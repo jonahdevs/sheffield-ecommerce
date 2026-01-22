@@ -143,4 +143,13 @@ class Product extends Model
     {
         return $this->hasMany(ProductImage::class)->orderBy('sort_order');
     }
+
+    /**
+     * Get accessories for the product
+     */
+    public function accessories(): BelongsToMany
+    {
+        return $this->belongsToMany(Product::class, 'product_accessories', 'product_id', 'accessory_id')
+            ->withTimestamps();
+    }
 }

@@ -12,13 +12,12 @@ return new class extends Migration {
     {
         Schema::table('users', function (Blueprint $table) {
             $table->after('email', function (Blueprint $table) {
-                $table->string('phone_number', 20)->nullable()->after('email');
-                $table->string('address_line1')->nullable()->after('phone_number');
-                $table->string('address_line2')->nullable()->after('address_line1');
-                $table->string('city')->nullable()->after('address_line2');
-                $table->string('state')->nullable()->after('city');
-                $table->string('postal_code', 20)->nullable()->after('state');
-                $table->string('country')->nullable()->after('postal_code');
+                $table->string('phone_number', 20)->nullable();
+                $table->string('phone_number_verified_at', 20)->nullable();
+                $table->string('avatar')->nullable();
+                $table->boolean('is_active')->default(true);
+                $table->boolean('newsletter_subscribed')->default(value: false);
+                $table->string('default_payment_method')->nullable();
             });
         });
     }
@@ -31,12 +30,11 @@ return new class extends Migration {
         Schema::table('users', function (Blueprint $table) {
             $table->dropColumn([
                 'phone_number',
-                'address_line1',
-                'address_line2',
-                'city',
-                'state',
-                'postal_code',
-                'country',
+                'phone_number_verified_at',
+                'avatar',
+                'is_active',
+                'newsletter_subscribed',
+                'default_payment_method',
             ]);
         });
     }
