@@ -186,7 +186,100 @@ new class extends Component {
                         <span class="hidden lg:inline text-sm font-medium text-zinc-900">Cart</span>
                     </a>
                 </div>
+
+                {{-- User Profile Dropdown --}}
+                <flux:dropdown position="bottom" align="end" hover>
+                    @auth
+                        @if (auth()->user()->avatar)
+                            <flux:profile circle avatar="{{ auth()->user()->avatar }}" name="{{ auth()->user()->name }}" />
+                        @else
+                            <flux:profile circle name="{{ auth()->user()->name }}" />
+                        @endif
+                    @else
+                        <button type="button" class="flex items-center gap-2 hover:text-sheffield-sheffield-blue-colors">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                            </svg>
+                            <div class="hidden lg:block">
+                                <div class="text-sm font-medium text-zinc-900">Account</div>
+                            </div>
+                            <svg class="w-4 h-4 hidden lg:block" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd"
+                                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                        </button>
+                    @endauth
+
+                    <flux:navmenu class="mt-5.5! rounded-sm!">
+                        <flux:navmenu.item href="#" wire:navigate icon="user" icon-variant="outline">Account
+                        </flux:navmenu.item>
+
+                        <flux:navmenu.item href="#" wire:navigate icon="package" icon-variant="outline">
+                            Orders
+                        </flux:navmenu.item>
+
+                        <flux:navmenu.item href="#" wire:navigate icon="heart" icon-variant="outline">
+                            Favorite Items
+                        </flux:navmenu.item>
+
+                        @auth
+                            <flux:navmenu.item href="#" wire:navigate icon="envelope">
+                                Messages
+                            </flux:navmenu.item>
+                        @endauth
+                        <flux:menu.separator />
+                        @auth
+                            <form action="{{ route('logout') }}" method="post">
+                                @csrf
+                                <flux:navmenu.item type="submit" icon="arrow-right-start-on-rectangle" variant="danger"
+                                    class="cursor-pointer">
+                                    Logout
+                                </flux:navmenu.item>
+                            </form>
+                        @else
+                            <flux:navmenu.item href="{{ route('login') }}" icon="arrow-left-start-on-rectangle"
+                                class="cursor-pointer">
+                                Log in
+                            </flux:navmenu.item>
+                        @endauth
+                    </flux:navmenu>
+                </flux:dropdown>
             </div>
+        </section>
+    </nav>
+
+    {{-- Category navigation --}}
+    <nav class="bg-sheffield-red text-white sticky top-14 md:top-19.5 z-40 shadow-md">
+        <section class="container mx-auto px-4 hidden lg:block">
+            <ul class="m-0 flex flex-wrap border-r border-white/20  p-0" data-language="en" role="menubar"
+                aria-label="Main navigation menu">
+                @foreach ($this->categories->take(12) as $category)
+                    <li class="w-[16.66666666666667%] cursor-pointer hover:bg-sheffield-red-dark" tabindex="0"
+                        role="menuitem" aria-expanded="false">
+                        <div class="relative h-9.25">
+                            <a class="flex min-h-full items-center overflow-hidden text-ellipsis whitespace-nowrap border-l border-white/20 px-1.25 xl:px-2.5 border-b"
+                                wire:navigate href="#">
+                                <img alt="" loading="eager" width="26" height="26" decoding="async"
+                                    data-nimg="1" class="duration-300 max-h-6.5 max-w-6.5 max-md:hidden invert"
+                                    style="color:transparent" src="{{ $category->icon_url }}">
+                                <span class="ml-2 truncate text-sm text-zinc-50">{{ $category->name }}</span>
+                            </a>
+                        </div>
+                    </li>
+                @endforeach
+            </ul>
+        </section>
+
+        <section
+            class="container mx-auto px-4 lg:hidden grid grid-flow-col auto-cols-max gap-1 overflow-x-auto scrollbar-hide">
+            @foreach ($this->categories as $category)
+                <a href="#" wire:navigate
+                    class="inline-block px-4 py-3 text-sm hover:opacity-80 transition-opacity duration-500">
+                    {{ $category->name }}
+                </a>
+            @endforeach
         </section>
     </nav>
 </div>

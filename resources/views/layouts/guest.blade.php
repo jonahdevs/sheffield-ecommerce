@@ -12,6 +12,7 @@
 
     {{ $slot }}
 
+    @fluxScripts
     <x-footer />
 </body>
 

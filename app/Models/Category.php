@@ -101,4 +101,13 @@ class Category extends Model
             : null
         );
     }
+
+     protected function iconUrl(): Attribute
+    {
+        return Attribute::make(
+            get: fn () =>$this->image_icon
+            ? asset('storage/' . $this->image_icon)
+            : null
+        );
+    }
 }
