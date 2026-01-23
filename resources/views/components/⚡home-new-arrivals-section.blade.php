@@ -99,7 +99,7 @@ new #[Defer] class extends Component {
                     <div class="swiper-wrapper pb-4">
                         @foreach ($this->products as $product)
                             <div class="swiper-slide h-auto!">
-                                <livewire:product-card :product="$product" />
+                                <livewire:product-card :product="$product" wire:key="product-{{ $product->id }}" />
                             </div>
                         @endforeach
                     </div>

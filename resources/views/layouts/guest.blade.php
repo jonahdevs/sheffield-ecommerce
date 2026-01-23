@@ -96,8 +96,10 @@
         {{ $slot }}
     </main>
 
-    @fluxScripts
+    <x-toast-notification />
     <x-footer />
+
+    @fluxScripts
 </body>
 
 </html>

@@ -3,18 +3,19 @@
 namespace App\Services;
 
 use App\Models\Product;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Class CompareService.
  */
 class CompareService
 {
-        /**
+    /**
      * Maximum number of products that can be compared
      */
     private const MAX_COMPARE_ITEMS = 3;
 
-  /**
+    /**
      * Check if product is in comparison
      */
     public function has(int $productId): bool
@@ -24,7 +25,7 @@ class CompareService
         return in_array($productId, $compare);
     }
 
-        /**
+    /**
      * Add product to comparison
      */
     public function add(int $productId): array
@@ -75,14 +76,13 @@ class CompareService
                 'message' => 'Added to comparison',
                 'count' => \count($compare),
             ];
-
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             throw new \RuntimeException('Product not found');
         } catch (\RuntimeException $e) {
             // Re-throw runtime exceptions (limit, category mismatch)
             throw $e;
         } catch (\Exception $e) {
-            \Log::error('Error adding to comparison', [
+            Log::error('Error adding to comparison', [
                 'product_id' => $productId,
                 'error' => $e->getMessage(),
             ]);
@@ -105,9 +105,8 @@ class CompareService
             }
 
             return false;
-
         } catch (\Exception $e) {
-            \Log::error('Error removing from comparison', [
+            Log::error('Error removing from comparison', [
                 'product_id' => $productId,
                 'error' => $e->getMessage(),
             ]);
@@ -135,6 +134,22 @@ class CompareService
         } catch (\Exception $e) {
             // Re-throw with context
             throw $e;
+        }
+    }
+
+    /**
+     * Get comparison count
+     */
+    public function getCount(): int
+    {
+        try {
+            return count(session('compare', []));
+        } catch (\Exception $e) {
+            Log::error('Error getting comparison count', [
+                'error' => $e->getMessage(),
+            ]);
+
+            return 0;
         }
     }
 }

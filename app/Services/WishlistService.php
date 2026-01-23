@@ -5,13 +5,36 @@ namespace App\Services;
 use App\Models\Product;
 use App\Models\WishlistItem;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Class WishlistService.
  */
 class WishlistService
 {
-   /**
+
+    /**
+     * Get Wishlist count
+     */
+    public function getCount(): int
+    {
+        try {
+            if (Auth::check()) {
+                return Auth::user()->wishlistItems()->count();
+            }
+
+            return \count(session('wishlist', []));
+        } catch (\Exception $e) {
+            Log::error('Error getting wishlist count', [
+                'error' => $e->getMessage(),
+            ]);
+
+            // Return 0 as a safe fallback
+            return 0;
+        }
+    }
+
+    /**
      * Check if product is in wishlist
      */
     public function has(int $productId): bool
@@ -27,7 +50,7 @@ class WishlistService
         return in_array($productId, $wishlist);
     }
 
-     /**
+    /**
      * Toggle product in wishlist (add if not present, remove if present)
      * Returns true if added, false if removed
      */
@@ -50,7 +73,7 @@ class WishlistService
         }
     }
 
-      /**
+    /**
      * Add product to wishlist
      */
     public function add(int $productId): bool
@@ -91,7 +114,7 @@ class WishlistService
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             throw new \RuntimeException('Product not found');
         } catch (\Exception $e) {
-            \Log::error('Error adding to wishlist', [
+            Log::error('Error adding to wishlist', [
                 'product_id' => $productId,
                 'error' => $e->getMessage(),
             ]);
@@ -123,7 +146,6 @@ class WishlistService
             }
 
             return false;
-
         } catch (\Exception $e) {
             \Log::error('Error removing from wishlist', [
                 'product_id' => $productId,

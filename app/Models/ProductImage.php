@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -41,5 +42,19 @@ class ProductImage extends Model
     public function variant(): BelongsTo
     {
         return $this->belongsTo(ProductVariant::class, 'variant_id');
+    }
+
+    // ===============================================
+    // ACCESSORS
+    // ===============================================
+
+     /**
+     * Get the product's image URL
+     */
+    protected function url(): Attribute
+    {
+        return Attribute::make(
+            get: fn() => $this->image_path ? asset('storage/' . $this->image_path) : null,
+        );
     }
 }

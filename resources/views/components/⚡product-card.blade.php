@@ -2,6 +2,7 @@
 
 use App\Services\WishlistService;
 use App\Services\CompareService;
+
 use App\Models\Product;
 use Livewire\Component;
 
@@ -9,7 +10,6 @@ new class extends Component {
     public Product $product;
 
     public bool $wishlisted = false;
-
     public bool $inCompare = false;
 
     public function mount(WishlistService $wishlist, CompareService $compareService)
@@ -50,25 +50,27 @@ new class extends Component {
     }
 };
 ?>
-
-
 <div
-    {{ $attributes->class(['bg-white overflow-hidden h-full border hover:shadow-[0px_0px_6px_2px_rgba(0,_0,_0,_0.1)] transition-all duration-300 ease-in-out group relative rounded-sm']) }}>
+    {{ $attributes->class(['bg-white overflow-hidden h-full border hover:shadow-[0px_0px_6px_2px_rgba(0,_0,_0,_0.1)] transition-all duration-300 ease-in-out group rounded-sm']) }}>
     <div class="h-full flex flex-col">
-        <a href="{{ route('products.show', $product->slug) }}" wire:navigate class="block">
-            <figure
-                class="w-full aspect-square overflow-hidden mb-2 relative bg-zinc-50 flex items-center justify-center">
-                @if ($product->image_url)
-                    <img src="{{ $product->image_url }}" alt="{{ $product->name }}"
-                        class="w-full h-full object-cover hover:scale-105 transition-transform duration-300 "
-                        loading="lazy">
-                @else
-                    <flux:icon.photo class="w-16 h-16 text-zinc-400 stroke-1" />
-                @endif
-            </figure>
+        <div class="relative">
+            <a href="{{ route('products.show', $product) }}" class="block">
+                <figure
+                    class="w-full aspect-square overflow-hidden mb-2 relative bg-zinc-50 flex items-center justify-center">
+                    @if ($product->image_url)
+                        <img src="{{ $product->image_url }}" alt="{{ $product->name }}"
+                            class="w-full h-full object-cover hover:scale-105 transition-transform duration-300 "
+                            loading="lazy">
+                    @else
+                        <flux:icon.photo class="w-16 h-16 text-zinc-400 stroke-1" />
+                    @endif
+                </figure>
 
+            </a>
             {{-- Quick action buttons --}}
             <div class="absolute top-2 right-2 flex flex-col gap-2 ">
+
+
                 <flux:button wire:click.stop="toggleWishlist" icon="heart" title="Wishlist"
                     icon-variant="{{ $wishlisted ? 'solid' : 'outline' }}" @class([
                         'cursor-pointer',
@@ -91,7 +93,7 @@ new class extends Component {
 
                 </flux:button>
             </div>
-        </a>
+        </div>
 
         <div class="p-4 flex flex-col gap-1 h-full">
             {{-- Brand --}}
@@ -100,7 +102,8 @@ new class extends Component {
             @endif
 
             {{-- Product Name --}}
-            <a class="text-sm text-zinc-700 line-clamp-2 group-hover:underline group-hover:text-sheffield-blue">
+            <a href="{{ route('products.show', $product) }}"
+                class="text-sm text-zinc-700 line-clamp-2 group-hover:underline group-hover:text-sheffield-blue">
                 {{ $product->name }}
             </a>
 

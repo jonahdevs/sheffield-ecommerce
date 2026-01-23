@@ -228,6 +228,7 @@ new #[Layout('layouts.guest')] class extends Component {
         <livewire:home-top-categories-section />
     </section>
 
+
     <section class="container mx-auto px-4 my-6">
         <img src="{{ asset('images/home/THIN BANNER.png') }}" alt="banner" class="w-full h-auto">
     </section>

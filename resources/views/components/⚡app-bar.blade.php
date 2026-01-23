@@ -1,18 +1,47 @@
 <?php
 
+use App\Services\WishlistService;
+use App\Services\CompareService;
+use App\Services\CartService;
 use Livewire\Component;
 use App\Models\Category;
 use Livewire\Attributes\Computed;
+use Livewire\Attributes\On;
 
 new class extends Component {
     public int $cartCount = 0;
     public int $compareCount = 0;
     public int $wishlistCount = 0;
 
+    public function mount(WishlistService $wishlist, CompareService $compareService, CartService $cartService)
+    {
+        $this->cartCount = $cartService->getCount();
+        $this->wishlistCount = $wishlist->getCount();
+        $this->compareCount = $compareService->getCount();
+    }
+
     #[Computed]
     public function categories()
     {
         return Category::active()->navbar()->orderBy('sort_order')->orderBy('name')->get();
+    }
+
+    #[On('cart-updated')]
+    public function refreshCartCount(CartService $cartService)
+    {
+        $this->cartCount = $cartService->getCount();
+    }
+
+    #[On('wishlist-updated')]
+    public function updateWishlistCount(WishlistService $wishlistService): void
+    {
+        $this->wishlistCount = $wishlistService->getCount();
+    }
+
+    #[On('compare-updated')]
+    public function updateCompareCount(CompareService $compareService): void
+    {
+        $this->compareCount = $compareService->getCount();
     }
 };
 ?>

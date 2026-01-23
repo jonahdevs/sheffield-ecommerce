@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Number;
 
 class Product extends Model
 {
@@ -228,10 +229,10 @@ class Product extends Model
         return $this->sale_price && $this->sale_price < $this->price;
     }
 
-    public function discountPercentage(): ?float
+    public function discountPercentage()
     {
         if ($this->hasDiscount()) {
-            return round((($this->price - $this->sale_price) / $this->price) * 100, 2);
+            return Number::percentage(round((($this->price - $this->sale_price) / $this->price) * 100, 2));
         }
         return null;
     }

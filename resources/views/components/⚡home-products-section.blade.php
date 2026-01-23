@@ -24,10 +24,9 @@ new #[Defer] class extends Component {
 
         <section class="flex items-center justify-between py-4 px-3 md:px-5">
             <h2 class="font-semibold text-xl text-zinc-800">You May Also Like</h2>
-
         </section>
 
-        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 pb-5">
+        <div class="px-3 md:px-5 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 pb-5">
             @for ($i = 0; $i < 12; $i++)
                 <div class="bg-white rounded border animate-pulse">
                     <div class="w-full aspect-square bg-zinc-200 mb-2"></div>
