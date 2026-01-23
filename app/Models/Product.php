@@ -197,4 +197,43 @@ class Product extends Model
         );
     }
 
+    protected function finalPrice(): Attribute
+    {
+        return Attribute::make(
+            get: fn() => $this->sale_price && $this->sale_price < $this->price ? $this->sale_price : $this->price,
+        );
+    }
+
+    protected function formattedFinalPrice(): Attribute
+    {
+        return Attribute::make(
+            get: fn() => format_currency($this->final_price)
+        );
+    }
+
+    protected function formattedSalePrice(): Attribute
+    {
+        return Attribute::make(
+            get: fn() => $this->sale_price ? format_currency($this->sale_price ?? 0) : null
+        );
+    }
+
+
+    // ===============================================
+    // METHODS
+    // ===============================================
+
+    public function hasDiscount(): bool
+    {
+        return $this->sale_price && $this->sale_price < $this->price;
+    }
+
+    public function discountPercentage(): ?float
+    {
+        if ($this->hasDiscount()) {
+            return round((($this->price - $this->sale_price) / $this->price) * 100, 2);
+        }
+        return null;
+    }
+
 }

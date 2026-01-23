@@ -55,7 +55,7 @@ new class extends Component {
 <div
     {{ $attributes->class(['bg-white overflow-hidden h-full border hover:shadow-[0px_0px_6px_2px_rgba(0,_0,_0,_0.1)] transition-all duration-300 ease-in-out group relative rounded-sm']) }}>
     <div class="h-full flex flex-col">
-        <a href="#" wire:navigate class="block">
+        <a href="{{ route('products.show', $product->slug) }}" wire:navigate class="block">
             <figure
                 class="w-full aspect-square overflow-hidden mb-2 relative bg-zinc-50 flex items-center justify-center">
                 @if ($product->image_url)
@@ -69,22 +69,25 @@ new class extends Component {
 
             {{-- Quick action buttons --}}
             <div class="absolute top-2 right-2 flex flex-col gap-2 ">
-                <flux:button wire:click="toggleWishlist" icon="heart"
+                <flux:button wire:click.stop="toggleWishlist" icon="heart" title="Wishlist"
                     icon-variant="{{ $wishlisted ? 'solid' : 'outline' }}" @class([
                         'cursor-pointer',
                         'text-red-500! border-red-500!' => $wishlisted,
                     ]) size="sm">
                 </flux:button>
 
-                <flux:button icon="eye" size="sm" icon-variant="outline">
+                <flux:button icon="eye" size="sm" icon-variant="outline" title="Quick View"
+                    class="cursor-pointer">
 
                 </flux:button>
 
-                <flux:button wire:click="toggleCompare" icon="scale" size="sm" icon-variant="outline">
+                <flux:button wire:click.stop="toggleCompare" icon="scale" size="sm" icon-variant="outline"
+                    title="Compare" class="cursor-pointer">
 
                 </flux:button>
 
-                <flux:button icon="shopping-cart" size="sm" icon-variant="outline">
+                <flux:button icon="shopping-cart" size="sm" icon-variant="outline" title="Add to Cart"
+                    class="cursor-pointer">
 
                 </flux:button>
             </div>
@@ -124,6 +127,17 @@ new class extends Component {
                 </div>
                 @if ($product->average_rating)
                     <span class="text-xs text-zinc-500">{{ number_format($product->average_rating, 1) }}</span>
+                @endif
+            </div>
+
+            <div class="pt-2 mt-auto">
+                @if ($product->hasDiscount())
+                    <div class="flex items-center flex-wrap gap-x-2">
+                        <p class="font-semibold text-sheffield-blue">{{ $product->formatted_final_price }}</p>
+                        <p class="text-sm text-zinc-500 line-through">{{ $product->formatted_sale_price }}</p>
+                    </div>
+                @else
+                    <p class="font-semibold text-sheffield-blue">{{ $product->formatted_final_price }}</p>
                 @endif
             </div>
         </div>

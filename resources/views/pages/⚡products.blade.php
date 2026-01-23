@@ -126,7 +126,7 @@ new #[Layout('layouts.guest')] class extends Component {
             default => $query->orderBy('created_at', 'desc'),
         };
 
-        return $query->paginate(20);
+        return $query->inRandomOrder()->paginate(20);
     }
 
     #[Computed]
