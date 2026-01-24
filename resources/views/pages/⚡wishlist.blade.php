@@ -4,9 +4,11 @@ use App\Models\Product;
 use Livewire\Component;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
+use Livewire\Attributes\On;
 
 new #[Layout('layouts.guest')] class extends Component {
     #[Computed]
+    #[On('wishlist-updated')]
     public function products()
     {
         if (auth()->check()) {
@@ -58,6 +60,8 @@ new #[Layout('layouts.guest')] class extends Component {
                 <flux:icon.home class="w-4 h-4 me-1.5 inline-block" />
                 Home
             </flux:breadcrumbs.item>
+
+            <flux:breadcrumbs.item href="{{ route('products') }}" wire:navigate>Products</flux:breadcrumbs.item>
 
             <flux:breadcrumbs.item>Wishlist</flux:breadcrumbs.item>
         </flux:breadcrumbs>
@@ -161,7 +165,7 @@ new #[Layout('layouts.guest')] class extends Component {
                             Browse Products
                         </flux:button>
 
-                        <flux:button href="{{ route('home') }}" variant="ghost" class="w-full sm:w-auto">
+                        <flux:button href="{{ route('home') }}" wire:navigate variant="ghost" class="w-full sm:w-auto">
                             Back to Home
                         </flux:button>
                     </div>

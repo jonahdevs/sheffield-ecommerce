@@ -8,6 +8,7 @@ Route::livewire('/', 'pages::home')->name('home');
 Route::livewire('/products', 'pages::products')->name('products');
 Route::livewire('/products/{product:slug}', 'pages::product-details')->name('products.show');
 Route::livewire('/wishlist', 'pages::wishlist')->name('wishlist');
+Route::livewire('/cart', 'pages::cart')->name('cart');
 
 Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])

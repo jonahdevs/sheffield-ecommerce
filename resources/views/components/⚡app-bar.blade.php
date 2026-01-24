@@ -114,7 +114,7 @@ new class extends Component {
                     </a>
 
                     {{-- Cart --}}
-                    <a href="" class="flex items-center gap-2">
+                    <a href="{{ route('cart') }}" wire:navigate class="flex items-center gap-2">
                         <div class="relative">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
