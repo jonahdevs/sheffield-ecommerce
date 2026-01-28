@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Category extends Model
 {
@@ -60,6 +61,30 @@ class Category extends Model
         return $this->hasMany(Category::class, 'parent_id');
     }
 
+    /**
+     * Get all products in this category
+     */
+    public function products(): BelongsToMany
+    {
+        return $this->belongsToMany(Product::class)
+            ->withPivot(['is_primary', 'sort_order'])
+            ->withTimestamps()
+            ->orderByPivot('sort_order');
+    }
+
+    /**
+     * Get active products only
+     */
+    public function activeProducts(): BelongsToMany
+    {
+        return $this->belongsToMany(Product::class)
+            ->where('products.is_active', true)
+            ->where('products.status', 'published')
+            ->withPivot('is_primary', 'sort_order')
+            ->withTimestamps()
+            ->orderBy('sort_order');
+    }
+
 
     // ==================================================
     // SCOPES
@@ -96,18 +121,18 @@ class Category extends Model
     protected function imageUrl(): Attribute
     {
         return Attribute::make(
-            get: fn () =>$this->image_path
-            ? asset('storage/' . $this->image_path)
-            : null
+            get: fn() => $this->image_path
+                ? asset('storage/' . $this->image_path)
+                : null
         );
     }
 
-     protected function iconUrl(): Attribute
+    protected function iconUrl(): Attribute
     {
         return Attribute::make(
-            get: fn () =>$this->image_icon
-            ? asset('storage/' . $this->image_icon)
-            : null
+            get: fn() => $this->image_icon
+                ? asset('storage/' . $this->image_icon)
+                : null
         );
     }
 }

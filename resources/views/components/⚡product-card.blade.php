@@ -133,10 +133,10 @@ new class extends Component {
             <div class="flex items-center gap-1">
                 <div class="flex gap-0.5">
                     @for ($i = 1; $i <= 5; $i++)
-                        @if ($product->average_rating && $i <= floor($product->average_rating))
+                        @if ($product->reviews_avg_rating && $i <= floor($product->reviews_avg_rating))
                             {{-- Full star --}}
                             <flux:icon.star variant="solid" class="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                        @elseif ($product->average_rating && $i - 0.5 <= $product->average_rating)
+                        @elseif ($product->reviews_avg_rating && $i - 0.5 <= $product->reviews_avg_rating)
                             {{-- Half star --}}
                             <div class="relative w-4 h-4">
                                 <flux:icon.star variant="solid" class="w-4 h-4 text-zinc-300" />
@@ -150,8 +150,8 @@ new class extends Component {
                         @endif
                     @endfor
                 </div>
-                @if ($product->average_rating)
-                    <span class="text-xs text-zinc-500">{{ number_format($product->average_rating, 1) }}</span>
+                @if ($product->reviews_avg_rating)
+                    <span class="text-xs text-zinc-500">{{ number_format($product->reviews_avg_rating, 1) }}</span>
                 @endif
             </div>
 

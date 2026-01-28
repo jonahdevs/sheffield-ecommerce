@@ -9,7 +9,7 @@ new #[Defer] class extends Component {
     #[Computed]
     public function products()
     {
-        return Product::active()->inRandomOrder()->limit(12)->get();
+        return Product::active()->withAvg('reviews', 'rating')->inRandomOrder()->limit(12)->get();
     }
 
     public function mount()

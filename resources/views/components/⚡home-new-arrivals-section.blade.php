@@ -11,6 +11,7 @@ new #[Defer] class extends Component {
     {
         return Product::active()
             ->with(['brand', 'images'])
+            ->withAvg('reviews', 'rating')
             ->newArrivals()
             ->inRandomOrder()
             ->limit(10)
