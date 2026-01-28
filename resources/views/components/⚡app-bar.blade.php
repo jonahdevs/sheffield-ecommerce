@@ -187,8 +187,8 @@ new class extends Component {
                                     </flux:navmenu.item>
                                 </form>
                             @else
-                                <flux:navmenu.item href="{{ route('login') }}" icon="arrow-left-start-on-rectangle"
-                                    class="cursor-pointer">
+                                <flux:navmenu.item href="{{ route('login') }}" wire:navigate
+                                    icon="arrow-left-start-on-rectangle" class="cursor-pointer">
                                     Log in
                                 </flux:navmenu.item>
                             @endauth

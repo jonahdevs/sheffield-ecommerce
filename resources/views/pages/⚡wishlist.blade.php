@@ -25,24 +25,19 @@ new #[Defer] #[Layout('layouts.guest')] class extends Component {
 
 @placeholder
     <div>
-        <section class="container mx-auto px-4 py-4 min-h-[80svh]">
-            {{-- Breadcrumb --}}
-            <flux:breadcrumbs class="mb-4">
-                <flux:breadcrumbs.item href="{{ route('home') }}" wire:navigate>
-                    <flux:icon.home class="w-4 h-4 me-1.5 inline-block" />
-                    Home
-                </flux:breadcrumbs.item>
-
-                <flux:breadcrumbs.item href="{{ route('products') }}" wire:navigate>Products</flux:breadcrumbs.item>
-                <flux:breadcrumbs.item>Wishlist</flux:breadcrumbs.item>
-            </flux:breadcrumbs>
-
-            <!-- Wishlist Header -->
-            <div class="flex items-center justify-between mb-6">
-                <div>
-                    <h1 class="text-2xl font-bold text-zinc-900">Wishlist</h1>
-                </div>
+        <div class="bg-zinc-100">
+            <div class="flex items-center gap-3 container mx-auto py-4 px-4">
+                <flux:skeleton animate="shimmer" class="w-32 h-4" />
+                <flux:skeleton animate="shimmer" class="w-8 h-4" />
+                <flux:skeleton animate="shimmer" class="w-32 h-4" />
+                <flux:skeleton animate="shimmer" class="w-8 h-4" />
+                <flux:skeleton animate="shimmer" class="w-44 h-4" />
             </div>
+        </div>
+
+        <section class="container mx-auto px-4 py-4 min-h-[80svh]">
+            <!-- Wishlist Header -->
+            <flux:skeleton class="w-48 h-4 mb-6" animate="shimmer" />
 
             <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
                 @for ($i = 0; $i < 6; $i++)
@@ -54,9 +49,9 @@ new #[Defer] #[Layout('layouts.guest')] class extends Component {
 @endplaceholder
 
 <div>
-    <section class="container mx-auto px-4 py-4 min-h-[80svh]">
-        {{-- Breadcrumb --}}
-        <flux:breadcrumbs class="mb-4">
+    {{-- Breadcrumb --}}
+    <div class="bg-zinc-100">
+        <flux:breadcrumbs class="container mx-auto px-4 py-4">
             <flux:breadcrumbs.item href="{{ route('home') }}" wire:navigate>
                 <flux:icon.home class="w-4 h-4 me-1.5 inline-block" />
                 Home
@@ -66,9 +61,11 @@ new #[Defer] #[Layout('layouts.guest')] class extends Component {
 
             <flux:breadcrumbs.item>Wishlist</flux:breadcrumbs.item>
         </flux:breadcrumbs>
+    </div>
 
+    <section class="container mx-auto px-4 py-4 min-h-[80svh]">
         <!-- Wishlist Header -->
-        <div class="flex items-center justify-between mb-6">
+        <div class="flex items-center justify-between mb-4">
             <div>
                 <h1 class="text-2xl font-bold text-zinc-900">Wishlist</h1>
             </div>

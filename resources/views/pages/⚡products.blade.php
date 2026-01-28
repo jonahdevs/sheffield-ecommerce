@@ -273,16 +273,17 @@ new #[Defer] #[Layout('layouts.guest')] class extends Component {
 
 @placeholder
     <div>
-        <div class="container mx-auto px-4 py-4">
-            {{-- Breadcrumb --}}
-            <flux:breadcrumbs>
-                <flux:breadcrumbs.item href="{{ route('home') }}" wire:navigate>
-                    <flux:icon.home class="w-4 h-4 me-1.5 inline-block" />
-                    Home
-                </flux:breadcrumbs.item>
+        <div class="bg-zinc-100">
+            <div class="flex items-center gap-3 container mx-auto py-4 px-4">
+                <flux:skeleton animate="shimmer" class="w-32 h-4" />
+                <flux:skeleton animate="shimmer" class="w-8 h-4" />
+                <flux:skeleton animate="shimmer" class="w-32 h-4" />
+                <flux:skeleton animate="shimmer" class="w-8 h-4" />
+                <flux:skeleton animate="shimmer" class="w-44 h-4" />
+            </div>
+        </div>
 
-                <flux:breadcrumbs.item href="{{ route('products') }}" wire:navigate>Products</flux:breadcrumbs.item>
-            </flux:breadcrumbs>
+        <div class="container mx-auto px-4 py-4">
 
             <div class="flex gap-4 mt-4">
                 {{-- left sidebar --}}
@@ -326,9 +327,9 @@ new #[Defer] #[Layout('layouts.guest')] class extends Component {
 @endplaceholder
 
 <div>
-    <div class="container mx-auto px-4 py-4">
+    <div class="bg-zinc-100">
         {{-- Breadcrumb --}}
-        <flux:breadcrumbs>
+        <flux:breadcrumbs class="container px-4 py-4 mx-auto">
             <flux:breadcrumbs.item href="{{ route('home') }}" wire:navigate>
                 <flux:icon.home class="w-4 h-4 me-1.5 inline-block" />
                 Home
@@ -340,7 +341,9 @@ new #[Defer] #[Layout('layouts.guest')] class extends Component {
                 <flux:breadcrumbs.item>{{ $this->selectedCategory->name }}</flux:breadcrumbs.item>
             @endif
         </flux:breadcrumbs>
+    </div>
 
+    <div class="container mx-auto px-4 py-4">
         <div class="flex gap-4 mt-4">
             {{-- Left sidebar  --}}
             <aside class="hidden lg:block w-64 shrink-0">

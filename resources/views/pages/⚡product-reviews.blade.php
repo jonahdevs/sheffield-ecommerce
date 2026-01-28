@@ -9,8 +9,9 @@ use App\Models\ReviewHelpfulness;
 use App\Models\Review;
 use App\Services\ReviewService;
 use Livewire\WithPagination;
+use Livewire\Attributes\Defer;
 
-new #[Layout('layouts.guest')] class extends Component {
+new #[Defer] #[Layout('layouts.guest')] class extends Component {
     use WithPagination;
 
     public Product $product;
@@ -149,10 +150,89 @@ new #[Layout('layouts.guest')] class extends Component {
 };
 ?>
 
+
+@placeholder
+    <div>
+        <section class="bg-zinc-100">
+            <div class="container mx-auto py-4 px-4">
+                <div class="flex items-center gap-3">
+                    <flux:skeleton animate="shimmer" class="w-32 h-4" />
+                    <flux:skeleton animate="shimmer" class="w-8 h-4" />
+                    <flux:skeleton animate="shimmer" class="w-32 h-4" />
+                    <flux:skeleton animate="shimmer" class="w-8 h-4" />
+                    <flux:skeleton animate="shimmer" class="w-44 h-4" />
+                </div>
+            </div>
+        </section>
+
+        <div class="container mx-auto px-4 py-4 min-h-[80svh]">
+            <flux:skeleton class="w-48 h-4 mb-6" animate="shimmer" />
+
+            <div class="bg-white rounded-sm border p-5 grid grid-cols-1 lg:grid-cols-4 gap-5">
+                <div class="lg:col-span-1">
+                    <div class="lg:sticky lg:top-44 space-y-6">
+                        <flux:skeleton animate="shimmer" class="w-14 h-5 mx-auto mb-2" />
+                        <flux:skeleton animate="shimmer" class="w-28 h-4 mx-auto mb-2" />
+                        <flux:skeleton animate="shimmer" class="w-12 h-3 mx-auto" />
+
+                        <flux:separator class="my-4" />
+
+                        <div class="flex items-center gap-3 mb-2">
+                            <flux:skeleton class="w-16 h-4" />
+                            <flux:skeleton class="flex-1 h-4" />
+                        </div>
+
+                        <div class="flex items-center gap-3 mb-2">
+                            <flux:skeleton class="w-16 h-4" />
+                            <flux:skeleton class="flex-1 h-4" />
+                        </div>
+
+                        <div class="flex items-center gap-3 mb-2">
+                            <flux:skeleton class="w-16 h-4" />
+                            <flux:skeleton class="flex-1 h-4" />
+                        </div>
+
+                        <div class="flex items-center gap-3 mb-2">
+                            <flux:skeleton class="w-16 h-4" />
+                            <flux:skeleton class="flex-1 h-4" />
+                        </div>
+
+                        <div class="flex items-center gap-3">
+                            <flux:skeleton class="w-16 h-4" />
+                            <flux:skeleton class="flex-1 h-4" />
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="lg:col-span-3">
+                    <div class="flex items-center justify-between mb-5 pb-4 border-b">
+                        <flux:skeleton animate="shimmer" class="h-4 w-28" />
+
+
+                        <div class="flex items-center gap-3">
+                            <flux:skeleton class="w-28 h-4" />
+                            <flux:skeleton class="w-28 h-4" />
+                        </div>
+
+                    </div>
+
+                    <div class="space-y-6">
+                        @for ($i = 0; $i < 4; $i++)
+                            <x-review-item-placeholder />
+                        @endfor
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+@endplaceholder
+
 <div>
-    <section class="container mx-auto px-4 py-4 min-h-[80svh]">
-        {{-- Breadcrumb --}}
-        <flux:breadcrumbs class="mb-4">
+    {{-- Breadcrumb --}}
+    <div class="bg-zinc-100">
+        <flux:breadcrumbs class="container mx-auto py-4 px-4 ">
             <flux:breadcrumbs.item href="{{ route('home') }}" wire:navigate>
                 <flux:icon.home class="w-4 h-4 me-1.5 inline-block" />
                 Home
@@ -168,17 +248,22 @@ new #[Layout('layouts.guest')] class extends Component {
 
             <flux:breadcrumbs.item>Reviews</flux:breadcrumbs.item>
         </flux:breadcrumbs>
+    </div>
+
+    <section class="container mx-auto px-4 py-4 min-h-[80svh]">
+        <!-- Cart Header -->
+        <div class="flex items-center justify-between mb-6">
+            <div>
+                <h1 class="text-2xl font-bold text-zinc-900">Customer Reviews</h1>
+            </div>
+        </div>
 
         <div class="bg-white rounded-sm border p-5">
-            {{-- Header --}}
-            <h2 class="font-medium text-lg mb-5">Customer Reviews</h2>
-
             <div class="grid grid-cols-1 lg:grid-cols-4 gap-5">
 
                 {{-- Sidebar with Rating Statistics --}}
                 <div class="lg:col-span-1">
                     <div class="lg:sticky lg:top-44 space-y-6">
-
                         <div>
                             <div class="text-center">
                                 <div class="text-3xl font-bold text-sheffield-blue">{{ $this->averageRating }}
