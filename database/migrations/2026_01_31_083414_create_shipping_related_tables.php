@@ -75,43 +75,7 @@ return new class extends Migration {
         });
 
         // ===============================================
-        //  5. Customer Addresses
-        // ===============================================
-
-        Schema::create('addresses', function (Blueprint $table) {
-            $table->id();
-
-            $table->foreignId('user_id')->nullable()->constrained()->cascadeOnDelete();
-
-            $table->string('first_name');
-            $table->string('last_name');
-            $table->string('phone_number');
-            $table->string('alternative_phone_number')->nullable();
-
-            $table->foreignId('county_id')->constrained('counties')->restrictOnDelete();
-            $table->foreignId('area_id')->nullable()->constrained('areas')->nullOnDelete();
-
-            $table->text('address');
-            $table->text('additional_information')->nullable();
-
-            // 🔑 Snapshot of derived data
-            $table->foreignId('shipping_zone_id')->constrained('shipping_zones')->restrictOnDelete();
-            $table->foreignId('selected_shipping_method_id')->nullable()->after('shipping_zone_id')->constrained('shipping_methods')->nullOnDelete();
-            $table->foreignId('selected_shipping_rate_id')->nullable()->after('selected_shipping_method_id')->constrained('shipping_rates')->nullOnDelete();
-
-            $table->boolean('is_default')->default(false);
-
-            $table->timestamps();
-
-            $table->index('user_id');
-            $table->index(['county_id', 'area_id']);
-            $table->index('shipping_zone_id');
-            $table->index(['user_id', 'is_default']);
-            $table->index('selected_shipping_method_id');
-        });
-
-        // ===============================================
-        //  6. Shipping Rates (Zone + Method + Weight = Price)
+        //  5. Shipping Rates (Zone + Method + Weight = Price)
         // ===============================================
 
         Schema::create('shipping_rates', function (Blueprint $table) {
@@ -141,6 +105,42 @@ return new class extends Migration {
             );
 
             $table->index(['shipping_zone_id', 'shipping_method_id', 'is_active'], 'idx_shipping_rates_zone_method_active');
+        });
+
+        // ===============================================
+        //  6. Customer Addresses
+        // ===============================================
+
+        Schema::create('addresses', function (Blueprint $table) {
+            $table->id();
+
+            $table->foreignId('user_id')->nullable()->constrained()->cascadeOnDelete();
+
+            $table->string('first_name');
+            $table->string('last_name');
+            $table->string('phone_number');
+            $table->string('alternative_phone_number')->nullable();
+
+            $table->foreignId('county_id')->constrained('counties')->restrictOnDelete();
+            $table->foreignId('area_id')->nullable()->constrained('areas')->nullOnDelete();
+
+            $table->text('address');
+            $table->text('additional_information')->nullable();
+
+            // 🔑 Snapshot of derived data
+            $table->foreignId('shipping_zone_id')->constrained('shipping_zones')->restrictOnDelete();
+            $table->foreignId('selected_shipping_method_id')->nullable()->constrained('shipping_methods')->nullOnDelete();
+            $table->foreignId('selected_shipping_rate_id')->nullable()->constrained('shipping_rates')->nullOnDelete();
+
+            $table->boolean('is_default')->default(false);
+
+            $table->timestamps();
+
+            $table->index('user_id');
+            $table->index(['county_id', 'area_id']);
+            $table->index('shipping_zone_id');
+            $table->index(['user_id', 'is_default']);
+            $table->index('selected_shipping_method_id');
         });
 
         // ===============================================

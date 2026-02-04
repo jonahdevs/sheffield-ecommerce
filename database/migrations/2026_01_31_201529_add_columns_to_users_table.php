@@ -18,6 +18,7 @@ return new class extends Migration {
                 $table->boolean('is_active')->default(true);
                 $table->boolean('newsletter_subscribed')->default(value: false);
                 $table->string('default_payment_method')->nullable();
+                $table->foreignId('preferred_shipping_method_id')->nullable()->constrained('shipping_methods');
                 $table->softDeletes();
             });
         });
@@ -36,6 +37,7 @@ return new class extends Migration {
                 'is_active',
                 'newsletter_subscribed',
                 'default_payment_method',
+                'preferred_shipping_method_id',
                 'deleted_at'
             ]);
         });

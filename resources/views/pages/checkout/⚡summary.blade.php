@@ -3,11 +3,17 @@
 use Livewire\Component;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Computed;
+use App\Services\CartService;
 
 new #[Layout('layouts.guest')] class extends Component {
     public function mount()
     {
         $user = auth()->user();
+        $cartService = app(CartService::class);
+
+        if (!$cartService->getCart()->items()->exists()) {
+            $this->redirectRoute('cart');
+        }
 
         // If no address exists → go to create address
         if ($user->defaultAddress()->doesntExist()) {
@@ -15,9 +21,9 @@ new #[Layout('layouts.guest')] class extends Component {
         }
 
         // If address exists but no shipping method selected → go to shipping options
-        if (!$user->defaultAddress->hasSelectedShippingMethod()) {
-            return redirect()->route('checkout.shipping-options');
-        }
+        // if (!$user->defaultAddress->hasSelectedShippingMethod()) {
+        //     return redirect()->route('checkout.shipping-options');
+        // }
     }
 
     #[Computed]
@@ -36,11 +42,6 @@ new #[Layout('layouts.guest')] class extends Component {
     public function selectedShippingRate()
     {
         return $this->defaultAddress?->selectedShippingRate;
-    }
-
-    public function changeAddress()
-    {
-        return redirect()->route('checkout.addresses.create');
     }
 
     public function changeShippingMethod()
@@ -67,77 +68,61 @@ new #[Layout('layouts.guest')] class extends Component {
         <!-- Checkout Summary Header -->
         <flux:heading level="1" class="text-2xl! font-bold!">Checkout Summary</flux:heading>
 
-        <div class="mt-4 grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div class="lg:col-span-2 space-y-6">
+        <div class="mt-4 grid grid-cols-1 lg:grid-cols-4 gap-6">
+            <div class="lg:col-span-3 space-y-4">
                 <!-- Customer Address Section -->
-                <div class="border rounded-lg bg-white">
-                    <div class="px-4 py-3 border-b flex items-center justify-between">
-                        <flux:heading level="3" class="font-medium!" size="lg">Delivery Address</flux:heading>
+                <div class="border rounded-sm bg-white">
+                    <div class="px-4 py-2 border-b flex items-center justify-between">
+                        <div class="flex items-center gap-1">
+                            <flux:icon.check-circle variant="solid" @class([
+                                'size-5',
+                                'text-green-500' => $this->defaultAddress,
+                                'text-zinc-500' => !$this->defaultAddress,
+                            ]) />
+                            <flux:heading level="3" class="font-medium!">Delivery Address</flux:heading>
+                        </div>
 
-                        <flux:button size="sm" variant="ghost" wire:click="changeAddress"
-                            class="text-blue-600 hover:text-blue-700">
-                            Change
-                            <flux:icon.chevron-right class="size-4 inline-block ml-1" />
-                        </flux:button>
+                        <flux:link :href="route('checkout.addresses')" wire:navigate icon:trailing="chevron-right"
+                            class="text-sm! group">Change
+                            <flux:icon.chevron-right
+                                class="size-4 ms-1 inline-block transition-transform group-hover:translate-x-2" />
+                        </flux:link>
                     </div>
+
                     <div class="px-4 py-5">
-                        @if ($this->defaultAddress)
-                            <div class="space-y-1">
-                                <flux:text class="font-semibold text-lg">{{ $this->defaultAddress->full_name }}
+                        @if (isset($this->defaultAddress))
+                            <flux:heading>{{ $this->defaultAddress->full_name }}
+                            </flux:heading>
+
+                            <div class="text-zinc-500 text-sm mt-3 space-y-1">
+                                <flux:text>{{ $this->defaultAddress->address }}</flux:text>
+
+                                <flux:text>
+                                    {{ implode(
+                                        ' | ',
+                                        array_filter([
+                                            $this->defaultAddress->area?->name . ', ' . $this->defaultAddress->county->name,
+                                            $this->defaultAddress->phone_number,
+                                        ]),
+                                    ) }}
                                 </flux:text>
-                                <flux:text class="text-zinc-700">{{ $this->defaultAddress->address }}</flux:text>
-
-                                @if ($this->defaultAddress->additional_information)
-                                    <flux:text class="text-zinc-600 text-sm">
-                                        {{ $this->defaultAddress->additional_information }}
-                                    </flux:text>
-                                @endif
-
-                                <flux:text class="text-zinc-700">
-                                    @if ($this->defaultAddress->area)
-                                        {{ $this->defaultAddress->area->name }},
-                                    @endif
-                                    {{ $this->defaultAddress->county->name }}
-                                </flux:text>
-
-                                <div class="pt-2 space-y-1">
-                                    <flux:text class="text-zinc-700">
-                                        <flux:icon.phone class="size-4 inline-block mr-1" />
-                                        {{ $this->defaultAddress->phone_number }}
-                                    </flux:text>
-
-                                    @if ($this->defaultAddress->alternative_phone_number)
-                                        <flux:text class="text-zinc-600 text-sm">
-                                            Alt: {{ $this->defaultAddress->alternative_phone_number }}
-                                        </flux:text>
-                                    @endif
-                                </div>
-
-                                <!-- Shipping Zone Badge -->
-                                @if ($this->defaultAddress->shippingZone)
-                                    <div class="pt-2">
-                                        <flux:badge size="sm" color="zinc">
-                                            Zone: {{ $this->defaultAddress->shippingZone->name }}
-                                        </flux:badge>
-                                    </div>
-                                @endif
                             </div>
                         @else
-                            <flux:text>You have not set a default address</flux:text>
+                            <p>You have not set a default address</p>
                         @endif
                     </div>
                 </div>
 
                 <!-- Delivery Method Section -->
-                <div class="bg-white rounded-lg border">
-                    <div class="px-4 py-3 border-b flex items-center justify-between">
-                        <flux:heading level="3" class="font-medium!" size="lg">Delivery Method</flux:heading>
+                <div class="bg-white rounded-sm border">
+                    <div class="px-4 py-2 border-b flex items-center justify-between">
+                        <flux:heading level="3" class="font-medium!">Delivery Details</flux:heading>
 
-                        <flux:button size="sm" variant="ghost" wire:click="changeShippingMethod"
-                            class="text-blue-600 hover:text-blue-700">
-                            Change
-                            <flux:icon.chevron-right class="size-4 inline-block ml-1" />
-                        </flux:button>
+                        <flux:link :href="route('checkout.shipping-options')" wire:navigate
+                            icon:trailing="chevron-right" class="text-sm! group">Change
+                            <flux:icon.chevron-right
+                                class="size-4 inline-block ms-1 group-hover:translate-x-2 transition-transform" />
+                        </flux:link>
                     </div>
 
                     <div class="px-4 py-5">
@@ -145,10 +130,10 @@ new #[Layout('layouts.guest')] class extends Component {
                             <div class="flex items-start gap-4">
                                 <!-- Method Icon -->
                                 @if ($this->selectedShippingMethod->icon)
-                                    <div class="flex-shrink-0">
+                                    <div class="shrink-0">
                                         <div class="w-12 h-12 bg-blue-50 rounded-lg flex items-center justify-center">
                                             <flux:icon :name="$this->selectedShippingMethod->icon"
-                                                class="size-6 text-blue-600" />
+                                                class="size-6 text-sheffield-blue" />
                                         </div>
                                     </div>
                                 @endif
@@ -184,9 +169,9 @@ new #[Layout('layouts.guest')] class extends Component {
                                 </div>
 
                                 <!-- Price -->
-                                <div class="flex-shrink-0 text-right">
+                                <div class="shrink-0 text-right">
                                     <flux:text class="text-sm text-zinc-600 mb-1">Shipping Cost</flux:text>
-                                    <flux:text class="text-xl font-bold text-blue-600">
+                                    <flux:text class="text-xl font-bold text-sheffield-blue">
                                         KES {{ number_format($this->selectedShippingRate->price, 2) }}
                                     </flux:text>
                                 </div>
@@ -201,58 +186,12 @@ new #[Layout('layouts.guest')] class extends Component {
                         @endif
                     </div>
                 </div>
-
-                <!-- TODO: Cart Items Section -->
-                <div class="bg-white rounded-lg border">
-                    <div class="px-4 py-3 border-b">
-                        <flux:heading level="3" class="font-medium!" size="lg">Order Items</flux:heading>
-                    </div>
-                    <div class="px-4 py-5">
-                        <flux:text class="text-zinc-600">Cart items will be displayed here</flux:text>
-                    </div>
-                </div>
             </div>
 
             <!-- Order Summary Sidebar -->
-            <div class="lg:col-span-1">
-                <div class="bg-white border rounded-lg p-4 sticky top-4">
-                    <flux:heading level="3" class="font-semibold mb-4">Order Summary</flux:heading>
 
-                    <div class="space-y-3 mb-4 pb-4 border-b">
-                        <!-- TODO: Add cart calculations -->
-                        <div class="flex justify-between text-sm">
-                            <flux:text class="text-zinc-600">Subtotal</flux:text>
-                            <flux:text class="font-medium">KES 0.00</flux:text>
-                        </div>
-
-                        @if ($this->selectedShippingRate)
-                            <div class="flex justify-between text-sm">
-                                <flux:text class="text-zinc-600">Shipping</flux:text>
-                                <flux:text class="font-medium">KES
-                                    {{ number_format($this->selectedShippingRate->price, 2) }}</flux:text>
-                            </div>
-                        @endif
-                    </div>
-
-                    <div class="flex justify-between mb-6">
-                        <flux:text class="font-semibold text-lg">Total</flux:text>
-                        <flux:text class="font-bold text-xl">
-                            KES
-                            {{ $this->selectedShippingRate ? number_format($this->selectedShippingRate->price, 2) : '0.00' }}
-                        </flux:text>
-                    </div>
-
-                    <flux:button class="w-full" :disabled="!$this->selectedShippingMethod">
-                        Proceed to Payment
-                    </flux:button>
-
-                    <div class="mt-4 pt-4 border-t">
-                        <div class="flex items-center gap-2 text-sm text-zinc-600">
-                            <flux:icon.shield-check class="size-5 text-green-600" />
-                            <flux:text>Secure checkout</flux:text>
-                        </div>
-                    </div>
-                </div>
+            <div class="col-span-1">
+                <livewire:order-summary />
             </div>
         </div>
     </div>

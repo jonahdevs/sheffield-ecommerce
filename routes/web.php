@@ -13,7 +13,7 @@ Route::livewire('compare', 'pages::product-compare')->name('products.compare');
 Route::livewire('/wishlist', 'pages::wishlist')->name('wishlist');
 Route::livewire('/cart', 'pages::cart')->name('cart');
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'cart_not_empty'])->group(function () {
     Route::livewire('/checkout/summary', 'pages::checkout.summary')->name('checkout.summary');
 
     Route::livewire('/checkout/addresses', 'pages::checkout.address.index')->name('checkout.addresses');

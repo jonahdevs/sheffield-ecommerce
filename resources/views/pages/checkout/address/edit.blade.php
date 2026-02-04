@@ -64,9 +64,13 @@ new #[Layout('layouts.guest')] class extends Component {
                     Home
                 </flux:breadcrumbs.item>
 
-                <flux:breadcrumbs.item :href="route('checkout.summary')">Checkout</flux:breadcrumbs.item>
+                <flux:breadcrumbs.item :href="route('checkout.summary')" wire:navigate>
+                    Checkout
+                </flux:breadcrumbs.item>
 
-                <flux:breadcrumbs.item :href="route('checkout.addresses')">Addresses</flux:breadcrumbs.item>
+                <flux:breadcrumbs.item :href="route('checkout.addresses')" wire:navigate>
+                    Addresses
+                </flux:breadcrumbs.item>
 
                 <flux:breadcrumbs.item>Edit</flux:breadcrumbs.item>
             </flux:breadcrumbs>
@@ -77,90 +81,100 @@ new #[Layout('layouts.guest')] class extends Component {
             <flux:heading level="1" class="text-2xl! font-bold! mb-3">Edit Address</flux:heading>
 
             <div class="grid grid-cols-4 gap-6">
-                <div class="col-span-3 bg-white rounded-sm border">
-                    <div class="px-3 py-2 border-b">
-                        <flux:heading level="3">Customer Address</flux:heading>
+                <div class="col-span-3 space-y-3">
+                    <div class="bg-white rounded-sm border">
+                        <div class="px-3 py-2 border-b flex items-center gap-1">
+                            <flux:icon.check-circle variant="solid" class="size-5 text-zinc-500" />
+                            <flux:heading level="3">Customer Address</flux:heading>
+                        </div>
+
+                        <form wire:submit="update" class="space-y-5 p-5">
+                            <div class="grid grid-cols-2 gap-5">
+                                {{-- First Name --}}
+                                <flux:input wire:model="form.first_name" :label="__('First Name')" placeholder="John" />
+
+                                {{-- Last Name - FIXED --}}
+                                <flux:input wire:model="form.last_name" :label="__('Last Name')" placeholder="Doe" />
+
+                                {{-- Phone Number - FIXED --}}
+                                <flux:field>
+                                    <flux:label>{{ __('Phone Number') }}</flux:label>
+                                    <flux:input.group>
+                                        <flux:input.group.prefix>+254</flux:input.group.prefix>
+                                        <flux:input wire:model="form.phone_number" placeholder="Enter Your Phone Number"
+                                            mask="999 999 999" />
+                                    </flux:input.group>
+                                    <flux:error name="form.phone_number" />
+                                </flux:field>
+
+                                {{-- Alternative Phone Number - FIXED --}}
+                                <flux:field>
+                                    <flux:label>{{ __('Alternative Phone Number') }}</flux:label>
+                                    <flux:input.group>
+                                        <flux:input.group.prefix>+254</flux:input.group.prefix>
+                                        <flux:input wire:model="form.alternative_phone_number"
+                                            placeholder="Enter Your Alternative Phone Number" mask="999 999 999" />
+                                    </flux:input.group>
+                                    <flux:error name="form.alternative_phone_number" />
+                                </flux:field>
+
+                                {{-- County --}}
+                                <flux:select class="w-full mt-2" wire:model.change="form.county_id"
+                                    :label="__('Region/County')">
+                                    @foreach ($this->counties as $county)
+                                        <flux:select.option value="{{ $county->id }}">
+                                            {{ $county->name }}
+                                        </flux:select.option>
+                                    @endforeach
+                                </flux:select>
+
+                                {{-- Area - FIXED --}}
+                                <flux:select wire:model.change="form.area_id" :label="__('City/Area')"
+                                    :placeholder="$form->county_id ? 'Select Area' : 'Select a county first'"
+                                    class="mt-2">
+                                    @foreach ($this->areas as $area)
+                                        <flux:select.option value="{{ $area->id }}">
+                                            {{ $area->name }}
+                                        </flux:select.option>
+                                    @endforeach
+                                </flux:select>
+                            </div>
+
+                            {{-- Address - FIXED --}}
+                            <flux:input wire:model="form.address_text" :label="__('Address')"
+                                placeholder="Enter your Address" />
+
+                            {{-- Additional Info - FIXED --}}
+                            <flux:textarea wire:model="form.additional_information"
+                                :label="__('Additional Information')" placeholder="Enter Additional Information" />
+
+                            @if (auth()->user()->addresses()->where('is_default', true)->exists())
+                                <flux:field variant="inline">
+                                    <flux:checkbox wire:model="form.is_default" />
+                                    <flux:label>Set as default Address</flux:label>
+                                </flux:field>
+                            @endif
+
+                            <flux:separator />
+
+                            <div class="flex items-center justify-end gap-3">
+                                <flux:button :href="route('checkout.addresses')" wire:navigate class="cursor-pointer">
+                                    Cancel
+                                </flux:button>
+
+                                <flux:button type="submit" variant="primary" class="cursor-pointer">
+                                    Save Address
+                                </flux:button>
+                            </div>
+                        </form>
                     </div>
 
-                    <form wire:submit="update" class="space-y-5 p-5">
-                        <div class="grid grid-cols-2 gap-5">
-                            {{-- First Name --}}
-                            <flux:input wire:model="form.first_name" :label="__('First Name')" placeholder="John" />
-
-                            {{-- Last Name - FIXED --}}
-                            <flux:input wire:model="form.last_name" :label="__('Last Name')" placeholder="Doe" />
-
-                            {{-- Phone Number - FIXED --}}
-                            <flux:field>
-                                <flux:label>{{ __('Phone Number') }}</flux:label>
-                                <flux:input.group>
-                                    <flux:input.group.prefix>+254</flux:input.group.prefix>
-                                    <flux:input wire:model="form.phone_number" placeholder="Enter Your Phone Number"
-                                        mask="999 999 999" />
-                                </flux:input.group>
-                                <flux:error name="form.phone_number" />
-                            </flux:field>
-
-                            {{-- Alternative Phone Number - FIXED --}}
-                            <flux:field>
-                                <flux:label>{{ __('Alternative Phone Number') }}</flux:label>
-                                <flux:input.group>
-                                    <flux:input.group.prefix>+254</flux:input.group.prefix>
-                                    <flux:input wire:model="form.alternative_phone_number"
-                                        placeholder="Enter Your Alternative Phone Number" mask="999 999 999" />
-                                </flux:input.group>
-                                <flux:error name="form.alternative_phone_number" />
-                            </flux:field>
-
-                            {{-- County --}}
-                            <flux:select class="w-full mt-2" wire:model.change="form.county_id"
-                                :label="__('Region/County')">
-                                @foreach ($this->counties as $county)
-                                    <flux:select.option value="{{ $county->id }}">
-                                        {{ $county->name }}
-                                    </flux:select.option>
-                                @endforeach
-                            </flux:select>
-
-                            {{-- Area - FIXED --}}
-                            <flux:select wire:model.change="form.area_id" :label="__('City/Area')"
-                                :placeholder="$form->county_id ? 'Select Area' : 'Select a county first'"
-                                class="mt-2">
-                                @foreach ($this->areas as $area)
-                                    <flux:select.option value="{{ $area->id }}">
-                                        {{ $area->name }}
-                                    </flux:select.option>
-                                @endforeach
-                            </flux:select>
+                    <div class="bg-white opacity-70 rounded-sm border">
+                        <div class="px-3 py-2 flex items-center gap-1">
+                            <flux:icon.check-circle variant="solid" class="size-5 text-zinc-600" />
+                            <flux:heading level="3">Delivery Details</flux:heading>
                         </div>
-
-                        {{-- Address - FIXED --}}
-                        <flux:input wire:model="form.address_text" :label="__('Address')"
-                            placeholder="Enter your Address" />
-
-                        {{-- Additional Info - FIXED --}}
-                        <flux:textarea wire:model="form.additional_information" :label="__('Additional Information')"
-                            placeholder="Enter Additional Information" />
-
-                        @if (auth()->user()->addresses()->where('is_default', true)->exists())
-                            <flux:field variant="inline">
-                                <flux:checkbox wire:model="form.is_default" />
-                                <flux:label>Set as default Address</flux:label>
-                            </flux:field>
-                        @endif
-
-                        <flux:separator />
-
-                        <div class="flex items-center justify-end gap-3">
-                            <flux:button :href="route('checkout.addresses')" wire:navigate class="cursor-pointer">
-                                Cancel
-                            </flux:button>
-
-                            <flux:button type="submit" variant="primary" class="cursor-pointer">
-                                Save Address
-                            </flux:button>
-                        </div>
-                    </form>
+                    </div>
                 </div>
 
                 <div class="col-span-1">

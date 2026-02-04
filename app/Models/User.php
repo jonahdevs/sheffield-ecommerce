@@ -34,6 +34,7 @@ class User extends Authenticatable
         'is_active',
         'newsletter_subscribed',
         'default_payment_method',
+        'preferred_shipping_method_id'
 
     ];
 

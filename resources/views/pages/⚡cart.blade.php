@@ -7,7 +7,6 @@ use Livewire\Attributes\Defer;
 use App\Services\CartService;
 use App\Services\WishlistService;
 use App\Models\Cart;
-use Livewire\Attributes\On;
 use Flux\Flux;
 
 new #[Defer] #[Layout('layouts.guest')] class extends Component {

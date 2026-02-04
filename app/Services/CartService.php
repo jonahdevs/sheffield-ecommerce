@@ -94,6 +94,13 @@ class CartService
         }
     }
 
+    public function hasItems(): bool
+    {
+        $cart = $this->getCart();
+
+        return $cart && $cart->items()->exists();
+    }
+
     public function addItem(int $productId, int $quantity = 1, ?string $variantId = null)
     {
         try {
