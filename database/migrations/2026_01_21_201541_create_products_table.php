@@ -31,7 +31,7 @@ return new class extends Migration {
             $table->boolean('is_featured')->default(false);
 
             // Physical properties
-            $table->decimal('weight', 8, 2)->nullable();
+            $table->decimal('weight', 8, 2)->nullable();  // in gms
             $table->decimal('height', 8, 2)->nullable();
             $table->decimal('width', 8, 2)->nullable();
             $table->decimal('length', 8, 2)->nullable();
