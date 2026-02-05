@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Log;
 
 /**
  * OrderSummary Service
- * 
+ *
  * Calculates and formats order summary including:
  * - Subtotal
  * - Discounts
@@ -28,7 +28,7 @@ class OrderSummary
 
     /**
      * Generate complete order summary
-     * 
+     *
      * @param Cart $cart
      * @param Address|null $address
      * @param array|null $selectedShippingOption Format: ['method_id' => int, 'rate_id' => int|null]
@@ -40,6 +40,8 @@ class OrderSummary
             // Calculate items summary
             $itemsSummary = $this->calculateItemsSummary($cart);
 
+
+            \Log::info($address);
             // Calculate shipping
             $shippingSummary = $this->calculateShippingSummary($cart, $address, $selectedShippingOption);
 
@@ -93,7 +95,7 @@ class OrderSummary
 
     /**
      * Calculate items summary (subtotal, discounts)
-     * 
+     *
      * @param Cart $cart
      * @return array
      */
@@ -130,7 +132,7 @@ class OrderSummary
 
     /**
      * Calculate shipping summary
-     * 
+     *
      * @param Cart $cart
      * @param Address|null $address
      * @param array|null $selectedShippingOption
@@ -138,6 +140,11 @@ class OrderSummary
      */
     protected function calculateShippingSummary(Cart $cart, ?Address $address, ?array $selectedShippingOption): array
     {
+        \Log::info('Calculating shipping summary', [
+            'cart_id' => $cart->id,
+            'address_id' => $address?->id,
+            'selected_shipping_option' => $selectedShippingOption,
+        ]);
         if (!$address) {
             return [
                 'shipping_cost' => 0,
@@ -195,10 +202,10 @@ class OrderSummary
 
     /**
      * Calculate tax summary
-     * 
+     *
      * RESERVED FOR FUTURE IMPLEMENTATION
      * Kenya VAT is 16% but can be inclusive or exclusive
-     * 
+     *
      * @param float $subtotal
      * @param float $shippingCost
      * @return array
@@ -211,13 +218,13 @@ class OrderSummary
         /*
         // Option 1: Tax on subtotal only
         $taxableAmount = $subtotal;
-        
+
         // Option 2: Tax on subtotal + shipping
         // $taxableAmount = $subtotal + $shippingCost;
-        
+
         $taxRate = 0.16; // 16% VAT
         $taxAmount = $taxableAmount * $taxRate;
-        
+
         return [
             'tax_amount' => round($taxAmount, 2),
             'tax_rate' => $taxRate,
@@ -238,7 +245,7 @@ class OrderSummary
 
     /**
      * Get order summary breakdown for display
-     * 
+     *
      * @param Cart $cart
      * @param Address|null $address
      * @param array|null $selectedShippingOption
@@ -344,7 +351,7 @@ class OrderSummary
 
     /**
      * Quick summary for cart badge/mini cart
-     * 
+     *
      * @param Cart $cart
      * @return array
      */

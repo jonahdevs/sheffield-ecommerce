@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Log;
 
 /**
  * ShippingCalculator Service
- * 
+ *
  * Handles all shipping cost calculations including:
  * - Weight-based rate calculation
  * - Free shipping rule application
@@ -27,7 +27,7 @@ class ShippingCalculator
 {
     /**
      * Calculate shipping options for a given cart and address
-     * 
+     *
      * @param Cart $cart
      * @param Address|null $address
      * @return array
@@ -48,7 +48,7 @@ class ShippingCalculator
             // Calculate total cart weight
             $totalWeight = $this->calculateCartWeight($cart);
 
-            if ($totalWeight <= 0) {
+            if ($totalWeight < 0) {
                 return [
                     'success' => false,
                     'message' => 'Unable to calculate shipping - products have no weight information',
@@ -116,7 +116,7 @@ class ShippingCalculator
 
     /**
      * Calculate shipping option for a specific method
-     * 
+     *
      * @param ShippingMethod $method
      * @param ShippingZone $zone
      * @param float $weight
@@ -178,7 +178,7 @@ class ShippingCalculator
 
     /**
      * Calculate pickup option (always free)
-     * 
+     *
      * @param ShippingMethod $method
      * @param Address $address
      * @return array|null
@@ -230,12 +230,12 @@ class ShippingCalculator
 
     /**
      * Find matching shipping rate for zone, method and weight
-     * 
+     *
      * RATE MATCHING LOGIC:
      * - Finds rates where weight falls within min_weight and max_weight (inclusive)
      * - If multiple rates match, selects the most specific one (smallest range)
      * - If no exact match, uses the highest available rate for that zone/method
-     * 
+     *
      * @param int $zoneId
      * @param int $methodId
      * @param float $weight
@@ -270,13 +270,13 @@ class ShippingCalculator
 
     /**
      * Check if free shipping rules apply
-     * 
+     *
      * FREE SHIPPING RULE PRIORITY:
      * 1. Most specific (zone + method specific) wins
      * 2. Zone-specific (any method) second
      * 3. Method-specific (any zone) third
      * 4. Global (any zone + any method) last
-     * 
+     *
      * @param int $zoneId
      * @param int $methodId
      * @param float $subtotal
@@ -380,7 +380,7 @@ class ShippingCalculator
 
     /**
      * Calculate total weight of cart items (in grams)
-     * 
+     *
      * @param Cart $cart
      * @return float Weight in KG
      */
@@ -413,7 +413,7 @@ class ShippingCalculator
 
     /**
      * Calculate cart subtotal
-     * 
+     *
      * @param Cart $cart
      * @return float
      */
@@ -426,7 +426,7 @@ class ShippingCalculator
 
     /**
      * Format estimated delivery time
-     * 
+     *
      * @param int|null $minDays
      * @param int|null $maxDays
      * @return string
@@ -454,7 +454,7 @@ class ShippingCalculator
 
     /**
      * Get cheapest shipping option
-     * 
+     *
      * @param array $options
      * @return array|null
      */
@@ -469,7 +469,7 @@ class ShippingCalculator
 
     /**
      * Get fastest shipping option
-     * 
+     *
      * @param array $options
      * @return array|null
      */
@@ -486,7 +486,7 @@ class ShippingCalculator
 
     /**
      * Validate if a specific shipping option is available
-     * 
+     *
      * @param Cart $cart
      * @param Address $address
      * @param int $methodId

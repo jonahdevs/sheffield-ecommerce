@@ -84,6 +84,7 @@ new #[Layout('layouts.guest')] class extends Component {
                     'preferred_shipping_method_id' => ShippingMethod::where('code', $validated['shippingMethod'])->value('id'),
                 ]);
 
+            $this->dispatch('shipping-method-selected');
             $this->redirectRoute('checkout.summary', navigate: true);
         } catch (\Throwable $th) {
             $this->dispatch('notify', variant: 'danger', message: $th->getMessage() ?: 'Unable to update the shipping method');

@@ -118,4 +118,9 @@ class User extends Authenticatable
     {
         return $this->belongsTo(ShippingMethod::class, 'preferred_shipping_method_id');
     }
+
+    public function cart(): HasOne
+    {
+        return $this->hasOne(Cart::class);
+    }
 }
