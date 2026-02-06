@@ -58,6 +58,10 @@
                 Zones
             </flux:navlist.item>
 
+            <flux:navlist.item icon="clipboard-document-list" wire:navigate :href="route('admin.counties')">
+                Counties
+            </flux:navlist.item>
+
             <flux:navlist.group heading="Warehouses" expandable expanded="false">
                 <flux:navlist.item icon="building-storefront" wire:navigate href="#">
                     Zones
