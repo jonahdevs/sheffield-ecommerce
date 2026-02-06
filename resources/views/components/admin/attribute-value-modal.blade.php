@@ -5,6 +5,7 @@ use Livewire\Component;
 use Livewire\WithFileUploads;
 use Illuminate\Support\Str;
 use Livewire\Attributes\On;
+use Flux\Flux;
 
 new class extends Component {
     use WithFileUploads;
@@ -114,9 +115,9 @@ new class extends Component {
 
         <div class="flex gap-2 justify-end">
             <flux:modal.close>
-                <flux:button variant="ghost">Cancel</flux:button>
+                <flux:button variant="ghost" class="cursor-pointer">Cancel</flux:button>
             </flux:modal.close>
-            <flux:button type="submit" variant="primary">Save Value</flux:button>
+            <flux:button type="submit" variant="primary" class="cursor-pointer">Save Value</flux:button>
         </div>
     </form>
 </flux:modal>

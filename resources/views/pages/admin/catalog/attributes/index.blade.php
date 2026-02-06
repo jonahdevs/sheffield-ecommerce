@@ -42,7 +42,8 @@ new #[Title('Product Attributes')] class extends Component {
     <flux:separator class="my-6" />
 
     <div class="mb-4">
-        <flux:input wire:model.live="search" icon="magnifying-glass" placeholder="Search attributes (e.g. Color)..." />
+        <flux:input wire:model.live="search" icon="magnifying-glass" placeholder="Search attributes (e.g. Color)..."
+            class="max-w-md" />
     </div>
 
     <flux:table :paginate="$attributes">

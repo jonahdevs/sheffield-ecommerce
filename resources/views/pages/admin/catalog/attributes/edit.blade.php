@@ -18,7 +18,7 @@ new class extends Component {
     #[On('refresh-values')]
     public function refresh()
     {
-        $this->attribute->load('attributeValues');
+        $this->attribute->load('values');
     }
 
     public function save()
@@ -35,9 +35,7 @@ new class extends Component {
 }; ?>
 
 <div>
-
-    <flux:heading size="xl">Edit Attribute: {{ $attribute->name }}</flux:heading>
-
+    <flux:heading size="xl" class="mb-4">Edit Attribute: {{ $attribute->name }}</flux:heading>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div class="lg:col-span-1 space-y-6">
@@ -51,7 +49,8 @@ new class extends Component {
                         <option value="button">Button</option>
                     </flux:select>
                     <flux:switch label="Used for Variations" wire:model="form.used_for_variations" />
-                    <flux:button type="submit" variant="primary" class="w-full">Update Info</flux:button>
+                    <flux:button type="submit" variant="primary" class="w-full cursor-pointer">Update Info
+                    </flux:button>
                 </section>
             </form>
         </div>
@@ -61,7 +60,8 @@ new class extends Component {
                 <div class="flex justify-between items-center mb-6">
                     <flux:heading size="lg">Attribute Values</flux:heading>
                     <flux:button icon="plus" size="sm" variant="subtle"
-                        wire:click="$dispatchTo('admin.attributes.value-modal', 'createValue', { attributeId: {{ $attribute->id }} })">
+                        wire:click="$dispatchTo('admin.attribute-value-modal', 'create-value', { attributeId: {{ $attribute->id }} })"
+                        class="cursor-pointer">
                         Add Value
                     </flux:button>
                 </div>
@@ -75,10 +75,12 @@ new class extends Component {
                     <flux:table.rows>
                         @foreach ($attribute->values->sortBy('sort_order') as $val)
                             <flux:table.row :key="$val->id">
+
                                 <flux:table.cell>
                                     <span class="font-medium">{{ $val->label }}</span>
                                     <div class="text-xs text-zinc-500">{{ $val->value }}</div>
                                 </flux:table.cell>
+
                                 <flux:table.cell>
                                     @if ($attribute->type === 'color')
                                         <div class="w-6 h-6 rounded-full border"
@@ -90,10 +92,12 @@ new class extends Component {
                                         <flux:text size="sm">N/A</flux:text>
                                     @endif
                                 </flux:table.cell>
+
                                 <flux:table.cell align="end">
                                     <flux:button variant="ghost" size="sm" icon="pencil-square"
-                                        wire:click="$dispatchTo('admin.attributes.value-modal', 'editValue', { id: {{ $val->id }} })" />
-                                    <flux:button variant="ghost" size="sm" icon="trash" color="red"
+                                        class="cursor-pointer"
+                                        wire:click="$dispatchTo('admin.attribute-value-modal', 'edit-value', { id: {{ $val->id }} })" />
+                                    <flux:button variant="ghost" size="sm" icon="trash" class="cursor-pointer"
                                         wire:click="deleteValue({{ $val->id }})" />
                                 </flux:table.cell>
                             </flux:table.row>
