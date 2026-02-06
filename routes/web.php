@@ -29,6 +29,7 @@ Route::middleware(['auth', 'cart_not_empty'])->group(function () {
 Route::middleware('auth')->prefix('admin')->name('admin')->group(function () {
     Route::livewire('zones', 'pages::admin.logistics.zones')->name('.zones');
     Route::livewire('counties', 'pages::admin.logistics.counties')->name('.counties');
+    Route::livewire('areas', 'pages::admin.logistics.areas')->name('.areas');
 });
 Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])

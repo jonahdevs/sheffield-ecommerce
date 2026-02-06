@@ -54,12 +54,19 @@
 
         {{-- Inventory Management --}}
         <flux:navlist.group heading="Logistics" class="grid">
-            <flux:navlist.item icon="clipboard-document-list" wire:navigate :href="route('admin.zones')">
+            <flux:navlist.item icon="clipboard-document-list" wire:navigate :href="route('admin.zones')"
+                :current="request()->routeIs('admin.zones')">
                 Zones
             </flux:navlist.item>
 
-            <flux:navlist.item icon="clipboard-document-list" wire:navigate :href="route('admin.counties')">
+            <flux:navlist.item icon="clipboard-document-list" wire:navigate :href="route('admin.counties')"
+                :current="request()->routeIs('admin.counties')">
                 Counties
+            </flux:navlist.item>
+
+            <flux:navlist.item icon="clipboard-document-list" wire:navigate :href="route('admin.areas')"
+                :current="request()->routeIs('admin.areas')">
+                Areas
             </flux:navlist.item>
 
             <flux:navlist.group heading="Warehouses" expandable expanded="false">
