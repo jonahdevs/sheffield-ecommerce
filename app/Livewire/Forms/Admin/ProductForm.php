@@ -30,11 +30,11 @@ class ProductForm extends Form
     // image properties
     public $image = null;
 
-    public $gallery_images = [];
+    public $images = [];
 
     public $existing_image = null;
 
-    public $existingGalleryImages = [];
+    public $existingImages = [];
 
     public $imagesToDelete = [];
 
@@ -57,7 +57,7 @@ class ProductForm extends Form
     public ?float $length = null;
 
     // Stock Management
-    public bool $manage_stock = true;
+    public bool $manage_stock = false;
 
     public int $stock_quantity = 0;
 
