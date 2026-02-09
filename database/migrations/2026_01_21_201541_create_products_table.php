@@ -16,57 +16,38 @@ return new class extends Migration {
             // Basic Information
             $table->string('name');
             $table->string('model_number')->nullable();
-            $table->text('description')->nullable();
-            $table->string('short_description', 500)->nullable();
             $table->string('slug')->unique();
-            $table->string('sku')->nullable();
+            $table->string('short_description', 500)->nullable();
+
             $table->enum('type', ['simple', 'variable'])->default('simple');
 
-            // Primary Image
-            $table->string('image_path')->nullable();
+            // General
+            $table->decimal('price', 10, 2);
+            $table->decimal('sale_price', 10, 2)->nullable(); // Discount price
+            $table->decimal('cost_price', 10, 2)->nullable(); // Your price
 
-            // properties
-            $table->json('technical_specification')->nullable();
-            $table->boolean('is_featured')->default(false);
+            // Inventory
+            $table->string('sku')->nullable();
+            $table->boolean('manage_stock')->default(true);
+            $table->integer('stock_quantity')->default(0);
+            $table->enum('allow_backorders', ['no', 'notify', 'yes'])->default('no');
 
-            // Physical properties
+            // Backorders
+            $table->integer('max_backorder_quantity')->nullable();
+            $table->date('expected_restock_date')->nullable();
+            $table->text('backorder_message')->nullable();
+
+            $table->integer('low_stock_threshold')->default(10);
+            $table->enum('stock_status', ['in_stock', 'out_of_stock', 'backorder'])->default('in_stock');
+            $table->boolean('sold_individually')->default(false);
+
+            // Shipping
             $table->decimal('weight', 8, 2)->nullable();  // in gms
             $table->decimal('height', 8, 2)->nullable();
             $table->decimal('width', 8, 2)->nullable();
             $table->decimal('length', 8, 2)->nullable();
 
-            // Pricing
-            $table->decimal('price', 10, 2);
-            $table->decimal('sale_price', 10, 2)->nullable(); // Discount price
-            $table->decimal('cost_price', 10, 2)->nullable(); // Your price
-
-            // Quantity control
-            $table->boolean('manage_stock')->default(true);
-            $table->integer('stock_quantity')->default(0);
-            $table->integer('low_stock_threshold')->default(10);
-            $table->enum('stock_status', ['in_stock', 'out_of_stock', 'backorder'])->default('in_stock');
-
-            // Backorders
-            $table->boolean('allow_backorders')->default(false);
-            $table->integer('max_backorder_quantity')->nullable();
-            $table->date('expected_restock_date')->nullable();
-            $table->text('backorder_message')->nullable();
-
-            //  Shipping & Policies
-            $table->string('estimated_delivery_time')->nullable();
-            $table->string('shipping_information')->nullable();
-            $table->string('warranty_information')->nullable();
-            $table->string('return_policy')->nullable();
-
-            // Status
-            $table->enum('status', ['draft', 'scheduled', 'published', 'archived'])->default('draft');
-            $table->timestamp('published_at')->nullable();
-
-            // Analytics
-            $table->integer('views_count')->default(0);
-            $table->integer('sales_count')->default(0);
-            $table->decimal('average_rating', 3, 2)->nullable();
-            $table->integer('reviews_count')->default(0);
+            $table->text('description')->nullable();
 
             // SEO fields
             $table->string('meta_title')->nullable();
@@ -74,13 +55,38 @@ return new class extends Migration {
             $table->json('meta_keywords')->nullable();
             $table->string('canonical_url', 500)->nullable();
 
+            // Status
+            $table->enum('status', ['draft', 'scheduled', 'published', 'archived'])->default('draft');
+            $table->timestamp('published_at')->nullable();
+            $table->boolean('is_featured')->default(false);
+
+            $table->foreignId('brand_id')->nullable()->constrained()->nullOnDelete();
+
+            // Primary Image
+            $table->string('image_path')->nullable();
+
+            // properties
+            $table->json('technical_specification')->nullable();
+
+            //  Shipping & Policies
+            $table->string('estimated_delivery_time')->nullable();
+            $table->string('shipping_information')->nullable();
+            $table->string('warranty_information')->nullable();
+            $table->string('return_policy')->nullable();
+
+
+            // Analytics
+            $table->integer('views_count')->default(0);
+            $table->integer('sales_count')->default(0);
+            $table->decimal('average_rating', 3, 2)->nullable();
+            $table->integer('reviews_count')->default(0);
+
             // Quotation Settings
             $table->boolean('requires_quotation')->default(false);
             $table->decimal('min_order_quantity', 10, 2)->nullable();
             $table->text('quotation_notes')->nullable();
 
             // Foreign Keys
-            $table->foreignId('brand_id')->nullable()->constrained()->nullOnDelete();
 
             $table->timestamps();
             $table->softDeletes();
@@ -330,34 +336,16 @@ return new class extends Migration {
 
         Schema::create('product_relationships', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('product_id')->constrained()->cascadeOnDelete();   // The main product
-            $table->foreignId('related_product_id')->constrained('products')->cascadeOnDelete();   // The related product (accessory, upsell, etc.)
+            $table->foreignId('product_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('related_product_id')->constrained('products')->cascadeOnDelete();
 
-            // Type of relationship
             $table->enum('relationship_type', [
-                'accessory',      // Compatible accessories (phone case for phone)
-                'related',        // Related products (similar items)
                 'upsell',         // Higher-end alternative
                 'cross_sell',     // Frequently bought together
-                'replacement',    // Replacement parts
-                'bundle',         // Bundle components
-                'required',       // Required accessories (battery for camera)
-            ])->default('accessory');
+                'related',        // Related products (similar items)
+            ])->default('related');
 
-            // Optional: Is this relationship bidirectional?
-            $table->boolean('is_bidirectional')->default(false);
-
-            // Optional: Discount when bought together
-            $table->decimal('bundle_discount_percentage', 5, 2)->nullable();
-            $table->decimal('bundle_discount_amount', 10, 2)->nullable();
-
-            // Control visibility and ordering
-            $table->boolean('is_active')->default(true);
             $table->integer('sort_order')->default(0);
-
-            // Optional description for the relationship
-            $table->text('description')->nullable(); // e.g., "Works perfectly with this product"
-
             $table->timestamps();
 
             // Prevent duplicate relationships
@@ -366,36 +354,6 @@ return new class extends Migration {
             // Indexes for performance
             $table->index(['product_id', 'relationship_type']);
             $table->index(['related_product_id', 'relationship_type']);
-        });
-
-        // ===============================================
-        // PRODUCT UPSELLS (Pivot)
-        // ===============================================
-        Schema::create('product_upsells', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('product_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('upsell_id')->constrained('products')->cascadeOnDelete();
-            $table->integer('sort_order')->default(0);
-            $table->timestamps();
-
-            $table->unique(['product_id', 'upsell_id']);
-            $table->index('product_id');
-            $table->index('upsell_id');
-        });
-
-        // ===============================================
-        // PRODUCT CROSS-SELLS (Pivot)
-        // ===============================================
-        Schema::create('product_cross_sells', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('product_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('cross_sell_id')->constrained('products')->cascadeOnDelete();
-            $table->integer('sort_order')->default(0);
-            $table->timestamps();
-
-            $table->unique(['product_id', 'cross_sell_id']);
-            $table->index('product_id');
-            $table->index('cross_sell_id');
         });
 
         // ===============================================

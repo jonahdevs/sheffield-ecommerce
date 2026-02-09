@@ -48,7 +48,7 @@ class ProductImage extends Model
     // ACCESSORS
     // ===============================================
 
-     /**
+    /**
      * Get the product's image URL
      */
     protected function url(): Attribute

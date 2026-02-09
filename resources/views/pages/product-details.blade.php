@@ -270,7 +270,7 @@ new #[Layout('layouts.guest')] class extends Component {
     #[Computed]
     public function accessories()
     {
-        return $this->product->accessories()->active()->get();
+        return $this->product->crossSells()->active()->get();
     }
 };
 ?>

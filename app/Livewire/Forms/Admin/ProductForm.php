@@ -6,8 +6,8 @@ use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\Tag;
+use Illuminate\Support\Facades\Storage;
 use Livewire\Form;
-use Livewire\Attributes\Validate;
 use Illuminate\Support\Str;
 
 class ProductForm extends Form
@@ -26,6 +26,8 @@ class ProductForm extends Form
 
     public ?string $description = null;
 
+    public string $product_type = 'simple';
+
     // Tabs
     // General Tab
     public float $price = 0;
@@ -41,13 +43,13 @@ class ProductForm extends Form
 
     public int $stock_quantity = 0;
 
-    public string $allow_backorder = 'no';
+    public ?string $allow_backorder = 'no';
 
     public int $low_stock_threshold = 10;
 
     public string $stock_status = 'in_stock';
 
-    public bool $sold_individually = false;
+    public ?bool $sold_individually = false;
 
 
     // Shipping
@@ -72,6 +74,8 @@ class ProductForm extends Form
 
     // Status Visibility
     public string $status = 'draft';
+
+    public  $published_at = null;
 
     public bool $is_featured = false;
 
@@ -106,6 +110,120 @@ class ProductForm extends Form
     public string $newBrandName = '';
     public ?string $newBrandWebsite = null;
 
+    public array $selectedUpsells = [];
+
+    public array $selectedCrossSells = [];
+
+    /**
+     * Validation rules
+     */
+    public function rules(): array
+    {
+        $productId = $this->product?->id;
+
+        return [
+            // Basic Information
+            'name' => 'required|string|max:255',
+            'model_number' => 'nullable|string|max:255',
+            'slug' => 'required|string|max:255|unique:products,slug,' . $productId,
+            'short_description' => 'nullable|string|max:500',
+            'description' => 'nullable|string',
+            'product_type' => 'required|in:simple,variable',
+
+            // Pricing
+            'price' => 'required|numeric|min:0',
+            'sale_price' => 'nullable|numeric|min:0|lt:price',
+            'cost_price' => 'nullable|numeric|min:0',
+
+            // Inventory
+            'sku' => 'required|string|max:100|unique:products,sku,' . $productId,
+            'manage_stock' => 'boolean',
+            'stock_quantity' => 'required_if:manage_stock,true|integer|min:0',
+            'allow_backorder' => 'required_if:manage_stock,true|in:no,notify,yes',
+            'low_stock_threshold' => 'nullable|integer|min:0',
+            'stock_status' => 'required_without:manage_stock|in:in_stock,out_of_stock,backorder',
+            'sold_individually' => 'boolean',
+
+            // Shipping
+            'weight' => 'nullable|numeric|min:0',
+            'length' => 'nullable|numeric|min:0',
+            'width' => 'nullable|numeric|min:0',
+            'height' => 'nullable|numeric|min:0',
+
+            // SEO
+            'meta_title' => 'nullable|string|max:255',
+            'meta_description' => 'nullable|string|max:500',
+            'meta_keywords' => 'nullable|string|max:255',
+            'canonical_url' => 'nullable|string|max:255',
+
+            // Status
+            'status' => 'required|in:draft,scheduled,published,archived',
+            'published_at' => 'required_if:status,scheduled|nullable|date',
+            'is_featured' => 'boolean',
+
+            // Images
+            'image' => 'nullable|image|max:2048', // 2MB max
+            'images.*' => 'nullable|image|max:2048',
+
+            // Relationships
+            'category_ids' => 'nullable|array',
+            'category_ids.*' => 'exists:categories,id',
+            'tag_ids' => 'nullable|array',
+            'tag_ids.*' => 'exists:tags,id',
+            'brand_id' => 'nullable|exists:brands,id',
+            'selectedUpsells' => 'nullable|array',
+            'selectedUpsells.*' => 'exists:products,id',
+            'selectedCrossSells' => 'nullable|array',
+            'selectedCrossSells.*' => 'exists:products,id',
+        ];
+    }
+
+    /**
+     * Custom validation messages
+     */
+    public function messages(): array
+    {
+        return [
+            'name.required' => 'Product name is required.',
+            'slug.required' => 'Product slug is required.',
+            'slug.unique' => 'This slug is already taken.',
+            'price.required' => 'Price is required.',
+            'price.min' => 'Price must be at least 0.',
+            'sale_price.lt' => 'Sale price must be less than regular price.',
+            'sku.required' => 'SKU is required.',
+            'sku.unique' => 'This SKU is already taken.',
+            'stock_quantity.required_if' => 'Stock quantity is required when managing stock.',
+            'published_at.required_if' => 'Published date is required for scheduled products.',
+            'image.image' => 'The file must be an image.',
+            'image.max' => 'Image size must not exceed 2MB.',
+        ];
+    }
+
+    /**
+     * Custom attribute names
+     */
+    public function validationAttributes(): array
+    {
+        return [
+            'name' => 'product name',
+            'model_number' => 'model number',
+            'short_description' => 'short description',
+            'sale_price' => 'sale price',
+            'cost_price' => 'cost price',
+            'stock_quantity' => 'stock quantity',
+            'allow_backorder' => 'backorder setting',
+            'low_stock_threshold' => 'low stock threshold',
+            'stock_status' => 'stock status',
+            'meta_title' => 'meta title',
+            'meta_description' => 'meta description',
+            'meta_keywords' => 'meta keywords',
+            'canonical_url' => 'canonical URL',
+            'published_at' => 'published date',
+            'category_ids' => 'categories',
+            'brand_id' => 'brand',
+        ];
+    }
+
     /**
      * Set the product for editing
      */
@@ -119,6 +237,8 @@ class ProductForm extends Form
         $this->slug = $product->slug;
         $this->short_description = $product->short_description;
         $this->description = $product->description;
+
+        $this->product_type = $product->product_type ?? 'simple';
 
         // Fill pricing
         $this->price = $product->price;
@@ -148,6 +268,7 @@ class ProductForm extends Form
 
         // Fill status
         $this->status = $product->status;
+        $this->published_at = $product->published_at;
         $this->is_featured = $product->is_featured;
 
         // Fill categories
@@ -159,9 +280,14 @@ class ProductForm extends Form
         // Fill brand
         $this->brand_id = $product->brand_id;
 
+        $this->selectedUpsells = $product->upsells()->pluck('related_product_id')->toArray();
+        $this->selectedCrossSells = $product->crossSells()->pluck('related_product_id')->toArray();
+
         // Fill existing images
         $this->existing_image = $product->image;
         $this->existingImages = $product->images ?? [];
+
+        dump($this->existingImages);
     }
 
     /**
@@ -365,7 +491,8 @@ class ProductForm extends Form
      */
     public function store(): Product
     {
-        // Add your validation here
+        // Validate the form
+        $this->validate();
 
         $product = Product::create([
             'name' => $this->name,
@@ -373,6 +500,7 @@ class ProductForm extends Form
             'slug' => $this->slug ?: Str::slug($this->name),
             'short_description' => $this->short_description,
             'description' => $this->description,
+            'product_type' => $this->product_type,
             'price' => $this->price,
             'sale_price' => $this->sale_price,
             'cost_price' => $this->cost_price,
@@ -392,7 +520,9 @@ class ProductForm extends Form
             'meta_keywords' => $this->meta_keywords,
             'canonical_url' => $this->canonical_url,
             'status' => $this->status,
+            'published_at' => $this->published_at,
             'is_featured' => $this->is_featured,
+            'brand_id' => $this->brand_id ?: null,
         ]);
 
         // Sync categories
@@ -405,8 +535,16 @@ class ProductForm extends Form
             $product->tags()->sync($this->tag_ids);
         }
 
-        // Handle image upload (you'll need to implement this based on your storage strategy)
-        // $this->handleImageUpload($product);
+        if (!empty($this->selectedUpsells)) {
+            $product->upsells()->sync($this->selectedUpsells);
+        }
+
+        if (!empty($this->selectedCrossSells)) {
+            $product->crossSells()->sync($this->selectedCrossSells);
+        }
+
+        // Handle image upload 
+        $this->handleImageUpload($product);
 
         return $product;
     }
@@ -416,7 +554,8 @@ class ProductForm extends Form
      */
     public function update(): void
     {
-        // Add your validation here
+        // Validate the form
+        $this->validate();
 
         $this->product->update([
             'name' => $this->name,
@@ -424,6 +563,7 @@ class ProductForm extends Form
             'slug' => $this->slug,
             'short_description' => $this->short_description,
             'description' => $this->description,
+            'product_type' => $this->product_type,
             'price' => $this->price,
             'sale_price' => $this->sale_price,
             'cost_price' => $this->cost_price,
@@ -443,7 +583,9 @@ class ProductForm extends Form
             'meta_keywords' => $this->meta_keywords,
             'canonical_url' => $this->canonical_url,
             'status' => $this->status,
+            'published_at' => $this->published_at,
             'is_featured' => $this->is_featured,
+            'brand_id' => $this->brand_id ?: null,
         ]);
 
         // Sync categories
@@ -452,7 +594,83 @@ class ProductForm extends Form
         // Sync tags
         $this->product->tags()->sync($this->tag_ids);
 
+        //  Sync upsells
+        $this->product->upsells()->sync($this->selectedUpsells);
+
+        //  Sync cross-sells
+        $this->product->crossSells()->sync($this->selectedCrossSells);
+
         // Handle image upload
-        // $this->handleImageUpload($this->product);
+        $this->handleImageUpload($this->product);
+    }
+
+    /**
+     * Handle image upload for product
+     */
+    private function handleImageUpload(Product $product): void
+    {
+        // Handle main product image
+        if ($this->image) {
+            // Delete old image if exists
+            if ($product->image) {
+                Storage::disk('public')->delete($product->image);
+            }
+
+            // Store new image
+            $imagePath = $this->image->store('products', 'public');
+            $product->update(['image' => $imagePath]);
+        }
+
+        // Handle gallery images
+        if (!empty($this->images)) {
+            $existingImages = $product->images ?? [];
+
+            foreach ($this->images as $image) {
+                $imagePath = $image->store('products/gallery', 'public');
+                $existingImages[] = $imagePath;
+            }
+
+            $product->update(['images' => $existingImages]);
+        }
+
+        // Handle image deletions
+        if (!empty($this->imagesToDelete)) {
+            foreach ($this->imagesToDelete as $imagePath) {
+                Storage::disk('public')->delete($imagePath);
+            }
+
+            $existingImages = $product->images ?? [];
+            $remainingImages = array_diff($existingImages, $this->imagesToDelete);
+
+            $product->update(['images' => array_values($remainingImages)]);
+
+            // Clear the deletion queue
+            $this->imagesToDelete = [];
+        }
+    }
+
+    /**
+     * Mark a gallery image for deletion
+     */
+    public function removeGalleryImage(string $imagePath): void
+    {
+        if (!in_array($imagePath, $this->imagesToDelete)) {
+            $this->imagesToDelete[] = $imagePath;
+        }
+
+        // Remove from existing images display
+        $this->existingImages = array_filter(
+            $this->existingImages,
+            fn($path) => $path !== $imagePath
+        );
+    }
+
+    /**
+     * Remove a newly uploaded image before saving
+     */
+    public function removeNewImage(int $index): void
+    {
+        unset($this->images[$index]);
+        $this->images = array_values($this->images);
     }
 }

@@ -58,7 +58,7 @@ new #[Defer] class extends Component {
                     if (this.swiper) {
                         this.swiper.destroy(true, true);
                     }
-
+            
                     this.swiper = new Swiper('#youMayAlsoLike', {
                         slidesPerView: 2,
                         slidesPerGroup: 1,

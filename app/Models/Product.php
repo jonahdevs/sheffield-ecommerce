@@ -147,12 +147,37 @@ class Product extends Model
     }
 
     /**
-     * Get accessories for the product
+     * Get upsell products for this product
+     */
+    public function upsells(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            Product::class,
+            'product_relationships',
+            'product_id',
+            'related_product_id'
+        )
+            ->wherePivot('relationship_type', 'upsell')
+            ->withPivot('sort_order')
+            ->withTimestamps()
+            ->orderByPivot('sort_order');
+    }
+
+    /**
+     * Get cross-sell products for this product
      */
     public function crossSells(): BelongsToMany
     {
-        return $this->belongsToMany(Product::class, 'product_cross_sells', 'product_id', 'cross_sell_id')
-            ->withTimestamps()->orderBy('sort_order');
+        return $this->belongsToMany(
+            Product::class,
+            'product_relationships',
+            'product_id',
+            'related_product_id'
+        )
+            ->wherePivot('relationship_type', 'cross_sell')
+            ->withPivot('sort_order')
+            ->withTimestamps()
+            ->orderByPivot('sort_order');
     }
 
     /**
@@ -173,7 +198,7 @@ class Product extends Model
     #[Scope]
     protected function active(Builder $query)
     {
-        $query->where('published', 'published');
+        $query->where('status', 'published');
     }
 
 

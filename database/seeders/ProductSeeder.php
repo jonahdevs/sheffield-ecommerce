@@ -23,7 +23,6 @@ class ProductSeeder extends Seeder
 
         if (!File::exists($jsonPath)) {
             $this->command->error("❌ JSON file not found: {$jsonPath}");
-
             return;
         }
 
@@ -32,16 +31,19 @@ class ProductSeeder extends Seeder
 
         if (json_last_error() !== JSON_ERROR_NONE) {
             $this->command->error('❌ Invalid JSON: ' . json_last_error_msg());
-
             return;
         }
 
-        // Store product-accessory relationships to process after all products are created
-        $productAccessories = [];
+        // Store product relationships to process after all products are created
+        $productRelationships = [
+            'cross_sell' => [],
+            'upsell' => [],
+            'related' => [],
+        ];
 
-        $this->command->info('🔄 Creating products and accessories...');
+        $this->command->info('🔄 Creating products...');
 
-        // First pass: Create all main products and their accessories as products
+        // First pass: Create all main products and their accessories/cross-sells as products
         foreach ($data['products'] as $index => $productData) {
             $brand = null;
             $category = null;
@@ -57,63 +59,144 @@ class ProductSeeder extends Seeder
             $product = $this->createProduct($productData, $category, $brand);
             $this->command->info("✅ Created product: {$product->name} (SKU: {$product->sku})");
 
-            // If product has accessories, store them for later processing
-            // New architecture: accessories are now just SKUs, not full product objects
+            // Process cross-sells (formerly accessories)
             if (!empty($productData['accessories']) && is_array($productData['accessories'])) {
-                // Check if accessories are SKU strings or full product objects
-                $firstAccessory = $productData['accessories'][0];
+                $crossSellSKUs = $this->processProductArray($productData['accessories'], 'cross-sell');
+                $productRelationships['cross_sell'][$productData['sku']] = $crossSellSKUs;
+                $this->command->info('  🔗 Stored ' . count($crossSellSKUs) . " cross-sell relationships for {$productData['name']}");
+            }
 
-                if (is_string($firstAccessory)) {
-                    // New format: accessories are just SKU strings
-                    $productAccessories[$productData['sku']] = $productData['accessories'];
-                    $this->command->info('  🔗 Stored ' . count($productData['accessories']) . " accessory SKUs for {$productData['name']}");
-                } else {
-                    // Old format: accessories are full product objects (legacy support)
-                    $accessorySKUs = [];
+            // Process upsells (if exists in your JSON)
+            if (!empty($productData['upsells']) && is_array($productData['upsells'])) {
+                $upsellSKUs = $this->processProductArray($productData['upsells'], 'upsell');
+                $productRelationships['upsell'][$productData['sku']] = $upsellSKUs;
+                $this->command->info('  ⬆️  Stored ' . count($upsellSKUs) . " upsell relationships for {$productData['name']}");
+            }
 
-                    foreach ($productData['accessories'] as $accessoryData) {
-                        $accessoryBrand = null;
-                        $accessoryCategory = null;
-
-                        if (!empty($accessoryData['brand'])) {
-                            $accessoryBrand = $this->createBrand($accessoryData['brand']);
-                        }
-
-                        if (!empty($accessoryData['category'])) {
-                            $accessoryCategory = $this->createCategory($accessoryData['category']);
-                        }
-
-                        // Create the accessory as a product
-                        $accessoryProduct = $this->createProduct($accessoryData, $accessoryCategory, $accessoryBrand);
-                        $this->command->info("  📎 Created accessory: {$accessoryProduct->name} (SKU: {$accessoryProduct->sku})");
-
-                        // Store the SKU for later attachment
-                        $accessorySKUs[] = $accessoryData['sku'];
-                    }
-
-                    // Store the relationship for later processing
-                    $productAccessories[$productData['sku']] = $accessorySKUs;
-                    $this->command->info('  🔗 Stored ' . count($accessorySKUs) . " accessory relationships for {$productData['name']}");
-                }
+            // Process related products (if exists in your JSON)
+            if (!empty($productData['related']) && is_array($productData['related'])) {
+                $relatedSKUs = $this->processProductArray($productData['related'], 'related');
+                $productRelationships['related'][$productData['sku']] = $relatedSKUs;
+                $this->command->info('  🔄 Stored ' . count($relatedSKUs) . " related product relationships for {$productData['name']}");
             }
         }
 
-        // Second pass: Attach cross-sell products
-        $this->command->info('🔗 Cross-sell products...');
-        foreach ($productAccessories as $productSKU => $crossSellSKUs) {
-            $product = Product::where('sku', $productSKU)->first();
+        // Second pass: Attach all product relationships
+        $this->attachProductRelationships($productRelationships);
 
-            if ($product) {
-                $crossSellSKUs = Product::whereIn('sku', $crossSellSKUs)->pluck('id')->toArray();
+        $this->command->info('✅ Product seeding completed!');
+    }
 
-                if (!empty($crossSellSKUs)) {
-                    $product->crossSells()->sync($crossSellSKUs);
-                    $this->command->info('✅ Attached ' . count($crossSellSKUs) . " cross-sells to {$product->name}");
-                }
+    /**
+     * Process an array of products (can be SKUs or full product objects)
+     * and return an array of SKUs
+     */
+    protected function processProductArray(array $products, string $type): array
+    {
+        $skus = [];
+
+        foreach ($products as $product) {
+            if (is_string($product)) {
+                // New format: just SKU strings
+                $skus[] = $product;
             } else {
-                $this->command->warn("⚠️  Product not found for SKU: {$productSKU}");
+                // Old format: full product objects (legacy support)
+                $brand = null;
+                $category = null;
+
+                if (!empty($product['brand'])) {
+                    $brand = $this->createBrand($product['brand']);
+                }
+
+                if (!empty($product['category'])) {
+                    $category = $this->createCategory($product['category']);
+                }
+
+                // Create the product
+                $createdProduct = $this->createProduct($product, $category, $brand);
+                $this->command->info("  📎 Created {$type}: {$createdProduct->name} (SKU: {$createdProduct->sku})");
+
+                // Store the SKU
+                $skus[] = $product['sku'];
             }
         }
+
+        return $skus;
+    }
+
+    /**
+     * Attach all product relationships (cross-sells, upsells, related)
+     */
+    protected function attachProductRelationships(array $productRelationships): void
+    {
+        // Attach cross-sells
+        if (!empty($productRelationships['cross_sell'])) {
+            $this->command->info('🔗 Attaching cross-sell products...');
+            foreach ($productRelationships['cross_sell'] as $productSKU => $crossSellSKUs) {
+                $this->attachRelationship($productSKU, $crossSellSKUs, 'cross_sell', 'cross-sells');
+            }
+        }
+
+        // Attach upsells
+        if (!empty($productRelationships['upsell'])) {
+            $this->command->info('⬆️  Attaching upsell products...');
+            foreach ($productRelationships['upsell'] as $productSKU => $upsellSKUs) {
+                $this->attachRelationship($productSKU, $upsellSKUs, 'upsell', 'upsells');
+            }
+        }
+
+        // Attach related products
+        if (!empty($productRelationships['related'])) {
+            $this->command->info('🔄 Attaching related products...');
+            foreach ($productRelationships['related'] as $productSKU => $relatedSKUs) {
+                $this->attachRelationship($productSKU, $relatedSKUs, 'related', 'related products');
+            }
+        }
+    }
+
+    /**
+     * Attach a specific relationship type to a product
+     */
+    protected function attachRelationship(string $productSKU, array $relatedSKUs, string $relationshipType, string $displayName): void
+    {
+        $product = Product::where('sku', $productSKU)->first();
+
+        if (!$product) {
+            $this->command->warn("⚠️  Product not found for SKU: {$productSKU}");
+            return;
+        }
+
+        // Get IDs of related products
+        $relatedProductIds = Product::whereIn('sku', $relatedSKUs)->pluck('id')->toArray();
+
+        if (empty($relatedProductIds)) {
+            $this->command->warn("⚠️  No related products found for SKUs: " . implode(', ', $relatedSKUs));
+            return;
+        }
+
+        // Prepare data with sort_order
+        $relationshipData = [];
+        foreach ($relatedProductIds as $index => $relatedProductId) {
+            $relationshipData[$relatedProductId] = [
+                'relationship_type' => $relationshipType,
+                'sort_order' => $index,
+            ];
+        }
+
+        // Use the appropriate relationship method
+        switch ($relationshipType) {
+            case 'cross_sell':
+                $product->crossSells()->sync($relationshipData);
+                break;
+            case 'upsell':
+                $product->upsells()->sync($relationshipData);
+                break;
+            case 'related':
+                $product->relatedProducts()->sync($relationshipData);
+                break;
+        }
+
+        $this->command->info("✅ Attached " . count($relatedProductIds) . " {$displayName} to {$product->name}");
     }
 
     /**
