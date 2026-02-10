@@ -59,7 +59,7 @@ new #[Title('Products')] class extends Component {
         <flux:table.columns>
             <flux:table.column>Product</flux:table.column>
             <flux:table.column>Category</flux:table.column>
-            <flux:table.column>Type</flux:table.column>
+            <flux:table.column>Stock</flux:table.column>
             <flux:table.column>Price</flux:table.column>
             <flux:table.column>Status</flux:table.column>
             <flux:table.column align="end">Actions</flux:table.column>
@@ -93,10 +93,7 @@ new #[Title('Products')] class extends Component {
 
                     {{-- Type --}}
                     <flux:table.cell>
-                        <flux:badge size="sm" :color="$product->type === 'variable' ? 'indigo' : 'emerald'"
-                            variant="subtle" class="capitalize">
-                            {{ $product->type }}
-                        </flux:badge>
+                        {{ $product->stock_quantity }}
                     </flux:table.cell>
 
                     {{-- Price --}}
@@ -110,8 +107,15 @@ new #[Title('Products')] class extends Component {
 
                     {{-- Status --}}
                     <flux:table.cell>
-                        <flux:badge size="sm" :color="$product->is_active ? 'green' : 'red'" variant="flat">
-                            {{ $product->is_active ? 'Active' : 'Draft' }}
+                        <flux:badge size="sm" variant="flat"
+                            :color="match($product->status) {
+                                                                                                                                                                                                                                            'draft' => 'gray',
+                                                                                                                                                                                                                                            'scheduled' => 'blue',
+                                                                                                                                                                                                                                            'published' => 'green',
+                                                                                                                                                                                                                                            'archived' => 'amber',
+                                                                                                                                                                                                                                            default => 'gray',
+                                                                                                                                                                                                                                        }">
+                            {{ ucfirst($product->status) }}
                         </flux:badge>
                     </flux:table.cell>
 

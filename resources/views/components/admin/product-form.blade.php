@@ -7,6 +7,7 @@ use App\Models\Category;
 use App\Models\Tag;
 use App\Models\Brand;
 use Livewire\Attributes\Computed;
+use Illuminate\Validation\ValidationException;
 
 new class extends Component {
     use WithFileUploads;
@@ -26,19 +27,26 @@ new class extends Component {
 
     public function save()
     {
-        // Check if we're editing or creating
-        if ($this->form->product instanceof Product && $this->form->product->exists) {
-            $this->form->update();
+        try {
+            // Check if we're editing or creating
+            if ($this->form->product instanceof Product && $this->form->product->exists) {
+                $this->form->update();
 
-            // Optional: Add success message and redirect
-            session()->flash('success', 'Product updated successfully!');
-            return redirect()->route('admin.products');
-        } else {
-            $product = $this->form->store();
+                // Optional: Add success message and redirect
+                $this->dispatch('notify', variant: 'success', message: 'Product updated successfully!');
+                return redirect()->route('admin.products');
+            } else {
+                $product = $this->form->store();
 
-            // Optional: Add success message and redirect
-            session()->flash('success', 'Product created successfully!');
-            return redirect()->route('admin.products');
+                // Optional: Add success message and redirect
+                $this->dispatch('notify', variant: 'success', message: 'Product created successfully!');
+                return redirect()->route('admin.products');
+            }
+            //code...
+        } catch (ValidationException $e) {
+            throw $e;
+        } catch (\Throwable $th) {
+            $this->dispatch('notify', variant: 'danger', message: $th->getMessage());
         }
     }
 
@@ -159,6 +167,47 @@ new class extends Component {
     {
         return Product::active()->orderBy('name')->get();
     }
+
+    public function hasGeneralErrors(): bool
+    {
+        return $this->getErrorBag()->hasAny(['form.price', 'form.sale_price']);
+    }
+
+    public function hasInventoryErrors(): bool
+    {
+        return $this->getErrorBag()->hasAny(['form.sku', 'form.manage_stock', 'form.stock_quantity', 'form.allow_backorder', 'form.low_stock_threshold', 'form.stock_status', 'form.sold_individually']);
+    }
+
+    public function hasShippingErrors(): bool
+    {
+        return $this->getErrorBag()->hasAny(['form.weight', 'form.length', 'form.width', 'form.height']);
+    }
+
+    public function hasLinkedProductsErrors(): bool
+    {
+        return $this->getErrorBag()->hasAny(['form.selectedUpsells', 'form.selectedCrossSells']);
+    }
+
+    public function hasAttributesErrors(): bool
+    {
+        return $this->getErrorBag()->hasAny([
+            // Add your attribute-related error keys here
+        ]);
+    }
+
+    public function hasVariationsErrors(): bool
+    {
+        return $this->getErrorBag()->hasAny([
+            // Add your variation-related error keys here
+        ]);
+    }
+
+    public function hasAdvancedErrors(): bool
+    {
+        return $this->getErrorBag()->hasAny([
+            // Add your advanced-related error keys here
+        ]);
+    }
 }; ?>
 
 <div>
@@ -209,24 +258,48 @@ new class extends Component {
                             x-bind:class="{ 'bg-zinc-200!': $wire.activeTab === 'general' }" icon="truck"
                             icon-variant="outline" @click="$wire.activeTab = 'general'">
                             General
+
+                            @if ($this->hasGeneralErrors())
+                                <x-slot name="iconTrailing">
+                                    <flux:icon.exclamation-circle class="w-4 h-4 text-red-500" variant="outline" />
+                                </x-slot>
+                            @endif
                         </flux:button>
 
                         <flux:button class="w-full rounded-none! cursor-pointer justify-start!" variant="ghost"
                             x-bind:class="{ 'bg-zinc-200!': $wire.activeTab === 'inventory' }" icon="archive-box"
                             icon-variant="outline" @click="$wire.activeTab = 'inventory'">
                             Inventory
+
+                            @if ($this->hasInventoryErrors())
+                                <x-slot name="iconTrailing">
+                                    <flux:icon.exclamation-circle class="w-4 h-4 text-red-500" variant="outline" />
+                                </x-slot>
+                            @endif
                         </flux:button>
 
                         <flux:button class="w-full rounded-none! cursor-pointer justify-start!" variant="ghost"
                             x-bind:class="{ 'bg-zinc-200!': $wire.activeTab === 'shipping' }" icon="truck"
                             icon-variant="outline" @click="$wire.activeTab = 'shipping'">
                             Shipping
+
+                            @if ($this->hasShippingErrors())
+                                <x-slot name="iconTrailing">
+                                    <flux:icon.exclamation-circle class="w-4 h-4 text-red-500" variant="outline" />
+                                </x-slot>
+                            @endif
                         </flux:button>
 
                         <flux:button class="w-full rounded-none! cursor-pointer justify-start!" variant="ghost"
                             x-bind:class="{ 'bg-zinc-200!': $wire.activeTab === 'linked-products' }" icon="link"
                             icon-variant="outline" @click="$wire.activeTab = 'linked-products'">
                             Linked Products
+
+                            @if ($this->hasLinkedProductsErrors())
+                                <x-slot name="iconTrailing">
+                                    <flux:icon.exclamation-circle class="w-4 h-4 text-red-500" variant="outline" />
+                                </x-slot>
+                            @endif
                         </flux:button>
 
                         <flux:button class="w-full rounded-none! cursor-pointer justify-start!" variant="ghost"
@@ -235,6 +308,12 @@ new class extends Component {
                             }"
                             icon="tag" icon-variant="outline" @click="$wire.activeTab = 'attributes'">
                             Attributes
+
+                            @if ($this->hasAttributesErrors())
+                                <x-slot name="iconTrailing">
+                                    <flux:icon.exclamation-circle class="w-4 h-4 text-red-500" variant="outline" />
+                                </x-slot>
+                            @endif
                         </flux:button>
 
                         <flux:button wire:cloak wire:show="form.product_type === 'variable'"
@@ -242,12 +321,24 @@ new class extends Component {
                             x-bind:class="{ 'bg-zinc-200!': $wire.activeTab === 'variations' }" icon="squares-2x2"
                             icon-variant="outline" @click="$wire.activeTab = 'variations'">
                             Variations
+
+                            @if ($this->hasVariationsErrors())
+                                <x-slot name="iconTrailing">
+                                    <flux:icon.exclamation-circle class="w-4 h-4 text-red-500" variant="outline" />
+                                </x-slot>
+                            @endif
                         </flux:button>
 
                         <flux:button class="w-full rounded-none! cursor-pointer justify-start!" variant="ghost"
                             x-bind:class="{ 'bg-zinc-200!': $wire.activeTab === 'advanced' }" icon="cog"
                             icon-variant="outline" @click="$wire.activeTab = 'advanced'">
                             Advanced
+
+                            @if ($this->hasAdvancedErrors())
+                                <x-slot name="iconTrailing">
+                                    <flux:icon.exclamation-circle class="w-4 h-4 text-red-500" variant="outline" />
+                                </x-slot>
+                            @endif
                         </flux:button>
                     </div>
 
@@ -282,8 +373,9 @@ new class extends Component {
                                     <flux:select.option value="yes">Allow</flux:select.option>
                                 </flux:select>
 
-                                <flux:input wire:model="form.low_stock_threshold" wire:model="form.low_stock_threshold"
-                                    :label="__('Low Stock Threshold')" type="number" />
+                                <flux:input wire:model="form.low_stock_threshold"
+                                    wire:model="form.low_stock_threshold" :label="__('Low Stock Threshold')"
+                                    type="number" />
                             </div>
 
                             {{-- Stock Status --}}
@@ -312,8 +404,8 @@ new class extends Component {
 
                         {{-- Shipping --}}
                         <div wire:cloak wire:show="activeTab == 'shipping'" class="space-y-5">
-                            <flux:input type="number" wire:model="form.weight" label=" Weight (kg)" placeholder="0.00"
-                                step="0.01" min="0" />
+                            <flux:input type="number" wire:model="form.weight" label=" Weight (kg)"
+                                placeholder="0.00" step="0.01" min="0" />
 
                             <flux:field>
                                 <flux:label>Dimensions</flux:label>
@@ -547,7 +639,7 @@ new class extends Component {
                         <div class="space-y-3">
                             <div @click="document.getElementById('product-image-input').click()"
                                 class="relative mx-auto w-full aspect-square rounded-sm overflow-hidden border-2 border-zinc-200 cursor-pointer group">
-                                {{ dump($form->existing_image) }}
+
                                 <img src="{{ Storage::url($form->existing_image) }}" alt="Current product image"
                                     class="w-full h-full object-cover">
 

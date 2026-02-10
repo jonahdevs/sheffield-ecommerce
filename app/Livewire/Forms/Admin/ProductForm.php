@@ -286,8 +286,6 @@ class ProductForm extends Form
         // Fill existing images
         $this->existing_image = $product->image;
         $this->existingImages = $product->images ?? [];
-
-        dump($this->existingImages);
     }
 
     /**
