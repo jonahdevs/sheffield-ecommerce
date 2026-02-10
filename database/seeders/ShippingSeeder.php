@@ -108,52 +108,44 @@ class ShippingSeeder extends Seeder
     {
         $zoneDefinitions = [
             'Nairobi' => [
-                'name' => 'Nairobi Metro',
+                'name' => 'Nairobi Region',
                 'code' => 'NAIROBI',
                 'description' => 'Nairobi County and immediate suburbs',
-                'sort_order' => 1,
             ],
             'Central' => [
                 'name' => 'Central Region',
                 'code' => 'CENTRAL',
                 'description' => 'Central Kenya counties',
-                'sort_order' => 2,
             ],
             'Coast' => [
                 'name' => 'Coast Region',
                 'code' => 'COAST',
                 'description' => 'Coastal counties',
-                'sort_order' => 3,
             ],
             'Eastern' => [
                 'name' => 'Eastern Region',
                 'code' => 'EASTERN',
                 'description' => 'Eastern Kenya counties',
-                'sort_order' => 4,
             ],
             'North Eastern' => [
                 'name' => 'North Eastern Region',
                 'code' => 'NORTH_EASTERN',
                 'description' => 'North Eastern counties',
-                'sort_order' => 5,
             ],
             'Western' => [
                 'name' => 'Western Region',
                 'code' => 'WESTERN',
                 'description' => 'Western Kenya counties',
-                'sort_order' => 6,
             ],
             'Nyanza' => [
                 'name' => 'Nyanza Region',
                 'code' => 'NYANZA',
                 'description' => 'Nyanza counties',
-                'sort_order' => 7,
             ],
             'Rift Valley' => [
                 'name' => 'Rift Valley Region',
                 'code' => 'RIFT_VALLEY',
                 'description' => 'Rift Valley counties',
-                'sort_order' => 8,
             ],
         ];
 
@@ -327,7 +319,7 @@ class ShippingSeeder extends Seeder
 
         $stations = [
             [
-                'name' => 'Nairobi Pickup Hub',
+                'name' => 'Nairobi Pickup ',
                 'code' => 'NBO_SYK',
                 'county_id' => $nairobi->id,
                 'address' => 'Off Old Mombasa Road before the Nairobi SGR Terminus',
