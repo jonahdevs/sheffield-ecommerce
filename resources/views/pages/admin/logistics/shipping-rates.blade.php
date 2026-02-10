@@ -92,7 +92,7 @@ new #[Title('Shipping Rates')] class extends Component {
         </flux:button>
     </div>
 
-    <flux:table>
+    <flux:table :paginate="$this->rates">
         <flux:table.columns>
             <flux:table.column>Zone</flux:table.column>
             <flux:table.column>Method</flux:table.column>

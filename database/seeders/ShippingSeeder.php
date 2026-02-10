@@ -229,20 +229,6 @@ class ShippingSeeder extends Seeder
             }, $rates);
         }
 
-        // Pickup Station Rates (15% cheaper, similar timeframes)
-        $pickupRates = [];
-        foreach ($standardRates as $zone => $rates) {
-            $pickupRates[$zone] = array_map(function ($rate) {
-                return [
-                    'min' => $rate['min'],
-                    'max' => $rate['max'],
-                    'price' => $rate['price'] * 0.85, // 15% discount
-                    'days_min' => $rate['days_min'],
-                    'days_max' => $rate['days_max'] + 1, // Slightly longer for pickup
-                ];
-            }, $rates);
-        }
-
         $totalRates = 0;
 
         // Create rates for each method
