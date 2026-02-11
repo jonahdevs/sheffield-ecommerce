@@ -438,7 +438,7 @@ new #[Defer] #[Layout('layouts.guest')] class extends Component {
                                 <div class="max-h-64 overflow-y-auto">
                                     @if ($this->selectedCategory)
                                         {{-- Back to all categories --}}
-                                        <button wire:click="clearCategory"
+                                        {{-- <button wire:click="clearCategory"
                                             class="flex items-center gap-2 text-sm text-sheffield-blue hover:underline p-2 mb-2">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor"
                                                 viewBox="0 0 24 24">
@@ -446,7 +446,7 @@ new #[Defer] #[Layout('layouts.guest')] class extends Component {
                                                     d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
                                             </svg>
                                             Back to All Categories
-                                        </button>
+                                        </button> --}}
 
                                         {{-- Current category --}}
                                         <div
@@ -466,8 +466,6 @@ new #[Defer] #[Layout('layouts.guest')] class extends Component {
                                                     <span class="text-sm text-zinc-700">{{ $category->name }}</span>
                                                 </button>
                                             @endforeach
-                                        @else
-                                            <p class="text-xs text-zinc-500 px-2 py-2">No subcategories available</p>
                                         @endif
                                     @else
                                         {{-- Root categories --}}

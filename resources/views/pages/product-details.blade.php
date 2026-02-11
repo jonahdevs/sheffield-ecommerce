@@ -5,6 +5,7 @@ use App\Services\CompareService;
 use App\Services\CartService;
 use App\Services\ReviewService;
 use App\Services\ProductService;
+use App\Services\ShippingCalculatorService;
 use App\Models\Product;
 use App\Models\Area;
 use App\Models\County;
@@ -52,6 +53,11 @@ new #[Layout('layouts.guest')] class extends Component {
                 $this->cartQuantity = $cartItem->quantity;
                 $this->cartItemId = $cartItem->id;
             }
+        }
+
+        if (auth()->check() && auth()->user()->defaultAddress) {
+            $this->selectedCounty = auth()->user()->defaultAddress->county?->id;
+            $this->selectedArea = auth()->user()->defaultAddress->area?->id;
         }
     }
 
@@ -272,6 +278,14 @@ new #[Layout('layouts.guest')] class extends Component {
     {
         return $this->product->crossSells()->active()->get();
     }
+
+    #[Computed]
+    public function estimatedShipping()
+    {
+        $shippingCalculator = app(ShippingCalculatorService::class);
+
+        return $shippingCalculator->calculateForProduct($this->product, $this->cartQuantity, auth()->user(), $this->selectedCounty ?: null, $this->selectedArea ?: null);
+    }
 };
 ?>
 
@@ -449,6 +463,15 @@ new #[Layout('layouts.guest')] class extends Component {
 
                     <div class="my-4 text-zinc-500 text-sm">{!! $product->short_description !!}</div>
 
+
+                    <div wire:show="selectedCounty" wire:cloak class="flex items-center mb-4 gap-3">
+                        <flux:text>Estimated Shipping fee from</flux:text>
+
+                        <flux:text class="font-semibold">
+                            {{ format_currency($this->estimatedShipping) }}
+                        </flux:text>
+                    </div>
+
                     <div>
                         @if ($product->hasDiscount())
                             <div class="flex items-center flex-wrap gap-x-2">
@@ -516,7 +539,7 @@ new #[Layout('layouts.guest')] class extends Component {
                     <div class="p-3">
                         <h4 class="text-sm  font-medium text-slate-600">Choose your location</h4>
                         @island('location-selector')
-                            <flux:select class="w-full mt-2" wire:model.change="selectedCounty"
+                            <flux:select class="w-full mt-2" wire:model.live="selectedCounty"
                                 placeholder="Select County...">
                                 @foreach ($this->counties as $county)
                                     <flux:select.option :value="$county->id">
@@ -579,12 +602,12 @@ new #[Layout('layouts.guest')] class extends Component {
         </div>
 
         @if ($this->accessories->count() > 0)
-            <div id="accessories" class="mt-5 scroll-mt-42.5">
+            <div id="accessories" class="mt-5 scroll-mt-42.5 @container">
                 <h3 class="text-lg font-semibold  mb-4">
                     Accessories
                 </h3>
 
-                <div class="grid grid-cols-6 gap-4 ">
+                <div class="grid grid-cols-1 @md:grid-cols-2 @xl:grid-cols-3 @4xl:grid-cols-4 @7xl:grid-cols-6 gap-4 ">
                     @foreach ($this->accessories as $accessory)
                         <livewire:accessory-item :product="$accessory" />
                     @endforeach

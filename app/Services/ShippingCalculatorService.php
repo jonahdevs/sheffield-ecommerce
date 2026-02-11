@@ -170,4 +170,82 @@ class ShippingCalculatorService
 
         return round($totalWeightKg, 2);
     }
+
+
+    /**
+     * Calculate estimated shipping cost for a single product
+     *
+     * @param \App\Models\Product $product
+     * @param int $quantity
+     * @param \App\Models\User|null $user
+     * @param int|null $countyId
+     * @param int|null $areaId
+     * @return float
+     */
+    public function calculateForProduct($product, int $quantity = 1, $user = null, $countyId = null, $areaId = null)
+    {
+        // Calculate product weight
+        $productWeight = $product->weight ?? 0;
+        $totalWeight = $productWeight * $quantity;
+
+        // Apply minimum weight if needed
+        $minWeight = config('shipping.min_order_weight_kg', 0.1);
+        $totalWeight = max($totalWeight, $minWeight);
+
+        // Get shipping zone
+        $shippingZoneId = $this->resolveShippingZone($user, $countyId, $areaId);
+
+        // Get shipping method
+        try {
+            $shippingMethodId = $this->getPreferredShippingMethodId($user);
+        } catch (\Exception $e) {
+            // Fallback to first active method if default not found
+            $fallbackMethod = ShippingMethod::where('is_active', true)->first();
+            $shippingMethodId = $fallbackMethod ? $fallbackMethod->id : 1;
+        }
+
+        // Calculate shipping rate
+        $rate = $this->getShippingRate($shippingZoneId, $shippingMethodId, $totalWeight);
+
+        return (float) $rate;
+    }
+
+    /**
+     * Resolve shipping zone from area, county, or user address
+     *
+     * @param \App\Models\User|null $user
+     * @param int|null $countyId
+     * @param int|null $areaId
+     * @return int
+     */
+    protected function resolveShippingZone($user, $countyId = null, $areaId = null): int
+    {
+        // Priority 1: If area is provided, get zone from area
+        if ($areaId) {
+            $area = \App\Models\Area::find($areaId);
+            if ($area && $area->shipping_zone_id) {
+                return $area->shipping_zone_id;
+            }
+        }
+
+        // Priority 2: If county is provided, get zone from county
+        if ($countyId) {
+            $county = \App\Models\County::find($countyId);
+            if ($county && $county->shipping_zone_id) {
+                return $county->shipping_zone_id;
+            }
+        }
+
+        // Priority 3: Try to get from user's default address
+        if ($user) {
+            try {
+                return $this->getShippingZoneFromUser($user);
+            } catch (\Exception $e) {
+                // Fall through to default
+            }
+        }
+
+        // Default zone
+        return 1;
+    }
 }

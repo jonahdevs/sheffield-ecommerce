@@ -120,9 +120,15 @@
                     "image_path": "seeder/categories/meat/1694466892_SXW280.jpg"
                 },
                 {
+                    "name": "Meat Saws",
+                    "description": "",
+                    "sort_order": 9,
+                    "image_path": ""
+                },
+                {
                     "name": "Accessories",
                     "description": "Professional butchery tools, knives, and meat prep accessories",
-                    "sort_order": 9,
+                    "sort_order": 10,
                     "image_path": "seeder/categories/meat/1694492560_PSEE98T.jpg"
                 }
             ]
