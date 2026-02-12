@@ -43,7 +43,8 @@
                 Brands
             </flux:navlist.item>
 
-            <flux:navlist.item icon="tag" wire:navigate href="#">
+            <flux:navlist.item icon="tag" wire:navigate :href="route('admin.tags')"
+                :current="request()->routeIs('admin.tags.*')">
                 Tags
             </flux:navlist.item>
         </flux:navlist.group>

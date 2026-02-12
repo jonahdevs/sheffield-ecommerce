@@ -57,6 +57,11 @@ Route::middleware('auth')->prefix('admin')->name('admin')->group(function () {
     Route::livewire('/brands/create', 'pages::admin.catalog.brands.create')->name('.brands.create');
     Route::livewire('/brands/{brand}/edit', 'pages::admin.catalog.brands.edit')->name('.brands.edit');
 
+    Route::livewire('/tags', 'pages::admin.catalog.tags.index')->name('.tags');
+    Route::livewire('/tags/create', 'pages::admin.catalog.tags.create')->name('.tags.create');
+    Route::livewire('/tags/{brand}/edit', 'pages::admin.catalog.tags.edit')->name('.tags.edit');
+
+    // Logistics
     Route::livewire('zones', 'pages::admin.logistics.zones')->name('.zones');
     Route::livewire('counties', 'pages::admin.logistics.counties')->name('.counties');
     Route::livewire('areas', 'pages::admin.logistics.areas')->name('.areas');
