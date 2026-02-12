@@ -53,7 +53,9 @@
             <flux:navlist.item icon="shopping-cart" wire:navigate :href="route('admin.orders')"
                 :current="request()->routeIs('admin.orders.*')">Orders
             </flux:navlist.item>
-            <flux:navlist.item icon="banknotes" wire:navigate href="#">Transaction
+
+            <flux:navlist.item icon="banknotes" wire:navigate :href="route('admin.payments')"
+                :current="request()->routeIs('admin.payments.*')">Payments
             </flux:navlist.item>
 
             <flux:navlist.item icon="arrow-uturn-left" wire:navigate href="#">Returns &

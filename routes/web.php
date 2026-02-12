@@ -37,6 +37,8 @@ Route::middleware('auth')->prefix('admin')->name('admin')->group(function () {
     Route::livewire('orders', 'pages::admin.sales.orders.index')->name('.orders');
     Route::livewire('orders/{order}', 'pages::admin.sales.orders.show')->name('.orders.show');
 
+    Route::livewire('payments', 'pages::admin.sales.payments.index')->name('.payments');
+    Route::livewire('payments/{order}', 'pages::admin.sales.payments.show')->name('.payments.show');
 
     // catalog
     Route::livewire('/categories', 'pages::admin.catalog.categories.index')->name('.categories');
