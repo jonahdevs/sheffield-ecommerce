@@ -51,7 +51,6 @@ class CheckoutService
                 throw new \Exception("Minimum order value is " . format_currency($minOrderValue));
             }
 
-
             // 5. Check for existing reusable order
             $existingOrder = $this->findReusableOrder();
 
@@ -119,7 +118,7 @@ class CheckoutService
                 // 2. Reserve inventory (prevent overselling)
                 app(InventoryService::class)->reserveStock($order);
 
-                // 3. Create Payment session 
+                // 3. Create Payment session
                 $response = app(PesawiseService::class)->createPaymentOrder($order);
 
                 return redirect()->away($response['createdPaymentOrder']['loadUrl']);
