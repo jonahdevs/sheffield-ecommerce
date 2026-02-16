@@ -35,7 +35,7 @@
                 </div>
 
                 <flux:navlist class="w-full text-xl [&_svg]:w-7 [&_svg]:h-7">
-                    <flux:navlist.item href="#" icon="user" wire:navigate>My Account
+                    <flux:navlist.item :href="route('customer.account')" icon="user" wire:navigate>My Account
                     </flux:navlist.item>
                     <flux:navlist.item href="#" icon="package" wire:navigate>
                         Orders</flux:navlist.item>

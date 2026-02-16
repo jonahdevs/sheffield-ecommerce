@@ -77,7 +77,7 @@ new #[Layout('layouts.guest')] class extends Component {
         <!-- Checkout Summary Header -->
         <flux:heading level="1" class="text-2xl! font-bold!">Checkout Summary</flux:heading>
 
-        <div class="mt-4 grid grid-cols-1 lg:grid-cols-4 gap-6">
+        <div class="mt-4 grid grid-cols-1 lg:grid-cols-4 gap-4">
             <div class="lg:col-span-3 space-y-4">
                 <!-- Customer Address Section -->
                 <div class="border rounded-sm bg-white">
@@ -151,7 +151,8 @@ new #[Layout('layouts.guest')] class extends Component {
                                     <flux:text>{{ $this->preferredShippingMethod->description }}</flux:text>
                                 </div>
 
-                                <flux:icon :name="$this->preferredShippingMethod->icon" class="shrink-0" />
+                                <flux:icon :name="$this->preferredShippingMethod->icon" class="shrink-0"
+                                    variant="outline" />
 
                             </div>
                         @else
@@ -167,8 +168,7 @@ new #[Layout('layouts.guest')] class extends Component {
             </div>
 
             <!-- Order Summary Sidebar -->
-
-            <div class="col-span-1">
+            <div class="lg:col-span-1">
                 <livewire:order-summary />
             </div>
         </div>

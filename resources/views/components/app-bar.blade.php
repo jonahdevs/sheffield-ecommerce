@@ -164,7 +164,7 @@ new class extends Component {
                             'mt-4!' => auth()->check(),
                             'mt-5.5!' => !auth()->check(),
                         ])>
-                            <flux:navmenu.item :href="route('customer.address.index')" wire:navigate icon="user"
+                            <flux:navmenu.item :href="route('customer.account')" wire:navigate icon="user"
                                 icon-variant="outline">
                                 Account
                             </flux:navmenu.item>
@@ -179,7 +179,7 @@ new class extends Component {
                             </flux:navmenu.item>
 
                             @auth
-                                <flux:navmenu.item href="#" wire:navigate icon="envelope">
+                                <flux:navmenu.item href="#" wire:navigate icon="envelope" icon-variant="outline">
                                     Messages
                                 </flux:navmenu.item>
                             @endauth

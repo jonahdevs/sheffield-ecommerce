@@ -35,6 +35,15 @@ Route::middleware(['auth', 'cart_not_empty'])->group(function () {
     Route::livewire('/checkout/shipping-options', 'pages::checkout.shipping-options')->name('checkout.shipping-options');
 });
 
+// customer
+Route::middleware('auth')->name('customer')->group(function () {
+    Route::livewire('account', 'pages::customer.account')->name('.account');
+    // Route::livewire('orders', 'pages::customer.orders.index')->name('.orders');
+    // Route::livewire('orders/{order}', 'pages::customer.orders.show')->name('.orders.show');
+    // Route::livewire('reviews', 'pages::customer.reviews.index')->name('.reviews');
+    // Route::livewire('reviews/{review}', 'pages::customer.reviews.show')->name('.reviews.show');
+});
+
 Route::middleware('auth')->prefix('admin')->name('admin')->group(function () {
     // Sales
     Route::livewire('orders', 'pages::admin.sales.orders.index')->name('.orders');

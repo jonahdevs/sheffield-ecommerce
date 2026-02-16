@@ -24,8 +24,6 @@ return new class extends Migration {
             $table->bigInteger('total_cents')->default(0);
 
             // Shipping Management
-            // $table->foreignId('shipping_zone_id')->nullable()->constrained();
-            // $table->foreignId('warehouse_id')->nullable()->constrained();
             $table->boolean('is_pickup')->default(false);
             $table->timestamp('pickup_ready_at')->nullable();
             $table->timestamp('pickup_collected_at')->nullable();

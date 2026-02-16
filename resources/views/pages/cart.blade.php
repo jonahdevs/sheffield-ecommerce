@@ -152,10 +152,9 @@ new #[Defer] #[Layout('layouts.guest')] class extends Component {
             <!-- Cart Header -->
             <flux:skeleton class="w-48 h-4 mb-6" animate="shimmer" />
 
-            <div class="mt-4 md:gap-6 lg:flex lg:items-start">
-                <div class="lg:flex-1">
+            <div class="mt-4 grid grid-cols-1 lg:grid-cols-4 gap-4">
+                <div class="lg:col-span-3">
                     <div class="space-y-4">
-
                         @for ($i = 0; $i < 2; $i++)
                             <div class="bg-white rounded-sm overflow-hidden border">
                                 <div class="flex items-start gap-3 p-3 py-4">
@@ -188,7 +187,7 @@ new #[Defer] #[Layout('layouts.guest')] class extends Component {
                     </div>
                 </div>
 
-                <div class="w-full max-w-sm">
+                <div class="lg:col-span-1">
                     <div class="bg-white rounded-sm border">
                         <div class="px-3 py-2 border-b">
                             <flux:skeleton animate="shimmer" class="h-6 w-24 px-3 py-2 rounded-sm" />

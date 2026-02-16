@@ -28,9 +28,9 @@ new #[Layout('layouts.guest')] class extends Component {
 <div class="mx-auto max-w-4xl px-4 py-12">
 
     @if ($order)
-        <div class="flex flex-col gap-1 items-center text-center">
+        <div class="flex flex-col items-center text-center">
             <flux:icon.check-circle class="size-12 text-green-500" />
-            <flux:heading class="text-2xl!">Thank you</flux:heading>
+            <flux:heading class="text-2xl! mt-1">Thank you</flux:heading>
             <flux:text class="text-lg">Your order has been received</flux:text>
             <flux:text class="text-xs!">You will receive an email confirmation shortly</flux:text>
         </div>
@@ -81,10 +81,10 @@ new #[Layout('layouts.guest')] class extends Component {
                     <div class="flex justify-between items-start">
                         <div class="flex-1">
                             <div class="flex justify-between items-start mb-2">
-                                <flux:text class="font-medium text-gray-900">
+                                <flux:text class="font-medium ">
                                     {{ $item->quantity }} × {{ $item->product->name }}
                                 </flux:text>
-                                <flux:text class="font-medium text-gray-900">
+                                <flux:text class="font-medium ">
                                     {{ format_currency($item->price * $item->quantity) }}
                                 </flux:text>
                             </div>
@@ -92,7 +92,7 @@ new #[Layout('layouts.guest')] class extends Component {
                     </div>
 
                     @if (!$loop->last)
-                        <div class="border-t border-gray-100"></div>
+                        <div class="border-t border-dotted border-zinc-200"></div>
                     @endif
                 @endforeach
             </div>
@@ -114,7 +114,7 @@ new #[Layout('layouts.guest')] class extends Component {
 
                     <flux:text>
                         <span class="text-zinc-800">Phone:</span>
-                        <span>{{ $order->user?->phone ?? ($order->shipping_address['phone'] ?? 'N/A') }}</span>
+                        <span>{{ $order->user?->phone_number ?? ($order->shipping_address['phone_number'] ?? 'N/A') }}</span>
                     </flux:text>
                 </div>
 
@@ -122,13 +122,13 @@ new #[Layout('layouts.guest')] class extends Component {
                     <flux:heading>Shipping Address</flux:heading>
 
                     <flux:text>
-                        <span class="text-zinc-800">Email:</span>
-                        {{ $order->user?->email ?? ($order->shipping_address['email'] ?? 'N/A') }}
+                        {{ !empty($order->shipping_address['first_name']) || !empty($order->shipping_address['last_name'])
+                            ? trim(($order->shipping_address['first_name'] ?? '') . ' ' . ($order->shipping_address['last_name'] ?? ''))
+                            : 'N/A' }}
                     </flux:text>
 
                     <flux:text>
-                        <span class="text-zinc-800">Phone:</span>
-                        <span>{{ $order->user?->phone ?? ($order->shipping_address['phone'] ?? 'N/A') }}</span>
+                        {{ $order->shipping_address['address'] }}
                     </flux:text>
                 </div>
             </div>

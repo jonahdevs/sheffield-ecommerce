@@ -503,7 +503,7 @@ new #[Layout('layouts.guest')] class extends Component {
                                     wire:click="increaseCartQuantity"></flux:button>
 
                                 @if ($inCart)
-                                    <flux:button icon="trash" class="cursor-pointer text-red-500!"
+                                    <flux:button icon="trash" icon-variant="outline" class="cursor-pointer text-red-500!"
                                         wire:click="removeFromCart" title="Remove Item from Cart">
                                     </flux:button>
                                 @endif
@@ -578,23 +578,22 @@ new #[Layout('layouts.guest')] class extends Component {
                         </div>
 
                         <div class="ms-2">
-                            <p class="font-medium  text-sm">Return Policy</p>
-                            <p class="text-xs text-zinc-500">Easy Return, Quick Refund. <a href=""
-                                    class="underline text-sheffield-blue">Details</a>
-                            </p>
+                            <flux:heading>Return Policy</flux:heading>
+                            <flux:text class="text-xs">Easy Returns, Quick Refund. <flux:link>Details</flux:link>
+                            </flux:text>
                         </div>
                     </div>
 
                     <div class="border-t p-3 flex items-center">
                         <div class="border rounded-sm flex items-center justify-center p-1">
-                            <flux:icon.shield-check class="size-7 shrink-0" />
+                            <flux:icon.shield-check class="size-7 shrink-0 stroke-1" />
                         </div>
 
                         <div class="ms-2">
-                            <p class="font-medium  text-sm">Warranty</p>
-                            <p class="text-xs text-zinc-500 stroke-1!" stroke-width="1">Covered against manufacturing
-                                defects. See <a href="" class="underline text-sheffield-blue">Details</a>
-                            </p>
+                            <flux:heading>Warranty</flux:heading>
+                            <flux:text class="text-xs">Covered against manufacturing defects. See <flux:link>Details
+                                </flux:link>
+                            </flux:text>
                         </div>
                     </div>
                 </div>

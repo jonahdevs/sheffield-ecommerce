@@ -34,13 +34,13 @@ new class extends Component {
 
                 // Optional: Add success message and redirect
                 $this->dispatch('notify', variant: 'success', message: 'Product updated successfully!');
-                return redirect()->route('admin.products');
+                return redirect()->route('admin.products.index');
             } else {
                 $product = $this->form->store();
 
                 // Optional: Add success message and redirect
                 $this->dispatch('notify', variant: 'success', message: 'Product created successfully!');
-                return redirect()->route('admin.products');
+                return redirect()->route('admin.products.index');
             }
         } catch (ValidationException $e) {
             $this->dispatch('notify', variant: 'warning', message: 'Please correct the highlighted fields and try again.');
