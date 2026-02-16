@@ -41,5 +41,6 @@ return [
         'api_secret' => env('PESAWISE_API_SECRET'),
         'balance_id_kes' => env('PESAWISE_BALANCE_ID_KES', 1102801),
         'balance_id_usd' => env('PESAWISE_BALANCE_ID_USD', 1102802),
+        'callback_base_url' => env('PESAWISE_CALLBACK_BASE_URL'), // For ngrok/tunneling
     ],
 ];

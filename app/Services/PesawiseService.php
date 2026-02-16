@@ -29,7 +29,49 @@ class PesawiseService
      */
     public function createPaymentOrder(Order $order)
     {
-        $payload = $this->buildPayload($order);
+        $payload =         private function buildPayload(Order $order): array
+        {
+            // IMPORTANT: callbackUrl receives BOTH POST webhook AND GET redirect from Pesawise
+            // For local development with ngrok: Set PESAWISE_CALLBACK_BASE_URL in .env
+            // For production: Leave empty to use APP_URL
+
+            $baseUrl = config('services.pesawise.callback_base_url') ?: config('app.url');
+
+            // Pesawise sends POST to this URL first with payment data,
+            // then GET when user clicks "Continue" button
+            $callbackUrl = rtrim($baseUrl, '/') . '/payment/callback/success';
+            $cancellationUrl = rtrim($baseUrl, '/') . '/payment/callback/cancel';
+
+            Log::info('Pesawise callback URLs', [
+                'baseUrl' => $baseUrl,
+                'callbackUrl' => $callbackUrl,
+                'externalId' => $order->reference,
+            ]);
+
+            $payload = [
+                'amount' => $order->total,
+                'customerName' => $this->getCustomerName($order),
+                'currency' => "KES",
+                'externalId' => $order->reference,
+                'description' => "Payment for Order #{$order->reference}",
+                'balanceId' => $this->balanceId,
+                'callbackUrl' => $callbackUrl,  // Receives BOTH POST and GET
+                'cancellationUrl' => $cancellationUrl,
+                'notificationId' => (string) $order->id,
+                'timeValidityMinutes' => 30,
+                'customerData' => [
+                    'email' => $order->user?->email ?? '',
+                    'phoneNumber' => $this->getPhoneNumber($order),
+                    'city' => $order->shipping_address['area']['name'] ?? 'Nairobi',
+                    'state' => $order->shipping_address['county']['name'] ?? 'Nairobi County',
+                    'address' => $order->shipping_address['address'] ?? '',
+                    'countryCode' => 'KE',
+                ],
+            ];
+
+            return $payload;
+        }
+;
 
         try {
             $response = $this->initiatePayment($payload);
@@ -50,16 +92,15 @@ class PesawiseService
 
     private function buildPayload(Order $order): array
     {
-        // Append order data directly to callback URLs as query parameters
-        // This ensures we get the data back even if Pesawise doesn't pass notificationId
-        $callbackUrl = route('payment.callback.success');
+        // Use API route for POST webhook (no CSRF, cleaner handling)
+        $webhookUrl = url('/api/webhooks/pesawise');
+        
+        // Use web route for GET redirect (user clicks "Continue")
+        $callbackUrl = url('/payment/callback/success');
+        $cancellationUrl = url('/payment/callback/cancel');
 
-        // $callbackUrl = "https://webhook.site/eeeb521c-4501-4eb5-95da-0c1055aea3d9";
-
-        $cancellationUrl = route('payment.callback.cancel', [
-            'order_id' => $order->id,
-            'reference' => $order->reference
-        ]);
+        // For testing with webhook.site
+        // $webhookUrl = "https://webhook.site/6b0dd07e-93f0-463e-b7d4-eb6dd106b577";
 
         $payload = [
             'amount' => $order->total,
@@ -68,7 +109,7 @@ class PesawiseService
             'externalId' => $order->reference,
             'description' => "Payment for Order #{$order->reference}",
             'balanceId' => $this->balanceId,
-            'callbackUrl' => $callbackUrl,
+            'callbackUrl' => $webhookUrl,  // GET - user redirect
             'cancellationUrl' => $cancellationUrl,
             'notificationId' => (string) $order->id,
             'timeValidityMinutes' => 30,
@@ -81,6 +122,16 @@ class PesawiseService
                 'countryCode' => 'KE',
             ],
         ];
+
+        // Add webhook URL if Pesawise supports it as a separate parameter
+        // Check Pesawise docs - they might have 'webhookUrl' or 'notificationUrl'
+        // $payload['webhookUrl'] = $webhookUrl;
+
+        Log::info('Pesawise payload', [
+            'webhookUrl' => $webhookUrl,
+            'callbackUrl' => $callbackUrl,
+            'externalId' => $order->reference,
+        ]);
 
         return $payload;
     }
@@ -121,6 +172,7 @@ class PesawiseService
 
         $decodedResponse = json_decode($response, true);
 
+        Log::info('Pesawise response: ' . json_encode($response, JSON_PRETTY_PRINT));
         return $decodedResponse;
     }
 
@@ -131,7 +183,7 @@ class PesawiseService
         $order->payment->update([
             'gateway_order_id' => $createdPaymentOrder['orderId'],
             'transaction_id' => $createdPaymentOrder['orderRequestId'],
-            'status' => 'processing', // Changed from pending to processing
+            'status' => 'processing',
             'meta' => [
                 'request_id' => $response['requestId'],
                 'load_url' => $createdPaymentOrder['loadUrl'],
