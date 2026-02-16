@@ -20,8 +20,7 @@ class PaymentCallbackController extends Controller
     ) {}
 
     /**
-     * Handle successful payment callback from Pesawise
-     * Simply redirect to success page - let Livewire handle the payment processing
+     * Handle successful payment callback
      */
     public function success(Request $request)
     {
