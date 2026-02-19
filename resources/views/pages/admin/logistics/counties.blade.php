@@ -1,22 +1,19 @@
 <?php
+
 use App\Models\County;
 use App\Models\ShippingZone;
+use App\Livewire\Forms\Admin\CountyForm;
 use Livewire\Attributes\{Title, Computed};
 use Livewire\WithPagination;
 use Livewire\Component;
+use Illuminate\Support\Facades\Log;
 use Flux\Flux;
 
 new #[Title('Manage Counties')] class extends Component {
     use WithPagination;
 
-    // Form State
-    public string $name = '';
-    public string $code = '';
-    public ?int $shipping_zone_id = null;
-    public ?int $editingId = null;
+    public CountyForm $form;
     public ?int $deletingId = null;
-
-    // Search/Filter State
     public string $search = '';
 
     #[Computed]
@@ -31,48 +28,69 @@ new #[Title('Manage Counties')] class extends Component {
         return ShippingZone::active()->get();
     }
 
-    public function save()
+    public function openCreate(): void
     {
-        $data = $this->validate([
-            'name' => 'required|unique:counties,name,' . ($this->editingId ?? 'NULL'),
-            'code' => 'nullable|unique:counties,code,' . ($this->editingId ?? 'NULL'),
-            'shipping_zone_id' => 'required|exists:shipping_zones,id',
-        ]);
-
-        County::updateOrCreate(['id' => $this->editingId], $data);
-
-        Flux::toast($this->editingId ? 'County updated.' : 'County created.');
-        $this->resetForm();
-        Flux::modal('county-modal')->close();
-    }
-
-    public function edit($id)
-    {
-        $county = County::findOrFail($id);
-        $this->editingId = $county->id;
-        $this->name = $county->name;
-        $this->code = $county->code ?? '';
-        $this->shipping_zone_id = $county->shipping_zone_id;
-
+        $this->form->reset();
         Flux::modal('county-modal')->show();
     }
 
-    public function confirmDelete($id)
+    public function save(): void
+    {
+        try {
+            $isEditing = (bool) $this->form->county;
+
+            $isEditing ? $this->form->update() : $this->form->store();
+
+            $this->form->reset();
+
+            Flux::modal('county-modal')->close();
+
+            $this->dispatch('notify', variant: 'success', message: $isEditing ? 'County updated' : 'County created.');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
+        } catch (\Throwable $e) {
+            logger()->error('Failed to save county.', [
+                'exception' => $e->getMessage(),
+                'county_id' => $this->form->county?->id,
+                'user_id' => auth()->id(),
+            ]);
+            $this->dispatch('notify', variant: 'danger', message: 'Something went wrong. Please try again.');
+        }
+    }
+
+    public function edit(County $county): void
+    {
+        $this->form->setCounty($county);
+        Flux::modal('county-modal')->show();
+    }
+
+    public function confirmDelete(int $id): void
     {
         $this->deletingId = $id;
         Flux::modal('delete-confirmation')->show();
     }
 
-    public function delete()
+    public function delete(): void
     {
-        County::destroy($this->deletingId);
-        Flux::modal('delete-confirmation')->close();
-        Flux::toast(variant: 'danger', text: 'County removed.');
-    }
+        if (!$this->deletingId) {
+            return;
+        }
 
-    public function resetForm()
-    {
-        $this->reset(['name', 'code', 'shipping_zone_id', 'editingId']);
+        try {
+            County::destroy($this->deletingId);
+            $this->deletingId = null;
+
+            Flux::modal('delete-confirmation')->close();
+            $this->dispatch('notify', variant: 'success', message: 'County removed.');
+        } catch (\Throwable $e) {
+            logger()->error('Failed to delete county.', [
+                'exception' => $e->getMessage(),
+                'county_id' => $this->deletingId,
+                'user_id' => auth()->id(),
+            ]);
+
+            $this->dispatch('notify', variant: 'danger', message: 'Something went wrong. Please try again.');
+        }
     }
 }; ?>
 
@@ -83,8 +101,7 @@ new #[Title('Manage Counties')] class extends Component {
             <flux:subheading>Manage counties used for customer addresses and delivery coverage.</flux:subheading>
         </div>
 
-        <flux:button variant="primary" icon="plus" wire:click="resetForm" @click="$flux.modal('county-modal').show()"
-            class="cursor-pointer">
+        <flux:button variant="primary" icon="plus" wire:click="openCreate" class="cursor-pointer">
             Add County
         </flux:button>
     </div>
@@ -111,40 +128,43 @@ new #[Title('Manage Counties')] class extends Component {
                         </flux:badge>
                     </flux:table.cell>
 
-                    <flux:table.cell class="font-semibold">{{ $county->name }}</flux:table.cell>
+                    <flux:table.cell>{{ $county->name }}</flux:table.cell>
 
                     <flux:table.cell>
-                        <flux:badge color="zinc" variant="outline">{{ $county->shippingZone->name }}</flux:badge>
+                        <flux:badge color="zinc" variant="outline" size="sm">{{ $county->shippingZone->name }}
+                        </flux:badge>
                     </flux:table.cell>
 
                     <flux:table.cell align="end">
-                        <flux:button variant="ghost" size="sm" icon="pencil-square" class="cursor-pointer"
-                            wire:click="edit({{ $county->id }})" icon-variant="outline"
-                            class="cursor-pointer text-sheffield-blue!" />
+                        <flux:button variant="ghost" size="sm" icon="pencil-square" icon-variant="outline"
+                            class="cursor-pointer text-sheffield-blue!" wire:click="edit({{ $county->id }})" />
 
-                        <flux:button variant="ghost" size="sm" icon="trash" color="danger"
-                            class="cursor-pointer text-red-500!" wire:click="confirmDelete({{ $county->id }})"
-                            icon-variant="outline" />
+                        <flux:button variant="ghost" size="sm" icon="trash" icon-variant="outline" color="red"
+                            class="cursor-pointer text-red-500!" wire:click="confirmDelete({{ $county->id }})" />
                     </flux:table.cell>
                 </flux:table.row>
             @endforeach
         </flux:table.rows>
     </flux:table>
 
+    {{-- County Create / Edit Modal --}}
     <flux:modal name="county-modal" class="md:w-100 space-y-6">
-        <flux:heading size="lg" class="text-center">{{ $editingId ? 'Edit County' : 'Add County' }}</flux:heading>
+        <flux:heading size="lg" class="text-center">
+            {{ $form->county ? 'Edit County' : 'Add County' }}
+        </flux:heading>
 
         <form wire:submit="save" class="space-y-4">
             <div class="grid grid-cols-4 gap-4">
                 <div class="col-span-1">
-                    <flux:input wire:model="code" label="Code" placeholder="047" maxlength="3" />
+                    <flux:input wire:model="form.code" label="Code" placeholder="047" maxlength="3" />
                 </div>
                 <div class="col-span-3">
-                    <flux:input wire:model="name" label="County Name" />
+                    <flux:input wire:model="form.name" label="County Name" />
                 </div>
             </div>
 
-            <flux:select wire:model="shipping_zone_id" label="Shipping Zone" searchable placeholder="Select a zone...">
+            <flux:select wire:model="form.shipping_zone_id" label="Shipping Zone" searchable
+                placeholder="Select a zone...">
                 @foreach ($this->zones as $zone)
                     <flux:select.option value="{{ $zone->id }}">{{ $zone->name }}</flux:select.option>
                 @endforeach
@@ -153,13 +173,14 @@ new #[Title('Manage Counties')] class extends Component {
             <div class="flex">
                 <flux:spacer />
                 <flux:modal.close>
-                    <flux:button variant="ghost">Cancel</flux:button>
+                    <flux:button variant="ghost" class="cursor-pointer">Cancel</flux:button>
                 </flux:modal.close>
-                <flux:button type="submit" variant="primary" class="ml-2">Save County</flux:button>
+                <flux:button type="submit" variant="primary" class="ml-2 cursor-pointer">Save County</flux:button>
             </div>
         </form>
     </flux:modal>
 
+    {{-- Delete Confirmation Modal --}}
     <flux:modal name="delete-confirmation" class="md:w-88 space-y-6">
         <flux:heading size="lg" class="mb-2">Remove County?</flux:heading>
         <flux:subheading>This will unbind it from its shipping zone.</flux:subheading>

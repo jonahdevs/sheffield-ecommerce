@@ -1,21 +1,18 @@
 <?php
+
 use App\Models\ShippingZone;
 use Livewire\Attributes\Title;
 use Livewire\Attributes\Computed;
 use Livewire\WithPagination;
 use Livewire\Component;
 use Flux\Flux;
+use App\Livewire\Forms\Admin\ShippingZoneForm;
 
 new #[Title('Shipping Zones')] class extends Component {
     use WithPagination;
 
-    // Form State
-    public string $name = '';
-    public string $code = '';
-    public string $description = '';
-    public ?int $editingId = null;
+    public ShippingZoneForm $form;
     public ?int $deletingId = null;
-    public bool $is_active = true;
 
     #[Computed]
     public function zones()
@@ -25,41 +22,38 @@ new #[Title('Shipping Zones')] class extends Component {
 
     public function save()
     {
-        $data = $this->validate([
-            'name' => 'required|min:3',
-            'code' => 'required|unique:shipping_zones,code,' . ($this->editingId ?? 'NULL'),
-            'description' => 'nullable',
-            'is_active' => 'boolean',
-        ]);
-
-        ShippingZone::updateOrCreate(['id' => $this->editingId], $data);
-
-        Flux::toast($this->editingId ? 'Zone updated.' : 'Zone created.');
-
-        $this->resetForm();
-        Flux::modal('zone-modal')->close();
+        try {
+            $this->form->zone ? $this->form->update() : $this->form->store();
+            $this->form->reset();
+            Flux::modal('zone-modal')->close();
+            $this->dispatch('notify', variant: 'success', message: 'Shipping zone saved.');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
+        } catch (\Throwable $e) {
+            logger()->error('Failed to save shipping zone: ' . $e->getMessage());
+            $this->dispatch('notify', variant: 'danger', message: 'Something went wrong. Please try again.');
+        }
     }
 
-    public function edit($id)
+    public function edit(ShippingZone $zone)
     {
-        $zone = ShippingZone::findOrFail($id);
-        $this->editingId = $zone->id;
-        $this->name = $zone->name;
-        $this->code = $zone->code;
-        $this->description = $zone->description ?? '';
-        $this->is_active = (bool) $zone->is_active;
-
+        $this->form->setZone($zone);
         Flux::modal('zone-modal')->show();
     }
 
-    public function toggleStatus($id)
+    public function openCreate()
     {
-        $zone = ShippingZone::findOrFail($id);
+        $this->form->reset();
+        Flux::modal('zone-modal')->show();
+    }
+
+    public function toggleStatus(ShippingZone $zone)
+    {
         $zone->update(['is_active' => !$zone->is_active]);
         Flux::toast('Zone status updated.');
     }
 
-    public function confirmDelete($id)
+    public function confirmDelete(int $id)
     {
         $this->deletingId = $id;
         Flux::modal('delete-confirmation')->show();
@@ -69,18 +63,11 @@ new #[Title('Shipping Zones')] class extends Component {
     {
         if ($this->deletingId) {
             ShippingZone::destroy($this->deletingId);
+            $this->deletingId = null;
 
             Flux::modal('delete-confirmation')->close();
             Flux::toast(variant: 'danger', text: 'Shipping zone permanently deleted.');
-
-            $this->deletingId = null;
         }
-    }
-
-    public function resetForm()
-    {
-        $this->reset(['name', 'code', 'description', 'editingId', 'is_active']);
-        $this->is_active = true;
     }
 }; ?>
 
@@ -92,8 +79,7 @@ new #[Title('Shipping Zones')] class extends Component {
             </flux:subheading>
         </div>
 
-        <flux:button variant="primary" icon="plus" wire:click="resetForm" @click="$flux.modal('zone-modal').show()"
-            class="cursor-pointer">
+        <flux:button variant="primary" icon="plus" wire:click="openCreate" class="cursor-pointer">
             Add Zone
         </flux:button>
     </div>
@@ -123,34 +109,32 @@ new #[Title('Shipping Zones')] class extends Component {
                     </flux:table.cell>
 
                     <flux:table.cell align="end">
-                        <flux:button variant="ghost" size="sm" icon="pencil-square" class="cursor-pointer"
-                            wire:click="edit({{ $zone->id }})" icon-variant="outline"
-                            class="cursor-pointer text-sheffield-blue!" />
+                        <flux:button variant="ghost" size="sm" icon="pencil-square" icon-variant="outline"
+                            class="cursor-pointer text-sheffield-blue!" wire:click="edit({{ $zone->id }})" />
 
-                        <flux:button variant="ghost" size="sm" icon="trash" color="red" class="cursor-pointer"
-                            wire:click="confirmDelete({{ $zone->id }})" class="cursor-pointer text-red-500!"
-                            icon-variant="outline" />
+                        <flux:button variant="ghost" size="sm" icon="trash" icon-variant="outline" color="red"
+                            class="cursor-pointer text-red-500!" wire:click="confirmDelete({{ $zone->id }})" />
                     </flux:table.cell>
                 </flux:table.row>
             @endforeach
         </flux:table.rows>
     </flux:table>
 
-
+    {{-- Zone Create / Edit Modal --}}
     <flux:modal name="zone-modal" class="md:w-100 space-y-6">
-        <div>
-            <flux:heading size="lg">{{ $editingId ? 'Edit Zone' : 'Create Zone' }}</flux:heading>
-        </div>
+        <flux:heading size="lg">
+            {{ $form->zone ? 'Edit Zone' : 'Create Zone' }}
+        </flux:heading>
 
         <form wire:submit="save" class="space-y-4">
-            <flux:input wire:model="name" label="Name" />
-            <flux:input wire:model="code" label="Short Code" />
-            <flux:textarea wire:model="description" label="Description" />
+            <flux:input wire:model="form.name" label="Name" />
+            <flux:input wire:model="form.code" label="Short Code" />
+            <flux:textarea wire:model="form.description" label="Description" />
 
             <flux:field variant="inline">
                 <flux:label>Active Status</flux:label>
                 <flux:description>Enable this zone for shipping calculations.</flux:description>
-                <flux:switch wire:model="is_active" />
+                <flux:switch wire:model="form.is_active" />
             </flux:field>
 
             <div class="flex">
@@ -158,14 +142,14 @@ new #[Title('Shipping Zones')] class extends Component {
                 <flux:modal.close>
                     <flux:button variant="ghost" class="cursor-pointer">Cancel</flux:button>
                 </flux:modal.close>
-
                 <flux:button type="submit" variant="primary" class="ml-2 cursor-pointer">Save</flux:button>
             </div>
         </form>
     </flux:modal>
 
+    {{-- Delete Confirmation Modal --}}
     <flux:modal name="delete-confirmation" class="md:w-88 space-y-6">
-        <flux:heading size="lg" class="mb-2">Delete Shipping Zone?</flux:heading>
+        <flux:heading size="lg">Delete Shipping Zone?</flux:heading>
 
         <flux:subheading>
             Are you sure? This action cannot be undone and may affect associated rates and locations.

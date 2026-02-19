@@ -14,6 +14,7 @@ new #[Title('Shipping Rates')] class extends Component {
     public ?float $min_weight = null;
     public ?float $max_weight = null;
     public ?float $price = null;
+
     public ?int $estimated_days_min = null;
     public ?int $estimated_days_max = null;
     public ?int $editingId = null;

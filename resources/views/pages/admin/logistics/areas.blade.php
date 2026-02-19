@@ -1,7 +1,9 @@
 <?php
+
 use App\Models\Area;
 use App\Models\County;
 use App\Models\ShippingZone;
+use App\Livewire\Forms\Admin\AreaForm;
 use Livewire\Attributes\{Title, Computed, Url};
 use Livewire\WithPagination;
 use Livewire\Component;
@@ -10,29 +12,21 @@ use Flux\Flux;
 new #[Title('Manage Areas')] class extends Component {
     use WithPagination;
 
-    // Form State
-    public string $name = '';
-    public ?int $county_id = null;
-    public ?int $shipping_zone_id = null; // Optional override
-    public ?int $editingId = null;
+    public AreaForm $form;
     public ?int $deletingId = null;
 
-    // Search and Filter State
     #[Url(history: true)]
     public string $search = '';
 
     #[Url(history: true)]
-    public $filterCounty = '';
+    public string $filterCounty = '';
 
-    /**
-     * Hook to reset pagination when search or filters change.
-     */
-    public function updatedSearch()
+    public function updatedSearch(): void
     {
         $this->resetPage();
     }
 
-    public function updatedFilterCounty()
+    public function updatedFilterCounty(): void
     {
         $this->resetPage();
     }
@@ -41,11 +35,7 @@ new #[Title('Manage Areas')] class extends Component {
     public function areas()
     {
         return Area::with(['county', 'shippingZone'])
-            // Global Search Logic
-            ->when($this->search, function ($query) {
-                $query->where(fn($q) => $q->where('name', 'like', "%{$this->search}%")->orWhereHas('county', fn($c) => $c->where('name', 'like', "%{$this->search}%")));
-            })
-            // Dropdown Filter Logic
+            ->when($this->search, fn($q) => $q->where(fn($q) => $q->where('name', 'like', "%{$this->search}%")->orWhereHas('county', fn($c) => $c->where('name', 'like', "%{$this->search}%"))))
             ->when($this->filterCounty, fn($q) => $q->where('county_id', $this->filterCounty))
             ->orderBy('name')
             ->paginate(10);
@@ -60,51 +50,69 @@ new #[Title('Manage Areas')] class extends Component {
     #[Computed]
     public function zones()
     {
-        return ShippingZone::all();
+        return ShippingZone::active()->get();
     }
 
-    public function save()
+    public function openCreate(): void
     {
-        $data = $this->validate([
-            'name' => 'required',
-            'county_id' => 'required|exists:counties,id',
-            'shipping_zone_id' => 'nullable|exists:shipping_zones,id',
-        ]);
-
-        Area::updateOrCreate(['id' => $this->editingId], $data);
-
-        Flux::toast($this->editingId ? 'Area updated.' : 'Area added.');
-        $this->resetForm();
-        Flux::modal('area-modal')->close();
-    }
-
-    public function edit($id)
-    {
-        $area = Area::findOrFail($id);
-        $this->editingId = $area->id;
-        $this->name = $area->name;
-        $this->county_id = $area->county_id;
-        $this->shipping_zone_id = $area->shipping_zone_id;
-
+        $this->form->reset();
         Flux::modal('area-modal')->show();
     }
 
-    public function confirmDelete($id)
+    public function save(): void
+    {
+        try {
+            $isEditing = (bool) $this->form->area;
+
+            $isEditing ? $this->form->update() : $this->form->store();
+
+            $this->form->reset();
+            Flux::modal('area-modal')->close();
+            $this->dispatch('notify', variant: 'success', message: $isEditing ? 'Area updated.' : 'Area added.');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
+        } catch (\Throwable $e) {
+            logger()->error('Failed to save area.', [
+                'exception' => $e->getMessage(),
+                'area_id' => $this->form->area?->id,
+                'user_id' => auth()->id(),
+            ]);
+            $this->dispatch('notify', variant: 'danger', message: 'Something went wrong. Please try again.');
+        }
+    }
+
+    public function edit(Area $area): void
+    {
+        $this->form->setArea($area);
+        Flux::modal('area-modal')->show();
+    }
+
+    public function confirmDelete(int $id): void
     {
         $this->deletingId = $id;
         Flux::modal('delete-confirmation')->show();
     }
 
-    public function delete()
+    public function delete(): void
     {
-        Area::destroy($this->deletingId);
-        Flux::modal('delete-confirmation')->close();
-        Flux::toast(variant: 'danger', text: 'Area deleted.');
-    }
+        if (!$this->deletingId) {
+            return;
+        }
 
-    public function resetForm()
-    {
-        $this->reset(['name', 'county_id', 'shipping_zone_id', 'editingId']);
+        try {
+            Area::destroy($this->deletingId);
+            $this->deletingId = null;
+
+            Flux::modal('delete-confirmation')->close();
+            $this->dispatch('notify', variant: 'danger', message: 'Area deleted.');
+        } catch (\Throwable $e) {
+            logger()->error('Failed to delete area.', [
+                'exception' => $e->getMessage(),
+                'area_id' => $this->deletingId,
+                'user_id' => auth()->id(),
+            ]);
+            $this->dispatch('notify', variant: 'danger', message: 'Could not delete this area. It may have dependent records.');
+        }
     }
 }; ?>
 
@@ -116,16 +124,14 @@ new #[Title('Manage Areas')] class extends Component {
             </flux:subheading>
         </div>
 
-        <flux:button variant="primary" icon="plus" wire:click="resetForm" x-on:click="$flux.modal('area-modal').show()">
+        <flux:button variant="primary" icon="plus" wire:click="openCreate" class="cursor-pointer">
             Add Area
         </flux:button>
     </div>
 
     <div class="flex flex-col md:flex-row justify-between gap-4 mb-4">
-
         <flux:input wire:model.live.debounce.300ms="search" placeholder="Search area or county name..."
             icon="magnifying-glass" clearable class="max-w-md" />
-
 
         <div class="w-full md:w-64">
             <flux:select wire:model.live="filterCounty" placeholder="All Counties" clearable>
@@ -162,32 +168,31 @@ new #[Title('Manage Areas')] class extends Component {
                     </flux:table.cell>
 
                     <flux:table.cell align="end">
-                        <flux:button variant="ghost" size="sm" icon="pencil-square"
-                            wire:click="edit({{ $area->id }})" class="cursor-pointer text-sheffield-blue!"
-                            icon-variant="outline" />
+                        <flux:button variant="ghost" size="sm" icon="pencil-square" icon-variant="outline"
+                            class="cursor-pointer text-sheffield-blue!" wire:click="edit({{ $area->id }})" />
 
-                        <flux:button variant="ghost" size="sm" icon="trash" color="danger"
-                            wire:click="confirmDelete({{ $area->id }})" class="cursor-pointer text-red-500!"
-                            icon-variant="outline" />
+                        <flux:button variant="ghost" size="sm" icon="trash" icon-variant="outline" color="red"
+                            class="cursor-pointer text-red-500!" wire:click="confirmDelete({{ $area->id }})" />
                     </flux:table.cell>
                 </flux:table.row>
             @endforeach
         </flux:table.rows>
     </flux:table>
 
+    {{-- Area Create / Edit Modal --}}
     <flux:modal name="area-modal" class="md:w-100 space-y-6">
-        <flux:heading size="lg">{{ $editingId ? 'Edit Area' : 'Add New Area' }}</flux:heading>
+        <flux:heading size="lg">{{ $form->area ? 'Edit Area' : 'Add New Area' }}</flux:heading>
 
         <form wire:submit="save" class="space-y-4">
-            <flux:input wire:model="name" label="Area Name" placeholder="e.g. Westlands" />
+            <flux:input wire:model="form.name" label="Area Name" placeholder="e.g. Westlands" />
 
-            <flux:select wire:model="county_id" label="Parent County" searchable>
+            <flux:select wire:model="form.county_id" label="Parent County" searchable placeholder="Select a county...">
                 @foreach ($this->counties as $county)
                     <flux:select.option value="{{ $county->id }}">{{ $county->name }}</flux:select.option>
                 @endforeach
             </flux:select>
 
-            <flux:select wire:model="shipping_zone_id" label="Zone Override (Optional)" clearable
+            <flux:select wire:model="form.shipping_zone_id" label="Zone Override (Optional)" clearable
                 placeholder="Use county zone">
                 @foreach ($this->zones as $zone)
                     <flux:select.option value="{{ $zone->id }}">{{ $zone->name }}</flux:select.option>
@@ -197,23 +202,23 @@ new #[Title('Manage Areas')] class extends Component {
             <div class="flex">
                 <flux:spacer />
                 <flux:modal.close>
-                    <flux:button variant="ghost">Cancel</flux:button>
+                    <flux:button variant="ghost" class="cursor-pointer">Cancel</flux:button>
                 </flux:modal.close>
-                <flux:button type="submit" variant="primary" class="ml-2">Save Area</flux:button>
+                <flux:button type="submit" variant="primary" class="ml-2 cursor-pointer">Save Area</flux:button>
             </div>
         </form>
     </flux:modal>
 
+    {{-- Delete Confirmation Modal --}}
     <flux:modal name="delete-confirmation" class="md:w-88 space-y-6">
         <flux:heading size="lg" class="mb-2">Delete Area?</flux:heading>
-
         <flux:subheading>This area will be removed from its county.</flux:subheading>
 
         <div class="flex gap-3">
             <flux:modal.close class="flex-1">
-                <flux:button variant="ghost" class="w-full">Cancel</flux:button>
+                <flux:button variant="ghost" class="w-full cursor-pointer">Cancel</flux:button>
             </flux:modal.close>
-            <flux:button wire:click="delete" variant="primary" color="danger" class="flex-1">Delete</flux:button>
+            <flux:button wire:click="delete" variant="danger" class="flex-1 cursor-pointer">Delete</flux:button>
         </div>
     </flux:modal>
 </div>
