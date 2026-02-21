@@ -108,8 +108,29 @@ new #[Title('Order Details')] #[Layout('layouts.customer')] class extends Compon
                 <div class="px-4">
                     <flux:heading class="text-lg mb-4">Delivery Information</flux:heading>
 
-                    <div class="space-y-4">
-                        <flux:text>Shipping Address:</flux:text>
+                    <div class="space-y-2">
+                        {{-- Full name --}}
+                        <flux:text>
+                            {{ trim(($order->shipping_address['first_name'] ?? '') . ' ' . ($order->shipping_address['last_name'] ?? '')) ?: 'N/A' }}
+                        </flux:text>
+
+                        {{-- Phone --}}
+                        <flux:text>
+                            {{ $order->shipping_address['phone_number'] ?? 'N/A' }}
+                        </flux:text>
+
+                        {{-- Street address --}}
+                        <flux:text>{{ $order->shipping_address['address'] ?? 'N/A' }}</flux:text>
+
+                        {{-- Area & County (from your Pesawise payload structure) --}}
+                        @if (!empty($order->shipping_address['area']['name']))
+                            <flux:text>{{ $order->shipping_address['area']['name'] }}</flux:text>
+                        @endif
+
+                        @if (!empty($order->shipping_address['county']['name']))
+                            <flux:text>{{ $order->shipping_address['county']['name'] }}</flux:text>
+                        @endif
+
                     </div>
 
                 </div>

@@ -1,7 +1,6 @@
 <x-layouts::guest>
-
     <!-- Breadcrumbs -->
-    <div class=" px-4 py-3 bg-zinc-100">
+    <div class="px-4 py-2.5 bg-zinc-100">
         <flux:breadcrumbs class="container mx-auto">
             <flux:breadcrumbs.item href="{{ route('home') }}">
                 <flux:icon.home class="w-4 h-4 me-1.5 inline-block" />

@@ -60,7 +60,7 @@ new #[Layout('layouts.customer')] class extends Component {
                 <x-my-tabs wire:model="selectedTab">
                     <x-my-tab name="ongoing-delivered-tab" label="Ongoing/Delivered">
                         <div class="space-y-3">
-                            @foreach ($this->ongoingOrders as $order)
+                            @forelse ($this->ongoingOrders as $order)
                                 <div :key="$order->id"
                                     class="border rounded-md p-5 hover:bg-zinc-50 transition-colors flex items-center justify-between gap-4">
                                     {{-- Product Image --}}
@@ -84,7 +84,7 @@ new #[Layout('layouts.customer')] class extends Component {
 
                                         {{-- Order Info --}}
                                         <div class="flex items-center gap-4 mt-1 text-xs text-zinc-600">
-                                            <flux:text>Order {{ $order->reference }}</flux:text>
+                                            <flux:text class="text-sm!">Order n° {{ $order->reference }}</flux:text>
                                             <flux:badge size="sm">{{ ucfirst($order->status) }}</flux:badge>
                                         </div>
                                     </div>
@@ -92,7 +92,18 @@ new #[Layout('layouts.customer')] class extends Component {
                                     <flux:link :href="route('customer.orders.show', $order)" class="text-sm!">See
                                         details</flux:link>
                                 </div>
-                            @endforeach
+                            @empty
+                                <div class="flex flex-col items-center justify-center py-16 text-center">
+                                    <flux:icon.shopping-bag class="w-12 h-12 text-zinc-300 mb-3" />
+                                    <flux:heading size="sm">No ongoing orders</flux:heading>
+                                    <flux:text class="text-zinc-500 mt-1 text-sm">You don't have any ongoing or
+                                        delivered orders yet.</flux:text>
+                                    <flux:button href="{{ route('products') }}" wire:navigate variant="primary"
+                                        class="mt-4">
+                                        Start Shopping
+                                    </flux:button>
+                                </div>
+                            @endforelse
                         </div>
 
                         <div class="mt-3">
@@ -101,7 +112,7 @@ new #[Layout('layouts.customer')] class extends Component {
                     </x-my-tab>
                     <x-my-tab name="cancelled-returned-tab" label="Cancelled/Returned">
                         <div class="space-y-3">
-                            @foreach ($this->cancelledOrders as $order)
+                            @forelse ($this->cancelledOrders as $order)
                                 <div :key="$order->id"
                                     class="border rounded-md p-5 hover:bg-zinc-50 transition-colors flex items-center justify-between gap-4">
                                     {{-- Product Image --}}
@@ -133,7 +144,14 @@ new #[Layout('layouts.customer')] class extends Component {
                                     <flux:link :href="route('customer.orders.show', $order)" class="text-sm!">See
                                         details</flux:link>
                                 </div>
-                            @endforeach
+                            @empty
+                                <div class="flex flex-col items-center justify-center py-16 text-center">
+                                    <flux:icon.check-circle class="w-12 h-12 text-zinc-300 mb-3" />
+                                    <flux:heading size="sm">No cancelled or returned orders</flux:heading>
+                                    <flux:text class="text-zinc-500 mt-1 text-sm">Great news — you have no cancelled or
+                                        returned orders.</flux:text>
+                                </div>
+                            @endforelse
                         </div>
 
                         <div class="mt-3">

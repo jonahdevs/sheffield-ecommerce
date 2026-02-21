@@ -2,8 +2,7 @@
 
 use Livewire\Component;
 use Livewire\Attributes\Computed;
-use Livewire\Attributes\Layout;
-use Livewire\Attributes\Defer;
+use Livewire\Attributes\{Layout, Defer};
 use App\Services\CartService;
 use App\Services\WishlistService;
 use App\Models\Cart;
@@ -12,6 +11,11 @@ use Flux\Flux;
 new #[Defer] #[Layout('layouts.guest')] class extends Component {
     public array $cartSummary = [];
     public Cart $cart;
+
+    public function render()
+    {
+        return $this->view()->title('Cart' . ' — ' . config('app.name'));
+    }
 
     public function mount()
     {
