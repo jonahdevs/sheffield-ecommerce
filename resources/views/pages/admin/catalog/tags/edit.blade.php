@@ -124,7 +124,7 @@ new class extends Component {
 
             {{-- Actions --}}
             <div class="flex gap-3 justify-end">
-                <flux:button variant="ghost" href="{{ route('admin.tags') }}" wire:navigate>
+                <flux:button variant="ghost" href="{{ route('admin.tags.index') }}" wire:navigate>
                     Cancel
                 </flux:button>
                 <flux:button type="submit" variant="primary">

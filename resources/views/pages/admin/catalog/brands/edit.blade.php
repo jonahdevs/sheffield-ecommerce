@@ -30,19 +30,19 @@ new class extends Component {
 }; ?>
 
 <div>
-    <flux:heading size="xl" class="mb-2">Edit Brand: {{ $brand->name }}</flux:heading>
-
-    <flux:breadcrumbs>
+    <flux:breadcrumbs class="mb-2">
         <flux:breadcrumbs.item :href="route('dashboard')" icon="home" icon-variant="outline"></flux:breadcrumbs.item>
         <flux:breadcrumbs.item :href="route('admin.brands.index')">Brands</flux:breadcrumbs.item>
         <flux:breadcrumbs.item>Edit</flux:breadcrumbs.item>
     </flux:breadcrumbs>
 
+    <flux:heading size="xl">Edit Brand: {{ $brand->name }}</flux:heading>
+
     <form wire:submit="save" class="space-y-8 mt-6">
         @include('pages.admin.catalog.brands._form-fields')
 
         <div class="flex justify-end gap-3 p-4 bg-zinc-50 dark:bg-zinc-800 rounded-xl border">
-            <flux:button variant="ghost" href="{{ route('admin.brands') }}" class="cursor-pointer">
+            <flux:button variant="ghost" href="{{ route('admin.brands.index') }}" class="cursor-pointer">
                 Discard Changes
             </flux:button>
             <flux:button type="submit" variant="primary" class="cursor-pointer">

@@ -215,9 +215,9 @@ new class extends Component {
 }; ?>
 
 <div>
-    <form wire:submit="save" class="mt-6 grid grid-cols-1 md:grid-cols-4 gap-6" id="product-form">
+    <form wire:submit="save" class="mt-6 grid grid-cols-1 md:grid-cols-4 gap-4" id="product-form">
 
-        <div class="col-span-3 space-y-5">
+        <div class="col-span-3 space-y-4">
             {{-- Basic Information Section --}}
             <flux:card class="p-0">
                 <div class="border-b px-3 py-2">
@@ -532,7 +532,7 @@ new class extends Component {
             </flux:card>
         </div>
 
-        <div class="col-span-1 space-y-5">
+        <div class="col-span-1 space-y-4">
             <flux:card class="p-0">
                 <div class="border-b px-3 py-2">
                     <flux:heading>Status & Visibility</flux:heading>

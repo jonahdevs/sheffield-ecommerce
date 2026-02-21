@@ -34,26 +34,22 @@ new class extends Component {
 }; ?>
 
 <div>
-
-    <flux:heading size="xl" class="mb-2">Create New Category</flux:heading>
-
-    <flux:breadcrumbs>
+    <flux:breadcrumbs class="mb-2">
         <flux:breadcrumbs.item :href="route('dashboard')" icon="home" icon-variant="outline"></flux:breadcrumbs.item>
         <flux:breadcrumbs.item :href="route('admin.categories.index')">Categories</flux:breadcrumbs.item>
         <flux:breadcrumbs.item>Create</flux:breadcrumbs.item>
     </flux:breadcrumbs>
 
+    <flux:heading size="xl">Create New Category</flux:heading>
+
+
     <form wire:submit="save" class="space-y-8 mt-6">
         @include('pages.admin.catalog.categories._form-fields')
 
-        <flux:card class="bg-zinc-50 dark:bg-z">
-
-
-            <div class="flex justify-end gap-3 p-4 bg-zinc-50 dark:bg-zinc-800 rounded-xl border">
-                <flux:button variant="ghost" href="{{ route('admin.categories') }}" class="cursor-pointer">Cancel
-                </flux:button>
-                <flux:button type="submit" variant="primary" class="cursor-pointer">Create Category</flux:button>
-            </div>
+        <flux:card class="bg-zinc-50 flex justify-end gap-3">
+            <flux:button variant="ghost" href="{{ route('admin.categories.index') }}" class="cursor-pointer">Cancel
+            </flux:button>
+            <flux:button type="submit" variant="primary" class="cursor-pointer">Create Category</flux:button>
         </flux:card>
     </form>
 </div>

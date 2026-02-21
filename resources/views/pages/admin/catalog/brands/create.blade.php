@@ -22,13 +22,14 @@ new class extends Component {
 }; ?>
 
 <div>
-    <flux:heading size="xl" class="mb-2">Create New Brand</flux:heading>
-
-    <flux:breadcrumbs>
+    <flux:breadcrumbs class="mb-2">
         <flux:breadcrumbs.item :href="route('dashboard')" icon="home" icon-variant="outline"></flux:breadcrumbs.item>
         <flux:breadcrumbs.item :href="route('admin.brands.index')">Brands</flux:breadcrumbs.item>
         <flux:breadcrumbs.item>Create</flux:breadcrumbs.item>
     </flux:breadcrumbs>
+
+    <flux:heading size="xl">Create New Brand</flux:heading>
+
 
     <form wire:submit="save" class="space-y-8 mt-6">
         @include('pages.admin.catalog.brands._form-fields')

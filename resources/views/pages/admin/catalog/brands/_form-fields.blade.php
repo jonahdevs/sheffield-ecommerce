@@ -1,6 +1,6 @@
-<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-5">
     {{-- Left Column --}}
-    <div class="md:col-span-2 space-y-6">
+    <div class="md:col-span-2 space-y-5">
         <flux:card class="p-0">
             <div class="px-3 py-2 border-b">
                 <flux:heading size="lg">General Information</flux:heading>
