@@ -61,9 +61,11 @@
                     <flux:navlist.item href="#" icon="cog-8-tooth">
                         Settings
                     </flux:navlist.item>
-                    <flux:navlist.item href="#" wire:navigate icon="book-open">
+
+                    <flux:navlist.item :href="route('customer.address-book.index')" wire:navigate icon="book-open">
                         Address Book
                     </flux:navlist.item>
+
                     <flux:navlist.item href="#" wire:navigate icon="newspaper">
                         Newsletter Preference</flux:navlist.item>
 

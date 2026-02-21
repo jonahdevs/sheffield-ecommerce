@@ -39,7 +39,7 @@ new #[Layout('layouts.customer')] class extends Component {
     <flux:card class="p-0 rounded-md">
         {{-- Page Header --}}
         <div class="px-3 py-2 border-b">
-            <flux:heading size="lg">Orders</flux:heading>
+            <flux:heading size="lg" level="1">Orders</flux:heading>
         </div>
 
         <div class="px-4 py-4">

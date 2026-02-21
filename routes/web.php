@@ -39,6 +39,12 @@ Route::middleware('auth')->name('customer')->group(function () {
     Route::livewire('orders', 'pages::customer.orders.index')->name('.orders.index');
     Route::livewire('orders/{order}', 'pages::customer.orders.show')->name('.orders.show');
     Route::livewire('orders/{order}/tracking', 'pages::customer.orders.tracking')->name('.orders.tracking');
+
+    Route::prefix('address-book')->name('.address-book')->group(function () {
+        Route::livewire('/', 'pages::customer.address-book.index')->name('.index');
+        Route::livewire('/create', 'pages::customer.address-book.create')->name('.create');
+        Route::livewire('/{address}/edit', 'pages::customer.address-book.edit')->name('.edit');
+    });
 });
 
 Route::middleware('auth')->prefix('admin')->name('admin')->group(function () {
