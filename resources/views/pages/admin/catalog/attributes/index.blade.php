@@ -36,7 +36,7 @@ new #[Title('Product Attributes')] class extends Component {
 
     <div class="flex items-center justify-between">
         <div>
-            <flux:heading size="xl">Product Attributes</flux:heading>
+            <flux:heading size="xl">Attributes</flux:heading>
             <flux:subheading>Manage options like Size, Color, and Material for your products</flux:subheading>
         </div>
 

@@ -142,7 +142,7 @@ new class extends Component {
     {{-- Checkout Button --}}
     <div class="p-3 border-t">
         <flux:button wire:click="completeOrder" class="w-full group cursor-pointer relative" variant="primary">
-            Complete Order
+            Place Order
             {{-- Icon --}}
             <x-slot name="iconTrailing">
                 <flux:icon.chevron-right class="size-4 ms-3 group-hover:translate-x-1 transition-transform" />

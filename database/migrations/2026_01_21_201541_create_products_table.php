@@ -108,16 +108,10 @@ return new class extends Migration {
             $table->string('slug')->unique();
             $table->text('description')->nullable();
             $table->enum('type', ['select', 'radio', 'checkbox', 'text', 'textarea', 'color', 'swatch', 'button']);
-
-            // Control Flags
             $table->boolean('is_active')->default(true);
-            $table->boolean('is_visible')->default(true);
-            $table->boolean('used_for_variations')->default(true); // used for variations or just product attributes
-
-            $table->integer('sort_order')->default(0);
             $table->timestamps();
 
-            $table->index(['is_active', 'used_for_variations']);
+            $table->index(['is_active']);
         });
 
         // ===============================================
