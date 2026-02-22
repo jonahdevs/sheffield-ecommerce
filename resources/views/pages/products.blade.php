@@ -409,10 +409,11 @@ new #[Defer] #[Layout('layouts.guest')] class extends Component {
                 Home
             </flux:breadcrumbs.item>
 
-            <flux:breadcrumbs.item>Products</flux:breadcrumbs.item>
-
             @if ($this->selectedCategory)
+                <flux:breadcrumbs.item :href="route('products')" wire:navigate>Products</flux:breadcrumbs.item>
                 <flux:breadcrumbs.item>{{ $this->selectedCategory->name }}</flux:breadcrumbs.item>
+            @else
+                <flux:breadcrumbs.item>Products</flux:breadcrumbs.item>
             @endif
         </flux:breadcrumbs>
     </div>

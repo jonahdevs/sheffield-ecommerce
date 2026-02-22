@@ -162,6 +162,44 @@ select:focus[data-flux-control] {
     @apply bg-transparent;
 }
 
+/* In your app.css or a relevant stylesheet */
+
+/* Hide scrollbar by default, show thin one on hover */
+flux-sidebar,
+[data-flux-sidebar] {
+    scrollbar-width: thin;
+    scrollbar-color: transparent transparent;
+    transition: scrollbar-color 0.3s ease;
+}
+
+flux-sidebar:hover,
+[data-flux-sidebar]:hover {
+    scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
+}
+
+/* For WebKit browsers (Chrome, Safari, Edge) */
+flux-sidebar::-webkit-scrollbar,
+[data-flux-sidebar]::-webkit-scrollbar {
+    width: 4px;
+}
+
+flux-sidebar::-webkit-scrollbar-track,
+[data-flux-sidebar]::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+flux-sidebar::-webkit-scrollbar-thumb,
+[data-flux-sidebar]::-webkit-scrollbar-thumb {
+    background-color: transparent;
+    border-radius: 999px;
+    transition: background-color 0.3s ease;
+}
+
+flux-sidebar:hover::-webkit-scrollbar-thumb,
+[data-flux-sidebar]:hover::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.25);
+}
+
 /* end of admin sidebar customization */
 [data-flux-card] {
     @apply rounded-md;

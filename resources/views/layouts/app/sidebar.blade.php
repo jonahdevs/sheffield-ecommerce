@@ -9,8 +9,10 @@
     <flux:sidebar sticky stashable class="border-e border-zinc-200 bg-white ">
         <flux:sidebar.toggle class="lg:hidden" icon="x-mark" />
 
-        <a href="{{ route('dashboard') }}" class="me-5 flex items-center space-x-2 rtl:space-x-reverse" wire:navigate>
-            <x-app-logo />
+        <a href="{{ route('dashboard') }}" class="me-5 my-4 flex items-center space-x-2 rtl:space-x-reverse"
+            wire:navigate>
+            {{-- <x-app-logo /> --}}
+            <img src="{{ asset('logo-inverse.png') }}" alt="" class="w-40 h-auto mx-auto">
         </a>
 
         <flux:navlist variant="outline">
