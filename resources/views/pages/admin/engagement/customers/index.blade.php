@@ -63,8 +63,16 @@ new #[Title('Customers')] class extends Component {
         <flux:breadcrumbs.item>Customers</flux:breadcrumbs.item>
     </flux:breadcrumbs>
 
-    <flux:heading size="xl">Customers</flux:heading>
-    <flux:subheading>Manage your customer accounts</flux:subheading>
+    <div class="flex items-center justify-between">
+        <div>
+            <flux:heading size="xl">Customers</flux:heading>
+            <flux:subheading>Manage your customer accounts</flux:subheading>
+        </div>
+
+        <flux:button icon="plus-circle" variant="primary" :href="route('admin.customers.create')" wire:navigate>
+            Add Customer
+        </flux:button>
+    </div>
 
     <div class="mt-6">
         <flux:card class="p-0">
@@ -81,11 +89,6 @@ new #[Title('Customers')] class extends Component {
                         <flux:select.option value="inactive">Inactive</flux:select.option>
                         <flux:select.option value="banned">Banned</flux:select.option>
                     </flux:select>
-
-                    <flux:button icon="plus-circle" variant="primary" size="sm"
-                        :href="route('admin.customers.create')" wire:navigate>
-                        Add Customer
-                    </flux:button>
                 </div>
             </div>
 
@@ -165,21 +168,18 @@ new #[Title('Customers')] class extends Component {
 
                             <flux:table.cell class="pe-4!">
                                 <div class="flex items-center justify-end gap-1">
-                                    <flux:tooltip content="View">
-                                        <flux:button icon="eye" variant="ghost" size="sm"
-                                            :href="route('admin.customers.show', $customer->id)" wire:navigate />
-                                    </flux:tooltip>
+                                    {{-- <flux:button icon="eye" variant="ghost" size="sm" tooltip="View"
+                                        :href="route('admin.customers.show', $customer->id)" wire:navigate /> --}}
 
-                                    <flux:tooltip content="Edit">
-                                        <flux:button icon="pencil-square" variant="ghost" size="sm"
-                                            :href="route('admin.customers.edit', $customer->id)" wire:navigate />
-                                    </flux:tooltip>
+                                    <flux:button icon="pencil-square" variant="ghost" size="sm" tooltip="Edit"
+                                        icon-variant="outline" :href="route('admin.customers.edit', $customer->id)"
+                                        wire:navigate class="cursor-pointer" />
 
-                                    <flux:tooltip content="Delete">
-                                        <flux:button icon="trash" variant="ghost" size="sm" class="text-red-500!"
-                                            wire:confirm="Are you sure? This will permanently delete {{ $customer->email }} and all related data."
-                                            wire:click="delete({{ $customer->id }})" />
-                                    </flux:tooltip>
+                                    <flux:button icon="trash" variant="ghost" size="sm"
+                                        class="text-red-500! cursor-pointer" tooltip="Delete" icon-variant="outline"
+                                        wire:confirm="Are you sure? This will permanently delete {{ $customer->email }} and all related data."
+                                        wire:click="delete({{ $customer->id }})" />
+
                                 </div>
                             </flux:table.cell>
 
@@ -200,26 +200,6 @@ new #[Title('Customers')] class extends Component {
                     @endforelse
                 </flux:table.rows>
             </flux:table>
-
-            {{-- Footer --}}
-            <div
-                class="flex items-center justify-between flex-wrap gap-3 px-5 py-3 border-t border-zinc-200 dark:border-zinc-700">
-                <flux:text class="text-sm text-zinc-400">
-                    Showing {{ $this->customers->firstItem() ?? 0 }}–{{ $this->customers->lastItem() ?? 0 }}
-                    of {{ $this->customers->total() }} results
-                </flux:text>
-
-                <div class="flex items-center gap-2">
-                    <flux:text class="text-sm shrink-0">Rows per page</flux:text>
-                    <flux:select wire:model.live="perPage" class="w-20">
-                        <flux:select.option value="10">10</flux:select.option>
-                        <flux:select.option value="25">25</flux:select.option>
-                        <flux:select.option value="50">50</flux:select.option>
-                        <flux:select.option value="100">100</flux:select.option>
-                    </flux:select>
-                </div>
-            </div>
-
         </flux:card>
     </div>
 </div>

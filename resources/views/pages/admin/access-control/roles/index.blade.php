@@ -155,7 +155,7 @@ new #[Title('Roles')] class extends Component {
                         @endforeach
                     </flux:select>
 
-                    <flux:button icon="plus-circle" variant="primary" size="sm">
+                    <flux:button icon="plus-circle" variant="primary" size="sm" class="cursor-pointer">
                         Add User
                     </flux:button>
                 </div>
@@ -269,26 +269,6 @@ new #[Title('Roles')] class extends Component {
                     @endforelse
                 </flux:table.rows>
             </flux:table>
-
-            {{-- Footer --}}
-            <div
-                class="flex items-center justify-between flex-wrap gap-3 px-5 py-3 border-t border-zinc-200 dark:border-zinc-700">
-                <flux:text class="text-sm text-zinc-400">
-                    Showing {{ $this->users->firstItem() ?? 0 }}–{{ $this->users->lastItem() ?? 0 }}
-                    of {{ $this->users->total() }} results
-                </flux:text>
-
-                <div class="flex items-center gap-2">
-                    <flux:text class="text-sm shrink-0">Rows per page</flux:text>
-                    <flux:select wire:model.live="perPage" class="w-20">
-                        <flux:select.option value="10">10</flux:select.option>
-                        <flux:select.option value="25">25</flux:select.option>
-                        <flux:select.option value="50">50</flux:select.option>
-                        <flux:select.option value="100">100</flux:select.option>
-                    </flux:select>
-                </div>
-            </div>
-
         </flux:card>
     </div>
 </div>

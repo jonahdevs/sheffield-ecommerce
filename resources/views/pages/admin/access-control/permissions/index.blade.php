@@ -125,26 +125,6 @@ new #[Title('Permissions')] class extends Component {
                     @endforelse
                 </flux:table.rows>
             </flux:table>
-
-            {{-- Footer --}}
-            <div
-                class="flex items-center justify-between flex-wrap gap-3 px-5 py-3 border-t border-zinc-200 dark:border-zinc-700">
-                <flux:text class="text-sm text-zinc-400">
-                    Showing {{ $this->permissions->firstItem() ?? 0 }}–{{ $this->permissions->lastItem() ?? 0 }}
-                    of {{ $this->permissions->total() }} results
-                </flux:text>
-
-                <div class="flex items-center gap-2">
-                    <flux:text class="text-sm shrink-0">Rows per page</flux:text>
-                    <flux:select wire:model.live="perPage" class="w-20">
-                        <flux:select.option value="10">10</flux:select.option>
-                        <flux:select.option value="25">25</flux:select.option>
-                        <flux:select.option value="50">50</flux:select.option>
-                        <flux:select.option value="100">100</flux:select.option>
-                    </flux:select>
-                </div>
-            </div>
-
         </flux:card>
     </div>
 </div>

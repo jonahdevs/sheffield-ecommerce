@@ -15,12 +15,13 @@
             <img src="{{ asset('logo-inverse.png') }}" alt="" class="w-40 h-auto mx-auto">
         </a>
 
-        <flux:sidebar.nav variant="outline">
+        <flux:sidebar.nav>
             <flux:sidebar.group :heading="__('Platform')" class="grid">
                 <flux:sidebar.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')"
                     wire:navigate>{{ __('Dashboard') }}</flux:sidebar.item>
             </flux:sidebar.group>
 
+            <flux:sidebar.spacer class="my-2" />
 
             {{-- Catalog Management --}}
             <flux:sidebar.group heading="Catalog" class="grid">
@@ -50,6 +51,8 @@
                 </flux:sidebar.item>
             </flux:sidebar.group>
 
+            <flux:sidebar.spacer class="my-2" />
+
             {{-- Sales --}}
             <flux:sidebar.group heading="Sales" class="grid">
                 <flux:sidebar.item icon="shopping-cart" wire:navigate :href="route('admin.orders')"
@@ -64,6 +67,7 @@
                     Refunds</flux:sidebar.item>
             </flux:sidebar.group>
 
+            <flux:sidebar.spacer class="my-2" />
 
             {{-- Inventory Management --}}
             <flux:sidebar.group heading="Logistics" class="grid">
@@ -108,6 +112,8 @@
             </flux:sidebar.item> --}}
             </flux:sidebar.group>
 
+            <flux:sidebar.spacer class="my-2" />
+
             {{-- Customer --}}
             <flux:sidebar.group heading="Customers" class="grid">
                 <flux:sidebar.item icon="users" wire:navigate :href="route('admin.customers.index')"
@@ -120,6 +126,8 @@
                 </flux:sidebar.item>
             </flux:sidebar.group>
 
+            <flux:sidebar.spacer class="my-2" />
+
             <flux:sidebar.group heading="Access & Control" class="grid">
                 <flux:sidebar.item icon="shield" wire:navigate :href="route('admin.roles.index')" wire:navigate
                     :current="request()->routeIs('admin.roles*')">Roles
@@ -131,11 +139,15 @@
                 </flux:sidebar.item>
             </flux:sidebar.group>
 
+            <flux:sidebar.spacer class="my-2" />
+
             {{-- Reports --}}
             <flux:sidebar.group heading="Reports & Analytics" expanded="false" class="grid">
                 <flux:sidebar.item icon="chart-bar" wire:navigate href="#">Reports
                 </flux:sidebar.item>
             </flux:sidebar.group>
+
+            <flux:sidebar.spacer class="my-2" />
 
             {{-- Marketing & Content --}}
             <flux:sidebar.group heading="Marketing & Content" expanded="false" class="grid">
@@ -148,6 +160,8 @@
                 <flux:sidebar.item icon="question-mark-circle" wire:navigate href="#">FAQ Management
                 </flux:sidebar.item>
             </flux:sidebar.group>
+
+            <flux:sidebar.spacer class="my-2" />
 
             <flux:sidebar.group heading="Settings & Others" class="grid">
                 <flux:sidebar.item icon="cog" wire:navigate :href="route('profile.edit')">Settings

@@ -1,7 +1,6 @@
 {{-- Left Panel --}}
 <div class="col-span-1">
     <flux:card class="px-10 pb-10 pt-5 space-y-5">
-
         {{-- Status Badge (edit only) --}}
         @isset($customer)
             <div class="flex justify-end">
@@ -95,7 +94,7 @@
 
 {{-- Right Panel --}}
 <div class="col-span-3">
-    <flux:card class="p-10 space-y-6">
+    <flux:card class="space-y-6">
 
         {{-- Personal Information --}}
         <div>

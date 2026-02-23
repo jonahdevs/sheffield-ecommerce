@@ -44,11 +44,12 @@ new #[Title('Create Customer')] class extends Component {
 
 
         <div class="col-span-4">
-            <flux:card class="flex justify-end gap-3">
-                <flux:button variant="ghost" :href="route('admin.customers.index')" wire:navigate>
+            <flux:card class="bg-zinc-50 dark:bg-zinc-900 flex justify-end gap-3">
+                <flux:button variant="ghost" :href="route('admin.customers.index')" wire:navigate class="cursor-pointer">
                     Cancel
                 </flux:button>
-                <flux:button type="submit" variant="primary">
+
+                <flux:button type="submit" variant="primary" class="cursor-pointer">
                     Create Customer
                 </flux:button>
             </flux:card>
