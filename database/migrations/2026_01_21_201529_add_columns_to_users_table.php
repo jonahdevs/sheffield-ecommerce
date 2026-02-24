@@ -15,10 +15,12 @@ return new class extends Migration {
                 $table->string('phone_number', 20)->nullable();
                 $table->string('phone_number_verified_at', 20)->nullable();
                 $table->string('avatar')->nullable();
-                $table->boolean('is_active')->default(true);
                 $table->boolean('newsletter_subscribed')->default(value: false);
                 $table->string('default_payment_method')->nullable();
-                $table->foreignId('preferred_shipping_method_id')->nullable()->constrained('shipping_methods');
+                $table->boolean('is_staff')->default(false);
+                $table->string('status')->default('active');
+                $table->string('status_reason')->nullable();
+                $table->timestamp('suspended_until')->nullable();
                 $table->softDeletes();
             });
         });
@@ -34,11 +36,14 @@ return new class extends Migration {
                 'phone_number',
                 'phone_number_verified_at',
                 'avatar',
-                'is_active',
                 'newsletter_subscribed',
                 'default_payment_method',
                 'preferred_shipping_method_id',
-                'deleted_at'
+                'is_staff',
+                'status',
+                'status_reason',
+                'suspended_until',
+                'deleted_at',
             ]);
         });
     }

@@ -63,7 +63,7 @@ new #[Title('Tags')] class extends Component {
 
 <div>
     <flux:breadcrumbs class="mb-2">
-        <flux:breadcrumbs.item :href="route('dashboard')" icon="home" icon-variant="outline" wire:navigate>
+        <flux:breadcrumbs.item :href="route('admin.dashboard')" icon="home" icon-variant="outline" wire:navigate>
         </flux:breadcrumbs.item>
         <flux:breadcrumbs.item>Tags</flux:breadcrumbs.item>
     </flux:breadcrumbs>

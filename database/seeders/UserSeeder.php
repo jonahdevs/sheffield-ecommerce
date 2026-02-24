@@ -20,6 +20,7 @@ class UserSeeder extends Seeder
 
         User::factory()->create([
             'email' => 'admin@sheffieldafrica.com',
+            'is_staff' => true,
         ])->assignRole('admin');
 
         User::factory()->count(10)->create()->each(function (User $user) {

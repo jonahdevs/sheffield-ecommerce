@@ -90,7 +90,7 @@ new #[Title('Shipping Methods')] class extends Component {
 
 <div>
     <flux:breadcrumbs class="mb-2">
-        <flux:breadcrumbs.item :href="route('dashboard')" icon="home" icon-variant="outline" wire:navigate>
+        <flux:breadcrumbs.item :href="route('admin.dashboard')" icon="home" icon-variant="outline" wire:navigate>
         </flux:breadcrumbs.item>
         <flux:breadcrumbs.item>Shipping Methods</flux:breadcrumbs.item>
     </flux:breadcrumbs>

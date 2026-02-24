@@ -51,7 +51,7 @@ new #[Title('Order Details')] class extends Component {
 
 <div>
     <flux:breadcrumbs class="mb-2">
-        <flux:breadcrumbs.item :href="route('dashboard')" icon="home" icon-variant="outline" wire:navigate />
+        <flux:breadcrumbs.item :href="route('admin.dashboard')" icon="home" icon-variant="outline" wire:navigate />
         <flux:breadcrumbs.item :href="route('admin.orders.index')" wire:navigate>Orders</flux:breadcrumbs.item>
         <flux:breadcrumbs.item>Order Details</flux:breadcrumbs.item>
     </flux:breadcrumbs>

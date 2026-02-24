@@ -3,6 +3,9 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+
+use Illuminate\Database\Eloquent\Attributes\Scope;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -31,9 +34,12 @@ class User extends Authenticatable
         'phone_number',
         'phone_number_verified_at',
         'avatar',
-        'is_active',
         'newsletter_subscribed',
         'default_payment_method',
+        'is_staff',
+        'status',
+        'status_reason',
+        'suspended_until',
         'preferred_shipping_method_id'
     ];
 
@@ -132,5 +138,14 @@ class User extends Authenticatable
     public function reviews(): HasMany
     {
         return $this->hasMany(Review::class);
+    }
+
+    // ===============================================
+    // Scope
+    // ===============================================
+    #[Scope]
+    protected function staff(Builder $query)
+    {
+        $query->where('is_staff', true);
     }
 }

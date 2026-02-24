@@ -47,7 +47,9 @@ Route::middleware('auth')->name('customer')->group(function () {
     });
 });
 
-Route::middleware('auth')->prefix('admin')->name('admin')->group(function () {
+Route::middleware(['auth', 'staff', 'verified'])->prefix('admin')->name('admin')->group(function () {
+    Route::view('dashboard', 'dashboard')->name('.dashboard');
+
     // Sales
     Route::livewire('orders', 'pages::admin.sales.orders.index')->name('.orders');
     Route::livewire('orders/{order}', 'pages::admin.sales.orders.show')->name('.orders.show');
@@ -98,8 +100,6 @@ Route::middleware('auth')->prefix('admin')->name('admin')->group(function () {
     Route::livewire('reviews', 'pages::admin.engagement.reviews.index')->name('.reviews.index');
     Route::livewire('reviews/{review}', 'pages::admin.engagement.reviews.show')->name('.reviews.show');
 });
-Route::view('dashboard', 'dashboard')
-    ->middleware(['auth', 'verified'])
-    ->name('dashboard');
+
 
 require __DIR__ . '/settings.php';

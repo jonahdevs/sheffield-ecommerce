@@ -9,7 +9,7 @@
     <flux:sidebar sticky collapsible class="border-e border-zinc-200 bg-white ">
         <flux:sidebar.toggle class="lg:hidden" icon="x-mark" />
 
-        <a href="{{ route('dashboard') }}" class="me-5 my-4 flex items-center space-x-2 rtl:space-x-reverse"
+        <a href="{{ route('admin.dashboard') }}" class="me-5 my-4 flex items-center space-x-2 rtl:space-x-reverse"
             wire:navigate>
             {{-- <x-app-logo /> --}}
             <img src="{{ asset('logo-inverse.png') }}" alt="" class="w-40 h-auto mx-auto">
@@ -17,8 +17,9 @@
 
         <flux:sidebar.nav>
             <flux:sidebar.group :heading="__('Platform')" class="grid">
-                <flux:sidebar.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')"
-                    wire:navigate>{{ __('Dashboard') }}</flux:sidebar.item>
+                <flux:sidebar.item icon="home" :href="route('admin.dashboard')"
+                    :current="request()->routeIs('admin.dashboard')" wire:navigate>{{ __('Dashboard') }}
+                </flux:sidebar.item>
             </flux:sidebar.group>
 
             <flux:sidebar.spacer class="my-2" />

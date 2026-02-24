@@ -578,6 +578,11 @@ return new class extends Migration {
             $table->index('status');
             $table->index('pickup_station_id');
         });
+
+
+        Schema::table('users', function (Blueprint $table) {
+            $table->foreignId('preferred_shipping_method_id')->nullable()->constrained('shipping_methods');
+        });
     }
 
     /**
@@ -585,6 +590,10 @@ return new class extends Migration {
      */
     public function down(): void
     {
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropColumn('preferred_shipping_method_id');
+        });
+
         Schema::dropIfExists('delivery_orders');
         Schema::dropIfExists('free_shipping_rules');
         Schema::dropIfExists('shipping_rate_addons');
