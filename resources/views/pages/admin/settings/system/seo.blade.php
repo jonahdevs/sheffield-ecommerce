@@ -87,116 +87,86 @@ new #[Title('SEO Settings')] class extends Component {
         <form wire:submit="save" class="space-y-6">
 
             {{-- Meta Tags --}}
-            <div class="space-y-4">
-                <flux:subheading class="font-medium">Meta Tags</flux:subheading>
+            <flux:card class="p-0">
+                <div class="border-b px-3 py-2">
+                    <flux:heading>Meta Tags</flux:heading>
+                </div>
 
-                <flux:field>
-                    <flux:label>Meta Title</flux:label>
-                    <flux:input wire:model="meta_title" placeholder="e.g. Sheffield Africa — Quality Products" />
-                    <flux:description>
-                        {{ strlen($meta_title) }}/70 characters.
-                        Recommended: 50–70 characters.
-                    </flux:description>
-                    <flux:error name="meta_title" />
-                </flux:field>
+                <div class="p-5 space-y-5">
+                    {{-- Meta Title --}}
+                    <flux:input label="Meta Title" wire:model.live="meta_title"
+                        placeholder="e.g. Sheffield Africa — Quality Products"
+                        description:trailing="{{ strlen($meta_title) }}/70 characters. Recommended: 50-70 characters." />
 
-                <flux:field>
-                    <flux:label>Meta Description</flux:label>
-                    <flux:textarea wire:model="meta_description" rows="3"
+                    {{-- Meta Description --}}
+                    <flux:textarea label="Meta Description"
+                        description:trailing="{{ strlen($meta_description) }}/160 characters. Recommended: 120-160 characters."
+                        wire:model="meta_description" rows="3"
                         placeholder="A short description of your store shown in search results..." />
-                    <flux:description>
-                        {{ strlen($meta_description) }}/160 characters.
-                        Recommended: 120–160 characters.
-                    </flux:description>
-                    <flux:error name="meta_description" />
-                </flux:field>
 
-                <flux:field>
-                    <flux:label>
-                        Meta Keywords
-                        <flux:badge size="sm" variant="ghost">Optional</flux:badge>
-                    </flux:label>
-                    <flux:input wire:model="meta_keywords" placeholder="e.g. electronics, kenya, online shop" />
-                    <flux:description>Comma-separated keywords.</flux:description>
-                    <flux:error name="meta_keywords" />
-                </flux:field>
-            </div>
-
-            <flux:separator />
+                    {{-- Meta Keywords --}}
+                    <flux:input label="Meta Keywords (optional)" description:trailing="Comma-separated keywords"
+                        wire:model="meta_keywords" placeholder="e.g. electronics, kenya, online shop" />
+                </div>
+            </flux:card>
 
             {{-- Open Graph --}}
-            <div class="space-y-4">
-                <div>
-                    <flux:subheading class="font-medium">Open Graph Image</flux:subheading>
+            <flux:card class="p-0">
+                <div class="border-b px-3 py-2">
+                    <flux:heading>Open Graph Image</flux:heading>
                     <flux:text class="text-xs text-zinc-400 mt-1">
                         Shown when your site is shared on social media (Facebook, Twitter, WhatsApp etc.)
                     </flux:text>
                 </div>
 
-                @if ($existing_og_image && !$og_image)
-                    <div class="flex items-center gap-4">
-                        <img src="{{ asset('storage/' . $existing_og_image) }}" alt="OG Image"
+                <div class="p-5 space-y-5">
+                    @if ($existing_og_image && !$og_image)
+                        <div class="flex items-center gap-4">
+                            <img src="{{ asset('storage/' . $existing_og_image) }}" alt="OG Image"
+                                class="h-24 w-auto object-cover rounded border border-zinc-200 dark:border-zinc-700" />
+                            <flux:button size="sm" variant="ghost" class="text-red-500!" wire:click="removeOgImage"
+                                wire:confirm="Remove the current OG image?">
+                                Remove
+                            </flux:button>
+                        </div>
+                    @endif
+
+                    @if ($og_image)
+                        <img src="{{ $og_image->temporaryUrl() }}" alt="OG Image preview"
                             class="h-24 w-auto object-cover rounded border border-zinc-200 dark:border-zinc-700" />
-                        <flux:button size="sm" variant="ghost" class="text-red-500!" wire:click="removeOgImage"
-                            wire:confirm="Remove the current OG image?">
-                            Remove
-                        </flux:button>
-                    </div>
-                @endif
+                    @endif
 
-                @if ($og_image)
-                    <img src="{{ $og_image->temporaryUrl() }}" alt="OG Image preview"
-                        class="h-24 w-auto object-cover rounded border border-zinc-200 dark:border-zinc-700" />
-                @endif
 
-                <flux:field>
-                    <flux:input type="file" wire:model="og_image" accept="image/*" />
-                    <flux:description>Recommended size: 1200x630px. Max 2MB.</flux:description>
-                    <flux:error name="og_image" />
-                </flux:field>
-            </div>
-
-            <flux:separator />
+                    <flux:input description:trailing="Recommended size: 1200x630px. Max 2MB." type="file"
+                        wire:model="og_image" accept="image/*" />
+                </div>
+            </flux:card>
 
             {{-- Google --}}
-            <div class="space-y-4">
-                <flux:subheading class="font-medium">Google</flux:subheading>
+            <flux:card class="p-0">
+                <div class="border-b px-3 py-2">
+                    <flux:heading>Google</flux:heading>
+                </div>
 
-                <flux:field>
-                    <flux:label>
-                        Google Analytics ID
-                        <flux:badge size="sm" variant="ghost">Optional</flux:badge>
-                    </flux:label>
-                    <flux:input wire:model="google_analytics_id" placeholder="G-XXXXXXXXXX" />
-                    <flux:error name="google_analytics_id" />
-                </flux:field>
+                <div class="p-5 space-y-5">
+                    {{-- Google Analytics --}}
+                    <flux:input label="Google Analytics ID (Optional)" wire:model="google_analytics_id"
+                        placeholder="G-XXXXXXXXXX" />
 
-                <flux:field>
-                    <flux:label>
-                        Google Tag Manager ID
-                        <flux:badge size="sm" variant="ghost">Optional</flux:badge>
-                    </flux:label>
-                    <flux:input wire:model="google_tag_manager_id" placeholder="GTM-XXXXXXX" />
-                    <flux:error name="google_tag_manager_id" />
-                </flux:field>
+                    {{-- Google Tag Manager ID --}}
+                    <flux:input label="Google Tag Manager ID (optional)" wire:model="google_tag_manager_id"
+                        placeholder="GTM-XXXXXXX" />
 
-                <flux:field>
-                    <flux:label>
-                        Google Site Verification
-                        <flux:badge size="sm" variant="ghost">Optional</flux:badge>
-                    </flux:label>
-                    <flux:input wire:model="google_site_verification" placeholder="Verification meta content value" />
-                    <flux:description>The content value from the Google Search Console verification meta tag.
-                    </flux:description>
-                    <flux:error name="google_site_verification" />
-                </flux:field>
-            </div>
-
-            <flux:separator />
+                    {{-- Google Site Verification --}}
+                    <flux:input label="Google Site Verification (optional)" wire:model="google_site_verification"
+                        description:trailing="The content value from the Google Search Console verification meta tag."
+                        placeholder="Verification meta content value" />
+                </div>
+            </flux:card>
 
             {{-- Indexing --}}
             <div class="space-y-2">
-                <flux:subheading class="font-medium">Search Engine Indexing</flux:subheading>
+                <flux:heading>Search Engine Indexing</flux:heading>
 
                 <div
                     class="flex items-start justify-between gap-4 rounded-lg border border-zinc-200 dark:border-zinc-700 p-4">
@@ -214,7 +184,7 @@ new #[Title('SEO Settings')] class extends Component {
             <flux:separator />
 
             <div class="flex justify-end">
-                <flux:button type="submit" variant="primary">
+                <flux:button type="submit" variant="primary" class="cursor-pointer">
                     Save Changes
                 </flux:button>
             </div>

@@ -70,123 +70,111 @@ new #[Title('Shipping Settings')] class extends Component {
         <form wire:submit="save" class="space-y-6">
 
             {{-- Free Shipping --}}
-            <div class="space-y-4">
-                <flux:subheading class="font-medium">Free Shipping</flux:subheading>
-
-                <div
-                    class="flex items-start justify-between gap-4 rounded-lg border border-zinc-200 dark:border-zinc-700 p-4">
-                    <div>
-                        <flux:text class="text-sm font-medium">Enable Free Shipping</flux:text>
-                        <flux:text class="text-xs text-zinc-400 mt-0.5">
-                            Automatically waive shipping fees when order total exceeds the threshold.
-                        </flux:text>
-                    </div>
-                    <flux:switch wire:model.live="free_shipping_enabled" />
+            <flux:card class="p-0">
+                <div class="border-b px-3 py-2">
+                    <flux:heading>Free Shipping</flux:heading>
                 </div>
 
-                @if ($free_shipping_enabled)
-                    <flux:field>
-                        <flux:label>Free Shipping Threshold</flux:label>
-                        <flux:input wire:model="free_shipping_threshold" type="number" min="0" step="100"
-                            placeholder="5000" />
-                        <flux:description>
-                            Orders above this amount qualify for free shipping.
-                        </flux:description>
-                        <flux:error name="free_shipping_threshold" />
-                    </flux:field>
-                @endif
-            </div>
+                <div class="p-5">
+                    <div
+                        class="flex items-start justify-between gap-4 rounded-lg border border-zinc-200 dark:border-zinc-700 p-4">
+                        <div>
+                            <flux:text class="text-sm font-medium">Enable Free Shipping</flux:text>
+                            <flux:text class="text-xs text-zinc-400 mt-0.5">
+                                Automatically waive shipping fees when order total exceeds the threshold.
+                            </flux:text>
+                        </div>
+                        <flux:switch wire:model.live="free_shipping_enabled" />
+                    </div>
 
-            <flux:separator />
+                    @if ($free_shipping_enabled)
+                        <flux:field>
+                            <flux:label>Free Shipping Threshold</flux:label>
+                            <flux:input wire:model="free_shipping_threshold" type="number" min="0" step="100"
+                                placeholder="5000" />
+                            <flux:description>
+                                Orders above this amount qualify for free shipping.
+                            </flux:description>
+                            <flux:error name="free_shipping_threshold" />
+                        </flux:field>
+                    @endif
+                </div>
+            </flux:card>
 
             {{-- Delivery Estimates --}}
-            <div class="space-y-4">
-                <div>
-                    <flux:subheading class="font-medium">Delivery Estimates</flux:subheading>
+            <flux:card class="p-0">
+                <div class="border-b px-3 py-2">
+                    <flux:heading>Delivery Estimates</flux:heading>
                     <flux:text class="text-xs text-zinc-400 mt-1">
                         Shown to customers at checkout and in order confirmation emails.
                     </flux:text>
                 </div>
 
-                <div class="grid grid-cols-2 gap-4">
-                    <flux:field>
-                        <flux:label>Min. Delivery Days</flux:label>
-                        <flux:input wire:model.live="estimated_delivery_days_min" type="number" min="1" />
-                        <flux:error name="estimated_delivery_days_min" />
-                    </flux:field>
+                <div class="p-5 space-y-5">
+                    <div class="grid grid-cols-2 gap-5">
+                        {{-- Min Delivery Days --}}
+                        <flux:input label="Min. Delivery Days" wire:model.live="estimated_delivery_days_min"
+                            type="number" min="1" />
 
-                    <flux:field>
-                        <flux:label>Max. Delivery Days</flux:label>
-                        <flux:input wire:model.live="estimated_delivery_days_max" type="number" min="1" />
-                        <flux:error name="estimated_delivery_days_max" />
-                    </flux:field>
+                        {{-- Max Delivery Days --}}
+                        <flux:input label="Max. Delivery Days" wire:model.live="estimated_delivery_days_max"
+                            type="number" min="1" />
+                    </div>
+
+                    {{-- Delivery Estimate Message --}}
+                    <flux:input label="Delivery Estimate Message"
+                        description:trailing="This message is shown at checkout below the shipping method."
+                        wire:model="delivery_estimate_message" placeholder="e.g. Delivered within 1–3 business days" />
                 </div>
-
-                <flux:field>
-                    <flux:label>Delivery Estimate Message</flux:label>
-                    <flux:input wire:model="delivery_estimate_message"
-                        placeholder="e.g. Delivered within 1–3 business days" />
-                    <flux:description>
-                        This message is shown at checkout below the shipping method.
-                    </flux:description>
-                    <flux:error name="delivery_estimate_message" />
-                </flux:field>
-            </div>
-
-            <flux:separator />
+            </flux:card>
 
             {{-- Pickup --}}
-            <div class="space-y-4">
-                <flux:subheading class="font-medium">Pickup Stations</flux:subheading>
-
-                <div
-                    class="flex items-start justify-between gap-4 rounded-lg border border-zinc-200 dark:border-zinc-700 p-4">
-                    <div>
-                        <flux:text class="text-sm font-medium">Allow Pickup</flux:text>
-                        <flux:text class="text-xs text-zinc-400 mt-0.5">
-                            Let customers choose to pick up their order from a pickup station at checkout.
-                        </flux:text>
-                    </div>
-                    <flux:switch wire:model="allow_pickup" />
+            <flux:card class="p-0">
+                <div class="border-b px-3 py-2">
+                    <flux:heading>Pickup Stations</flux:heading>
                 </div>
-            </div>
 
-            <flux:separator />
+                <div class="p-5">
+                    <div
+                        class="flex items-start justify-between gap-4 rounded-lg border border-zinc-200 dark:border-zinc-700 p-4">
+                        <div>
+                            <flux:text class="text-sm font-medium">Allow Pickup</flux:text>
+                            <flux:text class="text-xs text-zinc-400 mt-0.5">
+                                Let customers choose to pick up their order from a pickup station at checkout.
+                            </flux:text>
+                        </div>
+                        <flux:switch wire:model="allow_pickup" />
+                    </div>
+                </div>
+            </flux:card>
 
             {{-- Weight & Packaging --}}
-            <div class="space-y-4">
-                <div>
-                    <flux:subheading class="font-medium">Weight & Packaging</flux:subheading>
+            <flux:card class="p-0">
+                <div class="border-b px-3 py-2">
+                    <flux:heading>Weight & Packaging</flux:heading>
                     <flux:text class="text-xs text-zinc-400 mt-1">
                         Used when calculating shipping rates based on product weight.
                     </flux:text>
                 </div>
 
-                <flux:field>
-                    <flux:label>Default Weight Unit</flux:label>
-                    <flux:select wire:model="default_weight_unit">
+                <div class="p-5 space-y-5">
+                    {{-- Default Weight Unit --}}
+                    <flux:select label="Default Weight Unit" wire:model="default_weight_unit">
                         <flux:select.option value="kg">Kilograms (kg)</flux:select.option>
                         <flux:select.option value="g">Grams (g)</flux:select.option>
                     </flux:select>
-                    <flux:error name="default_weight_unit" />
-                </flux:field>
 
-                <flux:field>
-                    <flux:label>Default Packaging Weight</flux:label>
-                    <flux:input wire:model="default_packaging_weight" type="number" min="0" step="0.01"
-                        placeholder="0.00" />
-                    <flux:description>
-                        Added to each order's total weight to account for packaging materials.
-                        Enter in {{ $default_weight_unit }}.
-                    </flux:description>
-                    <flux:error name="default_packaging_weight" />
-                </flux:field>
-            </div>
+                    {{-- Default Packaging Weight --}}
+                    <flux:input label="Default Packaging Weight" wire:model="default_packaging_weight" type="number"
+                        min="0" step="0.01" placeholder="0.00"
+                        description:trailing="Added to each order's total weight to account for packaging materials.   Enter in {{ $default_weight_unit }}." />
+                </div>
+            </flux:card>
 
             <flux:separator />
 
             <div class="flex justify-end">
-                <flux:button type="submit" variant="primary">
+                <flux:button type="submit" variant="primary" class="cursor-pointer">
                     Save Changes
                 </flux:button>
             </div>

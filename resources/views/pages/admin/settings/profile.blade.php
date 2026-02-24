@@ -82,29 +82,33 @@ new class extends Component {
 
     <x-pages::admin.settings.layout :heading="__('Profile')" :subheading="__('Update your name and email address')">
         <form wire:submit="updateProfileInformation" class="my-6 w-full space-y-6">
-            <flux:input wire:model="name" :label="__('Name')" type="text" required autofocus autocomplete="name" />
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
 
-            <div>
-                <flux:input wire:model="email" :label="__('Email')" type="email" required autocomplete="email" />
+                <flux:input wire:model="name" :label="__('Name')" type="text" required autofocus
+                    autocomplete="name" />
 
-                @if ($this->hasUnverifiedEmail)
-                    <div>
-                        <flux:text class="mt-4">
-                            {{ __('Your email address is unverified.') }}
+                <div>
+                    <flux:input wire:model="email" :label="__('Email')" type="email" required autocomplete="email" />
 
-                            <flux:link class="text-sm cursor-pointer"
-                                wire:click.prevent="resendVerificationNotification">
-                                {{ __('Click here to re-send the verification email.') }}
-                            </flux:link>
-                        </flux:text>
+                    @if ($this->hasUnverifiedEmail)
+                        <div>
+                            <flux:text class="mt-4">
+                                {{ __('Your email address is unverified.') }}
 
-                        @if (session('status') === 'verification-link-sent')
-                            <flux:text class="mt-2 font-medium !dark:text-green-400 !text-green-600">
-                                {{ __('A new verification link has been sent to your email address.') }}
+                                <flux:link class="text-sm cursor-pointer"
+                                    wire:click.prevent="resendVerificationNotification">
+                                    {{ __('Click here to re-send the verification email.') }}
+                                </flux:link>
                             </flux:text>
-                        @endif
-                    </div>
-                @endif
+
+                            @if (session('status') === 'verification-link-sent')
+                                <flux:text class="mt-2 font-medium !dark:text-green-400 !text-green-600">
+                                    {{ __('A new verification link has been sent to your email address.') }}
+                                </flux:text>
+                            @endif
+                        </div>
+                    @endif
+                </div>
             </div>
 
             <div class="flex items-center gap-4">

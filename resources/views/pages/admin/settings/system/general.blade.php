@@ -127,162 +127,139 @@ new #[Title('General Settings')] class extends Component {
         <form wire:submit="save" class="space-y-6">
 
             {{-- Identity --}}
-            <div class="space-y-4">
-                <flux:subheading class="font-medium">Identity</flux:subheading>
-
-                <flux:field>
-                    <flux:label>Site Name</flux:label>
-                    <flux:input wire:model="site_name" placeholder="e.g. Sheffield Africa" />
-                    <flux:error name="site_name" />
-                </flux:field>
-
-                <flux:field>
-                    <flux:label>
-                        Site Tagline
-                        <flux:badge size="sm" variant="ghost">Optional</flux:badge>
-                    </flux:label>
-                    <flux:input wire:model="site_tagline" placeholder="e.g. Quality Products, Delivered Fast" />
-                    <flux:error name="site_tagline" />
-                </flux:field>
-
-                {{-- Logo --}}
-                <flux:field>
-                    <flux:label>Logo</flux:label>
-                    @if ($existing_logo && !$logo)
-                        <div class="flex items-center gap-4 mb-2">
-                            <img src="{{ asset('storage/' . $existing_logo) }}" alt="Logo"
-                                class="h-12 object-contain rounded border border-zinc-200 dark:border-zinc-700 p-1" />
-                            <flux:button size="sm" variant="ghost" class="text-red-500!" wire:click="removeLogo"
-                                wire:confirm="Remove the current logo?">
-                                Remove
-                            </flux:button>
-                        </div>
-                    @endif
-                    @if ($logo)
-                        <img src="{{ $logo->temporaryUrl() }}" alt="Logo preview"
-                            class="h-12 object-contain rounded border border-zinc-200 dark:border-zinc-700 p-1 mb-2" />
-                    @endif
-                    <flux:input type="file" wire:model="logo" accept="image/*" />
-                    <flux:description>Recommended size: 200x60px. Max 2MB.</flux:description>
-                    <flux:error name="logo" />
-                </flux:field>
-
-                {{-- Favicon --}}
-                <flux:field>
-                    <flux:label>Favicon</flux:label>
-                    @if ($existing_favicon && !$favicon)
-                        <div class="flex items-center gap-4 mb-2">
-                            <img src="{{ asset('storage/' . $existing_favicon) }}" alt="Favicon"
-                                class="size-8 object-contain rounded border border-zinc-200 dark:border-zinc-700 p-1" />
-                            <flux:button size="sm" variant="ghost" class="text-red-500!" wire:click="removeFavicon"
-                                wire:confirm="Remove the current favicon?">
-                                Remove
-                            </flux:button>
-                        </div>
-                    @endif
-                    @if ($favicon)
-                        <img src="{{ $favicon->temporaryUrl() }}" alt="Favicon preview"
-                            class="size-8 object-contain rounded border border-zinc-200 dark:border-zinc-700 p-1 mb-2" />
-                    @endif
-                    <flux:input type="file" wire:model="favicon" accept="image/*" />
-                    <flux:description>Recommended size: 32x32px. Max 512KB.</flux:description>
-                    <flux:error name="favicon" />
-                </flux:field>
-            </div>
-
-            <flux:separator />
-
-            {{-- Contact --}}
-            <div class="space-y-4">
-                <flux:subheading class="font-medium">Contact</flux:subheading>
-
-                <flux:field>
-                    <flux:label>Contact Email</flux:label>
-                    <flux:input wire:model="contact_email" type="email" placeholder="hello@sheffield.com" />
-                    <flux:description>Used in transactional emails and invoices.</flux:description>
-                    <flux:error name="contact_email" />
-                </flux:field>
-
-                <flux:field>
-                    <flux:label>Support Phone</flux:label>
-                    <flux:input wire:model="support_phone" placeholder="+254 700 000 000" />
-                    <flux:error name="support_phone" />
-                </flux:field>
-
-                <flux:field>
-                    <flux:label>Physical Address</flux:label>
-                    <flux:textarea wire:model="physical_address" placeholder="e.g. 4th Floor, TRG Plaza, Nairobi"
-                        rows="2" />
-                    <flux:description>Shown in the footer and on invoices.</flux:description>
-                    <flux:error name="physical_address" />
-                </flux:field>
-            </div>
-
-            <flux:separator />
-
-            {{-- Localization --}}
-            <div class="space-y-4">
-                <flux:subheading class="font-medium">Localization</flux:subheading>
-
-                <div class="grid grid-cols-2 gap-4">
-                    <flux:field>
-                        <flux:label>Currency Code</flux:label>
-                        <flux:input wire:model="currency" placeholder="KES" />
-                        <flux:description>e.g. KES, USD, EUR</flux:description>
-                        <flux:error name="currency" />
-                    </flux:field>
-
-                    <flux:field>
-                        <flux:label>Currency Symbol</flux:label>
-                        <flux:input wire:model="currency_symbol" placeholder="KSh" />
-                        <flux:description>e.g. KSh, $, €</flux:description>
-                        <flux:error name="currency_symbol" />
-                    </flux:field>
+            <flux:card class="p-0">
+                <div class="border-b px-3 py-2">
+                    <flux:heading>Identity</flux:heading>
                 </div>
 
-                <flux:field>
-                    <flux:label>Timezone</flux:label>
-                    <flux:select wire:model="timezone">
+                <div class="p-5 grid grid-cols-1 md:grid-cols-2 gap-5">
+                    {{-- Site Name --}}
+                    <flux:input label="Site Name" wire:model="site_name" placeholder="e.g. Sheffield Africa" />
+
+                    {{-- Site Tagline --}}
+                    <flux:input label="Site Tagline (optional)" wire:model="site_tagline"
+                        placeholder="e.g. Quality Products, Delivered Fast" />
+
+
+                    {{-- Logo --}}
+                    <flux:field>
+                        <flux:label>Logo</flux:label>
+                        @if ($existing_logo && !$logo)
+                            <div class="flex items-center gap-4 mb-2">
+                                <img src="{{ asset('storage/' . $existing_logo) }}" alt="Logo"
+                                    class="h-12 object-contain rounded border border-zinc-200 dark:border-zinc-700 p-1" />
+                                <flux:button size="sm" variant="ghost" class="text-red-500!"
+                                    wire:click="removeLogo" wire:confirm="Remove the current logo?">
+                                    Remove
+                                </flux:button>
+                            </div>
+                        @endif
+                        @if ($logo)
+                            <img src="{{ $logo->temporaryUrl() }}" alt="Logo preview"
+                                class="h-12 object-contain rounded border border-zinc-200 dark:border-zinc-700 p-1 mb-2" />
+                        @endif
+                        <flux:input type="file" wire:model="logo" accept="image/*" />
+                        <flux:description>Recommended size: 200x60px. Max 2MB.</flux:description>
+                        <flux:error name="logo" />
+                    </flux:field>
+
+                    {{-- Favicon --}}
+                    <flux:field>
+                        <flux:label>Favicon</flux:label>
+                        @if ($existing_favicon && !$favicon)
+                            <div class="flex items-center gap-4 mb-2">
+                                <img src="{{ asset('storage/' . $existing_favicon) }}" alt="Favicon"
+                                    class="size-8 object-contain rounded border border-zinc-200 dark:border-zinc-700 p-1" />
+                                <flux:button size="sm" variant="ghost" class="text-red-500!"
+                                    wire:click="removeFavicon" wire:confirm="Remove the current favicon?">
+                                    Remove
+                                </flux:button>
+                            </div>
+                        @endif
+                        @if ($favicon)
+                            <img src="{{ $favicon->temporaryUrl() }}" alt="Favicon preview"
+                                class="size-8 object-contain rounded border border-zinc-200 dark:border-zinc-700 p-1 mb-2" />
+                        @endif
+
+                        <flux:input type="file" wire:model="favicon" accept="image/*" />
+                        <flux:description>Recommended size: 32x32px. Max 512KB.</flux:description>
+                        <flux:error name="favicon" />
+                    </flux:field>
+                </div>
+            </flux:card>
+
+            {{-- Contact --}}
+            <flux:card class="p-0">
+                <div class="border-b px-3 py-2">
+                    <flux:heading>Contact</flux:heading>
+                </div>
+
+                <div class="p-5 space-y-5">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        {{-- Contact Email --}}
+                        <flux:input label="Contact Email" wire:model="contact_email" type="email"
+                            description:trailing="Used in transactional emails and invoices"
+                            placeholder="hello@sheffield.com" />
+
+                        {{-- Support Phone --}}
+                        <flux:input label="Support Phone" wire:model="support_phone" placeholder="+254 700 000 000" />
+                    </div>
+
+
+                    <flux:textarea label="Physical Address" wire:model="physical_address"
+                        description:trailing="Shown in the footer and on invoices"
+                        placeholder="e.g. 4th Floor, TRG Plaza, Nairobi" rows="2" />
+                </div>
+            </flux:card>
+
+            {{-- Localization --}}
+            <flux:card class="p-0">
+                <div class="border-b px-3 py-2">
+                    <flux:heading>Localization</flux:heading>
+                </div>
+
+                <div class="p-5 space-y-5">
+                    <div class="grid grid-cols-2 gap-4">
+                        {{-- Currency Code --}}
+                        <flux:input label="Currency Code" description:trailing="e.g. KES, USD, EUR"
+                            wire:model="currency" placeholder="KES" />
+
+                        {{-- Currency Symbol --}}
+                        <flux:input label="Currency Symbol" description:trailing="e.g. KSh, $, €"
+                            wire:model="currency_symbol" placeholder="KSh" />
+                    </div>
+
+                    <flux:select label="Timezone" wire:model="timezone">
                         @foreach (timezone_identifiers_list() as $tz)
                             <flux:select.option :value="$tz">{{ $tz }}</flux:select.option>
                         @endforeach
                     </flux:select>
-                    <flux:error name="timezone" />
-                </flux:field>
+                </div>
 
-
-            </div>
-
-            <flux:separator />
+            </flux:card>
 
             {{-- Business --}}
-            <div class="space-y-4">
-                <flux:subheading class="font-medium">Business</flux:subheading>
+            <flux:card class="p-0">
+                <div class="border-b px-3 py-2">
+                    <flux:heading>Business</flux:heading>
+                </div>
 
-                <flux:field>
-                    <flux:label>
-                        VAT / Tax Number
-                        <flux:badge size="sm" variant="ghost">Optional</flux:badge>
-                    </flux:label>
-                    <flux:input wire:model="vat_number" placeholder="e.g. P051234567X" />
-                    <flux:description>Printed on invoices and receipts.</flux:description>
-                    <flux:error name="vat_number" />
-                </flux:field>
+                <div class="p-5 space-y-5">
+                    {{-- VAT / Tax Number --}}
+                    <flux:input label="VAT / Tax Number (optional)"
+                        description:trailing="Printed on invoices and receipts" wire:model="vat_number"
+                        placeholder="e.g. P051234567X" />
 
-                <flux:field>
-                    <flux:label>
-                        Registration Number
-                        <flux:badge size="sm" variant="ghost">Optional</flux:badge>
-                    </flux:label>
-                    <flux:input wire:model="registration_number" placeholder="e.g. CPR/2020/12345" />
-                    <flux:error name="registration_number" />
-                </flux:field>
-            </div>
+                    {{-- Registration Number --}}
+                    <flux:input label="Registration Number (optional)" wire:model="registration_number"
+                        placeholder="e.g. CPR/2020/12345" />
+                </div>
+            </flux:card>
 
             <flux:separator />
 
             <div class="flex justify-end">
-                <flux:button type="submit" variant="primary">
+                <flux:button type="submit" variant="primary" class="cursor-pointer">
                     Save Changes
                 </flux:button>
             </div>

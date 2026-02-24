@@ -88,53 +88,41 @@ new #[Title('Maintenance Settings')] class extends Component {
             <flux:separator />
 
             {{-- Message --}}
-            <div class="space-y-4">
-                <flux:subheading class="font-medium">Maintenance Message</flux:subheading>
+            <flux:card class="p-0">
+                <div class="px-3 py-2 border-b">
+                    <flux:heading>Maintenance Message</flux:heading>
+                </div>
 
-                <flux:field>
-                    <flux:label>Message</flux:label>
-                    <flux:textarea wire:model="message" rows="3"
+                <div class="p-5">
+                    <flux:textarea label="Message" wire:model="message" rows="3"
+                        description:trailing="Shown to customers on the maintenance page."
                         placeholder="We are currently performing scheduled maintenance. We will be back shortly." />
-                    <flux:description>Shown to customers on the maintenance page.</flux:description>
-                    <flux:error name="message" />
-                </flux:field>
-            </div>
-
-            <flux:separator />
+                </div>
+            </flux:card>
 
             {{-- Schedule --}}
-            <div class="space-y-4">
-                <flux:subheading class="font-medium">Schedule</flux:subheading>
+            <flux:card class="p-0">
+                <div class="border-b px-3 py-2">
+                    <flux:subheading class="font-medium">Schedule</flux:subheading>
+                </div>
 
-                <flux:field>
-                    <flux:label>
-                        Expected End Time
-                        <flux:badge size="sm" variant="ghost">Optional</flux:badge>
-                    </flux:label>
-                    <flux:input wire:model="scheduled_end" type="datetime-local" />
-                    <flux:description>
-                        If set, customers will see when the store is expected to be back online.
-                    </flux:description>
-                    <flux:error name="scheduled_end" />
-                </flux:field>
+                <div class="p-5 grid grid-cols-1 md:grid-cols-2 gap-5">
+                    {{-- Expected End Time --}}
+                    <flux:input label="Expected End Time (Optional)"
+                        description:trailing="If set, customers will see when the store is expected to be back"
+                        wire:model="scheduled_end" type="datetime-local" />
 
-                <flux:field>
-                    <flux:label>
-                        Contact Email
-                        <flux:badge size="sm" variant="ghost">Optional</flux:badge>
-                    </flux:label>
-                    <flux:input wire:model="contact_email" type="email" placeholder="hello@sheffield.com" />
-                    <flux:description>
-                        Customers can reach out to this email during maintenance.
-                    </flux:description>
-                    <flux:error name="contact_email" />
-                </flux:field>
-            </div>
+                    {{-- Contact Email --}}
+                    <flux:input label="Contact Email" wire:model="contact_email" type="email"
+                        description:trailing="Customers can reach out to this email during maintenance."
+                        placeholder="hello@sheffield.com" />
+                </div>
+            </flux:card>
 
             <flux:separator />
 
             <div class="flex justify-end">
-                <flux:button type="submit" :variant="$enabled ? 'danger' : 'primary'">
+                <flux:button type="submit" :variant="$enabled ? 'danger' : 'primary'" class="cursor-pointer">
                     {{ $enabled ? 'Save & Keep Maintenance Active' : 'Save Changes' }}
                 </flux:button>
             </div>
