@@ -1874,16 +1874,16 @@
         },
         {
             "name": "laravel/fortify",
-            "version": "v1.34.1",
+            "version": "v1.35.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/fortify.git",
-                "reference": "412575e9c0cb21d49a30b7045ad4902019f538c2"
+                "reference": "24c5bb81ea4787e0865c4a62f054ed7d1cb7a093"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/fortify/zipball/412575e9c0cb21d49a30b7045ad4902019f538c2",
-                "reference": "412575e9c0cb21d49a30b7045ad4902019f538c2",
+                "url": "https://api.github.com/repos/laravel/fortify/zipball/24c5bb81ea4787e0865c4a62f054ed7d1cb7a093",
+                "reference": "24c5bb81ea4787e0865c4a62f054ed7d1cb7a093",
                 "shasum": ""
             },
             "require": {
@@ -1933,7 +1933,7 @@
                 "issues": "https://github.com/laravel/fortify/issues",
                 "source": "https://github.com/laravel/fortify"
             },
-            "time": "2026-02-03T06:55:55+00:00"
+            "time": "2026-02-24T14:00:44+00:00"
         },
         {
             "name": "laravel/framework",
@@ -2342,32 +2342,32 @@
         },
         {
             "name": "laravel/socialite",
-            "version": "v5.24.2",
+            "version": "v5.24.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/socialite.git",
-                "reference": "5cea2eebf11ca4bc6c2f20495c82a70a9b3d1613"
+                "reference": "0feb62267e7b8abc68593ca37639ad302728c129"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/socialite/zipball/5cea2eebf11ca4bc6c2f20495c82a70a9b3d1613",
-                "reference": "5cea2eebf11ca4bc6c2f20495c82a70a9b3d1613",
+                "url": "https://api.github.com/repos/laravel/socialite/zipball/0feb62267e7b8abc68593ca37639ad302728c129",
+                "reference": "0feb62267e7b8abc68593ca37639ad302728c129",
                 "shasum": ""
             },
             "require": {
                 "ext-json": "*",
                 "firebase/php-jwt": "^6.4|^7.0",
                 "guzzlehttp/guzzle": "^6.0|^7.0",
-                "illuminate/contracts": "^6.0|^7.0|^8.0|^9.0|^10.0|^11.0|^12.0",
-                "illuminate/http": "^6.0|^7.0|^8.0|^9.0|^10.0|^11.0|^12.0",
-                "illuminate/support": "^6.0|^7.0|^8.0|^9.0|^10.0|^11.0|^12.0",
+                "illuminate/contracts": "^6.0|^7.0|^8.0|^9.0|^10.0|^11.0|^12.0|^13.0",
+                "illuminate/http": "^6.0|^7.0|^8.0|^9.0|^10.0|^11.0|^12.0|^13.0",
+                "illuminate/support": "^6.0|^7.0|^8.0|^9.0|^10.0|^11.0|^12.0|^13.0",
                 "league/oauth1-client": "^1.11",
                 "php": "^7.2|^8.0",
                 "phpseclib/phpseclib": "^3.0"
             },
             "require-dev": {
                 "mockery/mockery": "^1.0",
-                "orchestra/testbench": "^4.18|^5.20|^6.47|^7.55|^8.36|^9.15|^10.8",
+                "orchestra/testbench": "^4.18|^5.20|^6.47|^7.55|^8.36|^9.15|^10.8|^11.0",
                 "phpstan/phpstan": "^1.12.23",
                 "phpunit/phpunit": "^8.0|^9.3|^10.4|^11.5|^12.0"
             },
@@ -2410,7 +2410,7 @@
                 "issues": "https://github.com/laravel/socialite/issues",
                 "source": "https://github.com/laravel/socialite"
             },
-            "time": "2026-01-10T16:07:28+00:00"
+            "time": "2026-02-21T13:32:50+00:00"
         },
         {
             "name": "laravel/tinker",
@@ -2669,16 +2669,16 @@
         },
         {
             "name": "league/flysystem",
-            "version": "3.31.0",
+            "version": "3.32.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/flysystem.git",
-                "reference": "1717e0b3642b0df65ecb0cc89cdd99fa840672ff"
+                "reference": "254b1595b16b22dbddaaef9ed6ca9fdac4956725"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/1717e0b3642b0df65ecb0cc89cdd99fa840672ff",
-                "reference": "1717e0b3642b0df65ecb0cc89cdd99fa840672ff",
+                "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/254b1595b16b22dbddaaef9ed6ca9fdac4956725",
+                "reference": "254b1595b16b22dbddaaef9ed6ca9fdac4956725",
                 "shasum": ""
             },
             "require": {
@@ -2746,9 +2746,9 @@
             ],
             "support": {
                 "issues": "https://github.com/thephpleague/flysystem/issues",
-                "source": "https://github.com/thephpleague/flysystem/tree/3.31.0"
+                "source": "https://github.com/thephpleague/flysystem/tree/3.32.0"
             },
-            "time": "2026-01-23T15:38:47+00:00"
+            "time": "2026-02-25T17:01:41+00:00"
         },
         {
             "name": "league/flysystem-local",
@@ -3115,26 +3115,26 @@
         },
         {
             "name": "livewire/flux",
-            "version": "v2.12.1",
+            "version": "v2.12.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/livewire/flux.git",
-                "reference": "24c139b97b6df1e67c0235637f0e08c206bf4486"
+                "reference": "68a3b06b62b23bae82e02d6be39722cf2a8770ff"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/livewire/flux/zipball/24c139b97b6df1e67c0235637f0e08c206bf4486",
-                "reference": "24c139b97b6df1e67c0235637f0e08c206bf4486",
+                "url": "https://api.github.com/repos/livewire/flux/zipball/68a3b06b62b23bae82e02d6be39722cf2a8770ff",
+                "reference": "68a3b06b62b23bae82e02d6be39722cf2a8770ff",
                 "shasum": ""
             },
             "require": {
-                "illuminate/console": "^10.0|^11.0|^12.0",
-                "illuminate/support": "^10.0|^11.0|^12.0",
-                "illuminate/view": "^10.0|^11.0|^12.0",
+                "illuminate/console": "^10.0|^11.0|^12.0|^13.0",
+                "illuminate/support": "^10.0|^11.0|^12.0|^13.0",
+                "illuminate/view": "^10.0|^11.0|^12.0|^13.0",
                 "laravel/prompts": "^0.1|^0.2|^0.3",
                 "livewire/livewire": "^3.7.4|^4.0",
                 "php": "^8.1",
-                "symfony/console": "^6.0|^7.0"
+                "symfony/console": "^6.0|^7.0|^8.0"
             },
             "conflict": {
                 "livewire/blaze": "<1.0.0-beta.2"
@@ -3175,9 +3175,9 @@
             ],
             "support": {
                 "issues": "https://github.com/livewire/flux/issues",
-                "source": "https://github.com/livewire/flux/tree/v2.12.1"
+                "source": "https://github.com/livewire/flux/tree/v2.12.2"
             },
-            "time": "2026-02-17T21:12:27+00:00"
+            "time": "2026-02-24T16:29:56+00:00"
         },
         {
             "name": "livewire/livewire",
@@ -11934,12 +11934,12 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {},
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
         "php": "^8.2"
     },
-    "platform-dev": [],
-    "plugin-api-version": "2.6.0"
+    "platform-dev": {},
+    "plugin-api-version": "2.9.0"
 }

@@ -94,92 +94,55 @@ new #[Title('SEO Settings')] class extends Component {
 
                 <div class="p-5 space-y-5">
                     {{-- Meta Title --}}
-                    <flux:input label="Meta Title" wire:model.live="meta_title"
-                        placeholder="e.g. Sheffield Africa — Quality Products"
-                        description:trailing="{{ strlen($meta_title) }}/70 characters. Recommended: 50-70 characters." />
-
-                    {{-- Meta Description --}}
-                    <flux:textarea label="Meta Description"
-                        description:trailing="{{ strlen($meta_description) }}/160 characters. Recommended: 120-160 characters."
-                        wire:model="meta_description" rows="3"
-                        placeholder="A short description of your store shown in search results..." />
+                    <flux:input label="Meta Title" wire:model="meta_title" />
 
                     {{-- Meta Keywords --}}
-                    <flux:input label="Meta Keywords (optional)" description:trailing="Comma-separated keywords"
-                        wire:model="meta_keywords" placeholder="e.g. electronics, kenya, online shop" />
+                    <flux:input label="Meta Keywords (optional)" wire:model="meta_keywords" />
+
+                    {{-- Meta Description --}}
+                    <flux:textarea label="Meta Description" wire:model="meta_description" rows="3" />
+
+                    {{-- Canonical Url --}}
+                    <flux:input label="Canonical Url" wire:model="canonical_url" />
+
                 </div>
             </flux:card>
 
             {{-- Open Graph --}}
             <flux:card class="p-0">
                 <div class="border-b px-3 py-2">
-                    <flux:heading>Open Graph Image</flux:heading>
-                    <flux:text class="text-xs text-zinc-400 mt-1">
-                        Shown when your site is shared on social media (Facebook, Twitter, WhatsApp etc.)
-                    </flux:text>
+                    <flux:heading>Open Graph</flux:heading>
                 </div>
 
                 <div class="p-5 space-y-5">
-                    @if ($existing_og_image && !$og_image)
-                        <div class="flex items-center gap-4">
-                            <img src="{{ asset('storage/' . $existing_og_image) }}" alt="OG Image"
-                                class="h-24 w-auto object-cover rounded border border-zinc-200 dark:border-zinc-700" />
-                            <flux:button size="sm" variant="ghost" class="text-red-500!" wire:click="removeOgImage"
-                                wire:confirm="Remove the current OG image?">
-                                Remove
-                            </flux:button>
-                        </div>
-                    @endif
+                    {{-- Og Title --}}
+                    <flux:input label="Og Title" wire:model.live="og_title" />
 
-                    @if ($og_image)
-                        <img src="{{ $og_image->temporaryUrl() }}" alt="OG Image preview"
-                            class="h-24 w-auto object-cover rounded border border-zinc-200 dark:border-zinc-700" />
-                    @endif
+                    {{-- Og Description --}}
+                    <flux:textarea label="Og Description" wire:model="og_description" rows="3" />
 
+                    <flux:field>
 
-                    <flux:input description:trailing="Recommended size: 1200x630px. Max 2MB." type="file"
-                        wire:model="og_image" accept="image/*" />
+                        <flux:label>Og Image</flux:label>
+                        <div class="flex items-center gap-2 bg-zinc-50 rounded-sm p-3 inset-shadow-sm">
+                            <div class="shrink-0">
+                                <flux:icon.photo class="size-20 text-inherit! stroke-1!" />
+                            </div>
+
+                            <div>
+                                <flux:heading>OG Image</flux:heading>
+                                <flux:text class="text-xs">Recommended image size is 160px x 50px</flux:text>
+
+                                <div class="flex items-center items-center gap-2 mt-2">
+                                    <flux:button class="cursor-pointer" variant="primary" size="xs">Change
+                                    </flux:button>
+                                    <flux:button class="cursor-pointer" size="xs">Cancel</flux:button>
+                                </div>
+                            </div>
+                    </flux:field>
                 </div>
             </flux:card>
 
-            {{-- Google --}}
-            <flux:card class="p-0">
-                <div class="border-b px-3 py-2">
-                    <flux:heading>Google</flux:heading>
-                </div>
-
-                <div class="p-5 space-y-5">
-                    {{-- Google Analytics --}}
-                    <flux:input label="Google Analytics ID (Optional)" wire:model="google_analytics_id"
-                        placeholder="G-XXXXXXXXXX" />
-
-                    {{-- Google Tag Manager ID --}}
-                    <flux:input label="Google Tag Manager ID (optional)" wire:model="google_tag_manager_id"
-                        placeholder="GTM-XXXXXXX" />
-
-                    {{-- Google Site Verification --}}
-                    <flux:input label="Google Site Verification (optional)" wire:model="google_site_verification"
-                        description:trailing="The content value from the Google Search Console verification meta tag."
-                        placeholder="Verification meta content value" />
-                </div>
-            </flux:card>
-
-            {{-- Indexing --}}
-            <div class="space-y-2">
-                <flux:heading>Search Engine Indexing</flux:heading>
-
-                <div
-                    class="flex items-start justify-between gap-4 rounded-lg border border-zinc-200 dark:border-zinc-700 p-4">
-                    <div>
-                        <flux:text class="text-sm font-medium">Allow Search Engine Indexing</flux:text>
-                        <flux:text class="text-xs text-zinc-400 mt-0.5">
-                            Disabling this adds a noindex tag — search engines will stop showing your site in results.
-                            Useful during development or maintenance.
-                        </flux:text>
-                    </div>
-                    <flux:switch wire:model="indexing_enabled" />
-                </div>
-            </div>
 
             <flux:separator />
 
@@ -188,7 +151,6 @@ new #[Title('SEO Settings')] class extends Component {
                     Save Changes
                 </flux:button>
             </div>
-
         </form>
     </x-pages::admin.settings.layout>
 </div>
