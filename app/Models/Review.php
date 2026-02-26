@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\ReviewStatus;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -37,6 +38,7 @@ class Review extends Model
             'helpful_count' => 'integer',
             'not_helpful_count' => 'integer',
             'moderated_at' => 'datetime',
+            'status' => ReviewStatus::class
         ];
     }
 

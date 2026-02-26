@@ -1,12 +1,10 @@
 <?php
 
-use App\Services\WishlistService;
-use App\Services\CompareService;
-use App\Services\CartService;
+use App\Services\{CompareService, WishlistService, CartService};
 use Livewire\Component;
 use App\Models\Category;
-use Livewire\Attributes\Computed;
-use Livewire\Attributes\On;
+use Livewire\Attributes\{Computed, On};
+use App\Enums\CategorySection;
 
 new class extends Component {
     public int $cartCount = 0;
@@ -20,10 +18,10 @@ new class extends Component {
         $this->compareCount = $compareService->getCount();
     }
 
-    #[Computed]
+    #[Computed(persist: true)]
     public function categories()
     {
-        return Category::active()->navbar()->orderBy('sort_order')->orderBy('name')->get();
+        return Category::inSection(CategorySection::Navbar)->get();
     }
 
     #[On('cart-updated')]

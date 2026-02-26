@@ -74,7 +74,7 @@ new #[Title('Tags')] class extends Component {
             <flux:subheading>Organize and categorize your products with tags.</flux:subheading>
         </div>
 
-        <flux:button href="{{ route('admin.tags.create') }}" variant="primary" icon="plus" wire:navigate>
+        <flux:button href="{{ route('admin.tags.create') }}" variant="primary" icon="plus-circle" wire:navigate>
             Create Tag
         </flux:button>
     </div>
@@ -137,14 +137,15 @@ new #[Title('Tags')] class extends Component {
         </flux:button>
     </div>
 
-    {{-- Search --}}
-    <div class="mb-4">
-        <flux:input wire:model.live.debounce.300ms="search" icon="magnifying-glass"
-            placeholder="Search tags by name or slug..." class="max-w-md" />
-    </div>
 
     {{-- Tags Table --}}
-    <flux:card class="p-0">
+    <flux:card class="p-0 **:data-flux-columns:bg-zinc-50">
+        {{-- Search --}}
+        <div class="px-5 py-3 border-b">
+            <flux:input wire:model.live.debounce.300ms="search" icon="magnifying-glass"
+                placeholder="Search tags by name or slug..." class="max-w-md" />
+        </div>
+
         <flux:table :paginate="$this->tags">
             <flux:table.columns>
                 <flux:table.column class="ps-4!">Tag</flux:table.column>

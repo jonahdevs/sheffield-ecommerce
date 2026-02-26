@@ -93,7 +93,7 @@ new #[Title('Reviews')] class extends Component {
     </div>
 
 
-    <flux:card class="p-0 mt-6">
+    <flux:card class="p-0 mt-6 **:data-flux-columns:bg-zinc-50">
         {{-- Filters --}}
         <div class="flex items-center gap-4 px-5 py-3 border-b ">
             <flux:input wire:model.live="search" icon="magnifying-glass"
@@ -135,12 +135,12 @@ new #[Title('Reviews')] class extends Component {
                     <flux:table.row :key="$review->id">
                         {{-- Review Content --}}
                         <flux:table.cell class="max-w-md ps-4!">
-                            <div class="font-medium text-zinc-800 dark:text-white mb-1">
+                            <flux:heading class="mb-1">
                                 {{ $review->title ?? 'No title' }}
-                            </div>
-                            <div class="text-sm text-zinc-600 dark:text-zinc-400 line-clamp-2">
+                            </flux:heading>
+                            <flux:text class="line-clamp-2 whitespace-normal wrap-break-words">
                                 {{ $review->review_text }}
-                            </div>
+                            </flux:text>
                             @if ($review->images->count() > 0)
                                 <div class="flex gap-1 mt-2">
                                     <flux:badge size="sm" color="blue" variant="outline">
@@ -155,7 +155,7 @@ new #[Title('Reviews')] class extends Component {
                         {{-- Product --}}
                         <flux:table.cell>
                             <div class="flex items-center gap-2">
-                                <div class="w-8 h-8 rounded border bg-zinc-50 overflow-hidden flex-shrink-0">
+                                <div class="w-10 h-10 rounded border bg-zinc-50 overflow-hidden shrink-0">
                                     @if ($review->product->image_path)
                                         <img src="{{ $review->product->image_url }}" class="object-cover w-full h-full">
                                     @else
@@ -168,41 +168,21 @@ new #[Title('Reviews')] class extends Component {
 
                         {{-- Rating --}}
                         <flux:table.cell>
-                            <div class="flex items-center gap-1">
-                                @for ($i = 1; $i <= 5; $i++)
-                                    <flux:icon name="star"
-                                        variant="{{ $i <= $review->rating ? 'solid' : 'outline' }}"
-                                        class="w-4 h-4 {{ $i <= $review->rating ? 'text-yellow-400' : 'text-zinc-300' }}" />
-                                @endfor
-                                <span class="text-sm font-medium ml-1">{{ $review->rating }}/5</span>
-                            </div>
-                            @if ($review->is_verified_purchase)
-                                <flux:badge size="sm" color="green" variant="flat" class="mt-1">
-                                    Verified Purchase
-                                </flux:badge>
-                            @endif
+                            <flux:badge icon="star" icon-variant="solid" size="sm"
+                                class="[&_[data-flux-badge-icon]]:text-yellow-500!">
+                                {{ number_format($review->rating, 1) }}
+                            </flux:badge>
                         </flux:table.cell>
 
                         {{-- Customer --}}
                         <flux:table.cell>
-                            <div class="font-medium text-sm">{{ $review->user->name }}</div>
-                            @if ($review->helpful_count > 0)
-                                <div class="text-xs text-zinc-500">
-                                    {{ $review->helpful_count }} found helpful
-                                </div>
-                            @endif
+                            <flux:link class="text-xs">{{ $review->user->email }}</flux:link>
                         </flux:table.cell>
 
                         {{-- Status --}}
                         <flux:table.cell>
-                            <flux:badge size="sm" variant="flat"
-                                :color="match($review->status) {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    'pending' => 'amber',
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    'approved' => 'green',
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    'rejected' => 'red',
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    default => 'gray',
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                }">
-                                {{ ucfirst($review->status) }}
+                            <flux:badge size="sm" variant="flat" :color="$review->status?->color()">
+                                {{ $review->status?->label() }}
                             </flux:badge>
                         </flux:table.cell>
 

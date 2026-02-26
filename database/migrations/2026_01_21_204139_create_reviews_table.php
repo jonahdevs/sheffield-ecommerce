@@ -24,7 +24,7 @@ return new class extends Migration {
             $table->text('review_text');
 
             // Status and Verification
-            $table->enum('status', ['pending', 'approved', 'rejected', 'flagged'])->default('pending');
+            $table->string('status')->default('pending');
             $table->boolean('is_verified_purchase')->default(true);
 
             // Helpfulness Counters

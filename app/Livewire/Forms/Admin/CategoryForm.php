@@ -2,130 +2,165 @@
 
 namespace App\Livewire\Forms\Admin;
 
+use App\Enums\CategorySection;
+use App\Enums\CategoryStatus;
 use App\Models\Category;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Str;
-use Livewire\Attributes\Validate;
 use Livewire\Form;
+use Livewire\WithFileUploads;
 
 class CategoryForm extends Form
 {
+    use WithFileUploads;
+
     public ?Category $category = null;
 
-    public $name = '';
-    public $slug = '';
-
+    // General
+    public string $name = '';
+    public string $slug = '';
     public $parent_id = null;
-    public $description = '';
-    public $is_active = true;
-    public $is_featured = false;
-    public $show_in_navbar = false;
+    public string $description = '';
+
+    // Status
+    public string $status = CategoryStatus::Draft->value;
+
+    // Placements — array of section values e.g. ['navbar', 'homepage_featured']
+    public array $placements = [];
 
     // Media
-    public $image_path;
-    public $image_icon;
+    public $image_path = null;
+    public $image_icon = null;
+    public string $icon_svg = '';
 
-    public $icon_svg = '';
+    // Existing media paths (for previews)
+    public ?string $existingBanner = null;
+    public ?string $existingImageIcon = null;
 
     // SEO
-    public $meta_title = '';
-    public $meta_description = '';
-    public $meta_keywords = '';
+    public string $meta_title = '';
+    public string $meta_description = '';
+    public array $meta_keywords = [];
 
-    public $existingImageIcon = null;
-    public $existingBanner = null;
-
-    public function rules()
+    public function rules(): array
     {
         $categoryId = $this->category?->id;
 
         return [
-            "name" => ["required", "string", "min:3", "max:255"],
-            "slug" => ["nullable", "string", "max:255", "unique:categories,slug," . $categoryId],
-            "parent_id" => ["nullable", "exists:categories,id"],
-            "description" => ["nullable", "string"],
-            "is_active" => ["boolean"],
-            "is_featured" => ["boolean"],
-            "show_in_navbar" => ["boolean"],
-            "icon_svg" => ["nullable", "string"],
-            "meta_title" => ["nullable", "string", "max:255"],
-            "meta_description" => ["nullable", "string"],
-            "meta_keywords" => ["nullable", "string"],
+            'name'             => ['required', 'string', 'min:3', 'max:255'],
+            'slug'             => ['nullable', 'string', 'max:255', 'unique:categories,slug,' . $categoryId],
+            'parent_id'        => ['nullable', 'exists:categories,id'],
+            'description'      => ['nullable', 'string'],
+            'status'           => ['required', 'string', 'in:' . implode(',', array_column(CategoryStatus::cases(), 'value'))],
+            'placements'       => ['array'],
+            'placements.*'     => ['string', 'in:' . implode(',', array_column(CategorySection::cases(), 'value'))],
+            'image_path'       => ['nullable', 'image', 'max:2048'],
+            'image_icon'       => ['nullable', 'image', 'max:1024'],
+            'icon_svg'         => ['nullable', 'string'],
+            'meta_title'       => ['nullable', 'string', 'max:255'],
+            'meta_description' => ['nullable', 'string'],
+            'meta_keywords'    => ['nullable', 'array'],
         ];
     }
 
-    public function setCategory(Category $category)
+    public function fromCategory(Category $category): void
     {
         $this->category = $category;
 
-        $this->fill($category->only([
-            'name',
-            'slug',
-            'parent_id',
-            'description',
-            'is_active',
-            'is_featured',
-            'show_in_navbar',
-            'icon_svg',
-            'meta_title',
-            'meta_description',
-        ]));
+        $this->name             = $category->name;
+        $this->slug             = $category->slug;
+        $this->parent_id        = $category->parent_id;
+        $this->description      = $category->description ?? '';
+        $this->status           = $category->status->value;
+        $this->icon_svg         = $category->icon_svg ?? '';
+        $this->meta_title       = $category->meta_title ?? '';
+        $this->meta_description = $category->meta_description ?? '';
+        $this->meta_keywords    = $category->meta_keywords ?? [];
 
-        $this->meta_keywords = $category->meta_keywords ?? [];
+        // Load existing placements as array of section values
+        $this->placements = $category->placements
+            ->pluck('section')
+            ->map(fn($section) => $section->value)
+            ->toArray();
 
-        // Populate previews — don't touch the upload fields
-        $this->existingBanner = $category->image_path;
+        // Previews
+        $this->existingBanner    = $category->image_path;
         $this->existingImageIcon = $category->image_icon;
     }
 
-    public function store()
+    public function store(): Category
     {
         $this->validate();
 
-        $data = $this->prepareData();
-        return Category::create($data);
+        $category = Category::create($this->prepareData());
+
+        $this->syncPlacements($category);
+
+        return $category;
     }
 
-    public function update()
+    public function update(): Category
     {
         $this->validate();
 
-        $data = $this->prepareData();
-        $this->category->update($data);
-        return $this->category;
+        $this->category->update($this->prepareData());
+
+        $this->syncPlacements($this->category);
+
+        return $this->category->fresh();
     }
 
-    protected function prepareData()
+    // Sync placements — delete removed, add new, preserve existing sort_order
+    protected function syncPlacements(Category $category): void
     {
-        $data = $this->except(['category', 'image_path', 'image_icon']);
+        $incoming = collect($this->placements);
 
-        // Auto-generate slug if empty
-        if (empty($data['slug'])) {
-            $data['slug'] = Str::slug($this->name);
-        }
+        // Delete placements that were unchecked
+        $category->placements()
+            ->whereNotIn('section', $incoming->toArray())
+            ->delete();
+
+        // Add newly checked placements (skip existing ones)
+        $existing = $category->placements()->pluck('section')->map(fn($s) => $s->value);
+
+        $incoming->diff($existing)->each(function (string $sectionValue) use ($category) {
+            // Append at the end of the section's current order
+            $maxOrder = \App\Models\CategoryPlacement::where('section', $sectionValue)->max('sort_order') ?? 0;
+
+            $category->placements()->create([
+                'section'    => CategorySection::from($sectionValue),
+                'sort_order' => $maxOrder + 1,
+            ]);
+        });
+    }
+
+    protected function prepareData(): array
+    {
+        $data = [
+            'name'             => $this->name,
+            'slug'             => $this->slug ?: Str::slug($this->name),
+            'parent_id'        => $this->parent_id ?: null,
+            'description'      => $this->description ?: null,
+            'status'           => $this->status,
+            'icon_svg'         => $this->icon_svg ?: null,
+            'meta_title'       => $this->meta_title ?: null,
+            'meta_description' => $this->meta_description ?: null,
+            'meta_keywords'    => !empty($this->meta_keywords) ? $this->meta_keywords : null,
+        ];
 
         // Handle image uploads
-        $data = array_merge($data, $this->handleImageUploads());
-
-        return $data;
-    }
-
-    protected function handleImageUploads(): array
-    {
-        $uploads = [];
-
         if ($this->image_path instanceof UploadedFile) {
-            $uploads['image_path'] = $this->image_path->store('categories/banners', 'public');
+            $data['image_path'] = $this->image_path->store('categories/banners', 'public');
         } else {
-            $uploads['image_path'] = $this->existingBanner;
+            $data['image_path'] = $this->existingBanner;
         }
 
         if ($this->image_icon instanceof UploadedFile) {
-            $uploads['image_icon'] = $this->image_icon->store('categories/icons', 'public');
+            $data['image_icon'] = $this->image_icon->store('categories/icons', 'public');
         } else {
-            $uploads['image_icon'] = $this->existingImageIcon;
+            $data['image_icon'] = $this->existingImageIcon;
         }
 
-        return $uploads;
+        return $data;
     }
 }

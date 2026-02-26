@@ -50,12 +50,12 @@ class CustomerForm extends Form
             'avatar'       => ['nullable', 'image', 'max:3072'],
 
             // Address
-            'address_first_name'     => ['required', 'string', 'max:100'],
-            'address_last_name'      => ['required', 'string', 'max:100'],
-            'address_phone'          => ['required', 'string', 'max:20'],
-            'county_id'              => ['required', 'exists:counties,id'],
-            'area_id'                => ['required', 'exists:areas,id'],
-            'address_line'           => ['required', 'string', 'max:255'],
+            'address_first_name'     => ['nullable', 'string', 'max:100'],
+            'address_last_name'      => ['nullable', 'string', 'max:100'],
+            'address_phone'          => ['nullable', 'string', 'max:20'],
+            'county_id'              => ['nullable', 'exists:counties,id'],
+            'area_id'                => ['nullable', 'exists:areas,id'],
+            'address_line'           => ['nullable', 'string', 'max:255'],
             'additional_information' => ['nullable', 'string', 'max:500'],
 
             // Status — only validated on edit

@@ -55,17 +55,19 @@ new #[Title('Brands')] class extends Component {
             <flux:subheading>Manage product brands and manufacturers</flux:subheading>
         </div>
 
-        <flux:button variant="primary" icon="plus" :href="route('admin.brands.create')" wire:navigate>
+        <flux:button variant="primary" icon="plus-circle" :href="route('admin.brands.create')" wire:navigate>
             Create Brand
         </flux:button>
     </div>
 
-    <div class="mb-4">
-        <flux:input wire:model.live="search" icon="magnifying-glass" placeholder="Search brands..." class="max-w-md"
-            clearable />
-    </div>
 
-    <flux:card class="p-0">
+    <flux:card class="p-0 **:data-flux-columns:bg-zinc-50">
+        {{-- Filters --}}
+        <div class="px-5 py-3 border-b">
+            <flux:input wire:model.live="search" icon="magnifying-glass" placeholder="Search brands..." class="max-w-md"
+                clearable />
+        </div>
+
         <flux:table :paginate="$this->brands">
             <flux:table.columns>
                 <flux:table.column class="ps-4!">Brand</flux:table.column>
@@ -85,7 +87,7 @@ new #[Title('Brands')] class extends Component {
                                     class="w-10 h-10 rounded object-contain bg-white p-1 border">
                             @else
                                 <div
-                                    class="w-10 h-10 bg-zinc-100 dark:bg-zinc-700 flex items-center justify-center rounded">
+                                    class="w-10 h-10 bg-zinc-50 dark:bg-zinc-900 border flex items-center justify-center rounded">
                                     <flux:icon name="building-storefront" variant="micro" />
                                 </div>
                             @endif

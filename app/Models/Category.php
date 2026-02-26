@@ -2,12 +2,15 @@
 
 namespace App\Models;
 
+use App\Enums\CategorySection;
+use App\Enums\CategoryStatus;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Category extends Model
 {
@@ -21,9 +24,7 @@ class Category extends Model
         'image_path',
         'image_icon',
         'icon_svg',
-        'is_active',
-        'is_featured',
-        'show_in_navbar',
+        'status',
         'sort_order',
         'meta_title',
         'meta_description',
@@ -35,9 +36,7 @@ class Category extends Model
     {
         return [
             'meta_keywords' => 'array',
-            'is_active' => 'boolean',
-            'is_featured' => 'boolean',
-            'show_in_navbar' => 'boolean',
+            'status' => CategoryStatus::class
         ];
     }
 
@@ -84,6 +83,12 @@ class Category extends Model
             ->orderBy('sort_order');
     }
 
+    // Category placements
+    public function placements(): HasMany
+    {
+        return $this->hasMany(CategoryPlacement::class);
+    }
+
 
     // ==================================================
     // SCOPES
@@ -92,19 +97,18 @@ class Category extends Model
     #[Scope]
     protected function active(Builder $query)
     {
-        $query->where('is_active', true);
+        $query->where('status', CategoryStatus::Active);
     }
 
     #[Scope]
-    protected function navbar(Builder $query)
+    protected function inSection(Builder $query, CategorySection $section): Builder
     {
-        $query->where('show_in_navbar', true);
-    }
-
-    #[Scope]
-    protected function featured(Builder $query)
-    {
-        $query->where('is_featured', true);
+        return $query
+            ->join('category_placements', 'categories.id', '=', 'category_placements.category_id')
+            ->where('category_placements.section', $section)
+            ->where('status', 'active')
+            ->orderBy('category_placements.sort_order')
+            ->select('categories.*', 'category_placements.sort_order as placement_order');
     }
 
     #[Scope()]

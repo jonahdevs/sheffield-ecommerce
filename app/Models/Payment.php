@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\PaymentStatus;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -25,6 +26,7 @@ class Payment extends Model
     {
         return [
             'meta' => 'array',
+            'status' => PaymentStatus::class
         ];
     }
 

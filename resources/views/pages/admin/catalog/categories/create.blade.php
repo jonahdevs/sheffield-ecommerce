@@ -1,4 +1,5 @@
 <?php
+
 use App\Models\Category;
 use App\Livewire\Forms\Admin\CategoryForm;
 use Livewire\Component;
@@ -11,7 +12,15 @@ new class extends Component {
 
     public CategoryForm $form;
 
-    public function save()
+    public function updatedFormName(string $value): void
+    {
+        // Auto-generate slug only if user hasn't manually set one
+        if (empty($this->form->slug)) {
+            $this->form->slug = \Illuminate\Support\Str::slug($value);
+        }
+    }
+
+    public function save(): void
     {
         try {
             $this->form->store();
@@ -35,22 +44,24 @@ new class extends Component {
 
 <div>
     <flux:breadcrumbs class="mb-2">
-        <flux:breadcrumbs.item :href="route('admin.dashboard')" icon="home" icon-variant="outline" wire:navigate>
-        </flux:breadcrumbs.item>
+        <flux:breadcrumbs.item :href="route('admin.dashboard')" icon="home" icon-variant="outline" wire:navigate />
         <flux:breadcrumbs.item :href="route('admin.categories.index')" wire:navigate>Categories</flux:breadcrumbs.item>
         <flux:breadcrumbs.item>Create</flux:breadcrumbs.item>
     </flux:breadcrumbs>
 
-    <flux:heading size="xl">Create New Category</flux:heading>
-
+    <flux:heading size="xl" class="mt-2">Create New Category</flux:heading>
 
     <form wire:submit="save" class="space-y-5 mt-6">
         @include('pages.admin.catalog.categories._form-fields')
 
         <flux:card class="bg-zinc-50 flex justify-end gap-3">
-            <flux:button variant="ghost" href="{{ route('admin.categories.index') }}" class="cursor-pointer">Cancel
+            <flux:button type="button" variant="ghost" :href="route('admin.categories.index')" wire:navigate
+                class="cursor-pointer">
+                Cancel
             </flux:button>
-            <flux:button type="submit" variant="primary" class="cursor-pointer">Create Category</flux:button>
+            <flux:button type="submit" variant="primary" class="cursor-pointer">
+                Create Category
+            </flux:button>
         </flux:card>
     </form>
 </div>

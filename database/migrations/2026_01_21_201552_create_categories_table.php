@@ -21,9 +21,7 @@ return new class extends Migration {
             $table->string('image_icon', 500)->nullable();
             $table->text('icon_svg')->nullable();
 
-            $table->boolean('is_active')->default(true);
-            $table->boolean('is_featured')->default(false);
-            $table->boolean('show_in_navbar')->default(false);
+            $table->string('status')->default('draft');
             $table->integer('sort_order')->default(0);
 
             // SEO & Meta
@@ -34,9 +32,8 @@ return new class extends Migration {
 
             $table->timestamps();
 
-            $table->index(['is_active', 'sort_order']);
+            $table->index(['status', 'sort_order']);
             $table->index('slug');
-            $table->index('is_featured');
         });
 
         Schema::create('category_product', function (Blueprint $table) {
@@ -50,6 +47,18 @@ return new class extends Migration {
             $table->unique(['category_id', 'product_id']);
             $table->index('is_primary');
         });
+
+        Schema::create('category_placements', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('category_id')->constrained()->cascadeOnDelete();
+            $table->string('section');
+            $table->unsignedSmallInteger('sort_order')->default(0);
+            $table->timestamps();
+
+            // A category can only appear once per section
+            $table->unique(['category_id', 'section']);
+            $table->index(['section', 'sort_order']);
+        });
     }
 
     /**
@@ -57,6 +66,7 @@ return new class extends Migration {
      */
     public function down(): void
     {
+        Schema::dropIfExists('category_placements');
         Schema::dropIfExists('category_product');
         Schema::dropIfExists('categories');
     }

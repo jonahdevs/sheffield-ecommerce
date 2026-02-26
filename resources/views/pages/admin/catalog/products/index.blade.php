@@ -76,13 +76,13 @@ new #[Title('Products')] class extends Component {
             </flux:subheading>
         </div>
 
-        <flux:button href="{{ route('admin.products.create') }}" variant="primary" icon="plus" wire:navigate>
+        <flux:button href="{{ route('admin.products.create') }}" variant="primary" icon="plus-circle" wire:navigate>
             Create Product
         </flux:button>
     </div>
 
 
-    <flux:card class="p-0 mt-6 [&_[data-flux-columns]]:bg-zinc-50">
+    <flux:card class="p-0 mt-6 **:data-flux-columns:bg-zinc-50">
         {{-- Filters --}}
         <div class="flex items-center gap-4 px-5 py-3 border-b">
             <flux:input wire:model.live="search" icon="magnifying-glass" placeholder="Search by name or SKU..."

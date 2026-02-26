@@ -1,0 +1,33 @@
+<?php
+
+namespace App\Enums;
+
+enum PaymentStatus: string
+{
+    case ABANDONED = 'abandoned';
+    case FAILED = 'failed';
+    case ONGOING = 'ongoing';
+    case PENDING = 'pending';
+    case PROCESSING = 'processing';
+    case QUEUED = 'queued';
+    case REVERSED = 'reversed';
+    case SUCCESS = 'success';
+
+    public function label(): string
+    {
+        return ucfirst($this->value);
+    }
+
+    public function color(): string
+    {
+        return match ($this) {
+            self::SUCCESS => 'emerald',
+            self::FAILED => 'red',
+            self::ABANDONED => 'zinc',
+            self::PENDING, self::PROCESSING => 'amber',
+            self::ONGOING => 'blue',
+            self::QUEUED => 'purple',
+            self::REVERSED => 'orange',
+        };
+    }
+}

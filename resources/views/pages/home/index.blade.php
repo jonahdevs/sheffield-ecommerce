@@ -4,21 +4,22 @@ use Livewire\Component;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
 use App\Models\{Category, Product};
+use App\Enums\CategorySection;
 
 new #[Layout('layouts.guest')] class extends Component {
-    #[Computed]
+    #[Computed(persist: true)]
     public function heroBanners()
     {
         return config('site.hero_slides');
     }
 
-    #[Computed]
+    #[Computed(persist: true)]
     public function topCategories()
     {
-        return Category::active()->featured()->ordered()->get();
+        return Category::inSection(CategorySection::HomepageFeatured)->active()->get();
     }
 
-    #[Computed]
+    #[Computed(persist: true)]
     public function newArrivals()
     {
         return Product::select(['id', 'name', 'slug', 'brand_id', 'price', 'sale_price', 'image_path', 'short_description'])
@@ -31,7 +32,7 @@ new #[Layout('layouts.guest')] class extends Component {
             ->get();
     }
 
-    #[Computed]
+    #[Computed(persist: true)]
     public function products()
     {
         return Product::select(['id', 'name', 'slug', 'brand_id', 'price', 'sale_price', 'image_path', 'short_description'])

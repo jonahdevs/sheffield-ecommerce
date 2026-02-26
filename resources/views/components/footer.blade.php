@@ -3,12 +3,13 @@
 use Livewire\Component;
 use App\Models\Category;
 use Livewire\Attributes\Computed;
+use App\Enums\CategorySection;
 
 new class extends Component {
-    #[Computed]
+    #[Computed(persist: true)]
     public function categories()
     {
-        return Category::active()->navbar()->orderBy('sort_order')->orderBy('name')->take(5)->get();
+        return Category::inSection(CategorySection::Navbar)->take(5)->get();
     }
 };
 ?>

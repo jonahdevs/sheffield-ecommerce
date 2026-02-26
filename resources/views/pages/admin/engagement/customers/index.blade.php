@@ -74,134 +74,130 @@ new #[Title('Customers')] class extends Component {
         </flux:button>
     </div>
 
-    <div class="mt-6">
-        <flux:card class="p-0">
 
-            {{-- Filters --}}
-            <div class="flex items-center flex-wrap gap-3 px-5 py-3 border-b border-zinc-200 dark:border-zinc-700">
-                <flux:input wire:model.live.debounce.400ms="search" icon="magnifying-glass"
-                    placeholder="Search customers..." class="max-w-xs" />
+    <flux:card class="p-0 **:data-flux-columns:bg-zinc-50 mt-6">
 
-                <div class="ms-auto flex items-center gap-3">
-                    <flux:select wire:model.live="status" placeholder="All Status" class="w-36">
-                        <flux:select.option value="">All Status</flux:select.option>
-                        <flux:select.option value="active">Active</flux:select.option>
-                        <flux:select.option value="inactive">Inactive</flux:select.option>
-                        <flux:select.option value="banned">Banned</flux:select.option>
-                    </flux:select>
-                </div>
+        {{-- Filters --}}
+        <div class="flex items-center flex-wrap gap-3 px-5 py-3 border-b ">
+            <flux:input wire:model.live.debounce.400ms="search" icon="magnifying-glass" placeholder="Search customers..."
+                class="max-w-xs" />
+
+            <div class="ms-auto flex items-center gap-3">
+                <flux:select wire:model.live="status" placeholder="All Status" class="w-36">
+                    <flux:select.option value="">All Status</flux:select.option>
+                    <flux:select.option value="active">Active</flux:select.option>
+                    <flux:select.option value="inactive">Inactive</flux:select.option>
+                    <flux:select.option value="banned">Banned</flux:select.option>
+                </flux:select>
             </div>
+        </div>
 
-            {{-- Table --}}
-            <flux:table :paginate="$this->customers">
-                <flux:table.columns>
-                    <flux:table.column class="ps-5!">ID</flux:table.column>
-                    <flux:table.column>Customer</flux:table.column>
-                    <flux:table.column>Phone</flux:table.column>
-                    <flux:table.column>Orders</flux:table.column>
-                    <flux:table.column>Amount Spent</flux:table.column>
-                    <flux:table.column>Joined</flux:table.column>
-                    <flux:table.column>Status</flux:table.column>
-                    <flux:table.column></flux:table.column>
-                </flux:table.columns>
+        {{-- Table --}}
+        <flux:table :paginate="$this->customers">
+            <flux:table.columns>
+                <flux:table.column class="ps-5!">ID</flux:table.column>
+                <flux:table.column>Customer</flux:table.column>
+                <flux:table.column>Phone</flux:table.column>
+                <flux:table.column>Orders</flux:table.column>
+                <flux:table.column>Amount Spent</flux:table.column>
+                <flux:table.column>Joined</flux:table.column>
+                <flux:table.column>Status</flux:table.column>
+                <flux:table.column></flux:table.column>
+            </flux:table.columns>
 
-                <flux:table.rows>
-                    @forelse ($this->customers as $customer)
-                        <flux:table.row :key="$customer->id">
+            <flux:table.rows>
+                @forelse ($this->customers as $customer)
+                    <flux:table.row :key="$customer->id">
 
-                            <flux:table.cell class="ps-5! text-zinc-400 text-sm">
-                                #{{ $customer->id }}
-                            </flux:table.cell>
+                        <flux:table.cell class="ps-5! text-zinc-400 text-sm">
+                            #{{ $customer->id }}
+                        </flux:table.cell>
 
-                            <flux:table.cell>
-                                <div class="flex items-center gap-3">
-                                    <div
-                                        class="size-9 rounded-full bg-zinc-200 dark:bg-zinc-700 overflow-hidden shrink-0">
-                                        @if ($customer->avatar)
-                                            <img src="{{ asset('storage/' . $customer->avatar) }}"
-                                                class="w-full h-full object-cover" alt="{{ $customer->name }}" />
-                                        @else
-                                            <div
-                                                class="w-full h-full grid place-items-center text-sm font-semibold text-zinc-600 dark:text-zinc-300">
-                                                {{ strtoupper(substr($customer->name, 0, 1)) }}
-                                            </div>
-                                        @endif
-                                    </div>
-                                    <div>
-                                        <flux:text class="text-sm font-medium">{{ $customer->name }}</flux:text>
-                                        <flux:text class="text-xs text-zinc-400">{{ $customer->email }}</flux:text>
-                                    </div>
+                        <flux:table.cell>
+                            <div class="flex items-center gap-3">
+                                <div class="shrink-0">
+                                    @if ($customer->avatar)
+                                        <flux:avatar :src="$customer->avatar" :alt="$customer->name" circle
+                                            size="sm" />
+                                    @else
+                                        <flux:avatar :name="$customer->name" circle size="sm" />
+                                    @endif
                                 </div>
-                            </flux:table.cell>
+                                <div>
+                                    <flux:text class="text-sm font-medium">{{ $customer->name }}</flux:text>
+                                    <flux:text class="text-xs text-zinc-400">{{ $customer->email }}</flux:text>
+                                </div>
+                            </div>
+                        </flux:table.cell>
 
-                            <flux:table.cell>
-                                <flux:text class="text-sm">{{ $customer->phone_number ?? '—' }}</flux:text>
-                            </flux:table.cell>
+                        <flux:table.cell>
+                            <flux:text class="text-sm">{{ $customer->phone_number ?? '—' }}</flux:text>
+                        </flux:table.cell>
 
-                            <flux:table.cell>
-                                <flux:text class="text-sm">{{ $customer->orders_count }}</flux:text>
-                            </flux:table.cell>
+                        <flux:table.cell>
+                            <flux:text class="text-sm">{{ $customer->orders_count }}</flux:text>
+                        </flux:table.cell>
 
-                            <flux:table.cell>
-                                <flux:text class="text-sm">{{ number_format($customer->amount_spent ?? 0, 2) }}
-                                </flux:text>
-                            </flux:table.cell>
+                        <flux:table.cell>
+                            <flux:text class="text-sm">{{ number_format($customer->amount_spent ?? 0, 2) }}
+                            </flux:text>
+                        </flux:table.cell>
 
-                            <flux:table.cell>
-                                <flux:text class="text-sm text-zinc-500">
-                                    {{ $customer->created_at->format('M d, Y') }}
-                                </flux:text>
-                            </flux:table.cell>
+                        <flux:table.cell>
+                            <flux:text class="text-sm text-zinc-500">
+                                {{ $customer->created_at->format('M d, Y') }}
+                            </flux:text>
+                        </flux:table.cell>
 
-                            <flux:table.cell>
-                                @php
-                                    $statusColor = match ($customer->status) {
-                                        'active' => 'green',
-                                        'banned' => 'red',
-                                        default => 'yellow',
-                                    };
-                                @endphp
-                                <flux:badge size="sm" :color="$statusColor" variant="soft" class="capitalize">
-                                    {{ $customer->status }}
-                                </flux:badge>
-                            </flux:table.cell>
+                        <flux:table.cell>
+                            @php
+                                $statusColor = match ($customer->status) {
+                                    'active' => 'green',
+                                    'banned' => 'red',
+                                    default => 'yellow',
+                                };
+                            @endphp
+                            <flux:badge size="sm" :color="$statusColor" variant="soft" class="capitalize">
+                                {{ $customer->status }}
+                            </flux:badge>
+                        </flux:table.cell>
 
-                            <flux:table.cell class="pe-4!">
-                                <div class="flex items-center justify-end gap-1">
-                                    {{-- <flux:button icon="eye" variant="ghost" size="sm" tooltip="View"
+                        <flux:table.cell class="pe-4!">
+                            <div class="flex items-center justify-end gap-1">
+                                {{-- <flux:button icon="eye" variant="ghost" size="sm" tooltip="View"
                                         :href="route('admin.customers.show', $customer->id)" wire:navigate /> --}}
 
-                                    <flux:button icon="pencil-square" variant="ghost" size="sm" tooltip="Edit"
-                                        icon-variant="outline" :href="route('admin.customers.edit', $customer->id)"
-                                        wire:navigate class="cursor-pointer" />
+                                <flux:button icon="pencil-square" variant="ghost" size="sm" tooltip="Edit"
+                                    icon-variant="outline" :href="route('admin.customers.edit', $customer->id)"
+                                    wire:navigate class="cursor-pointer" />
 
-                                    <flux:button icon="trash" variant="ghost" size="sm"
-                                        class="text-red-500! cursor-pointer" tooltip="Delete" icon-variant="outline"
-                                        wire:confirm="Are you sure? This will permanently delete {{ $customer->email }} and all related data."
-                                        wire:click="delete({{ $customer->id }})" />
+                                <flux:button icon="trash" variant="ghost" size="sm"
+                                    class="text-red-500! cursor-pointer" tooltip="Delete" icon-variant="outline"
+                                    wire:confirm="Are you sure? This will permanently delete {{ $customer->email }} and all related data."
+                                    wire:click="delete({{ $customer->id }})" />
 
-                                </div>
-                            </flux:table.cell>
+                            </div>
+                        </flux:table.cell>
 
-                        </flux:table.row>
+                    </flux:table.row>
 
-                    @empty
-                        <flux:table.row>
-                            <flux:table.cell colspan="8" class="text-center py-16">
-                                <div class="flex flex-col items-center gap-3">
-                                    <flux:icon name="users" class="size-10 text-zinc-300" />
-                                    <flux:heading size="lg" class="text-zinc-600">No Customers Found</flux:heading>
-                                    <flux:text class="text-sm text-zinc-400">
-                                        {{ $this->search || $this->status ? 'No customers match your filters.' : 'No customers have been added yet.' }}
-                                    </flux:text>
-                                </div>
-                            </flux:table.cell>
-                        </flux:table.row>
-                    @endforelse
-                </flux:table.rows>
-            </flux:table>
-        </flux:card>
-    </div>
+                @empty
+                    <flux:table.row>
+                        <flux:table.cell colspan="8" class="text-center py-16">
+                            <div class="flex flex-col items-center gap-3">
+                                <flux:icon name="users" class="size-10 text-zinc-300" />
+                                <flux:heading size="lg" class="text-zinc-600">No Customers Found</flux:heading>
+                                <flux:text class="text-sm text-zinc-400">
+                                    {{ $this->search || $this->status ? 'No customers match your filters.' : 'No customers have been added yet.' }}
+                                </flux:text>
+                            </div>
+                        </flux:table.cell>
+                    </flux:table.row>
+                @endforelse
+            </flux:table.rows>
+        </flux:table>
+    </flux:card>
+
 </div>
 
 <style>
