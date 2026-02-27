@@ -41,6 +41,18 @@ return [
         'api_secret' => env('PESAWISE_API_SECRET'),
         'balance_id_kes' => env('PESAWISE_BALANCE_ID_KES', 1102801),
         'balance_id_usd' => env('PESAWISE_BALANCE_ID_USD', 1102802),
-        'callback_base_url' => env('PESAWISE_CALLBACK_BASE_URL'), // For ngrok/tunneling
+        'callback_base_url' => env('PESAWISE_CALLBACK_BASE_URL'),
+    ],
+
+    'google' => [
+        'client_id'     => env('GOOGLE_CLIENT_ID'),
+        'client_secret' => env('GOOGLE_CLIENT_SECRET'),
+        'redirect'      => env('GOOGLE_REDIRECT_URL'),
+    ],
+
+    'facebook' => [
+        'client_id'     => env('FACEBOOK_CLIENT_ID'),
+        'client_secret' => env('FACEBOOK_CLIENT_SECRET'),
+        'redirect'      => env('FACEBOOK_REDIRECT_URL'),
     ],
 ];

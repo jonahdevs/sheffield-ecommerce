@@ -17,7 +17,8 @@ new #[Title('Order Details')] class extends Component {
     {
         $this->order = $order->load(['payment', 'user', 'statusHistories.changedBy', 'items' => ['product']]);
 
-        $this->status = $order->status->value;
+        $allowed = $order->status->allowedTransitions();
+        $this->status = !empty($allowed) ? $allowed[0]->value : '';
     }
 
     #[Computed(persist: true)]
@@ -28,21 +29,34 @@ new #[Title('Order Details')] class extends Component {
 
     public function updateStatus(): void
     {
+        if (empty($this->order->status->allowedTransitions())) {
+            $this->dispatch('notify', variant: 'danger', message: 'This order cannot be updated further.');
+            return;
+        }
+
         $this->validate([
             'status' => ['required', Rule::enum(OrdersStatus::class)],
             'note' => 'nullable|string|max:1000',
         ]);
 
+        $newStatus = OrdersStatus::from($this->status);
+
+        // Guard against invalid transitions
+        if (!$this->order->status->canTransitionTo($newStatus)) {
+            $this->addError('status', "Cannot transition from {$this->order->status->label()} to {$newStatus->label()}.");
+            return;
+        }
+
         try {
             $this->order->statusHistories()->create([
                 'from_status' => $this->order->status,
-                'to_status' => $this->status,
+                'to_status' => $newStatus,
                 'notes' => $this->note ?: null,
                 'changed_by_user_id' => auth()->id(),
                 'changed_by_type' => 'user',
             ]);
 
-            $this->order->update(['status' => $this->status]);
+            $this->order->transitionTo($newStatus); // 👈 use this instead of update()
             $this->order->refresh();
             $this->note = '';
 
@@ -56,6 +70,12 @@ new #[Title('Order Details')] class extends Component {
             ]);
             $this->dispatch('notify', variant: 'danger', message: 'Something went wrong. Please try again.');
         }
+    }
+
+    #[Computed]
+    public function allowedTransitions(): array
+    {
+        return $this->order->status->allowedTransitions();
     }
 }; ?>
 
@@ -325,8 +345,8 @@ new #[Title('Order Details')] class extends Component {
             </div>
 
             <form wire:submit="updateStatus" class="space-y-4">
-                <flux:select wire:model="status" label="Status">
-                    @foreach ($this->orderStatuses as $s)
+                <flux:select wire:model="status" label="Status" placeholder="Select Status">
+                    @foreach ($this->allowedTransitions as $s)
                         <flux:select.option :value="$s->value" class="capitalize">{{ $s->label() }}
                         </flux:select.option>
                     @endforeach
@@ -337,9 +357,10 @@ new #[Title('Order Details')] class extends Component {
 
                 <div class="flex justify-end gap-3 pt-2">
                     <flux:modal.close>
-                        <flux:button variant="ghost">Cancel</flux:button>
+                        <flux:button variant="ghost" class="cursor-pointer">Cancel</flux:button>
                     </flux:modal.close>
-                    <flux:button type="submit" variant="primary" class="min-w-36">
+                    <flux:button type="submit" variant="primary" class="min-w-36 cursor-pointer"
+                        :disabled="empty($this->allowedTransitions)">
                         Save Changes
                     </flux:button>
                 </div>

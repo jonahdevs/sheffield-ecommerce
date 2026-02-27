@@ -4,214 +4,484 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
+// Status Enum classes to create in app/Enums/:
+//
+//  LogisticsProviderStatus  → active | inactive | suspended
+//  ShippingZoneStatus       → active | inactive
+//  ShippingMethodStatus     → active | inactive | deprecated
+//  ShippingRateStatus       → active | inactive | expired
+//  VehicleRateStatus        → active | inactive | deprecated
+//  PickupStationStatus      → active | inactive | temporarily_closed
+//  ShippingRateAddonStatus  → active | inactive
+//  FreeShippingRuleStatus   → scheduled | active | expired | inactive
+//  DeliveryOrderStatus      → pending | picked_up | in_transit | out_for_delivery |
+//                             delivered | failed | at_station | collected |
+//                             returning | returned | cancelled
+
 return new class extends Migration {
     /**
      * Run the migrations.
      */
     public function up(): void
     {
-        // ===============================================
-        //  1. SHIPPING ZONES
-        //      Geographic regions that determine which rate bracket applies.
-        //      e.g. "Within Nairobi", "Outside Nairobi"
-        // ===============================================
+        // ================================================================
+        //  1. LOGISTICS PROVIDERS
+        //     Who fulfills deliveries. Starts with just one row: you.
+        //
+        //     type:
+        //       internal → you own and operate the logistics
+        //       external → third-party provider (Sendy, DHL, etc.)
+        //
+        //     Adding a new provider later = insert a row + add their
+        //     methods/rates. Nothing else in the schema changes.
+        //
+        //     Cast: LogisticsProviderStatus
+        //       active    → operating normally
+        //       inactive  → disabled, hidden from checkout
+        //       suspended → operational/billing issue; still referenced
+        //                   in historical orders but unavailable at checkout
+        // ================================================================
+
+        Schema::create('logistics_providers', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->string('code')->unique();
+            $table->enum('type', ['internal', 'external'])->default('internal');
+            $table->text('description')->nullable();
+
+            // Cast: LogisticsProviderStatus
+            $table->string('status')->default('active');
+
+            $table->timestamps();
+
+            $table->index(['status', 'type']);
+        });
+
+        // ================================================================
+        //  2. SHIPPING ZONES
+        //     Geographic regions that determine which rate bracket applies.
+        //     e.g. "Within Nairobi", "Outside Nairobi"
+        //
+        //     Cast: ShippingZoneStatus
+        //       active   → usable, shown at checkout
+        //       inactive → disabled
+        // ================================================================
 
         Schema::create('shipping_zones', function (Blueprint $table) {
             $table->id();
-            $table->string('name');                 // Nairobi CBD, Upcountry, etc.
-            $table->string('code')->unique()->nullable();      // Optional: NAI_CBD
+            $table->string('name');
+            $table->string('code')->unique()->nullable();
             $table->text('description')->nullable();
-            $table->boolean('is_active')->default(true);
+
+            // Cast: ShippingZoneStatus
+            $table->string('status')->default('active');
+
             $table->timestamps();
 
-            $table->index('is_active');
+            $table->index('status');
             $table->index('code');
         });
 
-        // ===============================================
-        //  2. COUNTIES
-        //     Kenya's 47 counties, Each belongs to a shipping zone,
-        //     which determines which rate bracket applies for deliveries going to/from that county.
-        // ===============================================
+        // ================================================================
+        //  3. COUNTIES
+        //     Kenya's 47 counties. Each belongs to a shipping zone,
+        //     which determines the rate bracket for deliveries to that county.
+        // ================================================================
 
         Schema::create('counties', function (Blueprint $table) {
             $table->id();
-            $table->string('name');                  // Nairobi, Kiambu, etc.
+            $table->string('name');
             $table->string('code')->unique()->nullable();
-            $table->foreignId('shipping_zone_id')->constrained('shipping_zones')->cascadeOnUpdate()->restrictOnDelete();
+            $table->foreignId('shipping_zone_id')
+                ->constrained('shipping_zones')
+                ->cascadeOnUpdate()
+                ->restrictOnDelete();
             $table->timestamps();
 
             $table->index('shipping_zone_id');
         });
 
-        // ===============================================
-        //  3. AREAS
+        // ================================================================
+        //  4. AREAS
         //     Towns/suburbs/estates within a county.
-        //     e.g. Westlands, Rongai, Karen (under Nairobi county)
-        // 
-        //     An area can optionally override its county's shipping zone
-        //     for more granular pricing (e.g. a border town)
-        // ===============================================
+        //     Can optionally override the county's shipping zone for
+        //     granular pricing (e.g. a border town that ships differently).
+        // ================================================================
 
         Schema::create('areas', function (Blueprint $table) {
             $table->id();
-            $table->string('name');                  // Westlands, Rongai
-            $table->foreignId('county_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
+            $table->string('name');
+            $table->foreignId('county_id')
+                ->constrained()
+                ->cascadeOnUpdate()
+                ->cascadeOnDelete();
 
-            // Optional override: if set, this area uses a different
-            // zone than its parent county (e.g. border towns).
-            $table->foreignId('shipping_zone_id')->nullable()->constrained()->cascadeOnUpdate()->restrictOnDelete();
+            // If set, this area uses a different zone than its parent county.
+            $table->foreignId('shipping_zone_id')
+                ->nullable()
+                ->constrained()
+                ->cascadeOnUpdate()
+                ->restrictOnDelete();
+
             $table->timestamps();
 
-            $table->index(['county_id', 'shipping_zone_id']);
             $table->unique(['county_id', 'name']);
+            $table->index(['county_id', 'shipping_zone_id']);
         });
 
-        // ===============================================
-        //  4. SHIPPING METHODS
-        //     The top-level delivery product offered to the customer.
+        // ================================================================
+        //  5. SHIPPING METHODS
+        //     The delivery products shown to the customer at checkout.
+        //     Now provider-aware via logistics_provider_id.
         //
-        //      `type` is the CRITICAL field - it tells the rate engine
-        //       which pricing strategy to use:
+        //     type (pricing engine selector):
+        //       flat     → weight bracket lookup    (shipping_rates)
+        //       distance → vehicle + km calculation (vehicle_rates)
+        //       pus      → flat line haul + addon   (shipping_rate_addons)
         //
-        //        flat   -> weight * zone -> shipping_rates table
-        //                  Used for: Same-Day Consolidated, PUS line haul
-        //
-        //         distance -> vehicle + km -> vehicle_rates table
-        //                     Used for: On-Demand Deliveries
-        //
-        //         pus       -> flat line haul + addon -> shipping_rate_addons
-        //                       Used for: Pickup Station / Last-Mile Hubs
-        //
-        //         `delivery_time_unit` lets Same-Day express its 8-hour
-        //          window properly instead of rounding up to "1 day".
-        // ===============================================
+        //     Cast: ShippingMethodStatus
+        //       active     → available at checkout
+        //       inactive   → hidden from checkout
+        //       deprecated → no longer selectable, but old orders still
+        //                    reference it — do not delete
+        // ================================================================
 
         Schema::create('shipping_methods', function (Blueprint $table) {
             $table->id();
-            $table->string('name');                 // "Same-Day Delivery", "On-Demand", "Pickup Station"
-            $table->string('code')->unique();       // same_day, on_demand, pus
 
-            /**
-             * Pricing engine selector
-             * flat     = weight-bracket price lookup (shipping_rates)
-             * distance = base rate * extra KM calculation (vehicle_rates)
-             * pus      = flat line haul + PUS surcharge stacked on top
-             */
+            $table->foreignId('logistics_provider_id')
+                ->constrained('logistics_providers')
+                ->cascadeOnUpdate()
+                ->restrictOnDelete();
+
+            $table->string('name');
+            $table->string('code')->unique();
+
             $table->enum('type', ['flat', 'distance', 'pus'])->default('flat');
 
-            /**
-             * Whether this method can be used for return shipments.
-             * Cossim charges returns "as forward logistics" — same rate
-             * engine fires, we just flag the direction.
-             */
             $table->boolean('supports_returns')->default(false);
 
-            /**
-             * hours → Same-Day (8 hours)
-             * days  → Standard multi-day delivery
-             */
+            // hours → Same-Day (e.g. 8 hours)
+            // days  → Standard multi-day
             $table->enum('delivery_time_unit', ['hours', 'days'])->default('days');
 
             $table->text('description')->nullable();
-            $table->string('icon')->nullable();     // For UI (truck, bolt, store)
+            $table->string('icon')->nullable();
             $table->integer('sort_order')->default(0);
-            $table->boolean('is_active')->default(true);
+
+            // Cast: ShippingMethodStatus
+            $table->string('status')->default('active');
+
             $table->timestamps();
 
-            $table->index('is_active');
+            $table->index(['status', 'type']);
+            $table->index('logistics_provider_id');
             $table->index('code');
-            $table->index('type');
         });
 
-        // ===============================================
-        //  5. SHIPPING RATES
-        //      Weight-bracket * zone pricing for flat-type methods
+        // ================================================================
+        //  6. SHIPPING RATES
+        //     Weight-bracket × zone pricing for flat and pus methods.
         //
-        //      Covers Cossim's Same-Day Consolidated model:
-        //
-        //       Zone           | Small  | Medium | Large  | XL
-        //       Within Nairobi | 400    | 800    | 1,200  | 1,800
-        //       Outside Nairobi| 600    | 1,200  | 1,800  | 2,700
+        //     Zone           | Small  | Medium | Large  | XL
+        //     Within Nairobi | 400    | 800    | 1,200  | 1,800
+        //     Outside Nairobi| 600    | 1,200  | 1,800  | 2,700
         //
         //     Also used as the LINE HAUL component of PUS pricing.
-        //     The PUS surcharge is stored separately in shipping_rate_addons.
+        //     The PUS surcharge stacks on top via shipping_rate_addons.
         //
-        //     `estimated_time_min/max` works in HOURS when the parent
-        //     shipping_method.delivery_time_unit = 'hours', otherwise days.
-        // ===============================================
+        //     estimated_days_min/max works in hours when
+        //     shipping_methods.delivery_time_unit = 'hours', otherwise days.
+        //
+        //     Cast: ShippingRateStatus
+        //       active   → current rate, used for new orders
+        //       inactive → disabled manually
+        //       expired  → superseded by a newer rate; kept for
+        //                  historical order reference — do not delete
+        // ================================================================
 
         Schema::create('shipping_rates', function (Blueprint $table) {
             $table->id();
 
-            $table->foreignId('shipping_zone_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
-            $table->foreignId('shipping_method_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
+            $table->foreignId('shipping_zone_id')
+                ->constrained()
+                ->cascadeOnUpdate()
+                ->cascadeOnDelete();
 
-            // Weight bracket boundaries (in KG)
-            $table->decimal('min_weight', 8, 2);            // e.g. 0.00
-            $table->decimal('max_weight', 8, 2)->nullable(); // null = no upper limit (XL tier)
+            $table->foreignId('shipping_method_id')
+                ->constrained()
+                ->cascadeOnUpdate()
+                ->cascadeOnDelete();
 
-            /**
-             * Human-readable label for this weight tier.
-             * Displayed in the checkout UI and invoices.
-             * e.g. "Small (0 - 5 Kgs)", "Extra Large (Above 60.1 Kgs)"
-             */
+            $table->decimal('min_weight', 8, 2);
+            $table->decimal('max_weight', 8, 2)->nullable();    // null = no upper limit (XL tier)
+
+            // Human-readable label shown at checkout and on invoices.
+            // e.g. "Small (0 – 5 Kgs)", "Extra Large (Above 60.1 Kgs)"
             $table->string('weight_label')->nullable();
 
-            // Base price for this zone + method + weight combination
-            $table->decimal('price', 10, 2);                // e.g. 1200.00
+            $table->decimal('price', 10, 2);
 
-            /**
-             * Delivery window in hours or days depending on
-             * shipping_methods.delivery_time_unit.
-             * e.g. Same-Day: min=6, max=8 (hours)
-             *      Standard:  min=1, max=3 (days)
-             */
+            // Works in hours or days depending on the method's delivery_time_unit
             $table->integer('estimated_days_min')->nullable();
             $table->integer('estimated_days_max')->nullable();
 
-            $table->boolean('is_active')->default(true);
+            // Cast: ShippingRateStatus
+            $table->string('status')->default('active');
+
             $table->timestamps();
 
-            // No overlapping brackets per zone + method
             $table->unique(
                 ['shipping_zone_id', 'shipping_method_id', 'min_weight', 'max_weight'],
                 'zone_method_weight_unique'
             );
-
-            $table->index(['shipping_zone_id', 'shipping_method_id', 'is_active'], 'idx_shipping_rates_zone_method_active');
+            $table->index(
+                ['shipping_zone_id', 'shipping_method_id', 'status'],
+                'idx_rates_zone_method_status'
+            );
         });
 
         // ================================================================
-        //  6. ADDRESSES
-        //     Customer delivery addresses with a snapshot of the
-        //     shipping selection at the time of save.
+        //  7. VEHICLE RATES
+        //     Powers the On-Demand pricing engine.
+        //     Price = base_rate + max(0, actual_km − base_km) × extra_km_rate
         //
-        //     Storing the zone, method, and rate as FKs means you can
-        //     recalculate or audit without re-deriving from county/area.
+        //     Vehicle    | Base Rate | Base KM | Extra KM Rate | Max Weight
+        //     Motorbike  | 800       | 30      | 40            | 5 kg
+        //     Van        | 7,500     | 50      | 70            | 1,000 kg
+        //     3T Truck   | 8,500     | 50      | 70            | 3,000 kg
+        //     5T Truck   | 10,000    | 50      | 90            | 5,000 kg
+        //     7T Truck   | 12,000    | 50      | 90            | 7,000 kg
+        //     10T Truck  | 15,000    | 50      | 90            | 10,000 kg
+        //
+        //     actual_km comes from Google Maps Distance Matrix API at checkout.
+        //
+        //     Cast: VehicleRateStatus
+        //       active     → available for selection
+        //       inactive   → hidden from checkout
+        //       deprecated → no longer selectable, kept for historical orders
+        // ================================================================
+
+        Schema::create('vehicle_rates', function (Blueprint $table) {
+            $table->id();
+
+            $table->foreignId('shipping_method_id')
+                ->constrained()
+                ->cascadeOnUpdate()
+                ->cascadeOnDelete();
+
+            $table->string('vehicle_type');         // Cast: VehicleType enum
+            $table->string('vehicle_label');        // "Motor Bike", "3T Truck" (for UI)
+
+            $table->decimal('base_rate', 10, 2);
+            $table->integer('base_km');
+            $table->decimal('extra_km_rate', 10, 2);
+
+            $table->decimal('max_weight_kg', 8, 2)->nullable();
+            $table->decimal('max_volume_m3', 8, 3)->nullable();
+
+            // Cast: VehicleRateStatus
+            $table->string('status')->default('active');
+
+            $table->timestamps();
+
+            $table->unique(['shipping_method_id', 'vehicle_type']);
+            $table->index(['shipping_method_id', 'status']);
+        });
+
+        // ================================================================
+        //  8. PICKUP STATIONS
+        //     Physical collection points for the PUS model.
+        //     Customers collect within holding_days (default 7).
+        //     Now provider-aware: a station is operated by a provider.
+        //
+        //     Cast: PickupStationStatus
+        //       active            → open and accepting parcels
+        //       inactive          → permanently closed / removed
+        //       temporarily_closed → short-term closure (holiday, renovation)
+        //                           parcels are not routed here until re-opened
+        // ================================================================
+
+        Schema::create('pickup_stations', function (Blueprint $table) {
+            $table->id();
+
+            $table->foreignId('logistics_provider_id')
+                ->constrained('logistics_providers')
+                ->cascadeOnUpdate()
+                ->restrictOnDelete();
+
+            $table->string('name');
+            $table->string('code')->unique();
+
+            $table->foreignId('county_id')
+                ->constrained()
+                ->restrictOnDelete();
+
+            $table->foreignId('area_id')
+                ->nullable()
+                ->constrained()
+                ->nullOnDelete();
+
+            $table->text('address');
+            $table->string('phone')->nullable();
+            $table->text('operating_hours')->nullable();
+
+            $table->decimal('latitude', 10, 7)->nullable();
+            $table->decimal('longitude', 10, 7)->nullable();
+
+            $table->integer('holding_days')->default(7);
+
+            // Cast: PickupStationStatus
+            $table->string('status')->default('active');
+
+            $table->timestamps();
+
+            $table->index(['logistics_provider_id', 'status']);
+            $table->index(['county_id', 'status']);
+            $table->index(['area_id', 'status']);
+        });
+
+        // ================================================================
+        //  9. SHIPPING RATE ADDONS
+        //     Rate stacking for the PUS model:
+        //       Total PUS cost = line haul (shipping_rates.price)
+        //                      + surcharge (this table)
+        //
+        //     PUS surcharges:
+        //       Small  (0–5 kg)      → 100
+        //       Medium (5.1–20 kg)   → 200
+        //       Large  (20.1–60 kg)  → 300
+        //       XL     (60.1+ kg)    → 400
+        //
+        //     addon_type is extensible — future surcharges (fuel,
+        //     remote area) can be added without any schema changes.
+        //
+        //     Cast: ShippingRateAddonStatus
+        //       active   → applied at checkout
+        //       inactive → disabled
+        // ================================================================
+
+        Schema::create('shipping_rate_addons', function (Blueprint $table) {
+            $table->id();
+
+            $table->foreignId('shipping_rate_id')
+                ->constrained('shipping_rates')
+                ->cascadeOnUpdate()
+                ->cascadeOnDelete();
+
+            // Cast: AddonType enum
+            // pus | fuel_surcharge | remote_area
+            $table->string('addon_type')->default('pus');
+
+            $table->string('label')->nullable();
+            $table->decimal('addon_amount', 10, 2);
+
+            // NULL = applies to ALL stations for this rate
+            // SET  = station-specific surcharge
+            $table->foreignId('pickup_station_id')
+                ->nullable()
+                ->constrained('pickup_stations')
+                ->nullOnDelete();
+
+            // Cast: ShippingRateAddonStatus
+            $table->string('status')->default('active');
+
+            $table->timestamps();
+
+            $table->index(['shipping_rate_id', 'addon_type', 'status']);
+            $table->index(['pickup_station_id', 'addon_type']);
+        });
+
+        // ================================================================
+        //  10. FREE SHIPPING RULES
+        //      Promotional free shipping thresholds.
+        //      e.g. "Spend KES 5,000+ → free standard delivery"
+        //
+        //      Scoped to a zone and/or method (null = applies to all).
+        //      Lifecycle driven by starts_at / ends_at — a scheduled
+        //      job transitions status automatically:
+        //        scheduled → active (when starts_at is reached)
+        //        active    → expired (when ends_at is passed)
+        //
+        //      Cast: FreeShippingRuleStatus
+        //        scheduled → created but start date not yet reached
+        //        active    → currently applying at checkout
+        //        expired   → end date passed, kept for reporting
+        //        inactive  → manually disabled
+        // ================================================================
+
+        Schema::create('free_shipping_rules', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+
+            $table->foreignId('shipping_zone_id')
+                ->nullable()
+                ->constrained()
+                ->cascadeOnUpdate()
+                ->cascadeOnDelete();
+
+            $table->foreignId('shipping_method_id')
+                ->nullable()
+                ->constrained()
+                ->cascadeOnUpdate()
+                ->cascadeOnDelete();
+
+            $table->decimal('min_order_amount', 10, 2);
+            $table->decimal('max_weight', 8, 2)->nullable();
+
+            $table->timestamp('starts_at')->nullable();
+            $table->timestamp('ends_at')->nullable();
+
+            // Cast: FreeShippingRuleStatus
+            $table->string('status')->default('inactive');
+
+            $table->timestamps();
+
+            $table->index(['status', 'starts_at', 'ends_at']);
+            $table->index(['shipping_zone_id', 'status']);
+            $table->index(['shipping_method_id', 'status']);
+        });
+
+        // ================================================================
+        //  11. ADDRESSES
+        //     Customer delivery addresses.
+        //     Stores the resolved shipping zone so we don't have to
+        //     re-derive it from county/area on every order.
+        //
+        //     NOTE: We no longer snapshot selected_shipping_method_id or
+        //     selected_shipping_rate_id here — those belong on the order,
+        //     not the address. An address is just a location.
         // ================================================================
 
         Schema::create('addresses', function (Blueprint $table) {
             $table->id();
 
-            $table->foreignId('user_id')->nullable()->constrained()->cascadeOnDelete();
+            $table->foreignId('user_id')
+                ->nullable()
+                ->constrained()
+                ->cascadeOnDelete();
 
             $table->string('first_name');
             $table->string('last_name');
             $table->string('phone_number');
             $table->string('alternative_phone_number')->nullable();
 
-            $table->foreignId('county_id')->constrained()->restrictOnDelete();
-            $table->foreignId('area_id')->nullable()->constrained()->nullOnDelete();
+            $table->foreignId('county_id')
+                ->constrained()
+                ->restrictOnDelete();
+
+            $table->foreignId('area_id')
+                ->nullable()
+                ->constrained()
+                ->nullOnDelete();
 
             $table->text('address');
             $table->text('additional_information')->nullable();
 
-            // Derived/snapshotted at address creation
-            $table->foreignId('shipping_zone_id')->constrained()->restrictOnDelete();
-
-            $table->foreignId('selected_shipping_method_id')->nullable()->constrained('shipping_methods')->nullOnDelete();
-            $table->foreignId('selected_shipping_rate_id')->nullable()->constrained('shipping_rates')->nullOnDelete();
+            // Resolved at save time from area override or county zone.
+            $table->foreignId('shipping_zone_id')
+                ->constrained()
+                ->restrictOnDelete();
 
             $table->boolean('is_default')->default(false);
 
@@ -221,274 +491,73 @@ return new class extends Migration {
             $table->index(['county_id', 'area_id']);
             $table->index('shipping_zone_id');
             $table->index(['user_id', 'is_default']);
-            $table->index('selected_shipping_method_id');
         });
 
         // ================================================================
-        //  7. PICKUP STATIONS
-        //     Physical collection points for the PUS (Pickup Station
-        //     Services) / Decentralized Last-Mile Hub model.
+        //  12. DELIVERY ORDERS
+        //     Audit trail for every delivery in the system.
+        //     Now provider-aware and leaner — no nullable god-columns.
         //
-        //     Customers collect within 7 days.
-        //     Coordinates allow map display in the UI.
-        // ================================================================
-        Schema::create('pickup_stations', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');                 // "Westlands Station"
-            $table->string('code')->unique();         // westlands-station
-
-            $table->foreignId('county_id')->constrained()->restrictOnDelete();
-            $table->foreignId('area_id')->nullable()->constrained()->nullOnDelete();
-
-            $table->text('address');
-            $table->string('phone')->nullable();
-
-            /**
-             * e.g. "Mon-Fri 8am-6pm, Sat 9am-2pm"
-             * Stored as text for flexibility — can be parsed/displayed as needed.
-             */
-            $table->text('operating_hours')->nullable();
-
-            // For map display and distance calculation
-            $table->decimal('latitude', 10, 7)->nullable();
-            $table->decimal('longitude', 10, 7)->nullable();
-
-            /**
-             * Max days the station holds a parcel before returning it.
-             * Cossim's default is 7 days.
-             */
-            $table->integer('holding_days')->default(7);
-
-            $table->boolean('is_active')->default(true);
-            $table->timestamps();
-
-            $table->index(['county_id', 'is_active']);
-            $table->index(['area_id', 'is_active']);
-        });
-
-
-        // ================================================================
-        //  8. VEHICLE RATES
-        //     Powers the On-Demand delivery pricing engine.
+        //     cost_breakdown JSON carries all the model-specific detail:
         //
-        //     This is NOT weight-based — it's a vehicle hire model:
-        //       price = base_rate + max(0, actual_km - base_km) × extra_km_rate
+        //     Same-Day / Flat:
+        //     {
+        //       "model": "flat",
+        //       "weight_kg": 12,
+        //       "weight_tier": "Medium (5.1–20 Kgs)",
+        //       "zone": "Within Nairobi",
+        //       "line_haul": 800,
+        //       "total": 800
+        //     }
         //
-        //     Cossim's rates:
-        //       Vehicle    | Base Rate | Base KM | Extra KM Rate
-        //       Motorbike  | 800       | 30      | 40
-        //       Van        | 7,500     | 50      | 70
-        //       3T Truck   | 8,500     | 50      | 70
-        //       5T Truck   | 10,000    | 50      | 90
-        //       7T Truck   | 12,000    | 50      | 90
-        //       10T Truck  | 15,000    | 50      | 90
+        //     On-Demand:
+        //     {
+        //       "model": "distance",
+        //       "vehicle": "3T Truck",
+        //       "distance_km": 70,
+        //       "base_km": 50,
+        //       "base_rate": 8500,
+        //       "extra_km": 20,
+        //       "extra_km_rate": 70,
+        //       "extra_km_cost": 1400,
+        //       "total": 9900
+        //     }
         //
-        //     actual_km comes from Google Maps Distance Matrix API at checkout.
-        // ================================================================
-        Schema::create('vehicle_rates', function (Blueprint $table) {
-            $table->id();
-
-            $table->foreignId('shipping_method_id')
-                ->constrained()
-                ->cascadeOnUpdate()
-                ->cascadeOnDelete();
-
-            /**
-             * Enum keeps vehicle types consistent across the system.
-             * Extending: add new enum values + seed new rows.
-             */
-            $table->enum('vehicle_type', [
-                'motorbike',
-                'van',
-                'truck_3t',
-                'truck_5t',
-                'truck_7t',
-                'truck_10t',
-            ]);
-
-            $table->string('vehicle_label');                // "Motor Bike", "3T Truck" (for UI)
-
-            $table->decimal('base_rate', 10, 2);            // e.g. 8500.00
-            $table->integer('base_km');                     // KMs included in base rate e.g. 50
-            $table->decimal('extra_km_rate', 10, 2);        // Per KM beyond base_km e.g. 70.00
-
-            /**
-             * Suggested max cargo weight for this vehicle.
-             * Used to auto-suggest the right vehicle at checkout.
-             * e.g. Motorbike = 5kg, 3T Truck = 3000kg
-             */
-            $table->decimal('max_weight_kg', 8, 2)->nullable();
-
-            /**
-             * Suggested max cargo volume in cubic metres.
-             * Optional — for future volumetric pricing support.
-             */
-            $table->decimal('max_volume_m3', 8, 3)->nullable();
-
-            $table->boolean('is_active')->default(true);
-            $table->timestamps();
-
-            $table->unique(['shipping_method_id', 'vehicle_type']);
-            $table->index(['shipping_method_id', 'is_active']);
-        });
-
-
-        // ================================================================
-        //  9. SHIPPING RATE ADDONS
-        //     Enables rate stacking for the PUS model:
-        //       Total PUS cost = Line Haul (shipping_rates.price)
-        //                      + PUS Surcharge (this table)
+        //     PUS:
+        //     {
+        //       "model": "pus",
+        //       "weight_kg": 25,
+        //       "weight_tier": "Large (20.1–60 Kgs)",
+        //       "zone": "Outside Nairobi",
+        //       "line_haul": 1800,
+        //       "pus_surcharge": 300,
+        //       "station": "Westlands Station",
+        //       "total": 2100
+        //     }
         //
-        //     Cossim's PUS surcharges:
-        //       Small (0-5kg)        → 100
-        //       Medium (5.1-20kg)    → 200
-        //       Large (20.1-60kg)    → 300
-        //       Extra Large (60.1+)  → 400
-        //
-        //     The addon links to the specific shipping_rate row so
-        //     we know exactly which weight tier + zone it applies to.
-        //
-        //     addon_type is extensible — future surcharges like
-        //     fuel or remote area fees can be added without schema changes.
-        // ================================================================
-
-        Schema::create('shipping_rate_addons', function (Blueprint $table) {
-            $table->id();
-
-            /**
-             * The base line haul rate this addon stacks on top of.
-             * Deleting a rate cascades to remove its addons.
-             */
-            $table->foreignId('shipping_rate_id')
-                ->constrained('shipping_rates')
-                ->cascadeOnUpdate()
-                ->cascadeOnDelete();
-
-            $table->enum('addon_type', [
-                'pus',              // Pickup Station surcharge
-                'fuel_surcharge',   // Future: dynamic fuel levy
-                'remote_area',      // Future: hard-to-reach locations
-            ])->default('pus');
-
-            $table->string('label')->nullable();             // "Pickup Station Surcharge"
-            $table->decimal('addon_amount', 10, 2);          // e.g. 300.00
-
-            /**
-             * Optional: pin this addon to a specific pickup station.
-             * NULL = addon applies to ALL stations for this rate.
-             * SET  = station-specific surcharge (e.g. remote stations cost more).
-             */
-            $table->foreignId('pickup_station_id')
-                ->nullable()
-                ->constrained('pickup_stations')
-                ->nullOnDelete();
-
-            $table->boolean('is_active')->default(true);
-            $table->timestamps();
-
-            $table->index(['shipping_rate_id', 'addon_type', 'is_active']);
-            $table->index(['pickup_station_id', 'addon_type']);
-        });
-
-
-        // ================================================================
-        //  10. FREE SHIPPING RULES
-        //      Promotional free shipping thresholds.
-        //      e.g. "Spend KES 5,000+ and get free standard delivery"
-        //
-        //      Can be scoped to a specific zone and/or method.
-        //      Can be scheduled with start/end timestamps.
-        // ================================================================
-
-        Schema::create('free_shipping_rules', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');                         // "Christmas Promo 2024"
-
-            // Scope: null = rule applies to all zones/methods
-            $table->foreignId('shipping_zone_id')
-                ->nullable()
-                ->constrained()
-                ->cascadeOnUpdate()
-                ->cascadeOnDelete();
-
-            $table->foreignId('shipping_method_id')
-                ->nullable()
-                ->constrained()
-                ->cascadeOnUpdate()
-                ->cascadeOnDelete();
-
-            $table->decimal('min_order_amount', 10, 2);     // e.g. 5000.00
-            $table->decimal('max_weight', 8, 2)->nullable(); // Weight ceiling for free shipping
-
-            $table->boolean('is_active')->default(true);
-            $table->timestamp('starts_at')->nullable();
-            $table->timestamp('ends_at')->nullable();
-            $table->timestamps();
-
-            $table->index(['is_active', 'starts_at', 'ends_at']);
-            $table->index(['shipping_zone_id', 'is_active']);
-            $table->index(['shipping_method_id', 'is_active']);
-        });
-
-        // ================================================================
-        //  11. DELIVERY ORDERS
-        //      The audit trail for every delivery raised in the system.
-        //
-        //      Captures the full cost breakdown per model so you can
-        //      always reconstruct how a price was calculated, even if
-        //      rates change later.
-        //
-        //      Supports reverse logistics via `is_return` flag.
-        //      Cossim charges returns "as forward logistics" — same
-        //      rate engine, opposite direction.
-        //
-        //      cost_breakdown JSON examples:
-        //
-        //      Same-Day Consolidated:
-        //      {
-        //        "model": "flat",
-        //        "weight_kg": 12,
-        //        "weight_tier": "Medium (5.1-20 Kgs)",
-        //        "zone": "Within Nairobi",
-        //        "line_haul": 800,
-        //        "total": 800
-        //      }
-        //
-        //      On-Demand:
-        //      {
-        //        "model": "distance",
-        //        "vehicle": "3T Truck",
-        //        "distance_km": 70,
-        //        "base_km": 50,
-        //        "base_rate": 8500,
-        //        "extra_km": 20,
-        //        "extra_km_rate": 70,
-        //        "extra_km_cost": 1400,
-        //        "total": 9900
-        //      }
-        //
-        //      PUS:
-        //      {
-        //        "model": "pus",
-        //        "weight_kg": 25,
-        //        "weight_tier": "Large (20.1-60 Kgs)",
-        //        "zone": "Outside Nairobi",
-        //        "line_haul": 1800,
-        //        "pus_surcharge": 300,
-        //        "station": "Westlands Station",
-        //        "total": 2100
-        //      }
+        //     Cast: DeliveryOrderStatus
+        //       pending          → received, not yet collected
+        //       picked_up        → collected from sender
+        //       in_transit       → en route to hub or destination
+        //       out_for_delivery → with last-mile rider/driver
+        //       delivered        → successfully delivered
+        //       failed           → delivery attempt failed
+        //       at_station       → arrived at PUS station, awaiting collection
+        //       collected        → customer collected from PUS station
+        //       returning        → failed delivery being returned to sender
+        //       returned         → back with sender
+        //       cancelled        → cancelled before pickup
         // ================================================================
 
         Schema::create('delivery_orders', function (Blueprint $table) {
             $table->id();
 
-            /**
-             * Adjust FK to match your orders table name.
-             * Uncomment the constrained() line when orders table exists.
-             */
+            // Update to ->constrained('orders') when your orders table exists
             $table->unsignedBigInteger('order_id');
-            // ->constrained('orders')->cascadeOnDelete();
+
+            $table->foreignId('logistics_provider_id')
+                ->constrained('logistics_providers')
+                ->restrictOnDelete();
 
             $table->foreignId('shipping_method_id')
                 ->constrained('shipping_methods')
@@ -498,90 +567,78 @@ return new class extends Migration {
                 ->constrained('shipping_zones')
                 ->restrictOnDelete();
 
-            // ── Flat / PUS method fields ───────────────────────────────
-            $table->foreignId('shipping_rate_id')
+            // -- Rate references (one will be set depending on method type) --
+            // These are nullable by design: cost_breakdown JSON is the source
+            // of truth. These FKs exist for querying and reporting.
+
+            $table->foreignId('shipping_rate_id')      // flat + pus
                 ->nullable()
                 ->constrained('shipping_rates')
                 ->nullOnDelete();
 
-            // ── On-Demand method fields ────────────────────────────────
-            $table->foreignId('vehicle_rate_id')
+            $table->foreignId('vehicle_rate_id')       // distance / on-demand
                 ->nullable()
                 ->constrained('vehicle_rates')
                 ->nullOnDelete();
 
-            /**
-             * Actual trip distance retrieved from Google Maps API.
-             * Used to calculate extra KM charges for On-Demand.
-             */
-            $table->decimal('distance_km', 8, 2)->nullable();
-
-            // ── PUS method fields ──────────────────────────────────────
-            $table->foreignId('pickup_station_id')
+            $table->foreignId('pickup_station_id')     // pus
                 ->nullable()
                 ->constrained('pickup_stations')
                 ->nullOnDelete();
 
-            // ── Common fields ──────────────────────────────────────────
+            // Actual distance from Google Maps (on-demand only)
+            $table->decimal('distance_km', 8, 2)->nullable();
 
-            /**
-             * Full itemised cost breakdown stored as JSON.
-             * See docblock above for format per delivery model.
-             * This is the source of truth for invoicing.
-             */
+            // -- Costing --
+
+            // Full itemised breakdown — source of truth for invoicing
             $table->json('cost_breakdown')->nullable();
 
-            $table->decimal('shipping_cost', 10, 2);         // Final price charged
+            $table->decimal('shipping_cost', 10, 2);
             $table->decimal('package_weight_kg', 8, 2)->nullable();
 
-            /**
-             * true  = reverse logistics (customer returning to seller)
-             * false = forward delivery (seller to customer)
-             *
-             * Cossim charges returns "as forward logistics",
-             * so the same rate engine applies either way.
-             */
+            // -- Logistics flags --
+
+            // true = reverse logistics (customer → seller)
+            // Cossim charges returns same as forward, so the same
+            // rate engine fires either way.
             $table->boolean('is_return')->default(false);
 
-            $table->enum('status', [
-                'pending',           // Order received, not yet collected
-                'picked_up',         // Collected from sender
-                'in_transit',        // En route to hub or destination
-                'out_for_delivery',  // With last-mile rider/driver
-                'delivered',         // Successfully delivered
-                'failed',            // Delivery attempt failed
-                'at_station',        // Arrived at PUS station (awaiting collection)
-                'collected',         // Customer collected from PUS station
-                'returning',         // Failed delivery being returned to sender
-                'returned',          // Returned to sender
-                'cancelled',         // Order cancelled before pickup
-            ])->default('pending');
+            // For external providers: their job/tracking reference
+            $table->string('provider_reference')->nullable();
 
-            /**
-             * Calculated at order creation from the shipping method's
-             * estimated_time_min/max and current dispatch time.
-             */
+            // Cast: DeliveryOrderStatus
+            $table->string('status')->default('pending');
+
+            // -- Timestamps --
+
             $table->timestamp('estimated_delivery_at')->nullable();
             $table->timestamp('delivered_at')->nullable();
 
-            /**
-             * For PUS: deadline before station returns the parcel.
-             * Typically: delivered_at + pickup_stations.holding_days
-             */
+            // PUS: deadline before the station returns the parcel
+            // Typically: delivered_at + pickup_stations.holding_days
             $table->timestamp('collection_deadline_at')->nullable();
 
             $table->timestamps();
 
             $table->index('order_id');
+            $table->index('logistics_provider_id');
             $table->index(['shipping_method_id', 'status']);
             $table->index(['is_return', 'status']);
             $table->index('status');
             $table->index('pickup_station_id');
+            $table->index('provider_reference');
         });
 
+        // ================================================================
+        //  Add preferred shipping method to users
+        // ================================================================
 
         Schema::table('users', function (Blueprint $table) {
-            $table->foreignId('preferred_shipping_method_id')->nullable()->constrained('shipping_methods');
+            $table->foreignId('preferred_shipping_method_id')
+                ->nullable()
+                ->constrained('shipping_methods')
+                ->nullOnDelete();
         });
     }
 
@@ -591,19 +648,21 @@ return new class extends Migration {
     public function down(): void
     {
         Schema::table('users', function (Blueprint $table) {
+            $table->dropForeign(['preferred_shipping_method_id']);
             $table->dropColumn('preferred_shipping_method_id');
         });
 
         Schema::dropIfExists('delivery_orders');
+        Schema::dropIfExists('addresses');
         Schema::dropIfExists('free_shipping_rules');
         Schema::dropIfExists('shipping_rate_addons');
-        Schema::dropIfExists('vehicle_rates');
         Schema::dropIfExists('pickup_stations');
-        Schema::dropIfExists('addresses');
+        Schema::dropIfExists('vehicle_rates');
         Schema::dropIfExists('shipping_rates');
         Schema::dropIfExists('shipping_methods');
         Schema::dropIfExists('areas');
         Schema::dropIfExists('counties');
         Schema::dropIfExists('shipping_zones');
+        Schema::dropIfExists('logistics_providers');
     }
 };

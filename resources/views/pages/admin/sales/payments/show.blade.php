@@ -13,14 +13,9 @@ new class extends Component {
 
     public function mount(Payment $payment)
     {
-        $this->payment = $payment->load(['order', 'order.user', 'order.items']);
+        \Log::info('Payment: ' . $payment);
+        $this->payment = $payment->load(['order' => ['user', 'items']]);
         $this->refundAmount = $this->payment->amount;
-    }
-
-    #[Computed]
-    public function title()
-    {
-        return 'Payment Details';
     }
 
     public function openRefundModal()
@@ -94,13 +89,9 @@ new class extends Component {
         <flux:breadcrumbs.item>Details</flux:breadcrumbs.item>
     </flux:breadcrumbs>
 
-    <flux:header>
-        <flux:heading size="xl">{{ $this->title }}</flux:heading>
-
-        <flux:button variant="ghost" href="{{ route('admin.payments.index') }}" icon="arrow-left" wire:navigate>
-            Back to Payments
-        </flux:button>
-    </flux:header>
+    <div>
+        <flux:heading size="xl">Payment Details</flux:heading>
+    </div>
 
     {{-- Flash Messages --}}
     @if (session('status'))
@@ -119,10 +110,12 @@ new class extends Component {
         {{-- Main Content --}}
         <div class="lg:col-span-2 space-y-6">
             {{-- Payment Details Card --}}
-            <flux:card>
-                <flux:heading size="lg" class="mb-4">Payment Information</flux:heading>
+            <flux:card class="p-0">
+                <div class="px-5 py-3 border-b">
+                    <flux:heading>Payment Information</flux:heading>
+                </div>
 
-                <div class="grid grid-cols-2 gap-6">
+                <div class="grid grid-cols-2 gap-6 p-5">
                     <div>
                         <div class="text-xs text-zinc-500 mb-1">Transaction ID</div>
                         <div class="font-mono text-sm text-zinc-800 dark:text-white break-all">
@@ -139,16 +132,8 @@ new class extends Component {
 
                     <div>
                         <div class="text-xs text-zinc-500 mb-1">Status</div>
-                        <flux:badge size="lg" variant="flat"
-                            :color="match($payment->status) {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            'pending' => 'amber',
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            'processing' => 'blue',
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            'completed' => 'green',
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            'failed' => 'red',
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            'refunded' => 'purple',
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            default => 'gray',
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        }">
-                            {{ ucfirst($payment->status) }}
+                        <flux:badge size="lg" variant="flat" :color="$payment->status->color()">
+                            {{ $payment->status->label() }}
                         </flux:badge>
                     </div>
 
@@ -241,16 +226,8 @@ new class extends Component {
                             </div>
                         </div>
 
-                        <flux:badge size="sm" variant="flat"
-                            :color="match($payment->order->status) {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            'pending' => 'amber',
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            'processing' => 'blue',
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            'shipped' => 'indigo',
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            'delivered' => 'green',
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            'cancelled' => 'red',
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            default => 'gray',
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        }">
-                            {{ ucfirst($payment->order->status) }}
+                        <flux:badge size="sm" variant="flat" :color="$payment->order->status->color()">
+                            {{ $payment->order->status->label() }}
                         </flux:badge>
                     </div>
 
@@ -259,7 +236,7 @@ new class extends Component {
                     <div class="space-y-3">
                         @foreach ($payment->order->items->take(3) as $item)
                             <div class="flex items-center gap-3 text-sm">
-                                <div class="w-10 h-10 rounded border bg-zinc-50 overflow-hidden flex-shrink-0">
+                                <div class="w-10 h-10 rounded border bg-zinc-50 overflow-hidden shrink-0">
                                     @if ($item->product?->image_path)
                                         <img src="{{ $item->product->image_url }}" class="object-cover w-full h-full">
                                     @else

@@ -42,4 +42,22 @@ enum OrdersStatus: string
             self::RETURNED => 'rotate-ccw',
         };
     }
+
+    public function canTransitionTo(self $new): bool
+    {
+        return in_array($new, $this->allowedTransitions());
+    }
+
+    public function allowedTransitions(): array
+    {
+        return match ($this) {
+            self::PENDING    => [self::CONFIRMED, self::CANCELLED],
+            self::CONFIRMED  => [self::PROCESSING, self::CANCELLED],
+            self::PROCESSING => [self::SHIPPED, self::CANCELLED],
+            self::SHIPPED    => [self::DELIVERED, self::RETURNED],
+            self::DELIVERED  => [self::RETURNED],
+            self::CANCELLED  => [],
+            self::RETURNED   => [],
+        };
+    }
 }

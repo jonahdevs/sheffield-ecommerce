@@ -21,6 +21,11 @@ return new class extends Migration {
                 $table->string('status')->default('active');
                 $table->string('status_reason')->nullable();
                 $table->timestamp('suspended_until')->nullable();
+
+                $table->string('provider')->nullable()->after('email');
+                $table->string('provider_id')->nullable()->after('provider');
+                $table->string('provider_token')->nullable()->after('provider_id');
+                $table->string('password')->nullable()->change();
                 $table->softDeletes();
             });
         });
@@ -38,11 +43,13 @@ return new class extends Migration {
                 'avatar',
                 'newsletter_subscribed',
                 'default_payment_method',
-                'preferred_shipping_method_id',
                 'is_staff',
                 'status',
                 'status_reason',
                 'suspended_until',
+                'provider',
+                'provider_id',
+                'provider_token',
                 'deleted_at',
             ]);
         });

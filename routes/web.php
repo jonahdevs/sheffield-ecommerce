@@ -1,9 +1,20 @@
 <?php
 
+use App\Http\Controllers\Auth\SocialiteController;
 use App\Http\Controllers\PaymentCallbackController;
 use Illuminate\Support\Facades\Route;
 
 Route::livewire('/', 'pages::home.index')->name('home');
+
+Route::middleware('guest')->group(function () {
+    Route::get('/auth/{provider}/redirect', [SocialiteController::class, 'redirect'])
+        ->name('socialite.redirect')
+        ->where('provider', 'google|facebook');
+
+    Route::get('/auth/{provider}/callback', [SocialiteController::class, 'callback'])
+        ->name('socialite.callback')
+        ->where('provider', 'google|facebook');
+});
 
 // Products Routes
 Route::livewire('/products', 'pages::products')->name('products');
@@ -55,7 +66,7 @@ Route::middleware(['auth', 'staff', 'verified'])->prefix('admin')->name('admin')
     Route::livewire('orders/{order}', 'pages::admin.sales.orders.show')->name('.orders.show');
 
     Route::livewire('payments', 'pages::admin.sales.payments.index')->name('.payments.index');
-    Route::livewire('payments/{order}', 'pages::admin.sales.payments.show')->name('.payments.show');
+    Route::livewire('payments/{payment}', 'pages::admin.sales.payments.show')->name('.payments.show');
 
     // catalog
     Route::livewire('/categories', 'pages::admin.catalog.categories.index')->name('.categories.index');

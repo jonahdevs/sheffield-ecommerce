@@ -7,8 +7,8 @@
 
 
         <div class="grid grid-cols-2 gap-3">
-            <a href="#">
-                <flux:button class="w-full">
+            <a href="{{ route('socialite.redirect', 'google') }}">
+                <flux:button class="w-full cursor-pointer">
                     <x-slot name="icon">
                         <svg width="25" height="24" viewBox="0 0 25 24" fill="none"
                             xmlns="http://www.w3.org/2000/svg" class="shrink-0">
@@ -30,8 +30,8 @@
                 </flux:button>
             </a>
 
-            <a href="#">
-                <flux:button class="w-full">
+            <a href="{{ route('socialite.redirect', 'facebook') }}">
+                <flux:button class="w-full cursor-pointer">
                     <x-slot name="icon">
                         <svg width="25" height="24" class="text-[#1877F2]" fill="currentColor"
                             viewBox="0 0 24 24">

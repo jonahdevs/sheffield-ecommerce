@@ -118,4 +118,20 @@ class Order extends Model
             get: fn() => $this->total_cents / 100,
         );
     }
+
+
+    // ===============================================
+    // Helper Method
+    // ===============================================
+
+    public function transitionTo(OrdersStatus $new): void
+    {
+        if (!$this->status->canTransitionTo($new)) {
+            throw new \Exception(
+                "Cannot transition order from {$this->status->label()} to {$new->label()}."
+            );
+        }
+
+        $this->update(['status' => $new]);
+    }
 }
