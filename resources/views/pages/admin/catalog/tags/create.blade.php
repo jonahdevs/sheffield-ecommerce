@@ -1,33 +1,17 @@
 <?php
-use App\Models\Tag;
+
 use Livewire\Component;
 use Livewire\Attributes\Title;
 use App\Livewire\Forms\Admin\TagForm;
-use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 
 new #[Title('Create Tag')] class extends Component {
     public TagForm $form;
 
-    public bool $autoGenerateSlug = true;
-
-    public function updatedFormName(): void
-    {
-        if ($this->autoGenerateSlug) {
-            $this->form->slug = Str::slug($this->form->name);
-        }
-    }
-
-    public function updatedFormSlug(): void
-    {
-        // If the user manually edits the slug, stop auto-generating
-        $this->autoGenerateSlug = false;
-    }
-
     public function save(): void
     {
         try {
-            $tag = $this->form->store();
+            $this->form->store();
             $this->dispatch('notify', variant: 'success', message: 'Tag created successfully!');
             $this->redirectRoute('admin.tags.index', navigate: true);
         } catch (ValidationException $e) {
@@ -54,10 +38,10 @@ new #[Title('Create Tag')] class extends Component {
         @include('pages.admin.catalog.tags._form-fields')
 
         <flux:card class="flex gap-3 justify-end bg-zinc-50 dark:bg-zinc-800">
-            <flux:button variant="ghost" :href="route('admin.tags.index')" wire:navigate class="cursor-pointer">
+            <flux:button variant="ghost" :href="route('admin.tags.index')" wire:navigate>
                 Cancel
             </flux:button>
-            <flux:button type="submit" variant="primary" class="cursor-pointer">
+            <flux:button type="submit" variant="primary">
                 Create Tag
             </flux:button>
         </flux:card>

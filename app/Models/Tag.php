@@ -6,45 +6,12 @@ use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Spatie\Tags\Tag as SpatieTag;
 
-class Tag extends Model
+class Tag extends SpatieTag
 {
-    protected $fillable = [
-        'name',
-        'slug',
-        'description',
-        'color',
-        'is_active',
-        'sort_order',
-    ];
-
-    protected function casts(): array
+    public function products()
     {
-        return [
-            'is_active' => 'boolean',
-        ];
-    }
-
-    // ===============================================
-    // RELATIONSHIPS
-    // ===============================================
-
-    /**
-     * Get all products with this tag
-     */
-    public function products(): BelongsToMany
-    {
-        return $this->belongsToMany(Product::class)
-            ->withTimestamps();
-    }
-
-
-    // ===============================================
-    // SCOPE
-    // ===============================================
-    #[Scope]
-    protected function active(Builder $query)
-    {
-        $query->where('is_active', true);
+        return $this->morphedByMany(Product::class, 'taggable');
     }
 }

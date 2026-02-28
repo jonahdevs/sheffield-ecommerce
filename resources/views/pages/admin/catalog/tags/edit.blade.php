@@ -1,4 +1,5 @@
 <?php
+
 use App\Models\Tag;
 use Livewire\Component;
 use Livewire\Attributes\Title;
@@ -41,19 +42,16 @@ new #[Title('Edit Tag')] class extends Component {
 
     <flux:heading size="xl">Edit Tag</flux:heading>
 
-    <div class="mt-6 space-y-6">
-        <form wire:submit="save" class="space-y-5">
-            @include('pages.admin.catalog.tags._form-fields')
+    <form wire:submit="save" class="mt-6 space-y-5">
+        @include('pages.admin.catalog.tags._form-fields')
 
-            <flux:card class="flex gap-3 justify-end bg-zinc-50 dark:bg-zinc-800">
-                <flux:button variant="ghost" :href="route('admin.tags.index')" wire:navigate class="cursor-pointer">
-                    Cancel
-                </flux:button>
-
-                <flux:button type="submit" variant="primary" class="cursor-pointer">
-                    Update Tag
-                </flux:button>
-            </flux:card>
-        </form>
-    </div>
+        <flux:card class="flex gap-3 justify-end bg-zinc-50 dark:bg-zinc-800">
+            <flux:button variant="ghost" :href="route('admin.tags.index')" wire:navigate>
+                Cancel
+            </flux:button>
+            <flux:button type="submit" variant="primary">
+                Update Tag
+            </flux:button>
+        </flux:card>
+    </form>
 </div>

@@ -1,4 +1,5 @@
 <?php
+
 use App\Models\Tag;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -7,14 +8,13 @@ use Livewire\Attributes\{Title, Computed};
 new #[Title('Tags')] class extends Component {
     use WithPagination;
 
-    public $search = '';
-    public $statusFilter = 'all';
+    public string $search = '';
+    public ?string $typeFilter = null;
 
-    public function delete($id)
+    public function delete($id): void
     {
         $tag = Tag::findOrFail($id);
 
-        // Check if tag is used by products
         $productsCount = $tag->products()->count();
 
         if ($productsCount > 0) {
@@ -26,45 +26,23 @@ new #[Title('Tags')] class extends Component {
         session()->flash('status', 'Tag deleted successfully.');
     }
 
-    public function toggleStatus($id)
-    {
-        $tag = Tag::findOrFail($id);
-        $tag->update(['is_active' => !$tag->is_active]);
-
-        session()->flash('status', 'Tag status updated.');
-    }
-
     #[Computed]
     public function tags()
     {
-        return Tag::query()
-            ->withCount('products')
-            ->when($this->search, function ($q) {
-                $q->where('name', 'like', "%{$this->search}%")->orWhere('slug', 'like', "%{$this->search}%");
-            })
-            ->when($this->statusFilter === 'active', fn($q) => $q->where('is_active', true))
-            ->when($this->statusFilter === 'inactive', fn($q) => $q->where('is_active', false))
-            ->orderBy('sort_order')
-            ->latest()
-            ->paginate(15);
+        return Tag::query()->withCount('products')->when($this->search, fn($q) => $q->where('name->en', 'like', "%{$this->search}%"))->when($this->typeFilter, fn($q) => $q->where('type', $this->typeFilter))->orderBy('order_column')->paginate(15);
     }
 
     #[Computed]
-    public function statusCounts()
+    public function types()
     {
-        return [
-            'all' => Tag::count(),
-            'active' => Tag::where('is_active', true)->count(),
-            'inactive' => Tag::where('is_active', false)->count(),
-        ];
+        return Tag::query()->whereNotNull('type')->distinct()->pluck('type');
     }
 };
 ?>
 
 <div>
     <flux:breadcrumbs class="mb-2">
-        <flux:breadcrumbs.item :href="route('admin.dashboard')" icon="home" icon-variant="outline" wire:navigate>
-        </flux:breadcrumbs.item>
+        <flux:breadcrumbs.item :href="route('admin.dashboard')" icon="home" icon-variant="outline" wire:navigate />
         <flux:breadcrumbs.item>Tags</flux:breadcrumbs.item>
     </flux:breadcrumbs>
 
@@ -73,7 +51,6 @@ new #[Title('Tags')] class extends Component {
             <flux:heading size="xl" class="mb-1">Tags</flux:heading>
             <flux:subheading>Organize and categorize your products with tags.</flux:subheading>
         </div>
-
         <flux:button href="{{ route('admin.tags.create') }}" variant="primary" icon="plus-circle" wire:navigate>
             Create Tag
         </flux:button>
@@ -81,127 +58,92 @@ new #[Title('Tags')] class extends Component {
 
     {{-- Flash Messages --}}
     @if (session('status'))
-        <flux:callout variant="success" class="mb-6">
-            {{ session('status') }}
-        </flux:callout>
+        <flux:callout variant="success" class="mb-6">{{ session('status') }}</flux:callout>
     @endif
 
     @if (session('error'))
-        <flux:callout variant="danger" class="mb-6">
-            {{ session('error') }}
-        </flux:callout>
+        <flux:callout variant="danger" class="mb-6">{{ session('error') }}</flux:callout>
     @endif
 
     {{-- Stats --}}
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
         <flux:card>
             <div class="text-sm text-zinc-600 mb-1">Total Tags</div>
-            <div class="text-2xl font-bold text-zinc-900 dark:text-white">{{ $this->statusCounts['all'] }}</div>
+            <div class="text-2xl font-bold text-zinc-900 dark:text-white">{{ Tag::count() }}</div>
         </flux:card>
-
         <flux:card>
-            <div class="text-sm text-zinc-600 mb-1">Active Tags</div>
-            <div class="text-2xl font-bold text-green-600">{{ $this->statusCounts['active'] }}</div>
+            <div class="text-sm text-zinc-600 mb-1">Tag Types</div>
+            <div class="text-2xl font-bold text-blue-600">{{ $this->types->count() }}</div>
         </flux:card>
-
         <flux:card>
-            <div class="text-sm text-zinc-600 mb-1">Inactive Tags</div>
-            <div class="text-2xl font-bold text-zinc-500">{{ $this->statusCounts['inactive'] }}</div>
+            <div class="text-sm text-zinc-600 mb-1">Total Tagged Products</div>
+            <div class="text-2xl font-bold text-zinc-500">
+                {{ \DB::table('taggables')->distinct('taggable_id')->count() }}</div>
         </flux:card>
     </div>
 
-    {{-- Filter Tabs --}}
-    <div class="flex gap-2 mb-6">
-        <flux:button wire:click="$set('statusFilter', 'all')"
-            variant="{{ $statusFilter === 'all' ? 'primary' : 'ghost' }}" size="sm" class="cursor-pointer">
-            All Tags
-            <flux:badge size="sm" :color="$statusFilter === 'all' ? 'white' : 'zinc'">
-                {{ $this->statusCounts['all'] }}
-            </flux:badge>
-        </flux:button>
-
-        <flux:button wire:click="$set('statusFilter', 'active')"
-            variant="{{ $statusFilter === 'active' ? 'primary' : 'ghost' }}" size="sm" class="cursor-pointer">
-            Active
-            <flux:badge size="sm" :color="$statusFilter === 'active' ? 'white' : 'zinc'">
-                {{ $this->statusCounts['active'] }}
-            </flux:badge>
-        </flux:button>
-
-        <flux:button wire:click="$set('statusFilter', 'inactive')"
-            variant="{{ $statusFilter === 'inactive' ? 'primary' : 'ghost' }}" size="sm" class="cursor-pointer">
-            Inactive
-            <flux:badge size="sm" :color="$statusFilter === 'inactive' ? 'white' : 'zinc'">
-                {{ $this->statusCounts['inactive'] }}
-            </flux:badge>
-        </flux:button>
-    </div>
-
+    {{-- Type Filter --}}
+    @if ($this->types->isNotEmpty())
+        <div class="flex gap-2 mb-6 flex-wrap">
+            <flux:button wire:click="$set('typeFilter', null)"
+                variant="{{ $typeFilter === null ? 'primary' : 'ghost' }}" size="sm">
+                All Types
+            </flux:button>
+            @foreach ($this->types as $type)
+                <flux:button wire:click="$set('typeFilter', '{{ $type }}')"
+                    variant="{{ $typeFilter === $type ? 'primary' : 'ghost' }}" size="sm">
+                    {{ ucfirst($type) }}
+                </flux:button>
+            @endforeach
+        </div>
+    @endif
 
     {{-- Tags Table --}}
     <flux:card class="p-0 **:data-flux-columns:bg-zinc-50">
-        {{-- Search --}}
         <div class="px-5 py-3 border-b">
             <flux:input wire:model.live.debounce.300ms="search" icon="magnifying-glass"
-                placeholder="Search tags by name or slug..." class="max-w-md" />
+                placeholder="Search tags by name..." class="max-w-md" />
         </div>
 
         <flux:table :paginate="$this->tags">
             <flux:table.columns>
                 <flux:table.column class="ps-4!">Tag</flux:table.column>
                 <flux:table.column>Slug</flux:table.column>
+                <flux:table.column>Type</flux:table.column>
                 <flux:table.column>Products</flux:table.column>
-                <flux:table.column>Sort Order</flux:table.column>
-                <flux:table.column>Status</flux:table.column>
+                <flux:table.column>Order</flux:table.column>
                 <flux:table.column align="end" class="pe-4!">Actions</flux:table.column>
             </flux:table.columns>
 
             <flux:table.rows>
                 @forelse ($this->tags as $tag)
                     <flux:table.row :key="$tag->id">
-                        {{-- Tag Name with Color --}}
                         <flux:table.cell class="ps-4!">
-                            <div class="flex items-center gap-3">
-                                <div class="w-4 h-4 rounded-full border"
-                                    style="background-color: {{ $tag->color ?? '#6B7280' }}">
-                                </div>
-                                <div>
-                                    <div class="font-medium text-zinc-800 dark:text-white">{{ $tag->name }}</div>
-                                    @if ($tag->description)
-                                        <div class="text-xs text-zinc-500">{{ Str::limit($tag->description, 50) }}
-                                        </div>
-                                    @endif
-                                </div>
-                            </div>
+                            <div class="font-medium text-zinc-800 dark:text-white">{{ $tag->name }}</div>
                         </flux:table.cell>
 
-                        {{-- Slug --}}
                         <flux:table.cell>
                             <span class="font-mono text-sm text-zinc-600">{{ $tag->slug }}</span>
                         </flux:table.cell>
 
-                        {{-- Products Count --}}
+                        <flux:table.cell>
+                            @if ($tag->type)
+                                <flux:badge size="sm" color="blue">{{ ucfirst($tag->type) }}</flux:badge>
+                            @else
+                                <span class="text-zinc-400 text-sm">—</span>
+                            @endif
+                        </flux:table.cell>
+
                         <flux:table.cell>
                             <flux:badge size="sm" color="zinc">
                                 {{ $tag->products_count }} {{ Str::plural('product', $tag->products_count) }}
                             </flux:badge>
                         </flux:table.cell>
 
-                        {{-- Sort Order --}}
                         <flux:table.cell>
-                            {{ $tag->sort_order ?? 0 }}
+                            {{ $tag->order_column ?? 0 }}
                         </flux:table.cell>
 
-                        {{-- Status --}}
-                        <flux:table.cell>
-                            <button wire:click="toggleStatus({{ $tag->id }})" class="inline-flex">
-                                <flux:badge size="sm" variant="flat" :color="$tag->is_active ? 'green' : 'gray'">
-                                    {{ $tag->is_active ? 'Active' : 'Inactive' }}
-                                </flux:badge>
-                            </button>
-                        </flux:table.cell>
-
-                        {{-- Actions --}}
                         <flux:table.cell align="end" class="pe-4!">
                             <flux:button variant="ghost" size="sm" icon="pencil-square" icon-variant="outline"
                                 href="{{ route('admin.tags.edit', $tag) }}" wire:navigate />

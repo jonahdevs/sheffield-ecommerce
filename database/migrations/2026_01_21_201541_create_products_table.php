@@ -143,22 +143,6 @@ return new class extends Migration {
             $table->index(['attribute_id', 'is_active']);
         });
 
-        // ===============================================
-        // TAGS TABLE
-        // ===============================================
-
-        Schema::create('tags', function (Blueprint $table) {
-            $table->id();
-            $table->string('name')->unique();
-            $table->string('slug')->unique();
-            $table->text('description')->nullable();
-            $table->string('color', 7)->default('#3B82F6');
-            $table->boolean('is_active')->default(true);
-            $table->integer('sort_order')->default(0);
-            $table->timestamps();
-
-            $table->index('is_active');
-        });
 
         // ===============================================
         // PRODUCT VARIANTS TAB
@@ -316,19 +300,6 @@ return new class extends Migration {
         });
 
         // ===============================================
-        // PRODUCT TAG (Pivot)
-        // ===============================================
-
-        Schema::create('product_tag', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('product_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('tag_id')->constrained()->cascadeOnDelete();
-            $table->timestamps();
-
-            $table->unique(['product_id', 'tag_id']);
-        });
-
-        // ===============================================
         // PRODUCT Relationships
         // ===============================================
 
@@ -381,7 +352,6 @@ return new class extends Migration {
         Schema::dropIfExists('product_upsells');
         Schema::dropIfExists('product_accessories');
         Schema::dropIfExists('product_relationships');
-        Schema::dropIfExists('product_tag');
         Schema::dropIfExists('product_variant_attribute_values');
         Schema::dropIfExists('product_attribute_values');
         Schema::dropIfExists('product_attributes');
@@ -390,7 +360,6 @@ return new class extends Migration {
         Schema::dropIfExists('product_variants');
         Schema::dropIfExists('attribute_values');
         Schema::dropIfExists('attributes');
-        Schema::dropIfExists('tags');
         Schema::dropIfExists('products');
     }
 };
