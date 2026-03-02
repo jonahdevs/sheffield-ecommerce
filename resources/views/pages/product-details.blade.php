@@ -220,7 +220,7 @@ new #[Layout('layouts.guest')] class extends Component {
     #[Computed]
     public function counties()
     {
-        return County::withShippingRates()->orderBy('name')->get();
+        return County::orderBy('name')->get();
     }
 
     #[Computed]
@@ -442,12 +442,12 @@ new #[Layout('layouts.guest')] class extends Component {
                                 <div class="swiper-wrapper">
                                     @foreach ($product->images as $image)
                                         <div class="swiper-slide cursor-pointer">
-                                            <div class="aspect-square rounded-sm overflow-hidden border-2 transition-all duration-300"
+                                            <div class="aspect-square flex items-center justify-center rounded-sm overflow-hidden border-2 transition-all duration-300"
                                                 :class="activeIndex === {{ $loop->index }} ? 'border-sheffield-blue' :
                                                     'border-zinc-200 hover:border-zinc-300'">
                                                 <img src="{{ $image->url }}"
                                                     alt="{{ $image->alt_text ?? $product->name }}"
-                                                    class="w-full h-full object-cover" />
+                                                    class="w-full h-full object-contain" />
                                             </div>
                                         </div>
                                     @endforeach

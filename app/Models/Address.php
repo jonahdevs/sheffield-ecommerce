@@ -25,7 +25,10 @@ class Address extends Model
         'is_default' => 'boolean',
     ];
 
-    // ── Relationships ─────────────────────────────────────────────────────────
+
+    // ===============================================
+    // RELATIONSHIPS
+    // ===============================================
 
     public function user(): BelongsTo
     {
@@ -47,7 +50,9 @@ class Address extends Model
         return $this->belongsTo(ShippingZone::class);
     }
 
-    // ── Helpers ───────────────────────────────────────────────────────────────
+    // ===============================================
+    // HELPER METHODS
+    // ===============================================
 
     public function getFullNameAttribute(): string
     {

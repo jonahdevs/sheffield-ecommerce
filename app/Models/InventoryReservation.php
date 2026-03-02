@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -36,6 +37,10 @@ class InventoryReservation extends Model
         'quantity' => 'integer',
     ];
 
+    // ===============================================
+    // RELATIONSHIPS
+    // ===============================================
+
     /**
      * Get the reservable item (Product or ProductVariant)
      * 
@@ -55,14 +60,19 @@ class InventoryReservation extends Model
         return $this->belongsTo(Order::class);
     }
 
+    // ===============================================
+    // SCOPE
+    // ===============================================
+
     /**
      * Scope: Get only active (non-expired) reservations
      * 
      * Usage: InventoryReservation::active()->get()
      */
-    public function scopeActive($query)
+    #[Scope]
+    protected function Active($query)
     {
-        return $query->where('expires_at', '>', now());
+        $query->where('expires_at', '>', now());
     }
 
     /**
@@ -70,9 +80,10 @@ class InventoryReservation extends Model
      * 
      * Usage: InventoryReservation::expired()->get()
      */
-    public function scopeExpired($query)
+    #[Scope]
+    protected function expired($query)
     {
-        return $query->where('expires_at', '<=', now());
+        $query->where('expires_at', '<=', now());
     }
 
     /**
@@ -80,10 +91,15 @@ class InventoryReservation extends Model
      * 
      * Usage: InventoryReservation::forOrder($orderId)->get()
      */
-    public function scopeForOrder($query, int $orderId)
+    #[Scope]
+    protected function forOrder($query, int $orderId)
     {
-        return $query->where('order_id', $orderId);
+        $query->where('order_id', $orderId);
     }
+
+    // ===============================================
+    // HELPER METHODS
+    // ===============================================
 
     /**
      * Check if this reservation has expired

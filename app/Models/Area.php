@@ -14,8 +14,10 @@ class Area extends Model
         'shipping_zone_id',
     ];
 
-    // ── Relationships ─────────────────────────────────────────────────────────
 
+    // ===============================================
+    // RELATIONSHIPS
+    // ===============================================
     public function county(): BelongsTo
     {
         return $this->belongsTo(County::class);
@@ -40,7 +42,9 @@ class Area extends Model
         return $this->hasMany(Address::class);
     }
 
-    // ── Helpers ───────────────────────────────────────────────────────────────
+    // ===============================================
+    // HELPER METHODS
+    // ===============================================
 
     /**
      * Returns the effective shipping zone — the area's own override if set,

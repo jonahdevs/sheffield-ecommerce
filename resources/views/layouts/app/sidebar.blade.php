@@ -229,7 +229,7 @@
     </flux:sidebar>
 
     <!-- Mobile User Menu -->
-    <flux:header class="bg-white border-b ">
+    <flux:header class="bg-white dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-700">
         <flux:sidebar.toggle class="lg:hidden" icon="bars-2" inset="left" />
 
         <flux:spacer />

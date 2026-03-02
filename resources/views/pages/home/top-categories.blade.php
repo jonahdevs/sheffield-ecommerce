@@ -21,7 +21,8 @@
                         @else
                             <div
                                 class="w-full h-full flex items-center justify-center bg-zinc-100 rounded-md aspect-4/3 shadow-sm hover:shadow-md transition-shadow duration-300">
-                                <flux:icon.photo class="text-zinc-400 h-8 w-8 sm:h-10 sm:w-10 lg:h-12 lg:w-12" />
+                                <flux:icon.photo
+                                    class="text-zinc-300 h-8 w-8 sm:h-10 sm:w-10 lg:h-12 lg:w-12 stroke-1" />
                             </div>
                         @endif
                     </div>

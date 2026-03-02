@@ -90,7 +90,9 @@ class Order extends Model
     }
 
 
-    // Accessors for money fields
+    // ===============================================
+    // ACCESSORS
+    // ===============================================
     protected function subtotal(): Attribute
     {
         return Attribute::make(

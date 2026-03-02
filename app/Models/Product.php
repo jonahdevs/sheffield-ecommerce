@@ -202,6 +202,12 @@ class Product extends Model
         return $this->hasMany(OrderItem::class);
     }
 
+    public function attributeValues(): BelongsToMany
+    {
+        return $this->belongsToMany(AttributeValue::class, 'product_attribute_values')
+            ->withTimestamps();
+    }
+
     // ===============================================
     // SCOPES
     // ===============================================

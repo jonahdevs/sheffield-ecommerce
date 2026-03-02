@@ -54,7 +54,7 @@
 
     <div x-show="expanded" x-cloak x-collapse class="p-5 space-y-5" :class="{ '-mb-5': !$wire.addNewBrand }">
         {{-- Brand Select --}}
-        <flux:select wire:model.live="form.brand_id" label="Brand" placeholder="-- Select Brand --">
+        <flux:select wire:model.live="form.brand_id" placeholder="-- Select Brand --">
             <flux:select.option>No Brand</flux:select.option>
             @foreach ($this->brands as $brand)
                 <flux:select.option :value="$brand->id">{{ $brand->name }}</flux:select.option>

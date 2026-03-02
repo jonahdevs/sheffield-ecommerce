@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Controllers\Auth\SocialiteController;
-use App\Http\Controllers\PaymentCallbackController;
 use Illuminate\Support\Facades\Route;
 
 Route::livewire('/', 'pages::home.index')->name('home');
@@ -26,8 +25,6 @@ Route::livewire('/wishlist', 'pages::wishlist')->name('wishlist');
 Route::livewire('/cart', 'pages::cart')->name('cart');
 
 // Payment callbacks
-Route::match(['get', 'post'], 'payment/callback/success', [PaymentCallbackController::class, 'handleSuccess']);
-Route::match(['get', 'post'], 'payment/callback/cancel', [PaymentCallbackController::class, 'handleCancel']);
 Route::livewire('/payment/success', 'pages::checkout.success')->name('checkout.success-page');
 Route::livewire('/payment/cancel', 'pages::checkout.cancel')->name('payment.cancel');
 
@@ -97,7 +94,6 @@ Route::middleware(['auth', 'staff', 'verified'])->prefix('admin')->name('admin')
     Route::livewire('/brands/create', 'pages::admin.catalog.brands.create')->name('.brands.create');
     Route::livewire('/brands/{brand}/edit', 'pages::admin.catalog.brands.edit')->name('.brands.edit');
 
-
     Route::livewire('/tags', 'pages::admin.catalog.tags.index')->name('.tags.index');
     Route::livewire('/tags/create', 'pages::admin.catalog.tags.create')->name('.tags.create');
     Route::livewire('/tags/{tag}/edit', 'pages::admin.catalog.tags.edit')->name('.tags.edit');
@@ -134,7 +130,7 @@ Route::middleware(['auth', 'staff', 'verified'])->prefix('admin')->name('admin')
             Route::livewire('free-shipping-rules', 'pages::admin.logistics.configuration.free-shipping-rules')->name('.free-shipping-rules');
         });
 
-        // rates
+        // operations
         Route::prefix('operations')->name('.operations')->group(function () {
             Route::livewire('delivery-orders', 'pages::admin.logistics.operations.delivery-orders')->name('.delivery-orders');
             Route::livewire('pus-tracker', 'pages::admin.logistics.operations.pus-tracker')->name('.pus-tracker');

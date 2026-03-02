@@ -120,13 +120,15 @@ new class extends Component {
                 @foreach ($suggestions['products'] as $product)
                     <a href="{{ route('products.show', $product['slug']) }}" wire:navigate
                         class="flex items-start gap-3 text-left px-4 py-2 hover:bg-zinc-50 transition-colors ">
-                        <!-- Product Image -->
-                        @if ($product['image'])
-                            <img src="{{ $product['image'] }}" alt="{{ $product['name'] }}"
-                                class="w-12 h-12 object-cover rounded">
-                        @else
-                            <flux:icon.photo class="w-12 h-12 bg-zinc-100 rounded shrink-0 stroke-1" />
-                        @endif
+                        <div class="shrink-0 w-12 h-12 rounded border bg-zinc-50 overflow-hidden">
+                            <!-- Product Image -->
+                            @if ($product['image'])
+                                <img src="{{ $product['image'] }}" alt="{{ $product['name'] }}"
+                                    class="w-full h-full object-cover">
+                            @else
+                                <flux:icon.photo class="w-full h-full p-2 text-zinc-200 stroke-1" />
+                            @endif
+                        </div>
 
                         {{-- Product Details --}}
                         <div class="flex-1 min-w-0">

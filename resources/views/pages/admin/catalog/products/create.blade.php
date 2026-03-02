@@ -139,6 +139,7 @@ new #[Title('Create Product')] class extends Component {
     {
         try {
             $product = $this->form->store();
+            $this->dispatch('product-saved', productId: $product->id);
             $this->dispatch('notify', variant: 'success', message: 'Product created successfully!');
             return redirect()->route('admin.products.index');
         } catch (ValidationException $e) {
@@ -293,8 +294,14 @@ new #[Title('Create Product')] class extends Component {
                         @include('pages.admin.catalog.products.partials._linked-products')
 
                         {{-- Attributes --}}
+                        <div wire:cloak wire:show="activeTab == 'attributes'">
+                            <livewire:pages::admin.catalog.products.partials._attributes-manager :product="$product ?? null" />
+                        </div>
 
                         {{-- Variations --}}
+                        <div wire:cloak wire:show="activeTab == 'variations'">
+                            <livewire:pages::admin.catalog.products.partials._variations-manager :product="$product ?? null" />
+                        </div>
 
                         {{-- Advanced --}}
                         @include('pages.admin.catalog.products.partials._advanced')
