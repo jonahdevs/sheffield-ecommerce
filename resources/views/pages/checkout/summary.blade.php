@@ -4,7 +4,7 @@ use App\Services\CartService;
 use App\Services\CheckoutSession;
 use Livewire\Attributes\{Computed, Layout};
 use Livewire\Component;
-use App\Services\PaymentService;
+use App\Services\Payment\PaymentService;
 
 new #[Layout('layouts.checkout')] class extends Component {
     public function mount(): void
@@ -18,7 +18,7 @@ new #[Layout('layouts.checkout')] class extends Component {
         }
 
         if (auth()->user()->addresses()->doesntExist()) {
-            $this->redirectRoute('customer.address-book.create', navigate: true);
+            $this->redirectRoute('checkout.addresses.create', navigate: true);
             return;
         }
 
@@ -28,7 +28,7 @@ new #[Layout('layouts.checkout')] class extends Component {
         }
 
         // If custom gateway and no payment method chosen yet, go to payment page
-        if (app(PaymentService::class)->isCustom() && !session('checkout.payment_method')) {
+        if (app(PaymentService::class)->isCustom() && !$checkoutSession->hasPaymentMethod()) {
             $this->redirectRoute('checkout.payment-methods', navigate: true);
             return;
         }
@@ -72,7 +72,7 @@ new #[Layout('layouts.checkout')] class extends Component {
     <x-slot:heading>Checkout Summary</x-slot:heading>
 
     {{-- Address --}}
-    <div class="border rounded-sm bg-white mb-4">
+    <flux:card class="mb-4 p-0">
         <div class="px-4 py-2 border-b flex items-center justify-between">
             <div class="flex items-center gap-1.5">
                 <flux:icon.check-circle variant="solid" class="size-5 text-green-500" />
@@ -95,10 +95,10 @@ new #[Layout('layouts.checkout')] class extends Component {
                 </div>
             @endif
         </div>
-    </div>
+    </flux:card>
 
     {{-- Shipping method --}}
-    <div class="border rounded-sm bg-white mb-4">
+    <flux:card class="mb-4 p-0">
         <div class="px-4 py-2 border-b flex items-center justify-between">
             <div class="flex items-center gap-1.5">
                 <flux:icon.check-circle variant="solid" class="size-5 text-green-500" />
@@ -127,7 +127,30 @@ new #[Layout('layouts.checkout')] class extends Component {
                 </div>
             @endif
         </div>
-    </div>
+    </flux:card>
+
+    {{-- Payment method --}}
+    <flux:card class="p-0 mb-4">
+        <div class="px-4 py-2 border-b flex items-center justify-between">
+            <div class="flex items-center gap-1.5">
+                <flux:icon.check-circle variant="solid" class="size-5 text-green-500" />
+                <flux:heading level="3" class="font-medium!">Payment Method</flux:heading>
+            </div>
+            <flux:link :href="route('checkout.payment-methods')" wire:navigate class="text-xs!">
+                Change <flux:icon.chevron-right class="size-3.5 ms-1 inline-block" />
+            </flux:link>
+        </div>
+        <div class="px-4 py-4">
+            <flux:heading>
+                {{ app(\App\Services\CheckoutSession::class)->getPaymentMethod() === 'card' ? 'Card' : 'M-Pesa' }}
+            </flux:heading>
+            <flux:text class="text-sm text-zinc-500 mt-1">
+                {{ app(\App\Services\CheckoutSession::class)->getPaymentMethod() === 'card'
+                    ? 'Visa, Mastercard, Amex'
+                    : 'STK push to your phone' }}
+            </flux:text>
+        </div>
+    </flux:card>
 
     <flux:link :href="route('products')" wire:navigate class="text-xs">
         ← Continue shopping

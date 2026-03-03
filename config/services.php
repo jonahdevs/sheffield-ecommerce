@@ -64,7 +64,9 @@ return [
         'shortcode' => env('MPESA_SHORTCODE', '174379'), // 174379 is sandbox default
         'callback_url' => env('MPESA_CALLBACK_URL', env('APP_URL') . '/checkout/mpesa/callback'),
     ],
-
+    'stripe' => [
+        'secret_key' => env('STRIPE_SECRET')
+    ],
     'google' => [
         'client_id'     => env('GOOGLE_CLIENT_ID'),
         'client_secret' => env('GOOGLE_CLIENT_SECRET'),

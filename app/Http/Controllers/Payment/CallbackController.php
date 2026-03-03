@@ -19,7 +19,7 @@ class CallbackController extends Controller
             $status = $paymentService->verify($reference);
 
             if ($status->isPaid && $order) {
-                return redirect()->route('customer.orders.show', $order)
+                return redirect()->route('customer.orders.confirmation', $order)
                     ->with('success', 'Payment successful! Your order has been placed.');
             }
         }

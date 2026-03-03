@@ -115,7 +115,7 @@ select:focus[data-flux-control] {
 /* admin sidebar customization */
 
 [data-flux-sidebar] {
-    @apply bg-sheffield-blue border-sheffield-blue-dark;
+    @apply bg-sheffield-blue border-sheffield-blue-dark dark:bg-sheffield-blue-dark;
 }
 
 [data-flux-sidebar-group] [data-flux-heading] {

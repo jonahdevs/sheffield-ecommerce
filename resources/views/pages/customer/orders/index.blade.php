@@ -68,7 +68,7 @@ new #[Layout('layouts.customer')] class extends Component {
                                         @if ($order->items->first()?->product?->image_path)
                                             <img src="{{ $order->items->first()->product->image_url }}"
                                                 alt="{{ $order->items->first()->name }}"
-                                                class="w-16 h-16 rounded object-cover">
+                                                class="w-16 h-16 rounded object-contain">
                                         @else
                                             <div
                                                 class="w-16 h-16 rounded bg-zinc-100 border flex items-center justify-center">
@@ -145,7 +145,7 @@ new #[Layout('layouts.customer')] class extends Component {
                                     </div>
 
                                     <flux:link :href="route('customer.orders.show', $order)" wire:navigate
-                                        class="text-sm!">See
+                                        class="text-xs!">See
                                         details</flux:link>
                                 </div>
                             @empty

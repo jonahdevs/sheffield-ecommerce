@@ -8,9 +8,10 @@ use App\Models\DeliveryOrder;
 use App\Models\Order;
 use App\Models\Payment;
 use App\Models\PickupStation;
+use App\Models\Product;
 use App\Models\ShippingMethod;
 use App\Models\ShippingRate;
-use App\Services\PaymentService;
+use App\Services\Payment\PaymentService;
 use App\Services\Payment\ValueObjects\PaymentResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -22,8 +23,7 @@ class CheckoutService
         private readonly CartService $cartService,
         private readonly CheckoutSession $checkoutSession,
         private readonly PaymentService $paymentService,
-    ) {
-    }
+    ) {}
 
     /**
      * The main checkout entry point.
@@ -80,6 +80,7 @@ class CheckoutService
         $order = DB::transaction(function () use ($user, $cartItems, $cart, $address, $subtotalCents, $discountCents, $shippingCents, $totalCents, $shippingData) {
             // 1. Validate stock for all items before committing
             foreach ($cartItems as $item) {
+                $product = Product::lockForUpdate()->find($item->product_id);
                 if ($item->product->stock_quantity < $item->quantity) {
                     throw new \RuntimeException(
                         "{$item->product->name} only has {$item->product->stock_quantity} units available."
@@ -176,6 +177,11 @@ class CheckoutService
             $response = $this->paymentService->initiate($order, $payment);
 
             if ($response->isFailed()) {
+                $order->update([
+                    'status'         => 'cancelled',
+                    'payment_status' => 'failed',
+                ]);
+
                 Log::error('Payment initiation failed after order created', [
                     'order_id' => $order->id,
                     'message' => $response->message,

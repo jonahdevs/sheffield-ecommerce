@@ -1,9 +1,6 @@
 <?php
 
-use App\Services\CheckoutSession;
 use App\Services\OrderSummaryService;
-use App\Services\Payment\Gateways\CustomGateway;
-use App\Services\PaymentService;
 use App\Services\Payment\ValueObjects\PaymentResponse;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
@@ -13,26 +10,12 @@ new class extends Component {
     public ?string $errorMessage = null;
     public ?string $errorType = null;
 
-    public function mount(): void
-    {
-        // Restore previously selected payment method from session
-        $this->paymentMethod = CustomGateway::getPaymentMethod();
-    }
-
     //  Computed
 
     #[Computed]
     public function summary(): array
     {
         return app(OrderSummaryService::class)->summary();
-    }
-
-    //  Actions
-
-    public function updatedPaymentMethod(): void
-    {
-        // Persist to session whenever the customer switches
-        CustomGateway::setPaymentMethod($this->paymentMethod);
     }
 
     public function completeOrder(): mixed
@@ -76,15 +59,9 @@ new class extends Component {
         }
 
         return match (true) {
-            // Redirect to external payment page (Pesawise, Pesapal, PayPal)
             $response->isRedirect() => redirect()->away($response->url),
-            // Show Pesawise iframe in modal
-            $response->isIframe() => $this->dispatch('open-payment-iframe', url: $response->url),
-            // M-Pesa STK push — show waiting screen
             $response->isStkPush() => $this->dispatch('stk-push-initiated', checkoutRequestId: $response->checkoutRequestId),
-            // Stripe Elements — show card form
-            $response->isInline() => $this->dispatch('show-stripe-elements', clientSecret: $response->clientSecret),
-
+            $response->isFailed() => null, // handled above
             default => null,
         };
     }

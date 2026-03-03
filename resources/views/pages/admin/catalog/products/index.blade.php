@@ -37,12 +37,30 @@ new #[Title('Products')] class extends Component {
         return ProductStatus::cases();
     }
 
-    public function delete($id)
+    #[Computed]
+    public function totalProducts()
     {
-        $product = Product::findOrFail($id);
-        // Add logic here to clean up images from storage if necessary
-        $product->delete();
-        session()->flash('status', 'Product moved to trash.');
+        return Product::count();
+    }
+
+    #[Computed]
+    public function publishedProducts()
+    {
+        return Product::where('status', 'published')->count();
+    }
+
+    #[Computed]
+    public function draftProducts()
+    {
+        return Product::where('status', 'draft')->count();
+    }
+
+    #[Computed]
+    public function lowStockProducts()
+    {
+        return Product::where(function ($query) {
+            $query->where('manage_stock', true)->whereColumn('stock_quantity', '<=', 'low_stock_threshold');
+        })->count();
     }
 
     #[Computed]
@@ -59,6 +77,14 @@ new #[Title('Products')] class extends Component {
             ->when($this->category, fn($q) => $q->whereHas('categories', fn($q) => $q->where('categories.id', $this->category)))
             ->latest()
             ->paginate(15);
+    }
+
+    public function delete($id)
+    {
+        $product = Product::findOrFail($id);
+        // Add logic here to clean up images from storage if necessary
+        $product->delete();
+        session()->flash('status', 'Product moved to trash.');
     }
 }; ?>
 
@@ -81,10 +107,66 @@ new #[Title('Products')] class extends Component {
         </flux:button>
     </div>
 
+    {{-- Stats Cards --}}
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
+        {{-- Total Products --}}
+        <flux:card>
+            <div class="flex items-center justify-between">
+                <div>
+                    <flux:text class="uppercase text-xs font-medium mb-3">Total Products</flux:text>
+                    <p class="text-3xl font-bold text-zinc-900 dark:text-zinc-50 mt-1">{{ $this->totalProducts }}</p>
+                </div>
+                <div class="p-3 bg-blue-50 rounded-lg dark:bg-blue-800">
+                    <flux:icon.inbox class="w-6 h-6 text-blue-600 dark:text-blue-400" />
+                </div>
+            </div>
+        </flux:card>
 
-    <flux:card class="p-0 mt-6 **:data-flux-columns:bg-zinc-50">
+        {{-- Published Products --}}
+        <flux:card>
+            <div class="flex items-center justify-between">
+                <div>
+                    <flux:text class="uppercase text-xs font-medium mb-3">Published</flux:text>
+                    <p class="text-3xl font-bold text-green-600 dark:text-green-400 mt-1">{{ $this->publishedProducts }}
+                    </p>
+                </div>
+                <div class="p-3 bg-green-50 rounded-lg dark:bg-green-800 ">
+                    <flux:icon.check-circle class="w-6 h-6 text-green-600 dark:text-green-400" />
+                </div>
+            </div>
+        </flux:card>
+
+        {{-- Draft Products --}}
+        <flux:card>
+            <div class="flex items-center justify-between">
+                <div>
+                    <flux:text class="uppercase text-xs font-medium mb-3">Draft</flux:text>
+                    <p class="text-3xl font-bold text-yellow-600 dark:text-yellow-400 mt-1">{{ $this->draftProducts }}
+                    </p>
+                </div>
+                <div class="p-3 bg-yellow-50 dark:bg-yellow-800 rounded-lg">
+                    <flux:icon.check-circle class="w-6 h-6 text-yellow-600 dark:text-yellow-300" />
+                </div>
+            </div>
+        </flux:card>
+
+        {{-- Low Stock Products --}}
+        <flux:card>
+            <div class="flex items-center justify-between">
+                <div>
+                    <flux:text class="uppercase text-xs font-medium mb-3">Low Stock</flux:text>
+                    <p class="text-3xl font-bold text-red-600 dark:text-red-400 mt-1">{{ $this->lowStockProducts }}</p>
+                </div>
+                <div class="p-3 bg-red-50 rounded-lg dark:bg-red-800">
+                    <flux:icon.exclamation-triangle class="w-6 h-6 text-red-600 dark:text-red-300" />
+                </div>
+            </div>
+        </flux:card>
+    </div>
+
+    <flux:card class="p-0 mt-6 **:data-flux-columns:bg-zinc-50 dark:**:data-flux-columns:bg-zinc-800">
         {{-- Filters --}}
-        <div class="flex items-center gap-4 px-5 py-3 border-b">
+        <div class="flex items-center gap-4 px-5 py-3 border-b border-zinc-200 dark:border-zinc-600">
             <flux:input wire:model.live="search" icon="magnifying-glass" placeholder="Search by name or SKU..."
                 class="max-w-md" clearable />
 
@@ -109,7 +191,7 @@ new #[Title('Products')] class extends Component {
         {{-- Table --}}
         <flux:table :paginate="$this->products">
             <flux:table.columns sticky class="bg-white dark:bg-zinc-900">
-                <flux:table.column class="ps-4! bg-zinc-50 dark:bg-zinc-900" sticky>
+                <flux:table.column class="ps-4! bg-zinc-50  dark:bg-zinc-800" sticky>
                     <span class="sr-only">Product Image</span>
                 </flux:table.column>
                 <flux:table.column>Product</flux:table.column>
@@ -126,8 +208,9 @@ new #[Title('Products')] class extends Component {
                 @forelse ($this->products as $product)
                     <flux:table.row :key="$product->id">
                         {{-- Product Image --}}
-                        <flux:table.cell sticky class="ps-4! bg-white dark:bg-zinc-900">
-                            <div class="w-10 h-10 rounded border bg-zinc-50 overflow-hidden">
+                        <flux:table.cell sticky class="ps-4! bg-white dark:bg-zinc-700">
+                            <div
+                                class="w-10 h-10 rounded border dark:border-zinc-600  bg-zinc-50 dark:bg-zinc-800 overflow-hidden">
                                 @if ($product->image_path)
                                     <img src="{{ $product->image_url }}" class="object-cover w-full h-full">
                                 @else
@@ -171,7 +254,7 @@ new #[Title('Products')] class extends Component {
 
                         <flux:table.cell>
                             <flux:badge icon="star" icon-variant="solid" size="sm"
-                                class="[&_[data-flux-badge-icon]]:text-yellow-500!">
+                                class="**:data-flux-badge-icon:text-yellow-500!">
                                 {{ number_format($product->reviews_avg_rating, 1) }}
                             </flux:badge>
                         </flux:table.cell>

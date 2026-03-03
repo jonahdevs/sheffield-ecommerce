@@ -43,7 +43,7 @@ new #[Layout('layouts.customer')] class extends Component {
         {{-- Favorite Products --}}
         <div class="flex items-center gap-4 group">
             <div
-                class="shrink-0 p-3 rounded-xl bg-rose-100 text-rose-600 
+                class="shrink-0 p-3 rounded-md bg-rose-100 text-rose-600 
                     group-hover:scale-105 transition">
                 <flux:icon.heart class="w-5 h-5" />
             </div>
@@ -58,7 +58,7 @@ new #[Layout('layouts.customer')] class extends Component {
         {{-- Total Orders --}}
         <div class="flex items-center gap-4 group">
             <div
-                class="shrink-0 p-3 rounded-xl bg-blue-100 text-blue-600 
+                class="shrink-0 p-3 rounded-md bg-blue-100 text-blue-600 
                     group-hover:scale-105 transition">
                 <flux:icon.package class="w-5 h-5" />
             </div>
@@ -73,7 +73,7 @@ new #[Layout('layouts.customer')] class extends Component {
         {{-- Total Reviews --}}
         <div class="flex items-center gap-4 group">
             <div
-                class="shrink-0 p-3 rounded-xl bg-amber-100 text-amber-600 
+                class="shrink-0 p-3 rounded-md bg-amber-100 text-amber-600 
                     group-hover:scale-105 transition">
                 <flux:icon.star class="w-5 h-5" />
             </div>
@@ -88,7 +88,7 @@ new #[Layout('layouts.customer')] class extends Component {
         {{-- Product Returns --}}
         <div class="flex items-center gap-4 group">
             <div
-                class="shrink-0 p-3 rounded-xl bg-zinc-100 text-zinc-600 
+                class="shrink-0 p-3 rounded-md bg-zinc-100 text-zinc-600 
                     group-hover:scale-105 transition">
                 <flux:icon.arrow-path-rounded-square class="w-5 h-5" />
             </div>

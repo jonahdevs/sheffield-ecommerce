@@ -6,17 +6,13 @@
 </head>
 
 <body class="min-h-screen bg-white dark:bg-zinc-800">
-    <flux:sidebar sticky collapsible class="border-e border-zinc-200 bg-white ">
-        <flux:sidebar.toggle class="lg:hidden" icon="x-mark" />
-
-        <a href="{{ route('admin.dashboard') }}" class="me-5 my-4 flex items-center space-x-2 rtl:space-x-reverse"
-            wire:navigate>
-            {{-- <x-app-logo /> --}}
+    <flux:sidebar sticky collapsible class="border-e border-zinc-200 ">
+        <flux:sidebar.header>
             <img src="{{ asset('logo-inverse.png') }}" alt="" class="w-40 h-auto mx-auto">
-        </a>
+        </flux:sidebar.header>
 
         <flux:sidebar.nav>
-            <flux:sidebar.group :heading="__('Platform')" class="grid">
+            <flux:sidebar.group :heading="__('Platform')" icon="squares-2x2" class="grid">
                 <flux:sidebar.item icon="home" :href="route('admin.dashboard')"
                     :current="request()->routeIs('admin.dashboard')" wire:navigate>{{ __('Dashboard') }}
                 </flux:sidebar.item>
@@ -229,9 +225,10 @@
     </flux:sidebar>
 
     <!-- Mobile User Menu -->
-    <flux:header class="bg-white dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-700">
-        <flux:sidebar.toggle class="lg:hidden" icon="bars-2" inset="left" />
-
+    <flux:header class="bg-white dark:bg-zinc-900/90 border-b border-zinc-200 dark:border-zinc-700">
+        {{-- <flux:sidebar.toggle class="lg:hidden" icon="bars-2" inset="left" /> --}}
+        <flux:sidebar.collapse
+            class="in-data-flux-sidebar-on-desktop:not-in-data-flux-sidebar-collapsed-desktop:-mr-2" />
         <flux:spacer />
 
         <flux:dropdown position="top" align="end">
@@ -278,8 +275,6 @@
     </flux:header>
 
     {{ $slot }}
-
-
 
     @fluxScripts
     @stack('scripts')

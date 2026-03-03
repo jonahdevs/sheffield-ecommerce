@@ -21,5 +21,8 @@
 <link rel="stylesheet" href="https://unpkg.com/easymde/dist/easymde.min.css">
 <script src="https://unpkg.com/easymde/dist/easymde.min.js"></script>
 
+<script src="https://cdn.tiny.cloud/1/c2ybu5wz30jxny8183sd8d7ne9vuxr5obaqz65xd06ohkqj8/tinymce/6/tinymce.min.js"
+    referrerpolicy="origin"></script>
+
 @vite(['resources/css/app.css', 'resources/js/app.js'])
 @fluxAppearance

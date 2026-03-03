@@ -12,6 +12,7 @@ enum PaymentStatus: string
     case QUEUED = 'queued';
     case REVERSED = 'reversed';
     case SUCCESS = 'success';
+    case CANCELLED = 'cancelled';
 
     public function label(): string
     {

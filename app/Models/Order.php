@@ -34,6 +34,7 @@ class Order extends Model
         'estimated_delivery_from',
         'estimated_delivery_to',
         'actual_delivery_date',
+        'expires_at'
     ];
 
     protected function casts(): array
@@ -87,6 +88,11 @@ class Order extends Model
             'id',            // local key on orders
             'product_id',    // local key on order_items
         );
+    }
+
+    public function deliveryOrder(): HasOne
+    {
+        return $this->hasOne(DeliveryOrder::class);
     }
 
 

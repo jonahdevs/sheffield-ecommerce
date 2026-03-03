@@ -2,6 +2,8 @@
 
 namespace App\Services\Payment\Gateways;
 
+use App\Enums\OrdersStatus;
+use App\Enums\PaymentStatus as EnumsPaymentStatus;
 use App\Models\Order;
 use App\Models\Payment;
 use App\Services\Payment\Contracts\PaymentGateway;
@@ -208,21 +210,24 @@ class PesawiseGateway implements PaymentGateway
         ]);
 
         $order->update([
-            'status' => 'confirmed',
-            'payment_status' => 'paid',
+            'status' => OrdersStatus::CONFIRMED,
+            'payment_status' => EnumsPaymentStatus::SUCCESS,
         ]);
     }
 
     private function markFailed(Order $order, array $data): void
     {
-        $order->payment?->update(['status' => 'failed', 'meta' => $data]);
-        $order->update(['payment_status' => 'failed']);
+        $order->payment?->update(['status' => EnumsPaymentStatus::FAILED, 'meta' => $data]);
+        $order->update([
+            'status'     => OrdersStatus::CANCELLED,
+            'payment_status' => EnumsPaymentStatus::FAILED
+        ]);
     }
 
     private function markCancelled(Order $order, array $data): void
     {
-        $order->payment?->update(['status' => 'cancelled', 'meta' => $data]);
-        $order->update(['status' => 'cancelled', 'payment_status' => 'cancelled']);
+        $order->payment?->update(['status' => EnumsPaymentStatus::CANCELLED, 'meta' => $data]);
+        $order->update(['status' => OrdersStatus::CANCELLED, 'payment_status' => EnumsPaymentStatus::CANCELLED]);
     }
 
     private function resolveCustomerName(Order $order): string

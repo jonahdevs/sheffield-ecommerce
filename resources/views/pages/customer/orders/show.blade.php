@@ -83,9 +83,10 @@ new #[Title('Order Details')] #[Layout('layouts.customer')] class extends Compon
                                     </flux:button>
 
                                     <flux:link href="{{ route('customer.orders.tracking', $order) }}" wire:navigate
-                                        class="text-sm!">
+                                        class="text-xs!">
                                         See
-                                        Status History</flux:link>
+                                        Status History
+                                    </flux:link>
                                 </div>
                             </div>
                         </div>

@@ -9,8 +9,10 @@
 
     <div x-show="expanded" x-cloak x-collapse class="p-5">
         <flux:field>
-            <x-my-markdown wire:model="form.description" />
+            {{-- <x-my-markdown wire:model="form.description" /> --}}
+            <x-my-editor wire:model="form.description" hint="The full product description" />
             <flux:error name="form.description" />
+
         </flux:field>
     </div>
 </flux:card>

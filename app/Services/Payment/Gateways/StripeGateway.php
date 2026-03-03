@@ -20,7 +20,7 @@ class StripeGateway implements PaymentGateway
 
     public function __construct(PaymentSettings $settings)
     {
-        $secretKey = $settings->stripe_secret_key ?? '';
+        $secretKey = $settings->stripe_secret_key ?? config('services.stripe.secret_key');
 
         $this->stripe = new StripeClient($secretKey);
         $this->webhookSecret = $settings->stripe_webhook_secret ?? '';
@@ -32,36 +32,40 @@ class StripeGateway implements PaymentGateway
     {
         try {
             $intent = $this->stripe->paymentIntents->create([
-                'amount' => $order->total_cents, // already in cents
-                'currency' => strtolower($order->currency ?? 'kes'),
-                'metadata' => [
-                    'order_id' => $order->id,
+                'amount'        => $order->total_cents,
+                'currency'      => strtolower($order->currency ?? 'kes'),
+                'metadata'      => [
+                    'order_id'        => $order->id,
                     'order_reference' => $order->reference,
                 ],
-                'description' => "Order #{$order->reference}",
+                'description'   => "Order #{$order->reference}",
                 'receipt_email' => $order->user?->email,
             ]);
 
+            // Store client_secret in payment_url — card payment page reads it
             $payment->update([
                 'gateway_order_id' => $intent->id,
-                'status' => 'processing',
-                'meta' => [
+                'payment_url'      => $intent->client_secret,
+                'status'           => 'processing',
+                'meta'             => [
                     'payment_intent_id' => $intent->id,
-                    'initiated_at' => now()->toISOString(),
+                    'initiated_at'      => now()->toISOString(),
                 ],
             ]);
 
-            Log::info('Stripe Payment Intent created', [
-                'order_id' => $order->id,
+            \Log::info('Stripe PaymentIntent created', [
+                'order_id'  => $order->id,
                 'intent_id' => $intent->id,
             ]);
 
-            // Return client secret — Stripe Elements uses this to confirm payment
-            return PaymentResponse::inline($intent->client_secret);
+            // Redirect to dedicated card payment page
+            return PaymentResponse::redirect(
+                route('checkout.card-payment', ['order' => $order->reference])
+            );
         } catch (\Throwable $e) {
-            Log::error('Stripe initiation failed', [
+            \Log::error('Stripe initiation failed', [
                 'order_id' => $order->id,
-                'error' => $e->getMessage(),
+                'error'    => $e->getMessage(),
             ]);
 
             return PaymentResponse::failed($e->getMessage());

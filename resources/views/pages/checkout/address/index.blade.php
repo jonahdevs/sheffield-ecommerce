@@ -140,6 +140,13 @@ new #[Layout('layouts.checkout')] class extends Component {
         </div>
     </div>
 
+    <div class="bg-white opacity-70 rounded-md border mb-4">
+        <div class="px-3 py-2 flex items-center gap-1">
+            <flux:icon.check-circle variant="solid" class="size-5 text-zinc-600" />
+            <flux:heading level="3">Payment Methods</flux:heading>
+        </div>
+    </div>
+
     <flux:link :href="route('products')" wire:navigate class="text-xs">Go back & continue shopping
     </flux:link>
 </div>

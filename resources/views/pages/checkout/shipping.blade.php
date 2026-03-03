@@ -21,13 +21,6 @@ new #[Layout('layouts.checkout')] class extends Component {
     public function mount(): void
     {
         $user = auth()->user();
-        $cartService = app(CartService::class);
-
-        // Guard: empty cart
-        if (!$cartService->hasItems()) {
-            $this->redirectRoute('cart', navigate: true);
-            return;
-        }
 
         // Guard: no address at all
         if ($user->addresses()->doesntExist()) {

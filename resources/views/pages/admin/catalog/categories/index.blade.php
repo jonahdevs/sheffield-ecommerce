@@ -235,10 +235,10 @@ new #[Title('Categories')] class extends Component {
     {{-- ALL TAB                                          --}}
     {{-- ================================================ --}}
     @if ($tab === 'all')
-        <flux:card class="p-0 **:data-flux-columns:bg-zinc-50">
+        <flux:card class="p-0 **:data-flux-columns:bg-zinc-50 dark:**:data-flux-columns:bg-zinc-800">
 
             {{-- Toolbar --}}
-            <div class="px-5 py-3 border-b flex items-center gap-3">
+            <div class="px-5 py-3 border-b dark:border-zinc-600 flex items-center gap-3">
                 <flux:input wire:model.live="search" icon="magnifying-glass" placeholder="Search categories..."
                     class="max-w-sm" clearable />
 
@@ -270,10 +270,10 @@ new #[Title('Categories')] class extends Component {
 
                             <flux:table.cell class="flex items-center gap-3 ps-4!">
                                 <div
-                                    class="shrink-0 w-9 h-9 rounded border bg-zinc-50 flex items-center justify-center overflow-hidden">
+                                    class="shrink-0 w-9 h-9 rounded border dark:border-zinc-600 bg-zinc-50 dark:bg-zinc-800 flex items-center justify-center overflow-hidden">
                                     @if ($category->image_icon)
                                         <img src="{{ asset('storage/' . $category->image_icon) }}"
-                                            class="w-full h-full object-contain p-0.5" />
+                                            class="w-full h-full object-contain p-0.5 dark:invert" />
                                     @else
                                         <flux:icon.folder variant="micro" class="text-zinc-400" />
                                     @endif
@@ -320,7 +320,7 @@ new #[Title('Categories')] class extends Component {
                             <flux:table.cell align="end" class="pe-4!">
                                 <flux:button variant="ghost" size="sm" icon="pencil-square"
                                     :href="route('admin.categories.edit', $category->id)" wire:navigate
-                                    icon-variant="outline" class="cursor-pointer text-sheffield-blue!" title="Edit" />
+                                    icon-variant="outline" class="cursor-pointer " title="Edit" />
 
                                 <flux:button variant="ghost" size="sm" icon="trash"
                                     wire:click="confirmDelete({{ $category->id }}, '{{ addslashes($category->name) }}')"
@@ -356,12 +356,12 @@ new #[Title('Categories')] class extends Component {
 
             {{-- Sortable list --}}
             <div class="flex-1">
-                <flux:card class="p-0">
+                <flux:card class="p-0 overflow-hidden">
 
                     {{-- Section toolbar --}}
-                    <div class="px-5 py-3 border-b flex items-center justify-between">
+                    <div class="px-5 py-3 border-b dark:border-zinc-600 flex items-center justify-between">
                         <div>
-                            <span class="font-medium">{{ $this->currentSection->label() }}</span>
+                            <span class="font-medium dark:text-zinc-200">{{ $this->currentSection->label() }}</span>
                             <span class="text-sm text-zinc-500 ml-2">
                                 {{ $this->sectionPlacements->count() }}
                                 {{ Str::plural('category', $this->sectionPlacements->count()) }}
@@ -393,10 +393,10 @@ new #[Title('Categories')] class extends Component {
                         @endif
                     </div>
 
-                    <div wire:sort="reorder" class="divide-y">
+                    <div wire:sort="reorder" class="divide-y dark:divide-zinc-600">
                         @forelse ($this->sectionPlacements as $placement)
                             <div wire:sort:item="{{ $placement->id }}" wire:key="placement-{{ $placement->id }}"
-                                class="flex items-center gap-3 px-4 py-3 hover:bg-zinc-50 group bg-white">
+                                class="flex items-center gap-3 px-4 py-3 hover:bg-zinc-50 dark:hover:bg-zinc-700 group bg-white dark:bg-zinc-800">
 
                                 {{-- Drag handle --}}
                                 <div wire:sort:handle
@@ -411,7 +411,7 @@ new #[Title('Categories')] class extends Component {
 
                                 {{-- Icon --}}
                                 <div
-                                    class="w-9 h-9 rounded border bg-zinc-50 flex items-center justify-center overflow-hidden shrink-0">
+                                    class="w-9 h-9 rounded border bg-zinc-50 dark:zinc-900/90 flex items-center justify-center overflow-hidden shrink-0">
                                     @if ($placement->category->image_icon)
                                         <img src="{{ asset('storage/' . $placement->category->image_icon) }}"
                                             class="w-full h-full object-contain p-0.5" />
@@ -422,7 +422,8 @@ new #[Title('Categories')] class extends Component {
 
                                 {{-- Name & slug --}}
                                 <div class="flex-1 min-w-0">
-                                    <p class="font-medium text-sm truncate">{{ $placement->category->name }}</p>
+                                    <p class="font-medium text-sm truncate dark:text-zinc-50">
+                                        {{ $placement->category->name }}</p>
                                     <p class="text-xs text-zinc-400 truncate">{{ $placement->category->slug }}</p>
                                 </div>
 
@@ -436,7 +437,7 @@ new #[Title('Categories')] class extends Component {
                                 <flux:button variant="ghost" size="sm" icon="pencil-square"
                                     :href="route('admin.categories.edit', $placement->category_id)" wire:navigate
                                     icon-variant="outline"
-                                    class="opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer text-sheffield-blue!"
+                                    class="opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer text-sheffield-blue! dark:text-sheffield-blue-light!"
                                     title="Edit category" />
 
                                 {{-- Remove from section --}}
@@ -459,13 +460,11 @@ new #[Title('Categories')] class extends Component {
 
                     </div>
 
-                    <div class="px-4 py-2 border-t bg-zinc-50">
+                    <div class="px-4 py-2 border-t dark:border-zinc-600 bg-zinc-50 dark:bg-zinc-900/90 ">
                         <p class="text-xs text-zinc-400">
                             Drag rows to reorder. Changes are saved automatically.
                         </p>
                     </div>
-
-
                 </flux:card>
             </div>
         </div>

@@ -5,14 +5,9 @@ use Illuminate\Support\Facades\Route;
 
 Route::livewire('/', 'pages::home.index')->name('home');
 
-Route::middleware('guest')->group(function () {
-    Route::get('/auth/{provider}/redirect', [SocialiteController::class, 'redirect'])
-        ->name('socialite.redirect')
-        ->where('provider', 'google|facebook');
-
-    Route::get('/auth/{provider}/callback', [SocialiteController::class, 'callback'])
-        ->name('socialite.callback')
-        ->where('provider', 'google|facebook');
+Route::middleware('guest')->controller(SocialiteController::class)->group(function () {
+    Route::get('/auth/{provider}/redirect',  'redirect')->name('socialite.redirect')->where('provider', 'google|facebook');
+    Route::get('/auth/{provider}/callback',  'callback')->name('socialite.callback')->where('provider', 'google|facebook');
 });
 
 // Products Routes
@@ -24,15 +19,12 @@ Route::livewire('compare', 'pages::product-compare')->name('products.compare');
 Route::livewire('/wishlist', 'pages::wishlist')->name('wishlist');
 Route::livewire('/cart', 'pages::cart')->name('cart');
 
-// Payment callbacks
-Route::livewire('/payment/success', 'pages::checkout.success')->name('checkout.success-page');
-Route::livewire('/payment/cancel', 'pages::checkout.cancel')->name('payment.cancel');
 
 Route::middleware(['auth', 'cart_not_empty', 'customer'])->group(function () {
     Route::livewire('/checkout/shipping', 'pages::checkout.shipping')->name('checkout.shipping');
     Route::livewire('/checkout/summary', 'pages::checkout.summary')->name('checkout.summary');
-    Route::livewire('/checkout/payment', 'pages::checkout.payment')->name('checkout.payment');
-    Route::livewire('/checkout/payment-methods', 'pages::checkout.payment-methods')->name('checkout.payment-methods');
+    Route::livewire('/checkout/card-payment', 'pages::checkout.card-payment')->name('checkout.card-payment');
+    Route::livewire('/checkout/payment-methods', 'pages::checkout.payment')->name('checkout.payment-methods');
 
     Route::livewire('customer/address/index', 'pages::customer.address.index')->name('customer.address.index');
     Route::livewire('/checkout/addresses', 'pages::checkout.address.index')->name('checkout.addresses');
@@ -54,9 +46,10 @@ Route::prefix('webhooks')->name('payment.webhook.')->withoutMiddleware([\App\Htt
 });
 
 // customer
-Route::middleware(['auth', 'customer'])->name('customer')->group(function () {
+Route::middleware(['auth', 'customer', 'verified'])->name('customer')->group(function () {
     Route::livewire('account', 'pages::customer.account')->name('.account');
 
+    Route::livewire('orders/{order}/confirmation', 'pages::customer.orders.confirmation')->name('.orders.confirmation');
     Route::livewire('orders', 'pages::customer.orders.index')->name('.orders.index');
     Route::livewire('orders/{order}', 'pages::customer.orders.show')->name('.orders.show');
     Route::livewire('orders/{order}/tracking', 'pages::customer.orders.tracking')->name('.orders.tracking');

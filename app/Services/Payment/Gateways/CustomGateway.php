@@ -4,10 +4,9 @@ namespace App\Services\Payment\Gateways;
 
 use App\Models\Order;
 use App\Models\Payment;
+use App\Services\CheckoutSession;
 use App\Services\Payment\Contracts\PaymentGateway;
-use App\Services\Payment\ValueObjects\PaymentResponse;
-use App\Services\Payment\ValueObjects\PaymentStatus;
-use App\Settings\PaymentSettings;
+use App\Services\Payment\ValueObjects\{PaymentResponse, PaymentStatus};
 use Illuminate\Http\Request;
 
 /**
@@ -47,24 +46,12 @@ class CustomGateway implements PaymentGateway
 
     private function resolveGateway(): PaymentGateway
     {
-        $method = session('checkout.payment_method', 'mpesa');
+        $method = app(CheckoutSession::class)->getPaymentMethod();
 
         return match ($method) {
             'card'  => $this->stripe,
             'mpesa' => $this->mpesa,
             default => $this->mpesa,
         };
-    }
-
-    //  Static helper — for the Livewire component 
-
-    public static function setPaymentMethod(string $method): void
-    {
-        session(['checkout.payment_method' => $method]); // 'mpesa' | 'card'
-    }
-
-    public static function getPaymentMethod(): string
-    {
-        return session('checkout.payment_method', 'mpesa');
     }
 }

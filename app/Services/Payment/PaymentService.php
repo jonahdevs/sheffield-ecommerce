@@ -1,18 +1,13 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Payment;
 
 use App\Models\Order;
 use App\Models\Payment;
 use App\Services\Payment\Contracts\PaymentGateway;
-use App\Services\Payment\Gateways\CustomGateway;
-use App\Services\Payment\Gateways\MpesaGateway;
-use App\Services\Payment\Gateways\PesawiseGateway;
-use App\Services\Payment\Gateways\StripeGateway;
-use App\Services\Payment\ValueObjects\PaymentResponse;
-use App\Services\Payment\ValueObjects\PaymentStatus;
+use App\Services\Payment\Gateways\{CustomGateway, MpesaGateway, PesawiseGateway, StripeGateway};
+use App\Services\Payment\ValueObjects\{PaymentResponse, PaymentStatus};
 use App\Settings\PaymentSettings;
-use Illuminate\Support\Facades\Log;
 
 /**
  * PaymentService
@@ -30,8 +25,7 @@ class PaymentService
 {
     public function __construct(
         private readonly PaymentSettings $settings,
-    ) {
-    }
+    ) {}
 
     //  Main operations
 
