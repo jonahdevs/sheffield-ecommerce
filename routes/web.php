@@ -6,8 +6,8 @@ use Illuminate\Support\Facades\Route;
 Route::livewire('/', 'pages::home.index')->name('home');
 
 Route::middleware('guest')->controller(SocialiteController::class)->group(function () {
-    Route::get('/auth/{provider}/redirect',  'redirect')->name('socialite.redirect')->where('provider', 'google|facebook');
-    Route::get('/auth/{provider}/callback',  'callback')->name('socialite.callback')->where('provider', 'google|facebook');
+    Route::get('/auth/{provider}/redirect', 'redirect')->name('socialite.redirect')->where('provider', 'google|facebook');
+    Route::get('/auth/{provider}/callback', 'callback')->name('socialite.callback')->where('provider', 'google|facebook');
 });
 
 // Products Routes
@@ -20,7 +20,7 @@ Route::livewire('/wishlist', 'pages::wishlist')->name('wishlist');
 Route::livewire('/cart', 'pages::cart')->name('cart');
 
 
-Route::middleware(['auth', 'customer'])->group(function () {
+Route::middleware(['auth', 'cart_not_empty', 'customer'])->group(function () {
     Route::livewire('/checkout/shipping', 'pages::checkout.shipping')->name('checkout.shipping');
     Route::livewire('/checkout/summary', 'pages::checkout.summary')->name('checkout.summary');
     Route::livewire('/checkout/card-payment', 'pages::checkout.card-payment')->name('checkout.card-payment');
@@ -35,14 +35,14 @@ Route::middleware(['auth', 'customer'])->group(function () {
 // Payment callbacks (redirect-back from gateway)
 Route::prefix('payment')->name('payment.')->group(function () {
     Route::get('/callback/success', [App\Http\Controllers\Payment\CallbackController::class, 'success'])->name('callback.success');
-    Route::get('/callback/cancel',  [App\Http\Controllers\Payment\CallbackController::class, 'cancel'])->name('callback.cancel');
+    Route::get('/callback/cancel', [App\Http\Controllers\Payment\CallbackController::class, 'cancel'])->name('callback.cancel');
 });
 
 // Webhooks — CSRF exempt, verified by gateway signatures
 Route::prefix('webhooks')->name('payment.webhook.')->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class])->group(function () {
     Route::post('/pesawise', App\Http\Controllers\Webhooks\PesawiseWebhookController::class)->name('pesawise');
-    Route::post('/mpesa',    App\Http\Controllers\Webhooks\MpesaWebhookController::class)->name('mpesa');
-    Route::post('/stripe',   App\Http\Controllers\Webhooks\StripeWebhookController::class)->name('stripe');
+    Route::post('/mpesa', App\Http\Controllers\Webhooks\MpesaWebhookController::class)->name('mpesa');
+    Route::post('/stripe', App\Http\Controllers\Webhooks\StripeWebhookController::class)->name('stripe');
 });
 
 // customer

@@ -15,52 +15,52 @@ use Illuminate\Support\Facades\Log;
 
 class MpesaGateway implements PaymentGateway
 {
-    private bool   $isProduction;
-    private string $consumerKey;
-    private string $consumerSecret;
+    private ?bool $isProduction;
+    private ?string $consumerKey;
+    private ?string $consumerSecret;
     private string $shortcode;
-    private string $passkey;
+    private ?string $passkey;
     private string $callbackUrl;
     private string $baseUrl;
 
     public function __construct(PaymentSettings $settings)
     {
-        $this->isProduction   = ($settings->mpesa_env ?: config('services.mpesa.env')) === 'production';
-        $this->consumerKey    = $settings->mpesa_consumer_key ?? config('services.mpesa.consumer_key');
+        $this->isProduction = ($settings->mpesa_env ?: config('services.mpesa.env')) === 'production';
+        $this->consumerKey = $settings->mpesa_consumer_key ?? config('services.mpesa.consumer_key');
         $this->consumerSecret = $settings->mpesa_consumer_secret ?? config('services.mpesa.consumer_secret');
-        $this->shortcode      = $settings->mpesa_shortcode ?? config('services.mpesa.shortcode');
-        $this->passkey        = $settings->mpesa_passkey ?? config('services.mpesa.passkey');
-        $this->callbackUrl    = $settings->mpesa_callback_url ?? config('services.mpesa.callback_url');
+        $this->shortcode = $settings->mpesa_shortcode ?? config('services.mpesa.shortcode');
+        $this->passkey = $settings->mpesa_passkey ?? config('services.mpesa.passkey');
+        $this->callbackUrl = $settings->mpesa_callback_url ?? config('services.mpesa.callback_url');
 
         $this->baseUrl = $this->isProduction
             ? 'https://api.safaricom.co.ke'
             : 'https://sandbox.safaricom.co.ke';
     }
 
-    //  Interface implementation 
+    //  Interface implementation
 
     public function initiate(Order $order, Payment $payment): PaymentResponse
     {
         try {
-            $phone     = $this->normalisePhone($this->resolvePhone($order));
-            $amount    = (int) ceil($order->total_cents / 100); // M-Pesa needs whole KES
+            $phone = $this->normalisePhone($this->resolvePhone($order));
+            $amount = (int) ceil($order->total_cents / 100); // M-Pesa needs whole KES
             $timestamp = now()->format('YmdHis');
-            $password  = base64_encode($this->shortcode . $this->passkey . $timestamp);
+            $password = base64_encode($this->shortcode . $this->passkey . $timestamp);
 
-            $token    = $this->getAccessToken();
+            $token = $this->getAccessToken();
             $response = Http::withToken($token)
                 ->post("{$this->baseUrl}/mpesa/stkpush/v1/processrequest", [
                     'BusinessShortCode' => $this->shortcode,
-                    'Password'          => $password,
-                    'Timestamp'         => $timestamp,
-                    'TransactionType'   => 'CustomerPayBillOnline',
-                    'Amount'            => $amount,
-                    'PartyA'            => $phone,
-                    'PartyB'            => $this->shortcode,
-                    'PhoneNumber'       => $phone,
-                    'CallBackURL'       => $this->callbackUrl,
-                    'AccountReference'  => $order->reference,
-                    'TransactionDesc'   => "Order #{$order->reference}",
+                    'Password' => $password,
+                    'Timestamp' => $timestamp,
+                    'TransactionType' => 'CustomerPayBillOnline',
+                    'Amount' => $amount,
+                    'PartyA' => $phone,
+                    'PartyB' => $this->shortcode,
+                    'PhoneNumber' => $phone,
+                    'CallBackURL' => $this->callbackUrl,
+                    'AccountReference' => $order->reference,
+                    'TransactionDesc' => "Order #{$order->reference}",
                 ]);
 
             $data = $response->json();
@@ -75,18 +75,18 @@ class MpesaGateway implements PaymentGateway
 
             $payment->update([
                 'transaction_id' => $checkoutRequestId,
-                'status'         => 'processing',
-                'meta'           => [
-                    'checkout_request_id'  => $checkoutRequestId,
-                    'merchant_request_id'  => $data['MerchantRequestID'],
-                    'customer_message'     => $data['CustomerMessage'],
-                    'phone'                => $phone,
-                    'initiated_at'         => now()->toISOString(),
+                'status' => 'processing',
+                'meta' => [
+                    'checkout_request_id' => $checkoutRequestId,
+                    'merchant_request_id' => $data['MerchantRequestID'],
+                    'customer_message' => $data['CustomerMessage'],
+                    'phone' => $phone,
+                    'initiated_at' => now()->toISOString(),
                 ],
             ]);
 
             Log::info('M-Pesa STK push initiated', [
-                'order_id'            => $order->id,
+                'order_id' => $order->id,
                 'checkout_request_id' => $checkoutRequestId,
             ]);
 
@@ -94,7 +94,7 @@ class MpesaGateway implements PaymentGateway
         } catch (\Throwable $e) {
             Log::error('M-Pesa initiation failed', [
                 'order_id' => $order->id,
-                'error'    => $e->getMessage(),
+                'error' => $e->getMessage(),
             ]);
 
             return PaymentResponse::failed($e->getMessage());
@@ -106,30 +106,32 @@ class MpesaGateway implements PaymentGateway
         // M-Pesa verification done via callback — use payment record status
         $payment = \App\Models\Payment::where('transaction_id', $reference)->first();
 
-        if (! $payment) return PaymentStatus::pending();
+        if (!$payment)
+            return PaymentStatus::pending();
 
         return match ($payment->status) {
-            'paid'       => PaymentStatus::paid($payment->transaction_id),
-            'failed'     => PaymentStatus::failed(),
-            'cancelled'  => PaymentStatus::cancelled(),
+            'paid' => PaymentStatus::paid($payment->transaction_id),
+            'failed' => PaymentStatus::failed(),
+            'cancelled' => PaymentStatus::cancelled(),
             'processing' => PaymentStatus::processing(),
-            default      => PaymentStatus::pending(),
+            default => PaymentStatus::pending(),
         };
     }
 
     public function handleWebhook(Request $request): void
     {
-        $data   = $request->json()->all();
+        $data = $request->json()->all();
         $result = $data['Body']['stkCallback'] ?? null;
 
-        if (! $result) return;
+        if (!$result)
+            return;
 
         $checkoutRequestId = $result['CheckoutRequestID'];
-        $resultCode        = $result['ResultCode'];
+        $resultCode = $result['ResultCode'];
 
         $payment = \App\Models\Payment::where('transaction_id', $checkoutRequestId)->first();
 
-        if (! $payment) {
+        if (!$payment) {
             Log::warning('M-Pesa webhook: payment not found', ['checkout_request_id' => $checkoutRequestId]);
             return;
         }
@@ -138,18 +140,18 @@ class MpesaGateway implements PaymentGateway
 
         if ($resultCode === 0) {
             // Extract M-Pesa receipt from callback metadata
-            $items  = collect($result['CallbackMetadata']['Item'] ?? []);
+            $items = collect($result['CallbackMetadata']['Item'] ?? []);
             $receipt = $items->firstWhere('Name', 'MpesaReceiptNumber')['Value'] ?? null;
 
             $payment->update([
-                'status'         => 'paid',
+                'status' => 'paid',
                 'transaction_id' => $receipt ?? $checkoutRequestId,
-                'paid_at'        => now(),
-                'meta'           => array_merge($payment->meta ?? [], $result),
+                'paid_at' => now(),
+                'meta' => array_merge($payment->meta ?? [], $result),
             ]);
 
             $order?->update([
-                'status'         => 'confirmed',
+                'status' => 'confirmed',
                 'payment_status' => 'paid',
             ]);
 
@@ -162,7 +164,7 @@ class MpesaGateway implements PaymentGateway
         }
     }
 
-    //  Private helpers 
+    //  Private helpers
 
     private function getAccessToken(): string
     {
