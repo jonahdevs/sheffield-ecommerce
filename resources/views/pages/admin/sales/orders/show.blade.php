@@ -5,6 +5,7 @@ use App\Models\{Order, DeliveryOrder};
 use Illuminate\Validation\Rule;
 use Livewire\Attributes\{Computed, Title};
 use Livewire\Component;
+use Illuminate\Support\Facades\DB;
 
 new #[Title('Order Details')] class extends Component {
     public Order $order;
@@ -47,8 +48,14 @@ new #[Title('Order Details')] class extends Component {
         }
 
         try {
-            // transitionTo() creates the history record automatically — don't duplicate
-            $this->order->transitionTo($newStatus, notes: $this->note ?: null, changedByType: 'user');
+            DB::transaction(function () use ($newStatus) {
+                if ($newStatus === OrdersStatus::PROCESSING) {
+                    $this->createDeliveryOrder();
+                }
+
+                $this->order->transitionTo($newStatus, notes: $this->note ?: null, changedByType: 'user');
+            });
+
             $this->order->refresh();
             $this->note = '';
 
@@ -64,40 +71,21 @@ new #[Title('Order Details')] class extends Component {
         }
     }
 
-    public function processOrder(): void
+    private function createDeliveryOrder(): void
     {
-        if (!$this->order->status->canTransitionTo(OrdersStatus::PROCESSING)) {
-            $this->dispatch('notify', variant: 'danger', message: 'Order cannot be processed.');
-            return;
+        $snapshot = $this->order->shipping_snapshot;
+
+        if (!$snapshot) {
+            throw new \RuntimeException('Cannot process order — shipping snapshot is missing.');
         }
 
-        try {
-            DB::transaction(function () {
-                // 1. Create DeliveryOrder from shipping_snapshot
-                $snapshot = $this->order->shipping_snapshot;
-
-                DeliveryOrder::create([
-                    'order_id' => $this->order->id,
-                    'shipping_method_id' => $snapshot['method_id'],
-                    'shipping_rate_id' => $snapshot['rate_id'],
-                    'pickup_station_id' => $snapshot['station_id'],
-                    'status' => DeliveryOrderStatus::PENDING,
-                    'estimated_delivery_at' => now()
-                        ->addDays
-                        // parse from delivery_window e.g. "1-2 days"
-                        (),
-                ]);
-
-                // 2. Transition order
-                $this->order->transitionTo(OrdersStatus::PROCESSING, notes: 'Order processed by admin', changedByType: 'user');
-            });
-
-            $this->order->refresh();
-            $this->dispatch('notify', variant: 'success', message: 'Order is now being processed.');
-        } catch (\Throwable $e) {
-            $this->dispatch('notify', variant: 'danger', message: 'Failed to process order.');
-            logger()->error('processOrder failed', ['order_id' => $this->order->id, 'error' => $e->getMessage()]);
-        }
+        DeliveryOrder::create([
+            'order_id' => $this->order->id,
+            'shipping_method_id' => $snapshot['method_id'],
+            'shipping_rate_id' => $snapshot['rate_id'],
+            'pickup_station_id' => $snapshot['station_id'] ?? null,
+            'status' => DeliveryOrderStatus::PENDING,
+        ]);
     }
 };
 ?>
@@ -146,13 +134,6 @@ new #[Title('Order Details')] class extends Component {
                             Edit Order
                         </flux:button>
                     </flux:modal.trigger>
-
-                    @if ($order->status === OrdersStatus::CONFIRMED)
-                        <flux:button wire:click="processOrder" variant="primary" icon="arrow-path"
-                            class="cursor-pointer">
-                            Process Order
-                        </flux:button>
-                    @endif
                 </div>
             </flux:card>
 
@@ -240,16 +221,18 @@ new #[Title('Order Details')] class extends Component {
                 </div>
 
                 <div class="p-5">
-                    {{-- Single vertical line behind all steps --}}
                     <div class="relative">
-                        <div class="absolute left-4 top-0 bottom-0 w-px bg-zinc-200 dark:bg-zinc-700 z-0"></div>
-
                         <div class="space-y-0">
                             @foreach ($timelineStatuses as $index => $step)
                                 @php
                                     $history = $order->statusHistories->firstWhere('to_status', $step);
                                     $reached = (bool) $history;
                                     $isLast = $index === count($timelineStatuses) - 1;
+                                    $nextStep = $timelineStatuses[$index + 1] ?? null;
+                                    $nextReached = $nextStep
+                                        ? (bool) $order->statusHistories->firstWhere('to_status', $nextStep)
+                                        : false;
+
                                     $stepIcon = match ($step) {
                                         'pending' => 'document-check',
                                         'confirmed' => 'check-circle',
@@ -268,19 +251,36 @@ new #[Title('Order Details')] class extends Component {
                                     };
                                 @endphp
 
-                                <div class="relative flex gap-4 {{ $isLast ? 'pb-0' : 'pb-8' }}">
+                                <div class="relative flex gap-4 {{ $isLast ? '' : 'pb-8' }}">
 
-                                    {{-- Dot --}}
-                                    <div
-                                        class="relative z-10 shrink-0 w-8 h-8 rounded-full flex items-center justify-center
-                                        {{ $reached ? 'bg-zinc-900 dark:bg-white text-white dark:text-zinc-900' : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-400' }}">
-                                        <flux:icon name="{{ $stepIcon }}" class="size-4" />
+                                    {{-- Dot + connecting line --}}
+                                    <div class="relative shrink-0 flex flex-col items-center">
+
+                                        {{-- Dot --}}
+                                        <div @class([
+                                            'relative z-10 w-8 h-8 rounded-full flex items-center justify-center transition-colors',
+                                            'bg-zinc-900 dark:bg-white text-white dark:text-zinc-900' => $reached,
+                                            'bg-zinc-100 dark:bg-zinc-800 text-zinc-400' => !$reached,
+                                        ])>
+                                            <flux:icon name="{{ $stepIcon }}" class="size-4" />
+                                        </div>
+
+                                        {{-- Connecting line to next step — filled if next step is reached --}}
+                                        @if (!$isLast)
+                                            <div
+                                                class="w-px flex-1 mt-1 transition-colors {{ $nextReached ? 'bg-zinc-900 dark:bg-white' : 'bg-zinc-200 dark:bg-zinc-700' }}">
+                                            </div>
+                                        @endif
                                     </div>
 
                                     {{-- Content --}}
-                                    <div class="flex-1 flex items-start justify-between gap-4 pt-1">
+                                    <div
+                                        class="flex-1 flex items-start justify-between gap-4 pt-1 {{ $isLast ? '' : 'pb-1' }}">
                                         <div>
-                                            <flux:text class="{{ $reached ? 'font-medium' : 'text-zinc-400' }}">
+                                            <flux:text @class([
+                                                'font-medium' => $reached,
+                                                'text-zinc-400' => !$reached,
+                                            ])>
                                                 {{ $label }}
                                             </flux:text>
                                             @if ($history?->notes)

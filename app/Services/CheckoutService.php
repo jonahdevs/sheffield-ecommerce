@@ -148,6 +148,16 @@ class CheckoutService
                 'expires_at' => now()->addMinutes(30),
             ]);
 
+            $order->statusHistories()->create([
+                'from_status'        => null,
+                'to_status'          => OrdersStatus::PENDING->value,
+                'changed_by_user_id' => auth()->id(),
+                'changed_by_type'    => 'user',
+                'notes'              => 'Order placed by customer',
+            ]);
+
+
+
             // 3. Create OrderItems + decrement stock
             foreach ($cartItems as $item) {
                 $product = Product::lockForUpdate()->find($item->product_id);

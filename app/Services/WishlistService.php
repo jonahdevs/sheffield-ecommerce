@@ -51,6 +51,20 @@ class WishlistService
     }
 
     /**
+     * Get all wishlist product IDs for the current user/session
+     */
+    public function ids(): array
+    {
+        if (Auth::check()) {
+            return WishlistItem::where('user_id', Auth::id())
+                ->pluck('product_id')
+                ->all();
+        }
+
+        return session('wishlist', []);
+    }
+
+    /**
      * Toggle product in wishlist (add if not present, remove if present)
      * Returns true if added, false if removed
      */

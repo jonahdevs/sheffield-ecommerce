@@ -1,34 +1,75 @@
 <?php
+
 use App\Models\Order;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Livewire\Attributes\{Title, Computed};
+use Illuminate\Support\Facades\Response;
+use App\Enums\OrdersStatus;
 
 new #[Title('Orders')] class extends Component {
     use WithPagination;
 
-    public $search = '';
-    public $statusFilter = 'all';
+    public string $search = '';
+    public string $statusFilter = 'all';
+    public string $dateFrom = '';
+    public string $dateTo = '';
+    public array $selected = [];
+    public bool $selectAll = false;
+
+    public function updatedSearch(): void
+    {
+        $this->resetPage();
+    }
+    public function updatedStatusFilter(): void
+    {
+        $this->resetPage();
+    }
+    public function updatedDateFrom(): void
+    {
+        $this->resetPage();
+    }
+    public function updatedDateTo(): void
+    {
+        $this->resetPage();
+    }
+
+    public function updatedSelectAll(bool $value): void
+    {
+        $this->selected = $value ? $this->orders->pluck('id')->map(fn($id) => (string) $id)->all() : [];
+    }
+
+    //  Computed
 
     #[Computed]
     public function orders()
     {
         return Order::query()
-            ->with(['user', 'payment', 'items'])
-            ->when($this->search, function ($q) {
-                $q->where('reference', 'like', "%{$this->search}%")->orWhereHas('user', function ($query) {
-                    $query->where('name', 'like', "%{$this->search}%")->orWhere('email', 'like', "%{$this->search}%");
-                });
-            })
-            ->when($this->statusFilter !== 'all', function ($q) {
-                $q->where('status', $this->statusFilter);
-            })
+            ->with(['user', 'payment'])
+            ->withCount('items')
+            ->when($this->search, fn($q) => $q->where('reference', 'like', "%{$this->search}%")->orWhereHas('user', fn($u) => $u->where('name', 'like', "%{$this->search}%")->orWhere('email', 'like', "%{$this->search}%")))
+            ->when($this->statusFilter !== 'all', fn($q) => $q->where('status', $this->statusFilter))
+            ->when($this->dateFrom, fn($q) => $q->whereDate('created_at', '>=', $this->dateFrom))
+            ->when($this->dateTo, fn($q) => $q->whereDate('created_at', '<=', $this->dateTo))
             ->latest()
             ->paginate(15);
     }
 
     #[Computed]
-    public function statusOptions()
+    public function stats(): array
+    {
+        $today = now()->toDateString();
+
+        return [
+            'total' => Order::count(),
+            'revenue' => Order::sum('total_cents') / 100,
+            'today' => Order::whereDate('created_at', $today)->count(),
+            'pending' => Order::whereIn('status', ['pending', 'processing'])->count(),
+        ];
+    }
+
+    #[Computed]
+    public function statusOptions(): array
     {
         return [
             'all' => 'All Orders',
@@ -41,24 +82,94 @@ new #[Title('Orders')] class extends Component {
     }
 
     #[Computed]
-    public function statusCounts()
+    public function statusCounts(): array
     {
-        return [
-            'all' => Order::count(),
-            'pending' => Order::where('status', 'pending')->count(),
-            'processing' => Order::where('status', 'processing')->count(),
-            'shipped' => Order::where('status', 'shipped')->count(),
-            'delivered' => Order::where('status', 'delivered')->count(),
-            'cancelled' => Order::where('status', 'cancelled')->count(),
-        ];
+        $counts = Order::query()->selectRaw('status, count(*) as count')->groupBy('status')->pluck('count', 'status')->toArray();
+
+        return array_merge(['all' => array_sum($counts)], $counts);
+    }
+
+    //  Bulk Actions
+
+    public function bulkMarkProcessing(): void
+    {
+        $this->bulkUpdateStatus('processing');
+    }
+
+    public function bulkMarkShipped(): void
+    {
+        $this->bulkUpdateStatus('shipped');
+    }
+
+    public function bulkMarkCancelled(): void
+    {
+        $this->bulkUpdateStatus('cancelled');
+    }
+
+    private function bulkUpdateStatus(string $status): void
+    {
+        if (empty($this->selected)) {
+            return;
+        }
+
+        Order::whereIn('id', $this->selected)->update(['status' => $status]);
+
+        $count = count($this->selected);
+        $this->selected = [];
+        $this->selectAll = false;
+        unset($this->orders, $this->statusCounts, $this->stats);
+
+        $this->dispatch('notify', variant: 'success', message: "{$count} orders updated to {$status}.");
+    }
+
+    //  CSV Export
+
+    public function export()
+    {
+        $query = Order::query()
+            ->with(['user', 'payment'])
+            ->when($this->search, fn($q) => $q->where('reference', 'like', "%{$this->search}%")->orWhereHas('user', fn($u) => $u->where('name', 'like', "%{$this->search}%")->orWhere('email', 'like', "%{$this->search}%")))
+            ->when($this->statusFilter !== 'all', fn($q) => $q->where('status', $this->statusFilter))
+            ->when($this->dateFrom, fn($q) => $q->whereDate('created_at', '>=', $this->dateFrom))
+            ->when($this->dateTo, fn($q) => $q->whereDate('created_at', '<=', $this->dateTo))
+            ->latest()
+            ->get();
+
+        $rows = [];
+        $rows[] = ['Reference', 'Customer', 'Email', 'Status', 'Payment Status', 'Gateway', 'Total', 'Items', 'Date'];
+
+        foreach ($query as $order) {
+            $rows[] = [$order->reference, $order->user->name, $order->user->email, $order->status->label(), $order->payment?->status?->label() ?? 'N/A', ucfirst($order->payment?->gateway ?? 'N/A'), $order->total, $order->items_count ?? $order->items()->count(), $order->created_at->format('Y-m-d H:i')];
+        }
+
+        $filename = 'orders-' . now()->format('Y-m-d') . '.csv';
+        $handle = fopen('php://temp', 'r+');
+
+        foreach ($rows as $row) {
+            fputcsv($handle, $row);
+        }
+
+        rewind($handle);
+        $csv = stream_get_contents($handle);
+        fclose($handle);
+
+        return Response::streamDownload(fn() => print $csv, $filename, ['Content-Type' => 'text/csv']);
+    }
+
+    public function clearFilters(): void
+    {
+        $this->search = '';
+        $this->statusFilter = 'all';
+        $this->dateFrom = '';
+        $this->dateTo = '';
+        $this->resetPage();
     }
 };
 ?>
 
 <div>
     <flux:breadcrumbs class="mb-2">
-        <flux:breadcrumbs.item :href="route('admin.dashboard')" icon="home" icon-variant="outline" wire:navigate>
-        </flux:breadcrumbs.item>
+        <flux:breadcrumbs.item :href="route('admin.dashboard')" icon="home" icon-variant="outline" wire:navigate />
         <flux:breadcrumbs.item>Orders</flux:breadcrumbs.item>
     </flux:breadcrumbs>
 
@@ -67,33 +178,98 @@ new #[Title('Orders')] class extends Component {
             <flux:heading size="xl" class="mb-1">Orders</flux:heading>
             <flux:subheading>Manage customer orders, track shipments, and process payments.</flux:subheading>
         </div>
+        <flux:button wire:click="export" icon="arrow-down-tray" variant="ghost" size="sm">
+            Export CSV
+        </flux:button>
+    </div>
+
+    {{-- Stats Row --}}
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <flux:card class="p-4">
+            <flux:text class="text-xs text-zinc-500 uppercase tracking-wide mb-1">Total Orders</flux:text>
+            <flux:heading size="xl">{{ number_format($this->stats['total']) }}</flux:heading>
+        </flux:card>
+        <flux:card class="p-4">
+            <flux:text class="text-xs text-zinc-500 uppercase tracking-wide mb-1">Total Revenue</flux:text>
+            <flux:heading size="xl">{{ format_currency($this->stats['revenue']) }}</flux:heading>
+        </flux:card>
+        <flux:card class="p-4">
+            <flux:text class="text-xs text-zinc-500 uppercase tracking-wide mb-1">Orders Today</flux:text>
+            <flux:heading size="xl">{{ number_format($this->stats['today']) }}</flux:heading>
+        </flux:card>
+        <flux:card class="p-4 border-l-2 border-amber-400">
+            <flux:text class="text-xs text-zinc-500 uppercase tracking-wide mb-1">Pending / Processing</flux:text>
+            <flux:heading size="xl">{{ number_format($this->stats['pending']) }}</flux:heading>
+        </flux:card>
     </div>
 
     {{-- Status Filter Tabs --}}
-    <div class="flex gap-2 mb-6 overflow-x-auto">
+    <div class="flex gap-2 mb-4 overflow-x-auto pb-1">
         @foreach ($this->statusOptions as $status => $label)
-            <flux:button wire:click="$set('statusFilter', '{{ $status }}')" class="cursor-pointer"
-                :loading="false" variant="{{ $statusFilter === $status ? 'primary' : 'ghost' }}" size="sm">
+            <flux:button wire:click="$set('statusFilter', '{{ $status }}')"
+                variant="{{ $statusFilter === $status ? 'primary' : 'ghost' }}" size="sm"
+                class="cursor-pointer shrink-0">
                 {{ $label }}
                 <flux:badge size="sm" :color="$statusFilter === $status ? 'white' : 'zinc'">
-                    {{ $this->statusCounts[$status] }}
+                    {{ $this->statusCounts[$status] ?? 0 }}
                 </flux:badge>
             </flux:button>
         @endforeach
     </div>
 
-
-    {{-- Orders Table --}}
-    <flux:card class="p-0 mt-6 **:data-flux-columns:bg-zinc-50">
-        {{-- Search --}}
-        <div class="flex items-center gap-4 px-5 py-3 border-b">
+    {{-- Filters Row --}}
+    <flux:card class="p-0 mt-4">
+        <div class="flex flex-wrap justify-between items-center gap-3 px-4 py-3 border-b">
             <flux:input wire:model.live.debounce.300ms="search" icon="magnifying-glass"
-                placeholder="Search by order reference, customer name or email..." class="max-w-md" />
+                placeholder="Search reference, name or email..." class="max-w-xs" />
+
+            <div class="flex items-center gap-3">
+                <flux:input wire:model.live="dateFrom" type="date" class="max-w-40" />
+
+                <flux:input wire:model.live="dateTo" type="date" class="max-w-40" />
+
+                @if ($search || $dateFrom || $dateTo || $statusFilter !== 'all')
+                    <flux:button wire:click="clearFilters" variant="ghost" size="sm" icon="x-mark">
+                        Clear
+                    </flux:button>
+                @endif
+
+                {{-- Bulk Actions --}}
+                @if (count($selected) > 0)
+                    <div class="ml-auto flex items-center gap-2">
+                        <flux:text class="text-sm text-zinc-500">
+                            {{ count($selected) }} selected
+                        </flux:text>
+                        <flux:dropdown>
+                            <flux:button variant="filled" size="sm" icon-trailing="chevron-down">
+                                Bulk Actions
+                            </flux:button>
+                            <flux:menu>
+                                <flux:menu.item wire:click="bulkMarkProcessing" icon="arrow-path">
+                                    Mark as Processing
+                                </flux:menu.item>
+                                <flux:menu.item wire:click="bulkMarkShipped" icon="truck">
+                                    Mark as Shipped
+                                </flux:menu.item>
+                                <flux:menu.separator />
+                                <flux:menu.item wire:click="bulkMarkCancelled" icon="x-circle" variant="danger">
+                                    Mark as Cancelled
+                                </flux:menu.item>
+                            </flux:menu>
+                        </flux:dropdown>
+                    </div>
+                @endif
+            </div>
         </div>
 
+        {{-- Table --}}
         <flux:table :paginate="$this->orders">
             <flux:table.columns>
-                <flux:table.column class="ps-4!">Order</flux:table.column>
+                <flux:table.column class="ps-4! w-8">
+                    <input type="checkbox" wire:model.live="selectAll"
+                        class="rounded border-zinc-300 accent-zinc-800" />
+                </flux:table.column>
+                <flux:table.column>Order</flux:table.column>
                 <flux:table.column>Customer</flux:table.column>
                 <flux:table.column>Date</flux:table.column>
                 <flux:table.column>Items</flux:table.column>
@@ -105,12 +281,17 @@ new #[Title('Orders')] class extends Component {
 
             <flux:table.rows>
                 @forelse ($this->orders as $order)
-                    <flux:table.row :key="$order->id">
-                        {{-- Order Reference --}}
+                    <flux:table.row :key="$order->id" @class(['bg-blue-50/50' => in_array((string) $order->id, $selected)])>
+
+                        {{-- Checkbox --}}
                         <flux:table.cell class="ps-4!">
-                            <div class="font-medium text-zinc-800 dark:text-white">
-                                #{{ $order->reference }}
-                            </div>
+                            <input type="checkbox" wire:model.live="selected" value="{{ $order->id }}"
+                                class="rounded border-zinc-300 accent-zinc-800" />
+                        </flux:table.cell>
+
+                        {{-- Reference --}}
+                        <flux:table.cell>
+                            <div class="font-medium text-zinc-800">#{{ $order->reference }}</div>
                             @if ($order->is_pickup)
                                 <flux:badge size="sm" color="blue" class="mt-1">Pickup</flux:badge>
                             @endif
@@ -124,13 +305,13 @@ new #[Title('Orders')] class extends Component {
 
                         {{-- Date --}}
                         <flux:table.cell>
-                            <div>{{ $order->placed_at?->format('M d, Y') ?? 'N/A' }}</div>
-                            <div class="text-xs text-zinc-500">{{ $order->placed_at?->format('h:i A') }}</div>
+                            <div>{{ $order->created_at->format('M d, Y') }}</div>
+                            <div class="text-xs text-zinc-500">{{ $order->created_at->format('h:i A') }}</div>
                         </flux:table.cell>
 
-                        {{-- Items Count --}}
+                        {{-- Items --}}
                         <flux:table.cell>
-                            {{ $order->items->count() }} {{ Str::plural('item', $order->items->count()) }}
+                            {{ $order->items_count }} {{ Str::plural('item', $order->items_count) }}
                         </flux:table.cell>
 
                         {{-- Total --}}
@@ -138,14 +319,14 @@ new #[Title('Orders')] class extends Component {
                             <div class="font-medium">{{ format_currency($order->total) }}</div>
                         </flux:table.cell>
 
-                        {{-- Payment Status --}}
+                        {{-- Payment --}}
                         <flux:table.cell>
                             @if ($order->payment)
                                 <flux:badge size="sm" variant="flat" :color="$order->payment->status->color()">
                                     {{ $order->payment->status?->label() }}
                                 </flux:badge>
                             @else
-                                <flux:badge size="sm" color="gray">No Payment</flux:badge>
+                                <flux:badge size="sm" color="zinc">No Payment</flux:badge>
                             @endif
                         </flux:table.cell>
 
@@ -159,16 +340,16 @@ new #[Title('Orders')] class extends Component {
                         {{-- Actions --}}
                         <flux:table.cell align="end" class="pe-4!">
                             <flux:button variant="ghost" size="sm" icon="eye" icon-variant="outline"
-                                href="{{ route('admin.orders.show', $order) }}" wire:navigate />
+                                :href="route('admin.orders.show', $order)" wire:navigate />
                         </flux:table.cell>
                     </flux:table.row>
                 @empty
                     <flux:table.row>
-                        <flux:table.cell colspan="8" class="text-center py-12">
+                        <flux:table.cell colspan="9" class="text-center py-12">
                             <div class="flex flex-col items-center justify-center text-zinc-500">
                                 <flux:icon.inbox class="w-12 h-12 mb-3 text-zinc-400" />
                                 <p class="text-lg font-medium">No orders found</p>
-                                <p class="text-sm mt-1">Orders will appear here once customers place them.</p>
+                                <p class="text-sm mt-1">Try adjusting your filters or search query.</p>
                             </div>
                         </flux:table.cell>
                     </flux:table.row>

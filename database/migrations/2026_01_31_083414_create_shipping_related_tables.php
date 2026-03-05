@@ -556,6 +556,7 @@ return new class extends Migration {
             $table->unsignedBigInteger('order_id');
 
             $table->foreignId('logistics_provider_id')
+                ->nullable()
                 ->constrained('logistics_providers')
                 ->restrictOnDelete();
 
