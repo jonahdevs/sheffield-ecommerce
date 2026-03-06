@@ -36,26 +36,27 @@ jobs:
         run:
           npm run build
 
-          # Deploy app to ecommerce_files (exclude public entirely)
-      - name: 📂 Deploy Laravel Files to App Dir
-        uses: burnett01/rsync-deployments@6.0.0
+            - name: 📂 Deploy App Files (FTP)
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.6
         with:
-          switches: -avzr --delete --exclude='.git*' --exclude='.github' --exclude='node_modules' --exclude='.env*' --exclude='public/**' --exclude='storage/logs/*'
-          path: ./
-          remote_path: ${{ secrets.APP_ROOT_DIR }}
-          remote_host: ${{ secrets.FTP_SERVER }}
-          remote_port: ${{ secrets.SSH_PORT }}
-          remote_user: ${{ secrets.FTP_USERNAME }}
-          remote_key: ${{ secrets.SSH_PRIVATE_KEY }}
-          remote_key_pass: ${{ secrets.SSH_PASSPHRASE }}
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          server-dir: ecommerce_files/
+          exclude: |
+            **/.git*
+            **/node_modules/**
+            **/public/**
+            **/.env*
 
-      # Deploy public contents to web root (everything gets copied)
-      - name: 🌐 Deploy Public to Web Root
-        uses: burnett01/rsync-deployments@6.0.0
+      - name: 🌐 Deploy Public to Root (FTP)
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.6
         with:
-          switches: -avzr --delete # Copies index.php, .htaccess, js/css, etc.
-          path: ./public/
-          remote_path: ${{ secrets.WEB_ROOT_DIR }}
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          server-dir: demo.ecommerce.sheffieldafrica.com/
+          local-dir: ./public/
 
       # Post-deploy: cleanup + optimize only
       - name: ⚙️ Post-Deployment Commands
