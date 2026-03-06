@@ -35,15 +35,16 @@ jobs:
       - name: Build NPM Assets
         run: npm run build
 
-      - name: 💾 Cache Laravel Configuration
+      - name: 💾 Pre-optimize Laravel
         run: |
-          php artisan optimize
+          php artisan optimize:clear
+          php artisan optimize  # Builds config/route caches
 
-      # Deploy entire Laravel project to project folder (INCLUDING public/build now)
-      - name: 📂 Deploy Laravel Files
+            # Deploy app to ecommerce_files (exclude public entirely)
+      - name: 📂 Deploy Laravel Files to App Dir
         uses: burnett01/rsync-deployments@6.0.0
         with:
-          switches: -avzr --delete --exclude='.git*' --exclude='.github' --exclude='node_modules' --exclude='.env' --exclude='.env.*' --exclude='public/hot' --exclude='public/storage' --exclude='public/.htaccess' --exclude='public/index.php' --exclude='public/assets/*' --exclude='storage/logs/*' --exclude='storage/framework/cache/data/*' --exclude='storage/framework/sessions/*' --exclude='storage/framework/views/*' --exclude='tests' --exclude='phpunit.xml'
+          switches: -avzr --delete --exclude='.git*' --exclude='.github' --exclude='node_modules' --exclude='.env*' --exclude='public/**' --exclude='storage/logs/*'
           path: ./
           remote_path: ${{ secrets.APP_ROOT_DIR }}
           remote_host: ${{ secrets.FTP_SERVER }}
@@ -52,16 +53,16 @@ jobs:
           remote_key: ${{ secrets.SSH_PRIVATE_KEY }}
           remote_key_pass: ${{ secrets.SSH_PASSPHRASE }}
 
-      # Deploy public folder to web root
-      - name: 🌐 Deploy Public Folder to Web Root
+      # Deploy public contents to web root (everything gets copied)
+      - name: 🌐 Deploy Public to Web Root
         uses: burnett01/rsync-deployments@6.0.0
         with:
-          switches: -avzr --delete --exclude='index.php' --exclude='.htaccess' --exclude='storage' --exclude='build'
+          switches: -avzr --delete # Copies index.php, .htaccess, js/css, etc.
           path: ./public/
           remote_path: ${{ secrets.WEB_ROOT_DIR }}
 
-      # Run post-deployment commands
-      - name: ⚙️ Run Post-Deployment Commands
+      # Post-deploy: cleanup + optimize only
+      - name: ⚙️ Post-Deployment Commands
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.FTP_SERVER }}
@@ -72,16 +73,11 @@ jobs:
           script: |
             cd ${{ secrets.APP_ROOT_DIR }}
 
-            # Clear all caches
-            php artisan optimize:clear
+            # Cleanup: Empty public/* but keep public/build folder structure
+            rm -rf public/*
 
-            # Rebuild caches for production
+            # Final optimize (matches your manual process exactly)
+            php artisan optimize:clear
             php artisan optimize
 
-            # Run migrations (only if there are new migrations)
-            php artisan migrate --force
-
-            # Create storage link if it doesn't exist
-            php artisan storage:link --force
-
-            echo "✅ Deployment completed successfully!"
+            echo "✅ Deployment completed! public/ now contains only build/"
