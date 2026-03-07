@@ -1,4 +1,4 @@
-name: Deploy to Demo Server
+name: 🚀 Deploy to Demo Server
 
 on:
   push:
@@ -12,76 +12,97 @@ jobs:
 
     steps:
       # ─── Checkout ───────────────────────────────────────────────────────────
-      - name: Checkout code
+      - name: 🚚 Checkout code
         uses: actions/checkout@v4
 
       # ─── PHP Setup ──────────────────────────────────────────────────────────
-      - name: Set up PHP 8.3
+      - name: 🐘 Setup PHP 8.3
         uses: shivammathur/setup-php@v2
         with:
           php-version: "8.3"
           extensions: mbstring, bcmath, ctype, fileinfo, json, openssl, pdo, tokenizer, xml, curl, zip
           coverage: none
 
-      # ─── Laravel Environment (CI only) ──────────────────────────────────────
-      - name: Create .env for CI
+      # ─── Laravel CI Environment ─────────────────────────────────────────────
+      - name: ⚙️ Prepare Laravel environment for CI
         run: |
           cp .env.example .env
-          php artisan key:generate
+          mkdir -p bootstrap/cache
+          mkdir -p storage/framework/{sessions,views,cache}
+          mkdir -p storage/logs
 
       # ─── Composer ───────────────────────────────────────────────────────────
-      - name: Install Composer dependencies
+      - name: 📦 Install Composer dependencies
         run: composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader
 
+      - name: 🔑 Generate app key
+        run: php artisan key:generate
+
       # ─── Node / Assets ──────────────────────────────────────────────────────
-      - name: Set up Node 24
+      - name: 🟢 Setup Node 24
         uses: actions/setup-node@v4
         with:
           node-version: "24"
           cache: "npm"
 
-      - name: Install NPM dependencies
+      - name: 📦 Install NPM dependencies
         run: npm ci
 
-      - name: Build assets
+      - name: 🏗️ Build assets
         run: npm run build
 
-      # ─── Deploy via SSH ─────────────────────────────────────────────────────
-      - name: Deploy to server
+      # ─── Deploy via Rsync ────────────────────────────────────────────────────
+      # Single rsync since document root is already inside the project (demo-ecommerce/public)
+      - name: 📂 Sync files to server
+        uses: burnett01/rsync-deployments@6.0.0
+        with:
+          switches: >-
+            -avzr --delete
+            --exclude='.git*'
+            --exclude='.github'
+            --exclude='node_modules'
+            --exclude='.env'
+            --exclude='.env.*'
+            --exclude='public/hot'
+            --exclude='public/storage'
+            --exclude='storage/logs/*'
+            --exclude='storage/framework/cache/data/*'
+            --exclude='storage/framework/sessions/*'
+            --exclude='storage/framework/views/*'
+            --exclude='tests'
+            --exclude='phpunit.xml'
+          path: ./
+          remote_path: ${{ secrets.APP_ROOT_DIR }}
+          remote_host: ${{ secrets.SSH_HOST }}
+          remote_port: ${{ secrets.SSH_PORT }}
+          remote_user: ${{ secrets.SSH_USERNAME }}
+          remote_key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      # ─── Post-Deploy Commands ────────────────────────────────────────────────
+      - name: ⚙️ Run post-deployment commands
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             set -e
+            cd ${{ secrets.APP_ROOT_DIR }}
 
-            cd /home/sheffieldafrica/demo-ecommerce
+            echo ">>> Clearing old caches..."
+            php artisan optimize:clear
 
-            echo ">>> Pulling latest code..."
-            git pull origin master
-
-            echo ">>> Installing Composer dependencies..."
-            composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader
-
-            echo ">>> Installing NPM dependencies and building assets..."
-            npm ci
-            npm run build
-
-            echo ">>> Caching Laravel config..."
-            php artisan config:cache
-            php artisan route:cache
-            php artisan view:cache
-            php artisan event:cache
+            echo ">>> Rebuilding caches for production..."
+            php artisan optimize
 
             echo ">>> Running migrations..."
             php artisan migrate --force
 
+            echo ">>> Linking storage..."
+            php artisan storage:link --force
+
             echo ">>> Restarting queue workers..."
             php artisan queue:restart
-
-            echo ">>> Clearing stale cache..."
-            php artisan cache:clear
 
             echo "✅ Deployment complete!"
