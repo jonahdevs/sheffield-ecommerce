@@ -1,80 +1,48 @@
-name: 🚀 Deploy Laravel to Production
+name: Deploy to Sheffield Demo
 
 on:
   push:
     branches:
-      - main
-      - master
+      - main # triggers on every push to main
 
 jobs:
   deploy:
-    name: Deploy to Server
     runs-on: ubuntu-latest
 
     steps:
-      - name: 🚚 Checkout Code
-        uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-      - name: 🐘 Setup PHP
+      - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: "8.3"
-          extensions: mbstring, xml, ctype, json, bcmath, pdo, mysql, zip
+          php-version: "8.2"
 
-      - name: 📦 Install Composer Dependencies
-        run: composer install --optimize-autoloader --no-dev --no-progress --no-interaction --prefer-dist
+      - name: Install Composer dependencies
+        run: composer install --no-dev --optimize-autoloader --no-interaction
 
-      - name: Install Node.js
+      - name: Setup Node & build assets
         uses: actions/setup-node@v3
         with:
-          node-version: "22"
+          node-version: "18"
 
-      - name: Install NPM Dependencies
-        run: npm install
-
-      - name: Build NPM Assets
-        run:
+      - name: Install NPM & build
+        run: |
+          npm ci
           npm run build
 
-            - name: 📂 Deploy App Files (FTP)
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.6
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1.0.0
         with:
-          server: ${{ secrets.FTP_SERVER }}
-          username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          server-dir: ecommerce_files/
-          exclude: |
-            **/.git*
-            **/node_modules/**
-            **/public/**
-            **/.env*
-
-      - name: 🌐 Deploy Public to Root (FTP)
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.6
-        with:
-          server: ${{ secrets.FTP_SERVER }}
-          username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          server-dir: demo.ecommerce.sheffieldafrica.com/
-          local-dir: ./public/
-
-      # Post-deploy: cleanup + optimize only
-      - name: ⚙️ Post-Deployment Commands
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.FTP_SERVER }}
-          username: ${{ secrets.FTP_USERNAME }}
-          port: ${{ secrets.SSH_PORT }}
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          passphrase: ${{ secrets.SSH_PASSPHRASE }}
+          port: ${{ secrets.SSH_PORT }}
           script: |
-            cd ${{ secrets.APP_ROOT_DIR }}
-
-            # Cleanup: Empty public/* but keep public/build folder structure
-            rm -rf public/*
-
-            # Final optimize (matches your manual process exactly)
+            cd ~/ecommerce_files
+            git pull origin main
+            composer install --no-dev --optimize-autoloader --no-interaction
             php artisan optimize:clear
             php artisan optimize
-
-            echo "✅ Deployment completed! public/ now contains only build/"
+            php artisan migrate --force
+            php artisan storage:link

@@ -5,7 +5,7 @@
     "scripts": {
         "build": "vite build",
         "dev": "vite",
-        "predeploy": "php artisan optimize:clear && php artisan optimize && npm run build",
+        "predeploy": "php artisan optimize:clear && php artisan clear && npm run build",
         "deploy": "git add . && git commit -m",
         "postdeploy": "git push origin master",
         "deploy:safe": "build test && build run deploy"
