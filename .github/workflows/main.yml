@@ -48,7 +48,7 @@ jobs:
         with:
           switches: -avzr --delete --exclude='.git*' --exclude='.github' --exclude='node_modules' --exclude='.env*' --exclude='public/hot' --exclude='public/storage' --exclude='storage/logs/*' --exclude='storage/framework/cache/data/*' --exclude='storage/framework/sessions/*' --exclude='storage/framework/views/*' --exclude='tests' --exclude='phpunit.xml'
           path: ./
-          remote_path: /home/yourusername/demo-ecommerce/ # FULL Laravel project path
+          remote_path: /home/sheffieldafrica/demo-ecommerce/ # FULL Laravel project path
           remote_host: ${{ secrets.FTP_SERVER }}
           remote_port: ${{ secrets.SSH_PORT }}
           remote_user: ${{ secrets.FTP_USERNAME }}
@@ -65,7 +65,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           passphrase: ${{ secrets.SSH_PASSPHRASE }}
           script: |
-            cd /home/yourusername/demo-ecommerce
+            cd /home/sheffieldafrica/demo-ecommerce
 
             # Generate app key if missing
             php artisan key:generate --no-interaction --force || true
