@@ -101,11 +101,11 @@
                             <div class="flex items-center gap-3 text-sm">
                                 <flux:button size="xs" icon="trash" icon-variant="outline" type="button"
                                     variant="ghost" wire:click="removeVariant({{ $index }})"
-                                    wire:confirm="Remove this attribute?" class="text-red-500!" />
+                                    wire:confirm="Remove this attribute?" class="text-red-500! cursor-pointer" />
 
                                 <flux:button icon="chevron-down" size="xs" variant="ghost" type="button"
-                                    class="transition-transform duration-300" x-bind:class="{ 'rotate-180': collapsed }"
-                                    @click="collapsed = !collapsed" />
+                                    class="transition-transform duration-300 cursor-pointer"
+                                    x-bind:class="{ 'rotate-180': collapsed }" @click="collapsed = !collapsed" />
                             </div>
                         </div>
 

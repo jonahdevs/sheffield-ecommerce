@@ -39,7 +39,8 @@ new #[Title('Edit Product')] class extends BaseProductComponent {
 
     <div class="flex items-center justify-between">
         <flux:heading size="xl">Edit Product</flux:heading>
-        <flux:button variant="primary" type="submit" form="product-form">Update</flux:button>
+        <flux:button variant="primary" type="submit" form="product-form" class="cursor-pointer min-w-32">Update
+        </flux:button>
     </div>
 
     @include('pages.admin.catalog.products.partials._form')

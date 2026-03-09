@@ -48,11 +48,11 @@
                         ))
                         <flux:button size="xs" icon="trash" icon-variant="outline" type="button" variant="ghost"
                             wire:click="removeSelectedAttribute({{ $index }})"
-                            wire:confirm="Remove this attribute?" class="text-red-500!" />
+                            wire:confirm="Remove this attribute?" class="text-red-500! cursor-pointer" />
                     @endif
 
                     <flux:button icon="chevron-down" size="xs" variant="ghost" type="button"
-                        class="transition-transform duration-300" x-bind:class="{ 'rotate-180': open }"
+                        class="transition-transform duration-300 cursor-pointer" x-bind:class="{ 'rotate-180': open }"
                         @click="open = !open" />
                 </div>
             </div>
