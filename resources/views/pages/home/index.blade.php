@@ -16,7 +16,7 @@ new #[Layout('layouts.guest')] class extends Component {
     #[Computed(persist: true)]
     public function topCategories()
     {
-        return Category::inSection(CategorySection::HomepageFeatured)->active()->get();
+        return Category::inSection(CategorySection::HOME_PAGE_FEATURED)->active()->get();
     }
 
     #[Computed(persist: true)]
@@ -58,7 +58,7 @@ new #[Layout('layouts.guest')] class extends Component {
         autoplayDelay: 5000,
         progressCircumference: 2 * Math.PI * 18,
         progressOffset: 0,
-
+    
         init() {
             this.swiper = new Swiper('#heroSwiper', {
                 loop: true,

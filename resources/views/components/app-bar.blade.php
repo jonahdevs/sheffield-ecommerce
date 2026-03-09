@@ -21,7 +21,7 @@ new class extends Component {
     #[Computed(persist: true)]
     public function categories()
     {
-        return Category::inSection(CategorySection::Navbar)->get();
+        return Category::inSection(CategorySection::NAVBAR)->get();
     }
 
     #[On('cart-updated')]
