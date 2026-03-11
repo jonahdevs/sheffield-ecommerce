@@ -1,55 +1,13 @@
 <?php
-
 use Livewire\Component;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
 use App\Models\{Category, Product};
 use App\Enums\CategorySection;
-
-new #[Layout('layouts.guest')] class extends Component {
-    #[Computed(persist: true)]
-    public function heroBanners()
-    {
-        return config('site.hero_slides');
-    }
-
-    #[Computed(persist: true)]
-    public function topCategories()
-    {
-        return Category::inSection(CategorySection::HOME_PAGE_FEATURED)->active()->get();
-    }
-
-    #[Computed(persist: true)]
-    public function newArrivals()
-    {
-        return Product::select(['id', 'name', 'slug', 'brand_id', 'price', 'sale_price', 'image_path', 'short_description'])
-            ->withAvg('reviews', 'rating')
-            ->with('brand:id,name')
-            ->active()
-            ->newArrivals()
-            ->inRandomOrder()
-            ->limit(20)
-            ->get();
-    }
-
-    #[Computed(persist: true)]
-    public function products()
-    {
-        $products = Product::select(['id', 'name', 'slug', 'brand_id', 'price', 'sale_price', 'image_path', 'short_description'])
-            ->withAvg('reviews', 'rating')
-            ->with('brand:id,name')
-            ->active()
-            ->inRandomOrder()
-            ->limit(24)
-            ->get();
-
-        return $products;
-    }
-};
 ?>
 
 <div>
-    {{-- Hero section --}}
+    
     <div class="container mx-auto mt-5 px-4" x-data="{
         swiper: null,
         isPaused: false,
@@ -107,11 +65,11 @@ new #[Layout('layouts.guest')] class extends Component {
     }">
         <div class="swiper opacity-0 transition-opacity duration-500" id="heroSwiper">
             <div class="swiper-wrapper">
-                @foreach ($this->heroBanners as $banner)
+                <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $this->heroBanners; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $banner): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoop($loop->index); ?><?php endif; ?>
                     <div class="swiper-slide">
-                        <img src="{{ $banner['image'] }}" alt="{{ $banner['alt'] }}" class="w-full h-auto rounded-md">
+                        <img src="<?php echo e($banner['image']); ?>" alt="<?php echo e($banner['alt']); ?>" class="w-full h-auto rounded-md">
                     </div>
-                @endforeach
+                <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
             </div>
 
             <div class="swiper-pagination"></div>
@@ -163,7 +121,28 @@ new #[Layout('layouts.guest')] class extends Component {
                 class="absolute top-0 start-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none">
                 <span
                     class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-white/30 dark:bg-zinc-800/30 hover:bg-white/50 dark:hover:bg-zinc-800/60 focus:ring-4 focus:ring-white dark:focus:ring-zinc-800/70 focus:outline-none">
-                    <flux:icon.arrow-long-left class="size-4 text-white" />
+                    <?php if (isset($component)) { $__componentOriginala38b22240d1f0026bfe37a3c5effc3d4 = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginala38b22240d1f0026bfe37a3c5effc3d4 = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::icon.arrow-long-left','data' => ['class' => 'size-4 text-white']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('flux::icon.arrow-long-left'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes(['class' => 'size-4 text-white']); ?>
+<?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
+
+<?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginala38b22240d1f0026bfe37a3c5effc3d4)): ?>
+<?php $attributes = $__attributesOriginala38b22240d1f0026bfe37a3c5effc3d4; ?>
+<?php unset($__attributesOriginala38b22240d1f0026bfe37a3c5effc3d4); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginala38b22240d1f0026bfe37a3c5effc3d4)): ?>
+<?php $component = $__componentOriginala38b22240d1f0026bfe37a3c5effc3d4; ?>
+<?php unset($__componentOriginala38b22240d1f0026bfe37a3c5effc3d4); ?>
+<?php endif; ?>
                     <span class="sr-only">Previous</span>
                 </span>
             </button>
@@ -172,7 +151,28 @@ new #[Layout('layouts.guest')] class extends Component {
                 class="absolute top-0 end-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none">
                 <span
                     class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-white/30 dark:bg-zinc-800/30 hover:bg-white/50 dark:hover:bg-zinc-800/60 focus:ring-4 focus:ring-white dark:focus:ring-zinc-800/70 focus:outline-none">
-                    <flux:icon.arrow-long-right class="size-4 text-white" />
+                    <?php if (isset($component)) { $__componentOriginal35b86e1ac5a257d741538ecc79e20be3 = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginal35b86e1ac5a257d741538ecc79e20be3 = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::icon.arrow-long-right','data' => ['class' => 'size-4 text-white']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('flux::icon.arrow-long-right'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes(['class' => 'size-4 text-white']); ?>
+<?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
+
+<?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginal35b86e1ac5a257d741538ecc79e20be3)): ?>
+<?php $attributes = $__attributesOriginal35b86e1ac5a257d741538ecc79e20be3; ?>
+<?php unset($__attributesOriginal35b86e1ac5a257d741538ecc79e20be3); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginal35b86e1ac5a257d741538ecc79e20be3)): ?>
+<?php $component = $__componentOriginal35b86e1ac5a257d741538ecc79e20be3; ?>
+<?php unset($__componentOriginal35b86e1ac5a257d741538ecc79e20be3); ?>
+<?php endif; ?>
                     <span class="sr-only">Next</span>
                 </span>
             </button>
@@ -207,7 +207,28 @@ new #[Layout('layouts.guest')] class extends Component {
 
                 <div class="flex flex-col items-center text-center p-6 transition-colors hover:bg-zinc-50">
                     <div class="mb-3 text-sheffield-red">
-                        <flux:icon.arrows-pointing-out class="size-8" />
+                        <?php if (isset($component)) { $__componentOriginald247533b0158ad1b5720129b2b0e6515 = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginald247533b0158ad1b5720129b2b0e6515 = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::icon.arrows-pointing-out','data' => ['class' => 'size-8']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('flux::icon.arrows-pointing-out'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes(['class' => 'size-8']); ?>
+<?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
+
+<?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginald247533b0158ad1b5720129b2b0e6515)): ?>
+<?php $attributes = $__attributesOriginald247533b0158ad1b5720129b2b0e6515; ?>
+<?php unset($__attributesOriginald247533b0158ad1b5720129b2b0e6515); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginald247533b0158ad1b5720129b2b0e6515)): ?>
+<?php $component = $__componentOriginald247533b0158ad1b5720129b2b0e6515; ?>
+<?php unset($__componentOriginald247533b0158ad1b5720129b2b0e6515); ?>
+<?php endif; ?>
                     </div>
                     <h3 class="text-xs font-semibold uppercase tracking-wider text-zinc-900">Customized</h3>
                     <p class="mt-1 text-xs text-zinc-500 leading-tight">Bespoke Solutions</p>
@@ -240,38 +261,16 @@ new #[Layout('layouts.guest')] class extends Component {
         </div>
     </section>
 
-    @island('top-categories')
-        @placeholder
-            <div class="mt-6">
-                <div class="py-4">
-                    <!-- Responsive Heading -->
-                    <h2 class="font-semibold text-xl text-zinc-800 ">
-                        Top Categories
-                    </h2>
-                </div>
-                <div
-                    class="py-3 pb-5 grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 gap-3">
-                    @for ($i = 0; $i < 14; $i++)
-                        <div class="animate-pulse">
-                            <div class="w-full aspect-4/3 bg-zinc-200 rounded-md"></div>
-                            <div class="w-3/4 h-3 sm:h-4 mt-2 bg-zinc-200 mx-auto rounded"></div>
-                        </div>
-                    @endfor
-                </div>
-            </div>
-        @endplaceholder
-
-        @include('pages.home.top-categories')
-    @endisland
+    <?php if (isset($__livewire)) echo $__livewire->renderIslandDirective('top-categories', token: '7e17ed2c-1'); ?>
 
     <section class="container mx-auto px-4 mt-6">
-        <img src="{{ asset('images/home/THIN BANNER.png') }}" alt="banner" class="w-full h-auto">
+        <img src="<?php echo e(asset('images/home/THIN BANNER.png')); ?>" alt="banner" class="w-full h-auto">
     </section>
 
     <div class="container mx-auto px-4 mt-8">
         <div class="bg-sheffield-red rounded-md overflow-hidden grid grid-cols-1 lg:grid-cols-6">
 
-            {{-- Left Panel --}}
+            
             <div
                 class="lg:col-span-1 flex flex-col justify-center px-5 md:px-6 py-6 lg:py-8
                     border-b border-white/10 lg:border-b-0 lg:border-r lg:border-white/10">
@@ -289,24 +288,33 @@ new #[Layout('layouts.guest')] class extends Component {
           text-white border border-white/30 hover:border-white hover:bg-white/10
           px-4 py-2 rounded-full transition-all duration-200 group focus:outline-none">
                     View All
-                    <flux:icon.arrow-right
-                        class="size-3.5 transition-transform duration-200 group-hover:translate-x-1" />
+                    <?php if (isset($component)) { $__componentOriginal5c84e1af936cb00c34687173a7f14ca8 = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginal5c84e1af936cb00c34687173a7f14ca8 = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::icon.arrow-right','data' => ['class' => 'size-3.5 transition-transform duration-200 group-hover:translate-x-1']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('flux::icon.arrow-right'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes(['class' => 'size-3.5 transition-transform duration-200 group-hover:translate-x-1']); ?>
+<?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
+
+<?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginal5c84e1af936cb00c34687173a7f14ca8)): ?>
+<?php $attributes = $__attributesOriginal5c84e1af936cb00c34687173a7f14ca8; ?>
+<?php unset($__attributesOriginal5c84e1af936cb00c34687173a7f14ca8); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginal5c84e1af936cb00c34687173a7f14ca8)): ?>
+<?php $component = $__componentOriginal5c84e1af936cb00c34687173a7f14ca8; ?>
+<?php unset($__componentOriginal5c84e1af936cb00c34687173a7f14ca8); ?>
+<?php endif; ?>
                 </a>
             </div>
 
-            {{-- Products --}}
-            @island('new-arrivals', defer: true)
-                @placeholder
-                    <section class="lg:col-span-5 px-4 md:px-5 py-5">
-                        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
-                            @for ($i = 0; $i < 5; $i++)
-                                <x-product-card-placeholder />
-                            @endfor
-                        </div>
-                    </section>
-                @endplaceholder
-                @include('pages.home.new-arrivals')
-            @endisland
+            
+            <?php if (isset($__livewire)) echo $__livewire->renderIslandDirective('new-arrivals', defer: true, token: '7e17ed2c-2'); ?>
 
         </div>
     </div>
@@ -315,42 +323,27 @@ new #[Layout('layouts.guest')] class extends Component {
 
     <section class="container mx-auto px-4 mt-6">
         <a href="#" class=" block overflow-hidden rounded-sm">
-            <img src="{{ asset('images/home/CLEARANCE-SALE.jpg') }}" alt="banner"
+            <img src="<?php echo e(asset('images/home/CLEARANCE-SALE.jpg')); ?>" alt="banner"
                 class="w-full h-auto object-cover object-center rounded-sm">
         </a>
     </section>
 
-    @island(name: 'products', defer: true)
-        @placeholder
-            <div class="container mx-auto px-4 mt-8">
-                <div class="flex items-center gap-3 py-4">
-                    <h2 class="font-semibold text-xl text-zinc-900">You May Also Like</h2>
-                    <div class="h-px flex-1 bg-zinc-100"></div>
-                </div>
-                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 pb-6">
-                    @for ($i = 0; $i < 12; $i++)
-                        <x-product-card-placeholder />
-                    @endfor
-                </div>
-            </div>
-        @endplaceholder
-        @include('pages.home.products')
-    @endisland
+    <?php if (isset($__livewire)) echo $__livewire->renderIslandDirective(name: 'products', defer: true, token: '7e17ed2c-3'); ?>
 
     <!-- Locations Section -->
     <section class="container @container/locations mx-auto px-4 mt-6 mb-12">
 
-        {{-- Header --}}
+        
         <div class="pb-6">
             <h2 class="text-2xl font-bold text-zinc-900 leading-tight">Our Locations</h2>
             <p class="text-sm text-zinc-500 mt-2">From local hubs to a continental presence.</p>
         </div>
 
-        {{-- Grid --}}
+        
         <div
             class="grid grid-cols-1 @sm/locations:grid-cols-2 @3xl/locations:grid-cols-3 @5xl/locations:grid-cols-4 gap-4">
 
-            @php
+            <?php
                 $locations = [
                     [
                         'city' => 'Nairobi',
@@ -393,73 +386,138 @@ new #[Layout('layouts.guest')] class extends Component {
                         'email' => 'rwanda@sheffieldafrica.com',
                     ],
                 ];
-            @endphp
+            ?>
 
-            @foreach ($locations as $location)
+            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $locations; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $location): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoop($loop->index); ?><?php endif; ?>
                 <div
                     class="group/card bg-white rounded-md overflow-hidden
                         ring-1 ring-zinc-200/80
                         hover:ring-zinc-300 hover:shadow-md hover:shadow-zinc-200/60
                         transition-all duration-200">
 
-                    {{-- Image --}}
+                    
                     <div class="w-full h-60 overflow-hidden">
-                        <img src="{{ asset($location['image']) }}" alt="{{ $location['city'] }} showroom"
+                        <img src="<?php echo e(asset($location['image'])); ?>" alt="<?php echo e($location['city']); ?> showroom"
                             loading="lazy"
                             class="w-full h-full object-cover object-center
                                transition-transform duration-300 group-hover/card:scale-105">
                     </div>
 
-                    {{-- Content --}}
+                    
                     <div class="p-5">
 
-                        {{-- City + Flag --}}
+                        
                         <div class="flex items-center justify-between gap-2 mb-4">
-                            <h3 class="text-lg font-bold text-zinc-900">{{ $location['city'] }}</h3>
-                            <img src="{{ asset($location['flag']) }}" alt="{{ $location['flag_alt'] }}"
+                            <h3 class="text-lg font-bold text-zinc-900"><?php echo e($location['city']); ?></h3>
+                            <img src="<?php echo e(asset($location['flag'])); ?>" alt="<?php echo e($location['flag_alt']); ?>"
                                 class="size-6 rounded-full object-cover ring-1 ring-zinc-200">
                         </div>
 
-                        {{-- Contact Details --}}
+                        
                         <div class="space-y-2.5">
 
-                            {{-- Address --}}
+                            
                             <div class="flex items-start gap-3">
                                 <div
                                     class="shrink-0 mt-0.5 w-7 h-7 rounded-md bg-red-50 text-sheffield-red ring-1 ring-red-100 flex items-center justify-center group-hover/card:bg-sheffield-red group-hover/card:text-white transition-colors duration-300">
-                                    <flux:icon.map-pin class="w-3.5 h-3.5" />
+                                    <?php if (isset($component)) { $__componentOriginal0d48bd54d72df81b49ee07c1a3735f04 = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginal0d48bd54d72df81b49ee07c1a3735f04 = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::icon.map-pin','data' => ['class' => 'w-3.5 h-3.5']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('flux::icon.map-pin'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes(['class' => 'w-3.5 h-3.5']); ?>
+<?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
+
+<?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginal0d48bd54d72df81b49ee07c1a3735f04)): ?>
+<?php $attributes = $__attributesOriginal0d48bd54d72df81b49ee07c1a3735f04; ?>
+<?php unset($__attributesOriginal0d48bd54d72df81b49ee07c1a3735f04); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginal0d48bd54d72df81b49ee07c1a3735f04)): ?>
+<?php $component = $__componentOriginal0d48bd54d72df81b49ee07c1a3735f04; ?>
+<?php unset($__componentOriginal0d48bd54d72df81b49ee07c1a3735f04); ?>
+<?php endif; ?>
                                 </div>
-                                <p class="text-sm text-zinc-500 leading-relaxed pt-1">{{ $location['address'] }}</p>
+                                <p class="text-sm text-zinc-500 leading-relaxed pt-1"><?php echo e($location['address']); ?></p>
                             </div>
 
-                            {{-- Phone --}}
+                            
                             <div class="flex items-center gap-3">
                                 <div
                                     class="shrink-0 w-7 h-7 rounded-md bg-red-50 ring-1 ring-red-100 text-sheffield-red flex items-center justify-center group-hover/card:bg-sheffield-red group-hover/card:text-white transition-colors duration-300">
-                                    <flux:icon.phone class="w-3.5 h-3.5" />
+                                    <?php if (isset($component)) { $__componentOriginal3b273e6b331c9518de08da49e1886441 = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginal3b273e6b331c9518de08da49e1886441 = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::icon.phone','data' => ['class' => 'w-3.5 h-3.5']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('flux::icon.phone'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes(['class' => 'w-3.5 h-3.5']); ?>
+<?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
+
+<?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginal3b273e6b331c9518de08da49e1886441)): ?>
+<?php $attributes = $__attributesOriginal3b273e6b331c9518de08da49e1886441; ?>
+<?php unset($__attributesOriginal3b273e6b331c9518de08da49e1886441); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginal3b273e6b331c9518de08da49e1886441)): ?>
+<?php $component = $__componentOriginal3b273e6b331c9518de08da49e1886441; ?>
+<?php unset($__componentOriginal3b273e6b331c9518de08da49e1886441); ?>
+<?php endif; ?>
                                 </div>
-                                <a href="tel:{{ $location['tel'] }}"
+                                <a href="tel:<?php echo e($location['tel']); ?>"
                                     class="text-sm text-zinc-600 hover:text-sheffield-red transition-colors duration-150 font-medium">
-                                    {{ $location['phone'] }}
+                                    <?php echo e($location['phone']); ?>
+
                                 </a>
                             </div>
 
-                            {{-- Email --}}
+                            
                             <div class="flex items-center gap-3">
                                 <div
                                     class="shrink-0 w-7 h-7 rounded-md bg-red-50 ring-1 ring-red-100 text-sheffield-red flex items-center justify-center group-hover/card:bg-sheffield-red group-hover/card:text-white transition-colors duration-300">
-                                    <flux:icon.envelope class="w-3.5 h-3.5" />
+                                    <?php if (isset($component)) { $__componentOriginalb2620669e6f3f9a8ec8b91c4a73fca6f = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginalb2620669e6f3f9a8ec8b91c4a73fca6f = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::icon.envelope','data' => ['class' => 'w-3.5 h-3.5']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('flux::icon.envelope'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes(['class' => 'w-3.5 h-3.5']); ?>
+<?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
+
+<?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginalb2620669e6f3f9a8ec8b91c4a73fca6f)): ?>
+<?php $attributes = $__attributesOriginalb2620669e6f3f9a8ec8b91c4a73fca6f; ?>
+<?php unset($__attributesOriginalb2620669e6f3f9a8ec8b91c4a73fca6f); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginalb2620669e6f3f9a8ec8b91c4a73fca6f)): ?>
+<?php $component = $__componentOriginalb2620669e6f3f9a8ec8b91c4a73fca6f; ?>
+<?php unset($__componentOriginalb2620669e6f3f9a8ec8b91c4a73fca6f); ?>
+<?php endif; ?>
                                 </div>
-                                <a href="mailto:{{ $location['email'] }}"
+                                <a href="mailto:<?php echo e($location['email']); ?>"
                                     class="text-sm text-zinc-600 hover:text-sheffield-red transition-colors duration-150 font-medium break-all">
-                                    {{ $location['email'] }}
+                                    <?php echo e($location['email']); ?>
+
                                 </a>
                             </div>
 
                         </div>
                     </div>
                 </div>
-            @endforeach
+            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
         </div>
     </section>
-</div>
+</div><?php /**PATH C:\Users\jonah\Herd\sheffield_ecommerce\storage\framework/views/livewire/views/aeb75ca3.blade.php ENDPATH**/ ?>

@@ -1,36 +1,37 @@
-<div class="container mx-auto px-4">
-    <div class="py-4">
-        <!-- Responsive Heading -->
-        <h2 class="font-semibold text-xl text-zinc-800 ">
+<div class="container mx-auto px-4 mt-6">
+    <div class="pb-6">
+        <h2 class="font-bold text-2xl text-zinc-900 leading-tight">
             Top Categories
         </h2>
+        {{-- <div class="w-24 h-1 bg-gradient-to-r from-sheffield-blue to-indigo-500 mt-2 rounded-full"></div> --}}
+        <p class="text-zinc-500 text-sm mt-2">Discover our most popular shopping categories</p>
     </div>
 
-    <div
-        class="py-3 pb-5 grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 gap-3">
+    <div class="grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 gap-2.5">
         @foreach ($this->topCategories as $category)
-            <div class="group/card" :key="'category-' . $category->id">
-                <a href="#" wire:navigate>
-                    <div class="relative w-full rounded-md overflow-hidden">
+            <div class="group relative" :key="'category-' . $category->id">
+                <a href="{{ route('products', ['category' => $category->slug]) }}" wire:navigate class="block">
+                    <div @class([
+                        'relative aspect-4/3 overflow-hidden rounded-md bg-zinc-50 shadow-sm transition-all duration-300 group-hover:-translate-y-1 group-hover:shadow-md group-hover:border-blue-100',
+                        'border border-zinc-200' => !$category->image_url,
+                    ])>
                         @if ($category->image_url)
-                            <figure
-                                class="w-full bg-zinc-100 rounded-md aspect-4/3 shadow-sm hover:shadow-md transition-shadow duration-300">
-                                <img src="{{ $category->image_url }}" alt="{{ $category->name }}" loading="lazy"
-                                    class="object-cover object-center w-full h-full transition-transform duration-300 group-hover/card:scale-110">
-                            </figure>
+                            <img src="{{ $category->image_url }}" alt="{{ $category->name }}" loading="lazy"
+                                class="object-cover w-full h-full transition-transform duration-500 group-hover:scale-110">
                         @else
-                            <div
-                                class="w-full h-full flex items-center justify-center bg-zinc-100 rounded-md aspect-4/3 shadow-sm hover:shadow-md transition-shadow duration-300">
-                                <flux:icon.photo
-                                    class="text-zinc-300 h-8 w-8 sm:h-10 sm:w-10 lg:h-12 lg:w-12 stroke-1" />
+                            <div class="flex items-center justify-center h-full">
+                                <flux:icon.photo class="text-zinc-300 h-10 w-10 stroke-1" />
                             </div>
                         @endif
+
+                        <div class="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity">
+                        </div>
                     </div>
 
-                    <div
-                        class="mt-2 sm:mt-3 text-wrap wrap-break-words text-center text-xs sm:text-sm font-medium text-zinc-700 group-hover/card:text-sheffield-blue transition-colors duration-200">
+                    <p
+                        class="mt-3 text-center text-sm font-semibold text-zinc-800 group-hover:text-blue-600 transition-colors line-clamp-1">
                         {{ $category->name }}
-                    </div>
+                    </p>
                 </a>
             </div>
         @endforeach

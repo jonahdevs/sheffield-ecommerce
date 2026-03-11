@@ -53,7 +53,6 @@ new #[Layout('layouts.guest')] class extends Component {
     }
 
     //  Computed
-
     #[Computed]
     public function isPaid(): bool
     {
