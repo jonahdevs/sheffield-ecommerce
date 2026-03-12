@@ -151,6 +151,8 @@ class StripeGateway implements PaymentGateway
 
     private function handleSucceeded(object $intent): void
     {
+        sleep(10);
+
         $payment = Payment::where('gateway_order_id', $intent->id)->first();
         if (!$payment) return;
 

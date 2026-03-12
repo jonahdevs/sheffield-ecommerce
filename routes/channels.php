@@ -14,3 +14,8 @@ Broadcast::channel('order.{orderId}', function ($user, $orderId) {
         ->where('user_id', $user->id)
         ->exists();
 });
+
+
+Broadcast::channel('test.{userId}', function ($user, $userId) {
+    return (int) $user->id === (int) $userId;
+});

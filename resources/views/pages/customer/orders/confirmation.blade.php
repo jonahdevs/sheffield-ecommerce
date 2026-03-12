@@ -21,11 +21,6 @@ new #[Layout('layouts.guest')] class extends Component {
     public bool $emailSent = false;
     public bool $justConfirmed = false;
 
-    // ── Session key for this order's confirmation page
-    // Format: order_confirmation_{order_id}
-    // Set on first legitimate visit
-    // Checked on every subsequent visit → redirect if exists
-
     public function mount(Order $order): void
     {
         abort_if($order->user_id !== auth()->id(), 403);
@@ -33,15 +28,11 @@ new #[Layout('layouts.guest')] class extends Component {
         $this->order = $order->load(['items.product', 'payment', 'user']);
         $this->orderId = $order->id;
 
-        \Log::info('Confirmation page:' . json_encode($this->order, JSON_PRETTY_PRINT));
-
         // Handle 3DS redirect back from Stripe first
         // Must run before session check so 3DS return works correctly
         $this->verifyStripeIfNeeded();
 
         // Session-based page invalidation
-        // If session exists → page already consumed → redirect
-        // If not → first visit → set session → show page
         $this->handleSessionCheck();
 
         // Only runs on first legitimate visit
@@ -52,17 +43,13 @@ new #[Layout('layouts.guest')] class extends Component {
         }
     }
 
-    //  Computed
+    // Computed
+
     #[Computed]
     public function isPaid(): bool
     {
-        return $this->order->payment?->status === PaymentStatus::PAID->value;
-    }
-
-    #[Computed]
-    public function isPending(): bool
-    {
-        return in_array($this->order->payment?->status?->value, [PaymentStatus::PENDING->value, PaymentStatus::PROCESSING->value]);
+        // Use ?->value consistently — status may be cast as an enum on the model
+        return $this->order->payment?->status?->value === PaymentStatus::PAID->value;
     }
 
     #[Computed]
@@ -106,102 +93,81 @@ new #[Layout('layouts.guest')] class extends Component {
         return "order_confirmation_{$this->order->id}";
     }
 
-    // Public Methods
+    //  Public Methods
 
-    /**
-     * Customer clicks "View Order Details"
-     * Session already set — just redirect
-     */
     public function viewOrderDetails(): void
     {
         $this->redirectRoute('customer.orders.show', ['order' => $this->order], navigate: true);
     }
 
-    /**
-     * Customer clicks "Continue Shopping"
-     * Session already set — just redirect
-     */
     public function continueShopping(): void
     {
         $this->redirectRoute('home', navigate: true);
     }
 
-    public function getListeners(): array
-    {
-        return [
-            "echo-private:order.{$this->orderId},payment.confirmed" => 'onPaymentConfirmed',
-        ];
-    }
-
-    // Echo Event Listener
-
     /**
-     * Fires when Stripe webhook broadcasts PaymentConfirmed
-     * via Pusher. Customer is on pending UI waiting for payment.
-     * This flips the UI from pending → confirmed instantly.
+     * Polling fallback — called every 3s while in pending/unknown state.
+     * Catches cases where Echo broadcast was missed (e.g. page loaded after webhook fired).
      */
-    public function onPaymentConfirmed(): void
+    public function refreshOrderStatus(): void
     {
         $this->order = $this->order->fresh(['items.product', 'payment', 'user']);
-
-        unset($this->isPaid, $this->isPending, $this->isFailed);
-
-        \Log::info('Testing the Payment event');
+        unset($this->isPaid, $this->isFailed);
 
         if ($this->isPaid) {
             $this->justConfirmed = true;
-
-            // Set session now — customer is seeing the page
             session()->put($this->sessionKey, true);
-
             $this->sendConfirmationEmailOnce();
             $this->clearCartIfPaid();
             $this->dispatch('cart-updated');
         }
     }
 
-    //  Private Helpers
+    public function getListeners(): array
+    {
+        return [
+            "echo-private:order.{$this->orderId},PaymentConfirmed" => 'onPaymentConfirmed',
+        ];
+    }
+
+    //  Echo Event Listener
 
     /**
-     * Core page invalidation logic using session.
-     *
-     * First visit (isPaid):
-     *   → session doesn't exist → set it → show page
-     *
-     * Revisit / refresh / shared URL (isPaid):
-     *   → session exists → redirect to order details
-     *
-     * Pending payment:
-     *   → skip session check entirely
-     *   → show waiting UI, Echo will flip to paid when ready
-     *
-     * Failed payment:
-     *   → skip session check
-     *   → show failed UI with retry option
+     * Fires when Stripe webhook broadcasts PaymentConfirmed via Pusher.
+     * Flips UI from pending → confirmed instantly without a page reload.
      */
+    public function onPaymentConfirmed(): void
+    {
+        $this->order = $this->order->fresh(['items.product', 'payment', 'user']);
+        unset($this->isPaid, $this->isFailed);
+
+        \Log::info('Testing the Payment Confirmed event');
+
+        if ($this->isPaid) {
+            $this->justConfirmed = true;
+            session()->put($this->sessionKey, true);
+            $this->sendConfirmationEmailOnce();
+            $this->clearCartIfPaid();
+            $this->dispatch('cart-updated');
+        }
+    }
+
+    // Private Helpers
+
     private function handleSessionCheck(): void
     {
-        // Don't invalidate if payment not yet confirmed
-        // Customer needs to stay on page waiting for confirmation
         if (!$this->isPaid) {
             return;
         }
 
-        // Session exists → page already viewed → redirect away
         if (session()->has($this->sessionKey)) {
             $this->redirectRoute('customer.orders.show', ['order' => $this->order], navigate: true);
             return;
         }
 
-        // First legitimate visit → set session → show page
         session()->put($this->sessionKey, true);
     }
 
-    /**
-     * Verify Stripe payment when customer returns from 3DS.
-     * URL contains ?payment_intent=pi_xxx&redirect_status=succeeded
-     * Must run BEFORE handleSessionCheck()
-     */
     private function verifyStripeIfNeeded(): void
     {
         $paymentIntent = request('payment_intent');
@@ -226,7 +192,7 @@ new #[Layout('layouts.guest')] class extends Component {
                 $this->order->update(['payment_status' => PaymentStatus::PAID->value]);
                 $this->order->refresh();
 
-                unset($this->isPaid, $this->isPending, $this->isFailed);
+                unset($this->isPaid, $this->isFailed);
 
                 app(CartService::class)->clear($this->order->user);
                 app(CheckoutSession::class)->clear();
@@ -304,295 +270,147 @@ new #[Layout('layouts.guest')] class extends Component {
         </flux:breadcrumbs>
     </div>
 
-    <div class="container mx-auto px-4 py-12 max-w-2xl">
+    <div class="container mx-auto px-4 py-12 max-w-2xl min-h-[60svh]">
 
         {{-- ══════════════════════════════════════════════════ --}}
         {{-- PAID STATE                                         --}}
         {{-- ══════════════════════════════════════════════════ --}}
         @if ($this->isPaid)
 
-            {{-- Success Icon + Heading --}}
-            <div class="text-center mb-10">
-                <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                    <flux:icon.check-circle class="size-10 text-green-600" />
-                </div>
+            <div class="container mx-auto px-4 py-12 max-w-3xl">
 
-                <flux:heading level="1" class="text-3xl! font-bold! mb-3">
-                    {{ $justConfirmed ? '🎉 Payment Confirmed!' : 'Thank You for Your Order!' }}
-                </flux:heading>
+                {{-- ══════════════════════════════════════ --}}
+                {{-- 1. HERO                                --}}
+                {{-- ══════════════════════════════════════ --}}
+                <div class="text-center mb-10">
 
-                <flux:text class="text-zinc-500 text-base mb-2">
-                    Hi <span class="font-medium text-zinc-700">{{ $order->user?->first_name }}</span>,
-                    your order has been placed successfully.
-                </flux:text>
+                    {{-- icon --}}
+                    <flux:icon.check-circle class="size-14 mx-auto text-green-600 mb-6" />
 
-                <div class="inline-flex items-center gap-2 bg-zinc-100 rounded-full px-4 py-1.5 mb-3">
-                    <flux:icon.clipboard-document-check class="size-4 text-zinc-500" />
-                    <span class="text-sm font-mono font-semibold text-zinc-700">
-                        #{{ $order->reference }}
-                    </span>
-                </div>
+                    {{-- Title --}}
+                    <flux:heading level="1" class="text-3xl! font-bold! mb-3">
+                        {{ $justConfirmed ? '🎉 Payment Confirmed!' : 'Thank You for Your Order!' }}
+                    </flux:heading>
 
-                <flux:text class="text-zinc-400 text-sm block">
-                    A confirmation email has been sent to
-                    <span class="font-medium text-zinc-600">{{ $order->user?->email }}</span>
-                </flux:text>
-            </div>
+                    <flux:text class="text-zinc-500 text-base mb-2">
+                        Hi <span class="font-medium text-zinc-700">{{ $order->user?->name }}</span>,
+                        your order has been placed successfully.
+                    </flux:text>
 
-            {{-- ── What Happens Next ── --}}
-            <div class="bg-white border border-zinc-200 rounded-xl p-6 mb-6">
-                <flux:heading level="2" class="text-base! font-semibold! mb-5 text-zinc-800">
-                    What happens next?
-                </flux:heading>
 
-                <div class="space-y-0">
-
-                    {{-- Step 1 --}}
-                    <div class="flex gap-4">
-                        <div class="flex flex-col items-center">
-                            <div class="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center shrink-0">
-                                <flux:icon.check class="size-4 text-green-600" />
-                            </div>
-                            <div class="w-px flex-1 bg-zinc-200 my-1"></div>
-                        </div>
-                        <div class="pb-6">
-                            <p class="text-sm font-semibold text-zinc-800 mb-0.5">
-                                Order Placed
-                            </p>
-                            <p class="text-xs text-zinc-400">
-                                {{ $order->created_at->format('M j, Y · g:i A') }}
-                            </p>
-                        </div>
-                    </div>
-
-                    {{-- Step 2 --}}
-                    <div class="flex gap-4">
-                        <div class="flex flex-col items-center">
-                            <div class="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center shrink-0">
-                                <flux:icon.check class="size-4 text-green-600" />
-                            </div>
-                            <div class="w-px flex-1 bg-zinc-200 my-1"></div>
-                        </div>
-                        <div class="pb-6">
-                            <p class="text-sm font-semibold text-zinc-800 mb-0.5">
-                                Payment Confirmed
-                            </p>
-                            <p class="text-xs text-zinc-400">
-                                Paid via {{ $this->paymentMethodLabel }}
-                                @if ($order->payment?->paid_at)
-                                    · {{ $order->payment->paid_at->format('M j, Y · g:i A') }}
-                                @endif
-                            </p>
-                        </div>
-                    </div>
-
-                    {{-- Step 3 --}}
-                    <div class="flex gap-4">
-                        <div class="flex flex-col items-center">
-                            <div class="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center shrink-0">
-                                <flux:icon.arrow-path class="size-4 text-amber-500 animate-spin" />
-                            </div>
-                            <div class="w-px flex-1 bg-zinc-200 my-1"></div>
-                        </div>
-                        <div class="pb-6">
-                            <p class="text-sm font-semibold text-zinc-800 mb-0.5">
-                                Preparing Your Order
-                            </p>
-                            <p class="text-xs text-zinc-400">
-                                Our team is verifying and packing your items.
-                                Usually within 1–2 business days.
-                            </p>
-                        </div>
-                    </div>
-
-                    {{-- Step 4 --}}
-                    <div class="flex gap-4">
-                        <div class="flex flex-col items-center">
-                            <div class="w-8 h-8 rounded-full bg-zinc-100 flex items-center justify-center shrink-0">
-                                <flux:icon.truck class="size-4 text-zinc-400" />
-                            </div>
-                            <div class="w-px flex-1 bg-zinc-200 my-1"></div>
-                        </div>
-                        <div class="pb-6">
-                            <p class="text-sm font-semibold text-zinc-400 mb-0.5">
-                                Shipped
-                            </p>
-                            <p class="text-xs text-zinc-400">
-                                You'll receive a tracking notification
-                                once your order ships.
-                                @if ($this->shippingMethod)
-                                    via {{ $this->shippingMethod }}.
-                                @endif
-                            </p>
-                        </div>
-                    </div>
-
-                    {{-- Step 5 --}}
-                    <div class="flex gap-4">
-                        <div class="flex flex-col items-center">
-                            <div class="w-8 h-8 rounded-full bg-zinc-100 flex items-center justify-center shrink-0">
-                                <flux:icon.home class="size-4 text-zinc-400" />
-                            </div>
-                        </div>
-                        <div class="pb-2">
-                            <p class="text-sm font-semibold text-zinc-400 mb-0.5">
-                                Delivered
-                            </p>
-                            <p class="text-xs text-zinc-400">
-                                @if ($this->deliveryWindow)
-                                    Estimated delivery: {{ $this->deliveryWindow }}
-                                    @if ($this->stationName)
-                                        · Pickup: {{ $this->stationName }}
-                                    @endif
-                                @else
-                                    Estimated delivery time will be
-                                    confirmed once your order ships.
-                                @endif
-                            </p>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-
-            {{-- ── Order Snapshot ── --}}
-            <div class="bg-white border border-zinc-200 rounded-xl p-6 mb-6">
-                <flux:heading level="2" class="text-base! font-semibold! mb-4 text-zinc-800">
-                    Order Summary
-                </flux:heading>
-
-                {{-- Items --}}
-                <div class="space-y-3 mb-4">
-                    @foreach ($order->items as $item)
-                        <div class="flex items-center gap-3">
-                            {{-- Product image --}}
-                            <div class="w-12 h-12 rounded-lg border bg-zinc-50 overflow-hidden shrink-0">
-                                @php $img = $item->product_image_url ?? $item->product?->image_url; @endphp
-                                @if ($img)
-                                    <img src="{{ asset($img) }}" alt="{{ $item->product_snapshot['name'] ?? '' }}"
-                                        class="w-full h-full object-cover" />
-                                @else
-                                    <flux:icon.photo class="w-full h-full p-2 text-zinc-300" />
-                                @endif
-                            </div>
-
-                            {{-- Name + qty --}}
-                            <div class="flex-1 min-w-0">
-                                <p class="text-sm font-medium text-zinc-800 truncate">
-                                    {{ $item->product_snapshot['name'] ?? $item->product?->name }}
-                                </p>
-                                <p class="text-xs text-zinc-400">
-                                    Qty: {{ $item->quantity }}
-                                </p>
-                            </div>
-
-                            {{-- Price --}}
-                            <span class="text-sm font-semibold text-zinc-800 shrink-0">
-                                {{ format_currency($item->total_cents / 100) }}
-                            </span>
-                        </div>
-                    @endforeach
-                </div>
-
-                {{-- Totals --}}
-                <div class="border-t border-zinc-100 pt-3 space-y-1.5">
-                    <div class="flex justify-between text-xs text-zinc-500">
-                        <span>Subtotal</span>
-                        <span>{{ format_currency($order->subtotal) }}</span>
-                    </div>
-
-                    @if ($order->discount > 0)
-                        <div class="flex justify-between text-xs text-green-600">
-                            <span>Discount</span>
-                            <span>− {{ format_currency($order->discount) }}</span>
-                        </div>
-                    @endif
-
-                    <div class="flex justify-between text-xs text-zinc-500">
-                        <span>Shipping</span>
-                        <span>
-                            {{ $order->shipping == 0 ? 'Free' : format_currency($order->shipping) }}
+                    <div class="inline-flex items-center gap-2 bg-zinc-100 rounded-full px-4 py-1.5 mb-3">
+                        <flux:icon.clipboard-document-check class="size-4 text-zinc-500" />
+                        <span class="text-sm font-mono font-semibold text-zinc-700">
+                            #{{ $order->reference }}
                         </span>
                     </div>
 
-                    <div class="flex justify-between font-semibold text-sm border-t border-zinc-100 pt-2 mt-1">
-                        <span>Total</span>
-                        <span>{{ format_currency($order->total) }}</span>
+                    <flux:text class="text-zinc-400 text-sm block">
+                        A confirmation email has been sent to
+                        <span class="font-medium text-zinc-600">{{ $order->user?->email }}</span>.
+                        If it doesn't arrive within a few minutes, please check your spam folder.
+                    </flux:text>
+                </div>
+
+                {{-- ══════════════════════════════════════ --}}
+                {{-- 2. ORDER ITEMS + TOTALS                --}}
+                {{-- ══════════════════════════════════════ --}}
+                <flux:card class="anim-4 p-0 mb-6">
+
+                    {{-- Header --}}
+                    <div class="px-6 py-4 border-b border-zinc-100">
+                        <h2 class="text-sm font-semibold text-zinc-400 uppercase tracking-widest">
+                            Items Ordered
+                        </h2>
                     </div>
-                </div>
-            </div>
 
-            {{-- ── SAP / eTIMS Placeholder ── --}}
-            {{--
-            TODO: SAP Integration
-            Once SAP is integrated, display the legal tax invoice number
-            and QR code here. This section is a placeholder.
+                    {{-- Items --}}
+                    <div class="divide-y divide-zinc-100">
+                        @foreach ($order->items as $item)
+                            <div class="flex items-center gap-4 px-6 py-4">
 
-            <div class="bg-zinc-50 border border-dashed border-zinc-300 rounded-xl p-5 mb-6">
-                <div class="flex items-start gap-3">
-                    <flux:icon.document-text class="size-5 text-zinc-400 shrink-0 mt-0.5" />
-                    <div>
-                        <p class="text-sm font-semibold text-zinc-700 mb-0.5">
-                            Tax Invoice
-                        </p>
-                        <p class="text-xs text-zinc-400 mb-2">
-                            Invoice #: {{ $order->sap_invoice_number ?? 'Pending generation' }}
-                        </p>
-                        <p class="text-xs text-zinc-400">
-                            KRA eTIMS compliant invoice will be available
-                            in your order details once generated.
-                        </p>
+                                {{-- Image --}}
+                                <div
+                                    class="w-16 h-16 rounded-xl border border-zinc-100 bg-zinc-50 overflow-hidden shrink-0">
+                                    @php $img = $item->product_image_url ?? $item->product?->image_url; @endphp
+                                    @if ($img)
+                                        <img src="{{ asset($img) }}" alt="{{ $item->product_snapshot['name'] ?? '' }}"
+                                            class="w-full h-full object-cover" />
+                                    @else
+                                        <flux:icon.photo class="w-full h-full p-3 text-zinc-300" />
+                                    @endif
+                                </div>
+
+                                {{-- Name + qty --}}
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-sm font-semibold text-zinc-800 leading-snug line-clamp-2 mb-1">
+                                        {{ $item->product_snapshot['name'] ?? $item->product?->name }}
+                                    </p>
+                                    <p class="text-xs text-zinc-400">Qty: {{ $item->quantity }}</p>
+                                </div>
+
+                                {{-- Price --}}
+                                <p class="text-sm font-bold text-zinc-800 shrink-0">
+                                    {{ format_currency($item->total_cents / 100) }}
+                                </p>
+
+                            </div>
+                        @endforeach
                     </div>
+
+                    {{-- Totals --}}
+                    <div class="px-6 py-4 bg-white\80 border-t border-zinc-100 space-y-2">
+                        <div class="flex justify-between text-xs text-zinc-500">
+                            <span>Subtotal</span>
+                            <span>{{ format_currency($order->subtotal) }}</span>
+                        </div>
+
+                        @if ($order->discount > 0)
+                            <div class="flex justify-between text-xs font-medium text-green-600">
+                                <span>Discount</span>
+                                <span>− {{ format_currency($order->discount) }}</span>
+                            </div>
+                        @endif
+
+                        <div class="flex justify-between text-xs text-zinc-500">
+                            <span>Shipping</span>
+                            <span>
+                                {{ $order->shipping == 0 ? 'Free' : format_currency($order->shipping) }}
+                            </span>
+                        </div>
+
+                        <div
+                            class="flex justify-between text-sm font-bold text-zinc-900 border-t border-zinc-200 pt-3 mt-1">
+                            <span>Total</span>
+                            <span>{{ format_currency($order->total) }}</span>
+                        </div>
+                    </div>
+                </flux:card>
+
+                {{-- ══════════════════════════════════════ --}}
+                {{-- 3. ACTIONS                             --}}
+                {{-- ══════════════════════════════════════ --}}
+                <div class="anim-5 flex flex-col sm:flex-row gap-3">
+                    <flux:button wire:click="viewOrderDetails" variant="primary" icon="clipboard-document-list"
+                        class="cursor-pointer w-full">
+                        View Order
+                    </flux:button>
+
+                    <flux:button wire:click="continueShopping" variant="ghost" icon="shopping-bag"
+                        class="cursor-pointer w-full">
+                        Continue Shopping
+                    </flux:button>
                 </div>
-            </div>
-            --}}
 
-            {{-- ── Actions ── --}}
-            <div class="flex flex-col sm:flex-row gap-3">
-                <flux:button wire:click="continueShopping" variant="ghost" class="cursor-pointer w-full sm:w-auto"
-                    icon="shopping-bag">
-                    Continue Shopping
-                </flux:button>
+                {{-- Support link --}}
+                <p class="anim-5 text-center text-xs text-zinc-400 mt-4">
+                    Questions about your order?
+                    <a href="#"
+                        class="text-zinc-600 underline underline-offset-2 hover:text-zinc-900 transition-colors">
+                        Contact support
+                    </a>
+                </p>
 
-                <flux:button wire:click="viewOrderDetails" variant="primary"
-                    class="cursor-pointer w-full sm:w-auto flex-1" icon="clipboard-document-list">
-                    View Order Details
-                </flux:button>
-            </div>
-
-            {{-- ══════════════════════════════════════════════════ --}}
-            {{-- PENDING / PROCESSING STATE                         --}}
-            {{-- ══════════════════════════════════════════════════ --}}
-        @elseif ($this->isPending)
-            <div class="text-center py-16">
-
-                <div class="w-20 h-20 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                    <svg class="animate-spin size-8 text-amber-500" viewBox="0 0 24 24" fill="none">
-                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
-                            stroke-width="4" />
-                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                    </svg>
-                </div>
-
-                <flux:heading level="1" class="text-2xl! font-bold! mb-3">
-                    Confirming Your Payment...
-                </flux:heading>
-
-                <flux:text class="text-zinc-500 mb-2">
-                    Please wait while we confirm your payment.
-                </flux:text>
-
-                <flux:text class="text-zinc-400 text-sm mb-6">
-                    This usually takes just a few seconds.
-                    Please don't close this page.
-                </flux:text>
-
-                <div class="inline-flex items-center gap-2 bg-zinc-100 rounded-full px-4 py-1.5">
-                    <flux:icon.clipboard-document-check class="size-4 text-zinc-500" />
-                    <span class="text-sm font-mono font-semibold text-zinc-700">
-                        #{{ $order->reference }}
-                    </span>
-                </div>
             </div>
 
             {{-- ══════════════════════════════════════════════════ --}}
@@ -600,7 +418,6 @@ new #[Layout('layouts.guest')] class extends Component {
             {{-- ══════════════════════════════════════════════════ --}}
         @elseif ($this->isFailed)
             <div class="text-center py-16">
-
                 <div class="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
                     <flux:icon.x-circle class="size-10 text-red-500" />
                 </div>
@@ -632,30 +449,112 @@ new #[Layout('layouts.guest')] class extends Component {
             </div>
 
             {{-- ══════════════════════════════════════════════════ --}}
-            {{-- UNKNOWN STATE — safety net                         --}}
+            {{-- PENDING / PROCESSING / UNKNOWN                     --}}
+            {{-- All non-failed, non-paid states show the spinner.  --}}
+            {{-- wire:poll refreshes every 3s as a fallback in case --}}
+            {{-- the Echo broadcast was missed.                      --}}
             {{-- ══════════════════════════════════════════════════ --}}
         @else
-            <div class="text-center py-16">
-
-                <div class="w-20 h-20 bg-zinc-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                    <flux:icon.question-mark-circle class="size-10 text-zinc-400" />
-                </div>
+            <div wire:poll.3s="refreshOrderStatus" class="text-center py-16">
+                <flux:icon.loading class="text-sheffield-red mx-auto mb-6" />
 
                 <flux:heading level="1" class="text-2xl! font-bold! mb-3">
-                    Something Went Wrong
+                    Confirming Your Payment...
                 </flux:heading>
 
-                <flux:text class="text-zinc-500 mb-8">
-                    We couldn't determine your payment status.
-                    Please check your orders or contact support.
+                <flux:text class="text-zinc-500 mb-2">
+                    Please wait while we confirm your payment.
                 </flux:text>
 
-                <flux:button :href="route('customer.orders.index')" wire:navigate variant="primary"
-                    class="cursor-pointer">
-                    View My Orders
-                </flux:button>
+                <flux:text class="text-zinc-400 text-sm mb-6">
+                    This usually takes just a few seconds.
+                    Please don't close this page.
+                </flux:text>
+
+                <div class="inline-flex items-center gap-2 bg-zinc-100 rounded-full px-4 py-1.5">
+                    <flux:icon.clipboard-document-check class="size-4 text-zinc-500" />
+                    <span class="text-sm font-mono font-semibold text-zinc-700">
+                        #{{ $order->reference }}
+                    </span>
+                </div>
             </div>
         @endif
 
     </div>
 </div>
+
+
+<style>
+    @keyframes pop-in {
+        0% {
+            transform: scale(0.4);
+            opacity: 0;
+        }
+
+        70% {
+            transform: scale(1.12);
+        }
+
+        100% {
+            transform: scale(1);
+            opacity: 1;
+        }
+    }
+
+    @keyframes fade-up {
+        from {
+            opacity: 0;
+            transform: translateY(14px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes ping-once {
+        0% {
+            transform: scale(1);
+            opacity: 0.6;
+        }
+
+        100% {
+            transform: scale(2.4);
+            opacity: 0;
+        }
+    }
+
+    .anim-pop {
+        animation: pop-in 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+    }
+
+    .anim-ping {
+        animation: ping-once 0.9s ease-out 0.2s both;
+    }
+
+    .anim-1 {
+        animation: fade-up 0.45s ease both;
+        animation-delay: 0.10s;
+    }
+
+    .anim-2 {
+        animation: fade-up 0.45s ease both;
+        animation-delay: 0.22s;
+    }
+
+    .anim-3 {
+        animation: fade-up 0.45s ease both;
+        animation-delay: 0.34s;
+    }
+
+    .anim-4 {
+        animation: fade-up 0.45s ease both;
+        animation-delay: 0.46s;
+    }
+
+    .anim-5 {
+        animation: fade-up 0.45s ease both;
+        animation-delay: 0.58s;
+    }
+</style>

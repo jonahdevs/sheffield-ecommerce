@@ -4,6 +4,9 @@ use App\Http\Controllers\Auth\SocialiteController;
 use App\Http\Controllers\Orders\OrderReceiptController;
 use Illuminate\Support\Facades\Route;
 
+
+Route::livewire('/test-broadcast', 'pages::broadcast-test')->middleware('auth');
+
 Route::livewire('/', 'pages::home.index')->name('home');
 
 Route::middleware('guest')->controller(SocialiteController::class)->group(function () {

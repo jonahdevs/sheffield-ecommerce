@@ -8,6 +8,7 @@ use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
@@ -16,7 +17,7 @@ class PaymentConfirmed implements ShouldBroadcast
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     /**
-     * Create a new event instance.
+     * Create a new event instance.``
      */
     public function __construct(
         public readonly Order $order,
@@ -36,10 +37,6 @@ class PaymentConfirmed implements ShouldBroadcast
         ];
     }
 
-    public function broadcastAs(): string
-    {
-        return 'payment.confirmed';
-    }
 
     /**
      * Only broadcast the data the frontend needs.

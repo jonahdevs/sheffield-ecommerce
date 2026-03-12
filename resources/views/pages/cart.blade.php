@@ -2,7 +2,7 @@
 
 use Livewire\Component;
 use Livewire\Attributes\Computed;
-use Livewire\Attributes\{Layout, Defer};
+use Livewire\Attributes\{Layout, Defer, On};
 use App\Services\CartService;
 use App\Services\WishlistService;
 use Flux\Flux;
@@ -16,6 +16,7 @@ new #[Defer] #[Layout('layouts.guest')] class extends Component {
     // Computed
 
     #[Computed]
+    #[On('cart-updated')]
     public function cartItems()
     {
         return app(CartService::class)
@@ -435,12 +436,13 @@ new #[Defer] #[Layout('layouts.guest')] class extends Component {
                 </div>
             @endif
         </div>
+        @island('recommended-products')
+            @if ($this->cartItems->isNotEmpty())
+                <livewire:product-recommendations type="cart_related" />
+            @endif
 
-        @if ($this->cartItems->isNotEmpty())
-            <livewire:product-recommendations type="cart_related" />
-        @endif
-
-        <livewire:product-recommendations type="recently_viewed" />
+            <livewire:product-recommendations type="recently_viewed" />
+        @endisland
     </div>
 
     {{-- Accessories Modal --}}

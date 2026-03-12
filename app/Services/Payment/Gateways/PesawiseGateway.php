@@ -4,6 +4,7 @@ namespace App\Services\Payment\Gateways;
 
 use App\Enums\OrdersStatus;
 use App\Enums\PaymentStatus;
+use App\Events\PaymentConfirmed;
 use App\Models\Order;
 use App\Models\Payment;
 use App\Models\User;
@@ -23,17 +24,17 @@ class PesawiseGateway implements PaymentGateway
     private string $apiKey;
     private string $apiSecret;
     private string $balanceId;
-    private bool   $isProduction;
+    private bool $isProduction;
 
     public function __construct(PaymentSettings $settings)
     {
         $this->isProduction = ($settings->pesawise_env
             ?: config('services.pesawise.pesawise_mode_production')) === 'production';
 
-        $this->apiKey    = $settings->pesawise_api_key    ?: config('services.pesawise.api_key');
+        $this->apiKey = $settings->pesawise_api_key ?: config('services.pesawise.api_key');
         $this->apiSecret = $settings->pesawise_api_secret ?: config('services.pesawise.api_secret');
         $this->balanceId = $settings->pesawise_account_number ?: config('services.pesawise.balance_id_kes');
-        $this->apiUrl    = config('services.pesawise.api_url', 'https://api.pesawise.xyz/api');
+        $this->apiUrl = config('services.pesawise.api_url', 'https://api.pesawise.xyz/api');
     }
 
     //  Interface implementation 
@@ -41,9 +42,9 @@ class PesawiseGateway implements PaymentGateway
     public function initiate(Order $order, Payment $payment): PaymentResponse
     {
         try {
-            $payload  = $this->buildPayload($order);
+            $payload = $this->buildPayload($order);
             $response = $this->makeRequest('/e-com/create-order', $payload);
-            $data     = $response->json();
+            $data = $response->json();
 
             $this->updatePaymentRecord($payment, $data);
 
@@ -54,7 +55,7 @@ class PesawiseGateway implements PaymentGateway
             }
 
             Log::info('Pesawise payment initiated', [
-                'order_id'  => $order->id,
+                'order_id' => $order->id,
                 'reference' => $order->reference,
             ]);
 
@@ -62,7 +63,7 @@ class PesawiseGateway implements PaymentGateway
         } catch (\Throwable $e) {
             Log::error('Pesawise initiation failed', [
                 'order_id' => $order->id,
-                'error'    => $e->getMessage(),
+                'error' => $e->getMessage(),
             ]);
 
             return PaymentResponse::failed($e->getMessage());
@@ -76,7 +77,7 @@ class PesawiseGateway implements PaymentGateway
                 'externalId' => $reference,
             ], 'get');
 
-            $data   = $response->json();
+            $data = $response->json();
             $status = $data['status'] ?? 'unknown';
 
             return match ($status) {
@@ -85,16 +86,16 @@ class PesawiseGateway implements PaymentGateway
                     gatewayStatus: $status,
                     meta: $data,
                 ),
-                'PENDING'    => PaymentStatusVO::pending(),
+                'PENDING' => PaymentStatusVO::pending(),
                 'PROCESSING' => PaymentStatusVO::processing(),
-                'FAILED'     => PaymentStatusVO::failed($status),
-                'CANCELLED'  => PaymentStatusVO::cancelled(),
-                default      => PaymentStatusVO::failed($status),
+                'FAILED' => PaymentStatusVO::failed($status),
+                'CANCELLED' => PaymentStatusVO::cancelled(),
+                default => PaymentStatusVO::failed($status),
             };
         } catch (\Throwable $e) {
             Log::error('Pesawise verification failed', [
                 'reference' => $reference,
-                'error'     => $e->getMessage(),
+                'error' => $e->getMessage(),
             ]);
             return PaymentStatusVO::failed($e->getMessage());
         }
@@ -103,7 +104,7 @@ class PesawiseGateway implements PaymentGateway
     public function handleWebhook(Request $request): void
     {
         // Verify webhook signature
-        $secret    = app(PaymentSettings::class)->pesawise_webhook_secret;
+        $secret = app(PaymentSettings::class)->pesawise_webhook_secret;
         $signature = $request->header('X-Pesawise-Signature');
 
         if ($secret && $signature !== hash_hmac('sha256', $request->getContent(), $secret)) {
@@ -111,7 +112,7 @@ class PesawiseGateway implements PaymentGateway
             abort(401);
         }
 
-        $data      = $request->json()->all();
+        $data = $request->json()->all();
         $reference = $data['externalId'] ?? null;
 
         if (!$reference) {
@@ -129,10 +130,10 @@ class PesawiseGateway implements PaymentGateway
 
         match ($gatewayStatus) {
             'PAID', 'SUCCESS', 'COMPLETED' => $this->markPaid($order, $data),
-            'FAILED'                        => $this->markFailed($order, $data),
-            'CANCELLED'                     => $this->markCancelled($order, $data),
+            'FAILED' => $this->markFailed($order, $data),
+            'CANCELLED' => $this->markCancelled($order, $data),
             default => Log::info('Pesawise webhook: unhandled status', [
-                'status'    => $gatewayStatus,
+                'status' => $gatewayStatus,
                 'reference' => $reference,
             ]),
         };
@@ -143,22 +144,22 @@ class PesawiseGateway implements PaymentGateway
     private function buildPayload(Order $order): array
     {
         return [
-            'amount'              => $order->total_cents / 100,
-            'customerName'        => $this->resolveCustomerName($order),
-            'currency'            => 'KES',
-            'externalId'          => $order->reference,
-            'description'         => "Payment for Order #{$order->reference}",
-            'balanceId'           => $this->balanceId,
-            'callbackUrl'         => route('payment.callback.success'),
-            'cancellationUrl'     => route('payment.callback.cancel'),
-            'notificationId'      => (string) $order->id,
+            'amount' => $order->total_cents / 100,
+            'customerName' => $this->resolveCustomerName($order),
+            'currency' => 'KES',
+            'externalId' => $order->reference,
+            'description' => "Payment for Order #{$order->reference}",
+            'balanceId' => $this->balanceId,
+            'callbackUrl' => route('payment.callback.success'),
+            'cancellationUrl' => route('payment.callback.cancel'),
+            'notificationId' => (string) $order->id,
             'timeValidityMinutes' => 30,
-            'customerData'        => [
-                'email'       => $order->user?->email ?? '',
+            'customerData' => [
+                'email' => $order->user?->email ?? '',
                 'phoneNumber' => $this->resolvePhone($order),
-                'city'        => $order->shipping_address['area'] ?? 'Nairobi',
-                'state'       => $order->shipping_address['county'] ?? 'Nairobi County',
-                'address'     => $order->shipping_address['address'] ?? '',
+                'city' => $order->shipping_address['area'] ?? 'Nairobi',
+                'state' => $order->shipping_address['county'] ?? 'Nairobi County',
+                'address' => $order->shipping_address['address'] ?? '',
                 'countryCode' => 'KE',
             ],
         ];
@@ -167,7 +168,7 @@ class PesawiseGateway implements PaymentGateway
     private function makeRequest(string $endpoint, array $payload, string $method = 'post')
     {
         $http = Http::withHeaders([
-            'api-key'    => $this->apiKey,
+            'api-key' => $this->apiKey,
             'api-secret' => $this->apiSecret,
         ]);
 
@@ -178,8 +179,8 @@ class PesawiseGateway implements PaymentGateway
         if ($response->failed()) {
             Log::error('Pesawise API request failed', [
                 'endpoint' => $endpoint,
-                'status'   => $response->status(),
-                'body'     => $response->body(),
+                'status' => $response->status(),
+                'body' => $response->body(),
             ]);
             throw new \RuntimeException('Payment gateway request failed. Please try again.');
         }
@@ -193,14 +194,14 @@ class PesawiseGateway implements PaymentGateway
 
         $payment->update([
             'gateway_order_id' => $created['orderId'],
-            'transaction_id'   => $created['orderRequestId'],
-            'payment_url'      => $created['loadUrl'],
-            'status'           => PaymentStatus::PROCESSING->value,
-            'meta'             => [
-                'request_id'       => $response['requestId'],
-                'load_url'         => $created['loadUrl'],
+            'transaction_id' => $created['orderRequestId'],
+            'payment_url' => $created['loadUrl'],
+            'status' => PaymentStatus::PROCESSING->value,
+            'meta' => [
+                'request_id' => $response['requestId'],
+                'load_url' => $created['loadUrl'],
                 'order_request_id' => $created['orderRequestId'],
-                'initiated_at'     => now()->toISOString(),
+                'initiated_at' => now()->toISOString(),
             ],
         ]);
     }
@@ -209,10 +210,10 @@ class PesawiseGateway implements PaymentGateway
     {
         // 1. Update payment record
         $order->payment?->update([
-            'status'         => PaymentStatus::PAID->value,
+            'status' => PaymentStatus::PAID->value,
             'transaction_id' => $data['transactionId'] ?? null,
-            'paid_at'        => now(),
-            'meta'           => array_merge($order->payment->meta ?? [], $data),
+            'paid_at' => now(),
+            'meta' => array_merge($order->payment->meta ?? [], $data),
         ]);
 
         // 2. Transition order status — records history automatically
@@ -231,8 +232,11 @@ class PesawiseGateway implements PaymentGateway
         // 4. Clear checkout session
         app(CheckoutSession::class)->clear();
 
+        // 5. Broadcast payment confirmation event
+        PaymentConfirmed::dispatch($order->fresh(['payment']));
+
         Log::info('Pesawise payment confirmed', [
-            'order_id'       => $order->id,
+            'order_id' => $order->id,
             'transaction_id' => $data['transactionId'] ?? null,
         ]);
     }
@@ -242,7 +246,7 @@ class PesawiseGateway implements PaymentGateway
         // 1. Update payment record
         $order->payment?->update([
             'status' => PaymentStatus::FAILED->value,
-            'meta'   => $data,
+            'meta' => $data,
         ]);
 
         // 2. Transition order status
@@ -257,7 +261,7 @@ class PesawiseGateway implements PaymentGateway
         $this->restoreStock($order);
 
         Log::info('Pesawise payment failed', [
-            'order_id'  => $order->id,
+            'order_id' => $order->id,
             'reference' => $order->reference,
         ]);
     }
@@ -267,7 +271,7 @@ class PesawiseGateway implements PaymentGateway
         // 1. Update payment record
         $order->payment?->update([
             'status' => PaymentStatus::CANCELLED->value,
-            'meta'   => $data,
+            'meta' => $data,
         ]);
 
         // 2. Transition order status
@@ -282,7 +286,7 @@ class PesawiseGateway implements PaymentGateway
         $this->restoreStock($order);
 
         Log::info('Pesawise payment cancelled', [
-            'order_id'  => $order->id,
+            'order_id' => $order->id,
             'reference' => $order->reference,
         ]);
     }
@@ -301,7 +305,7 @@ class PesawiseGateway implements PaymentGateway
         }
 
         $first = $order->shipping_address['first_name'] ?? '';
-        $last  = $order->shipping_address['last_name'] ?? '';
+        $last = $order->shipping_address['last_name'] ?? '';
 
         return trim("$first $last") ?: 'Customer';
     }
