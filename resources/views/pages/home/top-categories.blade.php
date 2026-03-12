@@ -3,7 +3,6 @@
         <h2 class="font-bold text-2xl text-zinc-900 leading-tight">
             Top Categories
         </h2>
-        {{-- <div class="w-24 h-1 bg-gradient-to-r from-sheffield-blue to-indigo-500 mt-2 rounded-full"></div> --}}
         <p class="text-zinc-500 text-sm mt-2">Discover our most popular shopping categories</p>
     </div>
 
@@ -12,7 +11,7 @@
             <div class="group relative" :key="'category-' . $category->id">
                 <a href="{{ route('products', ['category' => $category->slug]) }}" wire:navigate class="block">
                     <div @class([
-                        'relative aspect-4/3 overflow-hidden rounded-md bg-zinc-50 shadow-sm transition-all duration-300 group-hover:-translate-y-1 group-hover:shadow-md group-hover:border-blue-100',
+                        'relative aspect-4/3 overflow-hidden rounded-md bg-zinc-50 transition-all duration-300 group-hover:-translate-y-1 group-hover:shadow-md group-hover:border-blue-100',
                         'border border-zinc-200' => !$category->image_url,
                     ])>
                         @if ($category->image_url)
@@ -29,7 +28,7 @@
                     </div>
 
                     <p
-                        class="mt-3 text-center text-sm font-semibold text-zinc-800 group-hover:text-blue-600 transition-colors line-clamp-1">
+                        class="mt-3 text-center text-sm font-semibold text-zinc-800 group-hover:text-sheffield-blue transition-colors line-clamp-1">
                         {{ $category->name }}
                     </p>
                 </a>

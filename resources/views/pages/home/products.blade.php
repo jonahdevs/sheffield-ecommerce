@@ -71,13 +71,13 @@
 
             <!-- Navigation buttons -->
             <button type="button" @click="swiper?.slidePrev()"
-                class="absolute top-1/2 left-0  -translate-y-1/2 -translate-x-1/2 z-30 flex items-center justify-center cursor-pointer group focus:outline-none w-8 h-8 rounded-full bg-sheffield-blue/30 group-hover:bg-sheffield-blue/50 group-focus:ring-4 group-focus:ring-sheffield-blue/70 group-focus:outline-none">
+                class="absolute top-1/2 left-0  -translate-y-1/2 -translate-x-1/2 z-30 flex items-center justify-center cursor-pointer group focus:outline-none w-8 h-8 rounded-full bg-brand-secondary/30 group-hover:bg-brand-secondary/50 group-focus:ring-4 group-focus:ring-brand-secondary/70 group-focus:outline-none">
                 <flux:icon.arrow-long-left class="size-4 text-white" />
                 <span class="sr-only">Previous</span>
             </button>
 
             <button type="button" @click="swiper?.slideNext()"
-                class="absolute top-1/2 right-0 -translate-y-1/2 translate-x-1/2 z-30 flex items-center justify-center cursor-pointer group focus:outline-none w-8 h-8 rounded-full bg-sheffield-blue/30 group-hover:bg-sheffield-blue/50 group-focus:ring-4 group-focus:ring-sheffield-blue/70 group-focus:outline-none">
+                class="absolute top-1/2 right-0 -translate-y-1/2 translate-x-1/2 z-30 flex items-center justify-center cursor-pointer group focus:outline-none w-8 h-8 rounded-full bg-brand-secondary/30 group-hover:bg-brand-secondary/50 group-focus:ring-4 group-focus:ring-brand-secondary/70 group-focus:outline-none">
                 <flux:icon.arrow-long-right class="size-4 text-white" />
                 <span class="sr-only">Next</span>
             </button>

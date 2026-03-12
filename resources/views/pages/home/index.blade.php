@@ -35,15 +35,13 @@ new #[Layout('layouts.guest')] class extends Component {
     #[Computed(persist: true)]
     public function products()
     {
-        $products = Product::select(['id', 'name', 'slug', 'brand_id', 'price', 'sale_price', 'image_path', 'short_description'])
+        return Product::select(['id', 'name', 'slug', 'brand_id', 'price', 'sale_price', 'image_path', 'short_description'])
             ->withAvg('reviews', 'rating')
             ->with('brand:id,name')
             ->active()
             ->inRandomOrder()
             ->limit(24)
             ->get();
-
-        return $products;
     }
 };
 ?>
@@ -116,40 +114,32 @@ new #[Layout('layouts.guest')] class extends Component {
 
             <div class="swiper-pagination"></div>
 
-            <!-- Compact Circular Progress Indicator with Pause/Play - Bottom Right -->
+            {{-- Circular Progress Indicator with Pause/Play --}}
             <div class="absolute -bottom-2 right-3 sm:bottom-4 sm:right-4 z-50">
                 <button type="button" @click="toggleAutoplay()"
                     class="relative w-7 h-7 sm:w-10 sm:h-10 group cursor-pointer"
                     :aria-label="isPaused ? 'Play slideshow' : 'Pause slideshow'">
-                    <!-- Background Circle with Shadow -->
                     <svg class="w-full h-full transform -rotate-90 drop-shadow-lg" viewBox="0 0 48 48">
-                        <!-- Outer glow/shadow circle -->
                         <circle cx="24" cy="24" r="22" fill="rgba(0, 0, 0, 0.3)" />
-
-                        <!-- Background Circle -->
                         <circle cx="24" cy="24" r="20" fill="rgba(255, 255, 255, 0.95)" />
-
-                        <!-- Background track (light gray) -->
                         <circle cx="24" cy="24" r="18" fill="none" stroke="rgba(0, 0, 0, 0.1)"
                             stroke-width="2.5" />
-
-                        <!-- Progress Circle (Sheffield Red) -->
-                        <circle cx="24" cy="24" r="18" fill="none" stroke="#E31E24" stroke-width="2.5"
-                            stroke-linecap="round" :stroke-dasharray="progressCircumference"
+                        {{-- Progress circle — uses brand-primary via CSS variable --}}
+                        <circle cx="24" cy="24" r="18" fill="none" style="stroke: var(--brand-primary)"
+                            stroke-width="2.5" stroke-linecap="round" :stroke-dasharray="progressCircumference"
                             :stroke-dashoffset="progressOffset" class="transition-all duration-100 ease-linear" />
                     </svg>
 
-                    <!-- Pause/Play Icon (Centered) -->
                     <div class="absolute inset-0 flex items-center justify-center">
-                        <!-- Play Icon -->
+                        {{-- Play Icon --}}
                         <svg x-show="isPaused"
-                            class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-sheffield-red ml-0.5 transition-transform group-hover:scale-110"
+                            class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-brand-primary ml-0.5 transition-transform group-hover:scale-110"
                             fill="currentColor" viewBox="0 0 24 24">
                             <path d="M8 5v14l11-7z" />
                         </svg>
-                        <!-- Pause Icon -->
+                        {{-- Pause Icon --}}
                         <svg x-show="!isPaused"
-                            class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-sheffield-red transition-transform group-hover:scale-110"
+                            class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-brand-primary transition-transform group-hover:scale-110"
                             fill="currentColor" viewBox="0 0 24 24">
                             <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z" />
                         </svg>
@@ -157,8 +147,7 @@ new #[Layout('layouts.guest')] class extends Component {
                 </button>
             </div>
 
-            <!-- Slider controls -->
-
+            {{-- Slider controls --}}
             <button type="button" @click="swiper.slidePrev()"
                 class="absolute top-0 start-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none">
                 <span
@@ -179,12 +168,13 @@ new #[Layout('layouts.guest')] class extends Component {
         </div>
     </div>
 
+    {{-- Feature strips --}}
     <section class="border-y border-zinc-200 bg-white mt-6">
         <div class="container mx-auto px-4">
             <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 divide-x divide-zinc-100">
 
                 <div class="flex flex-col items-center text-center p-6 transition-colors hover:bg-zinc-50">
-                    <div class="mb-3 text-sheffield-red">
+                    <div class="mb-3 text-brand-primary">
                         <svg class="size-8" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round"
                                 d="M3.75 21h16.5M4.5 3h15M5.25 3v18m13.5-18v18M9 6.75h1.5m-1.5 3h1.5m-1.5 3h1.5m3-6H15m-1.5 3H15m-1.5 3H15M9 21v-3.375c0-.621.504-1.125 1.125-1.125h3.75c.621 0 1.125.504 1.125 1.125V21" />
@@ -195,7 +185,7 @@ new #[Layout('layouts.guest')] class extends Component {
                 </div>
 
                 <div class="flex flex-col items-center text-center p-6 transition-colors hover:bg-zinc-50">
-                    <div class="mb-3 text-sheffield-red">
+                    <div class="mb-3 text-brand-primary">
                         <svg class="size-8" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round"
                                 d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z" />
@@ -206,7 +196,7 @@ new #[Layout('layouts.guest')] class extends Component {
                 </div>
 
                 <div class="flex flex-col items-center text-center p-6 transition-colors hover:bg-zinc-50">
-                    <div class="mb-3 text-sheffield-red">
+                    <div class="mb-3 text-brand-primary">
                         <flux:icon.arrows-pointing-out class="size-8" />
                     </div>
                     <h3 class="text-xs font-semibold uppercase tracking-wider text-zinc-900">Customized</h3>
@@ -214,7 +204,7 @@ new #[Layout('layouts.guest')] class extends Component {
                 </div>
 
                 <div class="flex flex-col items-center text-center p-6 transition-colors hover:bg-zinc-50">
-                    <div class="mb-3 text-sheffield-red">
+                    <div class="mb-3 text-brand-primary">
                         <svg class="size-8" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                             stroke-width="1.5" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -226,7 +216,7 @@ new #[Layout('layouts.guest')] class extends Component {
                 </div>
 
                 <div class="hidden lg:flex flex-col items-center text-center p-6 transition-colors hover:bg-zinc-50">
-                    <div class="mb-3 text-sheffield-red">
+                    <div class="mb-3 text-brand-primary">
                         <svg class="size-8" fill="none" stroke="currentColor" stroke-width="1.5"
                             viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -236,6 +226,7 @@ new #[Layout('layouts.guest')] class extends Component {
                     <h3 class="text-xs font-semibold uppercase tracking-wider text-zinc-900">Installation</h3>
                     <p class="mt-1 text-xs text-zinc-500 leading-tight">Professional Setup</p>
                 </div>
+
             </div>
         </div>
     </section>
@@ -244,10 +235,7 @@ new #[Layout('layouts.guest')] class extends Component {
         @placeholder
             <div class="mt-6">
                 <div class="py-4">
-                    <!-- Responsive Heading -->
-                    <h2 class="font-semibold text-xl text-zinc-800 ">
-                        Top Categories
-                    </h2>
+                    <h2 class="font-semibold text-xl text-zinc-800">Top Categories</h2>
                 </div>
                 <div
                     class="py-3 pb-5 grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 gap-3">
@@ -260,7 +248,6 @@ new #[Layout('layouts.guest')] class extends Component {
                 </div>
             </div>
         @endplaceholder
-
         @include('pages.home.top-categories')
     @endisland
 
@@ -268,26 +255,25 @@ new #[Layout('layouts.guest')] class extends Component {
         <img src="{{ asset('images/home/THIN BANNER.png') }}" alt="banner" class="w-full h-auto">
     </section>
 
+    {{-- New Arrivals --}}
     <div class="container mx-auto px-4 mt-8">
-        <div class="bg-sheffield-red rounded-md overflow-hidden grid grid-cols-1 lg:grid-cols-6">
+        <div class="bg-brand-primary rounded-md overflow-hidden grid grid-cols-1 lg:grid-cols-6">
 
             {{-- Left Panel --}}
             <div
                 class="lg:col-span-1 flex flex-col justify-center px-5 md:px-6 py-6 lg:py-8
-                    border-b border-white/10 lg:border-b-0 lg:border-r lg:border-white/10">
+                border-b border-white/10 lg:border-b-0 lg:border-r lg:border-white/10">
                 <span class="text-white/60 text-xs font-semibold uppercase tracking-widest mb-2">
                     Just In
                 </span>
-                <h4 class="text-3xl lg:text-4xl font-bold text-white leading-none mb-3">
-                    New
-                </h4>
+                <h4 class="text-3xl lg:text-4xl font-bold text-white leading-none mb-3">New</h4>
                 <p class="text-white/75 text-sm leading-relaxed mb-5">
                     Discover what's just dropped
                 </p>
                 <a href="#"
                     class="inline-flex items-center gap-1.5 w-fit text-xs font-semibold
-          text-white border border-white/30 hover:border-white hover:bg-white/10
-          px-4 py-2 rounded-full transition-all duration-200 group focus:outline-none">
+                        text-white border border-white/30 hover:border-white hover:bg-white/10
+                        px-4 py-2 rounded-full transition-all duration-200 group focus:outline-none">
                     View All
                     <flux:icon.arrow-right
                         class="size-3.5 transition-transform duration-200 group-hover:translate-x-1" />
@@ -311,10 +297,8 @@ new #[Layout('layouts.guest')] class extends Component {
         </div>
     </div>
 
-
-
     <section class="container mx-auto px-4 mt-6">
-        <a href="#" class=" block overflow-hidden rounded-sm">
+        <a href="#" class="block overflow-hidden rounded-sm">
             <img src="{{ asset('images/home/CLEARANCE-SALE.jpg') }}" alt="banner"
                 class="w-full h-auto object-cover object-center rounded-sm">
         </a>
@@ -337,16 +321,14 @@ new #[Layout('layouts.guest')] class extends Component {
         @include('pages.home.products')
     @endisland
 
-    <!-- Locations Section -->
+    {{-- Locations Section --}}
     <section class="container @container/locations mx-auto px-4 mt-6 mb-12">
 
-        {{-- Header --}}
         <div class="pb-6">
             <h2 class="text-2xl font-bold text-zinc-900 leading-tight">Our Locations</h2>
             <p class="text-sm text-zinc-500 mt-2">From local hubs to a continental presence.</p>
         </div>
 
-        {{-- Grid --}}
         <div
             class="grid grid-cols-1 @sm/locations:grid-cols-2 @3xl/locations:grid-cols-3 @5xl/locations:grid-cols-4 gap-4">
 
@@ -398,16 +380,15 @@ new #[Layout('layouts.guest')] class extends Component {
             @foreach ($locations as $location)
                 <div
                     class="group/card bg-white rounded-md overflow-hidden
-                        ring-1 ring-zinc-200/80
-                        hover:ring-zinc-300 hover:shadow-md hover:shadow-zinc-200/60
-                        transition-all duration-200">
+                    ring-1 ring-zinc-200/80
+                    hover:ring-zinc-300 hover:shadow-md hover:shadow-zinc-200/60
+                    transition-all duration-200">
 
                     {{-- Image --}}
                     <div class="w-full h-60 overflow-hidden">
                         <img src="{{ asset($location['image']) }}" alt="{{ $location['city'] }} showroom"
                             loading="lazy"
-                            class="w-full h-full object-cover object-center
-                               transition-transform duration-300 group-hover/card:scale-105">
+                            class="w-full h-full object-cover object-center transition-transform duration-300 group-hover/card:scale-105">
                     </div>
 
                     {{-- Content --}}
@@ -426,7 +407,7 @@ new #[Layout('layouts.guest')] class extends Component {
                             {{-- Address --}}
                             <div class="flex items-start gap-3">
                                 <div
-                                    class="shrink-0 mt-0.5 w-7 h-7 rounded-md bg-red-50 text-sheffield-red ring-1 ring-red-100 flex items-center justify-center">
+                                    class="shrink-0 mt-0.5 w-7 h-7 rounded-md bg-brand-secondary/10 text-brand-secondary ring-1 ring-brand-secondary/20 flex items-center justify-center">
                                     <flux:icon.map-pin class="w-3.5 h-3.5" />
                                 </div>
                                 <p class="text-sm text-zinc-500 leading-relaxed pt-1">{{ $location['address'] }}</p>
@@ -435,11 +416,11 @@ new #[Layout('layouts.guest')] class extends Component {
                             {{-- Phone --}}
                             <div class="flex items-center gap-3">
                                 <div
-                                    class="shrink-0 w-7 h-7 rounded-md bg-red-50 ring-1 ring-red-100 text-sheffield-red flex items-center justify-center">
+                                    class="shrink-0 w-7 h-7 rounded-md bg-brand-secondary/10 text-brand-secondary ring-1 ring-brand-secondary/20 flex items-center justify-center">
                                     <flux:icon.phone class="w-3.5 h-3.5" />
                                 </div>
                                 <a href="tel:{{ $location['tel'] }}"
-                                    class="text-sm text-zinc-600 hover:text-sheffield-red transition-colors duration-150 font-medium">
+                                    class="text-sm text-zinc-600 hover:text-brand-primary transition-colors duration-150 font-medium">
                                     {{ $location['phone'] }}
                                 </a>
                             </div>
@@ -447,11 +428,11 @@ new #[Layout('layouts.guest')] class extends Component {
                             {{-- Email --}}
                             <div class="flex items-center gap-3">
                                 <div
-                                    class="shrink-0 w-7 h-7 rounded-md bg-red-50 ring-1 ring-red-100 text-sheffield-red flex items-center justify-center">
+                                    class="shrink-0 w-7 h-7 rounded-md bg-brand-secondary/10 text-brand-secondary ring-1 ring-brand-secondary/20 flex items-center justify-center">
                                     <flux:icon.envelope class="w-3.5 h-3.5" />
                                 </div>
                                 <a href="mailto:{{ $location['email'] }}"
-                                    class="text-sm text-zinc-600 hover:text-sheffield-red transition-colors duration-150 font-medium break-all">
+                                    class="text-sm text-zinc-600 hover:text-brand-primary transition-colors duration-150 font-medium break-all">
                                     {{ $location['email'] }}
                                 </a>
                             </div>

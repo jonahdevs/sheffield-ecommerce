@@ -95,13 +95,13 @@ class DeliveryOrder extends Model
     #[Scope()]
     public function atStation($query)
     {
-        $query->where('status', DeliveryOrderStatus::ATSTATION->value);
+        $query->where('status', DeliveryOrderStatus::AT_STATION->value);
     }
 
     #[Scope()]
     public function overdueCollection($query)
     {
-        $query->where('status', DeliveryOrderStatus::ATSTATION->value)
+        $query->where('status', DeliveryOrderStatus::AT_STATION->value)
             ->where('collection_deadline_at', '<', now());
     }
 
@@ -134,7 +134,7 @@ class DeliveryOrder extends Model
 
     public function isAtStation(): bool
     {
-        return $this->getStatusEnum() === DeliveryOrderStatus::ATSTATION;
+        return $this->getStatusEnum() === DeliveryOrderStatus::AT_STATION;
     }
 
     public function isOverdueCollection(): bool

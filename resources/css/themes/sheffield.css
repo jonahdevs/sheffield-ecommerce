@@ -1,0 +1,45 @@
+/*
+ |--------------------------------------------------------------------------
+ | Sheffield Africa — Brand Theme
+ |--------------------------------------------------------------------------
+ |
+ | To create a new client theme:
+ |   1. Copy this file → themes/client-name.css
+ |   2. Change the hex values below (nothing else)
+ |   3. Update the @import in app.css to point to your new file
+ |   4. Done.
+ |
+ | Token reference:
+ |   --brand-primary-*    Main brand color (navbar, CTAs, buttons, badges)
+ |   --brand-secondary-*  Supporting color (admin sidebar, info states)
+ |   --brand-footer-*     Footer colors
+ |
+ */
+
+:root {
+    /* ── Primary ────────────────────────────────────────────
+     * The dominant brand color.
+     * Sheffield: Red  |  Your next client: swap these 4 lines
+     * ─────────────────────────────────────────────────────── */
+    --brand-primary: #c02434;
+    --brand-primary-light: #d02e3a;
+    --brand-primary-dark: #931e2d;
+    --brand-primary-content: #ffffff; /* text color ON primary bg */
+
+    /* ── Secondary ──────────────────────────────────────────
+     * Supporting color — admin panel, info badges, links.
+     * Sheffield: Blue  |  Your next client: swap these 4 lines
+     * ─────────────────────────────────────────────────────── */
+    --brand-secondary: #304296;
+    --brand-secondary-light: #3652bf;
+    --brand-secondary-dark: #2d3c7b;
+    --brand-secondary-content: #ffffff; /* text color ON secondary bg */
+
+    /* ── Footer ─────────────────────────────────────────────
+     * Dark neutral footer. Change if client wants a colored footer.
+     * ─────────────────────────────────────────────────────── */
+    --brand-footer-bg: #0f172a; /* slate-900 */
+    --brand-footer-text: #cbd5e1; /* slate-300 */
+    --brand-footer-muted: #64748b; /* slate-500 */
+    --brand-footer-border: #334155; /* slate-700 */
+}

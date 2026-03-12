@@ -7,10 +7,13 @@
 
 <body class="bg-zinc-50 text-zinc-700 font-sans min-h-screen">
 
-    <div class="bg-sheffield-red text-white">
+
+    {{-- Announcement / Promo Bar --}}
+    <div class="bg-brand-primary text-brand-primary-content">
         <section class="container mx-auto px-4">
             <div class="flex items-center justify-between py-2 text-sm gap-4">
-                {{-- contact info - Hidden on mobile, visible on md+ --}}
+
+                {{-- Contact info — hidden on mobile --}}
                 <div class="hidden md:flex items-center gap-3 lg:gap-4">
                     <div class="flex items-center gap-2">
                         <flux:icon.phone class="w-4.5 h-4.5 shrink-0" />
@@ -27,7 +30,6 @@
                                 this.initializeSwiper();
                             });
                         },
-                    
                         initializeSwiper() {
                             this.swiper = new Swiper('.promoSwiper', {
                                 direction: 'vertical',
@@ -37,15 +39,8 @@
                                     delay: 3000,
                                     disableOnInteraction: false,
                                 },
-                                effect: 'slide',
-                                // Optional: Add fade effect for smoother transitions
-                                // effect: 'fade',
-                                // fadeEffect: {
-                                //     crossFade: true
-                                // },
                             });
                         },
-                    
                         destroy() {
                             if (this.swiper) {
                                 this.swiper.destroy(true, true);
@@ -79,21 +74,26 @@
                     </div>
                 </div>
 
-                <!-- Support Link - Hidden on mobile, visible on md+ -->
+                {{-- Support link — hidden on mobile --}}
                 <div class="hidden md:flex items-center gap-4">
                     <a href="" class="flex items-center gap-2 group hover:opacity-90 transition-opacity">
                         <flux:icon.question-mark-circle class="size-5 shrink-0" />
                         <span class="group-hover:underline text-xs lg:text-sm">Support</span>
                     </a>
                 </div>
+
             </div>
         </section>
     </div>
 
-    @persist('app-bar')
-        <livewire:app-bar />
-    @endpersist
+    <div class="sticky top-0 left-0 z-50 w-full">
+        {{-- App Bar (logo + search + nav categories) --}}
+        @persist('app-bar')
+            <livewire:app-bar />
+        @endpersist
 
+    </div>
+    {{-- END sticky header wrapper --}}
 
     <main>
         {{ $slot }}
@@ -107,9 +107,7 @@
 
     @fluxScripts
 
-    <!-- After your notification component -->
     <script>
-        // Bridge Laravel flash messages to Alpine notifications
         document.addEventListener('DOMContentLoaded', function() {
             @if (session('success'))
                 window.dispatchEvent(new CustomEvent('notify', {

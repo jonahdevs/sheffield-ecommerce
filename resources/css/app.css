@@ -1,17 +1,78 @@
+/* ============================================================
+   0. FONTS & IMPORTS
+   ============================================================ */
 @import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
 @import "tailwindcss";
 @import "../../vendor/livewire/flux/dist/flux.css";
 
+/*
+ |--------------------------------------------------------------------------
+ | ACTIVE THEME
+ |--------------------------------------------------------------------------
+ | To switch clients, change ONLY this one line.
+ | Example: @import "./themes/client-a.css";
+ |
+ */
+@import "./themes/sheffield.css";
+
+/* ============================================================
+   1. SOURCES
+   ============================================================ */
 @source '../views';
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../vendor/livewire/flux-pro/stubs/**/*.blade.php';
 @source '../../vendor/livewire/flux/stubs/**/*.blade.php';
+@source '../../vendor/robsontenorio/mary/src/View/Components/**/*.php';
 
+/* ============================================================
+   2. DARK MODE VARIANT — declared once
+   ============================================================ */
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* ============================================================
+   3. DESIGN TOKENS
+   These consume the theme file's --brand-* variables.
+   Nothing here changes per client — only the theme file does.
+   ============================================================ */
 @theme {
     --font-sans: "Poppins", sans-serif;
 
+    /*
+     * Tailwind utility classes are generated from these.
+     * bg-brand-primary, text-brand-primary, etc.
+     * These are YOUR classes — DaisyUI never intercepts them.
+     *
+     * Usage in Blade:
+     *   bg-brand-primary          → navbar, CTA buttons, add-to-cart
+     *   bg-brand-primary-dark     → hover states
+     *   bg-brand-primary-light    → subtle highlights
+     *   text-brand-primary-content → white text on primary bg
+     *
+     *   bg-brand-secondary         → admin sidebar (auto via CSS)
+     *   bg-brand-secondary-dark    → admin hover states (auto via CSS)
+     *   text-brand-secondary-content → white text on secondary bg
+     *
+     *   bg-brand-footer            → footer background
+     *   text-brand-footer          → footer body text
+     *   text-brand-footer-muted    → footer secondary/copyright text
+     *   border-brand-footer        → footer top border
+     */
+    --color-brand-primary: var(--brand-primary);
+    --color-brand-primary-light: var(--brand-primary-light);
+    --color-brand-primary-dark: var(--brand-primary-dark);
+    --color-brand-primary-content: var(--brand-primary-content);
+
+    --color-brand-secondary: var(--brand-secondary);
+    --color-brand-secondary-light: var(--brand-secondary-light);
+    --color-brand-secondary-dark: var(--brand-secondary-dark);
+    --color-brand-secondary-content: var(--brand-secondary-content);
+
+    --color-brand-footer: var(--brand-footer-bg);
+    --color-brand-footer-text: var(--brand-footer-text);
+    --color-brand-footer-muted: var(--brand-footer-muted);
+    --color-brand-footer-border: var(--brand-footer-border);
+
+    /* Zinc → Slate remap (Flux uses zinc internally) */
     --color-zinc-50: var(--color-slate-50);
     --color-zinc-100: var(--color-slate-100);
     --color-zinc-200: var(--color-slate-200);
@@ -23,32 +84,79 @@
     --color-zinc-800: var(--color-slate-800);
     --color-zinc-900: var(--color-slate-900);
     --color-zinc-950: var(--color-slate-950);
-
-    --color-accent: var(--color-neutral-800);
-    --color-accent-content: var(--color-neutral-800);
-    --color-accent-foreground: var(--color-white);
-
-    /* --color-accent: var(--color-sheffield-blue);
-    --color-accent-content: var(--color-sheffield-blue-dark);
-    --color-accent-foreground: var(--color-white); */
-
-    --color-sheffield-red: #c02434;
-    --color-sheffield-red-light: #d02e3a;
-    --color-sheffield-red-dark: #931e2d;
-
-    --color-sheffield-blue: #304296;
-    --color-sheffield-blue-light: #3652bf;
-    --color-sheffield-blue-dark: #2d3c7b;
 }
 
+/* ============================================================
+   4. DARK MODE TOKEN OVERRIDES — admin panel only
+   ============================================================ */
 @layer theme {
     .dark {
-        --color-accent: var(--color-white);
-        --color-accent-content: var(--color-white);
-        --color-accent-foreground: var(--color-neutral-800);
+        --color-accent: #ffffff;
+        --color-accent-content: #ffffff;
+        --color-accent-foreground: var(--brand-secondary-dark);
+
+        --color-input-ring: var(--color-slate-400);
+        --color-input-ring-offset: var(--color-slate-900);
+
+        --color-surface: var(--color-slate-900);
+        --color-surface-alt: var(--color-slate-800);
     }
 }
 
+/* ============================================================
+   5. DAISYUI PLUGIN
+   base:false is critical — prevents DaisyUI from overwriting
+   :root variables that Flux owns.
+   ============================================================ */
+@plugin "daisyui" {
+    themes:
+        light --default,
+        dark --prefersdark;
+    base: false;
+    styled: true;
+    utils: true;
+}
+
+/* ============================================================
+   6. TOKEN BRIDGE
+   Wire up Flux's accent system to our brand tokens.
+   Re-asserted here so they always win after DaisyUI loads.
+
+   NOTE: We do NOT feed --brand-* into DaisyUI's --p / --s vars
+   because DaisyUI requires OKLCH format — feeding hex/vars
+   causes it to fall back to its defaults.
+   Instead we own our own class names (brand-*) and leave
+   DaisyUI's primary/secondary for MaryUI components only.
+   ============================================================ */
+:root {
+    --color-accent: var(--brand-primary);
+    --color-accent-content: var(--brand-primary);
+    --color-accent-foreground: var(--brand-primary-content);
+
+    --color-input-ring: #64748b; /* slate-500 — neutral, never red */
+    --color-input-ring-offset: #ffffff;
+}
+
+/*
+ * Admin layout scope — add class="admin-layout" to your
+ * admin layout's root <body> or wrapper element.
+ * This switches Flux component accents from primary → secondary.
+ */
+.admin-layout {
+    --color-accent: var(--brand-secondary);
+    --color-accent-content: var(--brand-secondary);
+    --color-accent-foreground: var(--brand-secondary-content);
+}
+
+.dark {
+    --color-accent: #ffffff;
+    --color-accent-content: #ffffff;
+    --color-accent-foreground: var(--brand-secondary-dark);
+}
+
+/* ============================================================
+   7. BASE LAYER
+   ============================================================ */
 @layer base {
     *,
     ::after,
@@ -59,148 +167,164 @@
     }
 }
 
+/* ============================================================
+   8. FLUX COMPONENT OVERRIDES
+   ============================================================ */
 [data-flux-field]:not(ui-radio, ui-checkbox) {
     @apply grid gap-2;
 }
-
 [data-flux-label] {
     @apply !mb-0 !leading-tight;
 }
+[data-flux-card] {
+    @apply rounded-md;
+}
 
+/*
+ * Input focus ring — neutral slate, intentionally NOT primary.
+ * Red/colored focus rings signal "error" on ecommerce forms.
+ */
 input:focus[data-flux-control],
 textarea:focus[data-flux-control],
 select:focus[data-flux-control] {
-    @apply outline-hidden ring-2 ring-accent ring-offset-2 ring-offset-accent-foreground;
+    @apply outline-hidden;
+    box-shadow:
+        0 0 0 2px var(--color-input-ring-offset),
+        0 0 0 4px var(--color-input-ring);
 }
-
-/* \[:where(&)\]:size-4 {
-    @apply size-4;
-} */
 
 [x-cloak] {
     display: none !important;
 }
 
-/**
-    The lines above are intact.
-    The lines below were added by maryUI installer.
-*/
-
-/** daisyUI */
-@plugin "daisyui" {
-    themes:
-        light --default,
-        dark --prefersdark;
+/* ============================================================
+   9. PUBLIC NAVBAR
+   ============================================================ */
+[data-navbar],
+.navbar-public {
+    background-color: var(--brand-primary);
+    color: var(--brand-primary-content);
+}
+[data-navbar] a:hover,
+.navbar-public a:hover {
+    background-color: var(--brand-primary-dark);
 }
 
-/* maryUI */
-@source "../../vendor/robsontenorio/mary/src/View/Components/**/*.php";
+/* ============================================================
+   10. PUBLIC FOOTER
+   ============================================================ */
+[data-footer],
+.footer-public {
+    background-color: var(--brand-footer-bg);
+    color: var(--brand-footer-text);
+    border-top: 1px solid var(--brand-footer-border);
+}
+[data-footer] a,
+.footer-public a {
+    color: var(--brand-footer-text);
+}
+[data-footer] a:hover,
+.footer-public a:hover {
+    color: var(--brand-primary-light); /* subtle brand nod on hover */
+}
+[data-footer] .footer-muted,
+.footer-public .footer-muted {
+    color: var(--brand-footer-muted);
+}
 
-/* Theme toggle */
-@custom-variant dark (&:where(.dark, .dark *));
-
-/**
-* Paginator - Traditional style
-* Because Laravel defaults does not match well the design of daisyUI.
-*/
-
+/* ============================================================
+   11. MARYUI OVERRIDES
+   ============================================================ */
 .mary-table-pagination span[aria-current="page"] > span {
-    @apply bg-primary text-base-100;
+    background-color: var(--brand-primary);
+    @apply text-white;
 }
-
 .mary-table-pagination button {
     @apply cursor-pointer;
 }
 
-/* admin sidebar customization */
-
+/* ============================================================
+   12. ADMIN SIDEBAR
+   Blue (secondary) — deliberately distinct from the public site
+   so admins always know they are in the admin panel.
+   ============================================================ */
 [data-flux-sidebar] {
-    @apply bg-sheffield-blue border-sheffield-blue-dark dark:bg-sheffield-blue-dark;
+    background-color: var(--brand-secondary);
+    border-color: var(--brand-secondary-dark);
+}
+.dark [data-flux-sidebar] {
+    background-color: var(--brand-secondary-dark);
 }
 
 [data-flux-navlist-group] [data-flux-heading] {
     @apply text-white/50 text-xs uppercase tracking-widest;
 }
-
 [data-flux-sidebar] [data-flux-navlist-item] {
     @apply text-white/75;
 }
-
 [data-flux-sidebar-item]:hover {
-    @apply bg-sheffield-blue-light text-white;
+    background-color: var(--brand-secondary-light);
+    @apply text-white;
 }
-
 [data-flux-navlist-item][data-current] {
-    @apply bg-white text-sheffield-blue;
+    @apply bg-white;
+    color: var(--brand-secondary);
 }
-
 [data-flux-navlist-item] svg {
     @apply text-inherit;
 }
-
 [data-flux-sidebar] [data-flux-separator] {
     @apply border-white/15;
 }
-
 [data-flux-sidebar] [data-flux-brand] * {
     @apply text-white;
 }
 
-/* Fix nested expandable group dark background */
+/* Expandable groups */
 [data-flux-sidebar] [data-flux-navlist-group] {
     @apply bg-transparent;
 }
-
 [data-flux-sidebar] [data-flux-navlist-group] button,
 [data-flux-sidebar] [data-flux-navlist-group] [role="button"] {
-    @apply bg-transparent text-white/75 hover:bg-sheffield-blue-light hover:text-white;
+    @apply bg-transparent text-white/75;
 }
-
-/* Expandable group expanded content area */
+[data-flux-sidebar] [data-flux-navlist-group] button:hover,
+[data-flux-sidebar] [data-flux-navlist-group] [role="button"]:hover {
+    background-color: var(--brand-secondary-light);
+    @apply text-white;
+}
 [data-flux-sidebar] [data-flux-navlist-group] > div,
 [data-flux-sidebar] [data-flux-navlist-group] > ul {
     @apply bg-transparent;
 }
 
-/* In your app.css or a relevant stylesheet */
-
-/* Hide scrollbar by default, show thin one on hover */
+/* ============================================================
+   13. SIDEBAR SCROLLBAR
+   ============================================================ */
 flux-sidebar,
 [data-flux-sidebar] {
     scrollbar-width: thin;
     scrollbar-color: transparent transparent;
     transition: scrollbar-color 0.3s ease;
 }
-
 flux-sidebar:hover,
 [data-flux-sidebar]:hover {
     scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
 }
-
-/* For WebKit browsers (Chrome, Safari, Edge) */
 flux-sidebar::-webkit-scrollbar,
 [data-flux-sidebar]::-webkit-scrollbar {
     width: 4px;
 }
-
 flux-sidebar::-webkit-scrollbar-track,
 [data-flux-sidebar]::-webkit-scrollbar-track {
     background: transparent;
 }
-
 flux-sidebar::-webkit-scrollbar-thumb,
 [data-flux-sidebar]::-webkit-scrollbar-thumb {
     background-color: transparent;
     border-radius: 999px;
-    transition: background-color 0.3s ease;
 }
-
 flux-sidebar:hover::-webkit-scrollbar-thumb,
 [data-flux-sidebar]:hover::-webkit-scrollbar-thumb {
     background-color: rgba(255, 255, 255, 0.25);
-}
-
-/* end of admin sidebar customization */
-[data-flux-card] {
-    @apply rounded-md;
 }
