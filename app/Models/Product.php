@@ -254,12 +254,12 @@ class Product extends Model
     #[Scope]
     protected function active(Builder $query): void
     {
-        $query->where('status', ProductStatus::PUBLISHED)
+        $query->where('products.status', ProductStatus::PUBLISHED)
             ->where(function ($q) {
-                $q->where('type', ProductType::GROUPED)
-                    ->orWhere('is_virtual', true)
-                    ->orWhere('price', '>', 0)
-                    ->orWhere('sale_price', '>', 0);
+                $q->where('products.type', ProductType::GROUPED)
+                    ->orWhere('products.is_virtual', true)
+                    ->orWhere('products.price', '>', 0)
+                    ->orWhere('products.sale_price', '>', 0);
             });
     }
 

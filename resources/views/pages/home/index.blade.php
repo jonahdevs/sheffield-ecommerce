@@ -426,7 +426,7 @@ new #[Layout('layouts.guest')] class extends Component {
                             {{-- Address --}}
                             <div class="flex items-start gap-3">
                                 <div
-                                    class="shrink-0 mt-0.5 w-7 h-7 rounded-md bg-red-50 text-sheffield-red ring-1 ring-red-100 flex items-center justify-center group-hover/card:bg-sheffield-red group-hover/card:text-white transition-colors duration-300">
+                                    class="shrink-0 mt-0.5 w-7 h-7 rounded-md bg-red-50 text-sheffield-red ring-1 ring-red-100 flex items-center justify-center">
                                     <flux:icon.map-pin class="w-3.5 h-3.5" />
                                 </div>
                                 <p class="text-sm text-zinc-500 leading-relaxed pt-1">{{ $location['address'] }}</p>
@@ -435,7 +435,7 @@ new #[Layout('layouts.guest')] class extends Component {
                             {{-- Phone --}}
                             <div class="flex items-center gap-3">
                                 <div
-                                    class="shrink-0 w-7 h-7 rounded-md bg-red-50 ring-1 ring-red-100 text-sheffield-red flex items-center justify-center group-hover/card:bg-sheffield-red group-hover/card:text-white transition-colors duration-300">
+                                    class="shrink-0 w-7 h-7 rounded-md bg-red-50 ring-1 ring-red-100 text-sheffield-red flex items-center justify-center">
                                     <flux:icon.phone class="w-3.5 h-3.5" />
                                 </div>
                                 <a href="tel:{{ $location['tel'] }}"
@@ -447,7 +447,7 @@ new #[Layout('layouts.guest')] class extends Component {
                             {{-- Email --}}
                             <div class="flex items-center gap-3">
                                 <div
-                                    class="shrink-0 w-7 h-7 rounded-md bg-red-50 ring-1 ring-red-100 text-sheffield-red flex items-center justify-center group-hover/card:bg-sheffield-red group-hover/card:text-white transition-colors duration-300">
+                                    class="shrink-0 w-7 h-7 rounded-md bg-red-50 ring-1 ring-red-100 text-sheffield-red flex items-center justify-center">
                                     <flux:icon.envelope class="w-3.5 h-3.5" />
                                 </div>
                                 <a href="mailto:{{ $location['email'] }}"

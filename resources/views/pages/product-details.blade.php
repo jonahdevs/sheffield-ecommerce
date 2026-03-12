@@ -113,7 +113,7 @@ new #[Layout('layouts.guest')] class extends Component {
             // Dispatch events
             $this->dispatch('compare-updated');
 
-            $this->dispatch('notify', variant: 'success', message: $added ? 'Added to comparison' : 'Removed from comparison');
+            $this->dispatch('notify', variant: 'success', title: 'Compare Updated!', message: $added ? 'Product added to your comparison list.' : 'Product removed to your comparison list.');
         } catch (\Exception $e) {
             $this->dispatch('notify', variant: 'danger', message: $e->getMessage() ?: 'Unable to update comparison');
         }
