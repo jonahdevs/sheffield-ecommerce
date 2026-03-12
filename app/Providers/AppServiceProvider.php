@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Listeners\SyncCartOnLogin;
 use App\Listeners\SyncRecentViewedOnLogin;
 use App\Listeners\SyncWishlistOnLogin;
+use App\View\Composers\FooterComposer;
 use Carbon\CarbonImmutable;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Support\Facades\Date;
@@ -12,6 +13,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Password;
 
@@ -42,6 +44,8 @@ class AppServiceProvider extends ServiceProvider
         Event::listen(Login::class, SyncRecentViewedOnLogin::class);
 
         $this->configureDefaults();
+
+        View::composer('components.footer', FooterComposer::class);
     }
 
     protected function configureDefaults(): void

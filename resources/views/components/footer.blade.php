@@ -1,18 +1,3 @@
-<?php
-
-use Livewire\Component;
-use App\Models\Category;
-use Livewire\Attributes\Computed;
-use App\Enums\CategorySection;
-
-new class extends Component {
-    #[Computed(persist: true)]
-    public function categories()
-    {
-        return Category::inSection(CategorySection::FOOTER)->take(5)->get();
-    }
-};
-?>
 <!-- ====== Footer Section Start -->
 <footer class="relative z-10 bg-sheffield-blue-dark text-white pb-10 pt-20">
     <div class="container mx-auto px-4">
@@ -50,7 +35,7 @@ new class extends Component {
                     <span class="absolute top-full mt-1 left-0 w-12 h-0.5 bg-white"></span>
                 </h4>
                 <ul class="space-y-3">
-                    @foreach ($this->categories as $category)
+                    @foreach ($footerCategories as $category)
                         <li>
                             <a href="{{ route('products', ['category' => $category->slug]) }}" wire:navigate
                                 class="text-zinc-300 hover:text-white transition-colors text-sm">

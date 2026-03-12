@@ -123,17 +123,17 @@ new #[Layout('layouts.customer')] class extends Component {
                     <flux:heading class="font-medium text-zinc-600">Address Book</flux:heading>
 
                     <flux:button icon="pencil" size="xs" class="cursor-pointer"
-                        href="{{ route('customer.address-book.edit', $user->defaultAddress->id) }}">
+                        href="{{ $user->defaultAddress ? route('customer.address-book.edit', $user->defaultAddress?->id) : route('customer.address-book.create') }}">
                     </flux:button>
                 </div>
                 <div class="p-4 text-sm space-y-1">
                     @if ($user->defaultAddress)
                         <flux:heading>Default Shipping Address</flux:heading>
 
-                        <flux:text class="mt-2">{{ $this->user->defaultAddress->full_name }}
+                        <flux:text class="mt-2">{{ $this->user->defaultAddress?->full_name }}
                         </flux:text>
 
-                        <flux:text>{{ $this->user->defaultAddress->address }}</flux:text>
+                        <flux:text>{{ $this->user->defaultAddress?->address }}</flux:text>
 
                         <flux:text>
                             {{ $this->user->defaultAddress?->area?->name . ', ' . $this->user->defaultAddress?->county?->name }}
