@@ -51,9 +51,9 @@ new #[Layout('layouts.checkout')] class extends Component {
         return app(CheckoutSession::class)->getShipping();
     }
 
-    public function changeShipping(): mixed
+    public function changeShipping()
     {
-        return $this->redirectRoute('checkout.shipping', navigate: true);
+        $this->redirectRoute('checkout.shipping', navigate: true);
     }
 }; ?>
 
@@ -78,7 +78,7 @@ new #[Layout('layouts.checkout')] class extends Component {
                 <flux:icon.check-circle variant="solid" class="size-5 text-green-500" />
                 <flux:heading level="3" class="font-medium!">Delivery Address</flux:heading>
             </div>
-            <flux:link :href="route('checkout.addresses')" wire:navigate class="text-xs!">
+            <flux:link :href="route('checkout.addresses.index')" wire:navigate class="text-xs!">
                 Change <flux:icon.chevron-right class="size-3.5 ms-1 inline-block" />
             </flux:link>
         </div>
@@ -152,7 +152,7 @@ new #[Layout('layouts.checkout')] class extends Component {
         </div>
     </flux:card>
 
-    <flux:link :href="route('products')" wire:navigate class="text-xs">
+    <flux:link :href="route('shop.index')" wire:navigate class="text-xs">
         ← Continue shopping
     </flux:link>
 </div>

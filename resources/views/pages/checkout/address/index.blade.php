@@ -165,7 +165,7 @@ new #[Layout('layouts.checkout')] class extends Component {
         </div>
     </flux:card>
 
-    <flux:link :href="route('products')" wire:navigate class="text-xs">
+    <flux:link :href="route('shop.index')" wire:navigate class="text-xs">
         Go back & continue shopping
     </flux:link>
 </div>

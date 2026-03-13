@@ -164,7 +164,7 @@ new #[Defer] #[Layout('layouts.guest')] class extends Component {
 
                     <!-- Primary CTA -->
                     <div class="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
-                        <flux:button href="{{ route('products') }}" wire:navigate variant="primary"
+                        <flux:button href="{{ route('shop.index') }}" wire:navigate variant="primary"
                             class="w-full sm:w-auto">
                             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"

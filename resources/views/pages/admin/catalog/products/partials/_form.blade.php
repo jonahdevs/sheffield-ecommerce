@@ -1,12 +1,6 @@
-<form wire:submit="save" class="mt-6 space-y-5 lg:grid lg:grid-cols-12 lg:gap-5 lg:space-y-0" id="product-form">
+<form wire:submit="save" class="mt-6 lg:grid lg:grid-cols-12 lg:gap-5 " id="product-form">
     {{-- Sidebar --}}
-    <div class="lg:col-span-4 xl:col-span-3 lg:order-last space-y-5 @container">
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-5">
-            @include('pages.admin.catalog.products.partials._sidebar')
-        </div>
-    </div>
-
-    <div class="lg:col-span-8 xl:col-span-9 space-y-5">
+    <div class="lg:col-span-8 xl:col-span-9 lg:col-start-1 space-y-5">
 
         {{-- Basic Information --}}
         @include('pages.admin.catalog.products.partials._basic-information')
@@ -153,7 +147,6 @@
                                 <span class="size-1.5 rounded-full bg-red-500"></span>
                             @endif
                         </button>
-
                     </div>
                 </div>
 
@@ -352,7 +345,11 @@
         @include('pages.admin.catalog.products.partials._seo')
     </div>
 
-
+    <div class="lg:col-span-4 xl:col-span-3 lg:col-start-9 space-y-5">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-5">
+            @include('pages.admin.catalog.products.partials._sidebar')
+        </div>
+    </div>
 
     {{-- Type Change Modal --}}
     <flux:modal wire:model="showTypeChangeModal" class="max-w-md space-y-5">

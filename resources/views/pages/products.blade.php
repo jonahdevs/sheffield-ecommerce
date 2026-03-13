@@ -350,7 +350,7 @@ new #[Defer] #[Layout('layouts.guest')] class extends Component {
                 <flux:icon.home class="w-4 h-4 me-1.5 inline-block" />Home
             </flux:breadcrumbs.item>
             @if ($this->selectedCategory)
-                <flux:breadcrumbs.item :href="route('products')" wire:navigate>Products</flux:breadcrumbs.item>
+                <flux:breadcrumbs.item :href="route('shop.index')" wire:navigate>Products</flux:breadcrumbs.item>
                 <flux:breadcrumbs.item>{{ $this->selectedCategory->name }}</flux:breadcrumbs.item>
             @else
                 <flux:breadcrumbs.item>Products</flux:breadcrumbs.item>
@@ -613,7 +613,7 @@ new #[Defer] #[Layout('layouts.guest')] class extends Component {
                                 We couldn't find any products matching your criteria. Try adjusting your filters or
                                 search terms.
                             </p>
-                            <flux:button href="{{ route('products') }}" variant="primary" wire:navigate>
+                            <flux:button href="{{ route('shop.index') }}" variant="primary" wire:navigate>
                                 Clear Filters
                             </flux:button>
                         </section>

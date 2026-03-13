@@ -8,7 +8,6 @@ use Livewire\Component;
 new class extends Component {
     public bool $isProcessing = false;
 
-    //  Computed
     #[Computed]
     public function summary(): array
     {
@@ -23,8 +22,6 @@ new class extends Component {
 
     public function completeOrder(): mixed
     {
-        $this->errorMessage = null;
-        $this->errorType = null;
         $this->isProcessing = true;
 
         try {
@@ -43,13 +40,10 @@ new class extends Component {
         return null;
     }
 
-    //  Response handler
-
     private function handlePaymentResponse(PaymentResponse $response): mixed
     {
         if ($response->isFailed()) {
             $this->isProcessing = false;
-
             $this->dispatch('notify', variant: 'danger', message: $response->message ?? 'Payment initiation failed. Please try again.');
             return null;
         }
@@ -57,20 +51,15 @@ new class extends Component {
         return match (true) {
             $response->isRedirect() => redirect()->away($response->url),
             $response->isStkPush() => $this->dispatch('stk-push-initiated', checkoutRequestId: $response->checkoutRequestId),
-            $response->isFailed() => null, // handled above
             default => null,
         };
     }
-
-    //  Error handler
 
     private function handleCheckoutError(\Exception $e): void
     {
         $message = $e->getMessage();
 
-        $errorMessage = match (
-            true // ← local variable, not $this->
-        ) {
+        $errorMessage = match (true) {
             str_contains($message, 'already in progress') => 'Your checkout is being processed. Please wait...',
             str_contains($message, 'out of stock'), str_contains($message, 'units available') => $message,
             str_contains($message, 'shipping not selected') => 'Please select a shipping method to continue.',
@@ -90,12 +79,9 @@ new class extends Component {
         unset($this->summary);
     }
 };
-
 ?>
 
-
-
-<flux:card class="p-0 sticky top-44">
+<flux:card class="p-0">
 
     {{-- Header --}}
     <div class="px-4 py-2.5 border-b">
@@ -176,9 +162,16 @@ new class extends Component {
 
     {{-- Place order button --}}
     <div class="p-3 border-t">
-        <flux:button wire:click="completeOrder" wire:loading.attr="disabled" class="w-full group cursor-pointer"
-            variant="primary" :disabled="! $this->summary['shipping_selected'] || $isProcessing">
-            {{ $isProcessing ? 'Processing...' : 'Place Order' }}
+        <flux:button wire:click="completeOrder" wire:loading.attr="disabled" wire:target="completeOrder"
+            class="w-full group cursor-pointer" variant="primary"
+            :disabled="!$this->summary['shipping_selected'] || $isProcessing">
+            {{-- Fix: use wire:loading for reactive button text instead of server-rendered $isProcessing --}}
+            <span wire:loading.remove wire:target="completeOrder">Place Order</span>
+            <span wire:loading wire:target="completeOrder" class="flex items-center gap-2">
+                <flux:icon.arrow-path class="size-4 animate-spin" />
+                Processing...
+            </span>
+
             <x-slot name="iconTrailing">
                 <flux:icon.chevron-right class="size-4 ms-3 group-hover:translate-x-1 transition-transform"
                     wire:loading.class="hidden" wire:target="completeOrder" />
@@ -197,10 +190,12 @@ new class extends Component {
         </div>
     </div>
 
-    {{-- M-Pesa STK waiting screen --}}
+    {{-- M-Pesa STK waiting modal --}}
     <flux:modal name="stk-waiting" class="max-w-sm">
-        <div x-data="stkWaiting()" x-on:stk-push-initiated.window="start($event.detail.checkoutRequestId)"
-            x-init="init()">
+
+        {{-- Fix: removed x-on:stk-push-initiated.window — event is handled inside stkWaiting()
+             via Livewire.on() in init(). Having both caused the countdown to fire twice. --}}
+        <div x-data="stkWaiting()" x-init="init()">
             <div class="text-center p-6">
                 <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
                     <flux:icon.device-phone-mobile class="size-8 text-green-600" />
@@ -217,7 +212,7 @@ new class extends Component {
                 <div class="text-2xl font-mono font-bold text-zinc-800 mb-2" x-text="timeLeft + 's'"></div>
                 <div class="w-full bg-zinc-100 rounded-full h-1.5 mb-6">
                     <div class="bg-green-500 h-1.5 rounded-full transition-all duration-1000"
-                        x-bind:style="'width: ' + (timeLeft / 60 * 100) + '%'"></div>
+                        :style="'width: ' + (timeLeft / 60 * 100) + '%'"></div>
                 </div>
 
                 <flux:text class="text-xs text-zinc-400">
@@ -225,11 +220,10 @@ new class extends Component {
                 </flux:text>
             </div>
         </div>
+
     </flux:modal>
 
 </flux:card>
-
-
 
 @script
     <script>
@@ -240,7 +234,6 @@ new class extends Component {
                 interval: null,
 
                 init() {
-                    // Listen for Livewire event to open modal
                     Livewire.on('stk-push-initiated', ({
                         checkoutRequestId
                     }) => {
@@ -250,18 +243,15 @@ new class extends Component {
                     });
                 },
 
-                start(id) {
-                    this.checkoutRequestId = id;
-                    this.startCountdown();
-                },
-
                 startCountdown() {
+                    // Clear any existing interval before starting a new one
+                    if (this.interval) clearInterval(this.interval);
+
                     this.timeLeft = 60;
                     this.interval = setInterval(() => {
                         this.timeLeft--;
                         if (this.timeLeft <= 0) {
                             clearInterval(this.interval);
-                            // Redirect to order status page — let webhook update the order
                             window.location.href = '{{ route('customer.orders.index') }}';
                         }
                     }, 1000);

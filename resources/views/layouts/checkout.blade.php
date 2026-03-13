@@ -8,17 +8,18 @@
             {{ $heading ?? 'Checkout' }}
         </flux:heading>
 
-        <div class="mt-4 lg:gap-4 lg:flex lg:items-start ">
+        <div class="mt-4 flex flex-col lg:flex-row lg:items-start lg:gap-6">
 
-            {{-- Main content area - each page fills this --}}
-            <div class="lg:flex-1">
+            {{-- Main content area --}}
+            <div class="flex-1 min-w-0">
                 {{ $slot }}
             </div>
 
-            {{-- Order summary is always here, no need to repeat it --}}
-            <div class="w-100 sticky top-44">
+            {{-- Order summary sidebar --}}
+            <div class="w-full lg:w-96 shrink-0 mt-4 lg:mt-0 lg:sticky lg:top-28">
                 <livewire:order-summary />
             </div>
+
         </div>
     </div>
 

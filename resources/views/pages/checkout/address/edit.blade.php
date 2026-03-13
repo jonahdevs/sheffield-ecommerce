@@ -79,7 +79,7 @@ new #[Layout('layouts.checkout')] class extends Component {
                 Checkout
             </flux:breadcrumbs.item>
 
-            <flux:breadcrumbs.item :href="route('checkout.addresses')" wire:navigate>
+            <flux:breadcrumbs.item :href="route('checkout.addresses.index')" wire:navigate>
                 Addresses
             </flux:breadcrumbs.item>
 
@@ -101,7 +101,7 @@ new #[Layout('layouts.checkout')] class extends Component {
             <flux:separator />
 
             <div class="flex items-center justify-end gap-3">
-                <flux:button :href="route('checkout.addresses')" wire:navigate class="cursor-pointer">
+                <flux:button :href="route('checkout.addresses.index')" wire:navigate class="cursor-pointer">
                     Cancel
                 </flux:button>
 
@@ -127,6 +127,6 @@ new #[Layout('layouts.checkout')] class extends Component {
         </div>
     </flux:card>
 
-    <flux:link :href="route('products')" wire:navigate class="text-xs">Go back & continue shopping
+    <flux:link :href="route('shop.index')" wire:navigate class="text-xs">Go back & continue shopping
     </flux:link>
 </div>

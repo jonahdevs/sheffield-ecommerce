@@ -13,6 +13,7 @@ use Livewire\Component;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Computed;
 use App\Models\ReviewHelpfulness;
+use Illuminate\Support\Facades\Auth;
 
 new #[Layout('layouts.guest')] class extends Component {
     public Product $product;
@@ -40,20 +41,21 @@ new #[Layout('layouts.guest')] class extends Component {
         $productService->recordView($product);
         $productService->rememberRecentlyViewed($product);
 
+        $product->load(['images', 'brand', 'crossSells' => fn($q) => $q->active()]);
         $product->loadAvg('reviews', 'rating');
+
         $this->product = $product;
 
-        $this->wishlisted = $wishlist->has($this->product?->id);
+        $this->wishlisted = $wishlist->has($this->product->id);
         $this->inCompare = $compareService->has($this->product->id);
         $this->inCart = $cartService->has($this->product->id);
 
-        // If product is in cart, load the cart item quantity
         if ($this->inCart) {
             $cartItem = $cartService->getCartItem($this->product->id);
 
             if ($cartItem) {
-                $this->cartQuantity = $cartItem->quantity;
                 $this->cartItemId = $cartItem->id;
+                $this->cartQuantity = $cartItem->quantity;
             }
         }
 
@@ -65,14 +67,12 @@ new #[Layout('layouts.guest')] class extends Component {
         $user = auth()->user();
 
         if ($user?->defaultAddress) {
-            // Eager load to avoid lazy load on county/area relationships
             $user->defaultAddress->loadMissing(['county', 'area']);
             $this->selectedCounty = $user->defaultAddress->county_id;
             $this->selectedArea = $user->defaultAddress->area_id;
             return;
         }
 
-        // Guest or authenticated with no address - default to Nairobi
         $nairobi = County::where('name', 'Nairobi')->first();
         $this->selectedCounty = $nairobi?->id;
         $this->selectedArea = null;
@@ -110,10 +110,8 @@ new #[Layout('layouts.guest')] class extends Component {
             $added = $compareService->toggle($this->product->id);
             $this->inCompare = $added;
 
-            // Dispatch events
             $this->dispatch('compare-updated');
-
-            $this->dispatch('notify', variant: 'success', title: 'Compare Updated!', message: $added ? 'Product added to your comparison list.' : 'Product removed to your comparison list.');
+            $this->dispatch('notify', variant: 'success', title: 'Compare Updated!', message: $added ? 'Product added to your comparison list.' : 'Product removed from your comparison list.');
         } catch (\Exception $e) {
             $this->dispatch('notify', variant: 'danger', message: $e->getMessage() ?: 'Unable to update comparison');
         }
@@ -122,7 +120,8 @@ new #[Layout('layouts.guest')] class extends Component {
     // -----------------------------------------------------------------------
     // Cart
     // -----------------------------------------------------------------------
-    public function addToCart(CartService $cartService)
+
+    public function addToCart(CartService $cartService): void
     {
         try {
             $cartService->addItem($this->product->id, $this->cartQuantity);
@@ -142,7 +141,7 @@ new #[Layout('layouts.guest')] class extends Component {
         }
     }
 
-    public function increaseCartQuantity(CartService $cartService)
+    public function increaseCartQuantity(CartService $cartService): void
     {
         try {
             $newQuantity = $this->cartQuantity + 1;
@@ -152,20 +151,18 @@ new #[Layout('layouts.guest')] class extends Component {
                 return;
             }
 
-            if ($this->inCart && $this->cartItemId) {
+            if ($this->inCart && $this->cartItemId !== null) {
                 $cartService->updateItemQuantity($this->cartItemId, $newQuantity);
-                $this->cartQuantity = $newQuantity;
-            } else {
-                $this->cartQuantity++;
             }
 
+            $this->cartQuantity = $newQuantity;
             $this->dispatch('cart-updated');
         } catch (\Throwable $th) {
             $this->dispatch('notify', variant: 'danger', message: $th->getMessage() ?: 'Unable to update quantity');
         }
     }
 
-    public function decreaseCartQuantity(CartService $cartService)
+    public function decreaseCartQuantity(CartService $cartService): void
     {
         try {
             $newQuantity = $this->cartQuantity - 1;
@@ -175,26 +172,23 @@ new #[Layout('layouts.guest')] class extends Component {
                 return;
             }
 
-            if ($this->inCart && $this->cartItemId) {
+            if ($this->inCart && $this->cartItemId !== null) {
                 $cartService->updateItemQuantity($this->cartItemId, $newQuantity);
-                $this->cartQuantity = $newQuantity;
-            } else {
-                $this->cartQuantity--;
             }
 
+            $this->cartQuantity = $newQuantity;
             $this->dispatch('cart-updated');
         } catch (\Throwable $th) {
             $this->dispatch('notify', variant: 'danger', message: $th->getMessage() ?: 'Unable to update quantity');
         }
     }
 
-    public function removeFromCart(CartService $cartService)
+    public function removeFromCart(CartService $cartService): void
     {
         try {
-            if ($this->cartItemId) {
+            if ($this->cartItemId !== null) {
                 $cartService->removeItem($this->cartItemId);
 
-                // Reset state
                 $this->inCart = false;
                 $this->cartItemId = null;
                 $this->cartQuantity = 1;
@@ -211,13 +205,13 @@ new #[Layout('layouts.guest')] class extends Component {
     // Location / Shipping
     // -----------------------------------------------------------------------
 
-    public function updatedSelectedCounty()
+    public function updatedSelectedCounty(): void
     {
         $this->selectedArea = null;
         unset($this->areas);
     }
 
-    #[Computed]
+    #[Computed(persist: true)]
     public function counties()
     {
         return County::orderBy('name')->get();
@@ -234,64 +228,53 @@ new #[Layout('layouts.guest')] class extends Component {
     }
 
     #[Computed]
+    public function primaryCategory()
+    {
+        return $this->product->primaryCategory();
+    }
+
+    #[Computed]
     public function estimatedShipping()
     {
-        // Don't calculate without at minimum a county selected
         if (!$this->selectedCounty) {
             return null;
         }
 
-        return app(ShippingCalculatorService::class)->calculateForProduct(product: $this->product, quantity: $this->cartQuantity, user: auth()->user(), countyId: $this->selectedCounty, areaId: $this->selectedArea, variantId: $this->selectedVariantId ?? null);
+        return app(ShippingCalculatorService::class)->calculateForProduct(product: $this->product, quantity: $this->cartQuantity, user: auth()->user(), countyId: $this->selectedCounty, areaId: $this->selectedArea, variantId: null);
     }
 
     // -----------------------------------------------------------------------
     // Reviews
     // -----------------------------------------------------------------------
 
+    /**
+     * Single computed property — calls ReviewService::getStatistics() which
+     * runs ONE aggregation query returning total, average, and distribution.
+     *
+     * Replaces four previous computed properties:
+     *   reviewService(), totalReviews(), averageRating(), ratingDistribution()
+     *
+     * Template access:
+     *   $this->reviewStats['total']
+     *   $this->reviewStats['average']
+     *   $this->reviewStats['distribution']  (array keyed 5→1)
+     */
     #[Computed]
-    public function reviewService()
+    public function reviewStats(): array
     {
-        return app(ReviewService::class);
-    }
-
-    #[Computed]
-    public function ratingDistribution()
-    {
-        $distribution = $this->reviewService->ratingDistribution($this->product);
-        $total = $this->totalReviews;
-
-        return collect($distribution)
-            ->map(
-                fn($count) => [
-                    'count' => $count,
-                    'percentage' => $total > 0 ? round(($count / $total) * 100) : 0,
-                ],
-            )
-            ->all();
+        return app(ReviewService::class)->getStatistics($this->product);
     }
 
     #[Computed]
     public function reviews()
     {
-        return $this->reviewService->forProductPage($this->product, $this->reviewsToShow);
+        return app(ReviewService::class)->forProductPage($this->product, $this->reviewsToShow);
     }
 
     #[Computed]
-    public function totalReviews()
+    public function hasMoreReviews(): bool
     {
-        return $this->reviewService->totalReview($this->product);
-    }
-
-    #[Computed]
-    public function averageRating()
-    {
-        return $this->reviewService->averageRating($this->product);
-    }
-
-    #[Computed]
-    public function hasMoreReviews()
-    {
-        return $this->totalReviews > $this->reviewsToShow;
+        return $this->reviewStats['total'] > $this->reviewsToShow;
     }
 
     #[Computed]
@@ -317,7 +300,7 @@ new #[Layout('layouts.guest')] class extends Component {
     #[Computed]
     public function accessories()
     {
-        return $this->product->crossSells()->active()->get();
+        return $this->product->crossSells;
     }
 
     public function render()
@@ -336,9 +319,10 @@ new #[Layout('layouts.guest')] class extends Component {
                 Home
             </flux:breadcrumbs.item>
 
-            <flux:breadcrumbs.item href="{{ route('products', ['category' => $product->primaryCategory()->slug]) }}">
-                {{ $product->primaryCategory()->name }}
+            <flux:breadcrumbs.item href="{{ route('products', ['category' => $this->primaryCategory->slug]) }}">
+                {{ $this->primaryCategory->name }}
             </flux:breadcrumbs.item>
+
             <flux:breadcrumbs.item>{{ $product->name }}</flux:breadcrumbs.item>
         </flux:breadcrumbs>
     </div>
@@ -365,12 +349,8 @@ new #[Layout('layouts.guest')] class extends Component {
                                 watchSlidesProgress: true,
                                 loop: true,
                                 breakpoints: {
-                                    640: {
-                                        slidesPerView: 5,
-                                    },
-                                    768: {
-                                        slidesPerView: 6,
-                                    },
+                                    640: { slidesPerView: 5 },
+                                    768: { slidesPerView: 6 },
                                 },
                                 on: {
                                     slideChange: (swiper) => {
@@ -380,7 +360,6 @@ new #[Layout('layouts.guest')] class extends Component {
                                 },
                             });
                     
-                            // Initialize main slider
                             this.mainSwiper = new Swiper('#mainSwiper', {
                                 spaceBetween: 10,
                                 loop: true,
@@ -388,25 +367,18 @@ new #[Layout('layouts.guest')] class extends Component {
                                     nextEl: '.swiper-button-next',
                                     prevEl: '.swiper-button-prev',
                                 },
-                                thumbs: {
-                                    swiper: this.thumbSwiper,
-                                },
+                                thumbs: { swiper: this.thumbSwiper },
                                 on: {
                                     slideChange: (swiper) => {
                                         this.activeIndex = swiper.realIndex;
-                    
-                                        // Ensure the active thumbnail is visible
                                         this.thumbSwiper.slideTo(swiper.realIndex);
                                     },
                                 },
                             });
                     
-                            // Wait for next tick to ensure DOM is ready
                             this.$nextTick(() => {
                                 document.getElementById('thumbSwiper').classList.remove('opacity-0');
                                 document.getElementById('mainSwiper').classList.remove('opacity-0');
-                    
-                                // Set initial state
                                 this.isBeginning = this.thumbSwiper.isBeginning;
                                 this.isEnd = this.thumbSwiper.isEnd;
                             });
@@ -414,9 +386,9 @@ new #[Layout('layouts.guest')] class extends Component {
                     }">
                         {{-- Main Slider --}}
                         <div class="mb-4">
-                            <div class="swiper border border-2 rounded-sm  overflow-hidden px-2 opacity-0 transition-opacity duration-500"
+                            <div class="swiper border border-2 rounded-sm overflow-hidden px-2 opacity-0 transition-opacity duration-500"
                                 id="mainSwiper">
-                                <div class="swiper-wrapper ">
+                                <div class="swiper-wrapper">
                                     @foreach ($product->images as $image)
                                         <div class="swiper-slide">
                                             <div class="aspect-square flex items-center justify-center">
@@ -432,18 +404,13 @@ new #[Layout('layouts.guest')] class extends Component {
 
                         {{-- Thumbnail Slider --}}
                         <div class="relative" x-show="thumbSwiper" x-cloak>
-                            {{-- Previous Button --}}
-                            {{-- <button @click="thumbSwiper.slidePrev()"
-                                class="absolute left-0 top-1/2 -translate-y-1/2 z-10 p-2 cursor-pointer ">
-                                <flux:icon.chevron-left class="size-6 stroke-2" variant="solid" />
-                            </button> --}}
-
                             <div class="swiper px-12 opacity-0 transition-opacity duration-500" id="thumbSwiper">
                                 <div class="swiper-wrapper">
                                     @foreach ($product->images as $image)
                                         <div class="swiper-slide cursor-pointer">
                                             <div class="aspect-square flex items-center justify-center rounded-sm overflow-hidden border-2 transition-all duration-300"
-                                                :class="activeIndex === {{ $loop->index }} ? 'border-sheffield-blue' :
+                                                :class="activeIndex === {{ $loop->index }} ?
+                                                    'border-sheffield-blue' :
                                                     'border-zinc-200 hover:border-zinc-300'">
                                                 <img src="{{ $image->url }}"
                                                     alt="{{ $image->alt_text ?? $product->name }}"
@@ -453,17 +420,11 @@ new #[Layout('layouts.guest')] class extends Component {
                                     @endforeach
                                 </div>
                             </div>
-
-                            {{-- Next Button --}}
-                            {{-- <button @click="thumbSwiper.slideNext()"
-                                class="absolute right-0 top-1/2 -translate-y-1/2 z-10 cursor-pointer p-2">
-                                <flux:icon.chevron-right class="size-6 stroke-2" variant="solid" />
-                            </button> --}}
                         </div>
                     </div>
                 </div>
 
-                {{-- Product Details Section --}}
+                {{-- Product Details --}}
                 <div class="lg:col-span-3">
                     <h1 class="text-3xl font-bold">{{ $product->name }}</h1>
 
@@ -473,16 +434,13 @@ new #[Layout('layouts.guest')] class extends Component {
                             <span class="text-sheffield-blue font-semibold text-sm">{{ $product->brand?->name }}</span>
                         </div>
 
-
                         <div class="flex items-center gap-2">
                             <div class="flex items-center gap-1">
                                 @for ($i = 0; $i < 5; $i++)
                                     @if ($product->reviews_avg_rating && $i <= floor($product->reviews_avg_rating))
-                                        {{-- Full star --}}
                                         <flux:icon.star variant="solid"
                                             class="w-4 h-4 fill-yellow-400 text-yellow-400" />
                                     @elseif ($product->reviews_avg_rating && $i - 0.5 <= $product->reviews_avg_rating)
-                                        {{-- Half star --}}
                                         <div class="relative w-4 h-4">
                                             <flux:icon.star variant="solid" class="w-4 h-4 text-zinc-300" />
                                             <div class="absolute inset-0 overflow-hidden" style="width: 50%;">
@@ -491,70 +449,67 @@ new #[Layout('layouts.guest')] class extends Component {
                                             </div>
                                         </div>
                                     @else
-                                        {{-- Empty star --}}
                                         <flux:icon.star variant="solid" class="w-4 h-4 text-zinc-300" />
                                     @endif
                                 @endfor
                             </div>
 
-                            <span
-                                class="text-sm font-medium text-zinc-600">({{ number_format($product->reviews_avg_rating, 1) }})</span>
-                            <a href="{{ route('product.reviews', $product) }}" wire:navigate
+                            <span class="text-sm font-medium text-zinc-600">
+                                ({{ number_format($product->reviews_avg_rating, 1) }})
+                            </span>
+
+                            {{-- Uses reviewStats — no extra query --}}
+                            <a href="{{ route('products.reviews', $product) }}" wire:navigate
                                 class="text-sm font-medium text-sheffield-blue hover:underline">
-                                {{ $product->reviews()->count() }} Reviews
+                                {{ $this->reviewStats['total'] }} Reviews
                             </a>
                         </div>
                     </div>
 
                     @if ($product->sku)
-                        <flux:text class="mt-4">Item no: <span class="text-zinc-800">{{ $product->sku }}</span>
+                        <flux:text class="mt-4">
+                            Item no: <span class="text-zinc-800">{{ $product->sku }}</span>
                         </flux:text>
                     @endif
 
                     <flux:text class="my-4">{!! $product->short_description !!}</flux:text>
 
                     <div wire:cloak class="mb-4">
+                        @if ($this->selectedCounty && $this->estimatedShipping !== null)
+                            <div class="flex items-center gap-2">
+                                <flux:icon name="truck" variant="outline" class="w-4 h-4 text-zinc-400" />
 
-                        {{-- Calculating Shipping --}}
-                        <div>
-                            @if ($this->selectedCounty && $this->estimatedShipping !== null)
-                                <div class="flex items-center gap-2">
-                                    <flux:icon name="truck" variant="outline" class="w-4 h-4 text-zinc-400" />
-
-                                    @if ($this->estimatedShipping > 0)
-                                        <flux:text>
-                                            Estimated shipping:
-                                            <span wire:loading.remove
-                                                wire:target="selectedCounty, selectedArea, cartQuantity"
-                                                class="font-semibold text-zinc-800">{{ format_currency($this->estimatedShipping) }}</span>
-
-                                            <x-my-loading wire:loading
-                                                wire:target="selectedCounty, selectedArea, cartQuantity"
-                                                class="loading-dots" />
-                                        </flux:text>
-                                    @else
-                                        <flux:text>
-                                            <span class="font-semibold text-green-600">Free shipping</span> to this
-                                            location
-                                        </flux:text>
-                                    @endif
-                                </div>
-                            @elseif (!$this->selectedCounty)
-                                <flux:text class="text-zinc-400 text-sm">Select a county to see shipping estimate.
-                                </flux:text>
-                            @endif
-                        </div>
-
+                                @if ($this->estimatedShipping > 0)
+                                    <flux:text>
+                                        Estimated shipping:
+                                        <span wire:loading.remove
+                                            wire:target="selectedCounty, selectedArea, cartQuantity"
+                                            class="font-semibold text-zinc-800">
+                                            {{ format_currency($this->estimatedShipping) }}
+                                        </span>
+                                        <x-my-loading wire:loading
+                                            wire:target="selectedCounty, selectedArea, cartQuantity"
+                                            class="loading-dots" />
+                                    </flux:text>
+                                @else
+                                    <flux:text>
+                                        <span class="font-semibold text-green-600">Free shipping</span> to this location
+                                    </flux:text>
+                                @endif
+                            </div>
+                        @elseif (!$this->selectedCounty)
+                            <flux:text class="text-zinc-400 text-sm">
+                                Select a county to see shipping estimate.
+                            </flux:text>
+                        @endif
                     </div>
 
                     <div>
                         @if ($product->hasDiscount())
                             <div class="flex items-center flex-wrap gap-x-2">
                                 <p class="text-lg font-semibold text-sheffield-blue">
-                                    {{ $product->formatted_final_price }}
-                                </p>
-                                <p class=" text-zinc-500 line-through">{{ $product->formatted_sale_price }}</p>
-
+                                    {{ $product->formatted_final_price }}</p>
+                                <p class="text-zinc-500 line-through">{{ $product->formatted_sale_price }}</p>
                                 <flux:badge color="amber" size="sm">-{{ $product->discountPercentage() }}
                                 </flux:badge>
                             </div>
@@ -569,66 +524,61 @@ new #[Layout('layouts.guest')] class extends Component {
                     <div class="flex items-center gap-2 mb-3">
                         <flux:button.group>
                             <flux:button icon="minus" class="cursor-pointer text-zinc-500!" title="Decrease Quantity"
-                                wire:click="decreaseCartQuantity"></flux:button>
+                                wire:click="decreaseCartQuantity" />
 
                             <flux:input readonly value="{{ $cartQuantity }}"
                                 class="max-w-9! outline-none! border-none! ring-0 focus:outline-none! focus:border-none!"
                                 style="outline: none; padding-left: 0 !important; padding-right: 0 !important; text-align: center !important;" />
 
                             <flux:button icon="plus" class="cursor-pointer text-zinc-500!" title="Increase Quantity"
-                                wire:click="increaseCartQuantity"></flux:button>
+                                wire:click="increaseCartQuantity" />
 
                             @if ($inCart)
                                 <flux:button icon="trash" icon-variant="outline" class="cursor-pointer text-red-500!"
-                                    wire:click="removeFromCart" title="Remove Item from Cart">
-                                </flux:button>
+                                    wire:click="removeFromCart" title="Remove from Cart" />
                             @endif
                         </flux:button.group>
 
                         @if (!$inCart)
-                            <flux:button wire:click="addToCart" class="uppercase" variant="primary"
-                                class="cursor-pointer">
+                            <flux:button wire:click="addToCart" variant="primary" class="uppercase cursor-pointer">
                                 Add to Cart
                             </flux:button>
                         @endif
 
                         <flux:button wire:click.stop="toggleWishlist" icon="heart"
                             icon-variant="{{ $wishlisted ? 'solid' : 'outline' }}" title="Wishlist"
-                            @class(['cursor-pointer', 'text-red-500!' => $wishlisted])>
-                        </flux:button>
+                            @class(['cursor-pointer', 'text-red-500!' => $wishlisted]) />
 
                         <flux:button wire:click="toggleCompare" icon="{{ $inCompare ? 'x-mark' : 'scale' }}"
-                            icon-variant="outline" title="Compare" @class(['cursor-pointer', 'text-red-500!' => $inCompare])></flux:button>
+                            icon-variant="outline" title="Compare" @class(['cursor-pointer', 'text-red-500!' => $inCompare]) />
 
-                        <flux:button icon="share" icon-variant="outline" title="Share"></flux:button>
+                        <flux:button icon="share" icon-variant="outline" title="Share" />
                     </div>
                 </div>
             </flux:card>
 
+            {{-- Delivery & Returns sidebar --}}
             <div class="lg:col-span-1">
                 <flux:card class="sticky top-44 p-0">
                     <div class="border-b px-3 py-2">
                         <flux:heading>Delivery & Returns</flux:heading>
                     </div>
-                    <div class="p-3">
-                        <h4 class="text-sm  font-medium text-slate-600">Choose your location</h4>
 
-                        <flux:select class="w-full mt-2" wire:model.live="selectedCounty"
+                    <div class="p-3">
+                        <h4 class="text-sm font-medium text-slate-600">Choose your location</h4>
+
+                        <flux:select class="w-full mt-2" wire:model.live.debounce.300ms="selectedCounty"
                             placeholder="Select County...">
                             @foreach ($this->counties as $county)
-                                <flux:select.option :value="$county->id">
-                                    {{ $county->name }}
-                                </flux:select.option>
+                                <flux:select.option :value="$county->id">{{ $county->name }}</flux:select.option>
                             @endforeach
                         </flux:select>
 
-                        <flux:select wire:model.live="selectedArea"
+                        <flux:select wire:model.live.debounce.300ms="selectedArea"
                             :placeholder="$selectedCounty ? 'Select Area' : 'Select a county first'"
                             :disabled="!$selectedCounty" class="mt-2">
                             @foreach ($this->areas as $area)
-                                <flux:select.option :value="$area->id">
-                                    {{ $area->name }}
-                                </flux:select.option>
+                                <flux:select.option :value="$area->id">{{ $area->name }}</flux:select.option>
                             @endforeach
                         </flux:select>
                     </div>
@@ -646,10 +596,8 @@ new #[Layout('layouts.guest')] class extends Component {
                                     d="m52.055 22.656-24.367 10.445c-1.0117 0.43359-1.4844 1.6055-1.0547 2.6211 0.20703 0.48828 0.60156 0.875 1.0938 1.0742 0.49219 0.19922 1.0469 0.19141 1.5352-0.015625l23.586-10.105 23.586 10.105h-0.003906c0.48828 0.20703 1.043 0.21484 1.5352 0.015625 0.49219-0.19922 0.88672-0.58594 1.0938-1.0742 0.42969-1.0156-0.042969-2.1875-1.0547-2.6211l-24.367-10.445c-0.50391-0.21484-1.0781-0.21484-1.582 0z" />
                                 <path
                                     d="m19.488 38.859-1.4102 1.418-5.5234 5.582-4.5039-4.4531-1.418-1.4023-2.8125 2.8438 1.418 1.4023 5.9219 5.8594c0.78516 0.77734 2.0508 0.76953 2.8281-0.011719l6.9297-6.9961 1.4102-1.4258z" />
-
                             </svg>
                         </div>
-
                         <div class="ms-2">
                             <flux:heading>Return Policy</flux:heading>
                             <flux:text class="text-xs">Easy Returns, Quick Refund. <flux:link>Details</flux:link>
@@ -661,7 +609,6 @@ new #[Layout('layouts.guest')] class extends Component {
                         <div class="border rounded-sm flex items-center justify-center p-1">
                             <flux:icon.shield-check class="size-7 shrink-0 stroke-1" />
                         </div>
-
                         <div class="ms-2">
                             <flux:heading>Warranty</flux:heading>
                             <flux:text class="text-xs">Covered against manufacturing defects. See <flux:link>Details
@@ -675,11 +622,9 @@ new #[Layout('layouts.guest')] class extends Component {
 
         @if ($this->accessories->count() > 0)
             <div id="accessories" class="mt-5 scroll-mt-42.5 @container">
-                <h3 class="text-lg font-semibold  mb-4">
-                    Accessories
-                </h3>
+                <h3 class="text-lg font-semibold mb-4">Accessories</h3>
 
-                <div class="grid grid-cols-1 @md:grid-cols-2 @xl:grid-cols-3 @4xl:grid-cols-4 @7xl:grid-cols-6 gap-4 ">
+                <div class="grid grid-cols-1 @md:grid-cols-2 @xl:grid-cols-3 @4xl:grid-cols-4 @7xl:grid-cols-6 gap-4">
                     @foreach ($this->accessories as $accessory)
                         <livewire:accessory-item :product="$accessory" />
                     @endforeach
@@ -687,16 +632,14 @@ new #[Layout('layouts.guest')] class extends Component {
             </div>
         @endif
 
-        {{--  --}}
-
+        {{-- Tabs: Description / Specification / Reviews --}}
         <flux:card class="pb-6 relative pt-10 px-6 mt-10">
-            <div class="flex items-center gap-2 absolute top-0 left-0 -translate-y-1/2 rounded-b-sm rounded-tr-sm">
 
+            <div class="flex items-center gap-2 absolute top-0 left-0 -translate-y-1/2 rounded-b-sm rounded-tr-sm">
                 <flux:button x-show="$wire.selectedTab == 'description'" @click="$wire.selectedTab = 'description'"
                     variant="primary" class="rounded-none cursor-pointer">
                     Description
                 </flux:button>
-
                 <flux:button x-cloak x-show="$wire.selectedTab !== 'description'"
                     @click="$wire.selectedTab = 'description'" class="rounded-none cursor-pointer">
                     Description
@@ -707,7 +650,6 @@ new #[Layout('layouts.guest')] class extends Component {
                     class="rounded-none cursor-pointer">
                     Specification
                 </flux:button>
-
                 <flux:button x-show="$wire.selectedTab !== 'specification'"
                     @click="$wire.selectedTab = 'specification'" class="rounded-none cursor-pointer">
                     Specification
@@ -715,13 +657,12 @@ new #[Layout('layouts.guest')] class extends Component {
 
                 <flux:button x-cloak x-show="$wire.selectedTab == 'reviews'" @click="$wire.selectedTab = 'reviews'"
                     variant="primary" class="rounded-none cursor-pointer">
-                    Reviews</flux:button>
-
-                <flux:button x-show="$wire.selectedTab !== 'reviews'" @click="$wire.selectedTab = 'reviews'"
-                    class="rounded-none cursor-pointer ">
                     Reviews
                 </flux:button>
-
+                <flux:button x-show="$wire.selectedTab !== 'reviews'" @click="$wire.selectedTab = 'reviews'"
+                    class="rounded-none cursor-pointer">
+                    Reviews
+                </flux:button>
             </div>
 
             <div wire:cloak wire:show="selectedTab == 'description'">
@@ -737,43 +678,45 @@ new #[Layout('layouts.guest')] class extends Component {
 
                 <div class="grid grid-cols-1 lg:grid-cols-4 gap-7">
                     {{-- Rating Distribution --}}
-                    <div class="col-span-1 ">
+                    <div class="col-span-1">
                         <div class="sticky top-44">
-                            <div>
-                                <div class="text-center">
-                                    <div class="text-3xl font-bold text-sheffield-blue">{{ $this->averageRating }}
-                                    </div>
-                                    <div class="flex justify-center gap-1 mt-1">
-                                        @for ($i = 1; $i <= 5; $i++)
-                                            @if ($i <= floor($this->averageRating))
-                                                <flux:icon.star class="size-5 text-orange-400 fill-current" />
-                                            @elseif ($i - 0.5 <= $this->averageRating)
-                                                <svg class="w-5 h-5 text-orange-400" viewBox="0 0 20 20">
-                                                    <defs>
-                                                        <linearGradient id="half-star">
-                                                            <stop offset="50%" stop-color="currentColor" />
-                                                            <stop offset="50%" stop-color="#D1D5DB" />
-                                                        </linearGradient>
-                                                    </defs>
-                                                    <path fill="url(#half-star)"
-                                                        d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
-                                                </svg>
-                                            @else
-                                                <flux:icon.star class="size-5 text-zinc-300 fill-current" />
-                                            @endif
-                                        @endfor
-                                    </div>
-                                    <div class="text-sm text-zinc-600 mt-1">{{ $this->totalReviews }}
-                                        {{ Str::plural('review', $this->totalReviews) }}</div>
+                            <div class="text-center">
+                                <div class="text-3xl font-bold text-sheffield-blue">
+                                    {{ $this->reviewStats['average'] }}
+                                </div>
+
+                                <div class="flex justify-center gap-1 mt-1">
+                                    @for ($i = 1; $i <= 5; $i++)
+                                        @if ($i <= floor($this->reviewStats['average']))
+                                            <flux:icon.star class="size-5 text-orange-400 fill-current" />
+                                        @elseif ($i - 0.5 <= $this->reviewStats['average'])
+                                            <svg class="w-5 h-5 text-orange-400" viewBox="0 0 20 20">
+                                                <defs>
+                                                    <linearGradient id="half-star">
+                                                        <stop offset="50%" stop-color="currentColor" />
+                                                        <stop offset="50%" stop-color="#D1D5DB" />
+                                                    </linearGradient>
+                                                </defs>
+                                                <path fill="url(#half-star)"
+                                                    d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
+                                            </svg>
+                                        @else
+                                            <flux:icon.star class="size-5 text-zinc-300 fill-current" />
+                                        @endif
+                                    @endfor
+                                </div>
+
+                                <div class="text-sm text-zinc-600 mt-1">
+                                    {{ $this->reviewStats['total'] }}
+                                    {{ Str::plural('review', $this->reviewStats['total']) }}
                                 </div>
                             </div>
 
                             <flux:separator class="my-4" />
 
                             <div class="space-y-2">
-                                @foreach ($this->ratingDistribution as $rating => $data)
+                                @foreach ($this->reviewStats['distribution'] as $rating => $data)
                                     <div class="grid grid-cols-[auto_1fr_auto] items-center gap-3">
-                                        {{-- Star Rating --}}
                                         <div class="flex gap-0.5">
                                             @for ($star = 1; $star <= 5; $star++)
                                                 @if ($star <= $rating)
@@ -784,21 +727,17 @@ new #[Layout('layouts.guest')] class extends Component {
                                             @endfor
                                         </div>
 
-                                        {{-- Progress Bar --}}
                                         <div class="w-full bg-zinc-200 rounded-full h-2.5">
                                             <div class="bg-sheffield-blue h-2.5 rounded-full"
                                                 style="width: {{ $data['percentage'] }}%"></div>
                                         </div>
 
-                                        {{-- Percentage --}}
                                         <span class="text-sm font-semibold text-sheffield-blue min-w-[45px]">
                                             {{ $data['percentage'] }}%
                                         </span>
                                     </div>
                                 @endforeach
                             </div>
-
-
                         </div>
                     </div>
 
@@ -815,11 +754,10 @@ new #[Layout('layouts.guest')] class extends Component {
                                 @endforeach
                             </div>
 
-                            {{-- View All Reviews Link --}}
                             @if ($this->hasMoreReviews)
                                 <div class="mt-6 text-center">
-                                    <flux:button href="{{ route('product.reviews', $product) }}" wire:navigate>
-                                        View All {{ $this->totalReviews }} Reviews
+                                    <flux:button href="{{ route('products.reviews', $product) }}" wire:navigate>
+                                        View All {{ $this->reviewStats['total'] }} Reviews
                                     </flux:button>
                                 </div>
                             @endif
@@ -829,14 +767,10 @@ new #[Layout('layouts.guest')] class extends Component {
             </div>
         </flux:card>
 
-
         <livewire:product-recommendations type="similar" :context="['product' => $product]" />
-
         <livewire:product-recommendations type="recently_viewed" />
     </div>
 </div>
-
-
 
 <style>
     .swiper-button-next,

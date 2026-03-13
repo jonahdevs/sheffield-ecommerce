@@ -197,7 +197,7 @@ new #[Layout('layouts.guest')] class extends Component {
                 </flux:button>
 
                 {{-- Back to Shopping Button --}}
-                <flux:button :href="route('products')" wire:navigate variant="outline" class="w-full sm:w-48">
+                <flux:button :href="route('shop.index')" wire:navigate variant="outline" class="w-full sm:w-48">
                     Continue Shopping
                 </flux:button>
             </div>

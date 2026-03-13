@@ -2,7 +2,7 @@
     <section class="flex items-center justify-between py-4 ">
         <h2 class="font-semibold text-xl text-zinc-800">You May Also Like</h2>
 
-        <a href="{{ route('products') }}" wire:navigate class="text-sheffield-red hover:underline text-sm">View
+        <a href="{{ route('shop.index') }}" wire:navigate class="text-sheffield-red hover:underline text-sm">View
             All</a>
     </section>
 

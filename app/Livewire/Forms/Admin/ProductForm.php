@@ -112,6 +112,7 @@ class ProductForm extends Form
     public array $selected_upsells = [];
 
     public array $selected_cross_sells = [];
+    public array $accessories = [];
     public array $grouped_products = [];
 
     // Virtual & Downloadable
@@ -239,6 +240,9 @@ class ProductForm extends Form
             'selected_upsells.*' => 'exists:products,id',
             'selected_cross_sells' => 'nullable|array',
             'selected_cross_sells.*' => 'exists:products,id',
+            'accessories'              => 'nullable|array',
+            'accessories.*.id'         => 'required|exists:products,id',
+            'accessories.*.quantity'   => 'required|integer|min:1',
             'grouped_products'    => 'nullable|array',
             'grouped_products.*.id' => 'required|exists:products,id',
             'grouped_products.*.quantity' => 'required|integer|min:1',
@@ -370,6 +374,15 @@ class ProductForm extends Form
 
         $this->selected_upsells = $product->upsells->pluck('id')->toArray();
         $this->selected_cross_sells = $product->crossSells->pluck('id')->toArray();
+        $this->accessories = $product->accessories
+            ->map(fn($p) => [
+                'id'       => $p->id,
+                'name'     => $p->name,
+                'sku'      => $p->sku,
+                'price'    => $p->price,
+                'quantity' => $p->pivot->quantity,
+            ])
+            ->toArray();
         $this->grouped_products = $product->groupedProducts
             ->map(fn($p) => [
                 'id'       => $p->id,
@@ -665,6 +678,19 @@ class ProductForm extends Form
                         'type'       => ProductRelationshipType::CROSS_SELL->value,
                         'sort_order' => $index,
                         'quantity'   => 1,
+                    ]
+                ])
+                ->toArray()
+        );
+
+        // Accessories
+        $product->accessories()->sync(
+            collect($this->accessories)
+                ->mapWithKeys(fn($item, $index) => [
+                    $item['id'] => [
+                        'type'       => ProductRelationshipType::ACCESSORY->value,
+                        'quantity'   => $item['quantity'] ?? 1,
+                        'sort_order' => $index,
                     ]
                 ])
                 ->toArray()

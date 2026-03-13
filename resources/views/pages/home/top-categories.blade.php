@@ -9,7 +9,7 @@
     <div class="grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 gap-2.5">
         @foreach ($this->topCategories as $category)
             <div class="group relative" :key="'category-' . $category->id">
-                <a href="{{ route('products', ['category' => $category->slug]) }}" wire:navigate class="block">
+                <a href="{{ route('shop.category', ['category' => $category->slug]) }}" wire:navigate class="block">
                     <div @class([
                         'relative aspect-4/3 overflow-hidden rounded-md bg-zinc-50 transition-all duration-300 group-hover:-translate-y-1 group-hover:shadow-md group-hover:border-blue-100',
                         'border border-zinc-200' => !$category->image_url,

@@ -38,7 +38,7 @@
                 <ul class="space-y-3">
                     @foreach ($footerCategories as $category)
                         <li>
-                            <a href="{{ route('products', ['category' => $category->slug]) }}" wire:navigate
+                            <a href="{{ route('shop.category', ['category' => $category->slug]) }}" wire:navigate
                                 class="text-brand-footer-text hover:text-white transition-colors text-sm">
                                 {{ $category->name }}
                             </a>

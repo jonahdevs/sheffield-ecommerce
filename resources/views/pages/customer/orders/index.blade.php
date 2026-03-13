@@ -59,7 +59,7 @@ new #[Layout('layouts.customer')] class extends Component {
                     <flux:text class="text-zinc-500 max-w-sm">
                         When you place an order, it will appear here. Start shopping to discover amazing products!
                     </flux:text>
-                    <flux:button :href="route('products')" variant="primary" icon="shopping-bag" wire:navigate
+                    <flux:button :href="route('shop.index')" variant="primary" icon="shopping-bag" wire:navigate
                         class="mt-2">
                         Start Shopping
                     </flux:button>
@@ -132,7 +132,7 @@ new #[Layout('layouts.customer')] class extends Component {
                                     <flux:text class="text-zinc-500 mt-1 text-sm">
                                         You don't have any ongoing or delivered orders yet.
                                     </flux:text>
-                                    <flux:button :href="route('products')" wire:navigate variant="primary"
+                                    <flux:button :href="route('shop.index')" wire:navigate variant="primary"
                                         class="mt-4">
                                         Start Shopping
                                     </flux:button>

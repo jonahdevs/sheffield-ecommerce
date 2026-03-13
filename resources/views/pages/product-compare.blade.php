@@ -190,8 +190,8 @@ new #[Defer] #[Layout('layouts.guest')] class extends Component {
 
                 <!-- Primary CTA -->
                 <div class="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
-                    <flux:button href="{{ route('products') }}" wire:navigate variant="primary" class="w-full sm:w-auto"
-                        icon="magnifying-glass">
+                    <flux:button href="{{ route('shop.index') }}" wire:navigate variant="primary"
+                        class="w-full sm:w-auto" icon="magnifying-glass">
                         Browse Products
                     </flux:button>
 

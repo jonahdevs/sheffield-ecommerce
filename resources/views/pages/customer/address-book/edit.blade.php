@@ -79,7 +79,7 @@ new #[Layout('layouts.customer')] class extends Component {
             <flux:separator />
 
             <div class="flex items-center justify-end gap-3">
-                <flux:button :href="route('checkout.addresses')" wire:navigate class="cursor-pointer">
+                <flux:button :href="route('checkout.addresses.index')" wire:navigate class="cursor-pointer">
                     Cancel
                 </flux:button>
 

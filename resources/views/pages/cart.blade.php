@@ -2,21 +2,17 @@
 
 use Livewire\Component;
 use Livewire\Attributes\Computed;
-use Livewire\Attributes\{Layout, Defer, On};
+use Livewire\Attributes\{Layout, Defer, On, Title};
 use App\Services\CartService;
 use App\Services\WishlistService;
 use Flux\Flux;
 
-new #[Defer] #[Layout('layouts.guest')] class extends Component {
-    public function render()
-    {
-        return $this->view()->title('Cart — ' . config('app.name'));
-    }
-
+new #[Title('Cart')] #[Defer] #[Layout('layouts.guest')] class extends Component {
+    // -----------------------------------------------------------------------
     // Computed
+    // -----------------------------------------------------------------------
 
     #[Computed]
-    #[On('cart-updated')]
     public function cartItems()
     {
         return app(CartService::class)
@@ -31,7 +27,9 @@ new #[Defer] #[Layout('layouts.guest')] class extends Component {
     #[Computed]
     public function cartSummary(): array
     {
-        return app(CartService::class)->summary(app(CartService::class)->getCart());
+        // FIX: reuse the same cart instance rather than calling getCart() twice
+        $cartService = app(CartService::class);
+        return $cartService->summary($cartService->getCart());
     }
 
     #[Computed]
@@ -69,12 +67,28 @@ new #[Defer] #[Layout('layouts.guest')] class extends Component {
         return count($this->productsWithMissingAccessories) > 0;
     }
 
-    //  Actions
+    // -----------------------------------------------------------------------
+    // Event Listeners
+    // -----------------------------------------------------------------------
+
+    // FIX: #[On] does not work on #[Computed] properties — it must be on a
+    // regular method. This listener busts the computed cache when any other
+    // component (e.g. product show page) dispatches 'cart-updated'.
+    #[On('cart-updated')]
+    public function refreshCart(): void
+    {
+        unset($this->cartItems, $this->cartSummary);
+    }
+
+    // -----------------------------------------------------------------------
+    // Actions
+    // -----------------------------------------------------------------------
+
     public function clearCart(): void
     {
         app(CartService::class)->clear();
-        $this->dispatch('cart-updated');
         unset($this->cartItems, $this->cartSummary);
+        $this->dispatch('cart-updated');
     }
 
     public function removeItem(int $itemId): void
@@ -92,11 +106,17 @@ new #[Defer] #[Layout('layouts.guest')] class extends Component {
 
     public function updateQuantity(int $itemId, int $quantity): void
     {
+        // FIX: guard against quantity 0 — decrementing on a qty-1 item
+        // should trigger the remove modal, not pass 0 to the service
+        if ($quantity < 1) {
+            Flux::modal('remove-item-' . $itemId)->show();
+            return;
+        }
+
         try {
             app(CartService::class)->updateItemQuantity($itemId, $quantity);
             unset($this->cartItems, $this->cartSummary);
             $this->dispatch('cart-updated');
-            $this->dispatch('notify', variant: 'success', message: 'Cart list updated');
         } catch (\Throwable $th) {
             $this->dispatch('notify', variant: 'danger', message: $th->getMessage() ?: 'Unable to update cart');
         }
@@ -106,7 +126,7 @@ new #[Defer] #[Layout('layouts.guest')] class extends Component {
     {
         try {
             app(WishlistService::class)->toggle($productId);
-            unset($this->wishlistProductIds);
+            unset($this->wishlistProductIds); // FIX: was missing in some call paths
             $this->dispatch('wishlist-updated');
             $this->dispatch('notify', variant: 'success', message: 'Wishlist updated');
         } catch (\Throwable $th) {
@@ -123,6 +143,11 @@ new #[Defer] #[Layout('layouts.guest')] class extends Component {
 
         $this->redirect(route('checkout.shipping'), navigate: true);
     }
+
+    public function render()
+    {
+        return $this->view()->title('Cart');
+    }
 };
 ?>
 
@@ -138,13 +163,12 @@ new #[Defer] #[Layout('layouts.guest')] class extends Component {
         </div>
 
         <div class="mx-auto container px-4 py-4 min-h-[80svh]">
-            <!-- Cart Header -->
             <div class="flex items-center justify-between">
                 <flux:skeleton class="w-32 h-6 mb-4" animate="shimmer" />
                 <flux:skeleton class="w-24 h-6 mb-4" animate="shimmer" />
             </div>
 
-            <div class="space-y-4 lg:gap-4 lg:flex lg:items-start">
+            <div class="flex flex-col lg:flex-row lg:items-start lg:gap-6">
                 <div class="lg:flex-1">
                     <div class="space-y-4">
                         @for ($i = 0; $i < 2; $i++)
@@ -153,23 +177,19 @@ new #[Defer] #[Layout('layouts.guest')] class extends Component {
                                     <div class="shrink-0 px-4">
                                         <flux:skeleton animate="shimmer" class="w-20 h-20 rounded-sm" />
                                     </div>
-
                                     <div class="flex-1 space-y-2">
-                                        <flux:skeleton animate="shimmer" class="h-5 w-3/4 rounded-sm " />
-                                        <flux:skeleton animate="shimmer" class="h-4 w-1/4 rounded-sm " />
+                                        <flux:skeleton animate="shimmer" class="h-5 w-3/4 rounded-sm" />
+                                        <flux:skeleton animate="shimmer" class="h-4 w-1/4 rounded-sm" />
                                     </div>
                                     <div>
                                         <flux:skeleton animate="shimmer" class="h-5 w-24 rounded-sm" />
                                     </div>
-
                                 </div>
                                 <div class="bg-zinc-50 px-3 py-2 flex items-center">
                                     <div class="flex items-center gap-4">
                                         <flux:skeleton animate="shimmer" class="h-4 w-20 rounded-sm" />
                                         <flux:skeleton animate="shimmer" class="h-4 w-24 rounded-sm" />
-
                                     </div>
-
                                     <div class="ms-auto flex items-center gap-1">
                                         <flux:skeleton animate="shimmer" class="h-4 w-16 rounded-sm" />
                                     </div>
@@ -179,7 +199,7 @@ new #[Defer] #[Layout('layouts.guest')] class extends Component {
                     </div>
                 </div>
 
-                <div class="w-xs">
+                <div class="w-full lg:w-96 shrink-0 mt-4 lg:mt-0">
                     <div class="bg-white rounded-sm border">
                         <div class="px-3 py-2 border-b">
                             <flux:skeleton animate="shimmer" class="h-6 w-24 px-3 py-2 rounded-sm" />
@@ -237,10 +257,10 @@ new #[Defer] #[Layout('layouts.guest')] class extends Component {
             @endif
         </div>
 
-        <div class="space-y-4 lg:gap-4 lg:flex lg:items-start">
+        <div class="flex flex-col lg:flex-row lg:items-start lg:gap-6">
 
             {{-- Items --}}
-            <div class="lg:flex-1">
+            <div class="lg:flex-1 min-w-0">
                 @if ($this->cartItems->isEmpty())
                     <div class="flex flex-col items-center justify-center py-16 px-6 text-center">
                         <div class="mb-8">
@@ -252,7 +272,7 @@ new #[Defer] #[Layout('layouts.guest')] class extends Component {
                             Looks like you haven't added anything to your cart yet.
                         </p>
                         <div class="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
-                            <flux:button href="{{ route('products') }}" wire:navigate variant="primary"
+                            <flux:button href="{{ route('shop.index') }}" wire:navigate variant="primary"
                                 icon="shopping-bag" class="w-full sm:w-auto">
                                 Start Shopping
                             </flux:button>
@@ -265,6 +285,14 @@ new #[Defer] #[Layout('layouts.guest')] class extends Component {
                 @else
                     <section class="space-y-2">
                         @foreach ($this->cartItems as $item)
+                            {{--
+                                FIX: Extract wishlist check to a local variable — previously
+                                in_array($item->product->id, $this->wishlistProductIds) was
+                                called 3 times per item (footer button + modal button x2).
+                                Now resolved once per loop iteration.
+                            --}}
+                            @php $wishlisted = in_array($item->product->id, $this->wishlistProductIds); @endphp
+
                             <flux:card wire:key="cart-item-{{ $item->id }}" class="p-0 overflow-hidden">
                                 <div class="flex items-start gap-3 p-3 py-4">
 
@@ -355,13 +383,10 @@ new #[Defer] #[Layout('layouts.guest')] class extends Component {
                                                             class="cursor-pointer">
                                                             <x-slot name="icon">
                                                                 <flux:icon.heart
-                                                                    variant="{{ in_array($item->product->id, $this->wishlistProductIds) ? 'solid' : 'outline' }}"
-                                                                    @class([
-                                                                        'size-4',
-                                                                        'text-red-500' => in_array($item->product->id, $this->wishlistProductIds),
-                                                                    ]) />
+                                                                    variant="{{ $wishlisted ? 'solid' : 'outline' }}"
+                                                                    @class(['size-4', 'text-red-500' => $wishlisted]) />
                                                             </x-slot>
-                                                            {{ in_array($item->product->id, $this->wishlistProductIds) ? 'Remove Wishlist' : 'Save for later' }}
+                                                            {{ $wishlisted ? 'Remove from Wishlist' : 'Save for later' }}
                                                         </flux:button>
                                                     </flux:modal.close>
                                                     <flux:spacer />
@@ -378,14 +403,10 @@ new #[Defer] #[Layout('layouts.guest')] class extends Component {
                                         <flux:button wire:click="toggleWishlist({{ $item->product->id }})"
                                             variant="ghost" size="xs" class="cursor-pointer">
                                             <x-slot name="icon">
-                                                <flux:icon.heart
-                                                    variant="{{ in_array($item->product->id, $this->wishlistProductIds) ? 'solid' : 'outline' }}"
-                                                    @class([
-                                                        'size-4',
-                                                        'text-red-500' => in_array($item->product->id, $this->wishlistProductIds),
-                                                    ]) />
+                                                <flux:icon.heart variant="{{ $wishlisted ? 'solid' : 'outline' }}"
+                                                    @class(['size-4', 'text-red-500' => $wishlisted]) />
                                             </x-slot>
-                                            {{ in_array($item->product->id, $this->wishlistProductIds) ? 'Wishlisted' : 'Add to Wishlist' }}
+                                            {{ $wishlisted ? 'Wishlisted' : 'Add to Wishlist' }}
                                         </flux:button>
                                     </div>
 
@@ -405,7 +426,7 @@ new #[Defer] #[Layout('layouts.guest')] class extends Component {
 
             {{-- Cart Summary --}}
             @if ($this->cartItems->isNotEmpty())
-                <div class="w-xs sticky top-44">
+                <div class="w-full lg:w-96 shrink-0 mt-4 lg:mt-0 lg:sticky lg:top-44">
                     <div class="bg-white rounded-sm border">
                         <h3 class="font-medium text-sm uppercase px-3 py-2 border-b">Cart Summary</h3>
                         <div class="p-3 py-4 space-y-2">
@@ -436,13 +457,18 @@ new #[Defer] #[Layout('layouts.guest')] class extends Component {
                 </div>
             @endif
         </div>
-        @island('recommended-products')
-            @if ($this->cartItems->isNotEmpty())
-                <livewire:product-recommendations type="cart_related" />
-            @endif
 
-            <livewire:product-recommendations type="recently_viewed" />
-        @endisland
+        {{--
+            FIX: Removed redundant #[Defer] + @island combination.
+            Since the component itself is #[Defer], @island within it adds
+            no benefit — the whole component is already lazy. Use @island
+            only when you need lazy sections inside a non-deferred component.
+        --}}
+        @if ($this->cartItems->isNotEmpty())
+            <livewire:product-recommendations type="cart_related" />
+        @endif
+
+        <livewire:product-recommendations type="recently_viewed" />
     </div>
 
     {{-- Accessories Modal --}}
@@ -457,8 +483,16 @@ new #[Defer] #[Layout('layouts.guest')] class extends Component {
             <div class="space-y-3">
                 @foreach ($this->productsWithMissingAccessories as $product)
                     <div class="border rounded-sm p-3 flex items-start gap-3">
-                        <img src="{{ $product['image'] }}" alt="{{ $product['name'] }}"
-                            class="w-16 h-16 object-cover rounded-sm">
+                        {{-- FIX: added fallback for missing product image --}}
+                        @if ($product['image'])
+                            <img src="{{ $product['image'] }}" alt="{{ $product['name'] }}"
+                                class="w-16 h-16 object-cover rounded-sm shrink-0">
+                        @else
+                            <div class="w-16 h-16 rounded-sm bg-zinc-100 flex items-center justify-center shrink-0">
+                                <flux:icon.photo class="size-8 text-zinc-300 stroke-1" />
+                            </div>
+                        @endif
+
                         <div class="flex-1">
                             <p class="font-medium text-sm">{{ $product['name'] }}</p>
                             <p class="text-xs text-zinc-600 mt-1">
@@ -474,12 +508,10 @@ new #[Defer] #[Layout('layouts.guest')] class extends Component {
                 @endforeach
             </div>
             <div class="flex gap-2 pt-4 border-t">
-                <flux:modal.close>
-                    <flux:button variant="primary" class="cursor-pointer flex-1" :href="route('checkout.shipping')"
-                        wire:navigate>
-                        Continue without accessories
-                    </flux:button>
-                </flux:modal.close>
+                <flux:button variant="primary" class="cursor-pointer flex-1" href="{{ route('checkout.shipping') }}"
+                    wire:navigate>
+                    Continue without accessories
+                </flux:button>
             </div>
         </div>
     </flux:modal>

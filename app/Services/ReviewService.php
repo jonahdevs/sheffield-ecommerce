@@ -9,7 +9,6 @@ use DomainException;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * Class ReviewService.
@@ -20,7 +19,8 @@ class ReviewService
     {
         return Review::where('product_id', $product->id)
             ->approved()
-            ->with(['user', 'images'])->latest();
+            ->with(['user', 'images'])
+            ->latest();
     }
 
     public function forProductPage(Product $product, int $limit = 5)
@@ -53,68 +53,91 @@ class ReviewService
                         break;
                 }
             })
-            ->paginate(isset($filters['per_page']) ? $filters['per_page'] : 10);
+            ->paginate($filters['per_page'] ?? 10);
     }
 
     /**
-     * Get rating distribution for a product
+     * Get all review statistics for a product in a single aggregation query.
      *
-     * @param Product $product
-     * @return array
+     * Returns:
+     *   - total       (int)   — approved review count
+     *   - average     (float) — rounded to 1 decimal place, 0.0 when no reviews
+     *   - distribution (array) — keys 5→1, each with 'count' and 'percentage'
+     *
+     * Replaces the previous getStatistics() which internally called
+     * totalReview() + averageRating() + getDistributionWithPercentages(),
+     * firing 4 separate queries for the same data.
      */
-    public function ratingDistribution(Product $product): array
+    public function getStatistics(Product $product): array
     {
-        $distribution = $product->reviews()
+        $row = $product->reviews()
             ->approved()
-            ->select('rating', DB::raw('count(*) as count'))
-            ->groupBy('rating')
-            ->orderBy('rating', 'desc')
-            ->pluck('count', 'rating')
-            ->toArray();
+            ->selectRaw('
+                COUNT(*)                                         AS total,
+                COALESCE(ROUND(AVG(rating), 1), 0)              AS average,
+                SUM(CASE WHEN rating = 5 THEN 1 ELSE 0 END)     AS star_5,
+                SUM(CASE WHEN rating = 4 THEN 1 ELSE 0 END)     AS star_4,
+                SUM(CASE WHEN rating = 3 THEN 1 ELSE 0 END)     AS star_3,
+                SUM(CASE WHEN rating = 2 THEN 1 ELSE 0 END)     AS star_2,
+                SUM(CASE WHEN rating = 1 THEN 1 ELSE 0 END)     AS star_1
+            ')
+            ->first();
 
-        // Ensure all ratings 1-5 are present
-        $result = [];
-        for ($i = 5; $i >= 1; $i--) {
-            $result[$i] = $distribution[$i] ?? 0;
+        $total   = (int) ($row->total ?? 0);
+        $average = (float) ($row->average ?? 0.0);
+
+        $distribution = [];
+        foreach ([5, 4, 3, 2, 1] as $star) {
+            $count = (int) ($row->{"star_{$star}"} ?? 0);
+            $distribution[$star] = [
+                'count'      => $count,
+                'percentage' => $total > 0 ? (int) round(($count / $total) * 100) : 0,
+            ];
         }
 
-        return $result;
+        return compact('total', 'average', 'distribution');
     }
 
     /**
-     * Get total number of reviews for a product
-     *
-     * @param Product $product
-     * @return int
+     * Kept for backwards compatibility — delegates to getStatistics().
+     * Use getStatistics() directly where you need more than one of these values.
      */
     public function totalReview(Product $product): int
     {
-        return $product->reviews()
-            ->approved()
-            ->count();
+        return $this->getStatistics($product)['total'];
     }
 
     /**
-     * Get average rating for a product
-     *
-     * @param Product $product
-     * @return float
+     * Kept for backwards compatibility — delegates to getStatistics().
+     * Use getStatistics() directly where you need more than one of these values.
      */
     public function averageRating(Product $product): float
     {
-        $average = $product->reviews()
-            ->approved()
-            ->avg('rating');
-
-        return $average ? round($average, 1) : 0.0;
+        return $this->getStatistics($product)['average'];
     }
 
     /**
-     * Mark review as helpful
-     *
-     * @param Review $review
-     * @param bool $helpful
-     * @return void
+     * Kept for backwards compatibility — delegates to getStatistics().
+     * Use getStatistics() directly where you need more than one of these values.
+     */
+    public function ratingDistribution(Product $product): array
+    {
+        return array_column(
+            $this->getStatistics($product)['distribution'],
+            'count',
+        );
+    }
+
+    /**
+     * Kept for backwards compatibility — delegates to getStatistics().
+     */
+    public function getDistributionWithPercentages(Product $product): array
+    {
+        return $this->getStatistics($product)['distribution'];
+    }
+
+    /**
+     * Mark a review as helpful or not helpful.
      */
     public function vote(Review $review, bool $isHelpful): void
     {
@@ -122,7 +145,6 @@ class ReviewService
             throw new AuthenticationException('Authentication required.');
         }
 
-        // Prevent self-voting
         if ($review->user_id === Auth::id()) {
             throw new DomainException('self_vote');
         }
@@ -133,66 +155,26 @@ class ReviewService
                 ->first();
 
             if ($existingVote) {
-                // If clicking the same vote again, remove it (toggle off)
                 if ($existingVote->is_helpful === $isHelpful) {
+                    // Same vote clicked again — toggle off
                     $existingVote->delete();
                 } else {
-                    // If switching vote type, update it
+                    // Switching vote type
                     $existingVote->update(['is_helpful' => $isHelpful]);
-
                     $review->decrement($isHelpful ? 'not_helpful_count' : 'helpful_count');
                     $review->increment($isHelpful ? 'helpful_count' : 'not_helpful_count');
                 }
             } else {
-                // No existing vote, create new one
                 ReviewHelpfulness::create([
-                    'review_id' => $review->id,
-                    'user_id' => Auth::id(),
+                    'review_id'  => $review->id,
+                    'user_id'    => Auth::id(),
                     'is_helpful' => $isHelpful,
                 ]);
 
                 $review->increment($isHelpful ? 'helpful_count' : 'not_helpful_count');
             }
 
-            // Refresh the review's vote counts
             $review->refresh();
         });
-    }
-
-    /**
-     * Get statistics for a product
-     *
-     * @param Product $product
-     * @return array
-     */
-    public function getStatistics(Product $product): array
-    {
-        return [
-            'total' => $this->totalReview($product),
-            'average' => $this->averageRating($product),
-            'distribution' => $this->getDistributionWithPercentages($product),
-        ];
-    }
-
-    /**
-     * Get rating distribution with percentages
-     *
-     * @param Product $product
-     * @return array
-     */
-    public function getDistributionWithPercentages(Product $product): array
-    {
-        $distribution = $this->ratingDistribution($product);
-        $total = $this->totalReview($product);
-
-        $result = [];
-        foreach ($distribution as $rating => $count) {
-            $result[$rating] = [
-                'count' => $count,
-                'percentage' => $total > 0 ? round(($count / $total) * 100) : 0,
-            ];
-        }
-
-        return $result;
     }
 }

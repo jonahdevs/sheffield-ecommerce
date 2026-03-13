@@ -4,36 +4,38 @@
      All old tokens replaced with brand-* tokens.
      ========================================================================== --}}
 
-{{-- Category filter --}}
-<div class="p-4">
-    <h3 class="font-medium mb-3">Category</h3>
-    <div class="max-h-64 overflow-y-auto">
-        @if ($this->selectedCategory)
-            <div class="font-medium text-sm text-brand-secondary bg-brand-secondary/10 p-2 rounded mb-3">
-                {{ $this->selectedCategory->name }}
-            </div>
-            @if ($this->categories->isNotEmpty())
-                <div class="text-xs text-zinc-500 px-2 mb-2 font-medium">Subcategories:</div>
+{{-- Category filter — only rendered if the component has a selectedCategory property --}}
+@if (isset($this->selectedCategory))
+    <div class="p-4">
+        <h3 class="font-medium mb-3">Category</h3>
+        <div class="max-h-64 overflow-y-auto">
+            @if ($this->selectedCategory)
+                <div class="font-medium text-sm text-brand-secondary bg-brand-secondary/10 p-2 rounded mb-3">
+                    {{ $this->selectedCategory->name }}
+                </div>
+                @if ($this->categories->isNotEmpty())
+                    <div class="text-xs text-zinc-500 px-2 mb-2 font-medium">Subcategories:</div>
+                    @foreach ($this->categories as $category)
+                        <button type="button"
+                            class="flex items-center gap-2 cursor-pointer hover:bg-zinc-50 p-2 rounded w-full text-left"
+                            wire:click="selectCategory('{{ $category->slug }}')">
+                            <flux:icon.chevron-right variant="micro" />
+                            <span class="text-sm text-zinc-700">{{ $category->name }}</span>
+                        </button>
+                    @endforeach
+                @endif
+            @else
                 @foreach ($this->categories as $category)
                     <button type="button"
-                        class="flex items-center gap-2 cursor-pointer hover:bg-zinc-50 p-2 rounded w-full text-left"
+                        class="text-sm capitalize px-2 py-2 hover:bg-zinc-100 rounded block w-full text-left"
                         wire:click="selectCategory('{{ $category->slug }}')">
-                        <flux:icon.chevron-right variant="micro" />
-                        <span class="text-sm text-zinc-700">{{ $category->name }}</span>
+                        {{ $category->name }}
                     </button>
                 @endforeach
             @endif
-        @else
-            @foreach ($this->categories as $category)
-                <button type="button"
-                    class="text-sm capitalize px-2 py-2 hover:bg-zinc-100 rounded block w-full text-left"
-                    wire:click="selectCategory('{{ $category->slug }}')">
-                    {{ $category->name }}
-                </button>
-            @endforeach
-        @endif
+        </div>
     </div>
-</div>
+@endif
 
 {{-- Price filter --}}
 <div class="p-4" x-data="{
@@ -176,10 +178,13 @@
             <flux:checkbox wire:model.live="inStock" />
             <flux:label class="ms-2 font-normal">In Stock</flux:label>
         </flux:field>
-        <flux:field class="flex! items-center! mt-2">
-            <flux:checkbox wire:model.live="featured" />
-            <flux:label class="ms-2 font-normal">Featured Products</flux:label>
-        </flux:field>
+        {{-- Featured filter — only rendered if the component has a featured property --}}
+        @if (isset($this->featured))
+            <flux:field class="flex! items-center! mt-2">
+                <flux:checkbox wire:model.live="featured" />
+                <flux:label class="ms-2 font-normal">Featured Products</flux:label>
+            </flux:field>
+        @endif
         <flux:field class="flex! items-center! mt-2">
             <flux:checkbox wire:model.live="onSale" />
             <flux:label class="ms-2 font-normal">On Sale</flux:label>

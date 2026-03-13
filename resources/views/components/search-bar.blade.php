@@ -96,7 +96,7 @@ new class extends Component {
             class="w-full" autocomplete="off" clearable
             @focus="$wire.showSuggestions = ($wire.suggestions?.products?.length > 0)"
             @keydown.escape="$wire.showSuggestions = false"
-            @keydown.enter="window.location.href = '{{ route('products') }}?search=' + encodeURIComponent($wire.search)" />
+            @keydown.enter="window.location.href = '{{ route('shop.index') }}?search=' + encodeURIComponent($wire.search)" />
 
         {{-- Desktop suggestions dropdown --}}
         <div wire:show="showSuggestions" @click.outside="$wire.showSuggestions = false"
@@ -150,7 +150,7 @@ new class extends Component {
                     placeholder="Search products..." class="w-full" autocomplete="off" clearable x-init="$nextTick(() => $el.querySelector('input')?.focus())"
                     @keydown.escape="$wire.closeMobile()"
                     @keydown.enter="
-                        window.location.href = '{{ route('products') }}?search=' + encodeURIComponent($wire.search);
+                        window.location.href = '{{ route('shop.index') }}?search=' + encodeURIComponent($wire.search);
                         $wire.closeMobile();
                     " />
             </div>

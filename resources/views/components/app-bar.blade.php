@@ -141,10 +141,16 @@ new class extends Component {
                     <flux:dropdown position="bottom" align="end" hover>
                         @auth
                             @if (auth()->user()->avatar)
+                                {{-- Mobile: avatar only, no name --}}
+                                <flux:profile circle avatar="{{ auth()->user()->avatar }}" class="lg:hidden" />
+                                {{-- Desktop: avatar + name --}}
                                 <flux:profile circle avatar="{{ auth()->user()->avatar }}"
-                                    name="{{ auth()->user()->name }}" />
+                                    name="{{ auth()->user()->name }}" class="hidden lg:flex" />
                             @else
-                                <flux:profile circle name="{{ auth()->user()->name }}" />
+                                {{-- Mobile: initials only --}}
+                                <flux:profile circle class="lg:hidden" />
+                                {{-- Desktop: initials + name --}}
+                                <flux:profile circle name="{{ auth()->user()->name }}" class="hidden lg:flex" />
                             @endif
                         @else
                             <button type="button"
@@ -236,7 +242,7 @@ new class extends Component {
                     <li class="w-[16.66666666666667%] cursor-pointer hover:bg-brand-primary-dark" tabindex="0"
                         role="menuitem" aria-expanded="false">
                         <div class="relative h-9.25">
-                            <a href="{{ route('products', ['category' => $category->slug]) }}" wire:navigate
+                            <a href="{{ route('shop.category', ['category' => $category->slug]) }}" wire:navigate
                                 class="flex min-h-full items-center overflow-hidden text-ellipsis whitespace-nowrap border-l border-white/20 px-1.25 xl:px-2.5 border-b">
                                 <img alt="" loading="eager" width="26" height="26" decoding="async"
                                     class="duration-300 max-h-6.5 max-w-6.5 max-md:hidden invert"
@@ -280,7 +286,7 @@ new class extends Component {
             <div x-ref="scroller" @scroll="updateArrows()"
                 class="flex overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] w-full">
                 @foreach ($this->categories as $category)
-                    <a href="{{ route('products', ['category' => $category->slug]) }}" wire:navigate
+                    <a href="{{ route('shop.category', ['category' => $category->slug]) }}" wire:navigate
                         class="shrink-0 px-4 py-3 text-sm hover:opacity-80 transition-opacity duration-500 whitespace-nowrap">
                         {{ $category->name }}
                     </a>

@@ -65,6 +65,13 @@ abstract class BaseProductComponent extends Component
     public array $selectedGroupedProducts = [];
 
     // ===================================================
+    // ACCESSORIES STATE                      
+    // ===================================================
+
+    public array $accessories = [];
+    public array $selectedAccessories = [];
+
+    // ===================================================
     // DOWNLOADS STATE
     // ===================================================
 
@@ -99,6 +106,14 @@ abstract class BaseProductComponent extends Component
 
         // Sync grouped products to form before saving
         $this->form->grouped_products = collect($this->groupedProducts)
+            ->map(fn($item) => [
+                'id'       => $item['id'],
+                'quantity' => $item['quantity'] ?? 1,
+            ])
+            ->toArray();
+
+        // Sync accessories to form before saving  ← ADD THIS
+        $this->form->accessories = collect($this->accessories)
             ->map(fn($item) => [
                 'id'       => $item['id'],
                 'quantity' => $item['quantity'] ?? 1,
@@ -619,6 +634,25 @@ abstract class BaseProductComponent extends Component
             ->toArray();
     }
 
+    // ============================================================ 
+    //  loadAccessories
+    // ============================================================ 
+
+    protected function loadAccessories(Product $product): void
+    {
+        $this->accessories = $product
+            ->accessories()
+            ->get()
+            ->map(fn($p) => [
+                'id'       => $p->id,
+                'name'     => $p->name,
+                'sku'      => $p->sku,
+                'price'    => $p->price,
+                'quantity' => $p->pivot->quantity,
+            ])
+            ->toArray();
+    }
+
     public function addGroupedProducts(): void
     {
         if (empty($this->selectedGroupedProducts)) return;
@@ -659,6 +693,48 @@ abstract class BaseProductComponent extends Component
         array_splice($this->groupedProducts, $index, 1);
         $this->groupedProducts = array_values($this->groupedProducts);
     }
+
+    public function addAccessories(): void
+    {
+        if (empty($this->selectedAccessories)) return;
+
+        $existingIds = collect($this->accessories)->pluck('id')->toArray();
+
+        $newIds = array_filter(
+            $this->selectedAccessories,
+            fn($id) => !in_array($id, $existingIds)
+        );
+
+        if (empty($newIds)) {
+            $this->dispatch('notify', variant: 'warning', message: 'Selected products are already added as accessories.');
+            return;
+        }
+
+        $products = Product::whereIn('id', $newIds)
+            ->select('id', 'name', 'sku', 'price')
+            ->get();
+
+        foreach ($products as $product) {
+            $this->accessories[] = [
+                'id'       => $product->id,
+                'name'     => $product->name,
+                'sku'      => $product->sku,
+                'price'    => $product->price,
+                'quantity' => 1,
+            ];
+        }
+
+        $added = count($products);
+        $this->selectedAccessories = [];
+        $this->dispatch('notify', variant: 'success', message: "{$added} accessory(s) added.");
+    }
+
+    public function removeAccessory(int $index): void
+    {
+        array_splice($this->accessories, $index, 1);
+        $this->accessories = array_values($this->accessories);
+    }
+
 
     public function getGroupedTotal(): float
     {
@@ -833,6 +909,7 @@ abstract class BaseProductComponent extends Component
         return $this->getErrorBag()->hasAny([
             'form.selected_upsells',
             'form.selected_cross_sells',
+            'form.accessories',
             'form.grouped_products',
         ]);
     }

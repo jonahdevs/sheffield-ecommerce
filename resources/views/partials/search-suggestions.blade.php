@@ -86,7 +86,7 @@
         <flux:icon.magnifying-glass class="w-8 h-8 text-zinc-300 mx-auto mb-2" />
         <p class="text-sm font-medium text-zinc-500">No results for "{{ $search }}"</p>
         <p class="text-xs text-zinc-400 mt-1">Try a different keyword or browse categories</p>
-        <a href="{{ route('products') }}" wire:navigate
+        <a href="{{ route('shop.index') }}" wire:navigate
             class="inline-flex items-center gap-1.5 mt-4 text-xs font-medium text-brand-primary hover:underline">
             Browse all products
             <flux:icon.arrow-right class="w-3.5 h-3.5" />

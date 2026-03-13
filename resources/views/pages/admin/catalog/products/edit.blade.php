@@ -15,6 +15,7 @@ new #[Title('Edit Product')] class extends BaseProductComponent {
         $this->loadProductAttributes($product);
         $this->loadProductVariants($product);
         $this->loadGroupedProducts($product);
+        $this->loadAccessories($product);
         $this->loadProductDownloads($product);
     }
 
@@ -41,7 +42,10 @@ new #[Title('Edit Product')] class extends BaseProductComponent {
 
     <div class="flex items-center justify-between">
         <flux:heading size="xl">Edit Product</flux:heading>
-        <flux:button variant="primary" type="submit" form="product-form" class="cursor-pointer min-w-32">Update
+
+        <flux:button variant="primary" type="submit" form="product-form" class="cursor-pointer min-w-32"
+            wire:loading.attr="disabled" wire:target="save">
+            Update
         </flux:button>
     </div>
 

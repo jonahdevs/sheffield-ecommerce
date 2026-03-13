@@ -346,7 +346,6 @@ return new class extends Migration {
         Schema::dropIfExists('product_related');
         Schema::dropIfExists('product_cross_sells');
         Schema::dropIfExists('product_upsells');
-        Schema::dropIfExists('product_accessories');
         Schema::dropIfExists('product_relationships');
         Schema::dropIfExists('product_variant_attribute_values');
         Schema::dropIfExists('product_attribute_values');

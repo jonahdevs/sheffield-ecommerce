@@ -27,7 +27,10 @@ new #[Title('Create Product')] class extends BaseProductComponent {
 
     <div class="flex items-center justify-between">
         <flux:heading size="xl">Create New Product</flux:heading>
-        <flux:button variant="primary" type="submit" form="product-form" class="cursor-pointer min-w-32">Create
+
+        <flux:button variant="primary" type="submit" form="product-form" class="cursor-pointer min-w-32"
+            wire:loading.attr="disabled" wire:target="save">
+            Create
         </flux:button>
     </div>
 

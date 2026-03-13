@@ -196,6 +196,23 @@ class Product extends Model
     }
 
     /**
+     * Get accessories products for this product
+     */
+    public function accessories(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            Product::class,
+            'product_relationships',
+            'product_id',
+            'related_product_id'
+        )
+            ->wherePivot('type', ProductRelationshipType::ACCESSORY)
+            ->withPivot('sort_order', 'quantity')
+            ->withTimestamps()
+            ->orderByPivot('sort_order');
+    }
+
+    /**
      * Get grouped products 
      */
     public function groupedProducts(): BelongsToMany
