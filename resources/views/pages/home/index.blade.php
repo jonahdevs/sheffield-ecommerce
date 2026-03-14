@@ -47,129 +47,140 @@ new #[Layout('layouts.guest')] class extends Component {
 ?>
 
 <div>
-    {{-- Hero section --}}
-    <div class="container mx-auto mt-5 px-4" x-data="{
-        swiper: null,
-        isPaused: false,
-        autoplayDelay: 5000,
-        progressCircumference: 2 * Math.PI * 18,
-        progressOffset: 0,
-    
-        init() {
-            this.swiper = new Swiper('#heroSwiper', {
-                loop: true,
-                autoplay: {
-                    delay: this.autoplayDelay,
-                    disableOnInteraction: false,
-                },
-                pagination: {
-                    el: '#heroSwiper .swiper-pagination',
-                    clickable: true,
-                },
-                on: {
-                    slideChange: () => {
-                        this.resetProgress();
+
+    {{-- ============================================================ --}}
+    {{-- Hero Background Wrapper — top of page → feature strips       --}}
+    {{-- ============================================================ --}}
+    <div class="relative overflow-hidden bg-cover bg-center bg-fixed"
+        style="background-image: url('{{ asset('images/home/hero-bg.jpg') }}');">
+
+
+        {{-- Hero section --}}
+        <div class="container mx-auto px-4 py-8 relative z-10" x-data="{
+            swiper: null,
+            isPaused: false,
+            autoplayDelay: 5000,
+            progressCircumference: 2 * Math.PI * 18,
+            progressOffset: 0,
+        
+            init() {
+                this.swiper = new Swiper('#heroSwiper', {
+                    loop: true,
+                    autoplay: {
+                        delay: this.autoplayDelay,
+                        disableOnInteraction: false,
                     },
-                },
-            });
-            this.$nextTick(() => {
-                document.getElementById('heroSwiper').classList.remove('opacity-0');
-            });
-            this.startProgress();
-        },
-        toggleAutoplay() {
-            this.isPaused = !this.isPaused;
-            if (this.isPaused) {
-                this.swiper.autoplay.stop();
-            } else {
-                this.swiper.autoplay.start();
+                    pagination: {
+                        el: '#heroSwiper .swiper-pagination',
+                        clickable: true,
+                    },
+                    on: {
+                        slideChange: () => {
+                            this.resetProgress();
+                        },
+                    },
+                });
+                this.$nextTick(() => {
+                    document.getElementById('heroSwiper').classList.remove('opacity-0');
+                });
                 this.startProgress();
-            }
-        },
-        startProgress() {
-            this.progressOffset = 0;
-            const interval = setInterval(() => {
+            },
+            toggleAutoplay() {
+                this.isPaused = !this.isPaused;
                 if (this.isPaused) {
-                    clearInterval(interval);
-                    return;
+                    this.swiper.autoplay.stop();
+                } else {
+                    this.swiper.autoplay.start();
+                    this.startProgress();
                 }
-                this.progressOffset += (this.progressCircumference / (this.autoplayDelay / 100));
-                if (this.progressOffset >= this.progressCircumference) {
-                    this.progressOffset = 0;
-                }
-            }, 100);
-        },
-        resetProgress() {
-            this.progressOffset = 0;
-        }
-    }">
-        <div class="swiper opacity-0 transition-opacity duration-500" id="heroSwiper">
-            <div class="swiper-wrapper">
-                @foreach ($this->heroBanners as $banner)
-                    <div class="swiper-slide">
-                        <img src="{{ $banner['image'] }}" alt="{{ $banner['alt'] }}" class="w-full h-auto rounded-md">
-                    </div>
-                @endforeach
-            </div>
+            },
+            startProgress() {
+                this.progressOffset = 0;
+                const interval = setInterval(() => {
+                    if (this.isPaused) {
+                        clearInterval(interval);
+                        return;
+                    }
+                    this.progressOffset += (this.progressCircumference / (this.autoplayDelay / 100));
+                    if (this.progressOffset >= this.progressCircumference) {
+                        this.progressOffset = 0;
+                    }
+                }, 100);
+            },
+            resetProgress() {
+                this.progressOffset = 0;
+            }
+        }">
 
-            <div class="swiper-pagination"></div>
+            {{-- Carousel — slightly inset with a shadow ring so it floats --}}
+            <div class="swiper opacity-0 transition-opacity duration-500 rounded-md overflow-hidden shadow-2xl ring-1 ring-white/10"
+                id="heroSwiper">
+                <div class="swiper-wrapper">
+                    @foreach ($this->heroBanners as $banner)
+                        <div class="swiper-slide">
+                            <img src="{{ $banner['image'] }}" alt="{{ $banner['alt'] }}" class="w-full h-auto">
+                        </div>
+                    @endforeach
+                </div>
 
-            {{-- Circular Progress Indicator with Pause/Play --}}
-            <div class="absolute -bottom-2 right-3 sm:bottom-4 sm:right-4 z-50">
-                <button type="button" @click="toggleAutoplay()"
-                    class="relative w-7 h-7 sm:w-10 sm:h-10 group cursor-pointer"
-                    :aria-label="isPaused ? 'Play slideshow' : 'Pause slideshow'">
-                    <svg class="w-full h-full transform -rotate-90 drop-shadow-lg" viewBox="0 0 48 48">
-                        <circle cx="24" cy="24" r="22" fill="rgba(0, 0, 0, 0.3)" />
-                        <circle cx="24" cy="24" r="20" fill="rgba(255, 255, 255, 0.95)" />
-                        <circle cx="24" cy="24" r="18" fill="none" stroke="rgba(0, 0, 0, 0.1)"
-                            stroke-width="2.5" />
-                        {{-- Progress circle — uses brand-primary via CSS variable --}}
-                        <circle cx="24" cy="24" r="18" fill="none" style="stroke: var(--brand-primary)"
-                            stroke-width="2.5" stroke-linecap="round" :stroke-dasharray="progressCircumference"
-                            :stroke-dashoffset="progressOffset" class="transition-all duration-100 ease-linear" />
-                    </svg>
+                <div class="swiper-pagination"></div>
 
-                    <div class="absolute inset-0 flex items-center justify-center">
-                        {{-- Play Icon --}}
-                        <svg x-show="isPaused"
-                            class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-brand-primary ml-0.5 transition-transform group-hover:scale-110"
-                            fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M8 5v14l11-7z" />
+                {{-- Circular Progress Indicator with Pause/Play --}}
+                <div class="absolute -bottom-2 right-3 sm:bottom-4 sm:right-4 z-50">
+                    <button type="button" @click="toggleAutoplay()"
+                        class="relative w-7 h-7 sm:w-10 sm:h-10 group cursor-pointer"
+                        :aria-label="isPaused ? 'Play slideshow' : 'Pause slideshow'">
+                        <svg class="w-full h-full transform -rotate-90 drop-shadow-lg" viewBox="0 0 48 48">
+                            <circle cx="24" cy="24" r="22" fill="rgba(0, 0, 0, 0.3)" />
+                            <circle cx="24" cy="24" r="20" fill="rgba(255, 255, 255, 0.95)" />
+                            <circle cx="24" cy="24" r="18" fill="none" stroke="rgba(0, 0, 0, 0.1)"
+                                stroke-width="2.5" />
+                            <circle cx="24" cy="24" r="18" fill="none"
+                                style="stroke: var(--brand-primary)" stroke-width="2.5" stroke-linecap="round"
+                                :stroke-dasharray="progressCircumference" :stroke-dashoffset="progressOffset"
+                                class="transition-all duration-100 ease-linear" />
                         </svg>
-                        {{-- Pause Icon --}}
-                        <svg x-show="!isPaused"
-                            class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-brand-primary transition-transform group-hover:scale-110"
-                            fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z" />
-                        </svg>
-                    </div>
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <svg x-show="isPaused"
+                                class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-brand-primary ml-0.5 transition-transform group-hover:scale-110"
+                                fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M8 5v14l11-7z" />
+                            </svg>
+                            <svg x-show="!isPaused"
+                                class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-brand-primary transition-transform group-hover:scale-110"
+                                fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z" />
+                            </svg>
+                        </div>
+                    </button>
+                </div>
+
+                {{-- Prev / Next controls --}}
+                <button type="button" @click="swiper.slidePrev()"
+                    class="absolute top-0 start-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none">
+                    <span
+                        class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-white/30 dark:bg-zinc-800/30 hover:bg-white/50 dark:hover:bg-zinc-800/60 focus:ring-4 focus:ring-white dark:focus:ring-zinc-800/70 focus:outline-none">
+                        <flux:icon.arrow-long-left class="size-4 text-white" />
+                        <span class="sr-only">Previous</span>
+                    </span>
+                </button>
+                <button type="button" @click="swiper.slideNext()"
+                    class="absolute top-0 end-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none">
+                    <span
+                        class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-white/30 dark:bg-zinc-800/30 hover:bg-white/50 dark:hover:bg-zinc-800/60 focus:ring-4 focus:ring-white dark:focus:ring-zinc-800/70 focus:outline-none">
+                        <flux:icon.arrow-long-right class="size-4 text-white" />
+                        <span class="sr-only">Next</span>
+                    </span>
                 </button>
             </div>
 
-            {{-- Slider controls --}}
-            <button type="button" @click="swiper.slidePrev()"
-                class="absolute top-0 start-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none">
-                <span
-                    class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-white/30 dark:bg-zinc-800/30 hover:bg-white/50 dark:hover:bg-zinc-800/60 focus:ring-4 focus:ring-white dark:focus:ring-zinc-800/70 focus:outline-none">
-                    <flux:icon.arrow-long-left class="size-4 text-white" />
-                    <span class="sr-only">Previous</span>
-                </span>
-            </button>
-
-            <button type="button" @click="swiper.slideNext()"
-                class="absolute top-0 end-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none">
-                <span
-                    class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-white/30 dark:bg-zinc-800/30 hover:bg-white/50 dark:hover:bg-zinc-800/60 focus:ring-4 focus:ring-white dark:focus:ring-zinc-800/70 focus:outline-none">
-                    <flux:icon.arrow-long-right class="size-4 text-white" />
-                    <span class="sr-only">Next</span>
-                </span>
-            </button>
+            {{-- Bottom breathing room --}}
+            <div class="pb-8"></div>
         </div>
     </div>
 
-    {{-- Feature strips --}}
-    <section class="border-y border-zinc-200 bg-white mt-6">
+    {{-- Feature strips — sits directly below, no  needed --}}
+    <section class="border-y border-zinc-200 bg-white">
         <div class="container mx-auto px-4">
             <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 divide-x divide-zinc-100">
 
@@ -297,12 +308,12 @@ new #[Layout('layouts.guest')] class extends Component {
         </div>
     </div>
 
-    <section class="container mx-auto px-4 mt-6">
+    {{-- <section class="container mx-auto px-4 mt-6">
         <a href="#" class="block overflow-hidden rounded-sm">
             <img src="{{ asset('images/home/CLEARANCE-SALE.jpg') }}" alt="banner"
                 class="w-full h-auto object-cover object-center rounded-sm">
         </a>
-    </section>
+    </section> --}}
 
     @island(name: 'products', defer: true)
         @placeholder
