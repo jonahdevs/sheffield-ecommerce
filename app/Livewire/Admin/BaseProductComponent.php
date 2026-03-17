@@ -12,6 +12,7 @@ use App\Models\Tag;
 use App\Services\Product\ProductAttributeService;
 use App\Services\Product\ProductDownloadService;
 use App\Services\Product\ProductVariationService;
+use Flux\Flux;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Str;
@@ -102,13 +103,12 @@ abstract class BaseProductComponent extends Component
     public array $defaultVariantAttributes = [];
 
     // Bulk action staging fields — these are UI-only and do not map to saved data
-    public ?float $bulkPrice         = null;
-    public ?float $bulkSalePrice     = null;
-    public ?int   $bulkStockQuantity = null;
-    public ?float $bulkWeight        = null;
-    public ?float $bulkLength        = null;
-    public ?float $bulkWidth         = null;
-    public ?float $bulkHeight        = null;
+    public ?float $bulkPrice = null;
+    public ?int $bulkStockQuantity = null;
+    public ?float $bulkWeight = null;
+    public ?float $bulkLength = null;
+    public ?float $bulkWidth = null;
+    public ?float $bulkHeight = null;
 
     // =========================================================================
     // GROUPED PRODUCTS STATE
@@ -165,7 +165,6 @@ abstract class BaseProductComponent extends Component
             'selectedAccessories',
             'defaultVariantAttributes',
             'bulkPrice',
-            'bulkSalePrice',
             'bulkStockQuantity',
             'bulkWeight',
             'bulkLength',
@@ -230,14 +229,14 @@ abstract class BaseProductComponent extends Component
             // so ProductForm::syncRelationships() has the current state
             $this->form->grouped_products = collect($this->groupedProducts)
                 ->map(fn($item) => [
-                    'id'       => $item['id'],
+                    'id' => $item['id'],
                     'quantity' => $item['quantity'] ?? 1,
                 ])
                 ->toArray();
 
             $this->form->accessories = collect($this->accessories)
                 ->map(fn($item) => [
-                    'id'       => $item['id'],
+                    'id' => $item['id'],
                     'quantity' => $item['quantity'] ?? 1,
                 ])
                 ->toArray();
@@ -310,7 +309,7 @@ abstract class BaseProductComponent extends Component
         }
 
         foreach ($this->form->downloads as $index => $download) {
-            $hasNewFile      = !empty($download['file']);
+            $hasNewFile = !empty($download['file']);
             $hasExistingFile = !empty($download['file_path']);
 
             if (!$hasNewFile && !$hasExistingFile) {
@@ -376,12 +375,12 @@ abstract class BaseProductComponent extends Component
 
         if ($value === 'grouped') {
             // Grouped products cannot be virtual or downloadable
-            $this->form->is_virtual      = false;
+            $this->form->is_virtual = false;
             $this->form->is_downloadable = false;
 
             // Clear attribute/variation state — irrelevant for grouped
-            $this->selectedAttributes        = [];
-            $this->availableAttributes       = [];
+            $this->selectedAttributes = [];
+            $this->availableAttributes = [];
             $this->selectedExistingAttribute = null;
 
             // Redirect away from tabs that don't apply to grouped products
@@ -392,7 +391,7 @@ abstract class BaseProductComponent extends Component
 
         if ($value !== 'grouped') {
             // Clear grouped state when switching to any non-grouped type
-            $this->groupedProducts         = [];
+            $this->groupedProducts = [];
             $this->selectedGroupedProducts = [];
         }
 
@@ -401,8 +400,8 @@ abstract class BaseProductComponent extends Component
             $value === 'simple' && $productId &&
             app(ProductVariationService::class)->hasActiveVariants($productId)
         ) {
-            $this->pendingProductType  = $value;
-            $this->form->type          = 'variable'; // Hold at variable until confirmed
+            $this->pendingProductType = $value;
+            $this->form->type = 'variable'; // Hold at variable until confirmed
             $this->showTypeChangeModal = true;
             return;
         }
@@ -444,8 +443,8 @@ abstract class BaseProductComponent extends Component
             $this->variants[$index]['is_active'] = false;
         }
 
-        $this->form->type          = $this->pendingProductType;
-        $this->pendingProductType  = '';
+        $this->form->type = $this->pendingProductType;
+        $this->pendingProductType = '';
         $this->showTypeChangeModal = false;
 
         $this->dispatch('notify', variant: 'warning', message: 'Switched to Simple. All variations deactivated.');
@@ -456,8 +455,8 @@ abstract class BaseProductComponent extends Component
      */
     public function cancelTypeChange(): void
     {
-        $this->form->type          = 'variable';
-        $this->pendingProductType  = '';
+        $this->form->type = 'variable';
+        $this->pendingProductType = '';
         $this->showTypeChangeModal = false;
     }
 
@@ -527,13 +526,13 @@ abstract class BaseProductComponent extends Component
             ->withPivot(['is_visible', 'is_variation_attribute', 'sort_order', 'values'])
             ->get()
             ->map(fn($attr) => [
-                'attribute_id'           => $attr->id,
-                'name'                   => $attr->name,
-                'is_new'                 => false,
-                'is_visible'             => (bool) $attr->pivot->is_visible,
+                'attribute_id' => $attr->id,
+                'name' => $attr->name,
+                'is_new' => false,
+                'is_visible' => (bool) $attr->pivot->is_visible,
                 'is_variation_attribute' => (bool) $attr->pivot->is_variation_attribute,
-                'sort_order'             => $attr->pivot->sort_order,
-                'values'                 => json_decode($attr->pivot->values ?? '[]', true) ?? [],
+                'sort_order' => $attr->pivot->sort_order,
+                'values' => json_decode($attr->pivot->values ?? '[]', true) ?? [],
             ])
             ->toArray();
 
@@ -544,13 +543,13 @@ abstract class BaseProductComponent extends Component
     public function addNewAttribute(): void
     {
         $this->selectedAttributes[] = [
-            'attribute_id'           => null,
-            'name'                   => '',
-            'is_new'                 => true,
-            'is_visible'             => true,
+            'attribute_id' => null,
+            'name' => '',
+            'is_new' => true,
+            'is_visible' => true,
             'is_variation_attribute' => false,
-            'sort_order'             => count($this->selectedAttributes),
-            'values'                 => '',
+            'sort_order' => count($this->selectedAttributes),
+            'values' => '',
         ];
     }
 
@@ -560,7 +559,8 @@ abstract class BaseProductComponent extends Component
      */
     public function addExistingAttribute($attributeId): void
     {
-        if (!$attributeId) return;
+        if (!$attributeId)
+            return;
 
         $already = collect($this->selectedAttributes)
             ->pluck('attribute_id')
@@ -572,16 +572,17 @@ abstract class BaseProductComponent extends Component
         }
 
         $attribute = Attribute::find($attributeId);
-        if (!$attribute) return;
+        if (!$attribute)
+            return;
 
         $this->selectedAttributes[] = [
-            'attribute_id'           => $attribute->id,
-            'name'                   => $attribute->name,
-            'is_new'                 => false,
-            'is_visible'             => true,
+            'attribute_id' => $attribute->id,
+            'name' => $attribute->name,
+            'is_new' => false,
+            'is_visible' => true,
             'is_variation_attribute' => false,
-            'sort_order'             => count($this->selectedAttributes),
-            'values'                 => [],
+            'sort_order' => count($this->selectedAttributes),
+            'values' => [],
         ];
 
         $this->syncAvailableAttributes();
@@ -687,41 +688,44 @@ abstract class BaseProductComponent extends Component
             ])
             ->get()
             ->map(fn($variant) => [
-                'id'                  => $variant->id,
-                'name'                => $variant->name,
-                'sku'                 => $variant->sku,
-                'image_path'          => $variant->image_path,
-                'image'               => null, // Staging field for new uploads
-                'price'               => $variant->price,
-                'sale_price'          => $variant->sale_price,
-                'manage_stock'        => $variant->manage_stock,
-                'stock_quantity'      => $variant->stock_quantity,
-                'stock_status'        => $variant->stock_status,
-                'allow_backorders'    => $variant->allow_backorders ? '1' : '',
+                'id' => $variant->id,
+                'name' => $variant->name,
+                'sku' => $variant->sku,
+                'image_path' => $variant->image_path,
+                'image' => null, // Staging field for new uploads
+                'price' => $variant->price,
+                'sale_price' => $variant->sale_price,
+                'manage_stock' => $variant->manage_stock,
+                'stock_quantity' => $variant->stock_quantity,
+                'stock_status' => $variant->stock_status,
+                'allow_backorders' => $variant->allow_backorders ? '1' : '',
+                'max_backorder_quantity' => $variant->max_backorder_quantity,
+                'expected_restock_date' => $variant->expected_restock_date?->format('Y-m-d'),
+                'backorder_message' => $variant->backorder_message,
                 'low_stock_threshold' => $variant->low_stock_threshold,
-                'weight'              => $variant->weight,
-                'length'              => $variant->length,
-                'width'               => $variant->width,
-                'height'              => $variant->height,
-                'description'         => $variant->description,
-                'is_active'           => $variant->is_active,
-                'is_default'          => $variant->is_default,
-                'attributes'          => $variant->attributeValues
+                'weight' => $variant->weight,
+                'length' => $variant->length,
+                'width' => $variant->width,
+                'height' => $variant->height,
+                'description' => $variant->description,
+                'is_active' => $variant->is_active,
+                'is_default' => $variant->is_default,
+                'attributes' => $variant->attributeValues
                     ->mapWithKeys(fn($av) => [$av->attribute->name => $av->value])
                     ->toArray(),
                 'attribute_value_ids' => $variant->attributeValues->pluck('id')->toArray(),
-                'attribute_hash'      => md5(
+                'attribute_hash' => md5(
                     implode('-', $variant->attributeValues->pluck('id')->sort()->toArray())
                 ),
                 // Per-variant download files (variant_id = this variant's ID)
-                'downloads'           => $variant->downloads->map(fn($d) => [
-                    'id'                  => $d->id,
-                    'name'                => $d->name,
-                    'file'                => null,
-                    'file_path'           => $d->file_path,
-                    'file_name'           => $d->file_name,
-                    'file_type'           => $d->file_type,
-                    'file_size'           => $d->file_size,
+                'downloads' => $variant->downloads->map(fn($d) => [
+                    'id' => $d->id,
+                    'name' => $d->name,
+                    'file' => null,
+                    'file_path' => $d->file_path,
+                    'file_name' => $d->file_name,
+                    'file_type' => $d->file_type,
+                    'file_size' => $d->file_size,
                     'formatted_file_size' => $d->formatted_file_size,
                 ])->toArray(),
                 'downloads_to_delete' => [],
@@ -761,15 +765,17 @@ abstract class BaseProductComponent extends Component
 
         foreach ($variationAttributes as $attr) {
             $valueIds = is_array($attr['values']) ? $attr['values'] : [];
-            if (empty($valueIds)) continue;
+            if (empty($valueIds))
+                continue;
 
             $values = AttributeValue::whereIn('id', $valueIds)->get();
-            if ($values->isEmpty()) continue;
+            if ($values->isEmpty())
+                continue;
 
             $attributeValueGroups[] = $values->map(fn($v) => [
                 'attribute_name' => $attr['name'],
-                'value'          => $v->value,
-                'value_id'       => $v->id,
+                'value' => $v->value,
+                'value_id' => $v->id,
             ])->toArray();
         }
 
@@ -778,16 +784,17 @@ abstract class BaseProductComponent extends Component
             return;
         }
 
-        $combinations   = $this->cartesian($attributeValueGroups);
+        $combinations = $this->cartesian($attributeValueGroups);
         $existingHashes = collect($this->variants)->pluck('attribute_hash')->toArray();
-        $newCount       = 0;
+        $newCount = 0;
 
         foreach ($combinations as $combination) {
             $valueIds = collect($combination)->pluck('value_id')->sort()->toArray();
-            $hash     = md5(implode('-', $valueIds));
+            $hash = md5(implode('-', $valueIds));
 
             // Skip combinations that already exist
-            if (in_array($hash, $existingHashes)) continue;
+            if (in_array($hash, $existingHashes))
+                continue;
 
             $attributes = collect($combination)
                 ->mapWithKeys(fn($c) => [$c['attribute_name'] => $c['value']])
@@ -809,7 +816,7 @@ abstract class BaseProductComponent extends Component
     {
         $before = count($this->variants);
         $this->generateVariations();
-        $after  = count($this->variants);
+        $after = count($this->variants);
 
         if ($after === $before) {
             $this->dispatch('notify', variant: 'info', message: 'All variation combinations already exist. Nothing to add.');
@@ -869,9 +876,9 @@ abstract class BaseProductComponent extends Component
     /** Clears the variant image upload for a given index and nulls its stored path. */
     public function removeVariantImage(int $index): void
     {
-        $this->variantImages[$index]          = null;
+        $this->variantImages[$index] = null;
         $this->variants[$index]['image_path'] = null;
-        $this->variants[$index]['image']      = null;
+        $this->variants[$index]['image'] = null;
     }
 
     // =========================================================================
@@ -912,13 +919,10 @@ abstract class BaseProductComponent extends Component
             if ($this->bulkPrice !== null) {
                 $this->variants[$index]['price'] = $this->bulkPrice;
             }
-            if ($this->bulkSalePrice !== null) {
-                $this->variants[$index]['sale_price'] = $this->bulkSalePrice;
-            }
         }
 
-        $this->bulkPrice     = null;
-        $this->bulkSalePrice = null;
+        $this->bulkPrice = null;
+        Flux::modal('bulk-pricing')->close();
         $this->dispatch('notify', variant: 'success', message: 'Pricing applied to all variations.');
     }
 
@@ -935,6 +939,7 @@ abstract class BaseProductComponent extends Component
         }
 
         $this->bulkStockQuantity = null;
+        Flux::modal('bulk-stock"')->close();
         $this->dispatch('notify', variant: 'success', message: 'Stock applied to all variations.');
     }
 
@@ -945,13 +950,18 @@ abstract class BaseProductComponent extends Component
     public function applyBulkDimensions(): void
     {
         foreach ($this->variants as $index => $variant) {
-            if ($this->bulkWeight !== null) $this->variants[$index]['weight'] = $this->bulkWeight;
-            if ($this->bulkLength !== null) $this->variants[$index]['length'] = $this->bulkLength;
-            if ($this->bulkWidth  !== null) $this->variants[$index]['width']  = $this->bulkWidth;
-            if ($this->bulkHeight !== null) $this->variants[$index]['height'] = $this->bulkHeight;
+            if ($this->bulkWeight !== null)
+                $this->variants[$index]['weight'] = $this->bulkWeight;
+            if ($this->bulkLength !== null)
+                $this->variants[$index]['length'] = $this->bulkLength;
+            if ($this->bulkWidth !== null)
+                $this->variants[$index]['width'] = $this->bulkWidth;
+            if ($this->bulkHeight !== null)
+                $this->variants[$index]['height'] = $this->bulkHeight;
         }
 
         $this->bulkWeight = $this->bulkLength = $this->bulkWidth = $this->bulkHeight = null;
+        Flux::modal('bulk-dimensions')->close();
         $this->dispatch('notify', variant: 'success', message: 'Dimensions applied to all variations.');
     }
 
@@ -963,9 +973,9 @@ abstract class BaseProductComponent extends Component
     public function addVariantDownloadFile(int $variantIndex): void
     {
         $this->variants[$variantIndex]['downloads'][] = [
-            'id'        => null,
-            'name'      => '',
-            'file'      => null,
+            'id' => null,
+            'name' => '',
+            'file' => null,
             'file_path' => null,
             'file_name' => null,
             'file_type' => null,
@@ -1005,10 +1015,10 @@ abstract class BaseProductComponent extends Component
             ->groupedProducts()
             ->get()
             ->map(fn($p) => [
-                'id'       => $p->id,
-                'name'     => $p->name,
-                'sku'      => $p->sku,
-                'price'    => $p->price,
+                'id' => $p->id,
+                'name' => $p->name,
+                'sku' => $p->sku,
+                'price' => $p->price,
                 'quantity' => $p->pivot->quantity,
             ])
             ->toArray();
@@ -1020,10 +1030,11 @@ abstract class BaseProductComponent extends Component
      */
     public function addGroupedProducts(): void
     {
-        if (empty($this->selectedGroupedProducts)) return;
+        if (empty($this->selectedGroupedProducts))
+            return;
 
         $existingIds = collect($this->groupedProducts)->pluck('id')->toArray();
-        $newIds      = array_filter(
+        $newIds = array_filter(
             $this->selectedGroupedProducts,
             fn($id) => !in_array($id, $existingIds)
         );
@@ -1037,10 +1048,10 @@ abstract class BaseProductComponent extends Component
 
         foreach ($products as $product) {
             $this->groupedProducts[] = [
-                'id'       => $product->id,
-                'name'     => $product->name,
-                'sku'      => $product->sku,
-                'price'    => $product->price,
+                'id' => $product->id,
+                'name' => $product->name,
+                'sku' => $product->sku,
+                'price' => $product->price,
                 'quantity' => 1,
             ];
         }
@@ -1077,10 +1088,10 @@ abstract class BaseProductComponent extends Component
             ->accessories()
             ->get()
             ->map(fn($p) => [
-                'id'       => $p->id,
-                'name'     => $p->name,
-                'sku'      => $p->sku,
-                'price'    => $p->price,
+                'id' => $p->id,
+                'name' => $p->name,
+                'sku' => $p->sku,
+                'price' => $p->price,
                 'quantity' => $p->pivot->quantity,
             ])
             ->toArray();
@@ -1092,10 +1103,11 @@ abstract class BaseProductComponent extends Component
      */
     public function addAccessories(): void
     {
-        if (empty($this->selectedAccessories)) return;
+        if (empty($this->selectedAccessories))
+            return;
 
         $existingIds = collect($this->accessories)->pluck('id')->toArray();
-        $newIds      = array_filter(
+        $newIds = array_filter(
             $this->selectedAccessories,
             fn($id) => !in_array($id, $existingIds)
         );
@@ -1109,10 +1121,10 @@ abstract class BaseProductComponent extends Component
 
         foreach ($products as $product) {
             $this->accessories[] = [
-                'id'       => $product->id,
-                'name'     => $product->name,
-                'sku'      => $product->sku,
-                'price'    => $product->price,
+                'id' => $product->id,
+                'name' => $product->name,
+                'sku' => $product->sku,
+                'price' => $product->price,
                 'quantity' => 1,
             ];
         }
@@ -1142,13 +1154,13 @@ abstract class BaseProductComponent extends Component
             ->whereNull('variant_id')
             ->get()
             ->map(fn($download) => [
-                'id'                  => $download->id,
-                'name'                => $download->name,
-                'file'                => null,
-                'file_path'           => $download->file_path,
-                'file_name'           => $download->file_name,
-                'file_type'           => $download->file_type,
-                'file_size'           => $download->file_size,
+                'id' => $download->id,
+                'name' => $download->name,
+                'file' => null,
+                'file_path' => $download->file_path,
+                'file_name' => $download->file_name,
+                'file_type' => $download->file_type,
+                'file_size' => $download->file_size,
                 'formatted_file_size' => $download->formatted_file_size,
             ])
             ->toArray();
@@ -1158,9 +1170,9 @@ abstract class BaseProductComponent extends Component
     public function addDownloadFile(): void
     {
         $this->form->downloads[] = [
-            'id'        => null,
-            'name'      => '',
-            'file'      => null,
+            'id' => null,
+            'name' => '',
+            'file' => null,
             'file_path' => null,
             'file_name' => null,
             'file_type' => null,
@@ -1316,6 +1328,9 @@ abstract class BaseProductComponent extends Component
             'form.length',
             'form.width',
             'form.height',
+            'form.warranty_information',
+            'form.return_policy',
+            'form.shipping_information',
         ]);
     }
 
@@ -1398,9 +1413,9 @@ abstract class BaseProductComponent extends Component
             ->orderBy('name')
             ->get()
             ->map(fn($product) => [
-                'id'        => $product->id,
-                'name'      => $product->name,
-                'sku'       => $product->sku,
+                'id' => $product->id,
+                'name' => $product->name,
+                'sku' => $product->sku,
                 'image_url' => $product->image_url,
             ]);
     }
@@ -1474,7 +1489,8 @@ abstract class BaseProductComponent extends Component
             ->values()
             ->toArray();
 
-        if (empty($ids)) return [];
+        if (empty($ids))
+            return [];
 
         return AttributeValue::whereIn('attribute_id', $ids)
             ->where('is_active', true)
@@ -1482,7 +1498,7 @@ abstract class BaseProductComponent extends Component
             ->get()
             ->groupBy('attribute_id')
             ->map(fn($values) => $values->map(fn($v) => [
-                'id'   => $v->id,
+                'id' => $v->id,
                 'name' => $v->label ?: $v->value,
             ])->toArray())
             ->toArray();
@@ -1517,31 +1533,34 @@ abstract class BaseProductComponent extends Component
     private function blankVariantTemplate(array $attributes, array $valueIds, string $hash): array
     {
         return [
-            'id'                  => null,
-            'name'                => empty($attributes)
+            'id' => null,
+            'name' => empty($attributes)
                 ? null
                 : implode(' - ', array_values($attributes)),
-            'sku'                 => null,
-            'image'               => null,
-            'image_path'          => null,
-            'price'               => null,
-            'sale_price'          => null,
-            'manage_stock'        => true,
-            'stock_quantity'      => 0,
-            'stock_status'        => 'in_stock',
-            'allow_backorders'    => null,
+            'sku' => null,
+            'image' => null,
+            'image_path' => null,
+            'price' => null,
+            'sale_price' => null,
+            'manage_stock' => true,
+            'stock_quantity' => 0,
+            'stock_status' => 'in_stock',
+            'allow_backorders' => null,
             'low_stock_threshold' => null,
-            'weight'              => null,
-            'length'              => null,
-            'width'               => null,
-            'height'              => null,
-            'description'         => null,
-            'is_active'           => true,
-            'is_default'          => false,
-            'attributes'          => $attributes,
+            'max_backorder_quantity' => null,
+            'expected_restock_date' => null,
+            'backorder_message' => null,
+            'weight' => null,
+            'length' => null,
+            'width' => null,
+            'height' => null,
+            'description' => null,
+            'is_active' => true,
+            'is_default' => false,
+            'attributes' => $attributes,
             'attribute_value_ids' => $valueIds,
-            'attribute_hash'      => $hash,
-            'downloads'           => [],
+            'attribute_hash' => $hash,
+            'downloads' => [],
             'downloads_to_delete' => [],
         ];
     }
@@ -1560,8 +1579,8 @@ abstract class BaseProductComponent extends Component
 
         foreach ($categories as $category) {
             $result[] = [
-                'id'    => $category->id,
-                'name'  => $category->name,
+                'id' => $category->id,
+                'name' => $category->name,
                 'depth' => $depth,
             ];
 

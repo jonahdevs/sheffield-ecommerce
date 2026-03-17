@@ -432,12 +432,12 @@
     </flux:modal>
 
     {{-- Bulk Pricing Modal --}}
-    <flux:modal name="bulk-pricing" class="max-w-sm space-y-5">
-        <flux:heading>Set Prices for All Variations</flux:heading>
+    <flux:modal name="bulk-pricing" class="max-w-lg space-y-5">
+        <flux:heading>{{ $form->name }} Says</flux:heading>
+        <flux:text>Add price to all variations that don't have a price</flux:text>
         <flux:input wire:model.defer="bulkPrice" label="Regular Price (KES)" type="number" step="0.01"
             placeholder="Leave blank to skip" />
-        <flux:input wire:model.defer="bulkSalePrice" label="Sale Price (KES)" type="number" step="0.01"
-            placeholder="Leave blank to skip" />
+
         <div class="flex gap-3 justify-end">
             <flux:button @click="$flux.modal('bulk-pricing').close()">Cancel</flux:button>
             <flux:button variant="primary" wire:click="applyBulkPricing">Apply</flux:button>
@@ -445,17 +445,17 @@
     </flux:modal>
 
     {{-- Bulk Stock Modal --}}
-    <flux:modal name="bulk-stock" class="max-w-sm space-y-5">
+    <flux:modal name="bulk-stock" class="max-w-lg space-y-5">
         <flux:heading>Set Stock Quantity for All Variations</flux:heading>
         <flux:input wire:model.defer="bulkStockQuantity" label="Stock Quantity" type="number" min="0" />
         <div class="flex gap-3 justify-end">
-            <flux:button @click="$flux.modal('bulk-stock').close()">Cancel</flux:button>
-            <flux:button variant="primary" wire:click="applyBulkStock">Apply</flux:button>
+            <flux:button @click="$flux.modal('bulk-stock').close()" class="cursor-pointer">Cancel</flux:button>
+            <flux:button variant="primary" wire:click="applyBulkStock" class="cursor-pointer">Apply</flux:button>
         </div>
     </flux:modal>
 
     {{-- Bulk Dimensions Modal --}}
-    <flux:modal name="bulk-dimensions" class="max-w-sm space-y-5">
+    <flux:modal name="bulk-dimensions" class="max-w-lg space-y-5">
         <flux:heading>Set Dimensions & Weight for All Variations</flux:heading>
         <flux:input wire:model.defer="bulkWeight" label="Weight (kg)" type="number" step="0.01"
             placeholder="Leave blank to skip" />

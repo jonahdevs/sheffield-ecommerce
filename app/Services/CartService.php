@@ -44,7 +44,7 @@ class CartService
     /**
      * Check if a product is in cart
      */
-    public function has(int $productId, ?string $variantId = null): bool
+    public function has(int $productId, ?int $variantId = null): bool
     {
         try {
             $cart = $this->getCart();
@@ -56,17 +56,13 @@ class CartService
         } catch (\Throwable $th) {
             Log::error('Error checking if product is in cart', [
                 'product_id' => $productId,
-                'error' => $th->getMessage()
+                'error' => $th->getMessage(),
             ]);
-
             return false;
         }
     }
 
-    /**
-     * Get cart item for a product
-     */
-    public function getCartItem(int $productId, ?string $variantId = null)
+    public function getCartItem(int $productId, ?int $variantId = null)
     {
         try {
             $cart = $this->getCart();
@@ -84,17 +80,9 @@ class CartService
         }
     }
 
-    public function hasItems(): bool
-    {
-        $cart = $this->getCart();
-
-        return $cart && $cart->items()->exists();
-    }
-
-    public function addItem(int $productId, int $quantity = 1, ?string $variantId = null)
+    public function addItem(int $productId, int $quantity = 1, ?int $variantId = null)
     {
         try {
-            // Validate quantity
             if ($quantity < 1) {
                 throw new InvalidArgumentException('Quantity must be at least 1!');
             }
@@ -106,12 +94,12 @@ class CartService
             $cart = $this->getCart();
             $product = Product::findOrFail($productId);
 
-            // Check stock availability
-            if ($product->stock_quantity <= 0) {
+            // Stock check — only for products that manage stock
+            // Skip for virtual, downloadable, and backorder products
+            if ($product->manage_stock && $product->stock_quantity <= 0 && $product->allow_backorder === 'no') {
                 throw new RuntimeException('Product is out of stock');
             }
 
-            // Check if item already exists in cart
             $cartItem = $cart->items()
                 ->where('product_id', $productId)
                 ->where('variant_id', $variantId)
@@ -120,9 +108,10 @@ class CartService
             if ($cartItem) {
                 $newQuantity = $cartItem->quantity + $quantity;
 
-                // Validate against stock
-                if ($newQuantity > $product->stock_quantity) {
-                    throw new RuntimeException("Cannot add {$quantity} more items. only {$product->stock_quantity} available in stock (you have {$cartItem->quantity} in cart)");
+                if ($product->manage_stock && $newQuantity > $product->stock_quantity) {
+                    throw new RuntimeException(
+                        "Cannot add {$quantity} more items. Only {$product->stock_quantity} available (you have {$cartItem->quantity} in cart)"
+                    );
                 }
 
                 if ($newQuantity > 100) {
@@ -131,8 +120,7 @@ class CartService
 
                 $cartItem->increment('quantity', $quantity);
             } else {
-                // Validate quantity against stock for new items
-                if ($quantity > $product->stock_quantity) {
+                if ($product->manage_stock && $quantity > $product->stock_quantity) {
                     throw new RuntimeException(
                         "Cannot add {$quantity} items. Only {$product->stock_quantity} available in stock"
                     );
@@ -145,7 +133,6 @@ class CartService
                 ]);
             }
 
-            // Update cart expiry
             $cart->update([
                 'expires_at' => Auth::check() ? now()->addDays(30) : now()->addDays(7),
             ]);
@@ -153,9 +140,7 @@ class CartService
             return $cart->fresh();
         } catch (ModelNotFoundException $e) {
             throw new RuntimeException('Product not found');
-        } catch (InvalidArgumentException $e) {
-            throw $e;
-        } catch (RuntimeException $e) {
+        } catch (InvalidArgumentException | RuntimeException $e) {
             throw $e;
         } catch (Exception $e) {
             Log::error('Error adding item to cart', [
@@ -165,6 +150,12 @@ class CartService
             ]);
             throw new RuntimeException('Unable to add item to cart. Please try again.');
         }
+    }
+    public function hasItems(): bool
+    {
+        $cart = $this->getCart();
+
+        return $cart && $cart->items()->exists();
     }
 
     public function updateItemQuantity(int $cartItemId, int $quantity): void

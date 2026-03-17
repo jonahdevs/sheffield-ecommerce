@@ -120,7 +120,7 @@
         </div>
 
         @if ($this->unpricedVariantsCount > 0)
-            <div
+            {{-- <div
                 class="flex items-start justify-between gap-4 bg-amber-50 border border-amber-200 rounded-md px-4 py-3">
                 <div class="flex items-start gap-2">
                     <flux:icon.exclamation-triangle class="size-5 shrink-0 mt-0.5 text-amber-500" />
@@ -129,16 +129,24 @@
                             {{ $this->unpricedVariantsCount }}
                             variation{{ $this->unpricedVariantsCount > 1 ? 's do' : ' does' }} not have a price.
                         </p>
-                        <p class="text-xs text-amber-600 mt-0.5">
-                            Variations without a price will not be shown in your store.
-                        </p>
                     </div>
                 </div>
                 <flux:button size="sm" variant="filled" @click="$flux.modal('bulk-pricing').show()"
                     class="shrink-0 cursor-pointer">
                     Set prices
                 </flux:button>
-            </div>
+            </div> --}}
+
+            <flux:callout variant="warning" icon="exclamation-circle" inline>
+                <flux:callout.heading>{{ $this->unpricedVariantsCount }}
+                    variation{{ $this->unpricedVariantsCount > 1 ? 's do' : ' does' }} not have a price.
+                </flux:callout.heading>
+                <x-slot name="actions">
+                    <flux:button size="sm" @click="$flux.modal('bulk-pricing').show()" class="cursor-pointer">
+                        Set prices
+                    </flux:button>
+                </x-slot>
+            </flux:callout>
         @endif
 
         {{-- Variations List --}}
@@ -178,7 +186,7 @@
                                 <div class="grid grid-cols-2 gap-5">
                                     {{-- Variant Image --}}
                                     <div class="space-y-2 flex flex-col">
-                                        <flux:label>Variation Image</flux:label>
+                                        {{-- <flux:label>Variation Image</flux:label> --}}
 
                                         <input type="file" class="hidden" id="variant-image-{{ $index }}"
                                             wire:model="variantImages.{{ $index }}" accept="image/*" />
@@ -289,8 +297,30 @@
                                             <flux:select.option value="1">Allow</flux:select.option>
                                         </flux:select>
                                     </div>
+
+                                    {{-- Backorder Settings — shown when backorders are allowed --}}
+                                    <div x-show="$wire.variants[{{ $index }}].allow_backorders == '1'" x-cloak
+                                        class="space-y-3">
+                                        <flux:separator />
+
+                                        <flux:textarea wire:model="variants.{{ $index }}.backorder_message"
+                                            label="Backorder Message" rows="2" />
+
+                                        <div class="grid grid-cols-2 gap-3">
+                                            <flux:input type="number" min="1"
+                                                wire:model="variants.{{ $index }}.max_backorder_quantity"
+                                                label="Max Backorder Quantity"
+                                                placeholder="Leave blank for unlimited" />
+
+                                            <flux:input type="date"
+                                                wire:model="variants.{{ $index }}.expected_restock_date"
+                                                label="Expected Restock Date" />
+                                        </div>
+                                    </div>
+
                                     <flux:input wire:model="variants.{{ $index }}.low_stock_threshold"
                                         label="Low Stock Threshold" type="number" min="0" />
+
                                 </div>
 
                                 {{-- Stock status when manage_stock is OFF --}}

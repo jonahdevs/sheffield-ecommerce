@@ -390,6 +390,33 @@ class ProductForm extends Form
     public ?string $quotation_notes = null;
 
     // =========================================================================
+// POLICY & DELIVERY INFORMATION
+// =========================================================================
+
+    /**
+     * Warranty terms displayed on the product page.
+     * Informational only — not for sale.
+     * e.g. "12-month manufacturer warranty covering defects in materials and workmanship."
+     */
+    public ?string $warranty_information = null;
+
+    /**
+     * Per-product return policy.
+     * Overrides the global store return policy when set.
+     * Leave blank to use the global policy.
+     * e.g. "Non-returnable — made to order" or "30-day returns accepted."
+     */
+    public ?string $return_policy = null;
+
+    /**
+     * Supplementary shipping/delivery notes specific to this product.
+     * Shown on the product page and delivery sidebar.
+     * Not a replacement for shipping zone pricing — purely informational.
+     * e.g. "Requires delivery vehicle with tail lift."
+     */
+    public ?string $shipping_information = null;
+
+    // =========================================================================
     // VALIDATION RULES
     // =========================================================================
 
@@ -404,9 +431,9 @@ class ProductForm extends Form
 
         return [
             // ── Basic Information ──────────────────────────────────────────
-            'name'              => 'required|string|max:255',
-            'model_number'      => 'nullable|string|max:255',
-            'slug'              => 'nullable|string|max:255|unique:products,slug,' . $productId,
+            'name' => 'required|string|max:255',
+            'model_number' => 'nullable|string|max:255',
+            'slug' => 'nullable|string|max:255|unique:products,slug,' . $productId,
             'short_description' => 'nullable|string|max:500',
 
             // Strip HTML before checking length — rich text editors output <p></p>
@@ -491,17 +518,17 @@ class ProductForm extends Form
             // These are always nullable — productData() nulls them for virtual/grouped
             'weight' => 'nullable|numeric|min:0',
             'length' => 'nullable|numeric|min:0',
-            'width'  => 'nullable|numeric|min:0',
+            'width' => 'nullable|numeric|min:0',
             'height' => 'nullable|numeric|min:0',
 
             // ── SEO ────────────────────────────────────────────────────────
-            'meta_title'       => 'nullable|string|max:255',
+            'meta_title' => 'nullable|string|max:255',
             'meta_description' => 'nullable|string|max:500',
-            'meta_keywords'    => 'nullable|string|max:255',
-            'canonical_url'    => 'nullable|string|max:255',
+            'meta_keywords' => 'nullable|string|max:255',
+            'canonical_url' => 'nullable|string|max:255',
 
             // ── Status ─────────────────────────────────────────────────────
-            'status'     => ['required', Rule::enum(ProductStatus::class)],
+            'status' => ['required', Rule::enum(ProductStatus::class)],
             'visibility' => ['required', Rule::enum(ProductVisibility::class)],
 
             // Scheduled products must have a future publish date
@@ -528,41 +555,41 @@ class ProductForm extends Form
             'images.*' => 'nullable|image|max:2048|mimes:jpg,jpeg,png,gif,webp',
 
             // ── Relationships ──────────────────────────────────────────────
-            'category_ids'   => 'nullable|array',
+            'category_ids' => 'nullable|array',
             'category_ids.*' => 'exists:categories,id',
 
-            'tag_ids'   => 'nullable|array',
+            'tag_ids' => 'nullable|array',
             'tag_ids.*' => 'exists:tags,id',
 
             'brand_id' => 'nullable|exists:brands,id',
 
             // Self-reference prevention — a product cannot upsell or cross-sell itself
-            'selected_upsells'   => 'nullable|array',
+            'selected_upsells' => 'nullable|array',
             'selected_upsells.*' => [
                 'exists:products,id',
                 Rule::notIn([$this->product?->id]),
             ],
 
-            'selected_cross_sells'   => 'nullable|array',
+            'selected_cross_sells' => 'nullable|array',
             'selected_cross_sells.*' => [
                 'exists:products,id',
                 Rule::notIn([$this->product?->id]),
             ],
 
-            'accessories'            => 'nullable|array',
-            'accessories.*.id'       => 'required|exists:products,id',
+            'accessories' => 'nullable|array',
+            'accessories.*.id' => 'required|exists:products,id',
             'accessories.*.quantity' => 'required|integer|min:1',
 
-            'grouped_products'              => 'nullable|array',
-            'grouped_products.*.id'         => 'required|exists:products,id',
-            'grouped_products.*.quantity'   => 'required|integer|min:1',
+            'grouped_products' => 'nullable|array',
+            'grouped_products.*.id' => 'required|exists:products,id',
+            'grouped_products.*.quantity' => 'required|integer|min:1',
 
             // ── Virtual & Downloadable ─────────────────────────────────────
-            'is_virtual'      => 'boolean',
+            'is_virtual' => 'boolean',
             'is_downloadable' => 'boolean',
 
             // ── Downloads ──────────────────────────────────────────────────
-            'download_limit'  => 'nullable|integer|min:0',
+            'download_limit' => 'nullable|integer|min:0',
             'download_expiry' => 'nullable|integer|min:0',
 
             // When downloadable, at least one file must be attached
@@ -583,9 +610,9 @@ class ProductForm extends Form
             ],
 
             // ── Advanced ───────────────────────────────────────────────────
-            'purchase_note'      => 'nullable|string|max:1000',
-            'sort_order'         => 'nullable|integer|min:0',
-            'reviews_enabled'    => 'boolean',
+            'purchase_note' => 'nullable|string|max:1000',
+            'sort_order' => 'nullable|integer|min:0',
+            'reviews_enabled' => 'boolean',
             'requires_quotation' => 'boolean',
 
             // min_order_quantity is required only when requires_quotation is enabled
@@ -598,6 +625,11 @@ class ProductForm extends Form
             ],
 
             'quotation_notes' => 'nullable|string|max:1000',
+
+            // Policy & Delivery
+            'warranty_information' => 'nullable|string|max:2000',
+            'return_policy' => 'nullable|string|max:2000',
+            'shipping_information' => 'nullable|string|max:2000',
         ];
     }
 
@@ -612,24 +644,24 @@ class ProductForm extends Form
     public function messages(): array
     {
         return [
-            'name.required'                  => 'Product name is required.',
-            'slug.required'                  => 'Product slug is required.',
-            'slug.unique'                    => 'This slug is already taken.',
-            'price.required'                 => 'Price is required.',
-            'price.min'                      => 'Price must be at least 0.',
-            'sale_price.lt'                  => 'Sale price must be less than regular price.',
-            'sku.required'                   => 'SKU is required.',
-            'sku.unique'                     => 'This SKU is already taken.',
-            'stock_quantity.required_if'     => 'Stock quantity is required when managing stock.',
-            'published_at.required'          => 'A publish date is required for scheduled products.',
-            'published_at.after'             => 'The publish date must be a future date.',
-            'image.image'                    => 'The file must be an image.',
-            'image.max'                      => 'Image size must not exceed 2MB.',
-            'downloads.*.file.mimes'         => 'Only PDF, Office documents, images, zip, and media files are allowed.',
-            'downloads.*.file.max'           => 'Download file must not exceed 100MB.',
-            'downloads.*.name.max'           => 'Download file name must not exceed 255 characters.',
-            'selected_upsells.*.not_in'      => 'A product cannot upsell itself.',
-            'selected_cross_sells.*.not_in'  => 'A product cannot cross-sell itself.',
+            'name.required' => 'Product name is required.',
+            'slug.required' => 'Product slug is required.',
+            'slug.unique' => 'This slug is already taken.',
+            'price.required' => 'Price is required.',
+            'price.min' => 'Price must be at least 0.',
+            'sale_price.lt' => 'Sale price must be less than regular price.',
+            'sku.required' => 'SKU is required.',
+            'sku.unique' => 'This SKU is already taken.',
+            'stock_quantity.required_if' => 'Stock quantity is required when managing stock.',
+            'published_at.required' => 'A publish date is required for scheduled products.',
+            'published_at.after' => 'The publish date must be a future date.',
+            'image.image' => 'The file must be an image.',
+            'image.max' => 'Image size must not exceed 2MB.',
+            'downloads.*.file.mimes' => 'Only PDF, Office documents, images, zip, and media files are allowed.',
+            'downloads.*.file.max' => 'Download file must not exceed 100MB.',
+            'downloads.*.name.max' => 'Download file name must not exceed 255 characters.',
+            'selected_upsells.*.not_in' => 'A product cannot upsell itself.',
+            'selected_cross_sells.*.not_in' => 'A product cannot cross-sell itself.',
         ];
     }
 
@@ -644,25 +676,28 @@ class ProductForm extends Form
     public function validationAttributes(): array
     {
         return [
-            'name'                => 'product name',
-            'model_number'        => 'model number',
-            'short_description'   => 'short description',
-            'sale_price'          => 'sale price',
-            'cost_price'          => 'cost price',
-            'stock_quantity'      => 'stock quantity',
-            'allow_backorder'     => 'backorder setting',
+            'name' => 'product name',
+            'model_number' => 'model number',
+            'short_description' => 'short description',
+            'sale_price' => 'sale price',
+            'cost_price' => 'cost price',
+            'stock_quantity' => 'stock quantity',
+            'allow_backorder' => 'backorder setting',
             'low_stock_threshold' => 'low stock threshold',
-            'stock_status'        => 'stock status',
-            'meta_title'          => 'meta title',
-            'meta_description'    => 'meta description',
-            'meta_keywords'       => 'meta keywords',
-            'canonical_url'       => 'canonical URL',
-            'published_at'        => 'published date',
-            'category_ids'        => 'categories',
-            'brand_id'            => 'brand',
-            'min_order_quantity'  => 'minimum order quantity',
-            'quotation_notes'     => 'quotation notes',
-            'purchase_note'       => 'purchase note',
+            'stock_status' => 'stock status',
+            'meta_title' => 'meta title',
+            'meta_description' => 'meta description',
+            'meta_keywords' => 'meta keywords',
+            'canonical_url' => 'canonical URL',
+            'published_at' => 'published date',
+            'category_ids' => 'categories',
+            'brand_id' => 'brand',
+            'min_order_quantity' => 'minimum order quantity',
+            'quotation_notes' => 'quotation notes',
+            'warranty_information' => 'warranty information',
+            'return_policy' => 'return policy',
+            'shipping_information' => 'shipping information',
+            'purchase_note' => 'purchase note',
         ];
     }
 
@@ -680,51 +715,51 @@ class ProductForm extends Form
         $this->product = $product;
 
         // Basic information
-        $this->name              = $product->name;
-        $this->model_number      = $product->model_number;
-        $this->slug              = $product->slug;
+        $this->name = $product->name;
+        $this->model_number = $product->model_number;
+        $this->slug = $product->slug;
         $this->short_description = $product->short_description;
-        $this->description       = $product->description;
-        $this->type              = $product->type ?? 'simple';
+        $this->description = $product->description;
+        $this->type = $product->type ?? 'simple';
 
         // Pricing
-        $this->price      = $product->price;
+        $this->price = $product->price;
         $this->sale_price = $product->sale_price;
         $this->cost_price = $product->cost_price;
 
         // Inventory
-        $this->sku                = $product->sku;
-        $this->manage_stock       = $product->manage_stock;
-        $this->stock_quantity     = $product->stock_quantity;
-        $this->allow_backorder    = $product->allow_backorder;
+        $this->sku = $product->sku;
+        $this->manage_stock = $product->manage_stock;
+        $this->stock_quantity = $product->stock_quantity;
+        $this->allow_backorder = $product->allow_backorder;
         $this->low_stock_threshold = $product->low_stock_threshold;
-        $this->stock_status       = $product->stock_status;
-        $this->sold_individually  = $product->sold_individually;
+        $this->stock_status = $product->stock_status;
+        $this->sold_individually = $product->sold_individually;
 
         // Shipping
         $this->weight = $product->weight;
         $this->length = $product->length;
-        $this->width  = $product->width;
+        $this->width = $product->width;
         $this->height = $product->height;
 
         // SEO
         // meta_keywords is stored as JSON array in DB but displayed as comma-separated string
-        $this->meta_title       = $product->meta_title;
+        $this->meta_title = $product->meta_title;
         $this->meta_description = $product->meta_description;
-        $this->meta_keywords    = is_array($product->meta_keywords)
+        $this->meta_keywords = is_array($product->meta_keywords)
             ? implode(', ', $product->meta_keywords)
             : $product->meta_keywords;
-        $this->canonical_url    = $product->canonical_url;
+        $this->canonical_url = $product->canonical_url;
 
         // Status
-        $this->status       = $product->status->value;
-        $this->visibility   = $product->visibility->value;
+        $this->status = $product->status->value;
+        $this->visibility = $product->visibility->value;
         $this->published_at = $product->published_at;
 
         // Categories — load IDs and determine which one is primary
         $this->category_ids = $product->categories->pluck('id')->toArray();
 
-        $primaryCategory         = $product->categories()->wherePivot('is_primary', true)->first();
+        $primaryCategory = $product->categories()->wherePivot('is_primary', true)->first();
         $this->primaryCategoryId = $primaryCategory?->id ?? $product->categories()->first()?->id;
 
         // Tags
@@ -734,7 +769,7 @@ class ProductForm extends Form
         $this->brand_id = $product->brand_id;
 
         // Linked products
-        $this->selected_upsells     = $product->upsells->pluck('id')->toArray();
+        $this->selected_upsells = $product->upsells->pluck('id')->toArray();
         $this->selected_cross_sells = $product->crossSells->pluck('id')->toArray();
         // Note: accessories and grouped_products are NOT loaded here —
         // they are owned and loaded by BaseProductComponent (loadAccessories / loadGroupedProducts)
@@ -744,7 +779,7 @@ class ProductForm extends Form
         $this->existingImages = $product->images()
             ->get()
             ->map(fn($img) => [
-                'id'  => $img->id,
+                'id' => $img->id,
                 'path' => $img->image_path,
                 'url' => Storage::url($img->image_path),
                 'alt' => $img->alt_text,
@@ -752,21 +787,26 @@ class ProductForm extends Form
             ->toArray();
 
         // Virtual & downloadable
-        $this->is_virtual      = $product->is_virtual;
+        $this->is_virtual = $product->is_virtual;
         $this->is_downloadable = $product->is_downloadable;
 
         // Download settings
-        $this->download_limit  = $product->download_limit ?? 0;
+        $this->download_limit = $product->download_limit ?? 0;
         $this->download_expiry = $product->download_expiry ?? 0;
         // Note: download file rows are loaded by BaseProductComponent::loadProductDownloads()
 
         // Advanced
-        $this->purchase_note      = $product->purchase_note;
-        $this->sort_order         = $product->sort_order;
-        $this->reviews_enabled    = $product->reviews_enabled;
+        $this->purchase_note = $product->purchase_note;
+        $this->sort_order = $product->sort_order;
+        $this->reviews_enabled = $product->reviews_enabled;
         $this->requires_quotation = $product->requires_quotation;
         $this->min_order_quantity = $product->min_order_quantity;
-        $this->quotation_notes    = $product->quotation_notes;
+        $this->quotation_notes = $product->quotation_notes;
+
+        // Policy & delivery information
+        $this->warranty_information = $product->warranty_information;
+        $this->return_policy = $product->return_policy;
+        $this->shipping_information = $product->shipping_information;
     }
 
     // =========================================================================
@@ -867,18 +907,18 @@ class ProductForm extends Form
 
         // Generate a unique slug — increment counter on collision
         $baseSlug = Str::slug($this->newCategoryName);
-        $slug     = $baseSlug;
-        $counter  = 1;
+        $slug = $baseSlug;
+        $counter = 1;
 
         while (Category::where('slug', $slug)->exists()) {
             $slug = $baseSlug . '-' . $counter++;
         }
 
         $category = Category::create([
-            'name'       => $this->newCategoryName,
-            'slug'       => $slug,
-            'parent_id'  => $this->newCategoryParentId,
-            'status'     => CategoryStatus::ACTIVE,
+            'name' => $this->newCategoryName,
+            'slug' => $slug,
+            'parent_id' => $this->newCategoryParentId,
+            'status' => CategoryStatus::ACTIVE,
             'sort_order' => 0,
         ]);
 
@@ -893,7 +933,7 @@ class ProductForm extends Form
     /** Resets the inline category creation form fields. */
     public function resetCategoryForm(): void
     {
-        $this->newCategoryName     = '';
+        $this->newCategoryName = '';
         $this->newCategoryParentId = null;
     }
 
@@ -928,19 +968,19 @@ class ProductForm extends Form
 
         // Generate a unique slug — increment counter on collision
         $baseSlug = Str::slug($this->newBrandName);
-        $slug     = $baseSlug;
-        $counter  = 1;
+        $slug = $baseSlug;
+        $counter = 1;
 
         while (Brand::where('slug', $slug)->exists()) {
             $slug = $baseSlug . '-' . $counter++;
         }
 
         $brand = Brand::create([
-            'name'        => $this->newBrandName,
-            'slug'        => $slug,
+            'name' => $this->newBrandName,
+            'slug' => $slug,
             'website_url' => $this->newBrandWebsite,
-            'is_active'   => true,
-            'sort_order'  => 0,
+            'is_active' => true,
+            'sort_order' => 0,
         ]);
 
         $this->brand_id = $brand->id;
@@ -951,7 +991,7 @@ class ProductForm extends Form
     /** Resets the inline brand creation form fields. */
     public function resetBrandForm(): void
     {
-        $this->newBrandName    = '';
+        $this->newBrandName = '';
         $this->newBrandWebsite = null;
     }
 
@@ -994,33 +1034,33 @@ class ProductForm extends Form
     private function productData(): array
     {
         return [
-            'name'              => $this->name,
-            'model_number'      => $this->model_number,
-            'slug'              => $this->slug ?: Str::slug($this->name),
+            'name' => $this->name,
+            'model_number' => $this->model_number,
+            'slug' => $this->slug ?: Str::slug($this->name),
             'short_description' => $this->short_description,
-            'description'       => $this->description,
-            'type'              => $this->type,
+            'description' => $this->description,
+            'type' => $this->type,
 
             // Grouped products have no base price — derived from children
-            'price'      => $this->type === 'grouped' ? null : $this->price,
+            'price' => $this->type === 'grouped' ? null : $this->price,
             'sale_price' => $this->sale_price,
             'cost_price' => $this->cost_price,
 
-            'sku'                 => $this->sku,
-            'manage_stock'        => $this->hasStock() ? $this->manage_stock : false,
-            'stock_quantity'      => $this->hasStock() ? $this->stock_quantity : 0,
-            'allow_backorder'     => $this->allow_backorder,
+            'sku' => $this->sku,
+            'manage_stock' => $this->hasStock() ? $this->manage_stock : false,
+            'stock_quantity' => $this->hasStock() ? $this->stock_quantity : 0,
+            'allow_backorder' => $this->allow_backorder,
             'low_stock_threshold' => $this->low_stock_threshold,
-            'stock_status'        => $this->hasStock() ? $this->stock_status : 'in_stock',
-            'sold_individually'   => $this->sold_individually,
+            'stock_status' => $this->hasStock() ? $this->stock_status : 'in_stock',
+            'sold_individually' => $this->sold_individually,
 
             // Nulled for virtual and grouped products
             'weight' => $this->isPhysical() ? $this->weight : null,
             'length' => $this->isPhysical() ? $this->length : null,
-            'width'  => $this->isPhysical() ? $this->width  : null,
+            'width' => $this->isPhysical() ? $this->width : null,
             'height' => $this->isPhysical() ? $this->height : null,
 
-            'meta_title'       => $this->meta_title,
+            'meta_title' => $this->meta_title,
             'meta_description' => $this->meta_description,
 
             // Convert comma-separated string back to JSON array for storage
@@ -1029,28 +1069,32 @@ class ProductForm extends Form
                 : null,
 
             'canonical_url' => $this->canonical_url,
-            'status'        => $this->status,
-            'visibility'    => $this->visibility,
-            'published_at'  => $this->published_at,
+            'status' => $this->status,
+            'visibility' => $this->visibility,
+            'published_at' => $this->published_at,
 
             'brand_id' => $this->brand_id ?: null,
 
-            'is_virtual'      => $this->is_virtual,
+            'is_virtual' => $this->is_virtual,
             'is_downloadable' => $this->is_downloadable,
 
             // Nulled when not downloadable to avoid stale values persisting after toggling off
-            'download_limit'  => $this->is_downloadable ? $this->download_limit  : null,
+            'download_limit' => $this->is_downloadable ? $this->download_limit : null,
             'download_expiry' => $this->is_downloadable ? $this->download_expiry : null,
 
-            'purchase_note'   => $this->purchase_note,
-            'sort_order'      => $this->sort_order,
+            'purchase_note' => $this->purchase_note,
+            'sort_order' => $this->sort_order,
             'reviews_enabled' => $this->reviews_enabled,
 
             'requires_quotation' => $this->requires_quotation,
 
             // Nulled when quotation is disabled to avoid stale values persisting
             'min_order_quantity' => $this->requires_quotation ? $this->min_order_quantity : null,
-            'quotation_notes'    => $this->requires_quotation ? $this->quotation_notes    : null,
+            'quotation_notes' => $this->requires_quotation ? $this->quotation_notes : null,
+
+            'warranty_information' => $this->warranty_information,
+            'return_policy' => $this->return_policy,
+            'shipping_information' => $this->shipping_information,
         ];
     }
 
@@ -1081,9 +1125,9 @@ class ProductForm extends Form
             collect($this->selected_upsells)
                 ->mapWithKeys(fn($id, $index) => [
                     $id => [
-                        'type'       => ProductRelationshipType::UP_SELLS->value,
+                        'type' => ProductRelationshipType::UP_SELLS->value,
                         'sort_order' => $index,
-                        'quantity'   => 1,
+                        'quantity' => 1,
                     ]
                 ])
                 ->toArray()
@@ -1094,9 +1138,9 @@ class ProductForm extends Form
             collect($this->selected_cross_sells)
                 ->mapWithKeys(fn($id, $index) => [
                     $id => [
-                        'type'       => ProductRelationshipType::CROSS_SELL->value,
+                        'type' => ProductRelationshipType::CROSS_SELL->value,
                         'sort_order' => $index,
-                        'quantity'   => 1,
+                        'quantity' => 1,
                     ]
                 ])
                 ->toArray()
@@ -1107,8 +1151,8 @@ class ProductForm extends Form
             collect($this->accessories)
                 ->mapWithKeys(fn($item, $index) => [
                     $item['id'] => [
-                        'type'       => ProductRelationshipType::ACCESSORY->value,
-                        'quantity'   => $item['quantity'] ?? 1,
+                        'type' => ProductRelationshipType::ACCESSORY->value,
+                        'quantity' => $item['quantity'] ?? 1,
                         'sort_order' => $index,
                     ]
                 ])
@@ -1120,8 +1164,8 @@ class ProductForm extends Form
             collect($this->grouped_products)
                 ->mapWithKeys(fn($item, $index) => [
                     $item['id'] => [
-                        'type'       => ProductRelationshipType::GROUPED->value,
-                        'quantity'   => $item['quantity'] ?? 1,
+                        'type' => ProductRelationshipType::GROUPED->value,
+                        'quantity' => $item['quantity'] ?? 1,
                         'sort_order' => $index,
                     ]
                 ])

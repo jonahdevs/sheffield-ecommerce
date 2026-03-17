@@ -7,6 +7,7 @@ use App\Services\ReviewService;
 use App\Services\ProductService;
 use App\Services\ShippingCalculatorService;
 use App\Models\Product;
+use App\Models\ProductVariant;
 use App\Models\Area;
 use App\Models\County;
 use App\Models\AttributeValue;
@@ -20,26 +21,31 @@ use Illuminate\Support\Facades\Storage;
 new #[Layout('layouts.guest')] class extends Component {
     public Product $product;
 
-    // Status flags
+    // ── Status flags ──────────────────────────────────────────────────────
     public bool $wishlisted = false;
     public bool $inCompare = false;
     public bool $inCart = false;
 
-    // Location state
+    // ── Location state ────────────────────────────────────────────────────
     public $selectedCounty = '';
     public $selectedArea = '';
 
-    // UI State
+    // ── UI state ──────────────────────────────────────────────────────────
     public string $selectedTab = 'description';
     public int $reviewsToShow = 5;
 
-    // Cart State
+    // ── Cart state ────────────────────────────────────────────────────────
     public int $cartQuantity = 1;
     public ?int $cartItemId = null;
 
-    // Variant state
+    // ── Variant state ─────────────────────────────────────────────────────
+    // selectedAttributeValues: ['Color' => 'Red', 'Size' => 'Large']
     public array $selectedAttributeValues = [];
     public ?int $selectedVariantId = null;
+
+    // =========================================================================
+    // MOUNT
+    // =========================================================================
 
     public function mount(Product $product, WishlistService $wishlist, CompareService $compareService, CartService $cartService): void
     {
@@ -47,18 +53,23 @@ new #[Layout('layouts.guest')] class extends Component {
         $productService->recordView($product);
         $productService->rememberRecentlyViewed($product);
 
+        // Base eager loads for all product types
         $product->load(['images', 'brand', 'crossSells' => fn($q) => $q->active(), 'accessories' => fn($q) => $q->active()]);
         $product->loadAvg('reviews', 'rating');
 
-        // Load variant data for variable products
+        // Variable product — load all variants (active AND inactive/out-of-stock)
+        // so we can show greyed-out out-of-stock buttons on the storefront
         if ($product->type === 'variable') {
             $product->load([
-                'variants' => fn($q) => $q->where('is_active', true)->orderBy('sort_order'),
+                // Load ALL variants, not just active — we filter display in the view
+                'variants' => fn($q) => $q->orderBy('sort_order'),
                 'variants.attributeValues.attribute',
+                // Only load variation attributes (not display-only attributes)
                 'attributes' => fn($q) => $q->wherePivot('is_variation_attribute', true),
             ]);
 
-            $defaultVariant = $product->variants->firstWhere('is_default', true) ?? $product->variants->first();
+            // Pre-select the default variant or first available variant
+            $defaultVariant = $product->variants->where('is_active', true)->firstWhere('is_default', true) ?? $product->variants->where('is_active', true)->first();
 
             if ($defaultVariant) {
                 $this->selectedVariantId = $defaultVariant->id;
@@ -68,27 +79,43 @@ new #[Layout('layouts.guest')] class extends Component {
 
         $this->product = $product;
 
+        // Cart state
         $this->wishlisted = $wishlist->has($this->product->id);
         $this->inCompare = $compareService->has($this->product->id);
-        $this->inCart = $cartService->has($this->product->id);
 
-        if ($this->inCart) {
-            $cartItem = $cartService->getCartItem($this->product->id);
-            if ($cartItem) {
-                $this->cartItemId = $cartItem->id;
-                $this->cartQuantity = $cartItem->quantity;
+        // Check cart state — for variable products check by variant ID
+        if ($product->type === 'variable' && $this->selectedVariantId) {
+            $this->inCart = $cartService->has($this->product->id, $this->selectedVariantId);
+            if ($this->inCart) {
+                $cartItem = $cartService->getCartItem($this->product->id, $this->selectedVariantId);
+                if ($cartItem) {
+                    $this->cartItemId = $cartItem->id;
+                    $this->cartQuantity = $cartItem->quantity;
+                }
+            }
+        } else {
+            $this->inCart = $cartService->has($this->product->id);
+            if ($this->inCart) {
+                $cartItem = $cartService->getCartItem($this->product->id);
+                if ($cartItem) {
+                    $this->cartItemId = $cartItem->id;
+                    $this->cartQuantity = $cartItem->quantity;
+                }
             }
         }
 
         $this->initializeLocation();
     }
 
-    // -----------------------------------------------------------------------
-    // Variant computed properties
-    // -----------------------------------------------------------------------
+    // =========================================================================
+    // VARIANT COMPUTED PROPERTIES
+    // =========================================================================
 
+    /**
+     * The currently selected variant model, or null for simple products.
+     */
     #[Computed]
-    public function selectedVariant(): ?object
+    public function selectedVariant(): ?ProductVariant
     {
         if ($this->product->type !== 'variable' || !$this->selectedVariantId) {
             return null;
@@ -97,6 +124,14 @@ new #[Layout('layouts.guest')] class extends Component {
         return $this->product->variants->firstWhere('id', $this->selectedVariantId);
     }
 
+    /**
+     * Variation attributes with their values, including stock state per value.
+     * Used to render the attribute selector buttons with correct states.
+     *
+     * Each value entry includes:
+     *   - id, value, label
+     *   - state: 'available' | 'out_of_stock' | 'backorder' | 'unavailable'
+     */
     #[Computed]
     public function variationAttributes(): array
     {
@@ -104,10 +139,36 @@ new #[Layout('layouts.guest')] class extends Component {
             return [];
         }
 
-        // Collect all value IDs across all variation attributes in one query
+        // Load all attribute value IDs from pivot in a single query
         $allValueIds = $this->product->attributes->flatMap(fn($attr) => json_decode($attr->pivot->values ?? '[]', true) ?? [])->filter()->unique()->values()->toArray();
 
+        if (empty($allValueIds)) {
+            return [];
+        }
+
         $allValues = AttributeValue::whereIn('id', $allValueIds)->get()->keyBy('id');
+
+        // Build a map of attribute value ID => stock state
+        // by checking which variants contain each value
+        $valueStateMap = [];
+
+        foreach ($this->product->variants as $variant) {
+            foreach ($variant->attributeValues as $av) {
+                $existing = $valueStateMap[$av->id] ?? 'out_of_stock';
+
+                if (!$variant->is_active) {
+                    continue;
+                }
+
+                $state = $this->resolveVariantStockState($variant);
+
+                // Upgrade state — available beats backorder beats out_of_stock
+                $priority = ['available' => 3, 'backorder' => 2, 'out_of_stock' => 1];
+                if (($priority[$state] ?? 0) > ($priority[$existing] ?? 0)) {
+                    $valueStateMap[$av->id] = $state;
+                }
+            }
+        }
 
         return $this->product->attributes
             ->map(
@@ -121,6 +182,7 @@ new #[Layout('layouts.guest')] class extends Component {
                                 'id' => $v->id,
                                 'value' => $v->value,
                                 'label' => $v->label ?: $v->value,
+                                'state' => $valueStateMap[$v->id] ?? 'out_of_stock',
                             ],
                         )
                         ->toArray(),
@@ -129,22 +191,94 @@ new #[Layout('layouts.guest')] class extends Component {
             ->toArray();
     }
 
-    #[Computed]
-    public function selectedVariantValueIds(): array
+    /**
+     * Resolves the stock state of a variant into one of four states:
+     * - available:   in stock, can add to cart
+     * - backorder:   allow_backorders = true, can pre-order
+     * - out_of_stock: cannot order
+     * - unavailable:  no price set — never show
+     */
+    private function resolveVariantStockState(ProductVariant $variant): string
     {
-        return $this->selectedVariant?->attributeValues->pluck('id')->toArray() ?? [];
+        // No price = unavailable (not shown in store)
+        if (is_null($variant->price)) {
+            return 'unavailable';
+        }
+
+        if ($variant->manage_stock) {
+            if ($variant->stock_quantity > 0) {
+                return 'available';
+            }
+            if ($variant->allow_backorders) {
+                return 'backorder';
+            }
+            return 'out_of_stock';
+        }
+
+        return match ($variant->stock_status) {
+            'in_stock' => 'available',
+            'backorder' => 'backorder',
+            default => 'out_of_stock',
+        };
     }
 
-    // -----------------------------------------------------------------------
-    // Variant selection
-    // -----------------------------------------------------------------------
+    /**
+     * The stock state of the currently selected variant.
+     * Used to control cart button state and backorder notice display.
+     */
+    #[Computed]
+    public function selectedVariantState(): string
+    {
+        if (!$this->selectedVariant) {
+            return 'none';
+        }
 
+        return $this->resolveVariantStockState($this->selectedVariant);
+    }
+
+    /**
+     * The stock state of the simple product.
+     * Used to control cart button state and backorder notice display.
+     */
+    #[Computed]
+    public function simpleProductState(): string
+    {
+        if ($this->product->type === 'variable') {
+            return 'none';
+        }
+
+        if ($this->product->manage_stock) {
+            if ($this->product->stock_quantity > 0) {
+                return 'available';
+            }
+            if ($this->product->allow_backorder !== 'no') {
+                return 'backorder';
+            }
+            return 'out_of_stock';
+        }
+
+        return match ($this->product->stock_status) {
+            'in_stock' => 'available',
+            'backorder' => 'backorder',
+            default => 'out_of_stock',
+        };
+    }
+
+    // =========================================================================
+    // VARIANT SELECTION
+    // =========================================================================
+
+    /**
+     * Fires when the customer clicks an attribute value button.
+     * Finds the matching variant (including out-of-stock ones),
+     * updates cart state, and dispatches the image swap event.
+     */
     public function selectAttributeValue(string $attributeName, string $value): void
     {
         $this->selectedAttributeValues[$attributeName] = $value;
 
-        // Try to find a matching active variant
-        $matched = $this->product->variants->filter(fn($variant) => $variant->is_active)->first(function ($variant) {
+        // Search ALL active variants — including out-of-stock and backorder
+        $matched = $this->product->variants->where('is_active', true)->first(function ($variant) {
             $variantAttrs = $variant->attributeValues->mapWithKeys(fn($av) => [$av->attribute->name => $av->value])->toArray();
 
             foreach ($this->selectedAttributeValues as $attrName => $attrValue) {
@@ -163,32 +297,91 @@ new #[Layout('layouts.guest')] class extends Component {
         $this->inCart = false;
         $this->cartItemId = null;
 
-        // Check if this variant is already in cart
         if ($matched) {
+            // Check if already in cart
             $cartService = app(CartService::class);
-            $this->inCart = $cartService->has($matched->id, isVariant: true);
+            $this->inCart = $cartService->has($this->product->id, $matched->id);
 
             if ($this->inCart) {
-                $cartItem = $cartService->getCartItem($matched->id, isVariant: true);
+                $cartItem = $cartService->getCartItem($this->product->id, $matched->id);
                 if ($cartItem) {
                     $this->cartItemId = $cartItem->id;
                     $this->cartQuantity = $cartItem->quantity;
                 }
             }
 
-            // Dispatch variant image swap event if variant has an image
-            if ($matched->image_path) {
-                $this->dispatch('variant-image-selected', url: Storage::url($matched->image_path));
+            $slides = $this->imageSlides;
+            $slideIndex = 0; // default: main image
+
+            foreach ($slides as $i => $slide) {
+                if ($slide['variantId'] === $matched->id) {
+                    $slideIndex = $i;
+                    break;
+                }
             }
+
+            $this->dispatch('variant-image-selected', index: $slideIndex);
         }
 
         // Bust computed caches
-        unset($this->selectedVariant, $this->selectedVariantValueIds);
+        unset($this->selectedVariant, $this->selectedVariantState);
     }
 
-    // -----------------------------------------------------------------------
-    // Location
-    // -----------------------------------------------------------------------
+    /**
+     * Ordered flat list of all image slides for the gallery.
+     * Order: main product image → variant images (deduped) → gallery images.
+     * Each slide carries: url, alt, variantId (null for non-variant slides).
+     */
+    #[Computed]
+    public function imageSlides(): array
+    {
+        $slides = [];
+
+        // Shared dedup tracker — spans all three sections below
+        $seenPaths = [];
+
+        // 1. Main product image (always slot 0)
+        if ($this->product->image_path) {
+            $seenPaths[] = $this->product->image_path;
+            $slides[] = [
+                'url' => $this->product->image_url,
+                'alt' => $this->product->name,
+                'variantId' => null,
+            ];
+        }
+
+        // 2. Variant images — skip any path already seen
+        if ($this->product->type === 'variable') {
+            foreach ($this->product->variants->where('is_active', true)->sortBy('sort_order') as $variant) {
+                if ($variant->image_path && !in_array($variant->image_path, $seenPaths, true)) {
+                    $seenPaths[] = $variant->image_path;
+                    $slides[] = [
+                        'url' => Storage::url($variant->image_path),
+                        'alt' => $variant->attributeValues->map(fn($av) => $av->value)->join(', ') ?: $this->product->name,
+                        'variantId' => $variant->id,
+                    ];
+                }
+            }
+        }
+
+        // 3. Gallery images — skip any path already used by main image or a variant
+        foreach ($this->product->images as $image) {
+            if (!in_array($image->image_path, $seenPaths, true)) {
+                $seenPaths[] = $image->image_path;
+                $slides[] = [
+                    'url' => Storage::url($image->image_path),
+                    'alt' => $image->alt_text ?? $this->product->name,
+                    'variantId' => null,
+                ];
+            }
+        }
+
+        return $slides;
+    }
+
+    // =========================================================================
+    // LOCATION
+    // =========================================================================
 
     protected function initializeLocation(): void
     {
@@ -243,9 +436,9 @@ new #[Layout('layouts.guest')] class extends Component {
         return app(ShippingCalculatorService::class)->calculateForProduct(product: $this->product, quantity: $this->cartQuantity, user: auth()->user(), countyId: $this->selectedCounty, areaId: $this->selectedArea, variantId: $this->selectedVariantId);
     }
 
-    // -----------------------------------------------------------------------
-    // Wishlist
-    // -----------------------------------------------------------------------
+    // =========================================================================
+    // WISHLIST
+    // =========================================================================
 
     public function toggleWishlist(WishlistService $wishlistService): void
     {
@@ -258,15 +451,14 @@ new #[Layout('layouts.guest')] class extends Component {
             logger()->error('Wishlist toggle failed', [
                 'product_id' => $this->product->id ?? null,
                 'user_id' => auth()->id(),
-                'component' => static::class,
             ]);
             $this->dispatch('notify', variant: 'danger', message: $th->getMessage() ?: 'Unable to update wishlist');
         }
     }
 
-    // -----------------------------------------------------------------------
-    // Compare
-    // -----------------------------------------------------------------------
+    // =========================================================================
+    // COMPARE
+    // =========================================================================
 
     public function toggleCompare(CompareService $compareService): void
     {
@@ -280,24 +472,33 @@ new #[Layout('layouts.guest')] class extends Component {
         }
     }
 
-    // -----------------------------------------------------------------------
-    // Cart
-    // -----------------------------------------------------------------------
+    // =========================================================================
+    // CART
+    // =========================================================================
 
     public function addToCart(CartService $cartService): void
     {
         try {
             $variantId = $this->selectedVariantId;
 
+            // Variable product requires a variant selection
             if ($this->product->type === 'variable' && !$variantId) {
                 $this->dispatch('notify', variant: 'warning', message: 'Please select a variation first.');
+                return;
+            }
+
+            // Block if out of stock (backorder is allowed through)
+            $state = $this->product->type === 'variable' ? $this->selectedVariantState : $this->simpleProductState;
+
+            if ($state === 'out_of_stock') {
+                $this->dispatch('notify', variant: 'warning', message: 'This product is currently out of stock.');
                 return;
             }
 
             $cartService->addItem(productId: $this->product->id, quantity: $this->cartQuantity, variantId: $variantId);
 
             $this->inCart = true;
-            $cartItem = $cartService->getCartItem($variantId ?? $this->product->id, isVariant: $variantId !== null);
+            $cartItem = $cartService->getCartItem($this->product->id, $variantId);
 
             if ($cartItem) {
                 $this->cartItemId = $cartItem->id;
@@ -315,9 +516,12 @@ new #[Layout('layouts.guest')] class extends Component {
     {
         try {
             $newQuantity = $this->cartQuantity + 1;
-            $maxStock = $this->selectedVariant ? $this->selectedVariant->stock_quantity : $this->product->stock_quantity;
 
-            if ($newQuantity > $maxStock) {
+            // Determine max stock from selected variant or product
+            $source = $this->selectedVariant ?? $this->product;
+            $maxStock = $source->manage_stock ? $source->stock_quantity : PHP_INT_MAX;
+
+            if ($source->manage_stock && $newQuantity > $maxStock) {
                 $this->dispatch('notify', variant: 'warning', message: 'Maximum stock quantity reached');
                 return;
             }
@@ -374,7 +578,6 @@ new #[Layout('layouts.guest')] class extends Component {
     {
         try {
             $accessories = $this->accessories;
-
             if ($accessories->isEmpty()) {
                 return;
             }
@@ -390,9 +593,9 @@ new #[Layout('layouts.guest')] class extends Component {
         }
     }
 
-    // -----------------------------------------------------------------------
-    // Reviews
-    // -----------------------------------------------------------------------
+    // =========================================================================
+    // REVIEWS
+    // =========================================================================
 
     #[Computed]
     public function reviewStats(): array
@@ -427,9 +630,9 @@ new #[Layout('layouts.guest')] class extends Component {
         return ReviewHelpfulness::whereIn('review_id', $reviewIds)->where('user_id', Auth::id())->get()->keyBy('review_id')->map(fn($vote) => $vote->is_helpful);
     }
 
-    // -----------------------------------------------------------------------
-    // Accessories
-    // -----------------------------------------------------------------------
+    // =========================================================================
+    // ACCESSORIES
+    // =========================================================================
 
     #[Computed]
     public function accessories()
@@ -451,7 +654,6 @@ new #[Layout('layouts.guest')] class extends Component {
 ?>
 
 <div>
-    {{-- Breadcrumbs --}}
     <div class="bg-zinc-100">
         <flux:breadcrumbs class="container mx-auto py-2.5 px-4">
             <flux:breadcrumbs.item href="{{ route('home') }}" wire:navigate>

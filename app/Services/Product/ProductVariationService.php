@@ -35,9 +35,9 @@ class ProductVariationService
 
     private function deleteRemovedVariants(array $variantsToDelete): void
     {
-        if (empty($variantsToDelete)) return;
+        if (empty($variantsToDelete))
+            return;
 
-        // Clean up images from disk before deleting records
         ProductVariant::whereIn('id', $variantsToDelete)
             ->get(['id', 'image_path'])
             ->each(function (ProductVariant $variant) {
@@ -56,32 +56,34 @@ class ProductVariationService
     private function saveVariant(Product $product, array $variant, int $index): ?ProductVariant
     {
         $variantData = [
-            'product_id'          => $product->id,
-            'name'                => $variant['name'],
+            'name' => $variant['name'],
             'sku' => !empty($variant['sku']) ? $variant['sku'] : null,
-            'price'               => $variant['price'],
-            'sale_price'          => $variant['sale_price'],
-            'manage_stock'        => (bool) $variant['manage_stock'],
-            'stock_quantity'      => $variant['stock_quantity'],
-            'stock_status'        => $variant['stock_status'],
-            'allow_backorders'    => $variant['allow_backorders'] === '1'
+            'price' => $variant['price'],
+            'sale_price' => $variant['sale_price'],
+            'manage_stock' => (bool) $variant['manage_stock'],
+            'stock_quantity' => $variant['stock_quantity'],
+            'stock_status' => $variant['stock_status'],
+            'allow_backorders' => $variant['allow_backorders'] === '1'
                 ? true
                 : ($variant['allow_backorders'] === ''
                     ? null
                     : (bool) $variant['allow_backorders']),
+            'max_backorder_quantity' => $variant['max_backorder_quantity'],
+            'expected_restock_date' => $variant['expected_restock_date'],
+            'backorder_message' => $variant['backorder_message'],
             'low_stock_threshold' => $variant['low_stock_threshold'],
-            'weight'              => $variant['weight'],
-            'length'              => $variant['length'],
-            'width'               => $variant['width'],
-            'height'              => $variant['height'],
-            'description'         => $variant['description'],
-            'is_active'           => (bool) $variant['is_active'],
-            'is_default'          => (bool) $variant['is_default'],
-            'sort_order'          => $index,
-            'attributes'          => $variant['attributes'],
+            'weight' => $variant['weight'],
+            'length' => $variant['length'],
+            'width' => $variant['width'],
+            'height' => $variant['height'],
+            'description' => $variant['description'],
+            'is_active' => (bool) $variant['is_active'],
+            'is_default' => (bool) $variant['is_default'],
+            'sort_order' => $index,
+            'attributes' => $variant['attributes'],
         ];
 
-        // Handle image — store first, delete old only on success
+        // Handle image — store new file first, delete old only on success
         if (!empty($variant['image'])) {
             $newPath = $variant['image']->store('products/variants', 'public');
 
@@ -93,10 +95,38 @@ class ProductVariationService
             }
         }
 
+        // Resolve the existing variant using three strategies in priority order:
+        //
+        // 1. Explicit ID from Livewire state — most reliable when state is intact.
+        //
+        // 2. attribute_hash lookup — fallback when the ID was lost from Livewire's
+        //    snapshot (can happen with large state or certain re-hydration paths).
+        //    Matches on the product + hash combination which is unique per variant.
+        //    Skipped for manually-added variants (hash starts with 'manual_') since
+        //    those have no stable attribute combination to match against.
+        //
+        // 3. No match — genuinely new variant, insert a fresh row.
+        $savedVariant = null;
+
         if (!empty($variant['id'])) {
             $savedVariant = ProductVariant::find($variant['id']);
-            $savedVariant?->update($variantData);
+        }
+
+        if (
+            !$savedVariant
+            && !empty($variant['attribute_hash'])
+            && !str_starts_with((string) $variant['attribute_hash'], 'manual_')
+        ) {
+            $savedVariant = ProductVariant::where('product_id', $product->id)
+                ->where('attribute_hash', $variant['attribute_hash'])
+                ->first();
+        }
+
+        if ($savedVariant) {
+            $savedVariant->update($variantData);
         } else {
+            $variantData['product_id'] = $product->id;
+            $variantData['attribute_hash'] = $variant['attribute_hash'] ?? null;
             $savedVariant = ProductVariant::create($variantData);
         }
 
@@ -104,18 +134,7 @@ class ProductVariationService
             $savedVariant->attributeValues()->sync($variant['attribute_value_ids']);
         }
 
-        if (!empty($variant['id'])) {
-            $savedVariant = ProductVariant::find($variant['id']);
-            $savedVariant?->update($variantData);
-        } else {
-            $savedVariant = ProductVariant::create($variantData);
-        }
-
-        if ($savedVariant && !empty($variant['attribute_value_ids'])) {
-            $savedVariant->attributeValues()->sync($variant['attribute_value_ids']);
-        }
-
-        return $savedVariant ?? null;
+        return $savedVariant;
     }
 
     // -----------------------------------------------
@@ -151,8 +170,7 @@ class ProductVariationService
             ($product->sku ?: 'VAR') . '-' . Str::random(6)
         );
 
-        // Ensure uniqueness against DB
-        $sku     = $base;
+        $sku = $base;
         $counter = 1;
 
         while (ProductVariant::where('sku', $sku)->exists()) {

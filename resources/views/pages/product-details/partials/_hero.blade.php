@@ -1,13 +1,18 @@
 <flux:card class="lg:col-span-3 rounded-sm grid grid-cols-1 lg:grid-cols-5 gap-6 lg:gap-10">
 
-    {{-- ── Image Slider ── --}}
+    @php
+        $paths = collect($this->imageSlides)->map(fn($s) => ['variantId' => $s['variantId'], 'url' => $s['url']]);
+        \Log::info(json_encode($paths, JSON_PRETTY_PRINT));
+    @endphp
+
+    {{-- ═══════════════════════════════════════════════════ --}}
+    {{-- IMAGE SLIDER                                        --}}
+    {{-- ═══════════════════════════════════════════════════ --}}
     <div class="lg:col-span-2">
         <div wire:ignore class="w-full" x-data="{
             mainSwiper: null,
             thumbSwiper: null,
             activeIndex: 0,
-            isBeginning: true,
-            isEnd: false,
         
             init() {
                 this.thumbSwiper = new Swiper('#thumbSwiper', {
@@ -15,22 +20,16 @@
                     slidesPerView: 4,
                     freeMode: true,
                     watchSlidesProgress: true,
-                    loop: true,
+                    loop: false,
                     breakpoints: {
                         640: { slidesPerView: 5 },
                         768: { slidesPerView: 6 },
-                    },
-                    on: {
-                        slideChange: (swiper) => {
-                            this.isBeginning = swiper.isBeginning;
-                            this.isEnd = swiper.isEnd;
-                        },
                     },
                 });
         
                 this.mainSwiper = new Swiper('#mainSwiper', {
                     spaceBetween: 10,
-                    loop: true,
+                    loop: false,
                     navigation: {
                         nextEl: '.swiper-button-next',
                         prevEl: '.swiper-button-prev',
@@ -39,7 +38,6 @@
                     on: {
                         slideChange: (swiper) => {
                             this.activeIndex = swiper.realIndex;
-                            this.thumbSwiper.slideTo(swiper.realIndex);
                         },
                     },
                 });
@@ -47,94 +45,95 @@
                 this.$nextTick(() => {
                     document.getElementById('thumbSwiper').classList.remove('opacity-0');
                     document.getElementById('mainSwiper').classList.remove('opacity-0');
-                    this.isBeginning = this.thumbSwiper.isBeginning;
-                    this.isEnd = this.thumbSwiper.isEnd;
                 });
         
-                {{-- Listen for variant image swap --}}
+                {{-- Variant slide switch — smooth slideTo() instead of src swapping --}}
                 window.addEventListener('variant-image-selected', (e) => {
-                    const url = e.detail.url;
-                    if (!url || !this.mainSwiper || !this.thumbSwiper) return;
+                    const index = e.detail.index ?? 0;
+                    if (!this.mainSwiper) return;
         
-                    const firstMainSlide = this.mainSwiper.slides[0];
-                    const firstThumbSlide = this.thumbSwiper.slides[0];
-        
-                    if (firstMainSlide) {
-                        firstMainSlide.querySelector('img').src = url;
-                    }
-                    if (firstThumbSlide) {
-                        firstThumbSlide.querySelector('img').src = url;
-                    }
-        
-                    this.mainSwiper.slideTo(0);
-                    this.thumbSwiper.slideTo(0);
-                    this.activeIndex = 0;
+                    this.mainSwiper.slideTo(index);
+                    this.thumbSwiper?.slideTo(index);
+                    this.activeIndex = index;
                 });
             },
         }">
-            {{-- Main Slider --}}
+            {{-- Main slider --}}
             <div class="mb-4">
-                <div class="swiper border-2 rounded-sm overflow-hidden px-2 opacity-0 transition-opacity duration-500"
+                <div class="swiper border-2 rounded-sm overflow-hidden opacity-0 transition-opacity duration-500"
                     id="mainSwiper">
                     <div class="swiper-wrapper">
-                        @foreach ($product->images as $image)
+                        @foreach ($this->imageSlides as $slide)
                             <div class="swiper-slide">
-                                <div class="aspect-square flex items-center justify-center">
-                                    <img src="{{ $image->url }}" alt="{{ $image->alt_text ?? $product->name }}"
+                                <div class="aspect-square flex items-center justify-center p-2">
+                                    <img src="{{ $slide['url'] }}" alt="{{ $slide['alt'] }}"
                                         class="w-full h-full object-contain" />
                                 </div>
                             </div>
                         @endforeach
                     </div>
+                    <div class="swiper-button-prev"></div>
+                    <div class="swiper-button-next"></div>
                 </div>
             </div>
 
-            {{-- Thumbnail Slider --}}
-            <div class="relative" x-show="thumbSwiper" x-cloak>
-                <div class="swiper px-12 opacity-0 transition-opacity duration-500" id="thumbSwiper">
+            {{-- Thumbnail slider --}}
+            @if (count($this->imageSlides) > 0)
+                <div class="swiper px-8 opacity-0 transition-opacity duration-500" id="thumbSwiper">
                     <div class="swiper-wrapper">
-                        @foreach ($product->images as $image)
+                        @foreach ($this->imageSlides as $index => $slide)
                             <div class="swiper-slide cursor-pointer">
-                                <div class="aspect-square flex items-center justify-center rounded-sm overflow-hidden border-2 transition-all duration-300"
-                                    :class="activeIndex === {{ $loop->index }} ?
+                                <div class="aspect-square rounded-sm overflow-hidden border-2 transition-all duration-300"
+                                    :class="activeIndex === {{ $index }} ?
                                         'border-sheffield-blue' :
                                         'border-zinc-200 hover:border-zinc-300'">
-                                    <img src="{{ $image->url }}" alt="{{ $image->alt_text ?? $product->name }}"
+                                    <img src="{{ $slide['url'] }}" alt="{{ $slide['alt'] }}"
                                         class="w-full h-full object-contain" />
+                                    {{-- Variant indicator dot --}}
+                                    @if (!is_null($slide['variantId']))
+                                        <div
+                                            class="absolute bottom-1 right-1 w-1.5 h-1.5 rounded-full bg-sheffield-blue opacity-70">
+                                        </div>
+                                    @endif
                                 </div>
                             </div>
                         @endforeach
                     </div>
                 </div>
-            </div>
+            @endif
         </div>
     </div>
 
-    {{-- ── Product Details ── --}}
-    <div class="lg:col-span-3">
+    {{-- ═══════════════════════════════════════════════════ --}}
+    {{-- PRODUCT DETAILS                                     --}}
+    {{-- ═══════════════════════════════════════════════════ --}}
+    <div class="lg:col-span-3 space-y-4">
 
         {{-- Name --}}
-        <h1 class="text-3xl font-bold">{{ $product->name }}</h1>
+        <h1 class="text-2xl font-bold text-zinc-900 dark:text-zinc-100 leading-tight">
+            {{ $product->name }}
+        </h1>
 
         {{-- Brand + Rating --}}
-        <div class="flex items-center justify-between flex-wrap gap-3 mt-2">
-            <div class="flex items-center gap-3">
-                <span class="text-zinc-500 text-sm">Brand:</span>
-                <span class="text-sheffield-blue font-semibold text-sm">
-                    {{ $product->brand?->name }}
-                </span>
-            </div>
+        <div class="flex items-center justify-between flex-wrap gap-3">
+            @if ($product->brand)
+                <div class="flex items-center gap-2">
+                    <span class="text-zinc-500 text-sm">Brand:</span>
+                    <span class="text-sheffield-blue font-medium text-sm">{{ $product->brand->name }}</span>
+                </div>
+            @endif
 
             <div class="flex items-center gap-2">
-                <div class="flex items-center gap-1">
+                @php $avgRating = $product->reviews_avg_rating ?? 0; @endphp
+                <div class="flex items-center gap-0.5">
                     @for ($i = 0; $i < 5; $i++)
-                        @if ($product->reviews_avg_rating && $i <= floor($product->reviews_avg_rating))
-                            <flux:icon.star variant="solid" class="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                        @elseif ($product->reviews_avg_rating && $i - 0.5 <= $product->reviews_avg_rating)
+                        @if ($avgRating >= $i + 1)
+                            <flux:icon.star variant="solid" class="w-4 h-4 text-yellow-400" />
+                        @elseif ($avgRating > $i)
                             <div class="relative w-4 h-4">
                                 <flux:icon.star variant="solid" class="w-4 h-4 text-zinc-300" />
-                                <div class="absolute inset-0 overflow-hidden" style="width: 50%;">
-                                    <flux:icon.star variant="solid" class="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                                <div class="absolute inset-0 overflow-hidden w-1/2">
+                                    <flux:icon.star variant="solid" class="w-4 h-4 text-yellow-400" />
                                 </div>
                             </div>
                         @else
@@ -142,64 +141,85 @@
                         @endif
                     @endfor
                 </div>
-                <span class="text-sm font-medium text-zinc-600">
-                    ({{ number_format($product->reviews_avg_rating, 1) }})
-                </span>
+                <span class="text-sm text-zinc-500">({{ number_format($avgRating, 1) }})</span>
                 <a href="{{ route('products.reviews', $product) }}" wire:navigate
-                    class="text-sm font-medium text-sheffield-blue hover:underline">
-                    {{ $this->reviewStats['total'] }} Reviews
+                    class="text-sm text-sheffield-blue hover:underline">
+                    {{ $this->reviewStats['total'] }} reviews
                 </a>
             </div>
         </div>
 
-        {{-- SKU — shows variant SKU when selected --}}
+        {{-- SKU --}}
         @php $displaySku = $this->selectedVariant?->sku ?? $product->sku; @endphp
         @if ($displaySku)
-            <flux:text class="mt-4">
-                Item no: <span class="text-zinc-800">{{ $displaySku }}</span>
-            </flux:text>
+            <p class="text-xs text-zinc-500">
+                Item no: <span class="text-zinc-700 dark:text-zinc-300">{{ $displaySku }}</span>
+            </p>
         @endif
 
-        {{-- ── Variant Selector ── --}}
+        {{-- ── VARIANT SELECTOR ── --}}
         @if ($product->type === 'variable')
-            <div class="space-y-4 my-4">
+            <div class="space-y-3">
                 @foreach ($this->variationAttributes as $attribute)
-                    <div class="space-y-2">
-                        <div class="flex items-center gap-2">
-                            <span class="text-sm font-medium text-zinc-700 dark:text-zinc-300">
-                                {{ $attribute['name'] }}:
-                            </span>
+                    <div class="space-y-1.5">
+                        <p class="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+                            {{ $attribute['name'] }}
                             @if (!empty($selectedAttributeValues[$attribute['name']]))
-                                <span class="text-sm text-zinc-500">
-                                    {{ $selectedAttributeValues[$attribute['name']] }}
+                                <span class="font-normal text-zinc-500">
+                                    : {{ $selectedAttributeValues[$attribute['name']] }}
                                 </span>
                             @endif
-                        </div>
+                        </p>
 
                         <div class="flex flex-wrap gap-2">
                             @foreach ($attribute['values'] as $value)
-                                <button type="button"
-                                    wire:click="selectAttributeValue('{{ $attribute['name'] }}', '{{ $value['value'] }}')"
-                                    @class([
-                                        'px-3 py-1.5 text-sm border rounded-md transition-all cursor-pointer',
-                                        'border-sheffield-blue bg-sheffield-blue/5 text-sheffield-blue font-medium' =>
-                                            ($selectedAttributeValues[$attribute['name']] ?? null) ===
-                                            $value['value'],
-                                        'border-zinc-300 text-zinc-600 hover:border-zinc-400' =>
-                                            ($selectedAttributeValues[$attribute['name']] ?? null) !==
-                                            $value['value'],
-                                    ])>
-                                    {{ $value['label'] }}
-                                </button>
+                                @php
+                                    $isSelected =
+                                        ($selectedAttributeValues[$attribute['name']] ?? null) === $value['value'];
+                                    $state = $value['state'];
+                                @endphp
+
+                                @if ($state === 'unavailable')
+                                    {{-- Never show unpriced variants --}}
+                                    @continue
+                                @elseif ($state === 'available')
+                                    <button type="button"
+                                        wire:click="selectAttributeValue('{{ $attribute['name'] }}', '{{ $value['value'] }}')"
+                                        @class([
+                                            'px-3 py-1.5 text-sm border rounded-md transition-all cursor-pointer',
+                                            'border-sheffield-blue bg-sheffield-blue/5 text-sheffield-blue font-medium' => $isSelected,
+                                            'border-zinc-300 text-zinc-700 hover:border-zinc-400 dark:border-zinc-600 dark:text-zinc-300' => !$isSelected,
+                                        ])>
+                                        {{ $value['label'] }}
+                                    </button>
+                                @elseif ($state === 'backorder')
+                                    <button type="button"
+                                        wire:click="selectAttributeValue('{{ $attribute['name'] }}', '{{ $value['value'] }}')"
+                                        @class([
+                                            'px-3 py-1.5 text-sm border rounded-md transition-all cursor-pointer',
+                                            'border-amber-500 bg-amber-50 text-amber-700 font-medium' => $isSelected,
+                                            'border-amber-300 text-amber-600 hover:border-amber-500 bg-amber-50/50' => !$isSelected,
+                                        ])>
+                                        {{ $value['label'] }}
+                                        <span class="text-xs opacity-75 ml-1">(backorder)</span>
+                                    </button>
+                                @else
+                                    {{-- out_of_stock — greyed, not clickable but visible --}}
+                                    <button type="button" disabled
+                                        class="px-3 py-1.5 text-sm border rounded-md border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 cursor-not-allowed relative"
+                                        title="Out of stock">
+                                        <span class="line-through text-zinc-400">{{ $value['label'] }}</span>
+                                    </button>
+                                @endif
                             @endforeach
                         </div>
                     </div>
                 @endforeach
 
-                {{-- No match warning --}}
+                {{-- No combination match warning --}}
                 @if (!empty($selectedAttributeValues) && !$selectedVariantId)
                     <div
-                        class="flex items-center gap-2 text-sm text-amber-600 bg-amber-50 border border-amber-200 rounded-md px-3 py-2">
+                        class="flex items-center gap-2 text-sm text-amber-700 bg-amber-50 border border-amber-200 rounded-md px-3 py-2">
                         <flux:icon.exclamation-triangle class="size-4 shrink-0" />
                         This combination is not available.
                     </div>
@@ -207,148 +227,179 @@
             </div>
         @endif
 
-        {{-- Short Description --}}
-        <flux:text class="my-4">{!! $product->short_description !!}</flux:text>
+        {{-- ── SHORT DESCRIPTION ── --}}
+        @if ($product->short_description)
+            <div class="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
+                {!! $product->short_description !!}
+            </div>
+        @endif
 
-        {{-- Shipping estimate --}}
-        <div wire:cloak class="mb-4">
-            @if ($this->selectedCounty && $this->estimatedShipping !== null)
-                <div class="flex items-center gap-2">
-                    <flux:icon name="truck" variant="outline" class="w-4 h-4 text-zinc-400" />
-                    @if ($this->estimatedShipping > 0)
-                        <flux:text>
-                            Estimated shipping:
-                            <span wire:loading.remove
-                                wire:target="selectedCounty,selectedArea,cartQuantity,selectAttributeValue"
-                                class="font-semibold text-zinc-800">
-                                {{ format_currency($this->estimatedShipping) }}
-                            </span>
-                            <x-my-loading wire:loading
-                                wire:target="selectedCounty,selectedArea,cartQuantity,selectAttributeValue"
-                                class="loading-dots" />
-                        </flux:text>
-                    @else
-                        <flux:text>
-                            <span class="font-semibold text-green-600">Free shipping</span> to this location
-                        </flux:text>
-                    @endif
-                </div>
-            @elseif (!$this->selectedCounty)
-                <flux:text class="text-zinc-400 text-sm">
-                    Select a county to see shipping estimate.
-                </flux:text>
-            @endif
-        </div>
+        {{-- ── SHIPPING ESTIMATE ── --}}
+        @if (!$product->is_virtual)
+            <div wire:cloak class="text-sm text-zinc-500 flex items-center gap-2">
+                <flux:icon.truck class="size-4 shrink-0 text-zinc-400" variant="outline" />
+                @if ($this->selectedCounty && $this->estimatedShipping !== null)
+                    <span wire:loading.remove
+                        wire:target="selectedCounty,selectedArea,cartQuantity,selectAttributeValue">
+                        @if ($this->estimatedShipping > 0)
+                            Estimated shipping: <strong
+                                class="text-zinc-700 dark:text-zinc-300">{{ format_currency($this->estimatedShipping) }}</strong>
+                        @else
+                            <strong class="text-green-600">Free shipping</strong> to this location
+                        @endif
+                    </span>
+                    <flux:icon.loading wire:loading
+                        wire:target="selectedCounty,selectedArea,cartQuantity,selectAttributeValue" class="size-4" />
+                @else
+                    <span class="text-zinc-400">Select a county to see shipping estimate.</span>
+                @endif
+            </div>
+        @endif
 
-        {{-- Price --}}
+        {{-- ── PRICE ── --}}
         <div>
             @php
-                $displayProduct = $this->selectedVariant ?? $product;
-                $price = $displayProduct->price;
-                $salePrice = $displayProduct->sale_price;
-                $hasDiscount = $salePrice && $salePrice < $price;
+                $displaySource = $this->selectedVariant ?? $product;
+                $price = $displaySource->price;
+                $salePrice = $displaySource->sale_price;
+                $hasDiscount = $salePrice && $price && $salePrice < $price;
             @endphp
 
-            @if ($hasDiscount)
-                <div class="flex items-center flex-wrap gap-x-2">
-                    <p class="text-lg font-semibold text-sheffield-blue">
-                        {{ format_currency($salePrice) }}
-                    </p>
-                    <p class="text-zinc-500 line-through">
+            @if ($price)
+                @if ($hasDiscount)
+                    <div class="flex items-center flex-wrap gap-2">
+                        <span class="text-2xl font-bold text-sheffield-blue">
+                            {{ format_currency($salePrice) }}
+                        </span>
+                        <span class="text-base text-zinc-400 line-through">
+                            {{ format_currency($price) }}
+                        </span>
+                        <flux:badge color="amber" size="sm">
+                            -{{ number_format((($price - $salePrice) / $price) * 100) }}%
+                        </flux:badge>
+                    </div>
+                @else
+                    <span class="text-2xl font-bold text-sheffield-blue">
                         {{ format_currency($price) }}
-                    </p>
-                    <flux:badge color="amber" size="sm">
-                        -{{ number_format((($price - $salePrice) / $price) * 100) }}%
-                    </flux:badge>
-                </div>
-            @else
-                <p class="font-semibold text-lg text-sheffield-blue">
-                    {{ format_currency($price ?? 0) }}
-                </p>
+                    </span>
+                @endif
+            @elseif ($product->type === 'variable' && !$selectedVariantId)
+                <span class="text-base text-zinc-400">Select options to see price</span>
             @endif
 
-            {{-- Stock status --}}
-            @if ($product->type === 'variable')
-                @if ($this->selectedVariant)
-                    @if ($this->selectedVariant->manage_stock)
-                        @if ($this->selectedVariant->stock_quantity > 0)
-                            <p class="text-sm text-green-600 mt-1">
-                                In Stock ({{ $this->selectedVariant->stock_quantity }} available)
-                            </p>
-                        @else
-                            <p class="text-sm text-red-500 mt-1">Out of Stock</p>
-                        @endif
-                    @else
-                        @if ($this->selectedVariant->stock_status === 'in_stock')
-                            <p class="text-sm text-green-600 mt-1">In Stock</p>
-                        @elseif ($this->selectedVariant->stock_status === 'backorder')
-                            <p class="text-sm text-amber-600 mt-1">Available on backorder</p>
-                        @else
-                            <p class="text-sm text-red-500 mt-1">Out of Stock</p>
-                        @endif
+            {{-- ── STOCK STATUS ── --}}
+            @php
+                $state = $product->type === 'variable' ? $this->selectedVariantState : $this->simpleProductState;
+                $variant = $this->selectedVariant;
+                $source = $variant ?? $product;
+            @endphp
+
+            @if ($state === 'none')
+                <p class="text-sm text-zinc-400 mt-1">Select options to see availability</p>
+            @elseif ($state === 'available')
+                <p class="text-sm text-green-600 mt-1 flex items-center gap-1">
+                    <flux:icon.check-circle class="size-4" />
+                    In Stock
+                    @if ($source->manage_stock && $source->stock_quantity > 0)
+                        ({{ $source->stock_quantity }} available)
                     @endif
-                @else
-                    <p class="text-sm text-zinc-400 mt-1">Select options to see availability</p>
+                </p>
+            @elseif ($state === 'backorder')
+                <p class="text-sm text-amber-600 mt-1 flex items-center gap-1">
+                    <flux:icon.clock class="size-4" />
+                    Available on backorder
+                </p>
+                @php
+                    $backorderMsg = $source->backorder_message ?? null;
+                    $restockDate =
+                        $source instanceof \App\Models\ProductVariant
+                            ? $source->expected_restock_date
+                            : $product->expected_restock_date;
+                @endphp
+                @if ($backorderMsg || $restockDate)
+                    <div class="mt-2 bg-amber-50 border border-amber-200 rounded-md px-3 py-2.5 text-sm text-amber-800">
+                        @if ($backorderMsg)
+                            <p>{{ $backorderMsg }}</p>
+                        @endif
+                        @if ($restockDate)
+                            <p class="text-xs text-amber-600 mt-1 flex items-center gap-1">
+                                <flux:icon.calendar class="size-3.5" />
+                                Expected back in stock: {{ $restockDate->format('d M Y') }}
+                            </p>
+                        @endif
+                    </div>
                 @endif
             @else
-                {{-- Simple product stock --}}
-                @if ($product->manage_stock)
-                    @if ($product->stock_quantity > 0)
-                        <p class="text-sm text-green-600 mt-1">
-                            In Stock ({{ $product->stock_quantity }} available)
-                        </p>
-                    @else
-                        <p class="text-sm text-red-500 mt-1">Out of Stock</p>
-                    @endif
-                @else
-                    @if ($product->stock_status === 'in_stock')
-                        <p class="text-sm text-green-600 mt-1">In Stock</p>
-                    @elseif ($product->stock_status === 'backorder')
-                        <p class="text-sm text-amber-600 mt-1">Available on backorder</p>
-                    @else
-                        <p class="text-sm text-red-500 mt-1">Out of Stock</p>
-                    @endif
-                @endif
+                <p class="text-sm text-red-500 mt-1 flex items-center gap-1">
+                    <flux:icon.x-circle class="size-4" />
+                    Out of Stock
+                </p>
             @endif
         </div>
 
-        <flux:separator class="my-5" />
+        <flux:separator />
 
-        {{-- Cart Actions --}}
-        <div class="flex items-center gap-2 mb-3">
-            <flux:button.group>
-                <flux:button icon="minus" class="cursor-pointer text-zinc-500!" title="Decrease Quantity"
-                    wire:click="decreaseCartQuantity" />
+        {{-- ── CART ACTIONS ── --}}
+        <div class="flex items-center gap-2 flex-wrap">
 
-                <flux:input readonly value="{{ $cartQuantity }}"
-                    class="max-w-9! outline-none! border-none! ring-0 focus:outline-none! focus:border-none!"
-                    style="outline:none;padding-left:0!important;padding-right:0!important;text-align:center!important;" />
+            {{-- Quantity stepper — hidden when out of stock --}}
+            @if ($state !== 'out_of_stock' && $state !== 'none')
+                <flux:button.group>
+                    <flux:button icon="minus" wire:click="decreaseCartQuantity" class="cursor-pointer text-zinc-500!"
+                        title="Decrease" />
+                    <flux:input readonly value="{{ $cartQuantity }}"
+                        class="max-w-9! text-center! outline-none! border-none! ring-0!" />
+                    <flux:button icon="plus" wire:click="increaseCartQuantity" class="cursor-pointer text-zinc-500!"
+                        title="Increase" />
+                    @if ($inCart)
+                        <flux:button icon="trash" icon-variant="outline" wire:click="removeFromCart"
+                            class="cursor-pointer text-red-500!" title="Remove" />
+                    @endif
+                </flux:button.group>
+            @endif
 
-                <flux:button icon="plus" class="cursor-pointer text-zinc-500!" title="Increase Quantity"
-                    wire:click="increaseCartQuantity" />
-
-                @if ($inCart)
-                    <flux:button icon="trash" icon-variant="outline" class="cursor-pointer text-red-500!"
-                        wire:click="removeFromCart" title="Remove from Cart" />
-                @endif
-            </flux:button.group>
-
-            @if (!$inCart)
+            {{-- Primary action button --}}
+            @if ($product->type === 'variable' && !$selectedVariantId)
+                <flux:button variant="primary" class="uppercase cursor-pointer" disabled>
+                    Select Options
+                </flux:button>
+            @elseif ($state === 'out_of_stock')
+                <flux:button class="uppercase cursor-not-allowed" disabled>
+                    Out of Stock
+                </flux:button>
+            @elseif ($state === 'backorder' && !$inCart)
+                <flux:button wire:click="addToCart"
+                    class="uppercase cursor-pointer bg-amber-500! border-amber-500! hover:bg-amber-600! text-white!">
+                    Pre-order
+                </flux:button>
+            @elseif (!$inCart)
                 <flux:button wire:click="addToCart" variant="primary" class="uppercase cursor-pointer"
-                    :disabled="$product->type === 'variable' && !$selectedVariantId">
-                    {{ $product->type === 'variable' && !$selectedVariantId ? 'Select Options' : 'Add to Cart' }}
+                    wire:loading.attr="disabled" wire:target="addToCart">
+                    Add to Cart
                 </flux:button>
             @endif
 
+            {{-- Wishlist --}}
             <flux:button wire:click.stop="toggleWishlist" icon="heart"
                 icon-variant="{{ $wishlisted ? 'solid' : 'outline' }}" title="Wishlist"
                 @class(['cursor-pointer', 'text-red-500!' => $wishlisted]) />
 
+            {{-- Compare --}}
             <flux:button wire:click="toggleCompare" icon="{{ $inCompare ? 'x-mark' : 'scale' }}"
-                icon-variant="outline" title="Compare" @class(['cursor-pointer', 'text-red-500!' => $inCompare]) />
+                icon-variant="outline" title="Compare" @class(['cursor-pointer', 'text-sheffield-blue!' => $inCompare]) />
 
-            <flux:button icon="share" icon-variant="outline" title="Share" />
+            {{-- Share --}}
+            <flux:button icon="share" icon-variant="outline" title="Share" class="cursor-pointer" />
         </div>
+
+        {{-- Purchase note for downloadable --}}
+        @if ($product->is_downloadable && $product->purchase_note)
+            <div
+                class="text-xs text-zinc-500 bg-zinc-50 dark:bg-zinc-800 rounded-md px-3 py-2 border border-zinc-200 dark:border-zinc-700">
+                {{ $product->purchase_note }}
+            </div>
+        @endif
+
     </div>
 
 </flux:card>

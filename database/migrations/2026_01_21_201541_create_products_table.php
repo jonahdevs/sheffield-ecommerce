@@ -74,7 +74,6 @@ return new class extends Migration {
             // properties
             $table->json('technical_specification')->nullable();
 
-
             $table->text('purchase_note')->nullable();
             $table->integer('sort_order')->default(0);
             $table->boolean('reviews_enabled')->default(true);
@@ -83,6 +82,10 @@ return new class extends Migration {
             $table->boolean('requires_quotation')->default(false);
             $table->decimal('min_order_quantity', 10, 2)->nullable();
             $table->text('quotation_notes')->nullable();
+
+            $table->text('warranty_information')->nullable();
+            $table->text('return_policy')->nullable();
+            $table->text('shipping_information')->nullable();
 
             // Analytics
             $table->integer('views_count')->default(0);

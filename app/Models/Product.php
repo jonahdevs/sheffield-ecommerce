@@ -69,6 +69,9 @@ class Product extends Model
         'requires_quotation',
         'min_order_quantity',
         'quotation_notes',
+        'warranty_information',
+        'return_policy',
+        'shipping_information',
 
         'views_count',
         'sales_count',
@@ -82,27 +85,27 @@ class Product extends Model
     {
         return [
             'technical_specification' => 'array',
-            'meta_keywords'           => 'array',
-            'manage_stock'            => 'boolean',
-            'sold_individually'       => 'boolean',
-            'is_virtual'              => 'boolean',
-            'is_downloadable'         => 'boolean',
-            'requires_quotation'      => 'boolean',
-            'weight'                  => 'decimal:2',
-            'height'                  => 'decimal:2',
-            'width'                   => 'decimal:2',
-            'length'                  => 'decimal:2',
-            'price'                   => 'decimal:2',
-            'sale_price'              => 'decimal:2',
-            'cost_price'              => 'decimal:2',
-            'average_rating'          => 'decimal:2',
-            'min_order_quantity'      => 'decimal:2',
-            'expected_restock_date'   => 'date',
-            'published_at'            => 'datetime',
-            'status'                  => ProductStatus::class,
-            'visibility'              => ProductVisibility::class,
+            'meta_keywords' => 'array',
+            'manage_stock' => 'boolean',
+            'sold_individually' => 'boolean',
+            'is_virtual' => 'boolean',
+            'is_downloadable' => 'boolean',
+            'requires_quotation' => 'boolean',
+            'weight' => 'decimal:2',
+            'height' => 'decimal:2',
+            'width' => 'decimal:2',
+            'length' => 'decimal:2',
+            'price' => 'decimal:2',
+            'sale_price' => 'decimal:2',
+            'cost_price' => 'decimal:2',
+            'average_rating' => 'decimal:2',
+            'min_order_quantity' => 'decimal:2',
+            'expected_restock_date' => 'date',
+            'published_at' => 'datetime',
+            'status' => ProductStatus::class,
+            'visibility' => ProductVisibility::class,
             'reviews_enabled' => 'boolean',
-            'sort_order'      => 'integer',
+            'sort_order' => 'integer',
         ];
     }
 
@@ -134,7 +137,7 @@ class Product extends Model
     public function attributes(): BelongsToMany
     {
         return $this->belongsToMany(ProductAttribute::class, 'product_attributes')
-            ->withPivot(['is_variation_attribute', 'is_visible', 'sort_order'])
+            ->withPivot(['is_variation_attribute', 'is_visible', 'sort_order', 'values'])
             ->withTimestamps()
             ->orderByPivot('sort_order');
     }
@@ -211,7 +214,7 @@ class Product extends Model
     }
 
     /**
-     * Get grouped products 
+     * Get grouped products
      */
     public function groupedProducts(): BelongsToMany
     {
