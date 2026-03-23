@@ -207,7 +207,7 @@
             color: #888888;
         }
 
-        /* ── Totals ── */
+        /*  Totals  */
         .totals-table {
             width: 260px;
             margin-left: auto;
@@ -253,7 +253,7 @@
             font-style: italic;
         }
 
-        /* ── Notes ── */
+        /* Notes */
         .notes-box {
             background: #f5f7f5;
             border: 1px solid #d4ddd4;

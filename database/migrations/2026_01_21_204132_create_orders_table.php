@@ -50,6 +50,23 @@ return new class extends Migration {
             $table->string('preferred_area')->nullable();
 
             $table->timestamp('expires_at')->nullable();
+
+            // SAP Integration
+            $table->string('sap_reference')->nullable()->comment('SAP Sales Order / Quotation number');
+            $table->timestamp('sap_synced_at')->nullable()->comment('When order was last pushed to SAP');
+            $table->string('sap_sync_status')->nullable()->comment('pending | synced | failed');
+            $table->json('sap_response')->nullable()->comment('Raw SAP response payload');
+
+            // ETims / KRA (populated by SAP webhook)
+            $table->string('etims_cu_invoice_no')->nullable()->comment('KRA Control Unit invoice number');
+            $table->string('etims_cu_serial_no')->nullable()->comment('KRA ETims device serial number');
+            $table->timestamp('etims_cu_datetime')->nullable()->comment('CU invoice timestamp from KRA');
+            $table->text('etims_qr_code')->nullable()->comment('Base64 QR code from ETims');
+            $table->string('etims_status')->nullable()->comment('pending | submitted | accepted | failed');
+
+            // LPO (Local Purchase Order from customer)
+            $table->string('lpo_number')->nullable()->comment('Customer LPO reference number');
+
             $table->timestamps();
 
             $table->index(['document_type', 'status'], 'idx_orders_doc_type_status');
@@ -68,6 +85,8 @@ return new class extends Migration {
             $table->bigInteger('unit_tax_cents')->default(0);
             $table->bigInteger('discount_cents')->default(0);
             $table->bigInteger('total_cents');
+
+            $table->string('uom')->default('PCS')->comment('Unit of measure e.g. PCS, KG, SET');
 
             $table->json('product_snapshot')->nullable();
 

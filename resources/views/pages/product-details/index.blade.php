@@ -27,10 +27,6 @@ new #[Layout('layouts.guest')] class extends Component {
     public bool $inCompare = false;
     public bool $inCart = false;
 
-    // ── Location state
-    public $selectedCounty = '';
-    public $selectedArea = '';
-
     // ── UI state
     public string $accessoriesTab = 'accessories';
     public string $selectedTab = 'description';
@@ -135,8 +131,6 @@ new #[Layout('layouts.guest')] class extends Component {
                 }
             }
         }
-
-        $this->initializeLocation();
     }
 
     // Grouped products
@@ -425,47 +419,6 @@ new #[Layout('layouts.guest')] class extends Component {
         }
 
         return $slides;
-    }
-
-    // =========================================================================
-    // LOCATION
-    // =========================================================================
-
-    protected function initializeLocation(): void
-    {
-        $user = auth()->user();
-
-        if ($user?->defaultAddress) {
-            $user->defaultAddress->loadMissing(['county', 'area']);
-            $this->selectedCounty = $user->defaultAddress->county_id;
-            $this->selectedArea = $user->defaultAddress->area_id;
-            return;
-        }
-
-        $nairobi = County::where('name', 'Nairobi')->first();
-        $this->selectedCounty = $nairobi?->id;
-        $this->selectedArea = null;
-    }
-
-    public function updatedSelectedCounty(): void
-    {
-        $this->selectedArea = null;
-        unset($this->areas);
-    }
-
-    #[Computed(persist: true)]
-    public function counties()
-    {
-        return County::orderBy('name')->get();
-    }
-
-    #[Computed]
-    public function areas()
-    {
-        if (!$this->selectedCounty) {
-            return collect();
-        }
-        return Area::where('county_id', $this->selectedCounty)->orderBy('name')->get();
     }
 
     #[Computed]

@@ -13,10 +13,10 @@
             thumbSwiper: null,
             activeIndex: 0,
             init() {
-                const thumbEl = document.getElementById('groupedThumbSwiper');
+                const thumbEl = document.getElementById('thumbSwiper');
         
                 if (thumbEl) {
-                    this.thumbSwiper = new Swiper('#groupedThumbSwiper', {
+                    this.thumbSwiper = new Swiper('#thumbSwiper', {
                         spaceBetween: 10,
                         slidesPerView: 4,
                         freeMode: true,
@@ -29,7 +29,7 @@
                     });
                 }
         
-                this.mainSwiper = new Swiper('#groupedMainSwiper', {
+                this.mainSwiper = new Swiper('#mainSwiper', {
                     spaceBetween: 10,
                     loop: false,
                     navigation: {
@@ -46,14 +46,14 @@
         
                 this.$nextTick(() => {
                     if (thumbEl) thumbEl.classList.remove('opacity-0');
-                    document.getElementById('groupedMainSwiper').classList.remove('opacity-0');
+                    document.getElementById('mainSwiper').classList.remove('opacity-0');
                 });
             },
         }">
             {{-- Main slider --}}
-            <div class="mb-4" x-data="{ hovered: false }" @mouseenter="hovered = true" @mouseleave="hovered = false">
+            <div class="mb-4">
                 <div class="swiper border-2 rounded-sm overflow-hidden opacity-0 transition-opacity duration-500"
-                    id="groupedMainSwiper">
+                    id="mainSwiper">
                     <div class="swiper-wrapper">
                         @foreach ($this->imageSlides as $slide)
                             <div class="swiper-slide">
@@ -65,43 +65,39 @@
                         @endforeach
                     </div>
 
-                    <button type="button" @click="mainSwiper?.slidePrev()" x-show="hovered"
-                        x-transition:enter="transition ease-out duration-150" x-transition:enter-start="opacity-0"
-                        x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-100"
-                        x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
-                        class="absolute top-1/2 left-1 -translate-y-1/2 z-30
+                    @if (count($this->imageSlides) > 1)
+                        <button type="button" @click="mainSwiper?.slidePrev()"
+                            class="absolute top-1/2 left-1 -translate-y-1/2 z-30
                    w-7 h-7 rounded-full flex items-center justify-center
                    bg-black/20 hover:bg-black/40 backdrop-blur-sm
                    border border-white/20 hover:border-white/40
                    transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/50 cursor-pointer">
-                        <flux:icon.chevron-left class="size-3.5 text-white" />
-                        <span class="sr-only">Previous</span>
-                    </button>
+                            <flux:icon.chevron-left class="size-3.5 text-white" />
+                            <span class="sr-only">Previous</span>
+                        </button>
 
-                    <button type="button" @click="mainSwiper?.slideNext()" x-show="hovered"
-                        x-transition:enter="transition ease-out duration-150" x-transition:enter-start="opacity-0"
-                        x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-100"
-                        x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
-                        class="absolute top-1/2 right-1 -translate-y-1/2 z-30
+                        <button type="button" @click="mainSwiper?.slideNext()"
+                            class="absolute top-1/2 right-1 -translate-y-1/2 z-30
                    w-7 h-7 rounded-full flex items-center justify-center
                    bg-black/20 hover:bg-black/40 backdrop-blur-sm
                    border border-white/20 hover:border-white/40
                    transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/50 cursor-pointer">
-                        <flux:icon.chevron-right class="size-3.5 text-white" />
-                        <span class="sr-only">Next</span>
-                    </button>
+                            <flux:icon.chevron-right class="size-3.5 text-white" />
+                            <span class="sr-only">Next</span>
+                        </button>
+                    @endif
                 </div>
             </div>
 
             {{-- Thumbnail slider --}}
             @if (count($this->imageSlides) > 1)
-                <div class="swiper px-8 opacity-0 transition-opacity duration-500" id="groupedThumbSwiper">
+                <div class="swiper px-8 opacity-0 transition-opacity duration-500" id="thumbSwiper">
                     <div class="swiper-wrapper">
                         @foreach ($this->imageSlides as $index => $slide)
                             <div class="swiper-slide cursor-pointer">
                                 <div class="aspect-square rounded-sm overflow-hidden border-2 transition-all duration-300"
                                     :class="activeIndex === {{ $index }} ?
-                                        'border-sheffield-blue' :
+                                        'border-brand-secondary' :
                                         'border-zinc-200 hover:border-zinc-300'">
                                     <img src="{{ $slide['url'] }}" alt="{{ $slide['alt'] }}"
                                         class="w-full h-full object-contain" />
@@ -168,7 +164,7 @@
             </p>
         @endif
 
-        {{-- ── VARIANT SELECTOR ── --}}
+        {{-- VARIANT SELECTOR --}}
         @if ($product->type->value === 'variable')
             <div class="space-y-3">
                 @foreach ($this->variationAttributes as $attribute)
@@ -238,36 +234,14 @@
             </div>
         @endif
 
-        {{-- ── SHORT DESCRIPTION ── --}}
+        {{-- SHORT DESCRIPTION --}}
         @if ($product->short_description)
             <div class="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
                 {!! $product->short_description !!}
             </div>
         @endif
 
-        {{-- ── SHIPPING ESTIMATE ── --}}
-        @if (!$product->is_virtual)
-            <div wire:cloak class="text-sm text-zinc-500 flex items-center gap-2">
-                <flux:icon.truck class="size-4 shrink-0 text-zinc-400" variant="outline" />
-                @if ($this->selectedCounty && $this->estimatedShipping !== null)
-                    <span wire:loading.remove
-                        wire:target="selectedCounty,selectedArea,cartQuantity,selectAttributeValue">
-                        @if ($this->estimatedShipping > 0)
-                            Estimated shipping: <strong
-                                class="text-zinc-700 dark:text-zinc-300">{{ format_currency($this->estimatedShipping) }}</strong>
-                        @else
-                            <strong class="text-green-600">Free shipping</strong> to this location
-                        @endif
-                    </span>
-                    <flux:icon.loading wire:loading
-                        wire:target="selectedCounty,selectedArea,cartQuantity,selectAttributeValue" class="size-4" />
-                @else
-                    <span class="text-zinc-400">Select a county to see shipping estimate.</span>
-                @endif
-            </div>
-        @endif
-
-        {{-- ── PRICE ── --}}
+        {{-- PRICE --}}
         <div>
             @php
                 $displaySource = $this->selectedVariant ?? $product;
@@ -298,7 +272,7 @@
                 <span class="text-base text-zinc-400">Select options to see price</span>
             @endif
 
-            {{-- ── STOCK STATUS ── --}}
+            {{-- STOCK STATUS --}}
             @php
                 $state = $product->type->value === 'variable' ? $this->selectedVariantState : $this->simpleProductState;
                 $variant = $this->selectedVariant;
@@ -328,8 +302,7 @@
                             : $product->expected_restock_date;
                 @endphp
                 @if ($backorderMsg || $restockDate)
-                    <div
-                        class="mt-2 bg-amber-50 border border-amber-200 rounded-md px-3 py-2.5 text-sm text-amber-800">
+                    <div class="mt-2 bg-amber-50 border border-amber-200 rounded-md px-3 py-2.5 text-sm text-amber-800">
                         @if ($backorderMsg)
                             <p>{{ $backorderMsg }}</p>
                         @endif
