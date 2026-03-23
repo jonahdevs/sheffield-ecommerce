@@ -4,11 +4,6 @@
 
 <flux:card class="lg:col-span-3 rounded-sm grid grid-cols-1 lg:grid-cols-5 gap-6 lg:gap-10">
 
-    @php
-        $paths = collect($this->imageSlides)->map(fn($s) => ['variantId' => $s['variantId'], 'url' => $s['url']]);
-        \Log::info(json_encode($paths, JSON_PRETTY_PRINT));
-    @endphp
-
     {{-- ═══════════════════════════════════════════════════ --}}
     {{-- IMAGE SLIDER                                        --}}
     {{-- ═══════════════════════════════════════════════════ --}}
@@ -17,28 +12,31 @@
             mainSwiper: null,
             thumbSwiper: null,
             activeIndex: 0,
-        
             init() {
-                this.thumbSwiper = new Swiper('#thumbSwiper', {
-                    spaceBetween: 10,
-                    slidesPerView: 4,
-                    freeMode: true,
-                    watchSlidesProgress: true,
-                    loop: true,
-                    breakpoints: {
-                        640: { slidesPerView: 5 },
-                        768: { slidesPerView: 6 },
-                    },
-                });
+                const thumbEl = document.getElementById('groupedThumbSwiper');
         
-                this.mainSwiper = new Swiper('#mainSwiper', {
+                if (thumbEl) {
+                    this.thumbSwiper = new Swiper('#groupedThumbSwiper', {
+                        spaceBetween: 10,
+                        slidesPerView: 4,
+                        freeMode: true,
+                        watchSlidesProgress: true,
+                        loop: false,
+                        breakpoints: {
+                            640: { slidesPerView: 5 },
+                            768: { slidesPerView: 6 },
+                        },
+                    });
+                }
+        
+                this.mainSwiper = new Swiper('#groupedMainSwiper', {
                     spaceBetween: 10,
-                    loop: true,
+                    loop: false,
                     navigation: {
                         nextEl: '.swiper-button-next',
                         prevEl: '.swiper-button-prev',
                     },
-                    thumbs: { swiper: this.thumbSwiper },
+                    thumbs: { swiper: this.thumbSwiper ?? null },
                     on: {
                         slideChange: (swiper) => {
                             this.activeIndex = swiper.realIndex;
@@ -47,25 +45,15 @@
                 });
         
                 this.$nextTick(() => {
-                    document.getElementById('thumbSwiper').classList.remove('opacity-0');
-                    document.getElementById('mainSwiper').classList.remove('opacity-0');
-                });
-        
-                {{-- Variant slide switch — smooth slideTo() instead of src swapping --}}
-                window.addEventListener('variant-image-selected', (e) => {
-                    const index = e.detail.index ?? 0;
-                    if (!this.mainSwiper) return;
-        
-                    this.mainSwiper.slideTo(index);
-                    this.thumbSwiper?.slideTo(index);
-                    this.activeIndex = index;
+                    if (thumbEl) thumbEl.classList.remove('opacity-0');
+                    document.getElementById('groupedMainSwiper').classList.remove('opacity-0');
                 });
             },
         }">
             {{-- Main slider --}}
-            <div class="mb-4">
+            <div class="mb-4" x-data="{ hovered: false }" @mouseenter="hovered = true" @mouseleave="hovered = false">
                 <div class="swiper border-2 rounded-sm overflow-hidden opacity-0 transition-opacity duration-500"
-                    id="mainSwiper">
+                    id="groupedMainSwiper">
                     <div class="swiper-wrapper">
                         @foreach ($this->imageSlides as $slide)
                             <div class="swiper-slide">
@@ -76,7 +64,11 @@
                             </div>
                         @endforeach
                     </div>
-                    <button type="button" @click="mainSwiper?.slidePrev()"
+
+                    <button type="button" @click="mainSwiper?.slidePrev()" x-show="hovered"
+                        x-transition:enter="transition ease-out duration-150" x-transition:enter-start="opacity-0"
+                        x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-100"
+                        x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
                         class="absolute top-1/2 left-1 -translate-y-1/2 z-30
                    w-7 h-7 rounded-full flex items-center justify-center
                    bg-black/20 hover:bg-black/40 backdrop-blur-sm
@@ -86,7 +78,10 @@
                         <span class="sr-only">Previous</span>
                     </button>
 
-                    <button type="button" @click="mainSwiper?.slideNext()"
+                    <button type="button" @click="mainSwiper?.slideNext()" x-show="hovered"
+                        x-transition:enter="transition ease-out duration-150" x-transition:enter-start="opacity-0"
+                        x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-100"
+                        x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
                         class="absolute top-1/2 right-1 -translate-y-1/2 z-30
                    w-7 h-7 rounded-full flex items-center justify-center
                    bg-black/20 hover:bg-black/40 backdrop-blur-sm
@@ -99,14 +94,14 @@
             </div>
 
             {{-- Thumbnail slider --}}
-            @if (count($this->imageSlides) > 0)
-                <div class="swiper px-8 opacity-0 transition-opacity duration-500" id="thumbSwiper">
+            @if (count($this->imageSlides) > 1)
+                <div class="swiper px-8 opacity-0 transition-opacity duration-500" id="groupedThumbSwiper">
                     <div class="swiper-wrapper">
                         @foreach ($this->imageSlides as $index => $slide)
                             <div class="swiper-slide cursor-pointer">
                                 <div class="aspect-square rounded-sm overflow-hidden border-2 transition-all duration-300"
                                     :class="activeIndex === {{ $index }} ?
-                                        'border-brand-secondary' :
+                                        'border-sheffield-blue' :
                                         'border-zinc-200 hover:border-zinc-300'">
                                     <img src="{{ $slide['url'] }}" alt="{{ $slide['alt'] }}"
                                         class="w-full h-full object-contain" />
@@ -333,7 +328,8 @@
                             : $product->expected_restock_date;
                 @endphp
                 @if ($backorderMsg || $restockDate)
-                    <div class="mt-2 bg-amber-50 border border-amber-200 rounded-md px-3 py-2.5 text-sm text-amber-800">
+                    <div
+                        class="mt-2 bg-amber-50 border border-amber-200 rounded-md px-3 py-2.5 text-sm text-amber-800">
                         @if ($backorderMsg)
                             <p>{{ $backorderMsg }}</p>
                         @endif
