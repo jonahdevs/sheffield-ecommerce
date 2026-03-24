@@ -19,6 +19,8 @@ class Address extends Model
         'additional_information',
         'shipping_zone_id',
         'is_default',
+        'latitude',
+        'longitude'
     ];
 
     protected $casts = [

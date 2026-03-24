@@ -68,7 +68,7 @@
 <flux:field>
     <flux:label>{{ __('Pin Your Exact Location') }}</flux:label>
     <p class="text-sm text-zinc-500 mb-2">
-        Select your county and area first, then drag the pin to your exact delivery location.
+        Select your county and area first, then click or drag the pin to your exact delivery location.
     </p>
 
     {{-- Mismatch warning --}}
@@ -78,7 +78,9 @@
         selection. You can still save.
     </div>
 
-    <div id="address-map" class="w-full rounded-lg border border-zinc-200 z-0" style="height:350px;"></div>
+
+    <div id="address-map" wire:ignore class="w-full rounded-lg border border-zinc-200 z-0" style="height:350px;">
+    </div>
 </flux:field>
 
 {{-- Address --}}
@@ -112,19 +114,55 @@
             const script = document.createElement('script');
             script.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
             script.onload = callback;
+            script.onerror = () => console.error('Failed to load Leaflet');
             document.head.appendChild(script);
         }
 
         loadLeaflet(() => {
-            // ── State ──────────────────────────────────────────────────────────────
+            console.log('Leaflet loaded:', typeof L !== 'undefined');
+
             const KENYA_CENTER = [-0.0236, 37.9062];
             const KENYA_ZOOM = 6;
             let map, pin, boundaryLayer, nominatimTimer;
 
-            // ── Init map ───────────────────────────────────────────────────────────
+            // ── Find container ─────────────────────────────────────────────────────
             const container = document.getElementById('address-map');
+            if (!container) {
+                console.error('Map container #address-map not found');
+                return;
+            }
+            console.log('Map container found:', container.offsetHeight + 'px tall');
+
+            // ── Init map ───────────────────────────────────────────────────────────
             map = L.map(container, {
                 zoomControl: true
+            });
+
+            // ── Click to reposition pin ────────────────────────────────────────────
+            map.on('click', (e) => {
+                const {
+                    lat,
+                    lng
+                } = e.latlng;
+                placePin(lat, lng);
+                syncToWire(lat, lng);
+
+                // Run the same county validation as drag
+                clearTimeout(nominatimTimer);
+                nominatimTimer = setTimeout(async () => {
+                    const returnedValues = await reverseGeocode(lat, lng);
+                    const state = await $wire.call('getMapState');
+                    const selectedCounty = normalise(state?.countyName ?? '');
+
+                    if (returnedValues.length > 0) {
+                        const matched = returnedValues.some(val => {
+                            const n = normalise(val);
+                            return n === selectedCounty || n.includes(selectedCounty) ||
+                                selectedCounty.includes(n);
+                        });
+                        showWarning(!matched);
+                    }
+                }, 800);
             });
 
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -132,7 +170,16 @@
                 maxZoom: 19,
             }).addTo(map);
 
-            // ── Draggable pin ──────────────────────────────────────────────────────
+            // Set initial view immediately so tiles start loading
+            map.setView(KENYA_CENTER, KENYA_ZOOM);
+
+            // Fix size after paint
+            setTimeout(() => map.invalidateSize(), 300);
+
+            const observer = new ResizeObserver(() => map.invalidateSize());
+            observer.observe(container);
+
+            // ── Pin icon ───────────────────────────────────────────────────────────
             const pinIcon = L.divIcon({
                 className: '',
                 html: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#ef4444" width="32" height="32">
@@ -172,7 +219,6 @@
                     boundaryLayer = null;
                 }
                 if (!geojson) return;
-
                 try {
                     const data = typeof geojson === 'string' ? JSON.parse(geojson) : geojson;
                     boundaryLayer = L.geoJSON(data, {
@@ -181,7 +227,7 @@
                             weight: 2,
                             opacity: 0.8,
                             fillColor: '#3b82f6',
-                            fillOpacity: 0.08,
+                            fillOpacity: 0.08
                         },
                     }).addTo(map);
                 } catch (e) {
@@ -190,12 +236,11 @@
             }
 
             function applyMapState(state) {
+                console.log('applyMapState:', state);
                 if (!state) return;
 
-                // Draw boundary
                 drawBoundary(state.boundaryGeojson);
 
-                // If we have a saved pin (edit mode) use that, otherwise use center
                 const lat = state.pin?.lat ?? state.center?.lat ?? KENYA_CENTER[0];
                 const lng = state.pin?.lng ?? state.center?.lng ?? KENYA_CENTER[1];
 
@@ -205,7 +250,6 @@
                     syncToWire(lat, lng);
                     showWarning(false);
                 } else {
-                    // No county selected — show all of Kenya, remove pin
                     if (pin) {
                         map.removeLayer(pin);
                         pin = null;
@@ -213,24 +257,31 @@
                     map.setView(KENYA_CENTER, KENYA_ZOOM);
                     showWarning(false);
                 }
+
+                setTimeout(() => map.invalidateSize(), 100);
             }
 
-            // ── Nominatim reverse geocode ──────────────────────────────────────────
+            // ── Nominatim ─────────────────────────────────────────────────────────
             async function reverseGeocode(lat, lng) {
                 try {
-                    const url = `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`;
-                    const res = await fetch(url, {
-                        headers: {
-                            'Accept-Language': 'en'
-                        }
-                    });
+                    const res = await fetch(
+                        `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`, {
+                            headers: {
+                                'Accept-Language': 'en'
+                            }
+                        });
                     const data = await res.json();
-                    return data?.address?.county ??
-                        data?.address?.state_district ??
-                        data?.address?.state ??
-                        null;
+                    console.log('Nominatim response:', data?.address);
+
+                    // Nominatim can return the county in different fields depending on the area
+                    return [
+                        data?.address?.county,
+                        data?.address?.state_district,
+                        data?.address?.state,
+                        data?.address?.region,
+                    ].filter(Boolean);
                 } catch {
-                    return null;
+                    return [];
                 }
             }
 
@@ -244,42 +295,65 @@
                     lng
                 } = e.target.getLatLng();
                 syncToWire(lat, lng);
-
-                // Debounce Nominatim call
                 clearTimeout(nominatimTimer);
                 nominatimTimer = setTimeout(async () => {
-                    const returnedCounty = await reverseGeocode(lat, lng);
-                    const selectedCounty = (await $wire.get('mapState'))?.countyName ?? '';
+                    const returnedValues = await reverseGeocode(lat, lng);
+                    const state = await $wire.call('getMapState');
+                    const selectedCounty = normalise(state?.countyName ?? '');
 
-                    if (returnedCounty) {
-                        const mismatch = normalise(returnedCounty) !== normalise(selectedCounty);
-                        showWarning(mismatch);
+                    if (returnedValues.length > 0) {
+                        // Check if ANY of the returned values contain or match the selected county
+                        const matched = returnedValues.some(val => {
+                            const n = normalise(val);
+                            return n === selectedCounty ||
+                                n.includes(selectedCounty) ||
+                                selectedCounty.includes(n);
+                        });
+                        showWarning(!matched);
                     }
                 }, 800);
             }
 
-            // ── Boot from initial Livewire state ───────────────────────────────────
-            $wire.get('mapState').then(state => {
-                applyMapState(state);
-                // Fix tile rendering after Livewire has finished painting
-                setTimeout(() => map.invalidateSize(), 200);
+            // ── Boot ──────────────────────────────────────────────────────────────
+            // ── Boot ──────────────────────────────────────────────────────────────
+            $wire.call('getMapState').then(state => {
+                if (state?.countyName) {
+                    // County already selected (edit mode or back navigation) — use that
+                    applyMapState(state);
+                } else {
+                    // No county selected — try to center on user's GPS position
+                    if (navigator.geolocation) {
+                        navigator.geolocation.getCurrentPosition(
+                            (position) => {
+                                map.setView([position.coords.latitude, position.coords.longitude], 13);
+                            },
+                            () => {
+                                // Permission denied or unavailable — fall back to Kenya center
+                                map.setView(KENYA_CENTER, KENYA_ZOOM);
+                            }, {
+                                enableHighAccuracy: false,
+                                timeout: 5000,
+                                maximumAge: 60000
+                            }
+                        );
+                    } else {
+                        map.setView(KENYA_CENTER, KENYA_ZOOM);
+                    }
+                }
             });
 
-            // ── React to county / area changes ─────────────────────────────────────
+            // ── Watchers ──────────────────────────────────────────────────────────
             $wire.$watch('form.county_id', () => {
                 showWarning(false);
-                $wire.get('mapState').then(applyMapState);
+                $wire.call('getMapState').then(applyMapState);
             });
 
             $wire.$watch('form.area_id', () => {
-                $wire.get('mapState').then(state => {
+                $wire.call('getMapState').then(state => {
                     if (!state?.countyName) return;
-                    // Only recenter to area — don't remove the pin
-                    const lat = state.center.lat;
-                    const lng = state.center.lng;
-                    placePin(lat, lng);
-                    map.setView([lat, lng], 14);
-                    syncToWire(lat, lng);
+                    placePin(state.center.lat, state.center.lng);
+                    map.setView([state.center.lat, state.center.lng], 14);
+                    syncToWire(state.center.lat, state.center.lng);
                     showWarning(false);
                 });
             });

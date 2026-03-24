@@ -5,6 +5,7 @@ namespace App\Livewire\Forms;
 use App\Models\Address;
 use App\Models\Area;
 use App\Models\County;
+use Illuminate\Validation\Rule;
 use Livewire\Form;
 
 class CustomerAddressForm extends Form
@@ -35,7 +36,12 @@ class CustomerAddressForm extends Form
             'alternative_phone_number' => ['nullable', 'string', 'regex:/^[0-9\s]{9,12}$/'],
             'county_id' => ['required', 'exists:counties,id'],
             'area_id' => ['nullable', 'exists:areas,id'],
-            'address_text' => ['required', 'string', 'max:500'],
+            'address_text' => [
+                Rule::requiredIf(fn() => !$this->latitude || !$this->longitude),
+                'nullable',
+                'string',
+                'max:500'
+            ],
             'additional_information' => ['nullable', 'string', 'max:1000'],
             'is_default' => ['boolean'],
             'latitude'  => ['nullable', 'numeric', 'between:-90,90'],

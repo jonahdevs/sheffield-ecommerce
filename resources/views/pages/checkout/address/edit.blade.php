@@ -63,6 +63,11 @@ new #[Layout('layouts.checkout')] class extends Component {
         ];
     }
 
+    public function getMapState(): array
+    {
+        return $this->mapState();
+    }
+
     public function updatedFormCountyId()
     {
         $this->form->area_id = null;

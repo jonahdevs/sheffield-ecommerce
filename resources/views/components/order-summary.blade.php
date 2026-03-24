@@ -434,7 +434,33 @@ new class extends Component {
 
     {{-- M-Pesa STK push waiting modal — Path A only --}}
     <flux:modal name="stk-waiting" class="max-w-sm">
-        <div x-data="stkWaiting()" x-init="init()">
+        <div x-data="{
+            timeLeft: 60,
+            checkoutRequestId: null,
+            interval: null,
+        
+            init() {
+                Livewire.on('stk-push-initiated', ({
+                    checkoutRequestId
+                }) => {
+                    this.checkoutRequestId = checkoutRequestId;
+                    $flux.modal('stk-waiting').show();
+                    this.startCountdown();
+                });
+            },
+        
+            startCountdown() {
+                if (this.interval) clearInterval(this.interval);
+                this.timeLeft = 60;
+                this.interval = setInterval(() => {
+                    this.timeLeft--;
+                    if (this.timeLeft <= 0) {
+                        clearInterval(this.interval);
+                        window.location.href = '{{ route('customer.orders.index') }}';
+                    }
+                }, 1000);
+            },
+        }">
             <div class="text-center p-6">
                 <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
                     <flux:icon.device-phone-mobile class="size-8 text-green-600" />
@@ -459,44 +485,3 @@ new class extends Component {
     </flux:modal>
 
 </flux:card>
-
-@script
-    <script>
-        function stkWaiting() {
-            return {
-                timeLeft: 60,
-                checkoutRequestId: null,
-                interval: null,
-
-                init() {
-                    // Listen for the Livewire event dispatched when M-Pesa
-                    // STK push is successfully initiated by the gateway.
-                    Livewire.on('stk-push-initiated', ({
-                        checkoutRequestId
-                    }) => {
-                        this.checkoutRequestId = checkoutRequestId;
-                        $flux.modal('stk-waiting').show();
-                        this.startCountdown();
-                    });
-                },
-
-                startCountdown() {
-                    // Clear any existing interval before starting a fresh one —
-                    // prevents the countdown running twice on rapid re-triggers.
-                    if (this.interval) clearInterval(this.interval);
-
-                    this.timeLeft = 60;
-                    this.interval = setInterval(() => {
-                        this.timeLeft--;
-                        if (this.timeLeft <= 0) {
-                            clearInterval(this.interval);
-                            // Redirect to orders page when timer expires —
-                            // the webhook will have updated the order status by then.
-                            window.location.href = '{{ route('customer.orders.index') }}';
-                        }
-                    }, 1000);
-                },
-            };
-        }
-    </script>
-@endscript
