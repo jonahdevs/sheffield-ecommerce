@@ -64,6 +64,8 @@ jobs:
             --exclude='.env.*'
             --exclude='public/hot'
             --exclude='public/storage'
+            --exclude='storage/app/public'
+            --exclude='storage/app/private'
             --exclude='storage/logs/*'
             --exclude='storage/framework/cache/data/*'
             --exclude='storage/framework/sessions/*'

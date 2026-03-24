@@ -64,8 +64,8 @@ class ShippingSeeder extends Seeder
             $this->command->info('💰 Creating shipping rates...');
             $this->createShippingRates($zones, $methods);
 
-            $this->command->info('🚐 Creating vehicle rates...');
-            $this->createVehicleRates($methods);
+            // $this->command->info('🚐 Creating vehicle rates...');
+            // $this->createVehicleRates($methods);
 
             $this->command->info('📍 Creating pickup stations...');
             $this->createPickupStations($provider);
@@ -149,17 +149,6 @@ class ShippingSeeder extends Seeder
                 'sort_order' => 1,
                 'status' => ShippingMethodStatus::ACTIVE->value,
             ],
-            'express' => [
-                'name' => 'Express Delivery',
-                'code' => 'express',
-                'description' => 'Fast delivery with priority handling.',
-                'type' => 'flat',
-                'logistics_provider_id' => $provider->id,
-                'supports_returns' => true,
-                'delivery_time_unit' => 'days',
-                'sort_order' => 2,
-                'status' => ShippingMethodStatus::ACTIVE->value,
-            ],
             'pickup' => [
                 'name' => 'Pickup Station',
                 'code' => 'pickup',
@@ -169,17 +158,6 @@ class ShippingSeeder extends Seeder
                 'supports_returns' => false,
                 'delivery_time_unit' => 'days',
                 'sort_order' => 3,
-                'status' => ShippingMethodStatus::ACTIVE->value,
-            ],
-            'on_demand' => [
-                'name' => 'On-Demand Delivery',
-                'code' => 'on_demand',
-                'description' => 'Dedicated vehicle dispatched to your location. Price based on distance and vehicle size.',
-                'type' => 'distance',
-                'logistics_provider_id' => $provider->id,
-                'supports_returns' => true,
-                'delivery_time_unit' => 'hours',
-                'sort_order' => 4,
                 'status' => ShippingMethodStatus::ACTIVE->value,
             ],
         ];
@@ -258,7 +236,7 @@ class ShippingSeeder extends Seeder
 
         // Delivery windows per zone per tier [min_days, max_days]
         $standardDays = [
-            'NAIROBI' => [[1, 2], [1, 3], [2, 3], [2, 4]],
+            'NAIROBI' => [[2, 3], [2, 4], [3, 4], [3, 4]],
             'UPCOUNTRY' => [[2, 4], [3, 5], [4, 6], [5, 7]],
         ];
 
@@ -280,23 +258,9 @@ class ShippingSeeder extends Seeder
                     'min_weight' => $tier['min'],
                     'max_weight' => $tier['max'],
                     'weight_label' => $tier['label'],
-                    'price' => $stdPrice,
+                    'price' => 0,
                     'estimated_days_min' => $stdDays[0],
                     'estimated_days_max' => $stdDays[1],
-                    'status' => ShippingRateStatus::ACTIVE->value,
-                ]);
-                $totalRates++;
-
-                //  Express — 30% more, roughly half the delivery time 
-                ShippingRate::create([
-                    'shipping_zone_id' => $zone->id,
-                    'shipping_method_id' => $methods['express']->id,
-                    'min_weight' => $tier['min'],
-                    'max_weight' => $tier['max'],
-                    'weight_label' => $tier['label'],
-                    'price' => (int) round($stdPrice * 1.3),
-                    'estimated_days_min' => max(1, (int) ceil($stdDays[0] * 0.5)),
-                    'estimated_days_max' => max(1, (int) ceil($stdDays[1] * 0.5)),
                     'status' => ShippingRateStatus::ACTIVE->value,
                 ]);
                 $totalRates++;
@@ -413,10 +377,10 @@ class ShippingSeeder extends Seeder
         // One addon per weight tier for Nairobi (the only zone with PUS stations).
         // NULL pickup_station_id = applies to ALL stations globally.
         $surcharges = [
-            'Small (0–5 Kg)' => 100,
-            'Medium (5–20 Kg)' => 200,
-            'Large (20–60 Kg)' => 300,
-            'XL (60 Kg+)' => 400,
+            'Small (0–5 Kg)' => 0,
+            'Medium (5–20 Kg)' => 0,
+            'Large (20–60 Kg)' => 0,
+            'XL (60 Kg+)' => 0,
         ];
 
         // Find the active PUS rates for Nairobi

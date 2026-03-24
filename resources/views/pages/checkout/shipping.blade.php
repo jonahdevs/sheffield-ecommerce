@@ -67,7 +67,7 @@ new #[Layout('layouts.checkout')] class extends Component {
 
         $cartService = app(CartService::class);
 
-        return app(ShippingCalculator::class)->calculate(countyId: $this->address->county_id, areaId: $this->address->area_id, weightKg: $cartService->getWeight(), orderAmount: $cartService->getSubtotal());
+        return app(ShippingCalculator::class)->calculate(countyId: $this->address->county_id, areaId: $this->address->area_id, weightKg: $cartService->getWeight(), orderAmount: $cartService->getSubtotal())->reject(fn($option) => $option->isQuoteRequest());
     }
 
     #[Computed]
@@ -121,25 +121,6 @@ new #[Layout('layouts.checkout')] class extends Component {
         if ($this->selectedOption->isPus() && !$this->selectedStationId) {
             $this->dispatch('notify', variant: 'danger', message: 'Please select a pickup station.');
             return null;
-        }
-
-        // Quote request — store and redirect to quote confirmation page
-        if ($this->selectedOption->isQuoteRequest()) {
-            app(CheckoutSession::class)->setShipping([
-                'method_id' => 0,
-                'method_name' => $this->selectedOption->methodName,
-                'method_code' => 'quote',
-                'method_type' => 'quote',
-                'cost' => 0,
-                'zone_id' => $this->selectedOption->shippingZoneId,
-                'rate_id' => null,
-                'station_id' => null,
-                'station_name' => null,
-                'cost_breakdown' => $this->selectedOption->costBreakdown,
-                'delivery_window' => null,
-            ]);
-
-            return $this->redirectRoute('checkout.summary', navigate: true);
         }
 
         // Normal flow — build the option to store
