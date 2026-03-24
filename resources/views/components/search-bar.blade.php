@@ -90,8 +90,8 @@ new class extends Component {
 
     {{-- ── DESKTOP ── --}}
     <div class="hidden lg:block w-full max-w-xl relative">
-        <flux:input wire:model.live.debounce.300ms="search" icon="magnifying-glass" placeholder="Search products..."
-            class="w-full" autocomplete="off" clearable
+        <flux:input wire:model.live.debounce.300ms="search" wire:loading.attr.remove="disabled" icon="magnifying-glass"
+            placeholder="Search products..." class="w-full" autocomplete="off" clearable
             @focus="$wire.showSuggestions = ($wire.suggestions?.products?.length > 0)"
             @keydown.escape="$wire.showSuggestions = false"
             @keydown.enter="window.location.href = '{{ route('shop.index') }}?search=' + encodeURIComponent($wire.search)" />
@@ -158,3 +158,19 @@ new class extends Component {
     </template>
 
 </div>
+
+@push('scripts')
+    <script>
+        // Reset any stuck Livewire loading states on error pages
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('[wire\\:loading]').forEach(el => {
+                el.style.display = 'none';
+            });
+
+            // Also stop any Alpine loading states
+            document.querySelectorAll('[wire\\:loading\\.class]').forEach(el => {
+                el.classList.remove('opacity-50', 'pointer-events-none', 'cursor-wait');
+            });
+        });
+    </script>
+@endpush

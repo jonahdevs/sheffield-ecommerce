@@ -72,7 +72,9 @@ new class extends Component {
 
                 {{-- Search — takes up available space on desktop, hidden on mobile --}}
                 <div class="hidden lg:flex flex-1 min-w-0 px-6 xl:px-10">
-                    <livewire:search-bar />
+                    @if (!($isErrorPage ?? false))
+                        <livewire:search-bar />
+                    @endif
                 </div>
 
                 {{-- Actions --}}
@@ -81,7 +83,9 @@ new class extends Component {
                     {{-- Mobile: search icon (rendered by search-bar component itself) --}}
                     {{-- We include the full component — it handles both mobile icon + desktop bar --}}
                     <div class="lg:hidden">
-                        <livewire:search-bar />
+                        @if (!($isErrorPage ?? false))
+                            <livewire:search-bar />
+                        @endif
                     </div>
 
                     {{-- Wishlist — desktop only --}}

@@ -8,6 +8,7 @@ use App\Http\Controllers\Webhooks\PesawiseWebhookController;
 use App\Http\Controllers\Webhooks\MpesaWebhookController;
 use App\Http\Controllers\Webhooks\StripeWebhookController;
 use Illuminate\Support\Facades\Route;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 // ============================================================================
 // PUBLIC ROUTES
@@ -287,7 +288,12 @@ if (app()->isLocal()) {
     Route::livewire('/test-broadcast', 'pages::broadcast-test')
         ->middleware('auth')
         ->name('test.broadcast');
+
+    Route::get('test-error/{code}', function ($code) {
+        abort($code);
+    });
 }
+
 
 // ============================================================================
 // ADDITIONAL ROUTE FILES
