@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark">
 
 <head>
     @include('partials.head')
 </head>
 
-<body class="min-h-screen bg-white dark:bg-zinc-800 ">
+<body class="min-h-screen bg-white dark:bg-zinc-800 app-layout">
     <flux:sidebar sticky stashable class="border-e border-zinc-200 ">
         <flux:sidebar.header>
             <img src="{{ asset('logo-inverse.png') }}" alt="" class="w-40 h-auto mx-auto">

@@ -32,7 +32,7 @@
 /* ============================================================
    2. DARK MODE VARIANT — declared once
    ============================================================ */
-@variant dark (&:where(.app-layout, .app-layout *));
+@variant dark (&:where(.dark .app-layout, .dark .app-layout *));
 
 /* ============================================================
    3. DESIGN TOKENS

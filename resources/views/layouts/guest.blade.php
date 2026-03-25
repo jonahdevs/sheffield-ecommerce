@@ -2,11 +2,6 @@
 <html lang="en">
 
 <head>
-    <style>
-        :root {
-            color-scheme: light only;
-        }
-    </style>
     @include('partials.head')
 
 </head>
