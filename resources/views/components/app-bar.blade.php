@@ -153,20 +153,30 @@ new class extends Component {
                     {{-- Account Dropdown --}}
                     <flux:dropdown position="bottom" align="end" hover>
                         @auth
-                            @if (auth()->user()->avatar)
-                                <flux:profile circle avatar="{{ auth()->user()->avatar }}" :chevron="false"
-                                    class="md:hidden" />
-                            @else
-                                <flux:profile circle avatar:name="{{ auth()->user()->name }}" :chevron="false"
-                                    class="md:hidden" />
-                            @endif
+                            @auth
+                                <button type="button" class="flex items-center gap-2 cursor-pointer">
+                                    {{-- Avatar circle --}}
+                                    @if (auth()->user()->avatar)
+                                        <flux:avatar circle size="sm" src="{{ auth()->user()->avatar }}" />
+                                    @else
+                                        <flux:avatar circle size="sm" name="{{ auth()->user()->name }}" />
+                                    @endif
 
-                            @if (auth()->user()->avatar)
-                                <flux:profile circle avatar="{{ auth()->user()->avatar }}"
-                                    name="{{ auth()->user()->name }}" class="hidden md:flex" />
+                                    {{-- Name — md+ only --}}
+                                    <span class="hidden md:block text-sm font-medium text-zinc-800">
+                                        {{ auth()->user()->name }}
+                                    </span>
+
+                                    {{-- Chevron — md+ only --}}
+                                    <svg class="hidden md:block w-4 h-4 text-zinc-500" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd"
+                                            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                            clip-rule="evenodd" />
+                                    </svg>
+                                </button>
                             @else
-                                <flux:profile circle name="{{ auth()->user()->name }}" class="hidden md:flex" />
-                            @endif
+                                ...
+                            @endauth
                         @else
                             <button type="button"
                                 class="flex items-center gap-2 hover:text-brand-secondary transition-colors">
@@ -242,8 +252,8 @@ new class extends Component {
                             @auth
                                 <form action="{{ route('logout') }}" method="post">
                                     @csrf
-                                    <flux:navmenu.item type="submit" icon="arrow-right-start-on-rectangle" variant="danger"
-                                        class="cursor-pointer">
+                                    <flux:navmenu.item type="submit" icon="arrow-right-start-on-rectangle"
+                                        variant="danger" class="cursor-pointer">
                                         Logout
                                     </flux:navmenu.item>
                                 </form>
