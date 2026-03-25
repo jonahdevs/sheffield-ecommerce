@@ -196,8 +196,8 @@ new class extends Component {
                         @endauth
 
                         <flux:navmenu @class([
-                            'rounded-sm!',
-                            'mt-4!' => auth()->check(),
+                            'rounded-sm! shadow-2xl!',
+                            'mt-[9px]! md:mt-4.5! ' => auth()->check(),
                             'mt-5.5!' => !auth()->check(),
                         ])>
                             <flux:navmenu.item :href="route('customer.account')" wire:navigate icon="user"
@@ -217,11 +217,11 @@ new class extends Component {
                             @endauth
                             <flux:navmenu.item :href="route('quote')" wire:navigate icon="document-text"
                                 icon-variant="outline">
-                                <span class="flex items-center gap-2">
+                                <span class="flex items-center gap-2 w-full">
                                     Quote Basket
                                     @if ($quoteCount > 0)
                                         <span
-                                            class="bg-amber-500 text-white text-xs font-medium rounded-full h-5 w-5 flex items-center justify-center">
+                                            class="ms-auto bg-amber-500 text-white text-xs font-medium rounded-full h-5 w-5 flex items-center justify-center">
                                             {{ $quoteCount }}
                                         </span>
                                     @endif
@@ -229,15 +229,23 @@ new class extends Component {
                             </flux:navmenu.item>
                             <flux:navmenu.item :href="route('wishlist')" wire:navigate icon="heart"
                                 icon-variant="outline">
-                                Wishlist
+                                <span class="flex items-center gap-2  w-full">
+                                    Wishlist
+                                    @if ($wishlistCount > 0)
+                                        <span
+                                            class="ms-auto bg-brand-primary text-brand-primary-content text-xs font-medium rounded-full h-5 w-5 flex items-center justify-center">
+                                            {{ $wishlistCount }}
+                                        </span>
+                                    @endif
+                                </span>
                             </flux:navmenu.item>
                             <flux:navmenu.item :href="route('products.compare')" wire:navigate icon="arrows-right-left"
                                 icon-variant="outline">
-                                <span class="flex items-center gap-2">
+                                <span class="flex items-center gap-2  w-full">
                                     Compare
                                     @if ($compareCount > 0)
                                         <span
-                                            class="bg-brand-primary text-brand-primary-content text-xs font-medium rounded-full h-5 w-5 flex items-center justify-center">
+                                            class="ms-auto bg-brand-primary text-brand-primary-content text-xs font-medium rounded-full h-5 w-5 flex items-center justify-center">
                                             {{ $compareCount }}
                                         </span>
                                     @endif
