@@ -42,7 +42,8 @@ class ShippingCalculator
     public function __construct(
         private readonly FlatRateEngine $flatEngine,
         private readonly PusEngine $pusEngine,
-    ) {}
+    ) {
+    }
 
     //  Main calculation
 
@@ -112,7 +113,7 @@ class ShippingCalculator
 
         // 4. Sort: free first, then by cost, then by speed
         return $options->sortBy([
-            fn($a, $b) => $a->isFree() <=> $b->isFree() ? -1 : 0,
+            fn($a, $b) => $b->isFree() <=> $a->isFree(), // free first
             fn($a, $b) => $a->cost <=> $b->cost,
             fn($a, $b) => $a->estimatedDaysMax <=> $b->estimatedDaysMax,
         ])->values();
@@ -231,8 +232,8 @@ class ShippingCalculator
             estimatedDaysMax: 0,
             costBreakdown: [
                 'model' => 'quote',
-                'zone'  => $zone->name,
-                'note'  => 'Delivery cost to be confirmed by our team',
+                'zone' => $zone->name,
+                'note' => 'Delivery cost to be confirmed by our team',
             ],
             shippingZoneId: $zone->id,
             isVirtualQuote: true,

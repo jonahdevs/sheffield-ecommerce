@@ -302,22 +302,14 @@ return new class extends Migration {
         Schema::create('pickup_stations', function (Blueprint $table) {
             $table->id();
 
-            $table->foreignId('logistics_provider_id')
-                ->constrained('logistics_providers')
-                ->cascadeOnUpdate()
-                ->restrictOnDelete();
+            $table->foreignId('logistics_provider_id')->constrained('logistics_providers')->cascadeOnUpdate()->restrictOnDelete();
 
             $table->string('name');
             $table->string('code')->unique();
 
-            $table->foreignId('county_id')
-                ->constrained()
-                ->restrictOnDelete();
+            $table->foreignId('county_id')->constrained()->restrictOnDelete();
 
-            $table->foreignId('area_id')
-                ->nullable()
-                ->constrained()
-                ->nullOnDelete();
+            $table->foreignId('area_id')->nullable()->constrained()->nullOnDelete();
 
             $table->text('address');
             $table->string('phone')->nullable();
@@ -327,6 +319,7 @@ return new class extends Migration {
             $table->decimal('longitude', 10, 7)->nullable();
 
             $table->integer('holding_days')->default(7);
+            $table->boolean('is_primary')->default(false);
 
             // Cast: PickupStationStatus
             $table->string('status')->default('active');
@@ -336,6 +329,7 @@ return new class extends Migration {
             $table->index(['logistics_provider_id', 'status']);
             $table->index(['county_id', 'status']);
             $table->index(['area_id', 'status']);
+            $table->index('is_primary');
         });
 
         // ================================================================

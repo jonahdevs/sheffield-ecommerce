@@ -12,7 +12,7 @@ new #[Layout('layouts.customer')] class extends Component {
     #[Computed]
     public function counties()
     {
-        return County::orderBy('name')->get();
+        return County::with('shippingZone')->orderBy('name')->get()->groupBy(fn($county) => $county->shippingZone->is_delivery_available ? ' Available for Delivery' : ' Request a Quote')->sortKeysUsing(fn($a, $b) => str_contains($a, 'Available') ? -1 : 1);
     }
 
     #[Computed]
@@ -71,17 +71,13 @@ new #[Layout('layouts.customer')] class extends Component {
     {
         try {
             $this->form->store();
-            $this->dispatch('notify', variant: 'success', message: 'Address saved successfully');
+            $this->dispatch('notify', title: 'Address Saved', variant: 'success', message: 'Your delivery address has been saved successfully');
 
             return $this->redirectRoute('customer.address-book.index', navigate: true);
         } catch (ValidationException $e) {
             throw $e;
         } catch (\Throwable $th) {
-            logger()->error('Failed to save address', [
-                'user_id' => auth()->id(),
-                'error' => $th->getMessage(),
-            ]);
-            $this->dispatch('notify', variant: 'danger', message: $th->getMessage());
+            $this->dispatch('notify', title: 'Save Failed', variant: 'danger', message: $th->getMessage() ?: 'Unable to save address');
         }
     }
 };

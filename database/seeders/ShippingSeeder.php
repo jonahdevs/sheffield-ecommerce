@@ -2,25 +2,23 @@
 
 namespace Database\Seeders;
 
-use App\Enums\ShippingMethodStatus;
-use App\Enums\ShippingRateStatus;
-use App\Enums\ShippingZoneStatus;
-use App\Enums\PickupStationStatus;
+use App\Enums\AddonType;
 use App\Enums\FreeShippingRuleStatus;
 use App\Enums\LogisticsProviderStatus;
-use App\Enums\VehicleRateStatus;
-use App\Enums\AddonType;
+use App\Enums\PickupStationStatus;
+use App\Enums\ShippingMethodStatus;
 use App\Enums\ShippingRateAddonStatus;
+use App\Enums\ShippingRateStatus;
+use App\Enums\ShippingZoneStatus;
 use App\Models\Area;
 use App\Models\County;
+use App\Models\FreeShippingRule;
 use App\Models\LogisticsProvider;
+use App\Models\PickupStation;
+use App\Models\ShippingMethod;
 use App\Models\ShippingRate;
 use App\Models\ShippingRateAddon;
 use App\Models\ShippingZone;
-use App\Models\ShippingMethod;
-use App\Models\FreeShippingRule;
-use App\Models\PickupStation;
-use App\Models\VehicleRate;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
@@ -64,9 +62,6 @@ class ShippingSeeder extends Seeder
             $this->command->info('💰 Creating shipping rates...');
             $this->createShippingRates($zones, $methods);
 
-            // $this->command->info('🚐 Creating vehicle rates...');
-            // $this->createVehicleRates($methods);
-
             $this->command->info('📍 Creating pickup stations...');
             $this->createPickupStations($provider);
 
@@ -85,15 +80,17 @@ class ShippingSeeder extends Seeder
         }
     }
 
-    //  Provider 
+    // =========================================================================
+    //  Provider
+    // =========================================================================
 
     private function createProvider(): LogisticsProvider
     {
         $provider = LogisticsProvider::create([
-            'name' => 'Cossim Logistics',
-            'code' => 'cossim',
+            'name' => 'Sheffield Africa Logistics',
+            'code' => 'sheffield',
             'type' => 'internal',
-            'description' => 'In-house logistics arm. Handles standard, express, and pickup station deliveries across Kenya.',
+            'description' => 'Sheffield Africa in-house logistics arm. Handles standard and pickup station deliveries across Nairobi.',
             'status' => LogisticsProviderStatus::ACTIVE->value,
         ]);
 
@@ -102,22 +99,28 @@ class ShippingSeeder extends Seeder
         return $provider;
     }
 
-    //  Zones 
+    // =========================================================================
+    //  Zones
+    //
+    //  NAIROBI     → delivery available now
+    //  UPCOUNTRY   → not yet available; counties are assigned but checkout
+    //                is blocked by is_delivery_available = false
+    // =========================================================================
 
     private function createShippingZones(): array
     {
-        $zoneDefinitions = [
+        $definitions = [
             'NAIROBI' => [
                 'name' => 'Nairobi',
                 'code' => 'nairobi',
-                'description' => 'All delivery locations within Nairobi County including CBD and surrounding metropolitan areas.',
+                'description' => 'All delivery locations within Nairobi County and selected nearby areas.',
                 'status' => ShippingZoneStatus::ACTIVE->value,
                 'is_delivery_available' => true,
             ],
             'UPCOUNTRY' => [
                 'name' => 'Upcountry',
                 'code' => 'upcountry',
-                'description' => 'All delivery locations outside Nairobi County including major towns and counties across Kenya.',
+                'description' => 'Counties outside Nairobi. Delivery not yet available — flip is_delivery_available when ready to expand.',
                 'status' => ShippingZoneStatus::ACTIVE->value,
                 'is_delivery_available' => false,
             ],
@@ -125,19 +128,29 @@ class ShippingSeeder extends Seeder
 
         $zones = [];
 
-        foreach ($zoneDefinitions as $key => $definition) {
+        foreach ($definitions as $key => $definition) {
             $zones[$key] = ShippingZone::create($definition);
-            $this->command->info("  ✓ Created zone: {$definition['name']}");
+            $this->command->info("  ✓ Created zone: {$definition['name']} (delivery: " . ($definition['is_delivery_available'] ? 'yes' : 'no') . ')');
         }
 
         return $zones;
     }
 
-    //  Methods 
+    // =========================================================================
+    //  Methods
+    //
+    //  Two methods only:
+    //    standard  → doorstep delivery  (flat)
+    //    pickup    → pickup station     (pus)
+    //
+    //  Both are shown at checkout whenever the resolved zone has
+    //  is_delivery_available = true. The customer sees both options
+    //  with KES 0 for each — no provider name is exposed.
+    // =========================================================================
 
     private function createShippingMethods(LogisticsProvider $provider): array
     {
-        $methodDefinitions = [
+        $definitions = [
             'standard' => [
                 'name' => 'Standard Delivery',
                 'code' => 'standard',
@@ -157,14 +170,14 @@ class ShippingSeeder extends Seeder
                 'logistics_provider_id' => $provider->id,
                 'supports_returns' => false,
                 'delivery_time_unit' => 'days',
-                'sort_order' => 3,
+                'sort_order' => 2,
                 'status' => ShippingMethodStatus::ACTIVE->value,
             ],
         ];
 
         $methods = [];
 
-        foreach ($methodDefinitions as $key => $definition) {
+        foreach ($definitions as $key => $definition) {
             $methods[$key] = ShippingMethod::create($definition);
             $this->command->info("  ✓ Created method: {$definition['name']} ({$definition['type']})");
         }
@@ -172,7 +185,23 @@ class ShippingSeeder extends Seeder
         return $methods;
     }
 
-    //  Counties & Areas 
+    private function resolveZoneKey(string $region): string
+    {
+        return match ($region) {
+            'NAIROBI' => 'NAIROBI',
+            default => 'UPCOUNTRY',
+        };
+    }
+
+    // =========================================================================
+    //  Counties & Areas
+    //
+    //  Each county is assigned the zone that matches its `region` key from
+    //  the JSON. Areas get shipping_zone_id = null so they fall back to
+    //  their county's zone by default. Set an area's shipping_zone_id
+    //  explicitly only when it needs to override its county's zone
+    //  (e.g. a border town served by a different rate bracket).
+    // =========================================================================
 
     private function processCounties(array $counties, array $zones): void
     {
@@ -180,10 +209,10 @@ class ShippingSeeder extends Seeder
         $areaCount = 0;
 
         foreach ($counties as $countyData) {
-            $regionKey = $countyData['region'];
+            $regionKey = $this->resolveZoneKey($countyData['region']);
 
             if (!isset($zones[$regionKey])) {
-                $this->command->warn("  ⚠ Unknown region '{$regionKey}' for county: {$countyData['name']}");
+                $this->command->warn("  ⚠ No zone found for key '{$regionKey}' — county: {$countyData['name']}");
                 continue;
             }
 
@@ -195,32 +224,40 @@ class ShippingSeeder extends Seeder
 
             $countyCount++;
 
-            // Areas do NOT inherit shipping_zone_id from their county unless
-            // they genuinely need to override it. We leave it null here.
-            if (!empty($countyData['main_towns'])) {
-                foreach ($countyData['main_towns'] as $town) {
-                    Area::create([
-                        'name' => $town,
-                        'county_id' => $county->id,
-                        'shipping_zone_id' => null, // county zone applies by default
-                    ]);
-                    $areaCount++;
-                }
+            foreach (array_unique($countyData['main_towns'] ?? []) as $town) {
+                Area::create([
+                    'name' => $town,
+                    'county_id' => $county->id,
+                    'shipping_zone_id' => null,
+                ]);
+                $areaCount++;
             }
 
-            $townCount = count($countyData['main_towns'] ?? []);
-            $this->command->info("  ✓ {$countyData['number']} — {$countyData['name']} ({$townCount} areas)");
+            $townCount = count(array_unique($countyData['main_towns'] ?? []));
+            $this->command->info("  ✓ {$countyData['number']} — {$countyData['name']} ({$townCount} areas) → {$regionKey}");
         }
 
         $this->command->info("📊 {$countyCount} counties, {$areaCount} areas created");
     }
 
-    //  Shipping Rates 
+    // =========================================================================
+    //  Shipping Rates
+    //
+    //  Rates are only created for zones where delivery is available.
+    //  All prices are KES 0 — the cost is absorbed into product pricing.
+    //  The weight tiers and delivery windows are kept so that when you
+    //  eventually introduce paid shipping, you only need to update the
+    //  price column — nothing structural changes.
+    //
+    //  Both methods (standard + pickup) get a rate row per tier so the
+    //  checkout resolver can find and present both options.
+    //
+    //  Pickup delivery window is +1 day vs standard to account for the
+    //  station transfer step.
+    // =========================================================================
 
     private function createShippingRates(array $zones, array $methods): void
     {
-        // Weight tier definitions — shared across zone/method combinations.
-        // Each tier gets a human-readable label used in the flat-rate matrix UI.
         $tiers = [
             ['min' => 0, 'max' => 5, 'label' => 'Small (0–5 Kg)'],
             ['min' => 5.1, 'max' => 20, 'label' => 'Medium (5–20 Kg)'],
@@ -228,30 +265,30 @@ class ShippingSeeder extends Seeder
             ['min' => 60.1, 'max' => null, 'label' => 'XL (60 Kg+)'],
         ];
 
-        // Base prices per zone per tier — index matches $tiers above
-        $standardPrices = [
-            'NAIROBI' => [400, 800, 1200, 1800],
-            'UPCOUNTRY' => [600, 1200, 1800, 2700],
-        ];
-
-        // Delivery windows per zone per tier [min_days, max_days]
-        $standardDays = [
-            'NAIROBI' => [[2, 3], [2, 4], [3, 4], [3, 4]],
-            'UPCOUNTRY' => [[2, 4], [3, 5], [4, 6], [5, 7]],
+        // One flat window per method — weight affects cost, not speed.
+        $deliveryWindows = [
+            'NAIROBI' => [
+                'standard' => ['min' => 1, 'max' => 2],
+                'pickup' => ['min' => 2, 'max' => 3], // +1 day for station transfer
+            ],
         ];
 
         $totalRates = 0;
 
         foreach ($zones as $regionKey => $zone) {
-            if (!isset($standardPrices[$regionKey])) {
+
+            if (!$zone->is_delivery_available) {
+                $this->command->info("  — Skipped rates for zone: {$zone->name} (delivery unavailable)");
                 continue;
             }
 
-            foreach ($tiers as $i => $tier) {
-                $stdPrice = $standardPrices[$regionKey][$i];
-                $stdDays = $standardDays[$regionKey][$i];
+            $windows = $deliveryWindows[$regionKey] ?? [
+                'standard' => ['min' => 3, 'max' => 5],
+                'pickup' => ['min' => 4, 'max' => 6],
+            ];
 
-                //  Standard 
+            foreach ($tiers as $tier) {
+
                 ShippingRate::create([
                     'shipping_zone_id' => $zone->id,
                     'shipping_method_id' => $methods['standard']->id,
@@ -259,28 +296,24 @@ class ShippingSeeder extends Seeder
                     'max_weight' => $tier['max'],
                     'weight_label' => $tier['label'],
                     'price' => 0,
-                    'estimated_days_min' => $stdDays[0],
-                    'estimated_days_max' => $stdDays[1],
+                    'estimated_days_min' => $windows['standard']['min'],
+                    'estimated_days_max' => $windows['standard']['max'],
                     'status' => ShippingRateStatus::ACTIVE->value,
                 ]);
                 $totalRates++;
 
-                //  Pickup Station — flat discount vs standard 
-                // Only makes sense where we have stations (Nairobi to start)
-                if (in_array($regionKey, ['NAIROBI', 'UPCOUNTRY'])) {
-                    ShippingRate::create([
-                        'shipping_zone_id' => $zone->id,
-                        'shipping_method_id' => $methods['pickup']->id,
-                        'min_weight' => $tier['min'],
-                        'max_weight' => $tier['max'],
-                        'weight_label' => $tier['label'],
-                        'price' => 0,
-                        'estimated_days_min' => $stdDays[0] + 1,
-                        'estimated_days_max' => $stdDays[1] + 1,
-                        'status' => ShippingRateStatus::ACTIVE->value,
-                    ]);
-                    $totalRates++;
-                }
+                ShippingRate::create([
+                    'shipping_zone_id' => $zone->id,
+                    'shipping_method_id' => $methods['pickup']->id,
+                    'min_weight' => $tier['min'],
+                    'max_weight' => $tier['max'],
+                    'weight_label' => $tier['label'],
+                    'price' => 0,
+                    'estimated_days_min' => $windows['pickup']['min'],
+                    'estimated_days_max' => $windows['pickup']['max'],
+                    'status' => ShippingRateStatus::ACTIVE->value,
+                ]);
+                $totalRates++;
             }
 
             $this->command->info("  ✓ Created rates for zone: {$zone->name}");
@@ -289,134 +322,47 @@ class ShippingSeeder extends Seeder
         $this->command->info("📊 {$totalRates} shipping rates created");
     }
 
-    //  Vehicle Rates 
-
-    private function createVehicleRates(array $methods): void
-    {
-        // Formula: base_rate + max(0, actual_km − base_km) × extra_km_rate
-        // base_km = free distance included in the base rate
-        $vehicles = [
-            [
-                'vehicle_type' => 'motorbike',
-                'vehicle_label' => 'Motorbike',
-                'base_rate' => 800,
-                'base_km' => 30,
-                'extra_km_rate' => 40,
-                'max_weight_kg' => 5,
-                'max_volume_m3' => null,
-            ],
-            [
-                'vehicle_type' => 'van',
-                'vehicle_label' => 'Van',
-                'base_rate' => 7500,
-                'base_km' => 50,
-                'extra_km_rate' => 70,
-                'max_weight_kg' => 1000,
-                'max_volume_m3' => 8.0,
-            ],
-            [
-                'vehicle_type' => 'truck_3t',
-                'vehicle_label' => '3T Truck',
-                'base_rate' => 8500,
-                'base_km' => 50,
-                'extra_km_rate' => 70,
-                'max_weight_kg' => 3000,
-                'max_volume_m3' => 20.0,
-            ],
-            [
-                'vehicle_type' => 'truck_5t',
-                'vehicle_label' => '5T Truck',
-                'base_rate' => 10000,
-                'base_km' => 50,
-                'extra_km_rate' => 90,
-                'max_weight_kg' => 5000,
-                'max_volume_m3' => 30.0,
-            ],
-            [
-                'vehicle_type' => 'truck_7t',
-                'vehicle_label' => '7T Truck',
-                'base_rate' => 12000,
-                'base_km' => 50,
-                'extra_km_rate' => 90,
-                'max_weight_kg' => 7000,
-                'max_volume_m3' => 40.0,
-            ],
-            [
-                'vehicle_type' => 'truck_10t',
-                'vehicle_label' => '10T Truck',
-                'base_rate' => 15000,
-                'base_km' => 50,
-                'extra_km_rate' => 90,
-                'max_weight_kg' => 10000,
-                'max_volume_m3' => 60.0,
-            ],
-        ];
-
-        foreach ($vehicles as $vehicle) {
-            VehicleRate::create([
-                'shipping_method_id' => $methods['on_demand']->id,
-                'vehicle_type' => $vehicle['vehicle_type'],
-                'vehicle_label' => $vehicle['vehicle_label'],
-                'base_rate' => $vehicle['base_rate'],
-                'base_km' => $vehicle['base_km'],
-                'extra_km_rate' => $vehicle['extra_km_rate'],
-                'max_weight_kg' => $vehicle['max_weight_kg'],
-                'max_volume_m3' => $vehicle['max_volume_m3'],
-                'status' => VehicleRateStatus::ACTIVE->value,
-            ]);
-
-            $this->command->info("  ✓ {$vehicle['vehicle_label']} — KES {$vehicle['base_rate']} base, {$vehicle['base_km']} km included");
-        }
-    }
-
-    //  Rate Addons (PUS Surcharges) 
+    // =========================================================================
+    //  Rate Addons (PUS Surcharges)
+    //
+    //  All surcharges are KES 0 — consistent with the free delivery model.
+    //  Rows are created so the PUS resolver finds a valid addon record
+    //  and doesn't error. When you introduce paid PUS surcharges later,
+    //  update addon_amount here — nothing structural changes.
+    // =========================================================================
 
     private function createRateAddons(array $zones, array $methods): void
     {
-        // PUS surcharges stack on top of the pickup station flat rates.
-        // One addon per weight tier for Nairobi (the only zone with PUS stations).
-        // NULL pickup_station_id = applies to ALL stations globally.
-        $surcharges = [
-            'Small (0–5 Kg)' => 0,
-            'Medium (5–20 Kg)' => 0,
-            'Large (20–60 Kg)' => 0,
-            'XL (60 Kg+)' => 0,
-        ];
-
-        // Find the active PUS rates for Nairobi
         $pusRates = ShippingRate::where('shipping_method_id', $methods['pickup']->id)
             ->where('shipping_zone_id', $zones['NAIROBI']->id)
             ->where('status', ShippingRateStatus::ACTIVE->value)
-            ->get()
-            ->keyBy('weight_label');
+            ->get();
+
+        if ($pusRates->isEmpty()) {
+            $this->command->warn('  ⚠ No PUS rates found for Nairobi — skipping addons');
+            return;
+        }
 
         $addonCount = 0;
 
-        foreach ($surcharges as $weightLabel => $amount) {
-            $rate = $pusRates->get($weightLabel);
-
-            if (!$rate) {
-                $this->command->warn("  ⚠ PUS rate not found for tier: {$weightLabel}");
-                continue;
-            }
-
+        foreach ($pusRates as $rate) {
             ShippingRateAddon::create([
                 'shipping_rate_id' => $rate->id,
                 'addon_type' => AddonType::PUS->value,
                 'label' => 'Pickup Station Surcharge',
-                'addon_amount' => $amount,
+                'addon_amount' => 0,
                 'pickup_station_id' => null, // applies to all stations
                 'status' => ShippingRateAddonStatus::ACTIVE->value,
             ]);
-
             $addonCount++;
-            $this->command->info("  ✓ PUS addon: {$weightLabel} → +KES {$amount}");
         }
 
-        $this->command->info("📊 {$addonCount} rate addons created");
+        $this->command->info("  ✓ Created {$addonCount} PUS addons (KES 0 each)");
     }
 
-    //  Pickup Stations 
+    // =========================================================================
+    //  Pickup Stations
+    // =========================================================================
 
     private function createPickupStations(LogisticsProvider $provider): void
     {
@@ -427,8 +373,7 @@ class ShippingSeeder extends Seeder
             return;
         }
 
-        // Optionally resolve the specific Nairobi area if it exists
-        $syokimauArea = Area::where('county_id', $nairobi->id)
+        $embakasi = Area::where('county_id', $nairobi->id)
             ->where('name', 'like', '%Embakasi%')
             ->first();
 
@@ -438,7 +383,7 @@ class ShippingSeeder extends Seeder
                 'code' => 'nbo-syokimau',
                 'logistics_provider_id' => $provider->id,
                 'county_id' => $nairobi->id,
-                'area_id' => $syokimauArea?->id,
+                'area_id' => $embakasi?->id,
                 'address' => 'Off Old Mombasa Road, before the Nairobi SGR Terminus',
                 'phone' => '+254712345678',
                 'operating_hours' => 'Mon–Fri: 8:00 AM – 8:00 PM, Sat: 8:00 AM – 1:00 PM, Sun: Closed',
@@ -446,6 +391,7 @@ class ShippingSeeder extends Seeder
                 'latitude' => -1.2864,
                 'longitude' => 36.8172,
                 'status' => PickupStationStatus::ACTIVE->value,
+                'is_primary' => true,
             ],
         ];
 
@@ -455,34 +401,57 @@ class ShippingSeeder extends Seeder
         }
     }
 
-    //  Free Shipping Rules 
+    // =========================================================================
+    //  Free Shipping Rules
+    //
+    //  Nairobi free shipping is ACTIVE with min_order_amount = 0, meaning
+    //  every order qualifies regardless of basket size. Both methods get
+    //  their own rule so the resolver can match on method + zone.
+    //
+    //  No max_weight cap — the free delivery promise is unconditional for now.
+    //  Set max_weight when you want to exclude heavy shipments from the offer.
+    //
+    //  The nationwide rule is kept INACTIVE as a placeholder for future use.
+    // =========================================================================
 
     private function createFreeShippingRules(array $zones, array $methods): void
     {
-        // Nairobi only — standard & express — spend KES 5,000+ and get free shipping
+        // Standard delivery — free for all Nairobi orders, always on
         FreeShippingRule::create([
-            'name' => 'Nairobi Free Shipping (Standard)',
+            'name' => 'Nairobi Free Delivery — Standard',
             'shipping_zone_id' => $zones['NAIROBI']->id,
             'shipping_method_id' => $methods['standard']->id,
-            'min_order_amount' => 5000,
-            'max_weight' => 10,
+            'min_order_amount' => 0,
+            'max_weight' => null,
             'starts_at' => null,
             'ends_at' => null,
-            'status' => FreeShippingRuleStatus::INACTIVE->value, // activate manually
+            'status' => FreeShippingRuleStatus::ACTIVE->value,
         ]);
 
-        // Nationwide — any method — spend KES 10,000+ for free shipping
+        // Pickup station — free for all Nairobi orders, always on
         FreeShippingRule::create([
-            'name' => 'Nationwide Free Shipping',
+            'name' => 'Nairobi Free Delivery — Pickup Station',
+            'shipping_zone_id' => $zones['NAIROBI']->id,
+            'shipping_method_id' => $methods['pickup']->id,
+            'min_order_amount' => 0,
+            'max_weight' => null,
+            'starts_at' => null,
+            'ends_at' => null,
+            'status' => FreeShippingRuleStatus::ACTIVE->value,
+        ]);
+
+        // Placeholder — activate when expanding beyond Nairobi
+        FreeShippingRule::create([
+            'name' => 'Nationwide Free Shipping (placeholder)',
             'shipping_zone_id' => null,
             'shipping_method_id' => null,
             'min_order_amount' => 10000,
             'max_weight' => 20,
             'starts_at' => null,
             'ends_at' => null,
-            'status' => FreeShippingRuleStatus::INACTIVE->value, // activate manually
+            'status' => FreeShippingRuleStatus::INACTIVE->value,
         ]);
 
-        $this->command->info('  ✓ Created free shipping rules (inactive — activate when ready)');
+        $this->command->info('  ✓ Created free shipping rules (Nairobi standard + pickup = active)');
     }
 }

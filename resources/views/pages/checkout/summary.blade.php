@@ -17,7 +17,8 @@ new #[Layout('layouts.checkout')] class extends Component {
             return;
         }
 
-        if (auth()->user()->addresses()->doesntExist()) {
+        // No address in session → fall back to default → none means no addresses at all
+        if (!$this->address) {
             $this->redirectRoute('checkout.addresses.create', navigate: true);
             return;
         }
@@ -27,7 +28,6 @@ new #[Layout('layouts.checkout')] class extends Component {
             return;
         }
 
-        // If custom gateway and no payment method chosen yet, go to payment page
         if (app(PaymentService::class)->isCustom() && !$checkoutSession->hasPaymentMethod() && $checkoutSession->getShipping()['method_type'] !== 'quote') {
             $this->redirectRoute('checkout.payment-methods', navigate: true);
             return;
@@ -35,14 +35,21 @@ new #[Layout('layouts.checkout')] class extends Component {
     }
 
     #[Computed]
-    public function address()
+    public function address(): ?\App\Models\Address
     {
-        $checkoutSession = app(CheckoutSession::class);
         $user = auth()->user();
+        $checkoutSession = app(CheckoutSession::class);
 
-        $addressId = $checkoutSession->getAddressId() ?? ($user->addresses()->where('is_default', true)->value('id') ?? $user->addresses()->oldest()->value('id'));
+        $addressId = $checkoutSession->getAddressId() ?? $user->addresses()->where('is_default', true)->value('id');
 
-        return \App\Models\Address::with(['county', 'area', 'shippingZone'])->find($addressId);
+        if (!$addressId) {
+            return null;
+        }
+
+        return \App\Models\Address::with(['county', 'area', 'shippingZone'])
+            ->where('id', $addressId)
+            ->where('user_id', $user->id)
+            ->first();
     }
 
     #[Computed]

@@ -23,6 +23,7 @@ class PickupStation extends Model
         'longitude',
         'holding_days',
         'status',
+        'is_primary'
     ];
 
     protected $casts = [
@@ -30,6 +31,7 @@ class PickupStation extends Model
         'longitude' => 'decimal:7',
         'holding_days' => 'integer',
         'status' => PickupStationStatus::class,
+        'is_primary' => 'boolean'
     ];
 
     // ===============================================

@@ -19,7 +19,7 @@ new #[Layout('layouts.customer')] class extends Component {
     #[Computed]
     public function counties()
     {
-        return County::orderBy('name')->get();
+        return County::with('shippingZone')->orderBy('name')->get()->groupBy(fn($county) => $county->shippingZone->is_delivery_available ? ' Available for Delivery' : ' Request a Quote')->sortKeysUsing(fn($a, $b) => str_contains($a, 'Available') ? -1 : 1);
     }
 
     #[Computed]
@@ -78,17 +78,12 @@ new #[Layout('layouts.customer')] class extends Component {
     {
         try {
             $this->form->update();
-            $this->dispatch('notify', variant: 'success', message: 'Address updated successfully');
+            $this->dispatch('notify', title: 'Address Updated', variant: 'success', message: 'Your delivery address has been updated successfully');
             return $this->redirectRoute('customer.address-book.index', navigate: true);
         } catch (ValidationException $e) {
             throw $e;
         } catch (\Throwable $th) {
-            logger()->error('Failed to update address', [
-                'user_id' => auth()->id(),
-                'address_id' => $this->address->id,
-                'error' => $th->getMessage(),
-            ]);
-            $this->dispatch('notify', variant: 'danger', message: $th->getMessage());
+            $this->dispatch('notify', title: 'Update Failed', variant: 'danger', message: $th->getMessage() ?: 'Unable to update address');
         }
     }
 };

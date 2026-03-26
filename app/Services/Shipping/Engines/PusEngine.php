@@ -125,8 +125,13 @@ class PusEngine
 
     private function resolveRate(ShippingMethod $method, ShippingZone $zone, float $weightKg): ?ShippingRate
     {
+        // For PUS, always resolve the rate from the primary station's zone
+        // The customer's zone determines flat/doorstep pricing, but PUS is a line-haul model - the rate is fixed regardless of where the customer lives.
+
+        $pusZone = $this->resolvePusZone($zone);
+
         return ShippingRate::where('shipping_method_id', $method->id)
-            ->where('shipping_zone_id', $zone->id)
+            ->where('shipping_zone_id', $pusZone->id)
             ->where('status', 'active')
             ->where('min_weight', '<=', $weightKg)
             ->where(
@@ -138,14 +143,38 @@ class PusEngine
             ->first();
     }
 
+    private function resolvePusZone(ShippingZone $customerZone): ShippingZone
+    {
+        // If the customer is already in a zone that has PUS rates, use it.
+        // Otherwise fall back to the primary station's zone.
+        $primaryStation = PickupStation::where('is_primary', true)
+            ->where('status', 'active')
+            ->with('county.shippingZone')
+            ->first();
+
+        if (!$primaryStation) {
+            return $customerZone;
+        }
+
+        return $primaryStation->county->shippingZone;
+    }
+
     private function resolveStations(?int $countyId): Collection
     {
         return PickupStation::with(['county', 'area'])
             ->where('status', 'active')
+            ->where(function ($query) use ($countyId) {
+                $query->where('is_primary', true);
+
+                if ($countyId) {
+                    $query->orWhere('county_id', $countyId);
+                }
+            })
             ->orderByRaw(
                 $countyId
-                ? "CASE WHEN county_id = {$countyId} THEN 0 ELSE 1 END, name ASC"
-                : 'name ASC'
+                ? 'CASE WHEN county_id = ? THEN 0 ELSE 1 END, name ASC'
+                : 'name ASC',
+                $countyId ? [$countyId] : []
             )
             ->get();
     }
