@@ -6,7 +6,6 @@ use App\Models\Product;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Defer;
-use Livewire\Attributes\Title;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Illuminate\Database\Eloquent\Builder;
@@ -64,11 +63,6 @@ new #[Defer] #[Layout('layouts.guest')] class extends Component {
         $range = $this->priceRange;
         $this->minPrice = $this->minPriceUrl ?? ($range->min_price ?? 0);
         $this->maxPrice = $this->maxPriceUrl ?? ($range->max_price ?? 1000000);
-    }
-
-    public function render()
-    {
-        return $this->view()->title(($this->activeSubCategory?->name ?? $this->category->name) . ' — ' . config('app.name'));
     }
 
     // -----------------------------------------------------------------------
@@ -301,6 +295,11 @@ new #[Defer] #[Layout('layouts.guest')] class extends Component {
     public function updatedMinRating(): void
     {
         $this->resetPage();
+    }
+
+    public function render()
+    {
+        return $this->view()->title($this->activeSubCategory?->name ?? $this->category->name);
     }
 };
 ?>

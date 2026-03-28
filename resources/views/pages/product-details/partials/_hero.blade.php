@@ -413,7 +413,24 @@
                 icon-variant="outline" title="Compare" @class(['cursor-pointer', 'text-brand-secondary!' => $inCompare]) />
 
             {{-- Share --}}
-            <flux:button icon="share" icon-variant="outline" title="Share" class="cursor-pointer" />
+            <div x-data="{
+                share() {
+                    if (navigator.share) {
+                        navigator.share({
+                            title: '{{ addslashes($product->name) }}',
+                            text: '{{ addslashes(Str::limit($product->short_description, 100)) }}',
+                            url: '{{ url()->current() }}',
+                        })
+                    } else {
+                        navigator.clipboard.writeText('{{ url()->current() }}').then(() => {
+                            $flux.toast({ text: 'Link copied!', variant: 'success' })
+                        })
+                    }
+                }
+            }">
+                <flux:button icon="share" icon-variant="outline" title="Share" class="cursor-pointer"
+                    @click="share()" />
+            </div>
 
         </div>
 

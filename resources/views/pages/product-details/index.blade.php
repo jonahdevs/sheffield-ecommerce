@@ -8,8 +8,6 @@ use App\Services\ProductService;
 use App\Services\ShippingCalculatorService;
 use App\Models\Product;
 use App\Models\ProductVariant;
-use App\Models\Area;
-use App\Models\County;
 use App\Models\AttributeValue;
 use Livewire\Component;
 use Livewire\Attributes\Layout;
@@ -447,13 +445,9 @@ new #[Layout('layouts.guest')] class extends Component {
             $added = $wishlistService->toggle($this->product->id);
             $this->wishlisted = $added;
             $this->dispatch('wishlist-updated');
-            $this->dispatch('notify', variant: 'success', message: $added ? 'Added to wishlist' : 'Removed from wishlist');
+            $this->dispatch('notify', variant: 'success', title: $added ? 'Wishlist Updated' : 'Wishlist Updated', message: $added ? 'Product added to your wishlist' : 'Product removed from your wishlist');
         } catch (\Throwable $th) {
-            logger()->error('Wishlist toggle failed', [
-                'product_id' => $this->product->id ?? null,
-                'user_id' => auth()->id(),
-            ]);
-            $this->dispatch('notify', variant: 'danger', message: $th->getMessage() ?: 'Unable to update wishlist');
+            $this->dispatch('notify', title: 'Action Failed', variant: 'danger', message: $th->getMessage() ?: 'Unable to update wishlist');
         }
     }
 
@@ -467,9 +461,10 @@ new #[Layout('layouts.guest')] class extends Component {
             $added = $compareService->toggle($this->product->id);
             $this->inCompare = $added;
             $this->dispatch('compare-updated');
-            $this->dispatch('notify', variant: 'success', title: 'Compare Updated!', message: $added ? 'Product added to your comparison list.' : 'Product removed from your comparison list.');
-        } catch (\Exception $e) {
-            $this->dispatch('notify', variant: 'danger', message: $e->getMessage() ?: 'Unable to update comparison');
+
+            $this->dispatch('notify', title: $added ? 'Comparison Updated' : 'Comparison Updated', variant: 'success', message: $added ? 'Product added to comparison list' : 'Product removed from comparison list');
+        } catch (\Throwable $th) {
+            $this->dispatch('notify', title: 'Action Failed', variant: 'danger', message: $th->getMessage() ?: 'Unable to update comparison');
         }
     }
 
@@ -507,9 +502,9 @@ new #[Layout('layouts.guest')] class extends Component {
             }
 
             $this->dispatch('cart-updated');
-            $this->dispatch('notify', variant: 'success', message: 'Added to cart successfully');
+            $this->dispatch('notify', title: 'Cart Updated', variant: 'success', message: 'Product added to your cart');
         } catch (\Throwable $th) {
-            $this->dispatch('notify', variant: 'danger', message: $th->getMessage() ?: 'Unable to add to cart');
+            $this->dispatch('notify', title: 'Add to Cart Failed', variant: 'danger', message: $th->getMessage() ?: 'Unable to add product to cart');
         }
     }
 
@@ -534,7 +529,7 @@ new #[Layout('layouts.guest')] class extends Component {
             $this->cartQuantity = $newQuantity;
             $this->dispatch('cart-updated');
         } catch (\Throwable $th) {
-            $this->dispatch('notify', variant: 'danger', message: $th->getMessage() ?: 'Unable to update quantity');
+            $this->dispatch('notify', title: 'Update Failed', variant: 'danger', message: $th->getMessage() ?: 'Unable to update cart quantity');
         }
     }
 
@@ -555,7 +550,7 @@ new #[Layout('layouts.guest')] class extends Component {
             $this->cartQuantity = $newQuantity;
             $this->dispatch('cart-updated');
         } catch (\Throwable $th) {
-            $this->dispatch('notify', variant: 'danger', message: $th->getMessage() ?: 'Unable to update quantity');
+            $this->dispatch('notify', title: 'Update Failed', variant: 'danger', message: $th->getMessage() ?: 'Unable to update cart quantity');
         }
     }
 
@@ -580,10 +575,10 @@ new #[Layout('layouts.guest')] class extends Component {
                 $this->cartItemId = null;
                 $this->cartQuantity = 1;
                 $this->dispatch('cart-updated');
-                $this->dispatch('notify', variant: 'success', message: 'Removed from cart');
+                $this->dispatch('notify', title: 'Cart Updated', variant: 'success', message: 'Product removed from your cart');
             }
         } catch (\Throwable $th) {
-            $this->dispatch('notify', variant: 'danger', message: $th->getMessage() ?: 'Unable to remove from cart');
+            $this->dispatch('notify', title: 'Remove Failed', variant: 'danger', message: $th->getMessage() ?: 'Unable to remove item from cart');
         }
     }
 
@@ -600,9 +595,9 @@ new #[Layout('layouts.guest')] class extends Component {
             }
 
             $this->dispatch('cart-updated');
-            $this->dispatch('notify', variant: 'success', message: 'All accessories added to cart!');
+            $this->dispatch('notify', title: 'Cart Updated', variant: 'success', message: 'All accessories have been added to your cart');
         } catch (\Throwable $th) {
-            $this->dispatch('notify', variant: 'danger', message: $th->getMessage() ?: 'Unable to add accessories to cart');
+            $this->dispatch('notify', title: 'Add Failed', variant: 'danger', message: $th->getMessage() ?: 'Unable to add accessories to cart');
         }
     }
 
@@ -615,9 +610,9 @@ new #[Layout('layouts.guest')] class extends Component {
             }
 
             $this->dispatch('cart-updated');
-            $this->dispatch('notify', variant: 'success', message: 'Full kit added to cart!');
+            $this->dispatch('notify', title: 'Cart Updated', variant: 'success', message: 'Full kit has been added to your cart');
         } catch (\Throwable $th) {
-            $this->dispatch('notify', variant: 'danger', message: $th->getMessage() ?: 'Unable to add kit to cart');
+            $this->dispatch('notify', title: 'Add Failed', variant: 'danger', message: $th->getMessage() ?: 'Unable to add full kit to cart');
         }
     }
 
@@ -625,7 +620,7 @@ new #[Layout('layouts.guest')] class extends Component {
     {
         try {
             if (empty($this->selectedGroupedItems)) {
-                $this->dispatch('notify', variant: 'warning', message: 'No items selected.');
+                $this->dispatch('notify', title: 'No Items Selected', variant: 'warning', message: 'Please select at least one item to add to cart');
                 return;
             }
 
@@ -638,9 +633,9 @@ new #[Layout('layouts.guest')] class extends Component {
             }
 
             $this->dispatch('cart-updated');
-            $this->dispatch('notify', variant: 'success', message: count($this->selectedGroupedItems) . ' item(s) added to cart.');
+            $this->dispatch('notify', title: 'Cart Updated', variant: 'success', message: count($this->selectedGroupedItems) . ' item(s) added to your cart');
         } catch (\Throwable $th) {
-            $this->dispatch('notify', variant: 'danger', message: $th->getMessage() ?: 'Unable to add items to cart');
+            $this->dispatch('notify', title: 'Add Failed', variant: 'danger', message: $th->getMessage() ?: 'Unable to add selected items to cart');
         }
     }
 
@@ -699,7 +694,7 @@ new #[Layout('layouts.guest')] class extends Component {
 
     public function render()
     {
-        return $this->view()->title($this->product->name . ' | ' . config('app.name'));
+        return $this->view()->title($this->product->name);
     }
 
     public function addToQuoteBasket(QuoteBasketService $quoteBasket): void
@@ -708,10 +703,12 @@ new #[Layout('layouts.guest')] class extends Component {
             $quoteBasket->add(productId: $this->product->id, quantity: $this->cartQuantity, variantId: $this->selectedVariantId);
 
             $this->inQuoteBasket = true;
+
             $this->dispatch('quote-basket-updated');
-            $this->dispatch('notify', variant: 'success', message: 'Added to quote basket');
+
+            $this->dispatch('notify', title: 'Quote Basket Updated', variant: 'success', message: 'Product has been added to your quote basket');
         } catch (\Throwable $th) {
-            $this->dispatch('notify', variant: 'danger', message: $th->getMessage() ?: 'Unable to add to quote basket');
+            $this->dispatch('notify', title: 'Add Failed', variant: 'danger', message: $th->getMessage() ?: 'Unable to add product to quote basket');
         }
     }
 };
