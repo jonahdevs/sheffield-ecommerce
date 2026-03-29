@@ -1,6 +1,6 @@
 <?php
 
-use App\Enums\OrdersStatus;
+use App\Enums\OrderStatus;
 use App\Enums\PaymentStatus;
 use App\Jobs\SyncOrderToSapJob;
 use App\Mail\OrderConfirmationMail;
@@ -209,7 +209,7 @@ new #[Layout('layouts.guest')] class extends Component {
                 ]);
 
                 // Transition order to confirmed
-                $this->order->transitionTo(OrdersStatus::CONFIRMED, notes: 'Payment confirmed via Stripe 3DS redirect', changedByType: 'system');
+                $this->order->transitionTo(OrderStatus::CONFIRMED, notes: 'Payment confirmed via Stripe 3DS redirect', changedByType: 'system');
 
                 $this->order->update(['payment_status' => PaymentStatus::PAID->value]);
                 $this->order->refresh();

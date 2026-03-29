@@ -7,7 +7,7 @@ use App\Services\CartService;
 use App\Services\WishlistService;
 use Flux\Flux;
 
-new #[Title('Cart')] #[Defer] #[Layout('layouts.guest')] class extends Component {
+new #[Title('Cart')] #[Layout('layouts.guest')] class extends Component {
     // -----------------------------------------------------------------------
     // Computed
     // -----------------------------------------------------------------------

@@ -22,19 +22,23 @@ new #[Layout('layouts.guest')] class extends Component {
     #[Computed(persist: true)]
     public function newArrivals()
     {
-        return Product::select(['id', 'name', 'slug', 'brand_id', 'price', 'sale_price', 'image_path', 'short_description', 'type', 'requires_quotation', 'reviews_enabled'])
+        return Product::select([
+                'id', 'name', 'slug', 'brand_id', 'price', 'sale_price',
+                'image_path', 'short_description', 'type', 'requires_quotation',
+                'reviews_enabled', 'stock_status', 'manage_stock', 'stock_quantity',
+                'average_rating', 'reviews_count', 'created_at',
+            ])
             ->with([
                 'brand:id,name,slug',
-                'images' => fn($q) => $q->limit(1),
+                'images' => fn($q) => $q->select(['id', 'product_id', 'image_path', 'alt_text', 'sort_order'])->limit(1),
                 'variants' => fn($q) => $q
                     ->where('is_active', true)
                     ->whereNotNull('price')
                     ->select(['id', 'product_id', 'price', 'sale_price', 'is_active']),
             ])
-            ->withAvg('reviews', 'rating')
             ->active()
             ->newArrivals()
-            ->inRandomOrder()
+            ->latest()
             ->limit(20)
             ->get();
     }
@@ -42,18 +46,22 @@ new #[Layout('layouts.guest')] class extends Component {
     #[Computed(persist: true)]
     public function products()
     {
-        return Product::select(['id', 'name', 'slug', 'brand_id', 'price', 'sale_price', 'image_path', 'short_description', 'type', 'requires_quotation', 'reviews_enabled'])
+        return Product::select([
+                'id', 'name', 'slug', 'brand_id', 'price', 'sale_price',
+                'image_path', 'short_description', 'type', 'requires_quotation',
+                'reviews_enabled', 'stock_status', 'manage_stock', 'stock_quantity',
+                'average_rating', 'reviews_count', 'sales_count', 'created_at',
+            ])
             ->with([
                 'brand:id,name,slug',
-                'images' => fn($q) => $q->limit(1),
+                'images' => fn($q) => $q->select(['id', 'product_id', 'image_path', 'alt_text', 'sort_order'])->limit(1),
                 'variants' => fn($q) => $q
                     ->where('is_active', true)
                     ->whereNotNull('price')
                     ->select(['id', 'product_id', 'price', 'sale_price', 'is_active']),
             ])
-            ->withAvg('reviews', 'rating')
             ->active()
-            ->inRandomOrder()
+            ->orderBy('sales_count', 'desc')
             ->limit(24)
             ->get();
     }

@@ -4,14 +4,14 @@ use App\Models\Brand;
 use App\Models\{Product, Category};
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
-use Livewire\Attributes\Defer;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Illuminate\Database\Eloquent\Builder;
 use Livewire\Attributes\Url;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cache;
 
-new #[Defer] #[Layout('layouts.guest')] class extends Component {
+new #[Layout('layouts.guest')] class extends Component {
     use WithPagination;
 
     #[Url(as: 'search')]
@@ -67,13 +67,17 @@ new #[Defer] #[Layout('layouts.guest')] class extends Component {
     #[Computed(persist: true)]
     public function priceRange()
     {
-        return Product::active()->selectRaw('MIN(price) as min_price, MAX(price) as max_price')->first();
+        return Cache::remember('shop_price_range', 300, fn() =>
+            Product::active()->selectRaw('MIN(price) as min_price, MAX(price) as max_price')->first()
+        );
     }
 
     #[Computed(persist: true)]
     public function brands()
     {
-        return Brand::active()->orderBy('name')->get();
+        return Cache::remember('all_active_brands', 300, fn() =>
+            Brand::active()->orderBy('name')->get(['id', 'name', 'slug'])
+        );
     }
 
     #[Computed]
@@ -89,51 +93,59 @@ new #[Defer] #[Layout('layouts.guest')] class extends Component {
     public function products()
     {
         $query = Product::query()
-            ->select(['id', 'name', 'slug', 'brand_id', 'price', 'sale_price', 'image_path', 'short_description', 'type', 'requires_quotation', 'reviews_enabled'])
+            ->select([
+                'id', 'name', 'slug', 'brand_id', 'price', 'sale_price',
+                'image_path', 'short_description', 'type', 'requires_quotation',
+                'reviews_enabled', 'stock_status', 'manage_stock', 'stock_quantity',
+                'average_rating', 'reviews_count', 'sales_count', 'created_at',
+            ])
             ->with([
                 'brand:id,name,slug',
-                'images' => fn($q) => $q->limit(1),
+                'images' => fn($q) => $q->select(['id', 'product_id', 'image_path', 'alt_text', 'sort_order'])->limit(1),
                 'variants' => fn($q) => $q
                     ->where('is_active', true)
                     ->whereNotNull('price')
                     ->select(['id', 'product_id', 'price', 'sale_price', 'is_active']),
             ])
-            ->withAvg('reviews', 'rating')
             ->active();
 
         $query->when(!empty($this->search), function (Builder $q) {
             $term = $this->search;
-            $q->where(function (Builder $q2) use ($term) {
+            $q->where(fn(Builder $q2) =>
                 $q2->where('name', 'like', "%{$term}%")
                     ->orWhere('sku', 'like', "%{$term}%")
-                    ->orWhere('short_description', 'like', "%{$term}%");
-            });
+                    ->orWhere('short_description', 'like', "%{$term}%")
+            );
         });
 
-        $query->when(!empty($this->selectedBrands), function (Builder $q) {
-            $q->whereHas('brand', fn(Builder $q2) => $q2->whereIn('slug', $this->selectedBrands));
-        });
+        $query->when(!empty($this->selectedBrands), fn(Builder $q) =>
+            $q->whereHas('brand', fn(Builder $q2) => $q2->whereIn('slug', $this->selectedBrands))
+        );
 
         $query->when($this->minPrice !== null, fn(Builder $q) => $q->where('price', '>=', $this->minPrice));
         $query->when($this->maxPrice !== null, fn(Builder $q) => $q->where('price', '<=', $this->maxPrice));
 
-        $query->when($this->minRating, function (Builder $q) {
-            $q->whereHas('reviews')->having('reviews_avg_rating', '>=', $this->minRating);
-        });
+        $query->when($this->minRating, fn(Builder $q) =>
+            $q->where('average_rating', '>=', $this->minRating)
+        );
 
-        $query->when($this->inStock, fn(Builder $q) => $q->where('stock_quantity', '>', 0));
+        $query->when($this->inStock, fn(Builder $q) =>
+            $q->where(fn($q2) => $q2->where('stock_quantity', '>', 0)->orWhere('stock_status', 'in_stock'))
+        );
         $query->when($this->featured, fn(Builder $q) => $q->where('is_featured', true));
-        $query->when($this->onSale, fn(Builder $q) => $q->whereNotNull('sale_price')->where('sale_price', '<', DB::raw('price')));
+        $query->when($this->onSale, fn(Builder $q) =>
+            $q->whereNotNull('sale_price')->where('sale_price', '<', DB::raw('price'))
+        );
 
         match ($this->sortBy) {
-            'name_asc' => $query->orderBy('name', 'asc'),
-            'name_desc' => $query->orderBy('name', 'desc'),
-            'price_asc' => $query->orderBy('price', 'asc'),
+            'name_asc'   => $query->orderBy('name', 'asc'),
+            'name_desc'  => $query->orderBy('name', 'desc'),
+            'price_asc'  => $query->orderBy('price', 'asc'),
             'price_desc' => $query->orderBy('price', 'desc'),
-            'rating' => $query->orderBy('reviews_avg_rating', 'desc'),
-            'newest' => $query->orderBy('created_at', 'desc'),
-            'popular' => $query->withCount('orderItems')->orderBy('order_items_count', 'desc'),
-            default => $query->orderBy('created_at', 'desc'),
+            'rating'     => $query->orderBy('average_rating', 'desc'),
+            'newest'     => $query->orderBy('created_at', 'desc'),
+            'popular'    => $query->orderBy('sales_count', 'desc'),
+            default      => $query->orderBy('created_at', 'desc'),
         };
 
         return $query->paginate(20);
@@ -148,7 +160,9 @@ new #[Defer] #[Layout('layouts.guest')] class extends Component {
     #[Computed(persist: true)]
     public function categories()
     {
-        return Category::active()->whereNull('parent_id')->orderBy('name')->get();
+        return Cache::remember('root_active_categories', 300, fn() =>
+            Category::active()->whereNull('parent_id')->orderBy('name')->get(['id', 'name', 'slug'])
+        );
     }
 
     // =========================================================================

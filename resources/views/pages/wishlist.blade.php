@@ -5,45 +5,43 @@ use Livewire\Component;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\On;
-use Livewire\Attributes\Defer;
 
-new #[Defer] #[Layout('layouts.guest')] class extends Component {
+new #[Layout('layouts.guest')] class extends Component {
     #[Computed]
     #[On('wishlist-updated')]
     public function products()
     {
+        $columns = [
+            'products.id', 'products.name', 'products.slug', 'products.brand_id',
+            'products.price', 'products.sale_price', 'products.image_path',
+            'products.short_description', 'products.type', 'products.requires_quotation',
+            'products.reviews_enabled', 'products.stock_status', 'products.manage_stock',
+            'products.stock_quantity', 'products.average_rating', 'products.reviews_count',
+        ];
+
+        $with = [
+            'brand:id,name,slug',
+            'images' => fn($q) => $q->select(['id', 'product_id', 'image_path', 'alt_text', 'sort_order'])->limit(1),
+            'variants' => fn($q) => $q
+                ->where('is_active', true)
+                ->whereNotNull('price')
+                ->select(['id', 'product_id', 'price', 'sale_price', 'is_active']),
+        ];
+
         if (auth()->check()) {
-            return auth()
-                ->user()
-                ->wishlistProducts()
-                ->select(['products.id', 'products.name', 'products.slug', 'products.brand_id', 'products.price', 'products.sale_price', 'products.image_path', 'products.short_description', 'products.type', 'products.requires_quotation', 'products.reviews_enabled'])
-                ->with([
-                    'brand:id,name,slug',
-                    'images' => fn($q) => $q->limit(1),
-                    'variants' => fn($q) => $q
-                        ->where('is_active', true)
-                        ->whereNotNull('price')
-                        ->select(['id', 'product_id', 'price', 'sale_price', 'is_active']),
-                ])
-                ->withAvg('reviews', 'rating')
+            return auth()->user()->wishlistProducts()
+                ->select($columns)
+                ->with($with)
                 ->active()
                 ->get();
-        } else {
-            $wishlistIds = request()->session()->get('wishlist', []);
-
-            return Product::select(['products.id', 'products.name', 'products.slug', 'products.brand_id', 'products.price', 'products.sale_price', 'products.image_path', 'products.short_description', 'products.type', 'products.requires_quotation', 'products.reviews_enabled'])
-                ->with([
-                    'brand:id,name,slug',
-                    'images' => fn($q) => $q->limit(1),
-                    'variants' => fn($q) => $q
-                        ->where('is_active', true)
-                        ->whereNotNull('price')
-                        ->select(['id', 'product_id', 'price', 'sale_price', 'is_active']),
-                ])
-                ->withAvg('reviews', 'rating')
-                ->whereIn('id', $wishlistIds)
-                ->get();
         }
+
+        $wishlistIds = request()->session()->get('wishlist', []);
+
+        return Product::select($columns)
+            ->with($with)
+            ->whereIn('id', $wishlistIds)
+            ->get();
     }
 };
 ?>

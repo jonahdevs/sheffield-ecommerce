@@ -1,6 +1,6 @@
 <?php
 
-use App\Enums\{OrdersStatus, PaymentStatus};
+use App\Enums\{OrderStatus, PaymentStatus};
 use App\Models\Order;
 use Livewire\Attributes\{Computed, Layout, Title};
 use Livewire\Component;

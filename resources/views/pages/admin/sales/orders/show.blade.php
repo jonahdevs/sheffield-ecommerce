@@ -1,6 +1,6 @@
 <?php
 
-use App\Enums\{OrdersStatus, DeliveryOrderStatus, PaymentStatus};
+use App\Enums\{OrderStatus, DeliveryOrderStatus, PaymentStatus};
 use App\Models\{Order, DeliveryOrder};
 use Illuminate\Validation\Rule;
 use Livewire\Attributes\{Computed, Title};
@@ -40,11 +40,11 @@ new #[Title('Order Details')] class extends Component {
         }
 
         $this->validate([
-            'status' => ['required', Rule::enum(OrdersStatus::class)],
+            'status' => ['required', Rule::enum(OrderStatus::class)],
             'note' => 'nullable|string|max:1000',
         ]);
 
-        $newStatus = OrdersStatus::from($this->status);
+        $newStatus = OrderStatus::from($this->status);
 
         if (!$this->order->status->canTransitionTo($newStatus)) {
             $this->addError('status', "Cannot transition from {$this->order->status->label()} to {$newStatus->label()}.");
@@ -56,7 +56,7 @@ new #[Title('Order Details')] class extends Component {
                 // Create the delivery order when transitioning to PROCESSING.
                 // The guard inside createDeliveryOrder() ensures this only fires
                 // on sales orders — quotations are already redirected away in mount().
-                if ($newStatus === OrdersStatus::PROCESSING) {
+                if ($newStatus === OrderStatus::PROCESSING) {
                     $this->createDeliveryOrder();
                 }
 
@@ -306,15 +306,15 @@ new #[Title('Order Details')] class extends Component {
                         // The PENDING_QUOTE branch has been removed since quotations
                         // are redirected to their own show page in mount().
                         $mainPath = [
-                            OrdersStatus::PENDING,
-                            OrdersStatus::CONFIRMED,
-                            OrdersStatus::PROCESSING,
-                            OrdersStatus::SHIPPED,
-                            OrdersStatus::DELIVERED,
+                            OrderStatus::PENDING,
+                            OrderStatus::CONFIRMED,
+                            OrderStatus::PROCESSING,
+                            OrderStatus::SHIPPED,
+                            OrderStatus::DELIVERED,
                         ];
 
-                        $isCancelled = $order->status === OrdersStatus::CANCELLED;
-                        $isReturned = $order->status === OrdersStatus::RETURNED;
+                        $isCancelled = $order->status === OrderStatus::CANCELLED;
+                        $isReturned = $order->status === OrderStatus::RETURNED;
                         $isTerminal = $isCancelled || $isReturned;
 
                         // Histories keyed by to_status for quick lookup
@@ -403,7 +403,7 @@ new #[Title('Order Details')] class extends Component {
                                 <div
                                     class="relative z-10 shrink-0 w-8 h-8 rounded-full flex items-center justify-center
                                     bg-rose-100 dark:bg-rose-950 text-rose-600 dark:text-rose-400">
-                                    <flux:icon name="{{ OrdersStatus::CANCELLED->icon() }}" class="size-4" />
+                                    <flux:icon name="{{ OrderStatus::CANCELLED->icon() }}" class="size-4" />
                                 </div>
                                 <div class="flex-1 flex items-start justify-between gap-4 pt-1">
                                     <div>
@@ -440,7 +440,7 @@ new #[Title('Order Details')] class extends Component {
                                 <div
                                     class="relative z-10 shrink-0 w-8 h-8 rounded-full flex items-center justify-center
                                     bg-orange-100 dark:bg-orange-950 text-orange-600 dark:text-orange-400">
-                                    <flux:icon name="{{ OrdersStatus::RETURNED->icon() }}" class="size-4" />
+                                    <flux:icon name="{{ OrderStatus::RETURNED->icon() }}" class="size-4" />
                                 </div>
                                 <div class="flex-1 flex items-start justify-between gap-4 pt-1">
                                     <div>

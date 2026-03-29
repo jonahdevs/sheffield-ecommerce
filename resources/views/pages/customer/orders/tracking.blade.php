@@ -1,6 +1,6 @@
 <?php
 
-use App\Enums\OrdersStatus;
+use App\Enums\OrderStatus;
 use App\Models\Order;
 use Livewire\Attributes\{Layout, Title};
 use Livewire\Component;
@@ -10,13 +10,6 @@ new #[Title('Order Tracking')] #[Layout('layouts.customer')] class extends Compo
 
     public function mount(Order $order): void
     {
-        // Guard: tracking is only for sales orders.
-        // Quotations have their own dedicated page with a different timeline.
-        if ($order->isQuotation()) {
-            $this->redirectRoute('customer.quotations.show', $order, navigate: true);
-            return;
-        }
-
         // Guard: order must belong to the authenticated customer
         if ($order->user_id !== auth()->id()) {
             $this->redirectRoute('customer.orders.index', navigate: true);
@@ -25,7 +18,7 @@ new #[Title('Order Tracking')] #[Layout('layouts.customer')] class extends Compo
 
         $this->order = $order->load([
             'statusHistories.changedBy',
-            'parentQuotation', // loaded so we can show "converted from quote" notice
+            'quote', // loaded so we can show "converted from quote" notice
         ]);
     }
 };
@@ -51,14 +44,14 @@ new #[Title('Order Tracking')] #[Layout('layouts.customer')] class extends Compo
 
             {{-- Show quotation origin when this sales order was converted from a quote.
                  Gives the customer a clear link back to the original quotation document. --}}
-            @if ($order->wasConverted() && $order->parentQuotation)
+            @if ($order->wasConvertedFromQuote() && $order->quote)
                 <div class="flex items-center gap-2 mt-2">
                     <flux:icon.tag class="size-3.5 text-zinc-400" />
                     <flux:text class="text-xs text-zinc-400">
                         Converted from quotation
-                        <flux:link :href="route('customer.quotations.show', $order->parentQuotation)" wire:navigate
+                        <flux:link :href="route('customer.quotations.show', $order->quote)" wire:navigate
                             class="text-xs!">
-                            {{ $order->parentQuotation->reference }}
+                            {{ $order->quote->reference }}
                         </flux:link>
                     </flux:text>
                 </div>
@@ -73,15 +66,15 @@ new #[Title('Order Tracking')] #[Layout('layouts.customer')] class extends Compo
                 // The PENDING_QUOTE path has been removed — quotations have their
                 // own timeline on the customer.quotations.show page.
                 $mainPath = [
-                    OrdersStatus::PENDING,
-                    OrdersStatus::CONFIRMED,
-                    OrdersStatus::PROCESSING,
-                    OrdersStatus::SHIPPED,
-                    OrdersStatus::DELIVERED,
+                    OrderStatus::PENDING,
+                    OrderStatus::CONFIRMED,
+                    OrderStatus::PROCESSING,
+                    OrderStatus::SHIPPED,
+                    OrderStatus::DELIVERED,
                 ];
 
-                $isCancelled = $order->status === OrdersStatus::CANCELLED;
-                $isReturned = $order->status === OrdersStatus::RETURNED;
+                $isCancelled = $order->status === OrderStatus::CANCELLED;
+                $isReturned = $order->status === OrderStatus::RETURNED;
                 $isTerminal = $isCancelled || $isReturned;
 
                 $histories = $order->statusHistories->keyBy('to_status');
@@ -208,7 +201,7 @@ new #[Title('Order Tracking')] #[Layout('layouts.customer')] class extends Compo
                         <div
                             class="relative z-10 shrink-0 w-8 h-8 rounded-full flex items-center justify-center
                             bg-rose-100 dark:bg-rose-950 text-rose-500 dark:text-rose-400">
-                            <flux:icon name="{{ OrdersStatus::CANCELLED->icon() }}" class="size-4" />
+                            <flux:icon name="{{ OrderStatus::CANCELLED->icon() }}" class="size-4" />
                         </div>
                         <div class="flex-1 pt-1">
                             <div class="flex items-start justify-between gap-4">
@@ -243,7 +236,7 @@ new #[Title('Order Tracking')] #[Layout('layouts.customer')] class extends Compo
                         <div
                             class="relative z-10 shrink-0 w-8 h-8 rounded-full flex items-center justify-center
                             bg-orange-100 dark:bg-orange-950 text-orange-500 dark:text-orange-400">
-                            <flux:icon name="{{ OrdersStatus::RETURNED->icon() }}" class="size-4" />
+                            <flux:icon name="{{ OrderStatus::RETURNED->icon() }}" class="size-4" />
                         </div>
                         <div class="flex-1 pt-1">
                             <div class="flex items-start justify-between gap-4">
