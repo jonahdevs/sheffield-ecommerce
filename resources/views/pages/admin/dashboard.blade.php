@@ -360,7 +360,7 @@ new #[Title('Dashboard')] class extends Component {
             <flux:subheading>{{ $this->periodLabel }}</flux:subheading>
         </div>
         <div class="flex items-center gap-2">
-            <div class="relative">
+            <div class="relative" wire:ignore>
                 <input type="text" readonly
                     class="dashboard-date-range w-64 pl-8 pr-3 py-2 text-sm border border-zinc-200 dark:border-zinc-700 rounded-lg bg-white dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 cursor-pointer focus:outline-none focus:ring-2 focus:ring-zinc-300 hover:border-zinc-400 transition-colors" />
                 <flux:icon.calendar-days
@@ -1388,6 +1388,22 @@ new #[Title('Dashboard')] class extends Component {
                 const preset = label === 'Custom Range' ? 'custom' : label.toLowerCase().replace(/\s+/g, '_');
                 $wire.setDateRange(preset, start.format('YYYY-MM-DD'), end.format('YYYY-MM-DD'));
             });
+
+            // Set initial display value
+            updateDateRangeDisplay();
+        }
+
+        function updateDateRangeDisplay() {
+            const el = $('.dashboard-date-range').first();
+            if (!el.length || !el.data('daterangepicker')) return;
+
+            const picker = el.data('daterangepicker');
+            const start = moment($wire.dateFrom);
+            const end = moment($wire.dateTo);
+
+            picker.setStartDate(start);
+            picker.setEndDate(end);
+            el.val(start.format('MMM DD, YYYY') + ' – ' + end.format('MMM DD, YYYY'));
         }
 
         // Boot - wait for libraries to load before initializing
@@ -1405,9 +1421,9 @@ new #[Title('Dashboard')] class extends Component {
             }) => {
                 onMorph(async () => {
                     initAllCharts();
-                    // Reinitialize datepicker after DOM morph
+                    // Update datepicker display after DOM morph (don't reinitialize since wire:ignore preserves it)
                     waitForLibraries(() => {
-                        initDateRangePicker();
+                        updateDateRangeDisplay();
                     });
                 });
             });
