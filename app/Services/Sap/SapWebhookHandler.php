@@ -13,7 +13,8 @@ class SapWebhookHandler
 {
     public function __construct(
         private readonly KraReceiptService $receiptService,
-    ) {}
+    ) {
+    }
 
     // ================================================================
     // Entry point — called by SapWebhookController
@@ -70,7 +71,7 @@ class SapWebhookHandler
             return;
         }
 
-        $data      = $payload['data'] ?? [];
+        $data = $payload['data'] ?? [];
         $reference = $data['external_reference'] ?? null;
 
         // Property 6: reject webhooks with unknown order references
@@ -91,7 +92,7 @@ class SapWebhookHandler
 
         if ($order->kra_cu_number && $order->kra_cu_number === $incomingCuNumber) {
             Log::info('SAP webhook: duplicate delivery, CU number already stored', [
-                'order_id'      => $order->id,
+                'order_id' => $order->id,
                 'kra_cu_number' => $incomingCuNumber,
             ]);
             return;
@@ -101,8 +102,8 @@ class SapWebhookHandler
             cuNumber: $incomingCuNumber,
             kraInvoiceNumber: $data['kra_invoice_number'] ?? null,
             validatedAt: isset($data['validated_at'])
-                ? \Carbon\Carbon::parse($data['validated_at'])
-                : now(),
+            ? \Carbon\Carbon::parse($data['validated_at'])
+            : now(),
         );
 
         $this->storeCuNumber($order, $cuResult, $payload);
@@ -120,29 +121,39 @@ class SapWebhookHandler
     private function storeCuNumber(Order $order, CuNumberResult $result, array $rawPayload): void
     {
         $order->update([
-            'kra_cu_number'      => $result->cuNumber,
+            'kra_cu_number' => $result->cuNumber,
             'kra_invoice_number' => $result->kraInvoiceNumber,
-            'kra_validated_at'   => $result->validatedAt,
-            'sap_sync_status'    => SapSyncStatus::CU_RECEIVED,
+            'kra_validated_at' => $result->validatedAt,
+            'sap_sync_status' => SapSyncStatus::CU_RECEIVED,
         ]);
 
         // Log the webhook as a successful inbound operation
         SapSyncLog::create([
-            'order_id'         => $order->id,
-            'operation'        => 'cu_webhook',
-            'status'           => 'success',
-            'endpoint'         => '/webhooks/sap',
-            'http_method'      => 'POST',
-            'request_payload'  => $rawPayload,
+            'order_id' => $order->id,
+            'operation' => 'cu_webhook',
+            'status' => 'success',
+            'endpoint' => '/webhooks/sap',
+            'http_method' => 'POST',
+            'request_payload' => $rawPayload,
             'response_payload' => null,
             'http_status_code' => 200,
-            'duration_ms'      => null,
+            'duration_ms' => null,
         ]);
 
         Log::info('SAP webhook: CU number stored', [
-            'order_id'      => $order->id,
+            'order_id' => $order->id,
             'kra_cu_number' => $result->cuNumber,
         ]);
+
+        // Activity log for audit trail
+        activity()
+            ->performedOn($order)
+            ->withProperties([
+                'kra_cu_number' => $result->cuNumber,
+                'kra_invoice_number' => $result->kraInvoiceNumber,
+                'kra_validated_at' => $result->validatedAt?->toISOString(),
+            ])
+            ->log('kra_cu_number_received');
     }
 
     private function generateAndSendReceipt(Order $order): void
@@ -155,7 +166,7 @@ class SapWebhookHandler
             // SAP would keep retrying the webhook instead of the real issue.
             Log::error('SAP webhook: receipt generation failed', [
                 'order_id' => $order->id,
-                'error'    => $e->getMessage(),
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -167,19 +178,19 @@ class SapWebhookHandler
     private function logWebhookRequest(Request $request, array $payload): void
     {
         $reference = $payload['data']['external_reference'] ?? null;
-        $order     = $reference ? Order::where('reference', $reference)->first() : null;
+        $order = $reference ? Order::where('reference', $reference)->first() : null;
 
         if ($order) {
             SapSyncLog::create([
-                'order_id'         => $order->id,
-                'operation'        => 'cu_webhook',
-                'status'           => 'pending',
-                'endpoint'         => '/webhooks/sap',
-                'http_method'      => 'POST',
-                'request_payload'  => $payload,
+                'order_id' => $order->id,
+                'operation' => 'cu_webhook',
+                'status' => 'pending',
+                'endpoint' => '/webhooks/sap',
+                'http_method' => 'POST',
+                'request_payload' => $payload,
                 'response_payload' => null,
                 'http_status_code' => null,
-                'duration_ms'      => null,
+                'duration_ms' => null,
             ]);
         }
     }

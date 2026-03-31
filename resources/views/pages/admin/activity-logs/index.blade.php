@@ -8,7 +8,7 @@ use Livewire\Attributes\{Computed, Layout, Title, Url};
 use Spatie\Activitylog\Models\Activity;
 use Illuminate\Database\Eloquent\Builder;
 
-new #[Title('Activity Logs')] #[Layout('layouts.admin')] class extends Component {
+new #[Title('Activity Logs')] class extends Component {
     use WithPagination;
 
     #[Url]
