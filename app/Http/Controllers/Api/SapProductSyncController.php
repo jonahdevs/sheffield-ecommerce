@@ -12,11 +12,10 @@ class SapProductSyncController extends Controller
 {
     public function __construct(
         private readonly SapProductSyncService $syncService
-    ) {
-    }
+    ) {}
 
     /**
-     * Batch sync multiple products from SAP Business One for HANA.
+     * Syncing multiple products from SAP Business One for HANA.
      *
      * SAP calls this endpoint to update product prices and stock quantities.
      * Validates the secret header, processes all products, and returns detailed results.
@@ -51,13 +50,12 @@ class SapProductSyncController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message' => 'Batch sync completed',
+                'message' => 'Syncing completed',
                 'total' => count($products),
                 'successful' => $results['successful'],
                 'failed' => $results['failed'],
                 'results' => $results['details'],
             ], 200);
-
         } catch (\Throwable $e) {
             Log::error('SAP batch product sync failed', [
                 'error' => $e->getMessage(),
@@ -66,7 +64,7 @@ class SapProductSyncController extends Controller
 
             return response()->json([
                 'success' => false,
-                'message' => 'Batch sync failed: ' . $e->getMessage(),
+                'message' => 'Syncing failed: ' . $e->getMessage(),
             ], 500);
         }
     }
