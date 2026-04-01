@@ -60,7 +60,8 @@
                             <div class="swiper-slide flex items-center justify-center">
                                 <a href="#"
                                     class="text-center text-xs sm:text-sm hover:opacity-90 transition-opacity">
-                                    Free Shipping on Orders Over {{ get_currency_symbol() }} 10,000 <span class="underline font-medium">Learn
+                                    Free Shipping on Orders Over {{ get_currency_symbol() }} 10,000 <span
+                                        class="underline font-medium">Learn
                                         More</span>
                                 </a>
                             </div>
@@ -107,6 +108,19 @@
     @endpersist
 
     @fluxScripts
+
+    {{-- Guest Layout - Brand Secondary Progress Bar --}}
+    <style>
+        [x-cloak] {
+            display: none !important;
+        }
+
+        /* Livewire Progress Bar - Guest (Brand Secondary) */
+        [x-data*="progress"]>div {
+            background-color: var(--brand-secondary) !important;
+            box-shadow: 0 0 10px color-mix(in srgb, var(--brand-secondary) 50%, transparent);
+        }
+    </style>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
