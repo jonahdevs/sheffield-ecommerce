@@ -589,7 +589,7 @@ new #[Title('Dashboard')] class extends Component {
                     <flux:heading size="sm">Top Sales Locations</flux:heading>
                     <flux:text class="text-[10px] text-zinc-400">Distribution by city</flux:text>
                 </div>
-                <flux:link href="#" class="text-xs">Report</flux:link>
+                <flux:link :href="route('admin.coming-soon', ['feature' => 'Sales Location Report', 'description' => 'Detailed analytics on sales distribution across different cities and regions.'])" wire:navigate class="text-xs">Report</flux:link>
             </div>
             @php
                 $locations = [
@@ -948,7 +948,7 @@ new #[Title('Dashboard')] class extends Component {
         <flux:card class="p-0 flex flex-col">
             <div class="flex items-center justify-between px-5 py-3 border-b border-zinc-100 dark:border-zinc-800">
                 <flux:heading>Customer satisfaction</flux:heading>
-                <flux:link href="#" class="text-xs">Report</flux:link>
+                <flux:link :href="route('admin.coming-soon', ['feature' => 'Customer Satisfaction Report', 'description' => 'Comprehensive customer satisfaction metrics and trends over time.'])" wire:navigate class="text-xs">Report</flux:link>
             </div>
 
             <div class="p-4 flex flex-col flex-1">
@@ -1028,7 +1028,7 @@ new #[Title('Dashboard')] class extends Component {
         <flux:card class="p-0">
             <div class="flex items-center justify-between px-5 py-3 border-b border-zinc-100 dark:border-zinc-800">
                 <flux:heading>Top categories</flux:heading>
-                <flux:link href="#" class="text-xs">Report</flux:link>
+                <flux:link :href="route('admin.coming-soon', ['feature' => 'Category Performance Report', 'description' => 'Detailed breakdown of sales performance by product category.'])" wire:navigate class="text-xs">Report</flux:link>
             </div>
 
             <div class="p-4 flex flex-col items-center gap-4">
@@ -1136,7 +1136,7 @@ new #[Title('Dashboard')] class extends Component {
         <flux:card class="p-0">
             <div class="flex items-center justify-between px-5 py-3 border-b border-zinc-100 dark:border-zinc-800">
                 <flux:heading>Top products</flux:heading>
-                <flux:link href="#" class="text-xs">Report</flux:link>
+                <flux:link :href="route('admin.coming-soon', ['feature' => 'Product Performance Report', 'description' => 'In-depth analysis of best-selling products and revenue trends.'])" wire:navigate class="text-xs">Report</flux:link>
             </div>
             <div class="p-4 flex flex-col gap-3">
                 @php $prodColors = ['#10B981', '#3B82F6', '#F59E0B', '#8B5CF6', '#F43F5E', '#06B6D4']; @endphp

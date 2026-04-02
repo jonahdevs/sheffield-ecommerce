@@ -98,7 +98,7 @@ new #[Title('Categories')] class extends Component {
                 'section' => $this->tab,
                 'exception' => $th->getMessage(),
             ]);
-            $this->dispatch('notify', variant: 'danger', message: 'Failed to save order.');
+            $this->dispatch('notify', title: 'Sort Failed', variant: 'danger', message: 'Failed to save order.');
         }
     }
 
@@ -107,7 +107,7 @@ new #[Title('Categories')] class extends Component {
         $exists = CategoryPlacement::where('category_id', $categoryId)->where('section', $this->tab)->exists();
 
         if ($exists) {
-            $this->dispatch('notify', variant: 'warning', message: 'Category is already in this section.');
+            $this->dispatch('notify', title: 'Already Added', variant: 'warning', message: 'Category is already in this section.');
             return;
         }
 
@@ -120,14 +120,14 @@ new #[Title('Categories')] class extends Component {
         ]);
 
         unset($this->sectionPlacements, $this->availableCategories);
-        $this->dispatch('notify', variant: 'success', message: 'Category added to section.');
+        $this->dispatch('notify', title: 'Category Added', variant: 'success', message: 'Category added to section.');
     }
 
     public function removePlacement(int $placementId): void
     {
         CategoryPlacement::findOrFail($placementId)->delete();
         unset($this->sectionPlacements, $this->availableCategories);
-        $this->dispatch('notify', variant: 'success', message: 'Category removed from section.');
+        $this->dispatch('notify', title: 'Category Removed', variant: 'success', message: 'Category removed from section.');
     }
 
     // -----------------------------------------------
@@ -147,13 +147,13 @@ new #[Title('Categories')] class extends Component {
             if ($this->categoryToDelete) {
                 Category::findOrFail($this->categoryToDelete)->delete();
                 $this->modal('delete-category')->close();
-                $this->dispatch('notify', variant: 'success', message: 'Category deleted successfully!');
+                $this->dispatch('notify', title: 'Category Deleted', variant: 'success', message: 'Category deleted successfully!');
                 $this->categoryToDelete = null;
                 $this->categoryNameToDelete = null;
             }
         } catch (\Throwable $th) {
             \Log::error('Error deleting category: ' . $th->getMessage(), ['exception' => $th]);
-            $this->dispatch('notify', variant: 'danger', message: 'Failed to delete category.');
+            $this->dispatch('notify', title: 'Delete Failed', variant: 'danger', message: 'Failed to delete category.');
         }
     }
 

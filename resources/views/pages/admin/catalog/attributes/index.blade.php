@@ -18,7 +18,7 @@ new #[Title('Product Attributes')] class extends Component {
     {
         $attribute = Attribute::findOrFail($id);
         $attribute->delete();
-        $this->dispatch('notify', variant: 'success', message: 'Attribute deleted successfully.');
+        $this->dispatch('notify', title: 'Attribute Deleted', variant: 'success', message: 'Attribute deleted successfully.');
     }
 
     public function editAttribute($id): void
@@ -40,10 +40,10 @@ new #[Title('Product Attributes')] class extends Component {
             if ($this->editing) {
                 $this->form->update();
                 $this->editing = false;
-                $this->dispatch('notify', variant: 'success', message: 'Attribute updated.');
+                $this->dispatch('notify', title: 'Attribute Updated', variant: 'success', message: 'Attribute updated.');
             } else {
                 $this->form->store();
-                $this->dispatch('notify', variant: 'success', message: 'Attribute created.');
+                $this->dispatch('notify', title: 'Attribute Created', variant: 'success', message: 'Attribute created.');
             }
 
             $this->form->reset();
@@ -55,7 +55,7 @@ new #[Title('Product Attributes')] class extends Component {
                 'attribute_id' => $this->form->attribute?->id,
                 'user_id' => auth()->id(),
             ]);
-            $this->dispatch('notify', variant: 'danger', message: 'Something went wrong. Please try again.');
+            $this->dispatch('notify', title: 'Save Failed', variant: 'danger', message: 'Something went wrong. Please try again.');
         }
     }
 

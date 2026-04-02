@@ -112,13 +112,21 @@
 
             {{-- Marketing & Content --}}
             <flux:navlist.group heading="Marketing & Content" expanded="false" class="grid">
-                <flux:navlist.item icon="megaphone" wire:navigate href="#">Campaigns</flux:navlist.item>
-                <flux:navlist.item icon="ticket" wire:navigate href="#">Coupons & Discounts
+                <flux:navlist.item icon="megaphone" wire:navigate :href="route('admin.marketing.campaigns.index')"
+                    :current="request()->routeIs('admin.marketing.campaigns.*')">Campaigns</flux:navlist.item>
+                <flux:navlist.item icon="ticket" wire:navigate :href="route('admin.marketing.coupons.index')"
+                    :current="request()->routeIs('admin.marketing.coupons.*')">Coupons & Discounts
                 </flux:navlist.item>
-                <flux:navlist.item icon="envelope" wire:navigate href="#">Newsletter</flux:navlist.item>
-                <flux:navlist.item icon="document-text" wire:navigate href="#">Blog Posts
+                <flux:navlist.item icon="envelope" wire:navigate :href="route('admin.marketing.newsletter.index')"
+                    :current="request()->routeIs('admin.marketing.newsletter.*')">Newsletter</flux:navlist.item>
+                <flux:navlist.item icon="document-text" wire:navigate :href="route('admin.content.blog.index')"
+                    :current="request()->routeIs('admin.content.blog.*')">Blog Posts
                 </flux:navlist.item>
-                <flux:navlist.item icon="question-mark-circle" wire:navigate href="#">FAQ Management
+                <flux:navlist.item icon="question-mark-circle" wire:navigate :href="route('admin.content.faq.index')"
+                    :current="request()->routeIs('admin.content.faq.*')">FAQ Management
+                </flux:navlist.item>
+                <flux:navlist.item icon="document" wire:navigate :href="route('admin.content.pages.index')"
+                    :current="request()->routeIs('admin.content.pages.*')">Pages
                 </flux:navlist.item>
             </flux:navlist.group>
 

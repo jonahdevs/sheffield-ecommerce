@@ -31,13 +31,13 @@ new #[Title('Edit Product')] class extends BaseProductComponent {
                 $this->form->update();
             });
 
-            $this->dispatch('notify', variant: 'success', message: 'Product updated successfully!');
+            $this->dispatch('notify', title: 'Product Updated', variant: 'success', message: 'Product updated successfully!');
             $this->dispatch('product-saved');
         } catch (ValidationException $e) {
             throw $e;
         } catch (\Throwable $th) {
             \Log::error('Product update failed', ['exception' => $th]);
-            $this->dispatch('notify', variant: 'danger', message: 'Failed to update product.');
+            $this->dispatch('notify', title: 'Update Failed', variant: 'danger', message: 'Failed to update product.');
         }
     }
 };

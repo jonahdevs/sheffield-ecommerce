@@ -40,10 +40,10 @@ new class extends Component {
             if ($this->editing) {
                 $this->form->update();
                 $this->editing = false;
-                $this->dispatch('notify', variant: 'success', message: 'Value updated.');
+                $this->dispatch('notify', title: 'Value Updated', variant: 'success', message: 'Value updated.');
             } else {
                 $this->form->store($this->attribute->id);
-                $this->dispatch('notify', variant: 'success', message: 'Value added.');
+                $this->dispatch('notify', title: 'Value Added', variant: 'success', message: 'Value added.');
             }
 
             $this->form->reset();
@@ -55,14 +55,14 @@ new class extends Component {
                 'attribute_id' => $this->attribute->id,
                 'user_id' => auth()->id(),
             ]);
-            $this->dispatch('notify', variant: 'danger', message: 'Something went wrong. Please try again.');
+            $this->dispatch('notify', title: 'Save Failed', variant: 'danger', message: 'Something went wrong. Please try again.');
         }
     }
 
     public function deleteValue(int $id): void
     {
         AttributeValue::findOrFail($id)->delete();
-        $this->dispatch('notify', variant: 'success', message: 'Value deleted.');
+        $this->dispatch('notify', title: 'Value Deleted', variant: 'success', message: 'Value deleted.');
     }
 
     public function handleSort(string $id, string $position): void

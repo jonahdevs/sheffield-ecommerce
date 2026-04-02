@@ -16,14 +16,14 @@ new #[Title('Create Product')] class extends BaseProductComponent {
                 $this->persistProduct($product);
             });
 
-            $this->dispatch('notify', variant: 'success', message: 'Product created successfully!');
+            $this->dispatch('notify', title: 'Product Created', variant: 'success', message: 'Product created successfully!');
             $this->dispatch('product-saved');
             $this->redirectRoute('admin.products.index', navigate: true);
         } catch (ValidationException $e) {
             throw $e;
         } catch (\Throwable $th) {
             \Log::error('Product create failed', ['exception' => $th]);
-            $this->dispatch('notify', variant: 'danger', message: 'Failed to create product.');
+            $this->dispatch('notify', title: 'Creation Failed', variant: 'danger', message: 'Failed to create product.');
         }
     }
 };

@@ -110,7 +110,7 @@ new #[Title('Products')] class extends Component {
     public function trash(int $id): void
     {
         Product::findOrFail($id)->delete();
-        $this->dispatch('notify', variant: 'success', message: 'Product moved to trash.');
+        $this->dispatch('notify', title: 'Product Trashed', variant: 'success', message: 'Product moved to trash.');
     }
 
     public function duplicate(int $id): void
@@ -140,7 +140,7 @@ new #[Title('Products')] class extends Component {
             ->toArray();
         $copy->categories()->sync($categoryData);
 
-        $this->dispatch('notify', variant: 'success', message: 'Product duplicated as draft.');
+        $this->dispatch('notify', title: 'Product Duplicated', variant: 'success', message: 'Product duplicated as draft.');
         $this->redirectRoute('admin.catalog.products.edit', $copy, navigate: true);
     }
 
@@ -151,7 +151,7 @@ new #[Title('Products')] class extends Component {
             'status' => $status,
             'published_at' => $status === ProductStatus::PUBLISHED->value ? now() : $product->published_at,
         ]);
-        $this->dispatch('notify', variant: 'success', message: "Status updated to {$product->fresh()->status->label()}.");
+        $this->dispatch('notify', title: 'Status Updated', variant: 'success', message: "Status updated to {$product->fresh()->status->label()}.");
     }
 
     //  Bulk Actions
@@ -174,7 +174,7 @@ new #[Title('Products')] class extends Component {
         };
 
         unset($this->products);
-        $this->dispatch('notify', variant: 'success', message: count($ids) . ' products updated successfully.');
+        $this->dispatch('notify', title: 'Bulk Update Complete', variant: 'success', message: count($ids) . ' products updated successfully.');
     }
 
     private function bulkAssignCategory(array $ids, string $categoryId): void

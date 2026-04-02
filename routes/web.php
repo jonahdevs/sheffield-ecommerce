@@ -154,6 +154,7 @@ Route::middleware(['auth', 'staff', 'verified'])
     ->group(function () {
         Route::livewire('dashboard', 'pages::admin.dashboard')->name('dashboard');
         Route::livewire('notifications', 'pages::admin.notifications.index')->name('notifications');
+        Route::livewire('coming-soon', 'pages::admin.coming-soon')->name('coming-soon');
 
         // --------------------------------------------------------------------
         // System
@@ -260,12 +261,57 @@ Route::middleware(['auth', 'staff', 'verified'])
             Route::livewire('/', 'pages::admin.engagement.customers.index')->name('index');
             Route::livewire('/create', 'pages::admin.engagement.customers.create')->name('create');
             Route::livewire('/{customer}/edit', 'pages::admin.engagement.customers.edit')->name('edit');
-            Route::livewire('/{customer}', 'pages::admin.engagement.customers.show')->name('show');
+            // Customer show page - coming soon
+            Route::get('/{customer}', function () {
+                return redirect()->route('admin.coming-soon');
+            })->name('show');
         });
 
         Route::prefix('reviews')->name('reviews.')->group(function () {
             Route::livewire('/', 'pages::admin.engagement.reviews.index')->name('index');
             Route::livewire('/{review}', 'pages::admin.engagement.reviews.show')->name('show');
+        });
+
+        // --------------------------------------------------------------------
+        // Marketing
+        // --------------------------------------------------------------------
+    
+        Route::prefix('marketing')->name('marketing.')->group(function () {
+            // Campaigns
+            Route::get('/campaigns', function () {
+                return redirect()->route('admin.coming-soon');
+            })->name('campaigns.index');
+
+            // Coupons & Discounts
+            Route::get('/coupons', function () {
+                return redirect()->route('admin.coming-soon');
+            })->name('coupons.index');
+
+            // Newsletter
+            Route::get('/newsletter', function () {
+                return redirect()->route('admin.coming-soon');
+            })->name('newsletter.index');
+        });
+
+        // --------------------------------------------------------------------
+        // Content Management
+        // --------------------------------------------------------------------
+    
+        Route::prefix('content')->name('content.')->group(function () {
+            // Blog Posts
+            Route::get('/blog', function () {
+                return redirect()->route('admin.coming-soon');
+            })->name('blog.index');
+
+            // FAQ Management
+            Route::get('/faq', function () {
+                return redirect()->route('admin.coming-soon');
+            })->name('faq.index');
+
+            // Pages (About, Contact, Terms, etc.)
+            Route::get('/pages', function () {
+                return redirect()->route('admin.coming-soon');
+            })->name('pages.index');
         });
 
         // --------------------------------------------------------------------

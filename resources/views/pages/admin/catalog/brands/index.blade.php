@@ -25,13 +25,13 @@ new #[Title('Brands')] class extends Component {
                 $brand = Brand::findOrFail($this->brandToDelete);
                 $brand->delete();
                 $this->modal('delete-brand')->close();
-                $this->dispatch('notify', variant: 'success', message: 'Brand deleted successfully!');
+                $this->dispatch('notify', title: 'Brand Deleted', variant: 'success', message: 'Brand deleted successfully!');
                 $this->brandToDelete = null;
                 $this->brandNameToDelete = null;
             }
         } catch (\Throwable $th) {
             \Log::error('Error deleting brand: ' . $th->getMessage(), ['exception' => $th]);
-            $this->dispatch('notify', variant: 'danger', message: 'Failed to delete brand.');
+            $this->dispatch('notify', title: 'Delete Failed', variant: 'danger', message: 'Failed to delete brand.');
         }
     }
 
