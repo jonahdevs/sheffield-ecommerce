@@ -59,6 +59,19 @@ class SyncOrderToSapJob implements ShouldQueue
     // -------------------------------------------------------
     public function handle(SapIntegrationService $sap): void
     {
+        // Idempotency guard — if the job was dispatched more than once (e.g.
+        // from both a webhook and a 3DS redirect), skip if already completed.
+        $fresh = $this->order->fresh();
+        $completedStatuses = [SapSyncStatus::CU_PENDING, SapSyncStatus::CU_RECEIVED, SapSyncStatus::SYNCED];
+        if (in_array($fresh->sap_sync_status, $completedStatuses)) {
+            Log::info('SAP sync skipped — already completed', [
+                'order_id' => $this->order->id,
+                'sap_sync_status' => $fresh->sap_sync_status->value,
+            ]);
+
+            return;
+        }
+
         Log::info('SAP sync started', [
             'order_id' => $this->order->id,
             'reference' => $this->order->reference,
@@ -73,10 +86,12 @@ class SyncOrderToSapJob implements ShouldQueue
         // A/R Invoice and Incoming Payment creation internally.
         $result = $sap->syncOrder($this->order);
 
+        // Move to CU_PENDING — SAP documents are created, now waiting for
+        // the eTIMS/KRA webhook to deliver the CU number and generate the invoice.
         $this->order->update([
             'sap_order_number' => $result->documentEntry ?: $result->documentNumber,
             'sap_invoice_number' => $result->documentNumber,
-            'sap_sync_status' => SapSyncStatus::SYNCED,
+            'sap_sync_status' => SapSyncStatus::CU_PENDING,
             'sap_synced_at' => now(),
             'sap_sync_attempts' => $this->attempts(),
             'sap_sync_error' => null,

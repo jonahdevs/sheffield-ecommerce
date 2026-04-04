@@ -270,10 +270,13 @@ new #[Title('Cart')] #[Layout('layouts.guest')] class extends Component {
                             <img src="{{ asset('images/empty-states/empty-cart.svg') }}" alt="Empty Cart"
                                 class="w-72 h-72 mx-auto" />
                         </div>
-                        <h2 class="text-2xl font-bold text-zinc-900 mb-3">Your cart is empty</h2>
-                        <p class="text-zinc-600 mb-8 max-w-md">
+
+                        <flux:heading size="xl" class="mb-3">Your cart is empty</flux:heading>
+
+                        <flux:text class="mb-8 max-w-md">
                             Looks like you haven't added anything to your cart yet.
-                        </p>
+                        </flux:text>
+
                         <div class="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
                             <flux:button href="{{ route('shop.index') }}" wire:navigate variant="primary"
                                 icon="shopping-bag" class="w-full sm:w-auto">

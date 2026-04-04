@@ -26,13 +26,6 @@ class OrderReceiptController extends Controller
         // Only the order owner can download their invoice
         abort_if($order->user_id !== auth()->id(), 403);
 
-        // Quotations are not invoices — serve quotation PDF separately
-        abort_if(
-            $order->isQuotation(),
-            403,
-            'This document is a quotation, not an invoice.'
-        );
-
         // Invoice only available once payment is confirmed
         abort_if(
             $order->payment?->status?->value !== PaymentStatus::PAID->value,

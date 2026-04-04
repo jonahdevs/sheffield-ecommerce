@@ -5,14 +5,17 @@ namespace App\Services;
 use App\Enums\OrderStatus;
 use App\Enums\PaymentStatus as EnumsPaymentStatus;
 use App\Enums\SapSyncStatus;
+use App\Enums\ShippingMethodStatus;
 use App\Models\Address;
 use App\Models\Order;
 use App\Models\Payment;
 use App\Models\Product;
+use App\Models\ShippingMethod;
+use App\Models\User;
 use App\Services\Payment\PaymentService;
 use App\Services\Payment\ValueObjects\PaymentResponse;
 use App\Settings\LocalizationSettings;
-use App\Settings\TaxSettings;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -25,8 +28,7 @@ class CheckoutService
         private readonly InventoryService $inventoryService,
         private readonly TaxService $taxService,
         private readonly LocalizationSettings $localization,
-    ) {
-    }
+    ) {}
 
     // =====================================================
     // Initiate checkout — single path, cart orders only
@@ -47,9 +49,26 @@ class CheckoutService
     public function initiateCheckout(): PaymentResponse
     {
         $user = auth()->user();
+
+        // Prevent concurrent checkouts from the same account (e.g. double-click, duplicate tabs).
+        // The lock is held for 30 seconds — long enough to cover the full DB transaction + gateway call.
+        $lock = Cache::lock("checkout:user:{$user->id}", 30);
+        if (! $lock->get()) {
+            throw new \RuntimeException('A checkout is already in progress. Please wait a moment and try again.');
+        }
+
+        try {
+            return $this->doInitiateCheckout($user);
+        } finally {
+            $lock->release();
+        }
+    }
+
+    private function doInitiateCheckout(User $user): PaymentResponse
+    {
         $cart = $this->cartService->getCart();
 
-        if (!$cart || !$cart->items()->exists()) {
+        if (! $cart || ! $cart->items()->exists()) {
             throw new \RuntimeException('Your cart is empty.');
         }
 
@@ -57,13 +76,13 @@ class CheckoutService
             throw new \RuntimeException('Please add a shipping address to continue.');
         }
 
-        if (!$this->checkoutSession->isComplete()) {
+        if (! $this->checkoutSession->isComplete()) {
             throw new \RuntimeException('Shipping not selected. Please select a shipping method.');
         }
 
         // Pre-flight stock availability check
         $unavailable = $this->inventoryService->checkAvailability($cart);
-        if (!empty($unavailable)) {
+        if (! empty($unavailable)) {
             $items = collect($unavailable)->pluck('product')->implode(', ');
             throw new \RuntimeException("Some items are out of stock: {$items}");
         }
@@ -91,10 +110,25 @@ class CheckoutService
             ?? $user->addresses()->where('is_default', true)->value('id')
             ?? $user->addresses()->oldest()->value('id');
 
-        $address = Address::with(['county', 'area', 'shippingZone'])->findOrFail($addressId);
+        $address = Address::with(['county', 'area', 'shippingZone'])->find($addressId);
+        if (! $address) {
+            $this->checkoutSession->clearAddressId();
+            throw new \RuntimeException('Your selected delivery address no longer exists. Please choose another address.');
+        }
+
         $cartItems = $cart->items()->with('product.brand')->get();
         $cartSummary = $this->cartService->summary($cart);
         $shippingData = $this->checkoutSession->getShipping();
+
+        // Validate the chosen shipping method is still active.
+        $shippingMethodStillActive = ShippingMethod::where('id', $shippingData['method_id'])
+            ->where('status', ShippingMethodStatus::ACTIVE)
+            ->exists();
+
+        if (! $shippingMethodStillActive) {
+            $this->checkoutSession->clearShipping();
+            throw new \RuntimeException('The selected shipping method is no longer available. Please go back and choose another.');
+        }
 
         $subtotalCents = (int) round($cartSummary['subtotal'] * 100);
         $discountCents = (int) round($cartSummary['discount'] * 100);
@@ -186,7 +220,7 @@ class CheckoutService
                             'id' => $item->variant->id,
                             'sku' => $item->variant->sku,
                             'attributes' => $item->variant->attributeValues?->mapWithKeys(
-                                fn($av) => [$av->attribute->name => $av->label ?: $av->value]
+                                fn ($av) => [$av->attribute->name => $av->label ?: $av->value]
                             )->toArray() ?? [],
                         ] : null,
                     ],
@@ -208,26 +242,12 @@ class CheckoutService
                 ],
             ]);
 
+            // Reserve stock inside the transaction — if reservation fails the
+            // entire order creation rolls back, preventing orphaned orders.
+            $this->inventoryService->reserveStock($order);
+
             return $order;
         });
-
-        // Reserve stock outside the transaction — soft locks expire with the payment window.
-        try {
-            $this->inventoryService->reserveStock($order);
-        } catch (\Exception $e) {
-            Log::error('Stock reservation failed', [
-                'order_id' => $order->id,
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString(),
-            ]);
-
-            $order->transitionTo(
-                OrderStatus::CANCELLED,
-                notes: "Stock reservation failed: {$e->getMessage()}",
-                changedByType: 'system',
-            );
-            throw new \RuntimeException("Unable to reserve stock: {$e->getMessage()}");
-        }
 
         // -------------------------------------------------------
         // Gateway call — outside the transaction.
@@ -244,7 +264,7 @@ class CheckoutService
             if ($response->isFailed()) {
                 $order->transitionTo(
                     OrderStatus::CANCELLED,
-                    notes: 'Payment initiation failed: ' . $response->message,
+                    notes: 'Payment initiation failed: '.$response->message,
                     changedByType: 'system',
                 );
                 $order->update(['payment_status' => EnumsPaymentStatus::FAILED]);

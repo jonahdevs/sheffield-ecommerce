@@ -81,11 +81,23 @@ new #[Title('Transactions')] class extends Component {
     #[Computed]
     public function stats(): array
     {
+        $row = Payment::query()->selectRaw("
+            SUM(CASE WHEN status = ? THEN amount_cents ELSE 0 END) / 100 as revenue,
+            SUM(CASE WHEN status IN (?, ?) THEN amount_cents ELSE 0 END) / 100 as pending,
+            SUM(CASE WHEN status = ? THEN 1 ELSE 0 END) as failed,
+            COUNT(*) as total
+        ", [
+            PaymentStatus::PAID->value,
+            PaymentStatus::PENDING->value,
+            PaymentStatus::PROCESSING->value,
+            PaymentStatus::FAILED->value,
+        ])->first();
+
         return [
-            'revenue' => Payment::where('status', PaymentStatus::PAID)->sum('amount_cents') / 100,
-            'pending' => Payment::whereIn('status', [PaymentStatus::PENDING->value, PaymentStatus::PROCESSING->value])->sum('amount_cents') / 100,
-            'failed' => Payment::where('status', PaymentStatus::FAILED)->count(),
-            'total' => Payment::count(),
+            'revenue' => (float) ($row->revenue ?? 0),
+            'pending' => (float) ($row->pending ?? 0),
+            'failed' => (int) ($row->failed ?? 0),
+            'total' => (int) ($row->total ?? 0),
         ];
     }
 

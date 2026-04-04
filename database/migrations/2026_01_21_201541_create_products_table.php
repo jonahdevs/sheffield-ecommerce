@@ -72,7 +72,7 @@ return new class extends Migration {
             $table->string('image_path')->nullable();
 
             // properties
-            $table->json('technical_specification')->nullable();
+            $table->text('technical_specification')->nullable();
 
             $table->text('purchase_note')->nullable();
             $table->integer('sort_order')->default(0);
@@ -93,7 +93,9 @@ return new class extends Migration {
             $table->decimal('average_rating', 3, 2)->nullable();
             $table->integer('reviews_count')->default(0);
 
-            // Foreign Keys
+            // SAP Business One integration
+            $table->timestamp('sap_last_synced_at')->nullable();
+
             $table->timestamps();
             $table->softDeletes();
 
@@ -147,7 +149,6 @@ return new class extends Migration {
             $table->unique(['attribute_id', 'slug']);
             $table->index(['attribute_id', 'is_active']);
         });
-
 
         // ===============================================
         // PRODUCT VARIANTS TAB

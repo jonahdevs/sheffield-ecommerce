@@ -21,6 +21,7 @@ use App\Settings\NotificationSettings;
 use App\Settings\PaymentSettings;
 use App\Settings\PesawiseSettings;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
@@ -28,10 +29,15 @@ use Illuminate\Support\Facades\Notification;
 class PesawiseGateway implements PaymentGateway
 {
     private string $apiUrl;
+
     private string $apiKey;
+
     private string $apiSecret;
+
     private string $balanceId;
+
     private bool $isProduction;
+
     private string $currency;
 
     public function __construct(
@@ -59,7 +65,7 @@ class PesawiseGateway implements PaymentGateway
 
             $loadUrl = $data['createdPaymentOrder']['loadUrl'] ?? null;
 
-            if (!$loadUrl) {
+            if (! $loadUrl) {
                 throw new \RuntimeException('Pesawise did not return a payment URL.');
             }
 
@@ -119,6 +125,7 @@ class PesawiseGateway implements PaymentGateway
                 'reference' => $reference,
                 'error' => $e->getMessage(),
             ]);
+
             return PaymentStatusVO::failed($e->getMessage());
         }
     }
@@ -136,13 +143,15 @@ class PesawiseGateway implements PaymentGateway
         $data = $request->json()->all();
         $reference = $data['externalId'] ?? null;
 
-        if (!$reference)
+        if (! $reference) {
             return;
+        }
 
         $order = Order::where('reference', $reference)->first();
 
-        if (!$order) {
+        if (! $order) {
             Log::warning('Pesawise webhook: order not found', ['reference' => $reference]);
+
             return;
         }
 
@@ -161,29 +170,35 @@ class PesawiseGateway implements PaymentGateway
 
     private function markPaid(Order $order, array $data): void
     {
-        // Idempotency guard
-        if ($order->payment?->status === PaymentStatus::PAID->value) {
-            Log::info('Pesawise webhook already processed, skipping', [
+        // Reject if already in a terminal state — never re-process a confirmed or cancelled payment.
+        $terminalStates = [PaymentStatus::PAID->value, PaymentStatus::CANCELLED->value];
+        if (in_array($order->payment?->status, $terminalStates)) {
+            Log::info('Pesawise paid webhook ignored — payment already in terminal state', [
                 'reference' => $order->reference,
+                'current_status' => $order->payment?->status,
             ]);
+
             return;
         }
 
-        $order->payment?->update([
-            'status' => PaymentStatus::PAID->value,
-            'transaction_id' => $data['transactionId'] ?? null,
-            'paid_at' => now(),
-            'meta' => array_merge($order->payment->meta ?? [], $data),
-        ]);
+        // Wrap core DB writes in a transaction — payment + order status must be atomic.
+        DB::transaction(function () use ($order, $data) {
+            $order->payment?->update([
+                'status' => PaymentStatus::PAID->value,
+                'transaction_id' => $data['transactionId'] ?? null,
+                'paid_at' => now(),
+                'meta' => array_merge($order->payment->meta ?? [], $data),
+            ]);
 
-        $order->transitionTo(
-            OrderStatus::CONFIRMED,
-            notes: 'Payment confirmed via Pesawise webhook',
-            changedByType: 'system',
-        );
-        $order->update(['payment_status' => PaymentStatus::PAID->value]);
+            $order->transitionTo(
+                OrderStatus::CONFIRMED,
+                notes: 'Payment confirmed via Pesawise webhook',
+                changedByType: 'system',
+            );
+            $order->update(['payment_status' => PaymentStatus::PAID->value]);
+        });
 
-        // Deduct stock — reservation is converted to a real deduction
+        // Deduct stock — outside transaction as it has its own locking transaction.
         try {
             app(InventoryService::class)->deductStock($order);
         } catch (\Exception $e) {
@@ -193,14 +208,9 @@ class PesawiseGateway implements PaymentGateway
             ]);
         }
 
-        // Invoice is generated later when SAP webhook returns KRA data
         app(CartService::class)->clear(User::find($order->user_id));
         app(CheckoutSession::class)->clear();
 
-        // -------------------------------------------------------
-        // Dispatch SAP sync — fires after Pesawise confirms payment.
-        // Order is CONFIRMED, payment_status = paid.
-        // -------------------------------------------------------
         SyncOrderToSapJob::dispatch($order->fresh());
 
         PaymentConfirmed::dispatch($order->fresh(['payment']));
@@ -226,10 +236,15 @@ class PesawiseGateway implements PaymentGateway
 
     private function markFailed(Order $order, array $data): void
     {
-        if ($order->payment?->status === PaymentStatus::FAILED->value) {
-            Log::info('Pesawise failure webhook already processed, skipping', [
+        // Reject if already in a terminal state — a delayed FAILED must never
+        // downgrade a payment that has already been confirmed as PAID.
+        $terminalStates = [PaymentStatus::PAID->value, PaymentStatus::CANCELLED->value, PaymentStatus::FAILED->value];
+        if (in_array($order->payment?->status, $terminalStates)) {
+            Log::info('Pesawise failed webhook ignored — payment already in terminal state', [
                 'reference' => $order->reference,
+                'current_status' => $order->payment?->status,
             ]);
+
             return;
         }
 
@@ -270,10 +285,14 @@ class PesawiseGateway implements PaymentGateway
 
     private function markCancelled(Order $order, array $data): void
     {
-        if ($order->payment?->status === PaymentStatus::CANCELLED->value) {
-            Log::info('Pesawise cancellation webhook already processed, skipping', [
+        // Reject if already in a terminal state — never cancel a paid order.
+        $terminalStates = [PaymentStatus::PAID->value, PaymentStatus::CANCELLED->value];
+        if (in_array($order->payment?->status, $terminalStates)) {
+            Log::info('Pesawise cancelled webhook ignored — payment already in terminal state', [
                 'reference' => $order->reference,
+                'current_status' => $order->payment?->status,
             ]);
+
             return;
         }
 
@@ -369,8 +388,9 @@ class PesawiseGateway implements PaymentGateway
 
     private function resolveCustomerName(Order $order): string
     {
-        if ($order->user?->name)
+        if ($order->user?->name) {
             return $order->user->name;
+        }
 
         $first = $order->shipping_address['first_name'] ?? '';
         $last = $order->shipping_address['last_name'] ?? '';
@@ -387,7 +407,7 @@ class PesawiseGateway implements PaymentGateway
 
     private function sendFailedPaymentNotification(Order $order, ?Payment $payment, string $reason): void
     {
-        if (!$payment || !$this->notificationSettings->notify_failed_payment) {
+        if (! $payment || ! $this->notificationSettings->notify_failed_payment) {
             return;
         }
 
