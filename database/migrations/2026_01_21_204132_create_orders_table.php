@@ -4,7 +4,8 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+return new class extends Migration
+{
     public function up(): void
     {
         Schema::create('orders', function (Blueprint $table) {
@@ -32,6 +33,8 @@ return new class extends Migration {
 
             $table->json('guest_info')->nullable()->comment('Guest contact details for unauthenticated orders');
             $table->text('customer_notes')->nullable();
+            $table->string('tracking_number')->nullable();
+            $table->string('courier_name')->nullable();
 
             $table->string('preferred_county')->nullable();
             $table->string('preferred_area')->nullable();
@@ -71,10 +74,15 @@ return new class extends Migration {
 
             $table->timestamps();
 
-            // Indexes — only columns that exist on this table
+            // Single-column indexes
             $table->index('status', 'idx_orders_status');
             $table->index('sap_sync_status', 'idx_orders_sap_sync_status');
             $table->index('sap_invoice_number', 'idx_orders_sap_invoice_number');
+
+            // Composite indexes for common filter + sort patterns
+            $table->index(['status', 'created_at'], 'idx_orders_status_created_at');
+            $table->index(['payment_status', 'created_at'], 'idx_orders_payment_status_created_at');
+            $table->index(['user_id', 'created_at'], 'idx_orders_user_id_created_at');
         });
 
         Schema::create('order_items', function (Blueprint $table) {

@@ -181,15 +181,15 @@ new #[Defer] #[Layout('layouts.guest')] class extends Component {
                 </div>
 
                 <!-- Heading -->
-                <h2 class="text-2xl font-bold text-zinc-900 dark:text-white mb-3">
+                <flux:heading size="xl" class="mb-3">
                     No products to compare
-                </h2>
+                </flux:heading>
 
                 <!-- Description -->
-                <p class="text-zinc-600 dark:text-zinc-400 mb-8 max-w-md">
+                <flux:text class="mb-8 max-w-md">
                     Start comparing products to make better purchasing decisions. Add products from any product page to
                     see them side by side.
-                </p>
+                </flux:text>
 
                 <!-- Primary CTA -->
                 <div class="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
@@ -365,7 +365,8 @@ new #[Defer] #[Layout('layouts.guest')] class extends Component {
                                             class="p-4 text-center text-sm text-zinc-600 dark:text-zinc-400 border-l dark:border-zinc-700">
                                             @if ($product->length || $product->width || $product->height)
                                                 {{ $product->length ?? 'N/A' }} x {{ $product->width ?? 'N/A' }} x
-                                                {{ $product->height ?? 'N/A' }} {{ $this->regionalSettings->dimension_unit }}
+                                                {{ $product->height ?? 'N/A' }}
+                                                {{ $this->regionalSettings->dimension_unit }}
                                             @else
                                                 N/A
                                             @endif
@@ -375,33 +376,23 @@ new #[Defer] #[Layout('layouts.guest')] class extends Component {
                             @endif
 
                             <!-- Technical Specifications -->
-                            @php
-                                $allSpecs = collect();
-                                foreach ($this->products as $product) {
-                                    if (is_array($product->technical_specification)) {
-                                        $allSpecs = $allSpecs->merge(array_keys($product->technical_specification));
-                                    }
-                                }
-                                $allSpecs = $allSpecs->unique()->sort()->values();
-                            @endphp
-
-                            @foreach ($allSpecs as $specKey)
-                                <tr>
-                                    <td class="p-4 font-medium text-zinc-900 dark:text-white text-sm ">
-                                        {{ Str::title(str_replace('_', ' ', $specKey)) }}
+                            <tr>
+                                <td class="p-4 font-medium text-zinc-900 dark:text-white text-sm">
+                                    Technical Specifications
+                                </td>
+                                @foreach ($this->products as $product)
+                                    <td
+                                        class="p-4 text-sm text-zinc-600 dark:text-zinc-400 border-l dark:border-zinc-700">
+                                        @if (!empty($product->technical_specification))
+                                            <div class="prose prose-sm max-w-none dark:prose-invert">
+                                                {!! $product->technical_specification !!}
+                                            </div>
+                                        @else
+                                            <span class="text-zinc-400 dark:text-zinc-600">N/A</span>
+                                        @endif
                                     </td>
-                                    @foreach ($this->products as $product)
-                                        <td
-                                            class="p-4 text-center text-sm text-zinc-600 dark:text-zinc-400 border-l dark:border-zinc-700">
-                                            @if (is_array($product->technical_specification) && isset($product->technical_specification[$specKey]))
-                                                {{ $product->technical_specification[$specKey] }}
-                                            @else
-                                                <span class="text-zinc-400 dark:text-zinc-600">N/A</span>
-                                            @endif
-                                        </td>
-                                    @endforeach
-                                </tr>
-                            @endforeach
+                                @endforeach
+                            </tr>
 
                             <!-- Stock Status Row -->
                             <tr>

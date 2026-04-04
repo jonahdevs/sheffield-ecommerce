@@ -11,6 +11,8 @@ new #[Title('Order Details')] class extends Component {
     public Order $order;
     public string $status = '';
     public string $note = '';
+    public string $trackingNumber = '';
+    public string $courierName = '';
 
     public function mount(Order $order): void
     {
@@ -39,12 +41,19 @@ new #[Title('Order Details')] class extends Component {
             return;
         }
 
-        $this->validate([
+        $newStatus = OrderStatus::from($this->status);
+
+        $rules = [
             'status' => ['required', Rule::enum(OrderStatus::class)],
             'note' => 'nullable|string|max:1000',
-        ]);
+        ];
 
-        $newStatus = OrderStatus::from($this->status);
+        if ($newStatus === OrderStatus::SHIPPED) {
+            $rules['trackingNumber'] = 'nullable|string|max:255';
+            $rules['courierName'] = 'nullable|string|max:255';
+        }
+
+        $this->validate($rules);
 
         if (!$this->order->status->canTransitionTo($newStatus)) {
             $this->addError('status', "Cannot transition from {$this->order->status->label()} to {$newStatus->label()}.");
@@ -60,11 +69,21 @@ new #[Title('Order Details')] class extends Component {
                     $this->createDeliveryOrder();
                 }
 
+                // Save tracking info when shipping the order
+                if ($newStatus === OrderStatus::SHIPPED) {
+                    $this->order->update([
+                        'tracking_number' => $this->trackingNumber ?: null,
+                        'courier_name' => $this->courierName ?: null,
+                    ]);
+                }
+
                 $this->order->transitionTo($newStatus, notes: $this->note ?: null, changedByType: 'user');
             });
 
             $this->order->refresh();
             $this->note = '';
+            $this->trackingNumber = '';
+            $this->courierName = '';
 
             $this->dispatch('notify', title: 'Status Updated', variant: 'success', message: 'Order status updated.');
             $this->modal('edit-order')->close();
@@ -533,6 +552,27 @@ new #[Title('Order Details')] class extends Component {
                 </div>
             </flux:card>
 
+            {{-- Tracking Information --}}
+            @if ($order->tracking_number)
+                <flux:card class="p-0">
+                    <div class="px-5 py-3 border-b border-zinc-200 dark:border-zinc-600">
+                        <flux:heading>Tracking</flux:heading>
+                    </div>
+                    <div class="p-5 text-sm space-y-2 text-zinc-500">
+                        @if ($order->courier_name)
+                            <div class="flex justify-between">
+                                <flux:text>Courier</flux:text>
+                                <flux:heading size="sm" class="font-medium!">{{ $order->courier_name }}</flux:heading>
+                            </div>
+                        @endif
+                        <div class="flex justify-between">
+                            <flux:text>Tracking #</flux:text>
+                            <flux:text class="font-mono text-xs">{{ $order->tracking_number }}</flux:text>
+                        </div>
+                    </div>
+                </flux:card>
+            @endif
+
             {{-- Payment Information --}}
             {{-- Sales orders always have a payment record — no quote checks needed. --}}
             <flux:card class="p-0">
@@ -588,7 +628,7 @@ new #[Title('Order Details')] class extends Component {
             </div>
 
             <form wire:submit="updateStatus" class="space-y-4">
-                <flux:select wire:model="status" label="Status">
+                <flux:select wire:model.live="status" label="Status">
                     <flux:select.option value="">Select Status</flux:select.option>
                     @foreach ($this->allowedTransitions as $s)
                         <flux:select.option :value="$s->value">
@@ -596,6 +636,13 @@ new #[Title('Order Details')] class extends Component {
                         </flux:select.option>
                     @endforeach
                 </flux:select>
+
+                @if ($status === \App\Enums\OrderStatus::SHIPPED->value)
+                    <flux:input wire:model="courierName" label="Courier / Logistics Provider"
+                        placeholder="e.g. DHL, G4S, Sendy" />
+                    <flux:input wire:model="trackingNumber" label="Tracking Number"
+                        placeholder="e.g. 1Z999AA10123456784" />
+                @endif
 
                 <flux:textarea wire:model="note" label="Note (optional)"
                     placeholder="Note about this status change..." rows="3" />

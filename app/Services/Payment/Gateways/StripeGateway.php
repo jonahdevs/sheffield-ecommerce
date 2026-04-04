@@ -17,9 +17,9 @@ use App\Services\Payment\Contracts\PaymentGateway;
 use App\Services\Payment\ValueObjects\PaymentResponse;
 use App\Services\Payment\ValueObjects\PaymentStatus as PaymentStatusVO;
 use App\Settings\NotificationSettings;
-use App\Settings\OrderSettings;
 use App\Settings\StripeSettings;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
 use Stripe\StripeClient;
@@ -28,6 +28,7 @@ use Stripe\Webhook;
 class StripeGateway implements PaymentGateway
 {
     private StripeClient $stripe;
+
     private string $webhookSecret;
 
     public function __construct(
@@ -123,6 +124,7 @@ class StripeGateway implements PaymentGateway
                 'reference' => $reference,
                 'error' => $e->getMessage(),
             ]);
+
             return PaymentStatusVO::failed($e->getMessage());
         }
     }
@@ -159,14 +161,18 @@ class StripeGateway implements PaymentGateway
     private function handleSucceeded(object $intent): void
     {
         $payment = Payment::where('gateway_order_id', $intent->id)->first();
-        if (!$payment)
+        if (! $payment) {
             return;
+        }
 
-        // Idempotency guard — webhook may be delivered more than once
-        if ($payment->status === PaymentStatus::PAID->value) {
-            Log::info('Stripe webhook already processed, skipping', [
+        // Idempotency guard — reject if already in a terminal state.
+        $terminalStates = [PaymentStatus::PAID->value, PaymentStatus::CANCELLED->value];
+        if (in_array($payment->status, $terminalStates)) {
+            Log::info('Stripe succeeded webhook ignored — payment already in terminal state', [
                 'intent_id' => $intent->id,
+                'current_status' => $payment->status,
             ]);
+
             return;
         }
 
@@ -178,31 +184,36 @@ class StripeGateway implements PaymentGateway
             $mergedMeta['payment_method'] = $originalMethod;
         }
 
-        $payment->update([
-            'status' => PaymentStatus::PAID->value,
-            'transaction_id' => $intent->id,
-            'card_brand' => $intent->payment_method_types[0] ?? null,
-            'paid_at' => now(),
-            'meta' => $mergedMeta,
-            'gateway' => 'card',
-        ]);
+        // Wrap the core DB writes in a transaction — if any step fails,
+        // neither the payment nor the order status will be partially updated.
+        DB::transaction(function () use ($payment, $order, $mergedMeta, $intent) {
+            $payment->update([
+                'status' => PaymentStatus::PAID->value,
+                'transaction_id' => $intent->id,
+                'card_brand' => $intent->payment_method_types[0] ?? null,
+                'paid_at' => now(),
+                'meta' => $mergedMeta,
+                'gateway' => 'card',
+            ]);
 
-        if (!$order)
+            if (! $order) {
+                return;
+            }
+
+            $order->transitionTo(
+                OrderStatus::CONFIRMED,
+                notes: 'Payment confirmed via Stripe webhook',
+                changedByType: 'system',
+            );
+
+            $order->update(['payment_status' => PaymentStatus::PAID->value]);
+        });
+
+        if (! $order) {
             return;
+        }
 
-        // Transition order to confirmed — this is the first state change
-        // that means the order is real and should flow downstream
-        $order->transitionTo(
-            OrderStatus::CONFIRMED,
-            notes: 'Payment confirmed via Stripe webhook',
-            changedByType: 'system',
-        );
-
-        $order->update(['payment_status' => PaymentStatus::PAID->value]);
-
-        // Invoice is generated later when SAP webhook returns KRA data
-
-        // Deduct stock — reservation is converted to a real deduction
+        // Deduct stock — outside transaction as it has its own locking transaction.
         try {
             app(InventoryService::class)->deductStock($order);
         } catch (\Exception $e) {
@@ -219,40 +230,30 @@ class StripeGateway implements PaymentGateway
         // Broadcast payment confirmed event for any listeners
         PaymentConfirmed::dispatch($order->fresh(['payment']));
 
-        \Log::info('Stripe payment confirmed, order updated to CONFIRMED', [
-            'order_id' => $order->id,
-            'intent_id' => $intent->id,
-        ]);
-
-        // -------------------------------------------------------
-        // Dispatch SAP sync — fires HERE, after payment is
-        // confirmed and order is CONFIRMED. This is the correct
-        // trigger point: the order is real, payment is settled,
-        // and all three SAP documents (Sales Order, A/R Invoice,
-        // Incoming Payment) reflect an actual confirmed sale.
-        //
-        // Moved from CheckoutService::initiateCheckout() where it
-        // fired too early (before the customer had paid).
-        // -------------------------------------------------------
-        SyncOrderToSapJob::dispatch($order->fresh());
-
-
         Log::info('Stripe payment confirmed, SAP sync dispatched', [
             'order_id' => $order->id,
             'intent_id' => $intent->id,
         ]);
+
+        SyncOrderToSapJob::dispatch($order->fresh());
     }
 
     private function handleFailed(object $intent): void
     {
         $payment = Payment::where('gateway_order_id', $intent->id)->first();
-        if (!$payment)
+        if (! $payment) {
             return;
+        }
 
-        if ($payment->status === PaymentStatus::FAILED->value) {
-            Log::info('Stripe failure webhook already processed, skipping', [
+        // Reject if already in a terminal state — a delayed FAILED must never
+        // downgrade a payment that has already been confirmed as PAID.
+        $terminalStates = [PaymentStatus::PAID->value, PaymentStatus::CANCELLED->value, PaymentStatus::FAILED->value];
+        if (in_array($payment->status, $terminalStates)) {
+            Log::info('Stripe failed webhook ignored — payment already in terminal state', [
                 'intent_id' => $intent->id,
+                'current_status' => $payment->status,
             ]);
+
             return;
         }
 
@@ -269,8 +270,9 @@ class StripeGateway implements PaymentGateway
             'meta' => $mergedMeta,
         ]);
 
-        if (!$order)
+        if (! $order) {
             return;
+        }
 
         $order->transitionTo(
             OrderStatus::CANCELLED,
@@ -293,13 +295,18 @@ class StripeGateway implements PaymentGateway
     private function handleCancelled(object $intent): void
     {
         $payment = Payment::where('gateway_order_id', $intent->id)->first();
-        if (!$payment)
+        if (! $payment) {
             return;
+        }
 
-        if ($payment->status === PaymentStatus::CANCELLED->value) {
-            Log::info('Stripe cancellation webhook already processed, skipping', [
+        // Reject if already in a terminal state — never cancel a paid order.
+        $terminalStates = [PaymentStatus::PAID->value, PaymentStatus::CANCELLED->value];
+        if (in_array($payment->status, $terminalStates)) {
+            Log::info('Stripe cancelled webhook ignored — payment already in terminal state', [
                 'intent_id' => $intent->id,
+                'current_status' => $payment->status,
             ]);
+
             return;
         }
 
@@ -310,8 +317,9 @@ class StripeGateway implements PaymentGateway
             'meta' => array_merge($payment->meta ?? [], $intent->toArray()),
         ]);
 
-        if (!$order)
+        if (! $order) {
             return;
+        }
 
         $order->transitionTo(
             OrderStatus::CANCELLED,
@@ -331,8 +339,9 @@ class StripeGateway implements PaymentGateway
     private function handleRequiresAction(object $intent): void
     {
         $payment = Payment::where('gateway_order_id', $intent->id)->first();
-        if (!$payment)
+        if (! $payment) {
             return;
+        }
 
         if (
             in_array($payment->status, [
@@ -340,8 +349,9 @@ class StripeGateway implements PaymentGateway
                 PaymentStatus::FAILED->value,
                 PaymentStatus::CANCELLED->value,
             ])
-        )
+        ) {
             return;
+        }
 
         $payment->update([
             'status' => PaymentStatus::PROCESSING->value,
@@ -366,7 +376,7 @@ class StripeGateway implements PaymentGateway
 
     private function sendFailedPaymentNotification(Order $order, Payment $payment, ?string $reason): void
     {
-        if (!$this->notificationSettings->notify_failed_payment) {
+        if (! $this->notificationSettings->notify_failed_payment) {
             return;
         }
 

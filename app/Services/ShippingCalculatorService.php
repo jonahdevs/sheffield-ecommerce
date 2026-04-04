@@ -4,7 +4,9 @@ namespace App\Services;
 
 use App\Enums\ShippingMethodStatus;
 use App\Enums\ShippingRateStatus;
+use App\Models\Area;
 use App\Models\Cart;
+use App\Models\County;
 use App\Models\Product;
 use App\Models\ShippingMethod;
 use App\Models\ShippingRate;
@@ -16,13 +18,12 @@ use Illuminate\Support\Facades\Log;
  */
 class ShippingCalculatorService
 {
-
     /**
      * Calculate shipping cost for a cart
      * Uses user's default address and preferred shipping method
      *
-     * @param Cart $cart
      * @return float
+     *
      * @throws \Exception
      */
     public function calculate(Cart $cart)
@@ -51,17 +52,16 @@ class ShippingCalculatorService
         return (float) $rate;
     }
 
-
     /**
      * Get Shipping zone from user's default address
      *
-     * @param \App\Models\User|null $user
-     * @return int
+     * @param  User|null  $user
+     *
      * @throws \Exception
      */
     protected function getShippingZoneFromUser($user): int
     {
-        if (!$user) {
+        if (! $user) {
             throw new \Exception('User must be authenticated to calculate shipping.');
         }
 
@@ -81,14 +81,15 @@ class ShippingCalculatorService
             return $defaultAddress->shipping_zone_id;
         }
 
-        // Last resort: return default zone
-        return 1;
+        // No zone could be resolved from the address — throw so the caller
+        // can prompt the user to select an address with a valid shipping zone.
+        throw new \Exception('No shipping zone could be resolved for your address. Please update your delivery address.');
     }
 
     /**
      * Get user's preferred shipping method ID or fallback to standard
      *
-     * @param \App\Models\User|null $user
+     * @param  User|null  $user
      * @return int
      */
     protected function getPreferredShippingMethodId($user)
@@ -103,7 +104,7 @@ class ShippingCalculatorService
             ->where('status', ShippingMethodStatus::ACTIVE)
             ->first();
 
-        if (!$standardMethod) {
+        if (! $standardMethod) {
             // throw new \Exception('Default shipping method not found.');
         }
 
@@ -112,11 +113,6 @@ class ShippingCalculatorService
 
     /**
      * Get shipping rate for specific zone, method, and weight
-     *
-     * @param int $shippingZoneId
-     * @param int $shippingMethodId
-     * @param float $totalWeightKg
-     * @return float
      */
     protected function getShippingRate(int $shippingZoneId, int $shippingMethodId, float $totalWeightKg): float
     {
@@ -167,7 +163,7 @@ class ShippingCalculatorService
         $totalWeightKg = $cart->items->reduce(function ($carry, $item) {
             $product = $item->product;
 
-            if (!$product) {
+            if (! $product) {
                 return $carry;
             }
 
@@ -185,15 +181,9 @@ class ShippingCalculatorService
         return round($totalWeightKg, 2);
     }
 
-
     /**
      * Calculate estimated shipping cost for a single product
      *
-     * @param \App\Models\Product $product
-     * @param int $quantity
-     * @param \App\Models\User|null $user
-     * @param int|null $countyId
-     * @param int|null $areaId
      * @return float
      */
     public function calculateForProduct(Product $product, int $quantity = 1, ?User $user = null, ?int $countyId = null, ?int $areaId = null, ?int $variantId = null)
@@ -217,8 +207,9 @@ class ShippingCalculatorService
             $shippingMethodId = $this->getPreferredShippingMethodId($user);
         } catch (\Throwable $th) {
             $fallback = ShippingMethod::where('status', ShippingMethodStatus::ACTIVE)->first();
-            if (!$fallback)
+            if (! $fallback) {
                 throw new \Exception('No active shipping method found.');
+            }
             $shippingMethodId = $fallback->id;
         }
 
@@ -230,16 +221,15 @@ class ShippingCalculatorService
     /**
      * Resolve shipping zone from area, county, or user address
      *
-     * @param \App\Models\User|null $user
-     * @param int|null $countyId
-     * @param int|null $areaId
-     * @return int
+     * @param  User|null  $user
+     * @param  int|null  $countyId
+     * @param  int|null  $areaId
      */
     protected function resolveShippingZone($user, $countyId = null, $areaId = null): int
     {
         // Priority 1: If area is provided, get zone from area
         if ($areaId) {
-            $area = \App\Models\Area::find($areaId);
+            $area = Area::find($areaId);
             if ($area && $area->shipping_zone_id) {
                 return $area->shipping_zone_id;
             }
@@ -247,7 +237,7 @@ class ShippingCalculatorService
 
         // Priority 2: If county is provided, get zone from county
         if ($countyId) {
-            $county = \App\Models\County::find($countyId);
+            $county = County::find($countyId);
             if ($county && $county->shipping_zone_id) {
                 return $county->shipping_zone_id;
             }
@@ -262,7 +252,7 @@ class ShippingCalculatorService
             }
         }
 
-        // Default zone
-        return 1;
+        // No zone resolved — return 0 so the caller can treat shipping as unavailable.
+        return 0;
     }
 }

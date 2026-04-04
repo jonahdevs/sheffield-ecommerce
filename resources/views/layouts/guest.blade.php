@@ -109,17 +109,10 @@
 
     @fluxScripts
 
-    {{-- Guest Layout - Brand Secondary Progress Bar --}}
+    {{-- Override Livewire's NProgress bar color for the guest layout --}}
     <style>
-        [x-cloak] {
-            display: none !important;
-        }
-
-        /* Livewire Progress Bar - Guest (Brand Secondary) */
-        [x-data*="progress"]>div {
-            background-color: var(--brand-secondary) !important;
-            box-shadow: 0 0 10px color-mix(in srgb, var(--brand-secondary) 50%, transparent);
-        }
+        [x-cloak] { display: none !important; }
+        :root { --livewire-progress-bar-color: var(--brand-secondary); }
     </style>
 
     <script>

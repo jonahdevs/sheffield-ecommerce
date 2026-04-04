@@ -36,15 +36,15 @@ class ProductSeeder extends Seeder
 
         // Store relationships to process after all products are created
         $productRelationships = [
-            'accessory'  => [], // accessories with recommended quantity
+            'accessory' => [], // accessories with recommended quantity
             'cross_sell' => [],
-            'up_sells'   => [],
+            'up_sells' => [],
         ];
 
         $this->command->info('🔄 Creating products...');
 
         foreach ($data as $productData) {
-            $brand    = !empty($productData['brand'])    ? $this->createBrand($productData['brand'])       : null;
+            $brand = !empty($productData['brand']) ? $this->createBrand($productData['brand']) : null;
             $category = !empty($productData['category']) ? $this->createCategory($productData['category']) : null;
 
             $product = $this->createProduct($productData, $category, $brand);
@@ -94,7 +94,7 @@ class ProductSeeder extends Seeder
             }
 
             return [
-                'sku'      => $item['sku'],
+                'sku' => $item['sku'],
                 'quantity' => $item['quantity'] ?? 1,
             ];
         })->toArray();
@@ -113,7 +113,7 @@ class ProductSeeder extends Seeder
                 $skus[] = $product;
             } else {
                 // Legacy: full product object in JSON
-                $brand    = !empty($product['brand'])    ? $this->createBrand($product['brand'])       : null;
+                $brand = !empty($product['brand']) ? $this->createBrand($product['brand']) : null;
                 $category = !empty($product['category']) ? $this->createCategory($product['category']) : null;
 
                 $created = $this->createProduct($product, $category, $brand);
@@ -182,8 +182,8 @@ class ProductSeeder extends Seeder
         foreach ($relatedProducts as $index => $relatedProduct) {
             $quantity = $quantityMap->get($relatedProduct->sku)['quantity'] ?? 1;
             $syncData[$relatedProduct->id] = [
-                'type'       => ProductRelationshipType::ACCESSORY->value,
-                'quantity'   => $quantity,
+                'type' => ProductRelationshipType::ACCESSORY->value,
+                'quantity' => $quantity,
                 'sort_order' => $index,
             ];
         }
@@ -219,16 +219,16 @@ class ProductSeeder extends Seeder
         $syncData = [];
         foreach ($relatedProductIds as $index => $relatedProductId) {
             $syncData[$relatedProductId] = [
-                'type'       => $type->value,
-                'quantity'   => 1,
+                'type' => $type->value,
+                'quantity' => 1,
                 'sort_order' => $index,
             ];
         }
 
         match ($type) {
             ProductRelationshipType::CROSS_SELL => $product->crossSells()->sync($syncData),
-            ProductRelationshipType::UP_SELLS   => $product->upsells()->sync($syncData),
-            default                             => null,
+            ProductRelationshipType::UP_SELLS => $product->upsells()->sync($syncData),
+            default => null,
         };
 
         $this->command->info("✅ Attached " . count($syncData) . " {$displayName} to {$product->name}");
@@ -244,12 +244,12 @@ class ProductSeeder extends Seeder
 
         if (!array_key_exists('price', $productData)) {
             $retailPrice = fake()->numberBetween(50000, 500000);
-            $salePrice   = fake()->boolean(60)
+            $salePrice = fake()->boolean(60)
                 ? fake()->numberBetween(20000, $retailPrice - 1000)
                 : null;
         } else {
             $retailPrice = $productData['price'];
-            $salePrice   = null;
+            $salePrice = null;
         }
 
         $slugParts = array_filter([
@@ -259,9 +259,9 @@ class ProductSeeder extends Seeder
         ]);
 
         // Draft if no image or price is missing/zero
-        $hasImage  = !empty($productData['image']);
-        $hasPrice  = !empty($retailPrice) && $retailPrice > 0;
-        $status    = ($hasImage && $hasPrice) ? 'published' : 'draft';
+        $hasImage = !empty($productData['image']);
+        $hasPrice = !empty($retailPrice) && $retailPrice > 0;
+        $status = ($hasImage && $hasPrice) ? 'published' : 'draft';
 
         if (!$hasImage) {
             $this->command->warn("  ⚠️  No image for \"{$productData['name']}\" — setting to draft");
@@ -272,27 +272,29 @@ class ProductSeeder extends Seeder
         }
 
         $product = Product::create([
-            'name'                    => $productData['name'],
-            'slug'                    => Str::slug(implode(' ', $slugParts)),
-            'sku'                     => $productData['sku'],
-            'type'                    => ProductType::SIMPLE,
-            'model_number'            => $productData['model_number'] ?? null,
-            'stock_quantity'          => 100,
-            'image_path'              => $productData['image'] ?? null,
-            'price'                   => $retailPrice,
-            'sale_price'              => $salePrice,
-            'description'             => $productData['description'] ?? null,
-            'short_description'       => $productData['short_description'] ?? null,
-            'technical_specification' => !empty($productData['technical_specification'])
-                ? json_encode($productData['technical_specification'])
-                : null,
-            'meta_title'              => $productData['meta_title'] ?? null,
-            'meta_description'        => $productData['meta_description'] ?? null,
-            'meta_keywords'           => !empty($productData['meta_keywords'])
+            'name' => $productData['name'],
+            'slug' => Str::slug(implode(' ', $slugParts)),
+            'sku' => $productData['sku'],
+            'type' => ProductType::SIMPLE,
+            'model_number' => $productData['model_number'] ?? null,
+            'stock_quantity' => 100,
+            'image_path' => $productData['image'] ?? null,
+            'price' => $retailPrice,
+            'sale_price' => $salePrice,
+            'description' => $productData['description'] ?? null,
+            'short_description' => $productData['short_description'] ?? null,
+            'technical_specification' => $productData['technical_specification'] ?? null,
+            'length' => $productData['length'] ?? null,
+            'width' => $productData['width'] ?? null,
+            'height' => $productData['height'] ?? null,
+            'weight' => $productData['weight'] ?? null,
+            'meta_title' => $productData['meta_title'] ?? null,
+            'meta_description' => $productData['meta_description'] ?? null,
+            'meta_keywords' => !empty($productData['meta_keywords'])
                 ? json_encode($productData['meta_keywords'])
                 : null,
-            'canonical_url'           => $productData['canonical_url'] ?? null,
-            'status'                  => $status,
+            'canonical_url' => $productData['canonical_url'] ?? null,
+            'status' => $status,
         ]);
 
         if ($category) {
@@ -320,7 +322,7 @@ class ProductSeeder extends Seeder
             ProductImage::create([
                 'product_id' => $product->id,
                 'image_path' => $productData['image'],
-                'alt_text'   => $product->name,
+                'alt_text' => $product->name,
                 'sort_order' => $sortOrder++,
             ]);
         }
@@ -330,7 +332,7 @@ class ProductSeeder extends Seeder
                 ProductImage::create([
                     'product_id' => $product->id,
                     'image_path' => $imagePath,
-                    'alt_text'   => $product->name . ' - Image ' . ($sortOrder + 1),
+                    'alt_text' => $product->name . ' - Image ' . ($sortOrder + 1),
                     'sort_order' => $sortOrder++,
                 ]);
             }

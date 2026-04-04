@@ -19,6 +19,7 @@ use App\Settings\MpesaSettings;
 use App\Settings\NotificationSettings;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
@@ -26,11 +27,17 @@ use Illuminate\Support\Facades\Notification;
 class MpesaGateway implements PaymentGateway
 {
     private ?bool $isProduction;
+
     private ?string $consumerKey;
+
     private ?string $consumerSecret;
+
     private string $shortcode;
+
     private ?string $passkey;
+
     private string $callbackUrl;
+
     private string $baseUrl;
 
     public function __construct(
@@ -52,7 +59,7 @@ class MpesaGateway implements PaymentGateway
 
     public function initiate(Order $order, Payment $payment, ?string $phone = null): PaymentResponse
     {
-        if (!$phone) {
+        if (! $phone) {
             return PaymentResponse::failed('M-Pesa phone number is required.');
         }
 
@@ -60,8 +67,10 @@ class MpesaGateway implements PaymentGateway
             $phone = $this->normalisePhone($phone);
             $amount = (int) ceil($order->total_cents / 100);
             $timestamp = now()->format('YmdHis');
-            $password = base64_encode($this->shortcode . $this->passkey . $timestamp);
+            $password = base64_encode($this->shortcode.$this->passkey.$timestamp);
             $token = $this->getAccessToken();
+
+            $callbackUrl = $this->buildCallbackUrl();
 
             $response = Http::withToken($token)
                 ->post("{$this->baseUrl}/mpesa/stkpush/v1/processrequest", [
@@ -73,7 +82,7 @@ class MpesaGateway implements PaymentGateway
                     'PartyA' => $phone,
                     'PartyB' => $this->shortcode,
                     'PhoneNumber' => $phone,
-                    'CallBackURL' => $this->callbackUrl,
+                    'CallBackURL' => $callbackUrl,
                     'AccountReference' => $order->reference,
                     'TransactionDesc' => "Order #{$order->reference}",
                 ]);
@@ -121,8 +130,9 @@ class MpesaGateway implements PaymentGateway
     {
         $payment = Payment::where('transaction_id', $reference)->first();
 
-        if (!$payment)
+        if (! $payment) {
             return PaymentStatusVO::pending();
+        }
 
         return match ($payment->status) {
             PaymentStatus::PAID->value => PaymentStatusVO::paid($payment->transaction_id),
@@ -135,21 +145,34 @@ class MpesaGateway implements PaymentGateway
 
     public function handleWebhook(Request $request): void
     {
+        $secret = config('services.mpesa.webhook_secret');
+        if ($secret) {
+            $token = $request->query('token');
+            if (! $token || ! hash_equals($secret, $token)) {
+                Log::warning('M-Pesa webhook: invalid or missing security token', [
+                    'ip' => $request->ip(),
+                ]);
+                abort(401);
+            }
+        }
+
         $data = $request->json()->all();
         $result = $data['Body']['stkCallback'] ?? null;
 
-        if (!$result)
+        if (! $result) {
             return;
+        }
 
         $checkoutRequestId = $result['CheckoutRequestID'];
         $resultCode = $result['ResultCode'];
 
         $payment = Payment::where('transaction_id', $checkoutRequestId)->first();
 
-        if (!$payment) {
+        if (! $payment) {
             Log::warning('M-Pesa webhook: payment not found', [
                 'checkout_request_id' => $checkoutRequestId,
             ]);
+
             return;
         }
 
@@ -164,39 +187,47 @@ class MpesaGateway implements PaymentGateway
 
     private function markPaid(Payment $payment, ?Order $order, array $result): void
     {
-        // Idempotency guard — Safaricom can deliver the callback more than once
-        if ($payment->status === PaymentStatus::PAID->value) {
-            Log::info('M-Pesa webhook already processed, skipping', [
+        // Idempotency guard — Safaricom can deliver the callback more than once.
+        // Also reject if already cancelled to prevent resurrection of dead payments.
+        $terminalStates = [PaymentStatus::PAID->value, PaymentStatus::CANCELLED->value];
+        if (in_array($payment->status, $terminalStates)) {
+            Log::info('M-Pesa paid webhook ignored — payment already in terminal state', [
                 'transaction_id' => $payment->transaction_id,
+                'current_status' => $payment->status,
             ]);
+
             return;
         }
 
         $items = collect($result['CallbackMetadata']['Item'] ?? []);
         $receipt = $items->firstWhere('Name', 'MpesaReceiptNumber')['Value'] ?? null;
 
-        $payment->update([
-            'status' => PaymentStatus::PAID->value,
-            'transaction_id' => $receipt ?? $payment->transaction_id,
-            'paid_at' => now(),
-            'meta' => array_merge($payment->meta ?? [], $result),
-        ]);
+        // Wrap core DB writes in a transaction — payment + order status must be atomic.
+        DB::transaction(function () use ($payment, $order, $result, $receipt) {
+            $payment->update([
+                'status' => PaymentStatus::PAID->value,
+                'transaction_id' => $receipt ?? $payment->transaction_id,
+                'paid_at' => now(),
+                'meta' => array_merge($payment->meta ?? [], $result),
+            ]);
 
-        if (!$order)
+            if (! $order) {
+                return;
+            }
+
+            $order->transitionTo(
+                OrderStatus::CONFIRMED,
+                notes: 'Payment confirmed via M-Pesa webhook. Receipt: '.($receipt ?? 'N/A'),
+                changedByType: 'system',
+            );
+            $order->update(['payment_status' => PaymentStatus::PAID->value]);
+        });
+
+        if (! $order) {
             return;
+        }
 
-        $order->transitionTo(
-            OrderStatus::CONFIRMED,
-            notes: 'Payment confirmed via M-Pesa webhook. Receipt: ' . ($receipt ?? 'N/A'),
-            changedByType: 'system',
-        );
-        $order->update(['payment_status' => PaymentStatus::PAID->value]);
-
-        // Invoice is generated later when SAP webhook returns KRA data
-        app(CartService::class)->clear(User::find($order->user_id));
-        app(CheckoutSession::class)->clear();
-
-        // Deduct stock — reservation is converted to a real deduction
+        // Deduct stock — outside transaction as it has its own locking transaction.
         try {
             app(InventoryService::class)->deductStock($order);
         } catch (\Exception $e) {
@@ -206,10 +237,9 @@ class MpesaGateway implements PaymentGateway
             ]);
         }
 
-        // -------------------------------------------------------
-        // Dispatch SAP sync — fires after M-Pesa confirms payment.
-        // Order is CONFIRMED, payment_status = paid.
-        // -------------------------------------------------------
+        app(CartService::class)->clear(User::find($order->user_id));
+        app(CheckoutSession::class)->clear();
+
         SyncOrderToSapJob::dispatch($order->fresh());
 
         Log::info('M-Pesa payment confirmed, SAP sync dispatched', [
@@ -220,11 +250,15 @@ class MpesaGateway implements PaymentGateway
 
     private function markFailed(Payment $payment, ?Order $order, array $result, int $resultCode): void
     {
-        // Idempotency guard
-        if ($payment->status === PaymentStatus::FAILED->value) {
-            Log::info('M-Pesa failure webhook already processed, skipping', [
+        // Reject if already in a terminal state — prevents out-of-order webhooks from
+        // downgrading a confirmed payment (e.g. a delayed FAILED arriving after PAID).
+        $terminalStates = [PaymentStatus::PAID->value, PaymentStatus::CANCELLED->value, PaymentStatus::FAILED->value];
+        if (in_array($payment->status, $terminalStates)) {
+            Log::info('M-Pesa failure webhook ignored — payment already in terminal state', [
                 'transaction_id' => $payment->transaction_id,
+                'current_status' => $payment->status,
             ]);
+
             return;
         }
 
@@ -233,8 +267,9 @@ class MpesaGateway implements PaymentGateway
             'meta' => array_merge($payment->meta ?? [], $result),
         ]);
 
-        if (!$order)
+        if (! $order) {
             return;
+        }
 
         $order->transitionTo(
             OrderStatus::CANCELLED,
@@ -261,7 +296,7 @@ class MpesaGateway implements PaymentGateway
 
     private function sendFailedPaymentNotification(Order $order, Payment $payment, string $reason): void
     {
-        if (!$this->notificationSettings->notify_failed_payment) {
+        if (! $this->notificationSettings->notify_failed_payment) {
             return;
         }
 
@@ -300,11 +335,25 @@ class MpesaGateway implements PaymentGateway
         });
     }
 
+    private function buildCallbackUrl(): string
+    {
+        $url = $this->callbackUrl;
+        $secret = config('services.mpesa.webhook_secret');
+
+        if ($secret) {
+            $separator = str_contains($url, '?') ? '&' : '?';
+            $url .= $separator.'token='.urlencode($secret);
+        }
+
+        return $url;
+    }
+
     private function normalisePhone(string $phone): string
     {
         $digits = preg_replace('/\D/', '', $phone);
         $digits = preg_replace('/^(254|0)/', '', $digits);
-        return '254' . $digits;
+
+        return '254'.$digits;
     }
 
     public function initiateWithPhone(Order $order, Payment $payment, string $phone): PaymentResponse

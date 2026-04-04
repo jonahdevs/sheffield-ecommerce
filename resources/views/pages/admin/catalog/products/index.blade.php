@@ -54,60 +54,48 @@ new #[Title('Products')] class extends Component {
     }
 
     #[Computed]
-    public function totalProducts(): int
+    public function stats(): array
     {
-        return Cache::remember('products:stats:total', 60, fn () => Product::count());
-    }
+        $row = Product::query()
+            ->selectRaw(
+                "
+            COUNT(*) as total,
+            SUM(CASE WHEN status = ? THEN 1 ELSE 0 END) as published,
+            SUM(CASE WHEN status = ? THEN 1 ELSE 0 END) as draft,
+            SUM(CASE WHEN manage_stock = 1 AND stock_quantity <= low_stock_threshold THEN 1 ELSE 0 END) as low_stock
+        ",
+                [ProductStatus::PUBLISHED->value, ProductStatus::DRAFT->value],
+            )
+            ->first();
 
-    #[Computed]
-    public function publishedProducts(): int
-    {
-        return Cache::remember('products:stats:published', 60, fn () => Product::where('status', ProductStatus::PUBLISHED)->count());
-    }
-
-    #[Computed]
-    public function draftProducts(): int
-    {
-        return Cache::remember('products:stats:draft', 60, fn () => Product::where('status', ProductStatus::DRAFT)->count());
-    }
-
-    #[Computed]
-    public function lowStockProducts(): int
-    {
-        return Cache::remember('products:stats:low_stock', 60, fn () => Product::where(function ($q) {
-            $q->where('manage_stock', true)->whereColumn('stock_quantity', '<=', 'low_stock_threshold');
-        })->count());
-    }
-
-    private function flushStatCache(): void
-    {
-        Cache::forget('products:stats:total');
-        Cache::forget('products:stats:published');
-        Cache::forget('products:stats:draft');
-        Cache::forget('products:stats:low_stock');
+        return [
+            'total' => (int) ($row->total ?? 0),
+            'published' => (int) ($row->published ?? 0),
+            'draft' => (int) ($row->draft ?? 0),
+            'low_stock' => (int) ($row->low_stock ?? 0),
+        ];
     }
 
     #[Computed]
     public function products()
     {
         return Product::query()
-            ->with(['categories' => fn ($q) => $q->where('is_primary', true)])
+            ->with(['categories' => fn($q) => $q->where('is_primary', true)])
             ->withCount('orderItems')
             ->withAvg('reviews', 'rating')
             ->when($this->search, function ($q) {
                 $term = trim($this->search);
                 // FULLTEXT for terms ≥ 3 chars (InnoDB minimum), prefix LIKE for shorter terms
                 if (mb_strlen($term) >= 3) {
-                    $q->whereRaw('MATCH(name, sku) AGAINST(? IN BOOLEAN MODE)', [$term.'*']);
+                    $q->whereRaw('MATCH(name, sku) AGAINST(? IN BOOLEAN MODE)', [$term . '*']);
                 } else {
                     $q->where(function ($inner) use ($term) {
-                        $inner->where('name', 'like', $term.'%')
-                            ->orWhere('sku', 'like', $term.'%');
+                        $inner->where('name', 'like', $term . '%')->orWhere('sku', 'like', $term . '%');
                     });
                 }
             })
-            ->when($this->status, fn ($q) => $q->where('status', $this->status))
-            ->when($this->category, fn ($q) => $q->whereHas('categories', fn ($q) => $q->where('categories.id', $this->category)))
+            ->when($this->status, fn($q) => $q->where('status', $this->status))
+            ->when($this->category, fn($q) => $q->whereHas('categories', fn($q) => $q->where('categories.id', $this->category)))
             ->orderBy($this->sortBy, $this->sortDirection)
             ->paginate($this->perPage);
     }
@@ -197,26 +185,26 @@ new #[Title('Products')] class extends Component {
         $products = Product::whereIn('id', $ids);
 
         match ($action) {
-            'publish'   => $products->update(['status' => ProductStatus::PUBLISHED->value, 'published_at' => now()]),
+            'publish' => $products->update(['status' => ProductStatus::PUBLISHED->value, 'published_at' => now()]),
             'unpublish' => $products->update(['status' => ProductStatus::DRAFT->value]),
-            'archive'   => $products->update(['status' => ProductStatus::ARCHIVED->value]),
-            'trash'     => $products->get()->each(fn ($p) => $p->delete()),
-            'category'  => $this->bulkAssignCategory($ids, $categoryId),
-            default     => null,
+            'archive' => $products->update(['status' => ProductStatus::ARCHIVED->value]),
+            'trash' => $products->get()->each(fn($p) => $p->delete()),
+            'category' => $this->bulkAssignCategory($ids, $categoryId),
+            default => null,
         };
 
         $this->flushStatCache();
         unset($this->products);
-        $this->dispatch('notify', title: 'Bulk Update Complete', variant: 'success', message: count($ids).' products updated successfully.');
+        $this->dispatch('notify', title: 'Bulk Update Complete', variant: 'success', message: count($ids) . ' products updated successfully.');
     }
 
     private function bulkAssignCategory(array $ids, string $categoryId): void
     {
-        if (! $categoryId) {
+        if (!$categoryId) {
             return;
         }
 
-        if (! Category::where('id', $categoryId)->exists()) {
+        if (!Category::where('id', $categoryId)->exists()) {
             $this->dispatch('notify', title: 'Error', variant: 'danger', message: 'Selected category does not exist.');
 
             return;
@@ -226,14 +214,18 @@ new #[Title('Products')] class extends Component {
 
         // Single bulk insert — ignores rows that already exist via the unique constraint
         \Illuminate\Support\Facades\DB::table('category_product')->insertOrIgnore(
-            collect($ids)->map(fn ($id) => [
-                'product_id' => $id,
-                'category_id' => $categoryId,
-                'is_primary' => false,
-                'sort_order' => 0,
-                'created_at' => $now,
-                'updated_at' => $now,
-            ])->toArray()
+            collect($ids)
+                ->map(
+                    fn($id) => [
+                        'product_id' => $id,
+                        'category_id' => $categoryId,
+                        'is_primary' => false,
+                        'sort_order' => 0,
+                        'created_at' => $now,
+                        'updated_at' => $now,
+                    ],
+                )
+                ->toArray(),
         );
     }
 
@@ -318,7 +310,7 @@ new #[Title('Products')] class extends Component {
             <div class="flex items-center justify-between">
                 <div>
                     <flux:text class="uppercase text-xs font-medium mb-3">Total Products</flux:text>
-                    <p class="text-3xl font-bold text-zinc-900 dark:text-zinc-50">{{ $this->totalProducts }}</p>
+                    <p class="text-3xl font-bold text-zinc-900 dark:text-zinc-50">{{ $this->stats['total'] }}</p>
                 </div>
                 <div class="p-3 bg-blue-50 dark:bg-blue-900 rounded-lg">
                     <flux:icon.inbox class="w-6 h-6 text-blue-600 dark:text-blue-400" />
@@ -330,7 +322,7 @@ new #[Title('Products')] class extends Component {
             <div class="flex items-center justify-between">
                 <div>
                     <flux:text class="uppercase text-xs font-medium mb-3">Published</flux:text>
-                    <p class="text-3xl font-bold text-green-600 dark:text-green-400">{{ $this->publishedProducts }}</p>
+                    <p class="text-3xl font-bold text-green-600 dark:text-green-400">{{ $this->stats['published'] }}</p>
                 </div>
                 <div class="p-3 bg-green-50 dark:bg-green-900 rounded-lg">
                     <flux:icon.check-circle class="w-6 h-6 text-green-600 dark:text-green-400" />
@@ -342,7 +334,7 @@ new #[Title('Products')] class extends Component {
             <div class="flex items-center justify-between">
                 <div>
                     <flux:text class="uppercase text-xs font-medium mb-3">Draft</flux:text>
-                    <p class="text-3xl font-bold text-yellow-600 dark:text-yellow-400">{{ $this->draftProducts }}</p>
+                    <p class="text-3xl font-bold text-yellow-600 dark:text-yellow-400">{{ $this->stats['draft'] }}</p>
                 </div>
                 <div class="p-3 bg-yellow-50 dark:bg-yellow-900 rounded-lg">
                     <flux:icon.pencil-square class="w-6 h-6 text-yellow-600 dark:text-yellow-400" />
@@ -354,7 +346,7 @@ new #[Title('Products')] class extends Component {
             <div class="flex items-center justify-between">
                 <div>
                     <flux:text class="uppercase text-xs font-medium mb-3">Low Stock</flux:text>
-                    <p class="text-3xl font-bold text-red-600 dark:text-red-400">{{ $this->lowStockProducts }}</p>
+                    <p class="text-3xl font-bold text-red-600 dark:text-red-400">{{ $this->stats['low_stock'] }}</p>
                 </div>
                 <div class="p-3 bg-red-50 dark:bg-red-900 rounded-lg">
                     <flux:icon.exclamation-triangle class="w-6 h-6 text-red-600 dark:text-red-400" />
@@ -371,8 +363,8 @@ new #[Title('Products')] class extends Component {
         <div class="flex flex-wrap items-center gap-3 px-5 py-3 border-b border-zinc-200 dark:border-zinc-600">
 
             {{-- Search --}}
-            <flux:input wire:model.live="search" icon="magnifying-glass" placeholder="Search by name or SKU..."
-                class="max-w-xs" clearable />
+            <flux:input wire:model.live.debounce.300ms="search" icon="magnifying-glass"
+                placeholder="Search by name or SKU..." class="max-w-xs" clearable />
 
             {{-- Filters --}}
             <div class="flex items-center gap-2 ms-auto flex-wrap">
@@ -591,10 +583,10 @@ new #[Title('Products')] class extends Component {
                             <flux:text class="text-xs mt-0.5">SKU: {{ $product->sku ?? '—' }}</flux:text>
                         </flux:table.cell>
 
-                        {{-- Category --}}
+                        {{-- Category — uses already-loaded relation (is_primary=true filtered at query time) --}}
                         <flux:table.cell x-show="columns.category">
                             <flux:badge size="sm" variant="outline" color="zinc">
-                                {{ $product->primaryCategory()?->name ?? 'Uncategorized' }}
+                                {{ $product->categories->first()?->name ?? 'Uncategorized' }}
                             </flux:badge>
                         </flux:table.cell>
 

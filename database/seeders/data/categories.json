@@ -13,7 +13,7 @@
     },
     {
         "name": "Potato Processors",
-        "image_path": null,
+        "image_path": "categories/potato_processors.png",
         "image_icon": "categories/potato_processors_icon.png",
         "description": "Specialist potato processing machinery including peelers, chippers, and slicers built to handle large quantities of potatoes with speed and consistency.",
         "sort_order": 2,

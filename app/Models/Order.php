@@ -33,6 +33,8 @@ class Order extends Model
         'shipping_snapshot',
         'guest_info',
         'customer_notes',
+        'tracking_number',
+        'courier_name',
         'preferred_county',
         'preferred_area',
         'lpo_number',

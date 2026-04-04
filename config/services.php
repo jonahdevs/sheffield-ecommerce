@@ -62,12 +62,13 @@ return [
         'consumer_secret' => env('MPESA_CONSUMER_SECRET'),
         'passkey' => env('MPESA_PASSKEY'),
         'shortcode' => env('MPESA_SHORTCODE', '174379'), // 174379 is sandbox default
-        'callback_url' => env('MPESA_CALLBACK_URL', env('APP_URL') . '/api/webhooks/mpesa'),
+        'callback_url' => env('MPESA_CALLBACK_URL', env('APP_URL').'/api/webhooks/mpesa'),
+        'webhook_secret' => env('MPESA_WEBHOOK_SECRET'),
     ],
     'stripe' => [
         'secret_key' => env('STRIPE_SECRET'),
         'publishable_key' => env('STRIPE_KEY'),
-        'webhook_secret' => env('STRIPE_WEBHOOK_SECRET')
+        'webhook_secret' => env('STRIPE_WEBHOOK_SECRET'),
     ],
     'google' => [
         'client_id' => env('GOOGLE_CLIENT_ID'),

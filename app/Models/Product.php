@@ -90,7 +90,6 @@ class Product extends Model
     protected function casts(): array
     {
         return [
-            'technical_specification' => 'array',
             'meta_keywords' => 'array',
             'manage_stock' => 'boolean',
             'sold_individually' => 'boolean',
@@ -294,7 +293,7 @@ class Product extends Model
     protected function visibleInCatalog(Builder $query): void
     {
         $query->whereIn('products.visibility', [
-            ProductVisibility::PUBLIC,
+            ProductVisibility::PUBLIC ,
             ProductVisibility::CATALOG,
         ]);
     }
@@ -307,7 +306,7 @@ class Product extends Model
     protected function visibleInSearch(Builder $query): void
     {
         $query->whereIn('products.visibility', [
-            ProductVisibility::PUBLIC,
+            ProductVisibility::PUBLIC ,
             ProductVisibility::SEARCH,
         ]);
     }
@@ -338,21 +337,21 @@ class Product extends Model
     protected function imageUrl(): Attribute
     {
         return Attribute::make(
-            get: fn () => $this->image_path ? asset('storage/'.$this->image_path) : null,
+            get: fn() => $this->image_path ? asset('storage/' . $this->image_path) : null,
         );
     }
 
     protected function finalPrice(): Attribute
     {
         return Attribute::make(
-            get: fn () => $this->sale_price && $this->sale_price < $this->price ? $this->sale_price : $this->price,
+            get: fn() => $this->sale_price && $this->sale_price < $this->price ? $this->sale_price : $this->price,
         );
     }
 
     protected function formattedFinalPrice(): Attribute
     {
         return Attribute::make(
-            get: fn () => $this->final_price !== null
+            get: fn() => $this->final_price !== null
             ? format_currency($this->final_price)
             : null,
         );
@@ -361,14 +360,14 @@ class Product extends Model
     protected function formattedSalePrice(): Attribute
     {
         return Attribute::make(
-            get: fn () => $this->sale_price ? format_currency($this->sale_price ?? 0) : null
+            get: fn() => $this->sale_price ? format_currency($this->sale_price ?? 0) : null
         );
     }
 
     protected function formattedPrice(): Attribute
     {
         return Attribute::make(
-            get: fn () => format_currency($this->price)
+            get: fn() => format_currency($this->price)
         );
     }
 
@@ -389,7 +388,7 @@ class Product extends Model
                 }
 
                 // Guard against null type — fall back to simple behaviour
-                if (! $this->type) {
+                if (!$this->type) {
                     return $this->formatted_final_price;
                 }
 
@@ -414,7 +413,7 @@ class Product extends Model
                     return null;
                 }
 
-                if (! $this->type) {
+                if (!$this->type) {
                     return null;
                 }
 
@@ -433,7 +432,7 @@ class Product extends Model
     protected function hasPricePrefix(): Attribute
     {
         return Attribute::make(
-            get: fn () => ! is_null($this->display_price_prefix)
+            get: fn() => !is_null($this->display_price_prefix)
         );
     }
 
@@ -457,7 +456,7 @@ class Product extends Model
             ->where('is_active', true)
             ->whereNotNull('price')
             ->min(
-                fn ($v) => $v->sale_price && $v->sale_price < $v->price
+                fn($v) => $v->sale_price && $v->sale_price < $v->price
                 ? $v->sale_price
                 : $v->price
             );
@@ -496,8 +495,8 @@ class Product extends Model
 
     public function hasDiscount(): bool
     {
-        return ! is_null($this->sale_price)
-            && ! is_null($this->price)
+        return !is_null($this->sale_price)
+            && !is_null($this->price)
             && $this->sale_price < $this->price;
     }
 
@@ -537,8 +536,8 @@ class Product extends Model
 
     public function isPhysical(): bool
     {
-        return ! $this->isVirtual()
-            && ! $this->isDownloadable()
-            && ! $this->isGrouped();
+        return !$this->isVirtual()
+            && !$this->isDownloadable()
+            && !$this->isGrouped();
     }
 }

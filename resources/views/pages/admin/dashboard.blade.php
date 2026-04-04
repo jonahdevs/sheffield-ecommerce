@@ -20,19 +20,13 @@ new #[Title('Dashboard')] class extends Component {
     public string $dateFrom = '';
     public string $dateTo = '';
 
-    // Revenue chart specific date range
-    public string $revenuePreset = 'this_month';
-    public string $revenueDateFrom = '';
-    public string $revenueDateTo = '';
+    /** @var string 'area'|'bar' */
+    public string $revenueChartType = 'area';
 
     public function mount(): void
     {
         $this->dateFrom = now()->startOfDay()->toDateString();
         $this->dateTo = now()->endOfDay()->toDateString();
-
-        // Initialize revenue chart to this month
-        $this->revenueDateFrom = now()->startOfMonth()->toDateString();
-        $this->revenueDateTo = now()->toDateString();
     }
 
     public function setDateRange(string $preset, string $from, string $to): void
@@ -43,11 +37,9 @@ new #[Title('Dashboard')] class extends Component {
         $this->clearComputedCache();
     }
 
-    public function setRevenueChartDateRange(string $preset, string $from, string $to): void
+    public function setRevenueChartType(string $type): void
     {
-        $this->revenuePreset = $preset;
-        $this->revenueDateFrom = $from;
-        $this->revenueDateTo = $to;
+        $this->revenueChartType = in_array($type, ['area', 'bar']) ? $type : 'area';
         unset($this->revenueChartData);
     }
 
@@ -153,9 +145,7 @@ new #[Title('Dashboard')] class extends Component {
     #[Computed]
     public function revenueChartData(): array
     {
-        // Use revenue-specific date range instead of global dashboard date range
-        $from = Carbon::parse($this->revenueDateFrom)->startOfDay();
-        $to = Carbon::parse($this->revenueDateTo)->endOfDay();
+        [$from, $to] = $this->dateRange;
         $daysDiff = $from->diffInDays($to);
 
         if ($daysDiff < 1) {
@@ -512,15 +502,21 @@ new #[Title('Dashboard')] class extends Component {
         {{-- Revenue chart — spans 2 cols --}}
         <flux:card class="p-0 lg:col-span-2 h-full flex flex-col ">
             <div class="flex items-center justify-between px-5 py-3 border-b border-zinc-100 dark:border-zinc-800">
-                <flux:heading>Revenue</flux:heading>
-                <div class="flex items-center gap-1">
-                    @foreach (['today' => 'Today', 'last_7_days' => '7d', 'this_month' => '1M', 'last_6_months' => '6M', 'this_year' => '1Y'] as $key => $label)
-                        <button
-                            wire:click="setRevenueChartDateRange('{{ $key }}', '{{ match ($key) {'today' => now()->startOfDay()->toDateString(),'last_7_days' => now()->subDays(6)->toDateString(),'this_month' => now()->startOfMonth()->toDateString(),'last_6_months' => now()->subMonths(5)->startOfMonth()->toDateString(),'this_year' => now()->startOfYear()->toDateString()} }}', '{{ now()->toDateString() }}')"
-                            class="text-xs px-3 py-1 rounded-full transition-colors {{ $revenuePreset === $key ? 'bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 font-medium' : 'text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800' }}">
-                            {{ $label }}
-                        </button>
-                    @endforeach
+                <div>
+                    <flux:heading>Revenue</flux:heading>
+                    <flux:text class="text-[11px] text-zinc-400">{{ $this->periodLabel }}</flux:text>
+                </div>
+                <div class="flex items-center gap-1 p-0.5 rounded-lg bg-zinc-100 dark:bg-zinc-800">
+                    <button wire:click="setRevenueChartType('area')"
+                        title="Area chart"
+                        class="p-1.5 rounded-md transition-colors {{ $revenueChartType === 'area' ? 'bg-white dark:bg-zinc-700 shadow-sm text-zinc-800 dark:text-zinc-100' : 'text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300' }}">
+                        <flux:icon.presentation-chart-line class="size-4" />
+                    </button>
+                    <button wire:click="setRevenueChartType('bar')"
+                        title="Bar chart"
+                        class="p-1.5 rounded-md transition-colors {{ $revenueChartType === 'bar' ? 'bg-white dark:bg-zinc-700 shadow-sm text-zinc-800 dark:text-zinc-100' : 'text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300' }}">
+                        <flux:icon.chart-bar class="size-4" />
+                    </button>
                 </div>
             </div>
 
@@ -530,10 +526,12 @@ new #[Title('Dashboard')] class extends Component {
                 {{-- Chart — flex-1 so it fills all space the sidebar doesn't take --}}
                 <div
                     class="flex-1 min-w-0 px-5 pt-4 pb-5 border-b md:border-b-0 md:border-r border-zinc-100 dark:border-zinc-800">
-                    <div id="revenueChartData" data-labels="{{ json_encode($this->revenueChartData['labels']) }}"
+                    <div id="revenueChartData"
+                        data-labels="{{ json_encode($this->revenueChartData['labels']) }}"
                         data-revenue="{{ json_encode($this->revenueChartData['values']) }}"
                         data-orders="{{ json_encode($this->revenueChartData['order_counts']) }}"
-                        data-refunds="{{ json_encode($this->revenueChartData['refund_counts']) }}">
+                        data-refunds="{{ json_encode($this->revenueChartData['refund_counts']) }}"
+                        data-chart-type="{{ $revenueChartType }}">
                     </div>
                     <div wire:ignore style="position:relative; height:100%; width:100%;">
                         <canvas id="revenueChart"></canvas>
@@ -1200,6 +1198,7 @@ new #[Title('Dashboard')] class extends Component {
 
         // -----------------------------------------------------------------------
         //  Revenue — reads from #revenueChartData bridge, draws into fixed wrapper
+        //  Supports two chart types: 'area' (line+fill) and 'bar'
         // -----------------------------------------------------------------------
         function initRevenueChart() {
             const bridge = document.getElementById('revenueChartData');
@@ -1212,6 +1211,8 @@ new #[Title('Dashboard')] class extends Component {
             const revenue = JSON.parse(bridge.dataset.revenue || '[]');
             const orders = JSON.parse(bridge.dataset.orders || '[]');
             const refunds = JSON.parse(bridge.dataset.refunds || '[]');
+            const chartType = bridge.dataset.chartType || 'area';
+            const isBar = chartType === 'bar';
 
             // Smart y-axis number formatter — no currency symbol, just clean numbers
             const fmtRevenue = v => {
@@ -1221,154 +1222,189 @@ new #[Title('Dashboard')] class extends Component {
                 return v.toFixed(0);
             };
 
-            chartInstances['revenueChart'] = new Chart(canvas, {
-                type: 'line',
-                data: {
-                    labels,
-                    datasets: [{
-                            label: 'Earnings',
-                            data: revenue,
-                            borderColor: '#10B981',
-                            backgroundColor: 'rgba(16,185,129,0.06)',
-                            borderWidth: 2.5,
-                            fill: false,
-                            tension: 0.4,
-                            pointRadius: 0,
-                            pointHoverRadius: 5,
-                            pointHoverBackgroundColor: '#fff',
-                            pointHoverBorderColor: '#10B981',
-                            pointHoverBorderWidth: 2,
-                            yAxisID: 'yRevenue',
-                        },
-                        {
-                            label: 'Orders',
-                            data: orders,
-                            borderColor: '#8B5CF6',
-                            backgroundColor: 'transparent',
-                            borderWidth: 2,
-                            fill: false,
-                            tension: 0.4,
-                            pointRadius: 0,
-                            pointHoverRadius: 5,
-                            pointHoverBackgroundColor: '#fff',
-                            pointHoverBorderColor: '#8B5CF6',
-                            pointHoverBorderWidth: 2,
-                            yAxisID: 'yCount',
-                        },
-                        {
-                            label: 'Refunds',
-                            data: refunds,
-                            borderColor: '#F43F5E',
-                            backgroundColor: 'rgba(244,63,94,0.06)',
-                            borderWidth: 2,
-                            fill: true,
-                            tension: 0.4,
-                            pointRadius: 0,
-                            pointHoverRadius: 5,
-                            pointHoverBackgroundColor: '#fff',
-                            pointHoverBorderColor: '#F43F5E',
-                            pointHoverBorderWidth: 2,
-                            yAxisID: 'yCount',
-                        },
-                    ],
+            const areaDatasets = [{
+                    label: 'Earnings',
+                    data: revenue,
+                    borderColor: '#10B981',
+                    backgroundColor: 'rgba(16,185,129,0.08)',
+                    borderWidth: 2.5,
+                    fill: true,
+                    tension: 0.4,
+                    pointRadius: 0,
+                    pointHoverRadius: 5,
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: '#10B981',
+                    pointHoverBorderWidth: 2,
+                    yAxisID: 'yRevenue',
                 },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    layout: {
-                        padding: {
-                            top: 8,
-                            bottom: 0
+                {
+                    label: 'Orders',
+                    data: orders,
+                    borderColor: '#8B5CF6',
+                    backgroundColor: 'transparent',
+                    borderWidth: 2,
+                    fill: false,
+                    tension: 0.4,
+                    pointRadius: 0,
+                    pointHoverRadius: 5,
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: '#8B5CF6',
+                    pointHoverBorderWidth: 2,
+                    yAxisID: 'yCount',
+                },
+                {
+                    label: 'Refunds',
+                    data: refunds,
+                    borderColor: '#F43F5E',
+                    backgroundColor: 'rgba(244,63,94,0.06)',
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.4,
+                    pointRadius: 0,
+                    pointHoverRadius: 5,
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: '#F43F5E',
+                    pointHoverBorderWidth: 2,
+                    yAxisID: 'yCount',
+                },
+            ];
+
+            const barDatasets = [{
+                    label: 'Earnings',
+                    data: revenue,
+                    type: 'bar',
+                    backgroundColor: isDark() ? 'rgba(16,185,129,0.65)' : 'rgba(16,185,129,0.80)',
+                    borderColor: '#10B981',
+                    borderWidth: 0,
+                    borderRadius: 4,
+                    borderSkipped: false,
+                    yAxisID: 'yRevenue',
+                    order: 2,
+                },
+                {
+                    label: 'Orders',
+                    data: orders,
+                    type: 'line',
+                    borderColor: '#8B5CF6',
+                    backgroundColor: 'transparent',
+                    borderWidth: 2,
+                    fill: false,
+                    tension: 0.4,
+                    pointRadius: 0,
+                    pointHoverRadius: 5,
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: '#8B5CF6',
+                    pointHoverBorderWidth: 2,
+                    yAxisID: 'yCount',
+                    order: 1,
+                },
+            ];
+
+            const sharedOptions = {
+                responsive: true,
+                maintainAspectRatio: false,
+                layout: {
+                    padding: {
+                        top: 8,
+                        bottom: 0
+                    },
+                },
+                interaction: {
+                    mode: 'index',
+                    intersect: false,
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        backgroundColor: isDark() ? '#18181b' : '#ffffff',
+                        borderColor: isDark() ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.08)',
+                        borderWidth: 1,
+                        titleColor: isDark() ? '#e4e4e7' : '#3f3f46',
+                        bodyColor: isDark() ? '#a1a1aa' : '#71717a',
+                        padding: 10,
+                        boxPadding: 4,
+                        usePointStyle: true,
+                        callbacks: {
+                            label: ctx => {
+                                if (ctx.dataset.yAxisID === 'yRevenue') {
+                                    return `  ${ctx.dataset.label}: ${currencySymbol} ${ctx.parsed.y.toLocaleString('en-KE', { minimumFractionDigits: 2 })}`;
+                                }
+                                return `  ${ctx.dataset.label}: ${ctx.parsed.y}`;
+                            },
                         },
                     },
-                    interaction: {
-                        mode: 'index',
-                        intersect: false,
-                    },
-                    plugins: {
-                        legend: {
+                },
+                scales: {
+                    x: {
+                        display: true,
+                        grid: {
                             display: false
                         },
-                        tooltip: {
-                            backgroundColor: isDark() ? '#18181b' : '#ffffff',
-                            borderColor: isDark() ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.08)',
-                            borderWidth: 1,
-                            titleColor: isDark() ? '#e4e4e7' : '#3f3f46',
-                            bodyColor: isDark() ? '#a1a1aa' : '#71717a',
-                            padding: 10,
-                            boxPadding: 4,
-                            usePointStyle: true,
-                            callbacks: {
-                                label: ctx => {
-                                    if (ctx.dataset.yAxisID === 'yRevenue') {
-                                        return `  ${ctx.dataset.label}: ${currencySymbol} ${ctx.parsed.y.toLocaleString('en-KE', { minimumFractionDigits: 2 })}`;
-                                    }
-                                    return `  ${ctx.dataset.label}: ${ctx.parsed.y}`;
-                                },
+                        border: {
+                            display: false
+                        },
+                        ticks: {
+                            color: textColor(),
+                            font: {
+                                size: 11
                             },
+                            maxRotation: 0,
+                            autoSkip: true,
+                            maxTicksLimit: 12,
                         },
                     },
-                    scales: {
-                        x: {
-                            display: true, // ← was missing / getting hidden
-                            grid: {
-                                display: false
-                            },
-                            border: {
-                                display: false
-                            },
-                            ticks: {
-                                color: textColor(),
-                                font: {
-                                    size: 11
-                                },
-                                maxRotation: 0, // keep labels horizontal like the reference
-                                autoSkip: true,
-                                maxTicksLimit: 12, // enough labels without crowding
-                            },
+                    yRevenue: {
+                        type: 'linear',
+                        position: 'left',
+                        beginAtZero: true,
+                        grid: {
+                            color: gridColor(),
+                            drawTicks: false,
                         },
-                        yRevenue: {
-                            type: 'linear',
-                            position: 'left',
-                            beginAtZero: true,
-                            grid: {
-                                color: gridColor(),
-                                drawTicks: false,
-                            },
-                            border: {
-                                display: false
-                            },
-                            ticks: {
-                                color: textColor(),
-                                font: {
-                                    size: 11
-                                },
-                                padding: 8,
-                                callback: v => fmtRevenue(v), // ← clean: 0 / 500 / 2.5k / 1M
-                            },
+                        border: {
+                            display: false
                         },
-                        yCount: {
-                            type: 'linear',
-                            position: 'right',
-                            beginAtZero: true,
-                            grid: {
-                                drawOnChartArea: false
+                        ticks: {
+                            color: textColor(),
+                            font: {
+                                size: 11
                             },
-                            border: {
-                                display: false
+                            padding: 8,
+                            callback: v => fmtRevenue(v),
+                        },
+                    },
+                    yCount: {
+                        type: 'linear',
+                        position: 'right',
+                        beginAtZero: true,
+                        grid: {
+                            drawOnChartArea: false
+                        },
+                        border: {
+                            display: false
+                        },
+                        ticks: {
+                            color: textColor(),
+                            font: {
+                                size: 11
                             },
-                            ticks: {
-                                color: textColor(),
-                                font: {
-                                    size: 11
-                                },
-                                padding: 8,
-                                stepSize: 1,
-                                callback: v => Number.isInteger(v) ? v : '',
-                            },
+                            padding: 8,
+                            stepSize: 1,
+                            callback: v => Number.isInteger(v) ? v : '',
                         },
                     },
                 },
+            };
+
+            chartInstances['revenueChart'] = new Chart(canvas, {
+                type: isBar ? 'bar' : 'line',
+                data: {
+                    labels,
+                    datasets: isBar ? barDatasets : areaDatasets,
+                },
+                options: sharedOptions,
             });
         }
 

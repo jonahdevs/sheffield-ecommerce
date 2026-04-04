@@ -19,8 +19,6 @@ new #[Title('Orders')] class extends Component {
 
     public string $search = '';
     public string $statusFilter = 'all';
-    public string $dateFrom = '';
-    public string $dateTo = '';
     public string $sortBy = 'created_at';
     public string $sortDirection = 'desc';
     public int $perPage = 10;
@@ -35,14 +33,6 @@ new #[Title('Orders')] class extends Component {
         $this->resetPage();
     }
     public function updatingStatusFilter(): void
-    {
-        $this->resetPage();
-    }
-    public function updatingDateFrom(): void
-    {
-        $this->resetPage();
-    }
-    public function updatingDateTo(): void
     {
         $this->resetPage();
     }
@@ -68,10 +58,6 @@ new #[Title('Orders')] class extends Component {
             // Status filter
             ->when($this->statusFilter !== 'all', fn($q) => $q->where('status', $this->statusFilter))
 
-            // Date range
-            ->when($this->dateFrom, fn($q) => $q->whereDate('created_at', '>=', $this->dateFrom))
-            ->when($this->dateTo, fn($q) => $q->whereDate('created_at', '<=', $this->dateTo))
-
             ->orderBy($this->sortBy, $this->sortDirection)
             ->paginate($this->perPage);
     }
@@ -88,8 +74,8 @@ new #[Title('Orders')] class extends Component {
 
         return [
             'total' => (clone $base)->count(),
-            'revenue' => (clone $base)->sum('total_cents') / 100,
-            'today' => (clone $base)->whereDate('created_at', $today)->count(),
+            'revenue' => (clone $base)->where('payment_status', PaymentStatus::PAID->value)->sum('total_cents') / 100,
+            'today' => (clone $base)->whereBetween('created_at', [Carbon::parse($today)->startOfDay(), Carbon::parse($today)->endOfDay()])->count(),
             'pending' => (clone $base)->whereIn('status', [OrderStatus::PENDING->value, OrderStatus::PROCESSING->value])->count(),
         ];
     }
@@ -200,6 +186,7 @@ new #[Title('Orders')] class extends Component {
     {
         $orders = Order::whereIn('id', $ids)
             ->with(['user', 'payment'])
+            ->withCount('items')
             ->get();
 
         return $this->buildCsvDownload($orders, 'orders-selected-' . now()->format('Y-m-d'));
@@ -209,10 +196,9 @@ new #[Title('Orders')] class extends Component {
     {
         $orders = Order::query()
             ->with(['user', 'payment'])
+            ->withCount('items')
             ->when($this->search, fn($q) => $q->where('reference', 'like', "%{$this->search}%")->orWhereHas('user', fn($u) => $u->where('name', 'like', "%{$this->search}%")->orWhere('email', 'like', "%{$this->search}%")))
             ->when($this->statusFilter !== 'all', fn($q) => $q->where('status', $this->statusFilter))
-            ->when($this->dateFrom, fn($q) => $q->whereDate('created_at', '>=', $this->dateFrom))
-            ->when($this->dateTo, fn($q) => $q->whereDate('created_at', '<=', $this->dateTo))
             ->latest()
             ->get();
 
@@ -224,7 +210,7 @@ new #[Title('Orders')] class extends Component {
         $rows = [['Reference', 'Customer', 'Email', 'Status', 'Payment Status', 'Gateway', 'Total', 'Items', 'Date']];
 
         foreach ($orders as $order) {
-            $rows[] = [$order->reference, $order->user->name, $order->user->email, $order->status->label(), $order->payment?->status?->label() ?? 'N/A', ucfirst($order->payment?->gateway ?? 'N/A'), $order->total, $order->items()->count(), $order->created_at->format('Y-m-d H:i')];
+            $rows[] = [$order->reference, $order->user?->name ?? $order->guest_info['name'] ?? 'Guest', $order->user?->email ?? $order->guest_info['email'] ?? 'N/A', $order->status->label(), $order->payment?->status?->label() ?? 'N/A', ucfirst($order->payment?->gateway ?? 'N/A'), $order->total, $order->items_count, $order->created_at->format('Y-m-d H:i')];
         }
 
         $handle = fopen('php://temp', 'r+');
@@ -246,8 +232,6 @@ new #[Title('Orders')] class extends Component {
     {
         $this->search = '';
         $this->statusFilter = 'all';
-        $this->dateFrom = '';
-        $this->dateTo = '';
         $this->resetPage();
     }
 
@@ -401,10 +385,6 @@ new #[Title('Orders')] class extends Component {
 
             <div class="flex items-center gap-2 ms-auto flex-wrap">
 
-                <x-my-datepicker wire:model.live="dateFrom" placeholder="From date" icon="o-calendar"
-                    class="max-w-40" />
-                <x-my-datepicker wire:model.live="dateTo" placeholder="To date" icon="o-calendar" class="max-w-40" />
-
                 {{-- Status filter — options are scoped to the active tab --}}
                 <flux:select wire:model.live="statusFilter" class="w-48">
                     @foreach ($this->statusOptions as $value => $label)
@@ -440,7 +420,7 @@ new #[Title('Orders')] class extends Component {
                     </flux:menu>
                 </flux:dropdown>
 
-                @if ($search || $dateFrom || $dateTo || $statusFilter !== 'all')
+                @if ($search || $statusFilter !== 'all')
                     <flux:button wire:click="clearFilters" variant="ghost" size="sm" icon="x-mark">Clear
                     </flux:button>
                 @endif
@@ -564,8 +544,8 @@ new #[Title('Orders')] class extends Component {
 
                         {{-- Customer --}}
                         <flux:table.cell x-show="columns.customer">
-                            <flux:heading size="sm" class="font-medium!">{{ $order->user->name }}</flux:heading>
-                            <flux:subheading class="text-xs!">{{ $order->user->email }}</flux:subheading>
+                            <flux:heading size="sm" class="font-medium!">{{ $order->user?->name ?? $order->guest_info['name'] ?? 'Guest' }}</flux:heading>
+                            <flux:subheading class="text-xs!">{{ $order->user?->email ?? $order->guest_info['email'] ?? '—' }}</flux:subheading>
                         </flux:table.cell>
 
                         {{-- Date --}}
