@@ -4,6 +4,7 @@ use App\Enums\ProductStatus;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Livewire\Attributes\{Title, Computed};
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 
 new #[Title('Products')] class extends Component {
@@ -53,41 +54,60 @@ new #[Title('Products')] class extends Component {
     }
 
     #[Computed]
-    public function totalProducts()
+    public function totalProducts(): int
     {
-        return Product::count();
+        return Cache::remember('products:stats:total', 60, fn () => Product::count());
     }
 
     #[Computed]
-    public function publishedProducts()
+    public function publishedProducts(): int
     {
-        return Product::where('status', ProductStatus::PUBLISHED)->count();
+        return Cache::remember('products:stats:published', 60, fn () => Product::where('status', ProductStatus::PUBLISHED)->count());
     }
 
     #[Computed]
-    public function draftProducts()
+    public function draftProducts(): int
     {
-        return Product::where('status', ProductStatus::DRAFT)->count();
+        return Cache::remember('products:stats:draft', 60, fn () => Product::where('status', ProductStatus::DRAFT)->count());
     }
 
     #[Computed]
-    public function lowStockProducts()
+    public function lowStockProducts(): int
     {
-        return Product::where(function ($q) {
+        return Cache::remember('products:stats:low_stock', 60, fn () => Product::where(function ($q) {
             $q->where('manage_stock', true)->whereColumn('stock_quantity', '<=', 'low_stock_threshold');
-        })->count();
+        })->count());
+    }
+
+    private function flushStatCache(): void
+    {
+        Cache::forget('products:stats:total');
+        Cache::forget('products:stats:published');
+        Cache::forget('products:stats:draft');
+        Cache::forget('products:stats:low_stock');
     }
 
     #[Computed]
     public function products()
     {
         return Product::query()
-            ->with(['categories' => fn($q) => $q->where('is_primary', true)])
+            ->with(['categories' => fn ($q) => $q->where('is_primary', true)])
             ->withCount('orderItems')
             ->withAvg('reviews', 'rating')
-            ->when($this->search, fn($q) => $q->where('name', 'like', "%{$this->search}%")->orWhere('sku', 'like', "%{$this->search}%"))
-            ->when($this->status, fn($q) => $q->where('status', $this->status))
-            ->when($this->category, fn($q) => $q->whereHas('categories', fn($q) => $q->where('categories.id', $this->category)))
+            ->when($this->search, function ($q) {
+                $term = trim($this->search);
+                // FULLTEXT for terms ≥ 3 chars (InnoDB minimum), prefix LIKE for shorter terms
+                if (mb_strlen($term) >= 3) {
+                    $q->whereRaw('MATCH(name, sku) AGAINST(? IN BOOLEAN MODE)', [$term.'*']);
+                } else {
+                    $q->where(function ($inner) use ($term) {
+                        $inner->where('name', 'like', $term.'%')
+                            ->orWhere('sku', 'like', $term.'%');
+                    });
+                }
+            })
+            ->when($this->status, fn ($q) => $q->where('status', $this->status))
+            ->when($this->category, fn ($q) => $q->whereHas('categories', fn ($q) => $q->where('categories.id', $this->category)))
             ->orderBy($this->sortBy, $this->sortDirection)
             ->paginate($this->perPage);
     }
@@ -109,13 +129,17 @@ new #[Title('Products')] class extends Component {
 
     public function trash(int $id): void
     {
-        Product::findOrFail($id)->delete();
+        $product = Product::findOrFail($id);
+        $this->authorize('delete', $product);
+        $product->delete();
+        $this->flushStatCache();
         $this->dispatch('notify', title: 'Product Trashed', variant: 'success', message: 'Product moved to trash.');
     }
 
     public function duplicate(int $id): void
     {
         $original = Product::with(['categories', 'images'])->findOrFail($id);
+        $this->authorize('create', Product::class);
 
         $copy = $original->replicate();
         $copy->name = $original->name . ' (Copy)';
@@ -147,10 +171,12 @@ new #[Title('Products')] class extends Component {
     public function setStatus(int $id, string $status): void
     {
         $product = Product::findOrFail($id);
+        $this->authorize('update', $product);
         $product->update([
             'status' => $status,
             'published_at' => $status === ProductStatus::PUBLISHED->value ? now() : $product->published_at,
         ]);
+        $this->flushStatCache();
         $this->dispatch('notify', title: 'Status Updated', variant: 'success', message: "Status updated to {$product->fresh()->status->label()}.");
     }
 
@@ -162,35 +188,53 @@ new #[Title('Products')] class extends Component {
             return;
         }
 
+        $this->authorize('update', Product::class);
+
+        if ($action === 'trash') {
+            $this->authorize('delete', Product::class);
+        }
+
         $products = Product::whereIn('id', $ids);
 
         match ($action) {
-            'publish' => $products->update(['status' => ProductStatus::PUBLISHED->value, 'published_at' => now()]),
+            'publish'   => $products->update(['status' => ProductStatus::PUBLISHED->value, 'published_at' => now()]),
             'unpublish' => $products->update(['status' => ProductStatus::DRAFT->value]),
-            'archive' => $products->update(['status' => ProductStatus::ARCHIVED->value]),
-            'trash' => $products->each(fn($p) => $p->delete()),
-            'category' => $this->bulkAssignCategory($ids, $categoryId),
-            default => null,
+            'archive'   => $products->update(['status' => ProductStatus::ARCHIVED->value]),
+            'trash'     => $products->get()->each(fn ($p) => $p->delete()),
+            'category'  => $this->bulkAssignCategory($ids, $categoryId),
+            default     => null,
         };
 
+        $this->flushStatCache();
         unset($this->products);
-        $this->dispatch('notify', title: 'Bulk Update Complete', variant: 'success', message: count($ids) . ' products updated successfully.');
+        $this->dispatch('notify', title: 'Bulk Update Complete', variant: 'success', message: count($ids).' products updated successfully.');
     }
 
     private function bulkAssignCategory(array $ids, string $categoryId): void
     {
-        if (!$categoryId) {
+        if (! $categoryId) {
             return;
         }
 
-        Product::whereIn('id', $ids)
-            ->with('categories')
-            ->get()
-            ->each(function ($product) use ($categoryId) {
-                $product->categories()->syncWithoutDetaching([
-                    $categoryId => ['is_primary' => false, 'sort_order' => 0],
-                ]);
-            });
+        if (! Category::where('id', $categoryId)->exists()) {
+            $this->dispatch('notify', title: 'Error', variant: 'danger', message: 'Selected category does not exist.');
+
+            return;
+        }
+
+        $now = now();
+
+        // Single bulk insert — ignores rows that already exist via the unique constraint
+        \Illuminate\Support\Facades\DB::table('category_product')->insertOrIgnore(
+            collect($ids)->map(fn ($id) => [
+                'product_id' => $id,
+                'category_id' => $categoryId,
+                'is_primary' => false,
+                'sort_order' => 0,
+                'created_at' => $now,
+                'updated_at' => $now,
+            ])->toArray()
+        );
     }
 
     public function rendered(): void

@@ -11,6 +11,7 @@ use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\Tag;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -913,18 +914,9 @@ class ProductForm extends Form
             return $existingCategory;
         }
 
-        // Generate a unique slug — increment counter on collision
-        $baseSlug = Str::slug($this->newCategoryName);
-        $slug = $baseSlug;
-        $counter = 1;
-
-        while (Category::where('slug', $slug)->exists()) {
-            $slug = $baseSlug.'-'.$counter++;
-        }
-
         $category = Category::create([
             'name' => $this->newCategoryName,
-            'slug' => $slug,
+            'slug' => $this->generateUniqueSlug($this->newCategoryName, 'categories'),
             'parent_id' => $this->newCategoryParentId,
             'status' => CategoryStatus::ACTIVE,
             'sort_order' => 0,
@@ -944,6 +936,31 @@ class ProductForm extends Form
     {
         $this->newCategoryName = '';
         $this->newCategoryParentId = null;
+    }
+
+    // =========================================================================
+    // SLUG HELPERS
+    // =========================================================================
+
+    /**
+     * Generates a unique slug for the given name by checking the target table.
+     * Appends an incrementing counter suffix on collisions.
+     *
+     * @param  string  $name  Human-readable name to slugify.
+     * @param  string  $table  Database table to check for uniqueness.
+     * @param  string  $column  Column on that table that holds the slug (default 'slug').
+     */
+    private function generateUniqueSlug(string $name, string $table, string $column = 'slug'): string
+    {
+        $baseSlug = Str::slug($name);
+        $slug = $baseSlug;
+        $counter = 1;
+
+        while (DB::table($table)->where($column, $slug)->exists()) {
+            $slug = $baseSlug.'-'.$counter++;
+        }
+
+        return $slug;
     }
 
     // =========================================================================
@@ -976,18 +993,9 @@ class ProductForm extends Form
             return $existingBrand;
         }
 
-        // Generate a unique slug — increment counter on collision
-        $baseSlug = Str::slug($this->newBrandName);
-        $slug = $baseSlug;
-        $counter = 1;
-
-        while (Brand::where('slug', $slug)->exists()) {
-            $slug = $baseSlug.'-'.$counter++;
-        }
-
         $brand = Brand::create([
             'name' => $this->newBrandName,
-            'slug' => $slug,
+            'slug' => $this->generateUniqueSlug($this->newBrandName, 'brands'),
             'website_url' => $this->newBrandWebsite,
             'is_active' => true,
             'sort_order' => 0,

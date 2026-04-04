@@ -1,11 +1,12 @@
 @props([
     'model' => 'content',
     'placeholder' => 'Start writing...',
+    'value' => '',
     'label' => null,
     'error' => null,
 ])
 
-<div x-data="richEditor('{{ $model }}', '{{ $placeholder }}')" class="w-full">
+<div x-data="richEditor('{{ $model }}', '{{ $placeholder }}', @js($value ?? ''))" class="w-full">
 
     @if ($label)
         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">

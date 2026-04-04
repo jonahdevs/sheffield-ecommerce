@@ -412,13 +412,27 @@ abstract class BaseProductComponent extends Component
             return;
         }
 
-        // Switching back to variable reactivates all deactivated variants
+        // Switching back to variable reactivates all deactivated variants.
+        // Also ensure variants are loaded if they weren't at mount (e.g. was a simple product).
         if ($value === 'variable' && $productId) {
+            $product = Product::findOrFail($productId);
+
+            if (empty($this->variants)) {
+                $this->loadProductVariants($product);
+            }
+
             app(ProductVariationService::class)->reactivateAll($productId);
+
             foreach ($this->variants as $index => $variant) {
                 $this->variants[$index]['is_active'] = true;
             }
+
             $this->dispatch('notify', variant: 'success', message: 'Variations restored.');
+        }
+
+        // Switching to grouped — load any existing grouped children that weren't loaded at mount.
+        if ($value === 'grouped' && $productId && empty($this->groupedProducts)) {
+            $this->loadGroupedProducts(Product::findOrFail($productId));
         }
     }
 

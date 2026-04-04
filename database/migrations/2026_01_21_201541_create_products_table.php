@@ -2,9 +2,11 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+return new class extends Migration
+{
     /**
      * Run the migrations.
      */
@@ -98,11 +100,19 @@ return new class extends Migration {
             $table->softDeletes();
 
             // Indexes
-            $table->index(['status', 'created_at']);   // default sort + newest
-            $table->index(['status', 'price']);         // price filter + price sort
+            $table->index(['status', 'created_at']);    // default sort + newest
+            $table->index(['status', 'price']);          // price filter + price sort
             $table->index(['status', 'stock_quantity']); // in_stock filter
-            $table->index(['status', 'sale_price']);    // on_sale filter
+            $table->index(['status', 'sale_price']);     // on_sale filter
+            $table->index(['status', 'visibility']); // active scope (status + visibility together)
+            $table->index('type');                    // product type filter
+            $table->index('visibility');              // visibility scope
         });
+
+        // FULLTEXT index for fast admin search — MySQL/MariaDB only (not supported in SQLite)
+        if (DB::getDriverName() === 'mysql') {
+            DB::statement('ALTER TABLE products ADD FULLTEXT ft_products_name_sku (name, sku)');
+        }
 
         // ===============================================
         //  ATTRIBUTES TABLE
@@ -147,7 +157,6 @@ return new class extends Migration {
             $table->unique(['attribute_id', 'slug']);
             $table->index(['attribute_id', 'is_active']);
         });
-
 
         // ===============================================
         // PRODUCT VARIANTS TAB

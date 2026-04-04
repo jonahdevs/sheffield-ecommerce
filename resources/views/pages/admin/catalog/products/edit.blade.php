@@ -1,6 +1,7 @@
 <?php
 use Livewire\Attributes\Title;
 use App\Livewire\Admin\BaseProductComponent;
+use App\Enums\ProductType;
 use App\Models\Product;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\DB;
@@ -14,11 +15,27 @@ new #[Title('Edit Product')] class extends BaseProductComponent {
 
         $this->product = $product;
         $this->form->setProduct($product);
+
+        // Attributes are always needed (shown on the Attributes tab for all types)
         $this->loadProductAttributes($product);
-        $this->loadProductVariants($product);
-        $this->loadGroupedProducts($product);
+
+        // Variants are only relevant for variable products — skip the query for all other types
+        if ($product->type === ProductType::VARIABLE->value) {
+            $this->loadProductVariants($product);
+        }
+
+        // Grouped product children are only relevant for grouped products
+        if ($product->type === ProductType::GROUPED->value) {
+            $this->loadGroupedProducts($product);
+        }
+
+        // Accessories can appear on any product type
         $this->loadAccessories($product);
-        $this->loadProductDownloads($product);
+
+        // Download file rows are only loaded when the product is flagged as downloadable
+        if ($product->is_downloadable) {
+            $this->loadProductDownloads($product);
+        }
     }
 
     protected function executeSave(): void

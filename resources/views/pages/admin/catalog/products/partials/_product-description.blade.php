@@ -9,7 +9,7 @@
     </div>
 
     <div x-show="expanded" x-cloak x-collapse class="p-5">
-        <x-rich-editor model="form.description" placeholder="Describe the product features, specifications..." />
+        <x-rich-editor model="form.description" :value="$this->form->description ?? ''" placeholder="Describe the product features, specifications..." />
         <flux:error name="form.description" />
     </div>
 </flux:card>

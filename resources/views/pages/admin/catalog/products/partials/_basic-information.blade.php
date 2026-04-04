@@ -22,7 +22,7 @@
 
         <flux:field>
             <flux:label>{{ __('Short Description') }}</flux:label>
-            <x-rich-editor model="form.short_description" placeholder="Brief product summary shown in listings..." />
+            <x-rich-editor model="form.short_description" :value="$this->form->short_description ?? ''" placeholder="Brief product summary shown in listings..." />
             <flux:error name="form.short_description" />
         </flux:field>
     </div>

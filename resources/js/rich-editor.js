@@ -6,7 +6,7 @@ import TextAlign from '@tiptap/extension-text-align'
 // Note: In Tiptap v3, StarterKit already includes Underline and Link.
 // Importing them separately would cause duplicate extension errors.
 
-export default (wireProperty, placeholder = 'Start writing...') => ({
+export default (wireProperty, placeholder = 'Start writing...', initialContent = '') => ({
     editor: null,
 
     init() {
@@ -17,7 +17,10 @@ export default (wireProperty, placeholder = 'Start writing...') => ({
                 Placeholder.configure({ placeholder }),
                 TextAlign.configure({ types: ['heading', 'paragraph'] }),
             ],
-            content: this.$wire.get(wireProperty) || '',
+            // Use the server-rendered initial value passed from Blade so the
+            // editor is populated immediately — $wire.get() is not reliable
+            // at Alpine init time in Livewire 4 (can return null before hydration).
+            content: initialContent || '',
             editorProps: {
                 attributes: {
                     class: 'prose max-w-none min-h-48 p-4 focus:outline-none',
@@ -28,6 +31,8 @@ export default (wireProperty, placeholder = 'Start writing...') => ({
             },
         })
 
+        // Keep the editor in sync if the Livewire property changes from outside
+        // (e.g. a server-side action resets the form).
         this.$wire.$watch(wireProperty, (value) => {
             if (value !== this.editor.getHTML()) {
                 this.editor.commands.setContent(value || '', false)
