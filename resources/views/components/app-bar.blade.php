@@ -298,8 +298,6 @@ new class extends Component {
             </ul>
         </section>
 
-        {{-- Mobile: horizontal scroll --}}
-
 
         {{-- Mobile: horizontal scroll + Browse dropdown --}}
         <section x-data="{
@@ -335,20 +333,21 @@ new class extends Component {
                 </button>
 
                 {{-- Dropdown panel --}}
-                <div x-show="browseOpen" x-transition:enter="transition ease-out duration-150"
+                <div x-cloak x-show="browseOpen" x-transition:enter="transition ease-out duration-150"
                     x-transition:enter-start="opacity-0 -translate-y-1"
                     x-transition:enter-end="opacity-100 translate-y-0"
                     x-transition:leave="transition ease-in duration-100"
                     x-transition:leave-start="opacity-100 translate-y-0"
                     x-transition:leave-end="opacity-0 -translate-y-1"
-                    class="absolute left-0 top-full z-50 w-72 bg-white rounded-b-lg shadow-xl border border-t-0 border-gray-200 overflow-hidden"
+                    class="absolute left-0 top-full z-50 w-72 bg-white rounded-b-lg shadow-xl border border-t-0 border-zinc-200 overflow-hidden"
                     @click="browseOpen = false">
 
-                    <ul class="divide-y divide-gray-100">
+                    <ul class="divide-y divide-zinc-100 max-h-[60vh] overflow-y-auto" role="menu"
+                        aria-label="Browse categories">
                         @foreach ($this->categories as $category)
                             <li>
                                 <a href="{{ route('shop.category', ['category' => $category->slug]) }}" wire:navigate
-                                    class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-800 hover:bg-gray-50 transition-colors">
+                                    class="flex items-center gap-3 px-4 py-2.5 text-sm text-zinc-800 hover:bg-zinc-50 transition-colors">
                                     <img src="{{ $category->icon_url }}" alt="" width="20"
                                         height="20" class="max-w-5 max-h-5 opacity-60">
                                     {{ $category->name }}
@@ -360,7 +359,7 @@ new class extends Component {
             </div>
 
             {{-- Left chevron --}}
-            <button x-show="showLeft" x-transition:enter="transition ease-out duration-200"
+            <button x-cloak x-show="showLeft" x-transition:enter="transition ease-out duration-200"
                 x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
                 x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100"
                 x-transition:leave-end="opacity-0" @click="scrollLeft(); setTimeout(() => updateArrows(), 300)"
@@ -383,7 +382,7 @@ new class extends Component {
             </div>
 
             {{-- Right chevron --}}
-            <button x-show="showRight" x-transition:enter="transition ease-out duration-200"
+            <button x-cloak x-show="showRight" x-transition:enter="transition ease-out duration-200"
                 x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
                 x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100"
                 x-transition:leave-end="opacity-0" @click="scrollRight(); setTimeout(() => updateArrows(), 300)"
