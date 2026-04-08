@@ -123,9 +123,13 @@ new #[Layout('layouts.guest')] class extends Component {
 };
 ?>
 
+@push('head-scripts')
+    <link rel="preload" as="image" href="/images/home/COFFEE-MACHINES.jpg">
+@endpush
+
 <div>
-    {{-- Hero Background Wrapper       --}}
-    <div class="relative overflow-hidden bg-cover bg-center bg-fixed"
+    {{-- Hero Background Wrapper --}}
+    <div class="relative overflow-hidden bg-cover bg-center"
         style="background-image: url('{{ asset('images/home/hero-bg.jpg') }}');">
 
         {{-- Hero section --}}
@@ -189,9 +193,10 @@ new #[Layout('layouts.guest')] class extends Component {
             <div class="swiper opacity-0 transition-opacity duration-500 rounded-md overflow-hidden shadow-md"
                 id="heroSwiper">
                 <div class="swiper-wrapper">
-                    @foreach ($this->heroBanners as $banner)
+                    @foreach ($this->heroBanners as $i => $banner)
                         <div class="swiper-slide">
-                            <img src="{{ $banner['image'] }}" alt="{{ $banner['alt'] }}" class="w-full h-auto">
+                            <img src="{{ $banner['image'] }}" alt="{{ $banner['alt'] }}" class="w-full h-auto"
+                                @if ($i === 0) fetchpriority="high" @else loading="lazy" @endif>
                         </div>
                     @endforeach
                 </div>
@@ -334,7 +339,7 @@ new #[Layout('layouts.guest')] class extends Component {
     </div>
 
     <section class="container mx-auto px-4 mt-5 md:mt-7">
-        <img src="{{ asset('images/home/THIN BANNER.png') }}" alt="banner" class="w-full h-auto">
+        <img src="{{ asset('images/home/THIN BANNER.png') }}" alt="banner" class="w-full h-auto" loading="lazy">
     </section>
 
     {{-- New Arrivals --}}
@@ -383,7 +388,7 @@ new #[Layout('layouts.guest')] class extends Component {
             <section class="flex items-center justify-between pb-4 ">
                 <h2 class="font-semibold text-xl text-zinc-800">You May Also Like</h2>
 
-                <flux:link :href="route('shop.index')">View all</flux:link>
+                <flux:link :href="route('shop.index')" class="text-sm">View all</flux:link>
             </section>
             @island(name: 'products', defer: true)
                 @placeholder
@@ -416,7 +421,7 @@ new #[Layout('layouts.guest')] class extends Component {
                         'city' => 'Nairobi',
                         'flag' => 'images/kenya-flag.png',
                         'flag_alt' => 'Kenya flag',
-                        'image' => 'images/showrooms/SHEFFIELD SHOWROOM.png',
+                        'image' => 'images/showrooms/SHEFFIELD SHOWROOM.webp',
                         'address' => 'Off Old Mombasa Road before the Nairobi SGR Terminus',
                         'phone' => '+254 713 444 000',
                         'tel' => '+254713444000',
@@ -426,7 +431,7 @@ new #[Layout('layouts.guest')] class extends Component {
                         'city' => 'Mombasa',
                         'flag' => 'images/kenya-flag.png',
                         'flag_alt' => 'Kenya flag',
-                        'image' => 'images/showrooms/MOMBASA SHOWROOM-01.jpg',
+                        'image' => 'images/showrooms/MOMBASA SHOWROOM.webp',
                         'address' => 'Petrocity Complex 1st Floor — Off Links Road, Nyali, Mombasa',
                         'phone' => '+254 713 317 214',
                         'tel' => '+254713317214',
@@ -436,7 +441,7 @@ new #[Layout('layouts.guest')] class extends Component {
                         'city' => 'Kampala',
                         'flag' => 'images/uganda.png',
                         'flag_alt' => 'Uganda flag',
-                        'image' => 'images/showrooms/IMAGES SHOWROOMS-01.jpg',
+                        'image' => 'images/showrooms/KAMPALA SHOWROOM.webp',
                         'address' => 'Bugolobi Hardware City, Block 3 Room 102, Mulwana Road',
                         'phone' => '+256 741 177 712',
                         'tel' => '+256741177712',
@@ -446,7 +451,7 @@ new #[Layout('layouts.guest')] class extends Component {
                         'city' => 'Kigali',
                         'flag' => 'images/rwanda.png',
                         'flag_alt' => 'Rwanda flag',
-                        'image' => 'images/showrooms/IMAGES SHOWROOMS-02.jpg',
+                        'image' => 'images/showrooms/KIGALI SHOWROOM.webp',
                         'address' => 'Kicukiro Street, KK 500 ST Kigali, Rwanda',
                         'phone' => '+250 794 007 302',
                         'tel' => '+250794007302',

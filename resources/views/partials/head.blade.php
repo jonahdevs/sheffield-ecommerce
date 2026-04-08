@@ -19,25 +19,11 @@
 
 <meta name="color-scheme" content="light only">
 
-{{-- <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" /> --}}
-
-{{-- date picker --}}
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-
-{{-- Easy MDE --}}
-<link rel="stylesheet" href="https://unpkg.com/easymde/dist/easymde.min.css">
-<script src="https://unpkg.com/easymde/dist/easymde.min.js"></script>
-
-<script src="https://cdn.tiny.cloud/1/c2ybu5wz30jxny8183sd8d7ne9vuxr5obaqz65xd06ohkqj8/tinymce/6/tinymce.min.js"
-    referrerpolicy="origin"></script>
-
-{{-- Stripe JS --}}
-<script src="https://js.stripe.com/v3/"></script>
-
-{{-- Swiper js --}}
+{{-- Swiper --}}
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@12/swiper-bundle.min.css" />
-<script src="https://cdn.jsdelivr.net/npm/swiper@12/swiper-bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/swiper@12/swiper-bundle.min.js" defer></script>
+
+@stack('head-scripts')
 
 @vite(['resources/css/app.css', 'resources/js/app.js'])
 @fluxAppearance

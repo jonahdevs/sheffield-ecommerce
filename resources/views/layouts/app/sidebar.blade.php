@@ -3,6 +3,9 @@
 
 <head>
     @include('partials.head')
+    {{-- Flatpickr date picker (admin only) --}}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr" defer></script>
 </head>
 
 <body class="min-h-screen bg-white dark:bg-zinc-800 app-layout">

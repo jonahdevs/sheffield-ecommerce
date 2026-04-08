@@ -118,6 +118,10 @@ new #[Layout('layouts.guest')] class extends Component {
 };
 ?>
 
+@push('head-scripts')
+    <script src="https://js.stripe.com/v3/"></script>
+@endpush
+
 <div>
     {{-- Breadcrumb --}}
     <div class="bg-zinc-100">
