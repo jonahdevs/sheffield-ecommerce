@@ -130,7 +130,7 @@ new #[Layout('layouts.guest')] class extends Component {
 <div>
     {{-- Hero Background Wrapper --}}
     <div class="relative overflow-hidden bg-cover bg-center"
-        style="background-image: url('{{ asset('images/home/hero-bg.jpg') }}');">
+        style="background-image: url('{{ asset('images/home/hero-bg.webp') }}');">
 
         {{-- Hero section --}}
         <div class="container mx-auto px-2 sm:px-4 py-4 sm:py-8 relative" x-data="{
