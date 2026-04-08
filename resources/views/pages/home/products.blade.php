@@ -11,7 +11,6 @@
                 slidesPerView: 2,
                 slidesPerGroup: 1,
                 spaceBetween: 12,
-                loop: true,
                 speed: 600,
                 breakpoints: {
                     375: {

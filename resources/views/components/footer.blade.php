@@ -143,7 +143,7 @@
                 <div class="flex items-center gap-4">
                     <span class="text-sm text-brand-footer-muted mr-2">Follow Us:</span>
 
-                    <a href="https://www.facebook.com/SheffieldAfricaFacilitySolutions" target="_blank"
+                    <a href="https://www.facebook.com/SheffieldAfricaFacilitySolutions" target="_blank" rel="noopener noreferrer"
                         class="text-brand-footer-muted hover:text-white transition-colors">
                         <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                             <path
@@ -151,7 +151,7 @@
                         </svg>
                     </a>
 
-                    <a href="https://x.com/sheffield_afric/" target="_blank"
+                    <a href="https://x.com/sheffield_afric/" target="_blank" rel="noopener noreferrer"
                         class="text-brand-footer-muted hover:text-white transition-colors">
                         <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                             <path
@@ -159,7 +159,7 @@
                         </svg>
                     </a>
 
-                    <a href="https://www.instagram.com/sheffieldafrica/" target="_blank"
+                    <a href="https://www.instagram.com/sheffieldafrica/" target="_blank" rel="noopener noreferrer"
                         class="text-brand-footer-muted hover:text-white transition-colors">
                         <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                             <path
@@ -167,7 +167,7 @@
                         </svg>
                     </a>
 
-                    <a href="https://www.linkedin.com/company/sheffield-steel-systems-ltd/" target="_blank"
+                    <a href="https://www.linkedin.com/company/sheffield-steel-systems-ltd/" target="_blank" rel="noopener noreferrer"
                         class="text-brand-footer-muted hover:text-white transition-colors">
                         <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                             <path

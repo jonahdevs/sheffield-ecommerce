@@ -663,7 +663,7 @@ new #[Title('Delivery Orders')] class extends Component {
 
                     <flux:table.column class="w-10 ps-4!">
                         <flux:checkbox x-ref="selectAll"
-                            x-effect="$refs.selectAll.querySelector('input').indeterminate = someSelected"
+                            x-effect="const cb = $refs.selectAll?.querySelector('input'); if (cb) cb.indeterminate = someSelected"
                             ::checked="allSelected" @change="toggleAll()" />
                     </flux:table.column>
 

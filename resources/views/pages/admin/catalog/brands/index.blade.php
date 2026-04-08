@@ -100,7 +100,7 @@ new #[Title('Brands')] class extends Component {
 
                         <flux:table.cell>
                             @if ($brand->website_url)
-                                <a href="{{ $brand->website_url }}" target="_blank"
+                                <a href="{{ $brand->website_url }}" target="_blank" rel="noopener noreferrer"
                                     class="text-blue-600 hover:underline text-sm flex items-center gap-1">
                                     Visit
                                     <flux:icon name="arrow-top-right-on-square" variant="micro" />

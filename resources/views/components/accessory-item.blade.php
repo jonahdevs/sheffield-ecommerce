@@ -161,7 +161,7 @@ new class extends Component {
         </flux:button>
 
         {{-- View product --}}
-        <flux:button size="sm" href="{{ route('products.show', $product) }}" target="_blank" title="View product"
+        <flux:button size="sm" href="{{ route('products.show', $product) }}" target="_blank" rel="noopener noreferrer" title="View product"
             icon="arrow-top-right-on-square" class="cursor-pointer" />
     </div>
 </flux:card>
