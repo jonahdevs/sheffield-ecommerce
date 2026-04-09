@@ -242,15 +242,11 @@ class ProductSeeder extends Seeder
             throw new \Exception('Product name and SKU are required. Data: ' . json_encode($productData));
         }
 
-        if (!array_key_exists('price', $productData)) {
-            $retailPrice = fake()->numberBetween(50000, 500000);
-            $salePrice = fake()->boolean(60)
-                ? fake()->numberBetween(20000, $retailPrice - 1000)
-                : null;
-        } else {
-            $retailPrice = $productData['price'];
-            $salePrice = null;
-        }
+        // sale_price = the price from SAP (current selling price).
+        // price      = regular/list price, set by admin when they want to show a "was/now" discount.
+        //              Left null here — admin sets it manually after seeding if needed.
+        $salePrice = $productData['price'] ?? null;
+        $retailPrice = null;
 
         $slugParts = array_filter([
             $productData['name'],
@@ -260,7 +256,7 @@ class ProductSeeder extends Seeder
 
         // Draft if no image or price is missing/zero
         $hasImage = !empty($productData['image']);
-        $hasPrice = !empty($retailPrice) && $retailPrice > 0;
+        $hasPrice = !empty($salePrice) && $salePrice > 0;
         $status = ($hasImage && $hasPrice) ? 'published' : 'draft';
 
         if (!$hasImage) {
@@ -279,7 +275,7 @@ class ProductSeeder extends Seeder
             'model_number' => $productData['model_number'] ?? null,
             'stock_quantity' => 100,
             'image_path' => $productData['image'] ?? null,
-            'price' => $retailPrice,
+            'price' => null,
             'sale_price' => $salePrice,
             'description' => $productData['description'] ?? null,
             'short_description' => $productData['short_description'] ?? null,

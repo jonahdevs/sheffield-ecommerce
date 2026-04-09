@@ -8,9 +8,22 @@
             <flux:input label="Regular Price ({{ get_currency_symbol() }})" type="number" step="0.01" min="0" wire:model="form.price"
                 placeholder="0.00" />
 
-            {{-- Sale Price --}}
-            <flux:input label="Sale Price ({{ get_currency_symbol() }})" type="number" step="0.01" min="0"
-                wire:model="form.sale_price" placeholder="0.00" />
+            {{-- SAP Current Price (read-only) --}}
+            <div>
+                <flux:input label="SAP Price ({{ get_currency_symbol() }})" type="number" step="0.01" min="0"
+                    wire:model="form.sale_price" placeholder="Not yet synced" readonly
+                    description="Synced automatically from SAP. This is the current selling price." />
+                @if ($form->sale_price)
+                    <div class="mt-1 flex items-center gap-1">
+                        <flux:badge color="blue" size="sm" icon="arrow-path">SAP-managed</flux:badge>
+                        @if ($form->price && $form->sale_price < $form->price)
+                            <flux:badge color="green" size="sm">
+                                -{{ round((($form->price - $form->sale_price) / $form->price) * 100) }}% discount active
+                            </flux:badge>
+                        @endif
+                    </div>
+                @endif
+            </div>
         </div>
 
         {{-- Cost Price --}}

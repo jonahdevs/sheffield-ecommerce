@@ -39,19 +39,11 @@ Route::livewire('/quote', 'pages::quote')->name('quote');
 // Social Auth
 // ----------------------------------------------------------------------------
 
-Route::middleware('guest')
-    ->controller(SocialiteController::class)
-    ->prefix('auth')
-    ->name('socialite.')
-    ->group(function () {
-        Route::get('/{provider}/redirect', 'redirect')
-            ->name('redirect')
-            ->where('provider', 'google|facebook');
+Route::middleware('guest')->controller(SocialiteController::class)->prefix('auth')->name('socialite.')->group(function () {
+    Route::get('/{provider}/redirect', 'redirect')->name('redirect')->where('provider', 'google|facebook');
 
-        Route::get('/{provider}/callback', 'callback')
-            ->name('callback')
-            ->where('provider', 'google|facebook');
-    });
+    Route::get('/{provider}/callback', 'callback')->name('callback')->where('provider', 'google|facebook');
+});
 
 // ----------------------------------------------------------------------------
 // Payment Callbacks (gateway redirects back to site)
@@ -75,20 +67,17 @@ Route::middleware(['auth', 'customer'])
     });
 
 // Checkout flow — auth + customer + must have items in cart
-Route::middleware(['auth', 'customer', 'cart_not_empty'])
-    ->prefix('checkout')
-    ->name('checkout.')
-    ->group(function () {
-        Route::livewire('/shipping', 'pages::checkout.shipping')->name('shipping');
-        Route::livewire('/summary', 'pages::checkout.summary')->name('summary');
-        Route::livewire('/payment-methods', 'pages::checkout.payment-methods')->name('payment-methods');
+Route::middleware(['auth', 'customer', 'cart_not_empty'])->prefix('checkout')->name('checkout.')->group(function () {
+    Route::livewire('/shipping', 'pages::checkout.shipping')->name('shipping');
+    Route::livewire('/summary', 'pages::checkout.summary')->name('summary');
+    Route::livewire('/payment-methods', 'pages::checkout.payment-methods')->name('payment-methods');
 
-        Route::prefix('addresses')->name('addresses.')->group(function () {
-            Route::livewire('/', 'pages::checkout.address.index')->name('index');
-            Route::livewire('/create', 'pages::checkout.address.create')->name('create');
-            Route::livewire('/{address}/edit', 'pages::checkout.address.edit')->name('edit');
-        });
+    Route::prefix('addresses')->name('addresses.')->group(function () {
+        Route::livewire('/', 'pages::checkout.address.index')->name('index');
+        Route::livewire('/create', 'pages::checkout.address.create')->name('create');
+        Route::livewire('/{address}/edit', 'pages::checkout.address.edit')->name('edit');
     });
+});
 
 Route::middleware(['auth', 'customer'])
     ->prefix('checkout')
@@ -101,232 +90,237 @@ Route::middleware(['auth', 'customer'])
 // CUSTOMER PORTAL — Authenticated, verified customers
 // ============================================================================
 
-Route::middleware(['auth', 'customer', 'verified'])
-    ->name('customer.')
-    ->group(function () {
-        Route::livewire('/account', 'pages::customer.account')->name('account');
-        Route::livewire('/recently-viewed', 'pages::customer.recently-viewed')->name('recently-viewed');
-        Route::livewire('/pending-reviews', 'pages::customer.pending-reviews')->name('pending-reviews');
-        Route::livewire('/inbox', 'pages::customer.inbox')->name('inbox');
+Route::middleware(['auth', 'customer', 'verified'])->name('customer.')->group(function () {
+    Route::livewire('/account', 'pages::customer.account')->name('account');
+    Route::livewire('/recently-viewed', 'pages::customer.recently-viewed')->name('recently-viewed');
+    Route::livewire('/pending-reviews', 'pages::customer.pending-reviews')->name('pending-reviews');
+    Route::livewire('/inbox', 'pages::customer.inbox')->name('inbox');
 
-        // Orders
-        Route::prefix('orders')->name('orders.')->group(function () {
-            Route::livewire('/', 'pages::customer.orders.index')->name('index');
-            Route::livewire('/{order}', 'pages::customer.orders.show')->name('show');
-            Route::livewire('/{order}/confirmation', 'pages::customer.orders.confirmation')->name('confirmation');
-            Route::livewire('/{order}/tracking', 'pages::customer.orders.tracking')->name('tracking');
-            Route::get('/{order}/receipt', OrderReceiptController::class)->name('receipt');
-        });
-
-        Route::prefix('quotations')->name('quotations.')->group(function () {
-            Route::livewire('/', 'pages::customer.quotations.index')->name('index');
-            Route::livewire('/{quote}', 'pages::customer.quotations.show')->name('show');
-            Route::get('/{quote}/pdf', QuotationPdfController::class)->name('pdf');
-        });
-
-        // Address Book
-        Route::prefix('address-book')->name('address-book.')->group(function () {
-            Route::livewire('/', 'pages::customer.address-book.index')->name('index');
-            Route::livewire('/create', 'pages::customer.address-book.create')->name('create');
-            Route::livewire('/{address}/edit', 'pages::customer.address-book.edit')->name('edit');
-        });
-
-        // Settings
-        Route::prefix('settings')->name('settings.')->group(function () {
-            Route::livewire('/', 'pages::customer.settings.profile')->name('profile');
-            Route::livewire('/security', 'pages::customer.settings.security')->name('security');
-            Route::livewire('/preferences', 'pages::customer.settings.preferences')->name('preferences');
-        });
+    // Orders
+    Route::prefix('orders')->name('orders.')->group(function () {
+        Route::livewire('/', 'pages::customer.orders.index')->name('index');
+        Route::livewire('/{order}', 'pages::customer.orders.show')->name('show');
+        Route::livewire('/{order}/confirmation', 'pages::customer.orders.confirmation')->name('confirmation');
+        Route::livewire('/{order}/tracking', 'pages::customer.orders.tracking')->name('tracking');
+        Route::get('/{order}/receipt', OrderReceiptController::class)->name('receipt');
     });
+
+    Route::prefix('quotations')->name('quotations.')->group(function () {
+        Route::livewire('/', 'pages::customer.quotations.index')->name('index');
+        Route::livewire('/{quote}', 'pages::customer.quotations.show')->name('show');
+        Route::get('/{quote}/pdf', QuotationPdfController::class)->name('pdf');
+    });
+
+    // Address Book
+    Route::prefix('address-book')->name('address-book.')->group(function () {
+        Route::livewire('/', 'pages::customer.address-book.index')->name('index');
+        Route::livewire('/create', 'pages::customer.address-book.create')->name('create');
+        Route::livewire('/{address}/edit', 'pages::customer.address-book.edit')->name('edit');
+    });
+
+    // Settings
+    Route::prefix('settings')->name('settings.')->group(function () {
+        Route::livewire('/', 'pages::customer.settings.profile')->name('profile');
+        Route::livewire('/security', 'pages::customer.settings.security')->name('security');
+        Route::livewire('/preferences', 'pages::customer.settings.preferences')->name('preferences');
+    });
+});
 
 // ============================================================================
 // ADMIN PANEL — Authenticated, verified staff only
 // ============================================================================
 
-Route::middleware(['auth', 'staff', 'verified'])
-    ->prefix('admin')
-    ->name('admin.')
-    ->group(function () {
-        Route::livewire('dashboard', 'pages::admin.dashboard')->name('dashboard');
-        Route::livewire('notifications', 'pages::admin.notifications.index')->name('notifications');
-        Route::livewire('coming-soon', 'pages::admin.coming-soon')->name('coming-soon');
+Route::middleware(['auth', 'staff', 'verified'])->prefix('admin')->name('admin.')->group(function () {
+    Route::livewire('dashboard', 'pages::admin.dashboard')->name('dashboard');
+    Route::livewire('notifications', 'pages::admin.notifications.index')->name('notifications');
+    Route::livewire('coming-soon', 'pages::admin.coming-soon')->name('coming-soon');
 
-        // --------------------------------------------------------------------
-        // System
-        // --------------------------------------------------------------------
+    // --------------------------------------------------------------------
+    // System
+    // --------------------------------------------------------------------
 
-        Route::prefix('activity-logs')->name('activity-logs.')->group(function () {
-            Route::livewire('/', 'pages::admin.activity-logs.index')->name('index');
+    Route::prefix('activity-logs')->name('activity-logs.')->group(function () {
+        Route::livewire('/', 'pages::admin.activity-logs.index')->name('index');
+    });
+
+    // --------------------------------------------------------------------
+    // Sales
+    // --------------------------------------------------------------------
+
+    Route::prefix('orders')->name('orders.')->group(function () {
+        Route::livewire('/', 'pages::admin.sales.orders.index')->name('index');
+        Route::livewire('/create', 'pages::admin.sales.orders.create')->name('create');
+        Route::livewire('/{order}', 'pages::admin.sales.orders.show')->name('show');
+    });
+
+    Route::prefix('quotations')->name('quotations.')->group(function () {
+        Route::livewire('/', 'pages::admin.sales.quotations.index')->name('index');
+        Route::livewire('/{quote}', 'pages::admin.sales.quotations.show')->name('show');
+    });
+
+    Route::prefix('payments')->name('payments.')->group(function () {
+        Route::livewire('/', 'pages::admin.sales.payments.index')->name('index');
+        Route::livewire('/{payment}', 'pages::admin.sales.payments.show')->name('show');
+    });
+
+    // --------------------------------------------------------------------
+    // Catalog
+    // --------------------------------------------------------------------
+
+    Route::prefix('catalog')->name('catalog.')->group(function () {
+
+        Route::prefix('categories')->name('categories.')->group(function () {
+            Route::livewire('/', 'pages::admin.catalog.categories.index')->name('index');
+            Route::livewire('/create', 'pages::admin.catalog.categories.create')->name('create');
+            Route::livewire('/{category}/edit', 'pages::admin.catalog.categories.edit')->name('edit');
         });
 
-        // --------------------------------------------------------------------
-        // Sales
-        // --------------------------------------------------------------------
-
-        Route::prefix('orders')->name('orders.')->group(function () {
-            Route::livewire('/', 'pages::admin.sales.orders.index')->name('index');
-            Route::livewire('/create', 'pages::admin.sales.orders.create')->name('create');
-            Route::livewire('/{order}', 'pages::admin.sales.orders.show')->name('show');
+        Route::prefix('products')->name('products.')->group(function () {
+            Route::livewire('/', 'pages::admin.catalog.products.index')->name('index');
+            Route::livewire('/create', 'pages::admin.catalog.products.create')->name('create');
+            Route::livewire('/{product}/edit', 'pages::admin.catalog.products.edit')->name('edit');
         });
 
-        Route::prefix('quotations')->name('quotations.')->group(function () {
-            Route::livewire('/', 'pages::admin.sales.quotations.index')->name('index');
-            Route::livewire('/{quote}', 'pages::admin.sales.quotations.show')->name('show');
+        Route::prefix('brands')->name('brands.')->group(function () {
+            Route::livewire('/', 'pages::admin.catalog.brands.index')->name('index');
+            Route::livewire('/create', 'pages::admin.catalog.brands.create')->name('create');
+            Route::livewire('/{brand}/edit', 'pages::admin.catalog.brands.edit')->name('edit');
         });
 
-        Route::prefix('payments')->name('payments.')->group(function () {
-            Route::livewire('/', 'pages::admin.sales.payments.index')->name('index');
-            Route::livewire('/{payment}', 'pages::admin.sales.payments.show')->name('show');
+        Route::prefix('attributes')->name('attributes.')->group(function () {
+            Route::livewire('/', 'pages::admin.catalog.attributes.index')->name('index');
+            Route::livewire('/{attribute}/values', 'pages::admin.catalog.attributes.values')->name('values');
         });
 
-        // --------------------------------------------------------------------
-        // Catalog
-        // --------------------------------------------------------------------
-
-        Route::prefix('catalog')->name('catalog.')->group(function () {
-
-            Route::prefix('categories')->name('categories.')->group(function () {
-                Route::livewire('/', 'pages::admin.catalog.categories.index')->name('index');
-                Route::livewire('/create', 'pages::admin.catalog.categories.create')->name('create');
-                Route::livewire('/{category}/edit', 'pages::admin.catalog.categories.edit')->name('edit');
-            });
-
-            Route::prefix('products')->name('products.')->group(function () {
-                Route::livewire('/', 'pages::admin.catalog.products.index')->name('index');
-                Route::livewire('/create', 'pages::admin.catalog.products.create')->name('create');
-                Route::livewire('/{product}/edit', 'pages::admin.catalog.products.edit')->name('edit');
-            });
-
-            Route::prefix('brands')->name('brands.')->group(function () {
-                Route::livewire('/', 'pages::admin.catalog.brands.index')->name('index');
-                Route::livewire('/create', 'pages::admin.catalog.brands.create')->name('create');
-                Route::livewire('/{brand}/edit', 'pages::admin.catalog.brands.edit')->name('edit');
-            });
-
-            Route::prefix('attributes')->name('attributes.')->group(function () {
-                Route::livewire('/', 'pages::admin.catalog.attributes.index')->name('index');
-                Route::livewire('/{attribute}/values', 'pages::admin.catalog.attributes.values')->name('values');
-            });
-
-            Route::prefix('tags')->name('tags.')->group(function () {
-                Route::livewire('/', 'pages::admin.catalog.tags.index')->name('index');
-                Route::livewire('/create', 'pages::admin.catalog.tags.create')->name('create');
-                Route::livewire('/{tag}/edit', 'pages::admin.catalog.tags.edit')->name('edit');
-            });
-        });
-
-        // --------------------------------------------------------------------
-        // Logistics
-        // --------------------------------------------------------------------
-
-        Route::prefix('logistics')->name('logistics.')->group(function () {
-            Route::livewire('/overview', 'pages::admin.logistics.dashboard')->name('overview');
-
-            Route::prefix('configuration')->name('configuration.')->group(function () {
-                Route::livewire('/providers', 'pages::admin.logistics.configuration.providers')->name('providers');
-                Route::livewire('/zones', 'pages::admin.logistics.configuration.zones')->name('zones');
-                Route::livewire('/methods', 'pages::admin.logistics.configuration.methods')->name('methods');
-                Route::livewire('/pickup-stations', 'pages::admin.logistics.configuration.pickup-stations')->name('pickup-stations');
-                Route::livewire('/free-shipping-rules', 'pages::admin.logistics.configuration.free-shipping-rules')->name('free-shipping-rules');
-
-                Route::prefix('locations')->name('locations.')->group(function () {
-                    Route::livewire('/counties', 'pages::admin.logistics.configuration.locations.counties')->name('counties');
-                    Route::livewire('/areas', 'pages::admin.logistics.configuration.locations.areas')->name('areas');
-                });
-
-                Route::prefix('rates')->name('rates.')->group(function () {
-                    Route::livewire('/addons', 'pages::admin.logistics.configuration.rates.addons')->name('addons');
-                    Route::livewire('/flat', 'pages::admin.logistics.configuration.rates.flat')->name('flat');
-                    Route::livewire('/vehicle', 'pages::admin.logistics.configuration.rates.vehicle')->name('vehicle');
-                });
-            });
-
-            Route::prefix('operations')->name('operations.')->group(function () {
-                Route::livewire('/delivery-orders', 'pages::admin.logistics.operations.delivery-orders')->name('delivery-orders');
-                Route::livewire('/pus-tracker', 'pages::admin.logistics.operations.pus-tracker')->name('pus-tracker');
-                Route::livewire('/returns', 'pages::admin.logistics.operations.returns')->name('returns');
-            });
-        });
-
-        // --------------------------------------------------------------------
-        // Engagement
-        // --------------------------------------------------------------------
-
-        Route::prefix('customers')->name('customers.')->group(function () {
-            Route::livewire('/', 'pages::admin.engagement.customers.index')->name('index');
-            Route::livewire('/create', 'pages::admin.engagement.customers.create')->name('create');
-            Route::livewire('/{customer}/edit', 'pages::admin.engagement.customers.edit')->name('edit');
-            // Customer show page - coming soon
-            Route::get('/{customer}', function () {
-                return redirect()->route('admin.coming-soon');
-            })->name('show');
-        });
-
-        Route::prefix('reviews')->name('reviews.')->group(function () {
-            Route::livewire('/', 'pages::admin.engagement.reviews.index')->name('index');
-            Route::livewire('/{review}', 'pages::admin.engagement.reviews.show')->name('show');
-        });
-
-        // --------------------------------------------------------------------
-        // Marketing
-        // --------------------------------------------------------------------
-
-        Route::prefix('marketing')->name('marketing.')->group(function () {
-            // Campaigns
-            Route::get('/campaigns', function () {
-                return redirect()->route('admin.coming-soon');
-            })->name('campaigns.index');
-
-            // Coupons & Discounts
-            Route::get('/coupons', function () {
-                return redirect()->route('admin.coming-soon');
-            })->name('coupons.index');
-
-            // Newsletter
-            Route::get('/newsletter', function () {
-                return redirect()->route('admin.coming-soon');
-            })->name('newsletter.index');
-        });
-
-        // --------------------------------------------------------------------
-        // Content Management
-        // --------------------------------------------------------------------
-
-        Route::prefix('content')->name('content.')->group(function () {
-            // Blog Posts
-            Route::get('/blog', function () {
-                return redirect()->route('admin.coming-soon');
-            })->name('blog.index');
-
-            // FAQ Management
-            Route::get('/faq', function () {
-                return redirect()->route('admin.coming-soon');
-            })->name('faq.index');
-
-            // Pages (About, Contact, Terms, etc.)
-            Route::get('/pages', function () {
-                return redirect()->route('admin.coming-soon');
-            })->name('pages.index');
-        });
-
-        // --------------------------------------------------------------------
-        // Access Control
-        // --------------------------------------------------------------------
-
-        Route::prefix('access-control')->name('access-control.')->group(function () {
-            Route::prefix('roles')->name('roles.')->group(function () {
-                Route::livewire('/', 'pages::admin.access-control.roles.index')->name('index');
-                Route::livewire('/{role}/edit', 'pages::admin.access-control.roles.edit')->name('edit');
-            });
-
-            Route::livewire('/permissions', 'pages::admin.access-control.permissions.index')->name('permissions');
-
-            Route::prefix('users')->name('users.')->group(function () {
-                Route::livewire('/create', 'pages::admin.access-control.users.create')->name('create');
-                Route::livewire('/{user}/edit', 'pages::admin.access-control.users.edit')->name('edit');
-            });
+        Route::prefix('tags')->name('tags.')->group(function () {
+            Route::livewire('/', 'pages::admin.catalog.tags.index')->name('index');
+            Route::livewire('/create', 'pages::admin.catalog.tags.create')->name('create');
+            Route::livewire('/{tag}/edit', 'pages::admin.catalog.tags.edit')->name('edit');
         });
     });
+
+    // --------------------------------------------------------------------
+    // Logistics
+    // --------------------------------------------------------------------
+
+    Route::prefix('logistics')->name('logistics.')->group(function () {
+        Route::livewire('/overview', 'pages::admin.logistics.dashboard')->name('overview');
+
+        Route::prefix('configuration')->name('configuration.')->group(function () {
+            Route::livewire('/providers', 'pages::admin.logistics.configuration.providers')->name('providers');
+            Route::livewire('/zones', 'pages::admin.logistics.configuration.zones')->name('zones');
+            Route::livewire('/methods', 'pages::admin.logistics.configuration.methods')->name('methods');
+            Route::livewire('/pickup-stations', 'pages::admin.logistics.configuration.pickup-stations')->name('pickup-stations');
+            Route::livewire('/free-shipping-rules', 'pages::admin.logistics.configuration.free-shipping-rules')->name('free-shipping-rules');
+
+            Route::prefix('locations')->name('locations.')->group(function () {
+                Route::livewire('/counties', 'pages::admin.logistics.configuration.locations.counties')->name('counties');
+                Route::livewire('/areas', 'pages::admin.logistics.configuration.locations.areas')->name('areas');
+            });
+
+            Route::prefix('rates')->name('rates.')->group(function () {
+                Route::livewire('/addons', 'pages::admin.logistics.configuration.rates.addons')->name('addons');
+                Route::livewire('/flat', 'pages::admin.logistics.configuration.rates.flat')->name('flat');
+                Route::livewire('/vehicle', 'pages::admin.logistics.configuration.rates.vehicle')->name('vehicle');
+            });
+        });
+
+        Route::prefix('operations')->name('operations.')->group(function () {
+            Route::livewire('/delivery-orders', 'pages::admin.logistics.operations.delivery-orders')->name('delivery-orders');
+            Route::livewire('/pus-tracker', 'pages::admin.logistics.operations.pus-tracker')->name('pus-tracker');
+            Route::livewire('/returns', 'pages::admin.logistics.operations.returns')->name('returns');
+        });
+    });
+
+    // --------------------------------------------------------------------
+    // Engagement
+    // --------------------------------------------------------------------
+
+    Route::prefix('customers')->name('customers.')->group(function () {
+        Route::livewire('/', 'pages::admin.engagement.customers.index')->name('index');
+        Route::livewire('/create', 'pages::admin.engagement.customers.create')->name('create');
+        Route::livewire('/{customer}/edit', 'pages::admin.engagement.customers.edit')->name('edit');
+        // Customer show page - coming soon
+        Route::get('/{customer}', function () {
+            return redirect()->route('admin.coming-soon');
+        })->name('show');
+    });
+
+    Route::prefix('reviews')->name('reviews.')->group(function () {
+        Route::livewire('/', 'pages::admin.engagement.reviews.index')->name('index');
+        Route::livewire('/{review}', 'pages::admin.engagement.reviews.show')->name('show');
+    });
+
+    // --------------------------------------------------------------------
+    // Marketing
+    // --------------------------------------------------------------------
+
+    Route::prefix('marketing')->name('marketing.')->group(function () {
+        // Campaigns
+        Route::get('/campaigns', function () {
+            return redirect()->route('admin.coming-soon');
+        })->name('campaigns.index');
+
+        // Coupons & Discounts
+        Route::get('/coupons', function () {
+            return redirect()->route('admin.coming-soon');
+        })->name('coupons.index');
+
+        // Newsletter
+        Route::get('/newsletter', function () {
+            return redirect()->route('admin.coming-soon');
+        })->name('newsletter.index');
+    });
+
+    // --------------------------------------------------------------------
+    // Content Management
+    // --------------------------------------------------------------------
+
+    Route::prefix('content')->name('content.')->group(function () {
+        // Blog Posts
+        Route::get('/blog', function () {
+            return redirect()->route('admin.coming-soon');
+        })->name('blog.index');
+
+        // FAQ Management
+        Route::get('/faq', function () {
+            return redirect()->route('admin.coming-soon');
+        })->name('faq.index');
+
+        // Pages (About, Contact, Terms, etc.)
+        Route::get('/pages', function () {
+            return redirect()->route('admin.coming-soon');
+        })->name('pages.index');
+    });
+
+    // --------------------------------------------------------------------
+    // Reports
+    // --------------------------------------------------------------------
+
+    Route::prefix('reports')->name('reports.')->group(function () {
+        Route::livewire('/overview', 'pages::admin.reports.overview')->name('overview');
+        Route::livewire('/customers', 'pages::admin.reports.customers')->name('customers');
+        Route::livewire('/inventory', 'pages::admin.reports.inventory')->name('inventory');
+    });
+
+    // --------------------------------------------------------------------
+    // Access Control
+    // --------------------------------------------------------------------
+
+    Route::prefix('access-control')->name('access-control.')->group(function () {
+        Route::prefix('roles')->name('roles.')->group(function () {
+            Route::livewire('/', 'pages::admin.access-control.roles.index')->name('index');
+            Route::livewire('/{role}/edit', 'pages::admin.access-control.roles.edit')->name('edit');
+        });
+
+        Route::livewire('/permissions', 'pages::admin.access-control.permissions.index')->name('permissions');
+
+        Route::prefix('users')->name('users.')->group(function () {
+            Route::livewire('/create', 'pages::admin.access-control.users.create')->name('create');
+            Route::livewire('/{user}/edit', 'pages::admin.access-control.users.edit')->name('edit');
+        });
+    });
+});
 
 // ============================================================================
 // DEVELOPMENT ONLY
@@ -342,4 +336,4 @@ if (app()->isLocal()) {
 // ADDITIONAL ROUTE FILES
 // ============================================================================
 
-require __DIR__.'/settings.php';
+require __DIR__ . '/settings.php';

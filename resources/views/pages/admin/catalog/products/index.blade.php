@@ -615,11 +615,13 @@ new #[Title('Products')] class extends Component {
 
                         {{-- Price --}}
                         <flux:table.cell x-show="columns.price">
-                            <div class="font-medium text-sm">{{ format_currency($product->price ?? 0) }}</div>
                             @if ($product->sale_price)
-                                <div class="text-xs text-green-600">
-                                    Sale: {{ format_currency($product->sale_price) }}
-                                </div>
+                                <div class="font-medium text-sm">{{ format_currency($product->sale_price) }}</div>
+                                @if ($product->price && $product->price > $product->sale_price)
+                                    <div class="text-xs text-zinc-400 line-through">{{ format_currency($product->price) }}</div>
+                                @endif
+                            @else
+                                <div class="font-medium text-sm">{{ format_currency($product->price ?? 0) }}</div>
                             @endif
                         </flux:table.cell>
 

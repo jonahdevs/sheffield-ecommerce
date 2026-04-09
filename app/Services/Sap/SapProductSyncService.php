@@ -43,9 +43,10 @@ class SapProductSyncService
                     ];
 
                     Log::info("SAP product sync: updated", [
-                        'product_id' => $product->id,
-                        'sku' => $product->sku,
-                        'price' => $product->price,
+                        'product_id'     => $product->id,
+                        'sku'            => $product->sku,
+                        'sale_price'     => $product->sale_price,
+                        'regular_price'  => $product->price,
                         'stock_quantity' => $product->stock_quantity,
                     ]);
                 });
@@ -86,9 +87,10 @@ class SapProductSyncService
             // Required fields - SKU is the key identifier
             'sku' => 'required|string|max:255',
 
-            // Pricing - main sync focus
+            // Pricing — SAP sends its current (potentially discounted) price as 'price'.
+            // We store it in sale_price so admins can set a higher regular price to show
+            // the "was / now" discount UI on the storefront.
             'price' => 'required|numeric|min:0',
-            'sale_price' => 'nullable|numeric|min:0',
             'cost_price' => 'nullable|numeric|min:0',
 
             // Inventory - main sync focus
@@ -113,9 +115,10 @@ class SapProductSyncService
     private function updateProduct(Product $product, array $data): Product
     {
         $updateData = [
-            // Update price
-            'price' => $data['price'],
-            'sale_price' => $data['sale_price'] ?? null,
+            // SAP price → sale_price (the current selling price).
+            // The regular 'price' column is admin-managed and is NOT overwritten here —
+            // it acts as the "was" reference price for the discount UI.
+            'sale_price' => $data['price'],
             'cost_price' => $data['cost_price'] ?? null,
 
             // Update stock

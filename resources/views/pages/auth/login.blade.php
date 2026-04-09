@@ -5,6 +5,12 @@
         <!-- Session Status -->
         <x-auth-session-status class="text-center" :status="session('status')" />
 
+        @error('social')
+            <div class="rounded-lg bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800 px-4 py-3 text-sm text-red-600 dark:text-red-400">
+                {{ $message }}
+            </div>
+        @enderror
+
 
 
         <form method="POST" action="{{ route('login.store') }}" class="flex flex-col gap-6 mt-4">
@@ -36,10 +42,10 @@
             </div>
         </form>
 
-        <flux:separator text="or continue with email" />
+        <flux:separator text="or continue with" />
 
         <div class="grid grid-cols-2 gap-3">
-            <a href="{{ route('socialite.redirect', 'google') }}">
+            <a href="{{ route('socialite.redirect', ['provider' => 'google', 'intent' => 'login']) }}">
                 <flux:button class="w-full cursor-pointer">
                     <x-slot name="icon">
                         <svg width="25" height="24" viewBox="0 0 25 24" fill="none"
@@ -62,7 +68,7 @@
                 </flux:button>
             </a>
 
-            <a href="{{ route('socialite.redirect', 'facebook') }}">
+            <a href="{{ route('socialite.redirect', ['provider' => 'facebook', 'intent' => 'login']) }}">
                 <flux:button class="w-full cursor-pointer">
                     <x-slot name="icon">
                         <svg width="25" height="24" class="text-[#1877F2]" fill="currentColor"

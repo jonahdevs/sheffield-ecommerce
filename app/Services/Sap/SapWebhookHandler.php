@@ -109,8 +109,8 @@ class SapWebhookHandler
             cuNumber: $incomingCuNumber,
             kraInvoiceNumber: $data['kra_invoice_number'] ?? null,
             validatedAt: isset($data['validated_at'])
-            ? Carbon::parse($data['validated_at'])
-            : now(),
+                ? Carbon::parse($data['validated_at'])
+                : now(),
         );
 
         $this->storeCuNumber($order, $cuResult, $payload);
@@ -132,6 +132,7 @@ class SapWebhookHandler
             'kra_invoice_number' => $result->kraInvoiceNumber,
             'kra_validated_at' => $result->validatedAt,
             'sap_sync_status' => SapSyncStatus::CU_RECEIVED,
+
         ]);
 
         // Log the webhook as a successful inbound operation
