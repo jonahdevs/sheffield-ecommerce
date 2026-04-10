@@ -189,8 +189,7 @@ new #[Layout('layouts.guest')] class extends Component {
         }">
 
             {{-- Carousel — slightly inset with a shadow ring so it floats --}}
-            <div class="swiper opacity-0 transition-opacity duration-500 rounded-md overflow-hidden shadow-md"
-                id="heroSwiper">
+            <div class="swiper opacity-0 transition-opacity duration-500 rounded-md overflow-hidden" id="heroSwiper">
                 <div class="swiper-wrapper">
                     @foreach ($this->heroBanners as $i => $banner)
                         <div class="swiper-slide">
