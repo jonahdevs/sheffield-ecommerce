@@ -129,8 +129,7 @@ new #[Layout('layouts.guest')] class extends Component {
 
 <div>
     {{-- Hero Background Wrapper --}}
-    <div class="relative overflow-hidden bg-cover bg-center"
-        style="background-image: url('{{ asset('images/home/hero-bg.webp') }}');">
+    <div class="relative overflow-hidden">
 
         {{-- Hero section --}}
         <div class="container mx-auto px-2 sm:px-4 py-4 sm:py-8 relative" x-data="{
@@ -462,10 +461,7 @@ new #[Layout('layouts.guest')] class extends Component {
 
             @foreach ($locations as $location)
                 <div
-                    class="group/card bg-white rounded-md overflow-hidden
-                    ring-1 ring-zinc-200/80
-                    hover:ring-zinc-300 hover:shadow-md hover:shadow-zinc-200/60
-                    transition-all duration-200">
+                    class="group/card bg-white rounded-md overflow-hidden ring-1 ring-zinc-200/80 hover:ring-zinc-300 transition-all duration-200">
 
                     {{-- Image --}}
                     <div class="w-full h-60 overflow-hidden">

@@ -3,11 +3,9 @@
 
 <head>
     @include('partials.head')
-
 </head>
 
 <body class="bg-zinc-50 text-zinc-700 font-sans min-h-screen">
-
 
     {{-- Announcement / Promo Bar --}}
     <div class="bg-brand-primary text-brand-primary-content">
@@ -111,8 +109,13 @@
 
     {{-- Override Livewire's NProgress bar color for the guest layout --}}
     <style>
-        [x-cloak] { display: none !important; }
-        :root { --livewire-progress-bar-color: var(--brand-secondary); }
+        [x-cloak] {
+            display: none !important;
+        }
+
+        :root {
+            --livewire-progress-bar-color: var(--brand-secondary);
+        }
     </style>
 
     <script>
