@@ -304,7 +304,7 @@ class Product extends Model
     protected function visibleInCatalog(Builder $query): void
     {
         $query->whereIn('products.visibility', [
-            ProductVisibility::PUBLIC ,
+            ProductVisibility::PUBLIC,
             ProductVisibility::CATALOG,
         ]);
     }
@@ -317,7 +317,7 @@ class Product extends Model
     protected function visibleInSearch(Builder $query): void
     {
         $query->whereIn('products.visibility', [
-            ProductVisibility::PUBLIC ,
+            ProductVisibility::PUBLIC,
             ProductVisibility::SEARCH,
         ]);
     }
@@ -363,8 +363,8 @@ class Product extends Model
     {
         return Attribute::make(
             get: fn() => $this->final_price !== null
-            ? format_currency($this->final_price)
-            : null,
+                ? format_currency($this->final_price)
+                : null,
         );
     }
 

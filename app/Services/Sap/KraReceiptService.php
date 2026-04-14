@@ -4,10 +4,10 @@ namespace App\Services\Sap;
 
 use App\Models\Order;
 use App\Notifications\KraReceiptNotification;
-use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Storage;
+use Spatie\LaravelPdf\Facades\Pdf;
 
 class KraReceiptService
 {
@@ -30,7 +30,7 @@ class KraReceiptService
      */
     public function generate(Order $order): string
     {
-        if (! $this->canGenerate($order)) {
+        if (!$this->canGenerate($order)) {
             throw new \LogicException(
                 "Cannot generate invoice for order {$order->reference}: KRA validation not yet complete."
             );
@@ -38,16 +38,17 @@ class KraReceiptService
 
         $order->loadMissing('items.product', 'payment', 'user');
 
-        $pdf = Pdf::loadView('pdf.invoice', ['order' => $order])
-            ->setPaper('a4', 'portrait')
-            ->setOption('dpi', 150)
-            ->setOption('isHtml5ParserEnabled', true)
-            ->setOption('isRemoteEnabled', false);
+        // Choose template based on PDF driver
+        $view = $this->getInvoiceView();
+
+        $pdf = Pdf::view($view, ['order' => $order])
+            ->format('a4')
+            ->name("{$order->reference}.pdf");
 
         $filename = "{$order->reference}.pdf";
-        $path = self::INVOICE_DIR.'/'.$filename;
+        $path = self::INVOICE_DIR . '/' . $filename;
 
-        Storage::disk(self::DISK)->put($path, $pdf->output());
+        Storage::disk(self::DISK)->put($path, $pdf->pdf());
 
         $order->update(['invoice_path' => $path]);
 
@@ -56,9 +57,27 @@ class KraReceiptService
             'reference' => $order->reference,
             'kra_cu_number' => $order->kra_cu_number,
             'path' => $path,
+            'view' => $view,
         ]);
 
         return $path;
+    }
+
+    /**
+     * Get the appropriate invoice view based on PDF driver.
+     * Browsershot supports modern CSS (Tailwind), others use custom CSS.
+     */
+    private function getInvoiceView(): string
+    {
+        $driver = config('laravel-pdf.driver', 'browsershot');
+
+        // Use Tailwind version for Chromium-based drivers (better CSS support)
+        if (in_array($driver, ['browsershot', 'cloudflare', 'gotenberg'])) {
+            return 'pdf.invoice-tailwind';
+        }
+
+        // Use custom CSS version for limited drivers (dompdf, weasyprint)
+        return 'pdf.invoice';
     }
 
     /**
@@ -67,7 +86,7 @@ class KraReceiptService
      */
     public function canGenerate(Order $order): bool
     {
-        return ! is_null($order->kra_cu_number);
+        return !is_null($order->kra_cu_number);
     }
 
     /**
@@ -78,7 +97,7 @@ class KraReceiptService
     {
         $email = $order->customerEmail();
 
-        if (! $email) {
+        if (!$email) {
             Log::warning('Invoice: no customer email, skipping send', [
                 'order_id' => $order->id,
             ]);
@@ -86,7 +105,7 @@ class KraReceiptService
             return;
         }
 
-        if (! $order->invoice_path || ! Storage::disk(self::DISK)->exists($order->invoice_path)) {
+        if (!$order->invoice_path || !Storage::disk(self::DISK)->exists($order->invoice_path)) {
             Log::warning('Invoice: PDF not found, skipping send', [
                 'order_id' => $order->id,
                 'path' => $order->invoice_path,

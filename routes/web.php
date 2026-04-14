@@ -427,7 +427,7 @@ if (app()->isLocal()) {
             ->latest()
             ->first();
 
-        if (! $quote) {
+        if (!$quote) {
             $quote = Quote::factory()
                 ->sent()
                 ->withItems(3)
@@ -447,7 +447,7 @@ if (app()->isLocal()) {
             ->latest()
             ->first();
 
-        if (! $order) {
+        if (!$order) {
             // Fall back to a factory-built order so the template is always previewable
             $order = Order::factory()
                 ->confirmed()
@@ -461,7 +461,7 @@ if (app()->isLocal()) {
             $order->load('items.product', 'payment', 'user');
         }
 
-        return view('pdf.invoice', ['order' => $order]);
+        return view('pdf.invoice-tailwind', ['order' => $order]);
     })->name('dev.invoice-preview');
 }
 
@@ -469,4 +469,4 @@ if (app()->isLocal()) {
 // ADDITIONAL ROUTE FILES
 // ============================================================================
 
-require __DIR__.'/settings.php';
+require __DIR__ . '/settings.php';

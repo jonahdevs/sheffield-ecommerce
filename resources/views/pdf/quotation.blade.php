@@ -357,7 +357,7 @@
         <table class="header-table">
             <tr>
                 <td style="width: 55%;">
-                    <img class="logo" src="{{ public_path('logo.png') }}" alt="Sheffield Africa Steel Systems" />
+                    <img class="logo" src="{{ asset('logo.png') }}" alt="Sheffield Africa Steel Systems" />
                 </td>
                 <td style="width: 45%; text-align: right;">
                     <div class="company-name">SheffieldAfrica Steel Systems</div>

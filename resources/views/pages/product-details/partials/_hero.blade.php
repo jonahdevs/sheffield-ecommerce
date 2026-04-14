@@ -242,86 +242,90 @@
         @endif
 
         {{-- PRICE --}}
-        <div>
-            @php
-                $displaySource = $this->selectedVariant ?? $product;
-                $regularPrice = $displaySource->price;
-                $salePrice = $displaySource->sale_price;
-                $finalPrice = $salePrice ?? $regularPrice;
-                $hasDiscount = $salePrice && $regularPrice && $salePrice < $regularPrice;
-            @endphp
-
-            @if ($finalPrice)
-                @if ($hasDiscount)
-                    <div class="flex items-center flex-wrap gap-2">
-                        <span class="text-2xl font-bold text-brand-secondary">
-                            {{ format_currency($salePrice) }}
-                        </span>
-                        <span class="text-base text-zinc-400 line-through">
-                            {{ format_currency($regularPrice) }}
-                        </span>
-                        <flux:badge color="amber" size="sm">
-                            -{{ number_format((($regularPrice - $salePrice) / $regularPrice) * 100) }}%
-                        </flux:badge>
-                    </div>
-                @else
-                    <span class="text-2xl font-bold text-brand-secondary">
-                        {{ format_currency($finalPrice) }}
-                    </span>
-                @endif
-            @elseif ($product->type->value === 'variable' && !$selectedVariantId)
-                <span class="text-base text-zinc-400">Select options to see price</span>
-            @endif
-
-            {{-- STOCK STATUS --}}
-            @php
-                $state = $product->type->value === 'variable' ? $this->selectedVariantState : $this->simpleProductState;
-                $variant = $this->selectedVariant;
-                $source = $variant ?? $product;
-            @endphp
-
-            @if ($state === 'none')
-                <p class="text-sm text-zinc-400 mt-1">Select options to see availability</p>
-            @elseif ($state === 'available')
-                <p class="text-sm text-green-600 mt-1 flex items-center gap-1">
-                    <flux:icon.check-circle class="size-4" />
-                    In Stock
-                    @if ($source->manage_stock && $source->stock_quantity > 0)
-                        ({{ $source->stock_quantity }} available)
-                    @endif
-                </p>
-            @elseif ($state === 'backorder')
-                <p class="text-sm text-amber-600 mt-1 flex items-center gap-1">
-                    <flux:icon.clock class="size-4" />
-                    Available on backorder
-                </p>
+        @if (!$product->requires_quotation)
+            <div>
                 @php
-                    $backorderMsg = $source->backorder_message ?? null;
-                    $restockDate =
-                        $source instanceof \App\Models\ProductVariant
-                            ? $source->expected_restock_date
-                            : $product->expected_restock_date;
+                    $displaySource = $this->selectedVariant ?? $product;
+                    $regularPrice = $displaySource->price;
+                    $salePrice = $displaySource->sale_price;
+                    $finalPrice = $salePrice ?? $regularPrice;
+                    $hasDiscount = $salePrice && $regularPrice && $salePrice < $regularPrice;
                 @endphp
-                @if ($backorderMsg || $restockDate)
-                    <div class="mt-2 bg-amber-50 border border-amber-200 rounded-md px-3 py-2.5 text-sm text-amber-800">
-                        @if ($backorderMsg)
-                            <p>{{ $backorderMsg }}</p>
-                        @endif
-                        @if ($restockDate)
-                            <p class="text-xs text-amber-600 mt-1 flex items-center gap-1">
-                                <flux:icon.calendar class="size-3.5" />
-                                Expected back in stock: {{ $restockDate->format('d M Y') }}
-                            </p>
-                        @endif
-                    </div>
+
+                @if ($finalPrice)
+                    @if ($hasDiscount)
+                        <div class="flex items-center flex-wrap gap-2">
+                            <span class="text-2xl font-bold text-brand-secondary">
+                                {{ format_currency($salePrice) }}
+                            </span>
+                            <span class="text-base text-zinc-400 line-through">
+                                {{ format_currency($regularPrice) }}
+                            </span>
+                            <flux:badge color="amber" size="sm">
+                                -{{ number_format((($regularPrice - $salePrice) / $regularPrice) * 100) }}%
+                            </flux:badge>
+                        </div>
+                    @else
+                        <span class="text-2xl font-bold text-brand-secondary">
+                            {{ format_currency($finalPrice) }}
+                        </span>
+                    @endif
+                @elseif ($product->type->value === 'variable' && !$selectedVariantId)
+                    <span class="text-base text-zinc-400">Select options to see price</span>
                 @endif
-            @else
-                <p class="text-sm text-red-500 mt-1 flex items-center gap-1">
-                    <flux:icon.x-circle class="size-4" />
-                    Out of Stock
-                </p>
-            @endif
-        </div>
+
+                {{-- STOCK STATUS --}}
+                @php
+                    $state =
+                        $product->type->value === 'variable' ? $this->selectedVariantState : $this->simpleProductState;
+                    $variant = $this->selectedVariant;
+                    $source = $variant ?? $product;
+                @endphp
+
+                @if ($state === 'none')
+                    <p class="text-sm text-zinc-400 mt-1">Select options to see availability</p>
+                @elseif ($state === 'available')
+                    <p class="text-sm text-green-600 mt-1 flex items-center gap-1">
+                        <flux:icon.check-circle class="size-4" />
+                        In Stock
+                        @if ($source->manage_stock && $source->stock_quantity > 0)
+                            ({{ $source->stock_quantity }} available)
+                        @endif
+                    </p>
+                @elseif ($state === 'backorder')
+                    <p class="text-sm text-amber-600 mt-1 flex items-center gap-1">
+                        <flux:icon.clock class="size-4" />
+                        Available on backorder
+                    </p>
+                    @php
+                        $backorderMsg = $source->backorder_message ?? null;
+                        $restockDate =
+                            $source instanceof \App\Models\ProductVariant
+                                ? $source->expected_restock_date
+                                : $product->expected_restock_date;
+                    @endphp
+                    @if ($backorderMsg || $restockDate)
+                        <div
+                            class="mt-2 bg-amber-50 border border-amber-200 rounded-md px-3 py-2.5 text-sm text-amber-800">
+                            @if ($backorderMsg)
+                                <p>{{ $backorderMsg }}</p>
+                            @endif
+                            @if ($restockDate)
+                                <p class="text-xs text-amber-600 mt-1 flex items-center gap-1">
+                                    <flux:icon.calendar class="size-3.5" />
+                                    Expected back in stock: {{ $restockDate->format('d M Y') }}
+                                </p>
+                            @endif
+                        </div>
+                    @endif
+                @else
+                    <p class="text-sm text-red-500 mt-1 flex items-center gap-1">
+                        <flux:icon.x-circle class="size-4" />
+                        Out of Stock
+                    </p>
+                @endif
+            </div>
+        @endif
 
         <flux:separator />
 

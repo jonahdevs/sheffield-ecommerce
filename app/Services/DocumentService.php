@@ -3,9 +3,9 @@
 namespace App\Services;
 
 use App\Models\Quote;
-use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Spatie\LaravelPdf\Facades\Pdf;
 
 class DocumentService
 {
@@ -35,16 +35,17 @@ class DocumentService
     public function generateQuotation(Quote $quote): ?string
     {
         try {
-            $pdf = Pdf::loadView('pdf.quotation', ['quote' => $quote->load(['items', 'user'])])
-                ->setPaper('a4', 'portrait')
-                ->setOption('dpi', 150)
-                ->setOption('isHtml5ParserEnabled', true)
-                ->setOption('isRemoteEnabled', false);
+            // Choose template based on PDF driver
+            $view = $this->getQuotationView();
+
+            $pdf = Pdf::view($view, ['quote' => $quote->load(['items', 'user'])])
+                ->format('a4')
+                ->name("{$quote->reference}.pdf");
 
             $filename = "{$quote->reference}.pdf";
             $path = self::QUOTATION_DIR . '/' . $filename;
 
-            Storage::disk(self::DISK)->put($path, $pdf->output());
+            Storage::disk(self::DISK)->put($path, $pdf->pdf());
 
             $quote->update(['document_path' => $path]);
 
@@ -52,6 +53,7 @@ class DocumentService
                 'quote_id' => $quote->id,
                 'reference' => $quote->reference,
                 'path' => $path,
+                'view' => $view,
             ]);
 
             return $path;
@@ -65,6 +67,28 @@ class DocumentService
 
             return null;
         }
+    }
+
+    // =========================================================================
+    //  GET QUOTATION VIEW
+    //
+    //  Returns the appropriate quotation view based on PDF driver.
+    //  Chromium-based drivers (browsershot, cloudflare, gotenberg) support
+    //  modern CSS including Tailwind, while others use custom CSS.
+    // =========================================================================
+
+    private function getQuotationView(): string
+    {
+        $driver = config('laravel-pdf.driver', 'browsershot');
+
+        // Use Tailwind version for Chromium-based drivers (better CSS support)
+        if (in_array($driver, ['browsershot', 'cloudflare', 'gotenberg'])) {
+            // TODO: Create quotation-tailwind.blade.php when needed
+            return 'pdf.quotation'; // Fallback to original for now
+        }
+
+        // Use custom CSS version for limited drivers (dompdf, weasyprint)
+        return 'pdf.quotation';
     }
 
     // =========================================================================

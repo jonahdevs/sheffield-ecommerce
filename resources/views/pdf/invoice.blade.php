@@ -4,8 +4,21 @@
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Tax Invoice {{ $order->reference }}</title>
+    <title>Invoice {{ $order->reference }}</title>
+
+    {{-- Tailwind CSS CDN for PDF generation --}}
+    <script src="https://cdn.tailwindcss.com"></script>
+
     <style>
+        @page {
+            margin: 0;
+        }
+
+        body {
+            font-family: 'Helvetica', 'Arial', sans-serif;
+        }
+
+        /* Custom styles that complement Tailwind */
         * {
             margin: 0;
             padding: 0;
@@ -13,569 +26,860 @@
         }
 
         body {
-            font-family: DejaVu Sans, sans-serif;
-            font-size: 11px;
-            color: #1a1a1a;
-            line-height: 1.5;
+            font-family: 'Helvetica', 'Arial', sans-serif;
+            font-size: 10px;
+            color: #000000;
+            line-height: 1.4;
             background: #ffffff;
         }
 
-        /* ── Page layout ── */
         .page {
-            padding: 36px 48px;
+            padding: 0;
+            position: relative;
         }
 
-        /* ── Header ── */
-        .header-table {
-            width: 100%;
-            border-bottom: 2px solid #1a3c2e;
-            padding-bottom: 16px;
-            margin-bottom: 24px;
+        /* ══════════════════════════════════════════════════════════════════ */
+        /* HEADER WITH BUILDING IMAGE BACKGROUND */
+        /* ══════════════════════════════════════════════════════════════════ */
+        .header-section {
+            position: relative;
+            height: 140px;
+            background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+            border-bottom: 3px solid #000000;
+            overflow: hidden;
         }
 
-        .header-table td {
-            vertical-align: top;
+        .header-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.85);
         }
 
-        .logo {
-            width: 160px;
-            height: auto;
+        .header-content {
+            position: relative;
+            z-index: 2;
+            padding: 20px 40px;
         }
 
-        .company-name {
-            font-size: 15px;
-            font-weight: bold;
-            color: #1a3c2e;
-            margin-bottom: 4px;
-        }
-
-        .company-details {
-            font-size: 9.5px;
-            color: #555555;
-            line-height: 1.6;
-        }
-
-        /* ── Document title block ── */
-        .doc-title-block {
-            width: 100%;
-            margin-bottom: 24px;
-        }
-
-        .doc-title-block td {
-            vertical-align: top;
-        }
-
-        .doc-title {
-            font-size: 22px;
-            font-weight: bold;
-            color: #1a3c2e;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-
-        .doc-meta {
-            font-size: 10px;
-            color: #333333;
-            line-height: 1.8;
-        }
-
-        .doc-meta strong {
-            color: #1a1a1a;
-        }
-
-        /* ── Bill to / ship to ── */
-        .addresses-table {
-            width: 100%;
-            margin-bottom: 24px;
-        }
-
-        .addresses-table td {
-            vertical-align: top;
+        .logo-section {
+            float: left;
             width: 50%;
         }
 
-        .address-box {
-            background: #f5f7f5;
-            border-left: 3px solid #1a3c2e;
-            padding: 10px 14px;
-            border-radius: 2px;
-        }
-
-        .address-label {
-            font-size: 9px;
+        .company-logo {
+            font-size: 32px;
             font-weight: bold;
-            color: #1a3c2e;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            color: #000000;
+            letter-spacing: -1px;
             margin-bottom: 5px;
         }
 
-        .address-name {
+        .company-tagline {
             font-size: 11px;
-            font-weight: bold;
-            color: #1a1a1a;
-            margin-bottom: 2px;
+            color: #666666;
+            font-style: italic;
         }
 
-        .address-detail {
+        .invoice-title-section {
+            float: right;
+            width: 50%;
+            text-align: right;
+            padding-top: 10px;
+        }
+
+        .invoice-title {
+            font-size: 48px;
+            font-weight: bold;
+            color: #000000;
+            letter-spacing: 2px;
+            line-height: 1;
+        }
+
+        .invoice-copy {
+            font-size: 14px;
+            color: #666666;
+            margin-top: 5px;
+        }
+
+        .clearfix::after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+
+        /* ══════════════════════════════════════════════════════════════════ */
+        /* MAIN CONTENT AREA */
+        /* ══════════════════════════════════════════════════════════════════ */
+        .content-section {
+            padding: 30px 40px;
+        }
+
+        /* ══════════════════════════════════════════════════════════════════ */
+        /* CUSTOMER & INVOICE INFO - TWO COLUMNS */
+        /* ══════════════════════════════════════════════════════════════════ */
+        .info-grid {
+            width: 100%;
+            margin-bottom: 25px;
+            border: 2px solid #000000;
+        }
+
+        .info-grid td {
+            vertical-align: top;
+            padding: 15px;
+        }
+
+        .info-left {
+            width: 50%;
+            border-right: 2px solid #000000;
+        }
+
+        .info-right {
+            width: 50%;
+        }
+
+        .info-label {
+            font-size: 9px;
+            font-weight: bold;
+            color: #000000;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            letter-spacing: 0.5px;
+        }
+
+        .info-value {
             font-size: 10px;
-            color: #444444;
+            color: #333333;
             line-height: 1.6;
         }
 
-        /* ── Payment info strip ── */
-        .payment-strip {
+        .info-value strong {
+            color: #000000;
+        }
+
+        .info-row {
+            margin-bottom: 8px;
+        }
+
+        .invoice-meta-table {
             width: 100%;
-            background: #1a3c2e;
-            color: #ffffff;
-            margin-bottom: 24px;
-            border-radius: 2px;
+            border-collapse: collapse;
         }
 
-        .payment-strip td {
-            padding: 8px 14px;
+        .invoice-meta-table td {
+            padding: 4px 0;
             font-size: 10px;
-            text-align: center;
         }
 
-        .payment-strip .strip-label {
-            font-size: 8.5px;
-            color: #aaccbb;
-            text-transform: uppercase;
-            letter-spacing: 0.8px;
-            display: block;
-            margin-bottom: 2px;
-        }
-
-        .payment-strip .strip-value {
+        .invoice-meta-table .meta-label {
             font-weight: bold;
-            font-size: 11px;
+            width: 140px;
+            color: #000000;
         }
 
-        /* ── Items table ── */
+        .invoice-meta-table .meta-value {
+            color: #333333;
+        }
+
+        /* ══════════════════════════════════════════════════════════════════ */
+        /* ITEMS TABLE */
+        /* ══════════════════════════════════════════════════════════════════ */
         .items-table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 24px;
+            margin-bottom: 20px;
+            border: 2px solid #000000;
         }
 
-        .items-table thead tr {
-            background: #1a3c2e;
-            color: #ffffff;
+        .items-table thead {
+            background: #f0f0f0;
+            border-bottom: 2px solid #000000;
         }
 
         .items-table thead th {
-            padding: 8px 10px;
-            font-size: 9.5px;
+            padding: 10px 8px;
+            font-size: 9px;
             font-weight: bold;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
             text-align: left;
-            border: none;
+            color: #000000;
+            border-right: 1px solid #cccccc;
+        }
+
+        .items-table thead th:last-child {
+            border-right: none;
+        }
+
+        .items-table thead th.text-center {
+            text-align: center;
         }
 
         .items-table thead th.text-right {
             text-align: right;
         }
 
-        .items-table tbody tr {
-            border-bottom: 1px solid #e8ece8;
-        }
-
-        .items-table tbody tr:nth-child(even) {
-            background: #f9faf9;
-        }
-
         .items-table tbody td {
-            padding: 8px 10px;
+            padding: 10px 8px;
             font-size: 10px;
+            border-bottom: 1px solid #e0e0e0;
+            border-right: 1px solid #e0e0e0;
             vertical-align: top;
         }
 
-        .items-table tbody td.text-right {
-            text-align: right;
+        .items-table tbody td:last-child {
+            border-right: none;
         }
 
-        .item-name {
+        .items-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .item-description {
             font-weight: bold;
-            color: #1a1a1a;
-            margin-bottom: 1px;
+            color: #000000;
+            margin-bottom: 2px;
         }
 
-        .item-sku {
+        .item-code {
             font-size: 9px;
-            color: #888888;
+            color: #666666;
         }
 
-        /*  Totals  */
-        .totals-table {
-            width: 260px;
-            margin-left: auto;
-            margin-bottom: 32px;
-            border-collapse: collapse;
+        .serial-info {
+            font-size: 9px;
+            color: #666666;
+            margin-top: 4px;
         }
 
-        .totals-table td {
-            padding: 5px 10px;
-            font-size: 10.5px;
-        }
-
-        .totals-table .label {
-            color: #555555;
-        }
-
-        .totals-table .value {
-            text-align: right;
-            font-weight: bold;
-            color: #1a1a1a;
-        }
-
-        .totals-table .divider td {
-            border-top: 1px solid #cccccc;
-            padding-top: 6px;
-        }
-
-        .totals-table .total-row {
-            background: #1a3c2e;
-            border-radius: 2px;
-        }
-
-        .totals-table .total-row td {
-            color: #ffffff;
-            font-size: 12px;
-            font-weight: bold;
-            padding: 8px 10px;
-        }
-
-        .totals-table .vat-row td {
-            color: #555555;
-            font-size: 9.5px;
+        .warranty-info {
+            font-size: 8px;
+            color: #999999;
             font-style: italic;
         }
 
-        /* Notes */
-        .notes-box {
-            background: #f5f7f5;
-            border: 1px solid #d4ddd4;
-            padding: 10px 14px;
-            margin-bottom: 24px;
-            border-radius: 2px;
+        /* ══════════════════════════════════════════════════════════════════ */
+        /* TAX DETAILS & TOTALS */
+        /* ══════════════════════════════════════════════════════════════════ */
+        .totals-section {
+            width: 100%;
+            margin-bottom: 25px;
+        }
+
+        .totals-section td {
+            vertical-align: top;
+        }
+
+        .tax-details-box {
+            width: 48%;
+            background: #fffbf0;
+            border: 1px solid #e0d5a0;
+            padding: 12px;
+        }
+
+        .tax-details-title {
+            font-size: 9px;
+            font-weight: bold;
+            color: #000000;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            border-bottom: 1px solid #e0d5a0;
+            padding-bottom: 4px;
+        }
+
+        .tax-breakdown-table {
+            width: 100%;
+            font-size: 9px;
+        }
+
+        .tax-breakdown-table td {
+            padding: 3px 0;
+        }
+
+        .tax-breakdown-table .tax-label {
+            color: #666666;
+        }
+
+        .tax-breakdown-table .tax-value {
+            text-align: right;
+            font-weight: bold;
+            color: #000000;
+        }
+
+        .invoice-subtotal-box {
+            width: 48%;
+            text-align: right;
+        }
+
+        .subtotal-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .subtotal-table td {
+            padding: 6px 10px;
             font-size: 10px;
-            color: #444444;
+        }
+
+        .subtotal-table .subtotal-label {
+            text-align: right;
+            color: #666666;
+        }
+
+        .subtotal-table .subtotal-value {
+            text-align: right;
+            font-weight: bold;
+            color: #000000;
+            width: 120px;
+        }
+
+        .subtotal-table .total-row {
+            background: #000000;
+            color: #ffffff;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .subtotal-table .total-row td {
+            padding: 10px;
+            border-top: 2px solid #000000;
+        }
+
+        /* ══════════════════════════════════════════════════════════════════ */
+        /* FOOTER WITH LOGOS */
+        /* ══════════════════════════════════════════════════════════════════ */
+        .footer-section {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            border-top: 2px solid #cc0000;
+            padding: 15px 40px;
+            background: #ffffff;
+        }
+
+        .footer-logos {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .footer-text {
+            text-align: center;
+            font-size: 8px;
+            color: #666666;
             line-height: 1.6;
         }
 
-        .notes-label {
-            font-weight: bold;
-            color: #1a3c2e;
-            font-size: 9.5px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 4px;
+        .footer-text strong {
+            color: #000000;
         }
 
-        /* ── Footer ── */
-        .footer {
-            border-top: 1px solid #cccccc;
-            padding-top: 12px;
+        /* ══════════════════════════════════════════════════════════════════ */
+        /* PAGE 2 - CONTROL UNIT INFO */
+        /* ══════════════════════════════════════════════════════════════════ */
+        .page-break {
+            page-break-before: always;
+        }
+
+        .cu-header {
+            background: #f0f0f0;
+            border: 2px solid #000000;
+            padding: 12px 20px;
             text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .cu-header-title {
+            font-size: 14px;
+            font-weight: bold;
+            color: #000000;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .qr-section {
+            text-align: center;
+            margin: 30px 0;
+        }
+
+        .qr-code {
+            width: 180px;
+            height: 180px;
+            margin: 0 auto 15px;
+            border: 2px solid #000000;
+        }
+
+        .cu-info-table {
+            width: 100%;
+            margin-bottom: 30px;
+            font-size: 10px;
+        }
+
+        .cu-info-table td {
+            padding: 6px 0;
+        }
+
+        .cu-info-table .cu-label {
+            font-weight: bold;
+            color: #000000;
+            width: 150px;
+        }
+
+        .cu-info-table .cu-value {
+            color: #333333;
+        }
+
+        .bank-details-section {
+            width: 48%;
+            float: left;
+            margin-right: 4%;
+        }
+
+        .terms-section {
+            width: 48%;
+            float: right;
+        }
+
+        .section-title {
+            font-size: 11px;
+            font-weight: bold;
+            color: #000000;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            border-bottom: 2px solid #000000;
+            padding-bottom: 5px;
+        }
+
+        .bank-info {
             font-size: 9px;
-            color: #888888;
-            line-height: 1.7;
+            line-height: 1.8;
+            color: #333333;
+            margin-bottom: 15px;
         }
 
-        .footer strong {
-            color: #1a3c2e;
+        .bank-info strong {
+            color: #000000;
         }
 
-        /* ── Paid stamp ── */
+        .terms-list {
+            font-size: 9px;
+            line-height: 1.8;
+            color: #333333;
+        }
+
+        .note-box {
+            background: #fffbf0;
+            border: 1px solid #e0d5a0;
+            padding: 10px;
+            margin-top: 20px;
+            font-size: 9px;
+            color: #666666;
+            text-align: center;
+        }
+
+        .note-box strong {
+            color: #000000;
+        }
+
+        /* ══════════════════════════════════════════════════════════════════ */
+        /* PAID STAMP */
+        /* ══════════════════════════════════════════════════════════════════ */
         .paid-stamp {
-            border: 3px solid #16a34a;
+            position: absolute;
+            top: 50px;
+            right: 50px;
+            border: 4px solid #16a34a;
             color: #16a34a;
-            font-size: 18px;
+            background: rgba(22, 163, 74, 0.1);
+            font-size: 24px;
             font-weight: bold;
             text-transform: uppercase;
             letter-spacing: 3px;
-            padding: 4px 12px;
-            display: inline-block;
+            padding: 8px 20px;
             transform: rotate(-15deg);
-            opacity: 0.8;
-            border-radius: 2px;
+            z-index: 10;
         }
     </style>
 </head>
 
 <body>
+    {{-- ═══════════════════════════════════════════════════════════════════════ --}}
+    {{-- PAGE 1: INVOICE DETAILS --}}
+    {{-- ═══════════════════════════════════════════════════════════════════════ --}}
     <div class="page">
+        {{-- PAID STAMP --}}
+        <div class="paid-stamp">PAID</div>
 
-        {{-- ================================================================== --}}
-        {{-- HEADER                                                              --}}
-        {{-- ================================================================== --}}
-        <table class="header-table">
-            <tr>
-                <td style="width: 55%;">
-                    <img class="logo" src="{{ public_path('logo.png') }}" alt="Sheffield Africa Steel Systems" />
-                </td>
-                <td style="width: 45%; text-align: right;">
-                    <div class="company-name">SheffieldAfrica Steel Systems</div>
-                    <div class="company-details">
-                        Off Old Mombasa Road before the Nairobi SGR Terminus<br>
-                        Nairobi, Kenya<br>
-                        Tel: +254 713 777 111<br>
-                        Email: info@sheffieldafrica.com<br>
-                        Web: www.sheffieldafrica.com<br>
-                        PIN: P051234567X
-                    </div>
-                </td>
-            </tr>
-        </table>
+        {{-- HEADER --}}
+        <div class="header-section">
+            <div class="header-overlay"></div>
+            <div class="header-content clearfix">
+                <div class="logo-section">
+                    <div class="company-logo">SHEFFIELD</div>
+                    <div class="company-tagline">Driven. Trusted. Delivered.</div>
+                </div>
+                <div class="invoice-title-section">
+                    <div class="invoice-title">INVOICE</div>
+                    <div class="invoice-copy">Copy</div>
+                </div>
+            </div>
+        </div>
 
-        {{-- ================================================================== --}}
-        {{-- DOCUMENT TITLE + META                                               --}}
-        {{-- ================================================================== --}}
-        <table class="doc-title-block">
-            <tr>
-                <td style="width: 50%;">
-                    <div class="doc-title">Tax Invoice</div>
-                    @if ($order->payment?->paid_at)
-                        <div style="margin-top: 8px;">
-                            <span class="paid-stamp">Paid</span>
+        {{-- MAIN CONTENT --}}
+        <div class="content-section">
+            {{-- CUSTOMER & INVOICE INFO GRID --}}
+            <table class="info-grid">
+                <tr>
+                    <td class="info-left">
+                        <div class="info-label">Customer</div>
+                        <div class="info-value">
+                            <strong>{{ $order->user ? 'CLO' . str_pad($order->user->id, 4, '0', STR_PAD_LEFT) : 'GUEST' }}</strong>
                         </div>
-                    @endif
-                </td>
-                <td style="width: 50%; text-align: right;">
-                    <div class="doc-meta">
-                        <strong>Invoice No:</strong> {{ str_replace('SO-', 'INV-', $order->reference) }}<br>
-                        <strong>Order Ref:</strong> {{ $order->reference }}<br>
-                        <strong>Invoice Date:</strong> {{ now()->format('d M Y') }}<br>
-                        <strong>Payment Date:</strong>
-                        {{ $order->payment?->paid_at?->format('d M Y') ?? now()->format('d M Y') }}<br>
-                        @if ($order->wasConvertedFromQuote() && $order->quote)
-                            <strong>Quotation Ref:</strong> {{ $order->quote->reference }}<br>
-                        @endif
-                        @if ($order->kra_cu_number)
-                            <strong>KRA CU No:</strong> {{ $order->kra_cu_number }}<br>
-                        @endif
-                    </div>
-                </td>
-            </tr>
-        </table>
-
-        {{-- ================================================================== --}}
-        {{-- BILL TO / SHIP TO                                                   --}}
-        {{-- ================================================================== --}}
-        <table class="addresses-table">
-            <tr>
-                <td style="padding-right: 12px;">
-                    <div class="address-box">
-                        <div class="address-label">Bill To</div>
-                        <div class="address-name">{{ $order->user?->name }}</div>
-                        <div class="address-detail">
-                            {{ $order->billing_address['address'] ?? '' }}<br>
+                        <div class="info-value" style="margin-top: 8px;">
+                            <strong>{{ strtoupper($order->customerName()) }}</strong>
+                        </div>
+                        <div class="info-value" style="margin-top: 8px;">
+                            {{ $order->billing_address['address'] ?? 'N/A' }}<br>
                             @if ($order->billing_address['area'] ?? null)
                                 {{ $order->billing_address['area'] }},
                             @endif
                             {{ $order->billing_address['county'] ?? '' }}<br>
-                            {{ $order->user?->email }}<br>
-                            {{ $order->billing_address['phone_number'] ?? ($order->user?->phone_number ?? '') }}
+                            <strong>KENYA</strong>
                         </div>
-                    </div>
-                </td>
-                <td style="padding-left: 12px;">
-                    <div class="address-box">
-                        <div class="address-label">Ship To</div>
-                        <div class="address-name">{{ $order->shipping_address['full_name'] ?? $order->user?->name }}
+
+                        <div style="margin-top: 15px;">
+                            <div class="info-label">Customer Email:</div>
+                            <div class="info-value">{{ $order->customerEmail() ?: 'N/A' }}</div>
                         </div>
-                        <div class="address-detail">
-                            {{ $order->shipping_address['address'] ?? '' }}<br>
-                            @if ($order->shipping_address['area'] ?? null)
-                                {{ $order->shipping_address['area'] }},
-                            @endif
-                            {{ $order->shipping_address['county'] ?? '' }}<br>
-                            {{ $order->shipping_address['phone_number'] ?? '' }}
+
+                        <div style="margin-top: 10px;">
+                            <div class="info-label">Customer Phone:</div>
+                            <div class="info-value">{{ $order->customerPhone() ?: 'N/A' }}</div>
                         </div>
-                    </div>
-                </td>
-            </tr>
-        </table>
 
-        {{-- ================================================================== --}}
-        {{-- PAYMENT STRIP                                                        --}}
-        {{-- ================================================================== --}}
-        <table class="payment-strip">
-            <tr>
-                <td>
-                    <span class="strip-label">Payment Method</span>
-                    <span class="strip-value">{{ strtoupper($order->payment?->gateway ?? 'N/A') }}</span>
-                </td>
-                <td>
-                    <span class="strip-label">Transaction ID</span>
-                    <span class="strip-value">{{ $order->payment?->transaction_id ?? '—' }}</span>
-                </td>
-                <td>
-                    <span class="strip-label">Currency</span>
-                    <span class="strip-value">{{ $order->currency }}</span>
-                </td>
-                <td>
-                    <span class="strip-label">Payment Status</span>
-                    <span class="strip-value">{{ strtoupper($order->payment?->status?->label() ?? 'Paid') }}</span>
-                </td>
-            </tr>
-        </table>
-
-        {{-- ================================================================== --}}
-        {{-- ITEMS TABLE                                                          --}}
-        {{-- ================================================================== --}}
-        <table class="items-table">
-            <thead>
-                <tr>
-                    <th style="width: 5%;">#</th>
-                    <th style="width: 42%;">Description</th>
-                    <th style="width: 10%;">SKU</th>
-                    <th class="text-right" style="width: 10%;">Qty</th>
-                    <th class="text-right" style="width: 15%;">Unit Price</th>
-                    <th class="text-right" style="width: 12%;">Discount</th>
-                    <th class="text-right" style="width: 12%;">Total</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach ($order->items as $index => $item)
-                    @php
-                        $name = $item->product_snapshot['name'] ?? ($item->product?->name ?? '—');
-                        $sku = $item->product_snapshot['sku'] ?? '—';
-                        $brand = $item->product_snapshot['brand'] ?? null;
-                    @endphp
-                    <tr>
-                        <td>{{ $index + 1 }}</td>
-                        <td>
-                            <div class="item-name">{{ $name }}</div>
-                            @if ($brand)
-                                <div class="item-sku">{{ $brand }}</div>
-                            @endif
-                        </td>
-                        <td><span class="item-sku">{{ $sku }}</span></td>
-                        <td class="text-right">{{ $item->quantity }}</td>
-                        <td class="text-right">{{ number_format($item->unit_price_cents / 100, 2) }}</td>
-                        <td class="text-right">
-                            {{ $item->discount_cents > 0 ? number_format($item->discount_cents / 100, 2) : '—' }}
-                        </td>
-                        <td class="text-right">{{ number_format($item->total_cents / 100, 2) }}</td>
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
-
-        {{-- ================================================================== --}}
-        {{-- TOTALS                                                              --}}
-        {{-- ================================================================== --}}
-        <table class="totals-table">
-            <tr>
-                <td class="label">Subtotal</td>
-                <td class="value">{{ format_currency($order->subtotal) }}</td>
-            </tr>
-            @if ($order->discount > 0)
-                <tr>
-                    <td class="label">Discount</td>
-                    <td class="value" style="color: #16a34a;">− {{ format_currency($order->discount) }}</td>
-                </tr>
-            @endif
-            <tr>
-                <td class="label">Shipping</td>
-                <td class="value">
-                    @if ($order->shipping == 0)
-                        Free
-                    @else
-                        {{ format_currency($order->shipping) }}
-                    @endif
-                </td>
-            </tr>
-
-            {{-- VAT breakdown (16% inclusive) --}}
-            @php
-                // VAT is inclusive — extract from total
-                // VAT amount = total × (16/116)
-                $vatAmount = ($order->total * 16) / 116;
-                $exclVat = $order->total - $vatAmount;
-            @endphp
-            <tr class="divider">
-                <td class="label" style="border-top: 1px solid #cccccc; padding-top: 6px;">
-                    Excl. VAT (16%)
-                </td>
-                <td class="value" style="border-top: 1px solid #cccccc; padding-top: 6px;">
-                    {{ format_currency($exclVat) }}
-                </td>
-            </tr>
-            <tr>
-                <td class="label">VAT @ 16%</td>
-                <td class="value">{{ format_currency($vatAmount) }}</td>
-            </tr>
-            <tr class="total-row">
-                <td>Total (Incl. VAT)</td>
-                <td style="text-align: right;">{{ format_currency($order->total) }}</td>
-            </tr>
-            <tr class="vat-row">
-                <td colspan="2" style="padding-top: 4px; text-align: center;">
-                    All amounts in {{ get_currency_code() }}. VAT inclusive at 16%.
-                </td>
-            </tr>
-        </table>
-
-        {{-- ================================================================== --}}
-        {{-- ETIMS / KRA COMPLIANCE SECTION                                      --}}
-        {{-- ================================================================== --}}
-        @if ($order->kra_cu_number)
-            <table style="width: 100%; margin-bottom: 24px; border: 1px solid #d4ddd4; border-radius: 2px;">
-                <tr>
-                    <td style="background: #f5f7f5; padding: 8px 14px; border-bottom: 1px solid #d4ddd4;">
-                        <span style="font-size: 9.5px; font-weight: bold; color: #1a3c2e; text-transform: uppercase; letter-spacing: 0.5px;">
-                            KRA eTIMS Compliance
-                        </span>
+                        <div style="margin-top: 10px;">
+                            <div class="info-label">Delivery Address</div>
+                            <div class="info-value">
+                                {{ strtoupper($order->shipping_address['full_name'] ?? $order->customerName()) }}<br>
+                                {{ $order->shipping_address['address'] ?? ($order->billing_address['address'] ?? 'N/A') }}
+                                @if ($order->shipping_address['area'] ?? null)
+                                    <br>{{ $order->shipping_address['area'] }},
+                                    {{ $order->shipping_address['county'] ?? '' }}
+                                @endif
+                            </div>
+                        </div>
                     </td>
-                </tr>
-                <tr>
-                    <td style="padding: 10px 14px;">
-                        <table style="width: 100%; font-size: 10px; color: #444444;">
+                    <td class="info-right">
+                        <table class="invoice-meta-table">
                             <tr>
-                                <td style="width: 30%; padding: 3px 0;"><strong>CU Number:</strong></td>
-                                <td style="padding: 3px 0;">{{ $order->kra_cu_number }}</td>
+                                <td class="meta-label">Invoice Number:</td>
+                                <td class="meta-value">{{ str_replace('SO-', 'SALINV', $order->reference) }}</td>
                             </tr>
-                            @if ($order->kra_validated_at)
+                            <tr>
+                                <td class="meta-label">Invoice Date:</td>
+                                <td class="meta-value">{{ $order->created_at->format('d/m/y') }}</td>
+                            </tr>
+                            <tr>
+                                <td class="meta-label">Order Reference:</td>
+                                <td class="meta-value">{{ $order->reference }}</td>
+                            </tr>
+                            @if ($order->wasConvertedFromQuote() && $order->quote)
                                 <tr>
-                                    <td style="padding: 3px 0;"><strong>Validated:</strong></td>
-                                    <td style="padding: 3px 0;">{{ $order->kra_validated_at->format('d M Y H:i:s') }}</td>
+                                    <td class="meta-label">Quote Ref Number:</td>
+                                    <td class="meta-value">{{ $order->quote->reference }}</td>
                                 </tr>
                             @endif
+                            @if ($order->customer_notes)
+                                <tr>
+                                    <td class="meta-label">Customer Notes:</td>
+                                    <td class="meta-value">{{ Str::limit($order->customer_notes, 50) }}</td>
+                                </tr>
+                            @endif
+                            <tr>
+                                <td class="meta-label" style="padding-top: 15px; color: #16a34a;">
+                                    <strong>Payment Date:</strong>
+                                </td>
+                                <td class="meta-value" style="padding-top: 15px; color: #16a34a;">
+                                    <strong>{{ $order->payment?->paid_at?->format('d/m/y H:i') ?? $order->created_at->format('d/m/y H:i') }}</strong>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="meta-label">Payment Method:</td>
+                                <td class="meta-value">{{ strtoupper($order->payment?->gateway ?? 'N/A') }}</td>
+                            </tr>
+                            @if ($order->payment?->transaction_id)
+                                <tr>
+                                    <td class="meta-label">Transaction ID:</td>
+                                    <td class="meta-value">{{ $order->payment->transaction_id }}</td>
+                                </tr>
+                            @endif
+                            <tr>
+                                <td class="meta-label" style="padding-top: 15px;">VAT NO:</td>
+                                <td class="meta-value" style="padding-top: 15px;">
+                                    <strong>0127183D</strong>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="meta-label">Company PIN:</td>
+                                <td class="meta-value">
+                                    <strong>P051148391Z</strong>
+                                </td>
+                            </tr>
                         </table>
                     </td>
                 </tr>
             </table>
-        @endif
 
-        {{-- ================================================================== --}}
-        {{-- NOTES                                                               --}}
-        {{-- ================================================================== --}}
-        <div class="notes-box">
-            <div class="notes-label">Notes & Terms</div>
-            This invoice is computer generated and does not require a physical signature.
-            For any queries regarding this invoice, please contact us at info@sheffieldafrica.com
-            or call +254 713 777 111 quoting your order reference <strong>{{ $order->reference }}</strong>.
-            Goods remain the property of SheffieldAfrica Steel Systems until full payment is received.
+            {{-- ITEMS TABLE --}}
+            <table class="items-table">
+                <thead>
+                    <tr>
+                        <th style="width: 5%;">#</th>
+                        <th style="width: 40%;">Description</th>
+                        <th class="text-center" style="width: 10%;">Quantity</th>
+                        <th style="width: 10%;">Unit</th>
+                        <th class="text-right" style="width: 15%;">Price</th>
+                        <th class="text-right" style="width: 10%;">Tax %</th>
+                        <th class="text-right" style="width: 15%;">Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($order->items as $index => $item)
+                        @php
+                            $name = $item->product_snapshot['name'] ?? ($item->product?->name ?? '—');
+                            $sku = $item->product_snapshot['sku'] ?? '—';
+                            $brand = $item->product_snapshot['brand'] ?? null;
+                        @endphp
+                        <tr>
+                            <td>{{ str_pad($index + 1, 3, '0', STR_PAD_LEFT) }}</td>
+                            <td>
+                                <div class="item-description">{{ $name }}</div>
+                                <div class="item-code">Item Code: {{ $sku }}</div>
+                                @if ($brand)
+                                    <div class="item-code">Brand: {{ $brand }}</div>
+                                @endif
+                            </td>
+                            <td class="text-center">{{ $item->quantity }}</td>
+                            <td>{{ $item->uom ?? 'PCS' }}</td>
+                            <td class="text-right">{{ number_format($item->unit_price_cents / 100, 2) }}</td>
+                            <td class="text-right">16.00</td>
+                            <td class="text-right">
+                                <strong>{{ number_format($item->total_cents / 100, 2) }}</strong>
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+
+            {{-- TAX DETAILS & TOTALS --}}
+            <table class="totals-section">
+                <tr>
+                    <td style="width: 48%;">
+                        <div class="tax-details-box">
+                            <div class="tax-details-title">Tax Details</div>
+                            <table class="tax-breakdown-table">
+                                @php
+                                    $vatAmount = ($order->total * 16) / 116;
+                                    $netAmount = $order->total - $vatAmount;
+                                @endphp
+                                <tr>
+                                    <td class="tax-label">Tax %</td>
+                                    <td class="tax-value">Net</td>
+                                    <td class="tax-value">Tax</td>
+                                    <td class="tax-value">Gross</td>
+                                </tr>
+                                <tr>
+                                    <td class="tax-label">16.00</td>
+                                    <td class="tax-value">{{ number_format($netAmount, 2) }}</td>
+                                    <td class="tax-value">{{ number_format($vatAmount, 2) }}</td>
+                                    <td class="tax-value">{{ number_format($order->total, 2) }}</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </td>
+                    <td style="width: 4%;"></td>
+                    <td style="width: 48%;">
+                        <div class="invoice-subtotal-box">
+                            <table class="subtotal-table">
+                                <tr>
+                                    <td class="subtotal-label">Invoice Subtotal:</td>
+                                    <td class="subtotal-value">KES {{ number_format($order->subtotal, 2) }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="subtotal-label">Total before Tax:</td>
+                                    <td class="subtotal-value">KES {{ number_format($netAmount, 2) }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="subtotal-label">Total Tax Amount:</td>
+                                    <td class="subtotal-value">KES {{ number_format($vatAmount, 2) }}</td>
+                                </tr>
+                                @if ($order->shipping > 0)
+                                    <tr>
+                                        <td class="subtotal-label">Shipping Type:</td>
+                                        <td class="subtotal-value">
+                                            {{ $order->shipping_snapshot['method_name'] ?? 'Standard' }}</td>
+                                    </tr>
+                                @endif
+                                <tr class="total-row">
+                                    <td>Total Amount Paid</td>
+                                    <td>KES {{ number_format($order->total, 2) }}</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+
+            {{-- PAYMENT CONFIRMATION BOX --}}
+            <div
+                style="background: #f0fdf4; border: 2px solid #16a34a; padding: 15px; margin-bottom: 25px; text-align: center;">
+                <div style="font-size: 11px; font-weight: bold; color: #16a34a; margin-bottom: 5px;">
+                    ✓ PAYMENT CONFIRMED
+                </div>
+                <div style="font-size: 9px; color: #166534;">
+                    Payment of <strong>KES {{ number_format($order->total, 2) }}</strong> received on
+                    <strong>{{ $order->payment?->paid_at?->format('d M Y \a\t H:i') ?? $order->created_at->format('d M Y \a\t H:i') }}</strong>
+                    via <strong>{{ strtoupper($order->payment?->gateway ?? 'N/A') }}</strong>
+                    @if ($order->payment?->transaction_id)
+                        <br>Transaction ID: <strong>{{ $order->payment->transaction_id }}</strong>
+                    @endif
+                </div>
+            </div>
         </div>
 
-        {{-- ================================================================== --}}
-        {{-- FOOTER                                                              --}}
-        {{-- ================================================================== --}}
-        <div class="footer">
-            <strong>SheffieldAfrica Steel Systems</strong> &bull;
-            Off Old Mombasa Road, Nairobi &bull;
-            +254 713 777 111 &bull;
-            info@sheffieldafrica.com &bull;
-            www.sheffieldafrica.com<br>
-            PIN: P051234567X &bull;
-            Thank you for your business!
+        {{-- FOOTER --}}
+        <div class="footer-section">
+            <div class="footer-logos">
+                <!-- Placeholder for certification logos -->
+                <span style="font-size: 8px; color: #999999;">[CERTIFICATION LOGOS]</span>
+            </div>
+            <div class="footer-text">
+                <strong>SHEFFIELD STEEL SYSTEMS LIMITED</strong> Off Old Mombasa Road, Opposite Hilton Garden Inn,
+                Before Standard Gauge Railway (SGR), P.O. Box 29-00606, Nairobi, Kenya.<br>
+                Tel: +254 713 444 000 / +254 713 777 111, Email: control@sheffieldafrica.com
+            </div>
         </div>
-
     </div>
+
+    {{-- ═══════════════════════════════════════════════════════════════════════ --}}
+    {{-- PAGE 2: CONTROL UNIT INFO & PAYMENT DETAILS --}}
+    {{-- ═══════════════════════════════════════════════════════════════════════ --}}
+    @if ($order->kra_cu_number)
+        <div class="page page-break">
+            <div class="content-section" style="padding-top: 40px;">
+                {{-- BLENDERS INFO --}}
+                <div style="background: #f0f0f0; padding: 10px; text-align: center; margin-bottom: 25px;">
+                    <span style="font-size: 9px; color: #666666;">
+                        BLENDERS Based On Sales Quotations
+                        {{ $order->wasConvertedFromQuote() && $order->quote ? $order->quote->id : $order->id }},
+                        Based on Sales Orders {{ $order->id }}.
+                    </span>
+                </div>
+
+                {{-- CONTROL UNIT INFO HEADER --}}
+                <div class="cu-header">
+                    <div class="cu-header-title">Control Unit Info</div>
+                </div>
+
+                {{-- QR CODE --}}
+                <div class="qr-section">
+                    <div class="qr-code"
+                        style="background: #f5f5f5; display: flex; align-items: center; justify-content: center;">
+                        {{-- QR Code would be generated here --}}
+                        <span style="font-size: 10px; color: #999999;">[QR CODE]</span>
+                    </div>
+                </div>
+
+                {{-- CU DETAILS --}}
+                <table class="cu-info-table">
+                    <tr>
+                        <td class="cu-label">CU Invoice No:</td>
+                        <td class="cu-value">{{ $order->kra_cu_number }}</td>
+                    </tr>
+                    <tr>
+                        <td class="cu-label">CU Date & Time:</td>
+                        <td class="cu-value">
+                            {{ $order->kra_validated_at ? $order->kra_validated_at->format('d/m/Y H:i:s') : now()->format('d/m/Y H:i:s') }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="cu-label">CU Serial No:</td>
+                        <td class="cu-value">KRAMVR11202260539655</td>
+                    </tr>
+                </table>
+
+                {{-- BANK DETAILS & TERMS --}}
+                <div class="clearfix">
+                    <div class="bank-details-section">
+                        <div class="section-title">Bank Details:</div>
+
+                        <div class="bank-info">
+                            <strong>Bank of India Kenya</strong><br>
+                            Industrial Area Branch, Nairobi<br>
+                            Swift Code: <strong>BKIDKENAXXX</strong><br>
+                            KES A/C: <strong>0022522700004001</strong>
+                        </div>
+
+                        <div class="bank-info">
+                            <strong>Kenya Commercial Bank</strong><br>
+                            Industrial Area Branch, Nairobi<br>
+                            SWIFT CODE: <strong>KCBLKENX</strong><br>
+                            KES A/C: <strong>1128266994</strong>
+                        </div>
+
+                        <div class="section-title" style="margin-top: 20px;">MPESA Details:</div>
+                        <div class="bank-info">
+                            <strong>PAYBILL NUMBER:</strong><br>
+                            522522
+                        </div>
+                        <div class="bank-info">
+                            <strong>ACCOUNT NUMBER:</strong><br>
+                            1128266994
+                        </div>
+
+                        <div class="note-box">
+                            <strong>NOTE: Please email proof of payment to<br>
+                                creditcontroller@sheffieldafrica.com</strong>
+                        </div>
+                    </div>
+
+                    <div class="terms-section">
+                        <div class="section-title">Terms and Conditions of Sale:</div>
+                        <div class="terms-list">
+                            - Sheffield does not accept cash payments. All payments must be made through approved mobile
+                            money or bank channels.<br><br>
+
+                            - All accounts are net and payable according to the agreed on payment terms.<br><br>
+
+                            - Returned goods may be accepted only at our discretion and should be made within 14 days
+                            from the date of invoice and delivery.<br><br>
+
+                            - The goods remain the property of Sheffield Steel Systems Limited until the full and final
+                            payment is received.
+                        </div>
+                    </div>
+                </div>
+
+                <div
+                    style="margin-top: 40px; text-align: center; font-style: italic; font-size: 10px; color: #666666;">
+                    Serving you is our delight. Thank you for your business!
+                </div>
+            </div>
+
+            {{-- FOOTER --}}
+            <div class="footer-section">
+                <div class="footer-logos">
+                    <span style="font-size: 8px; color: #999999;">[CERTIFICATION LOGOS]</span>
+                </div>
+                <div class="footer-text">
+                    <strong>SHEFFIELD STEEL SYSTEMS LIMITED</strong> Off Old Mombasa Road, Opposite Hilton Garden Inn,
+                    Before Standard Gauge Railway (SGR), P.O. Box 29-00606, Nairobi, Kenya.<br>
+                    Tel: +254 713 444 000 / +254 713 777 111, Email: control@sheffieldafrica.com
+                </div>
+            </div>
+        </div>
+    @endif
 </body>
 
 </html>
