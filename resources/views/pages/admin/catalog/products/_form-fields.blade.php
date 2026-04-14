@@ -178,12 +178,16 @@
                                             class="size-3.5 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 cursor-help" />
                                     </flux:tooltip>
                                 </div>
-                                <select wire:model="form.tax_class_id" class="{{ $selectClass }}">
-                                    <option value="">— None —</option>
+
+                                <flux:select wire:model="form.tax_class_id">
+                                    <flux.select.option value="">— None —</flux.select.option>
                                     @foreach ($this->taxClasses as $tc)
-                                        <option value="{{ $tc->id }}">{{ $tc->name }} ({{ $tc->rateLabel() }})</option>
+                                        <flux.select.option value="{{ $tc->id }}">{{ $tc->name }}
+                                            ({{ $tc->rateLabel() }})
+                                        </flux.select.option>
                                     @endforeach
-                                </select>
+                                </flux:select>
+
                                 <flux:error name="form.tax_class_id" />
                             </flux:field>
                         </div>
@@ -231,13 +235,14 @@
                                 <flux:field>
                                     <div class="flex items-center gap-1.5 mb-1">
                                         <flux:label>Weight (kg)</flux:label>
-                                        <flux:tooltip content="Product weight in kilograms. Used for shipping rate calculations.">
+                                        <flux:tooltip
+                                            content="Product weight in kilograms. Used for shipping rate calculations.">
                                             <flux:icon.information-circle variant="outline"
                                                 class="size-3.5 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 cursor-help" />
                                         </flux:tooltip>
                                     </div>
-                                    <flux:input wire:model="form.weight" type="number" step="0.001" min="0"
-                                        placeholder="0.000" />
+                                    <flux:input wire:model="form.weight" type="number" step="0.001"
+                                        min="0" placeholder="0.000" />
                                     <flux:error name="form.weight" />
                                 </flux:field>
                             </div>
@@ -284,21 +289,16 @@
 
                         {{-- ── Linked Products ── --}}
                         <div x-show="tab === 'linked'" x-cloak class="space-y-6">
-                            @foreach ([
-                                ['type' => 'upsell',      'label' => 'Upsells',       'query' => 'upsellQuery',     'results' => 'upsellResults',     'list' => 'upsell_products',     'desc' => 'Premium or complementary products shown on the product page.'],
-                                ['type' => 'cross_sell',  'label' => 'Cross-sells',   'query' => 'crossSellQuery',  'results' => 'crossSellResults',  'list' => 'cross_sell_products', 'desc' => 'Products promoted on the cart page alongside this item.'],
-                                ['type' => 'accessory',   'label' => 'Accessories',   'query' => 'accessoryQuery',  'results' => 'accessoryResults',  'list' => 'accessory_products',  'desc' => 'Optional add-ons shown on the product detail page.'],
-                            ] as $lp)
+                            @foreach ([['type' => 'upsell', 'label' => 'Upsells', 'query' => 'upsellQuery', 'results' => 'upsellResults', 'list' => 'upsell_products', 'desc' => 'Premium or complementary products shown on the product page.'], ['type' => 'cross_sell', 'label' => 'Cross-sells', 'query' => 'crossSellQuery', 'results' => 'crossSellResults', 'list' => 'cross_sell_products', 'desc' => 'Products promoted on the cart page alongside this item.'], ['type' => 'accessory', 'label' => 'Accessories', 'query' => 'accessoryQuery', 'results' => 'accessoryResults', 'list' => 'accessory_products', 'desc' => 'Optional add-ons shown on the product detail page.']] as $lp)
                                 <div>
                                     <flux:heading size="sm">{{ $lp['label'] }}</flux:heading>
                                     <flux:text class="text-xs text-zinc-500 mb-2">{{ $lp['desc'] }}</flux:text>
 
                                     {{-- Search input --}}
-                                    <div class="relative mb-2" x-data="{ open: false }" x-on:click.outside="open = false">
-                                        <flux:input
-                                            wire:model.live.debounce.300ms="{{ $lp['query'] }}"
-                                            placeholder="Search by name or SKU..."
-                                            icon="magnifying-glass"
+                                    <div class="relative mb-2" x-data="{ open: false }"
+                                        x-on:click.outside="open = false">
+                                        <flux:input wire:model.live.debounce.300ms="{{ $lp['query'] }}"
+                                            placeholder="Search by name or SKU..." icon="magnifying-glass"
                                             @focus="open = true" />
 
                                         @if (count($this->{$lp['results']}) > 0)
@@ -309,9 +309,11 @@
                                                         wire:click="addLinkedProduct({{ $p['id'] }}, '{{ $lp['type'] }}')"
                                                         @click="open = false"
                                                         class="flex items-center gap-2 w-full px-3 py-2 text-sm hover:bg-zinc-50 dark:hover:bg-zinc-700 text-left cursor-pointer">
-                                                        <span class="font-medium text-zinc-900 dark:text-zinc-100 flex-1">{{ $p['name'] }}</span>
+                                                        <span
+                                                            class="font-medium text-zinc-900 dark:text-zinc-100 flex-1">{{ $p['name'] }}</span>
                                                         @if ($p['sku'] ?? null)
-                                                            <span class="text-xs text-zinc-400">{{ $p['sku'] }}</span>
+                                                            <span
+                                                                class="text-xs text-zinc-400">{{ $p['sku'] }}</span>
                                                         @endif
                                                     </button>
                                                 @endforeach
@@ -326,12 +328,15 @@
                                                 <div class="flex items-center justify-between px-3 py-2 bg-zinc-50 dark:bg-zinc-800/60 rounded-md border dark:border-zinc-700"
                                                     wire:key="{{ $lp['type'] }}-{{ $p['id'] }}">
                                                     <div class="text-sm">
-                                                        <span class="font-medium text-zinc-800 dark:text-zinc-200">{{ $p['name'] }}</span>
+                                                        <span
+                                                            class="font-medium text-zinc-800 dark:text-zinc-200">{{ $p['name'] }}</span>
                                                         @if ($p['sku'] ?? null)
-                                                            <span class="text-zinc-400 ms-2">{{ $p['sku'] }}</span>
+                                                            <span
+                                                                class="text-zinc-400 ms-2">{{ $p['sku'] }}</span>
                                                         @endif
                                                     </div>
-                                                    <flux:button type="button" icon="x-mark" variant="ghost" size="xs"
+                                                    <flux:button type="button" icon="x-mark" variant="ghost"
+                                                        size="xs"
                                                         class="text-zinc-400 hover:text-red-500 cursor-pointer"
                                                         wire:click="removeLinkedProduct({{ $idx }}, '{{ $lp['type'] }}')" />
                                                 </div>
@@ -354,8 +359,8 @@
 
                             {{-- Toolbar --}}
                             <div class="flex items-center gap-3 flex-wrap">
-                                <flux:button type="button" wire:click="addNewAttribute" icon="plus" size="sm"
-                                    class="cursor-pointer">
+                                <flux:button type="button" wire:click="addNewAttribute" icon="plus"
+                                    size="sm" class="cursor-pointer">
                                     Add New
                                 </flux:button>
 
@@ -365,7 +370,8 @@
                                         class="{{ $selectClass }} !py-1.5 !text-sm">
                                         <option value="">Add existing...</option>
                                         @foreach ($this->selectableAttributes as $selAttr)
-                                            <option value="{{ $selAttr->id }}">{{ ucfirst($selAttr->name) }}</option>
+                                            <option value="{{ $selAttr->id }}">{{ ucfirst($selAttr->name) }}
+                                            </option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -390,15 +396,16 @@
                                         </flux:heading>
 
                                         <div class="ms-auto flex items-center gap-1">
-                                            <flux:button size="xs" icon="trash" icon-variant="outline" type="button"
-                                                variant="ghost" wire:click="removeSelectedAttribute({{ $attrIndex }})"
+                                            <flux:button size="xs" icon="trash" icon-variant="outline"
+                                                type="button" variant="ghost"
+                                                wire:click="removeSelectedAttribute({{ $attrIndex }})"
                                                 wire:confirm="Remove this attribute?"
                                                 class="text-red-500! cursor-pointer" />
 
-                                            <flux:button icon="chevron-down" size="xs" variant="ghost" type="button"
+                                            <flux:button icon="chevron-down" size="xs" variant="ghost"
+                                                type="button"
                                                 class="transition-transform duration-300 cursor-pointer"
-                                                x-bind:class="{ 'rotate-180': open }"
-                                                @click="open = !open" />
+                                                x-bind:class="{ 'rotate-180': open }" @click="open = !open" />
                                         </div>
                                     </div>
 
@@ -439,9 +446,11 @@
                                                 @if (!empty($attrValues))
                                                     <flux:field>
                                                         <flux:label>Values</flux:label>
-                                                        <div class="flex flex-wrap gap-x-4 gap-y-2 mt-2 max-h-40 overflow-y-auto">
+                                                        <div
+                                                            class="flex flex-wrap gap-x-4 gap-y-2 mt-2 max-h-40 overflow-y-auto">
                                                             @foreach ($attrValues as $val)
-                                                                <label class="flex items-center gap-1.5 text-sm cursor-pointer">
+                                                                <label
+                                                                    class="flex items-center gap-1.5 text-sm cursor-pointer">
                                                                     <flux:checkbox
                                                                         wire:model="form.product_attributes.{{ $attrIndex }}.values"
                                                                         :value="$val['id']" />
@@ -452,7 +461,8 @@
                                                     </flux:field>
                                                 @else
                                                     <p class="text-xs text-zinc-400 mt-6">
-                                                        This attribute has no values. Add values in the Attributes catalogue first.
+                                                        This attribute has no values. Add values in the Attributes
+                                                        catalogue first.
                                                     </p>
                                                 @endif
                                             @endif
@@ -469,7 +479,7 @@
                             @endif
                         </div>
 
-                        {{-- ── Variations ── --}}
+                        {{--  Variations  --}}
                         <div x-show="tab === 'variations'" x-cloak>
                             @php
                                 $regionalSettings = app(\App\Settings\RegionalSettings::class);
@@ -502,8 +512,8 @@
                                         </flux:button>
                                     @endif
 
-                                    <flux:button size="sm" type="button" wire:click="addVariant" icon="plus"
-                                        class="cursor-pointer">
+                                    <flux:button size="sm" type="button" wire:click="addVariant"
+                                        icon="plus" class="cursor-pointer">
                                         Add Manual
                                     </flux:button>
 
@@ -523,8 +533,7 @@
                                                         class="cursor-pointer">
                                                         Toggle "Manage stock"
                                                     </flux:menu.item>
-                                                    <flux:menu.item
-                                                        wire:click="setAllVariantsStockStatus('in_stock')"
+                                                    <flux:menu.item wire:click="setAllVariantsStockStatus('in_stock')"
                                                         class="cursor-pointer">
                                                         Set status — In stock
                                                     </flux:menu.item>
@@ -533,8 +542,7 @@
                                                         class="cursor-pointer">
                                                         Set status — Out of stock
                                                     </flux:menu.item>
-                                                    <flux:menu.item
-                                                        wire:click="setAllVariantsStockStatus('backorder')"
+                                                    <flux:menu.item wire:click="setAllVariantsStockStatus('backorder')"
                                                         class="cursor-pointer">
                                                         Set status — Backorder
                                                     </flux:menu.item>
@@ -571,7 +579,8 @@
                                     <flux:callout variant="warning" icon="exclamation-circle" inline>
                                         <flux:callout.heading>
                                             {{ $this->unpricedVariantsCount }}
-                                            variation{{ $this->unpricedVariantsCount > 1 ? 's do' : ' does' }} not have a price set.
+                                            variation{{ $this->unpricedVariantsCount > 1 ? 's do' : ' does' }} not have
+                                            a price set.
                                         </flux:callout.heading>
                                     </flux:callout>
                                 @endif
@@ -582,11 +591,10 @@
                                         @foreach ($form->variations as $vIdx => $variation)
                                             <flux:card class="p-0"
                                                 wire:key="var-{{ $vIdx }}-{{ implode('-', (array) ($variation['attributes'] ?? [])) ?: $vIdx }}">
-                                                <div
-                                                    x-data="{
-                                                        collapsed: {{ $loop->first ? 'true' : 'false' }},
-                                                        readonlyName: @js(!empty($variation['name']))
-                                                    }"
+                                                <div x-data="{
+                                                    collapsed: {{ $loop->first ? 'true' : 'false' }},
+                                                    readonlyName: @js(!empty($variation['name']))
+                                                }"
                                                     @toggle-all-variants.window="collapsed = $event.detail.collapsed">
 
                                                     {{-- Variant header --}}
@@ -614,8 +622,7 @@
                                                     </div>
 
                                                     {{-- Variant body --}}
-                                                    <div x-cloak x-show="collapsed" x-collapse
-                                                        class="space-y-5 p-5">
+                                                    <div x-cloak x-show="collapsed" x-collapse class="space-y-5 p-5">
 
                                                         {{-- Image + SKU row --}}
                                                         <div class="grid grid-cols-2 gap-5 items-start">
@@ -628,11 +635,9 @@
                                                                     wire:model="variantImages.{{ $vIdx }}"
                                                                     accept="image/*" />
 
-                                                                <flux:skeleton
-                                                                    wire:loading
+                                                                <flux:skeleton wire:loading
                                                                     wire:target="variantImages.{{ $vIdx }}"
-                                                                    class="w-24 h-24 rounded-md"
-                                                                    animate="shimmer" />
+                                                                    class="w-24 h-24 rounded-md" animate="shimmer" />
 
                                                                 <div wire:loading.remove
                                                                     wire:target="variantImages.{{ $vIdx }}">
@@ -663,11 +668,10 @@
                                                                     @else
                                                                         <button type="button"
                                                                             @click="document.getElementById('variant-img-{{ $vIdx }}').click()"
-                                                                            class="w-24 h-24 rounded-md border-2 border-dashed border-zinc-300 dark:border-zinc-600 flex flex-col items-center justify-center gap-1 hover:border-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-all cursor-pointer">
+                                                                            class="w-24 h-24 rounded-md border-2 border-dashed border-zinc-300 dark:border-zinc-600 flex flex-col items-center justify-center gap-1 dark:bg-zinc-500 hover:border-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-all cursor-pointer">
                                                                             <flux:icon.photo
                                                                                 class="size-6 text-zinc-400" />
-                                                                            <span
-                                                                                class="text-xs text-zinc-400">Add
+                                                                            <span class="text-xs text-zinc-400">Add
                                                                                 image</span>
                                                                         </button>
                                                                     @endif
@@ -683,13 +687,15 @@
                                                             </div>
 
                                                             {{-- SKU --}}
-                                                            <flux:input wire:model="form.variations.{{ $vIdx }}.sku"
+                                                            <flux:input
+                                                                wire:model="form.variations.{{ $vIdx }}.sku"
                                                                 label="SKU"
                                                                 placeholder="Leave blank to auto-generate" />
                                                         </div>
 
                                                         {{-- Flags --}}
-                                                        <div class="flex items-center gap-5 border-y py-3 dark:border-zinc-700">
+                                                        <div
+                                                            class="flex items-center gap-5 border-y py-3 dark:border-zinc-700">
                                                             <flux:checkbox
                                                                 wire:model="form.variations.{{ $vIdx }}.is_active"
                                                                 label="Active" />
@@ -702,7 +708,8 @@
                                                         </div>
 
                                                         {{-- Variation name --}}
-                                                        <flux:input wire:model="form.variations.{{ $vIdx }}.name"
+                                                        <flux:input
+                                                            wire:model="form.variations.{{ $vIdx }}.name"
                                                             ::readonly="readonlyName" label="Variation Name">
                                                             <x-slot name="iconTrailing">
                                                                 <flux:button size="sm" variant="subtle"
@@ -729,8 +736,7 @@
                                                         </div>
 
                                                         {{-- Stock — when manage_stock ON --}}
-                                                        <div
-                                                            x-show="$wire.form.variations[{{ $vIdx }}].manage_stock"
+                                                        <div x-show="$wire.form.variations[{{ $vIdx }}].manage_stock"
                                                             x-cloak class="space-y-3">
                                                             <div class="grid grid-cols-2 gap-3">
                                                                 <flux:input type="number" min="0"
@@ -753,9 +759,9 @@
                                                             </flux:field>
 
                                                             {{-- Backorder details --}}
-                                                            <div
-                                                                x-show="$wire.form.variations[{{ $vIdx }}].allow_backorders == '1'"
-                                                                x-cloak class="space-y-3 border-l-2 border-amber-300 pl-4">
+                                                            <div x-show="$wire.form.variations[{{ $vIdx }}].allow_backorders == '1'"
+                                                                x-cloak
+                                                                class="space-y-3 border-l-2 border-amber-300 pl-4">
                                                                 <flux:textarea
                                                                     wire:model="form.variations.{{ $vIdx }}.backorder_message"
                                                                     label="Backorder Message" rows="2"
@@ -773,31 +779,29 @@
                                                         </div>
 
                                                         {{-- Stock status — when manage_stock OFF --}}
-                                                        <div
-                                                            x-show="!$wire.form.variations[{{ $vIdx }}].manage_stock"
+                                                        <div x-show="!$wire.form.variations[{{ $vIdx }}].manage_stock"
                                                             x-cloak>
-                                                            <flux:field>
-                                                                <flux:label>Stock Status</flux:label>
-                                                                <select
-                                                                    wire:model="form.variations.{{ $vIdx }}.stock_status"
-                                                                    class="{{ $selectClass }}">
-                                                                    <option value="in_stock">In Stock</option>
-                                                                    <option value="out_of_stock">Out of Stock</option>
-                                                                    <option value="backorder">Backorder</option>
-                                                                </select>
-                                                            </flux:field>
+                                                            <flux:select label="Stock Status"
+                                                                wire:model="form.variations.{{ $vIdx }}.stock_status">
+                                                                <flux:select.option value="in_stock">In Stock
+                                                                </flux:select.option>
+                                                                <flux:select.option value="out_of_stock">Out of Stock
+                                                                </flux:select.option>
+                                                                <flux:select.option value="backorder">Backorder
+                                                                </flux:select.option>
+                                                            </flux:select>
                                                         </div>
 
                                                         {{-- Shipping --}}
                                                         <div class="grid grid-cols-2 gap-3">
-                                                            <flux:input
-                                                                label="Weight ({{ $weightUnit }})"
+                                                            <flux:input label="Weight ({{ $weightUnit }})"
                                                                 type="number" step="0.001"
                                                                 wire:model="form.variations.{{ $vIdx }}.weight"
                                                                 placeholder="0.000" />
                                                             <flux:field>
                                                                 <flux:label>Dimensions — L × W × H
-                                                                    ({{ $dimensionUnit }})</flux:label>
+                                                                    ({{ $dimensionUnit }})
+                                                                </flux:label>
                                                                 <flux:input.group>
                                                                     <flux:input placeholder="Length"
                                                                         wire:model="form.variations.{{ $vIdx }}.length" />
@@ -836,7 +840,8 @@
                             <flux:field>
                                 <div class="flex items-center gap-1.5 mb-1">
                                     <flux:label>Purchase Note</flux:label>
-                                    <flux:tooltip content="Sent to customers in their order confirmation email after purchasing this product.">
+                                    <flux:tooltip
+                                        content="Sent to customers in their order confirmation email after purchasing this product.">
                                         <flux:icon.information-circle variant="outline"
                                             class="size-3.5 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 cursor-help" />
                                     </flux:tooltip>
@@ -1005,6 +1010,22 @@
                         <flux:select.option value="{{ $s->value }}">{{ $s->label() }}</flux:select.option>
                     @endforeach
                 </flux:select>
+
+
+                <div x-data x-show="$wire.form.status === 'scheduled'" x-cloak>
+                    <flux:field>
+                        <div class="flex items-center gap-1.5 mb-1">
+                            <flux:label>Publish Date & Time <span class="text-red-500">*</span></flux:label>
+                            <flux:tooltip content="The product will go live automatically at this date and time.">
+                                <flux:icon.information-circle variant="outline"
+                                    class="size-3.5 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 cursor-help" />
+                            </flux:tooltip>
+                        </div>
+                        <flux:input type="datetime-local" wire:model="form.published_at"
+                            :min="now()->format('Y-m-d\TH:i')" />
+                        <flux:error name="form.published_at" />
+                    </flux:field>
+                </div>
 
                 <flux:select wire:model="form.visibility" label="Visibility">
                     @foreach (App\Enums\ProductVisibility::cases() as $v)
@@ -1215,6 +1236,80 @@
                 @endif
 
                 <flux:error name="form.category_ids" />
+            </div>
+        </flux:card>
+
+
+        {{-- Tags --}}
+        <flux:card class="p-0" x-data="{ expanded: true, panelOpen: false }">
+            <div class="flex items-center justify-between px-3 py-2 dark:border-zinc-600"
+                :class="{ 'border-b': expanded }">
+                <flux:heading>Tags</flux:heading>
+                <flux:button size="xs" variant="ghost" class="cursor-pointer" @click="expanded = !expanded">
+                    <x-slot name="icon">
+                        <flux:icon.chevron-down variant="outline"
+                            class="size-4 text-zinc-400 transition-transform duration-200"
+                            x-bind:class="{ 'rotate-180': expanded }" />
+                    </x-slot>
+                </flux:button>
+            </div>
+
+            <div x-show="expanded" x-collapse class="p-4 space-y-3">
+
+                {{-- Input + Add --}}
+                <flux:input.group>
+                    <flux:input wire:model="newTagInput" placeholder="Add a tag…"
+                        x-on:keydown.enter.prevent="$wire.addTags()" />
+                    <flux:button type="button" wire:click="addTags" class="cursor-pointer">
+                        Add
+                    </flux:button>
+                </flux:input.group>
+
+                <flux:text class="text-xs text-zinc-400">Separate multiple tags with commas</flux:text>
+
+                {{-- Selected tag badges --}}
+                @if ($this->selectedTags->isNotEmpty())
+                    <div class="flex flex-wrap gap-1.5">
+                        @foreach ($this->selectedTags as $tag)
+                            <flux:badge color="zinc" size="sm" class="flex items-center gap-1.5"
+                                wire:key="tag-{{ $tag->id }}">
+                                <span>{{ $tag->name }}</span>
+                                <button type="button" wire:click="removeTag({{ $tag->id }})"
+                                    class="hover:text-red-500 transition-colors cursor-pointer leading-none">
+                                    <flux:icon.x-mark variant="micro" class="size-3" />
+                                </button>
+                            </flux:badge>
+                        @endforeach
+                    </div>
+                @endif
+
+                {{-- Toggle panel --}}
+                <button type="button"
+                    class="text-xs text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 underline underline-offset-2 cursor-pointer transition-colors"
+                    @click="panelOpen = !panelOpen">
+                    <span x-text="panelOpen ? 'Hide tag suggestions' : 'Choose from the most used tags'"></span>
+                </button>
+
+                {{-- Suggested tags panel --}}
+                <div x-show="panelOpen" x-collapse class="space-y-2 border-t pt-3 dark:border-zinc-700">
+                    <flux:input wire:model.live.debounce.200ms="tagQuery" placeholder="Search tags…"
+                        icon="magnifying-glass" size="sm" />
+
+                    <div class="flex flex-wrap gap-1.5 max-h-36 overflow-y-auto">
+                        @forelse ($this->availableTags as $tag)
+                            <button type="button" wire:click="addTag({{ $tag->id }})"
+                                wire:key="avail-{{ $tag->id }}"
+                                class="px-2 py-0.5 text-xs rounded-full border border-zinc-200 dark:border-zinc-700
+                               text-zinc-500 dark:text-zinc-400 hover:border-zinc-400 hover:text-zinc-700
+                               dark:hover:text-zinc-200 transition-colors cursor-pointer">
+                                {{ $tag->name }}
+                            </button>
+                        @empty
+                            <p class="text-xs text-zinc-400">No tags found.</p>
+                        @endforelse
+                    </div>
+                </div>
+
             </div>
         </flux:card>
     </div>

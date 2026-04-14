@@ -10,7 +10,7 @@ use Livewire\Attributes\Computed;
 
 trait ManagesProductForm
 {
-    // ── Linked-product search state ────────────────────────────────────────────
+    // ── Linked-product search state 
 
     public string $upsellQuery = '';
 
@@ -18,10 +18,52 @@ trait ManagesProductForm
 
     public string $accessoryQuery = '';
 
+    // ── Tag management state ───────────────────────────────────────────────────
+
+    public string $tagQuery = '';
+
+    public string $newTagInput = '';
+
     // ── Variant image uploads ──────────────────────────────────────────────────
 
     /** @var array<int, \Livewire\Features\SupportFileUploads\TemporaryUploadedFile|null> */
     public array $variantImages = [];
+    // ── Tag actions ────────────────────────────────────────────────────────────
+
+
+    public function addTags(): void
+    {
+        $names = array_filter(array_map('trim', explode(',', $this->newTagInput)));
+
+        foreach ($names as $name) {
+            $tag = \App\Models\Tag::firstOrCreate(
+                ['slug' => \Illuminate\Support\Str::slug($name)],
+                ['name' => $name]
+            );
+
+            if (!in_array($tag->id, $this->form->tag_ids, true)) {
+                $this->form->tag_ids[] = $tag->id;
+            }
+        }
+
+        $this->newTagInput = '';
+    }
+
+
+    public function addTag(int $tagId): void
+    {
+        if (!in_array($tagId, $this->form->tag_ids, true)) {
+            $this->form->tag_ids[] = $tagId;
+        }
+    }
+
+    public function removeTag(int $tagId): void
+    {
+        $this->form->tag_ids = array_values(
+            array_filter($this->form->tag_ids, fn($id) => $id !== $tagId)
+        );
+    }
+
 
     // ── Computed data ──────────────────────────────────────────────────────────
 
@@ -67,7 +109,7 @@ trait ManagesProductForm
             ->firstWhere('id', $attributeId)
             ?->values
             ->where('is_active', true)
-            ->map(fn ($v) => ['id' => $v->id, 'label' => $v->label])
+            ->map(fn($v) => ['id' => $v->id, 'label' => $v->label])
             ->values()
             ->toArray() ?? [];
     }
@@ -76,7 +118,7 @@ trait ManagesProductForm
     public function unpricedVariantsCount(): int
     {
         return collect($this->form->variations)
-            ->filter(fn ($v) => $v['price'] === '' || $v['price'] === null)
+            ->filter(fn($v) => $v['price'] === '' || $v['price'] === null)
             ->count();
     }
 
@@ -96,6 +138,29 @@ trait ManagesProductForm
     public function accessoryResults(): array
     {
         return $this->searchLinkedProducts($this->accessoryQuery);
+    }
+
+    #[Computed]
+    public function selectedTags()
+    {
+        if (empty($this->form->tag_ids)) {
+            return collect();
+        }
+
+        return \App\Models\Tag::whereIn('id', $this->form->tag_ids)->get();
+    }
+
+    #[Computed]
+    public function availableTags()
+    {
+        return \App\Models\Tag::whereNotIn('id', $this->form->tag_ids ?: [])
+            ->when(
+                strlen(trim($this->tagQuery)) >= 1,
+                fn($q) => $q->where('name->en', 'like', "%{$this->tagQuery}%")
+            )
+            ->orderBy('name')
+            ->limit(50)
+            ->get();
     }
 
     private function searchLinkedProducts(string $query): array
@@ -126,14 +191,14 @@ trait ManagesProductForm
     public function addLinkedProduct(int $productId, string $type): void
     {
         $product = Product::find($productId, ['id', 'name', 'sku']);
-        if (! $product) {
+        if (!$product) {
             return;
         }
 
         $data = ['id' => $product->id, 'name' => $product->name, 'sku' => $product->sku];
         $list = $this->resolveLinkedList($type);
 
-        if (! collect($this->form->{$list})->contains('id', $productId)) {
+        if (!collect($this->form->{$list})->contains('id', $productId)) {
             $this->form->{$list}[] = $data;
         }
 
@@ -165,12 +230,12 @@ trait ManagesProductForm
     public function addNewAttribute(): void
     {
         $this->form->product_attributes[] = [
-            'attribute_id'           => null,
-            'name'                   => '',
-            'values'                 => '',
+            'attribute_id' => null,
+            'name' => '',
+            'values' => '',
             'is_variation_attribute' => false,
-            'is_visible'             => true,
-            'is_new'                 => true,
+            'is_visible' => true,
+            'is_new' => true,
         ];
     }
 
@@ -178,7 +243,7 @@ trait ManagesProductForm
     {
         $attr = $this->availableAttributes->firstWhere('id', $attributeId);
 
-        if (! $attr) {
+        if (!$attr) {
             return;
         }
 
@@ -192,12 +257,12 @@ trait ManagesProductForm
         }
 
         $this->form->product_attributes[] = [
-            'attribute_id'           => $attr->id,
-            'name'                   => $attr->name,
-            'values'                 => [],
+            'attribute_id' => $attr->id,
+            'name' => $attr->name,
+            'values' => [],
             'is_variation_attribute' => false,
-            'is_visible'             => true,
-            'is_new'                 => false,
+            'is_visible' => true,
+            'is_new' => false,
         ];
     }
 
@@ -233,9 +298,9 @@ trait ManagesProductForm
 
     public function toggleAllVariantsActive(): void
     {
-        $allActive = collect($this->form->variations)->every(fn ($v) => $v['is_active']);
+        $allActive = collect($this->form->variations)->every(fn($v) => $v['is_active']);
         $this->form->variations = array_map(function ($v) use ($allActive) {
-            $v['is_active'] = ! $allActive;
+            $v['is_active'] = !$allActive;
 
             return $v;
         }, $this->form->variations);
@@ -243,9 +308,9 @@ trait ManagesProductForm
 
     public function toggleAllVariantsManageStock(): void
     {
-        $allManage = collect($this->form->variations)->every(fn ($v) => $v['manage_stock']);
+        $allManage = collect($this->form->variations)->every(fn($v) => $v['manage_stock']);
         $this->form->variations = array_map(function ($v) use ($allManage) {
-            $v['manage_stock'] = ! $allManage;
+            $v['manage_stock'] = !$allManage;
 
             return $v;
         }, $this->form->variations);
@@ -276,14 +341,18 @@ trait ManagesProductForm
         // Only use existing (non-new) attributes flagged for variations with selected values
         $variationAttrs = array_values(array_filter(
             $this->form->product_attributes,
-            fn ($a) => ! ($a['is_new'] ?? false)
-                && ! empty($a['is_variation_attribute'])
-                && ! empty($a['values'])
+            fn($a) => !($a['is_new'] ?? false)
+                && !empty($a['is_variation_attribute'])
+                && !empty($a['values'])
         ));
 
         if (empty($variationAttrs)) {
-            $this->dispatch('notify', title: 'No Variation Attributes', variant: 'warning',
-                message: 'Mark at least one attribute as "Used for variations" and select its values first.');
+            $this->dispatch(
+                'notify',
+                title: 'No Variation Attributes',
+                variant: 'warning',
+                message: 'Mark at least one attribute as "Used for variations" and select its values first.'
+            );
 
             return;
         }
@@ -305,8 +374,8 @@ trait ManagesProductForm
                 return $attrs === $sorted;
             });
 
-            if (! $exists) {
-                $name = implode(' / ', array_map(fn ($id) => $valueLabels[$id] ?? "Value {$id}", $combo));
+            if (!$exists) {
+                $name = implode(' / ', array_map(fn($id) => $valueLabels[$id] ?? "Value {$id}", $combo));
                 $this->form->variations[] = $this->blankVariation($name, $combo);
                 $added++;
             }
@@ -355,29 +424,29 @@ trait ManagesProductForm
     private function blankVariation(string $name = '', array $attributes = []): array
     {
         return [
-            'id'                     => null,
-            'name'                   => $name,
-            'sku'                    => '',
-            'price'                  => '',
-            'sale_price'             => '',
-            'cost_price'             => '',
-            'manage_stock'           => false,
-            'stock_quantity'         => 0,
-            'stock_status'           => 'in_stock',
-            'allow_backorders'       => false,
-            'backorder_message'      => '',
+            'id' => null,
+            'name' => $name,
+            'sku' => '',
+            'price' => '',
+            'sale_price' => '',
+            'cost_price' => '',
+            'manage_stock' => false,
+            'stock_quantity' => 0,
+            'stock_status' => 'in_stock',
+            'allow_backorders' => false,
+            'backorder_message' => '',
             'max_backorder_quantity' => '',
-            'expected_restock_date'  => '',
-            'low_stock_threshold'    => '',
-            'weight'                 => '',
-            'height'                 => '',
-            'width'                  => '',
-            'length'                 => '',
-            'image_path'             => null,
-            'is_default'             => false,
-            'is_active'              => true,
-            'description'            => '',
-            'attributes'             => $attributes,
+            'expected_restock_date' => '',
+            'low_stock_threshold' => '',
+            'weight' => '',
+            'height' => '',
+            'width' => '',
+            'length' => '',
+            'image_path' => null,
+            'is_default' => false,
+            'is_active' => true,
+            'description' => '',
+            'attributes' => $attributes,
         ];
     }
 }
