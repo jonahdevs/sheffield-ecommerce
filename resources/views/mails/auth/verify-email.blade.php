@@ -1,259 +1,119 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="en" xmlns:v="urn:schemas-microsoft-com:vml">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title>Verify Your Email Address</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            background-color: #f4f4f5;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            color: #18181b;
-        }
-
-        a {
-            color: #18181b;
-        }
-
-        .wrapper {
-            background: #f4f4f5;
-            padding: 32px 16px;
-        }
-
-        .container {
-            background: #ffffff;
-            max-width: 600px;
-            margin: 0 auto;
-            border-radius: 8px;
-            overflow: hidden;
-            border: 1px solid #e4e4e7;
-        }
-
-        .header {
-            background: #18181b;
-            padding: 28px 32px;
-            text-align: center;
-        }
-
-        .header .logo {
-            color: #ffffff;
-            font-size: 20px;
-            font-weight: 700;
-            letter-spacing: -0.5px;
-            text-decoration: none;
-        }
-
-        .header .tagline {
-            color: #a1a1aa;
-            font-size: 12px;
-            margin-top: 4px;
-        }
-
-        .hero {
-            padding: 40px 32px 32px;
-            text-align: center;
-            border-bottom: 1px solid #f4f4f5;
-        }
-
-        .hero .icon {
-            width: 60px;
-            height: 60px;
-            background: #f0fdf4;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 18px;
-        }
-
-        .hero h1 {
-            font-size: 22px;
-            font-weight: 700;
-            color: #18181b;
-            margin-bottom: 8px;
-        }
-
-        .hero p {
-            color: #71717a;
-            font-size: 14px;
-            line-height: 1.6;
-            max-width: 400px;
-            margin: 0 auto;
-        }
-
-        .cta {
-            padding: 32px 32px;
-            text-align: center;
-        }
-
-        .btn {
-            display: inline-block;
-            background: #18181b;
-            color: #ffffff !important;
-            text-decoration: none;
-            padding: 13px 32px;
-            border-radius: 6px;
-            font-size: 14px;
-            font-weight: 600;
-        }
-
-        .expiry-note {
-            background: #fafafa;
-            border: 1px solid #e4e4e7;
-            border-radius: 6px;
-            padding: 12px 16px;
-            font-size: 13px;
-            color: #71717a;
-            text-align: center;
-            margin-top: 8px;
-        }
-
-        .url-fallback {
-            margin-top: 16px;
-            font-size: 11px;
-            color: #a1a1aa;
-            word-break: break-all;
-        }
-
-        .section {
-            padding: 24px 32px;
-            border-bottom: 1px solid #f4f4f5;
-        }
-
-        .benefit {
-            display: flex;
-            gap: 12px;
-            align-items: flex-start;
-            padding: 8px 0;
-        }
-
-        .benefit-dot {
-            width: 7px;
-            height: 7px;
-            background: #16a34a;
-            border-radius: 50%;
-            margin-top: 5px;
-            flex-shrink: 0;
-        }
-
-        .benefit p {
-            font-size: 13px;
-            color: #3f3f46;
-            line-height: 1.5;
-        }
-
-        .footer {
-            background: #fafafa;
-            border-top: 1px solid #e4e4e7;
-            padding: 20px 32px;
-            text-align: center;
-        }
-
-        .footer p {
-            font-size: 12px;
-            color: #a1a1aa;
-            line-height: 1.6;
-        }
-
-        .footer a {
-            color: #71717a;
-        }
-
-        @media (max-width: 600px) {
-
-            .hero,
-            .section,
-            .cta {
-                padding-left: 20px;
-                padding-right: 20px;
-            }
-
-            .header {
-                padding: 20px;
-            }
-        }
-    </style>
+  <meta charset="utf-8">
+  <meta name="x-apple-disable-message-reformatting">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="format-detection" content="telephone=no, date=no, address=no, email=no, url=no">
+  <meta name="color-scheme" content="light dark">
+  <meta name="supported-color-schemes" content="light dark">
+  <!--[if mso]>
+  <noscript>
+    <xml>
+      <o:OfficeDocumentSettings xmlns:o="urn:schemas-microsoft-com:office:office">
+        <o:PixelsPerInch>96</o:PixelsPerInch>
+      </o:OfficeDocumentSettings>
+    </xml>
+  </noscript>
+  <style>
+    td,th,div,p,a,h1,h2,h3,h4,h5,h6 {font-family: "Segoe UI", sans-serif; mso-line-height-rule: exactly;}
+    .mso-break-all {word-break: break-all;}
+  </style>
+  <![endif]-->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" media="screen">
+  <style>
+    .hover-bg-brand-secondary-dark:hover {
+      background-color: #2d3c7b !important;
+    }
+    .hover-underline:hover {
+      text-decoration: underline !important;
+    }
+    @media (max-width: 600px) {
+      .sm-p-6 {
+        padding: 24px !important;
+      }
+      .sm-px-4 {
+        padding-left: 16px !important;
+        padding-right: 16px !important;
+      }
+      .sm-px-6 {
+        padding-left: 24px !important;
+        padding-right: 24px !important;
+      }
+    }
+  </style>
 </head>
-
-<body>
-    <div class="wrapper">
-        <div class="container">
-
-            {{-- Header --}}
-            <div class="header">
-                <a href="{{ config('app.url') }}" class="logo">{{ config('app.name') }}</a>
-                <p class="tagline">Sheffield Africa Steel Systems</p>
-            </div>
-
-            {{-- Hero --}}
-            <div class="hero">
-                <div class="icon">
-                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
-                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"
-                            stroke="#16a34a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                        <polyline points="22,6 12,13 2,6" stroke="#16a34a" stroke-width="2" stroke-linecap="round"
-                            stroke-linejoin="round" />
-                    </svg>
-                </div>
-                <h1>Verify Your Email Address</h1>
-                <p>
-                    Hi {{ $user->name }}, thanks for registering! Please verify your email address
-                    to activate your account and start shopping.
-                </p>
-            </div>
-
-            {{-- What you unlock --}}
-            <div class="section">
-                <p
-                    style="font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.8px; color: #a1a1aa; margin-bottom: 14px;">
-                    After verifying you can
-                </p>
-                <div class="benefit">
-                    <div class="benefit-dot"></div>
-                    <p>Browse and order from our full catalog of steel and construction products</p>
-                </div>
-                <div class="benefit">
-                    <div class="benefit-dot"></div>
-                    <p>Request custom quotations for bulk orders with competitive pricing</p>
-                </div>
-                <div class="benefit">
-                    <div class="benefit-dot"></div>
-                    <p>Track your orders and download KRA-validated tax invoices</p>
-                </div>
-            </div>
-
-            {{-- CTA --}}
-            <div class="cta">
-                <a href="{{ $verificationUrl }}" class="btn">Verify Email Address</a>
-                <div class="expiry-note">
-                    This link expires in 60 minutes.
-                </div>
-                <div class="url-fallback">
-                    If the button doesn't work, copy and paste this URL into your browser:<br />
-                    <a href="{{ $verificationUrl }}" style="color: #71717a;">{{ $verificationUrl }}</a>
-                </div>
-            </div>
-
-            {{-- Footer --}}
-            <div class="footer">
-                <p>
-                    {{ config('app.name') }} · Sheffield Africa Steel Systems<br />
-                    Off Old Mombasa Road, Nairobi, Kenya<br /><br />
-                    <span style="color: #d4d4d8;">You're receiving this because you created an account at
-                        {{ config('app.name') }}.</span>
-                </p>
-            </div>
-
-        </div>
+<body style="margin: 0; width: 100%; background-color: #f8fafc; padding: 0; -webkit-font-smoothing: antialiased; word-break: break-word;">
+  <div style="display: none;">
+    Verify email template
+    &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847;
+  </div>
+  <div role="article" aria-roledescription="email" aria-label lang="en">
+    <div class="sm-px-4" style="background-color: #f8fafc; font-family: Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif">
+      <table align="center" style="margin: 0 auto;" cellpadding="0" cellspacing="0" role="none">
+        <tr>
+          <td style="width: 552px; max-width: 100%;">
+            <div role="separator" style="line-height: 24px">&zwj;</div>
+            <table style="width: 100%;" cellpadding="0" cellspacing="0" role="none">
+              <tr>
+                <td style="overflow: hidden; border-radius: 6px; background-color: #fffffe; border: 1px solid #e2e8f0;">
+                  <div class="sm-p-6" style="display: flex; align-items: center; justify-content: space-between; background-color: #304296; padding: 16px 36px; color: #ffffff">
+                    <a href="https://demo.ecommerce.sheffieldafrica.com">
+                      <img src="{{ asset('images/mails/logo-inverse.png') }}" width="120" height="auto" alt="Sheffield Africa logo" style="max-width: 100%; vertical-align: middle;">
+                    </a>
+                    <div style="display: flex; align-items: center;">
+                      <a href="https://demo.ecommerce.sheffieldafrica.com/shop" class="hover-underline" style="padding-left: 8px; padding-right: 8px; font-size: 14px; color: #fffffe;">Shop</a>
+                      <a href="https://demo.ecommerce.sheffieldafrica.com/new-arrivals" class="hover-underline" style="padding-left: 8px; padding-right: 8px; font-size: 14px; color: #fffffe;">New Arrivals</a>
+                      <a href="https://demo.ecommerce.sheffieldafrica.com/account" class="hover-underline" style="padding-left: 8px; padding-right: 8px; font-size: 14px; color: #fffffe;">Account</a>
+                    </div>
+                  </div>
+                  <div class="sm-p-6" style="padding: 24px 36px">
+                    <p style="margin: 0 0 12px; font-size: 16px; line-height: 24px; color: #475569;">
+                      Hi {{$user->name}},
+                    </p>
+                    <p style="margin: 0 0 24px; font-size: 16px; line-height: 24px; color: #475569;">We are excited to have you on board! Please verify your
+                      email address in order to activate your
+                      account:</p>
+                    <div>
+                      <a href="{{$verificationUrl}}" style="display: inline-block; text-decoration: none; padding: 16px 24px; font-size: 16px; line-height: 1; border-radius: 4px; color: #fffffe; margin-bottom: 24px; background-color: #304296;" class="hover-bg-brand-secondary-dark">
+                        <!--[if mso]><i style="mso-font-width: 150%; mso-text-raise: 31px;" hidden>&emsp;</i><![endif]-->
+                        <span style="mso-text-raise: 16px">Verify email</span>
+                        <!--[if mso]><i hidden style="mso-font-width: 150%;">&emsp;&#8203;</i><![endif]-->
+                      </a>
+                    </div>
+                    <p style="margin: 0 0 12px; font-size: 16px; line-height: 24px; color: #475569;">If you did not create this account, please ignore this
+                      email.</p>
+                    <div role="separator" style="line-height: 24px">&zwj;</div>
+                    <p style="margin: 0; font-size: 16px; line-height: 24px; color: #475569;">
+                      Thanks,
+                      <br>
+                      <span style="font-weight: 600;">Sheffieldafrica</span>
+                    </p>
+                    <div role="separator" style="height: 1px; line-height: 1px; background-color: #cbd5e1; margin-top: 24px; margin-bottom: 24px">&zwj;</div>
+                    <p class="mso-break-all" style="margin: 0; font-size: 12px; line-height: 20px; color: #475569;">
+                      If you're having trouble clicking the "Verify email" button, copy and paste the following URL into
+                      your web browser:
+                      <a href="{{$verificationUrl}}" style="color: #1e293b; text-decoration: underline;">{{$verificationUrl}}</a>
+                    </p>
+                  </div>
+                </td>
+              </tr>
+            </table>
+            <table style="width: 100%;" cellpadding="0" cellspacing="0" role="none">
+              <tr>
+                <td class="sm-px-6" style="padding: 24px 36px">
+                  <p style="margin: 0; font-size: 12px; color: #64748b;">
+                    &copy; 2026 Sheffieldafrica. All rights reserved.
+                  </p>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
     </div>
+  </div>
 </body>
-
 </html>

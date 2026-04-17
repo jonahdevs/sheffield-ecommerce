@@ -26,7 +26,8 @@ class OrderStatusNotification extends Notification implements ShouldQueue
     public function __construct(
         public readonly Order $order,
         public readonly OrderStatus $newStatus,
-    ) {}
+    ) {
+    }
 
     public function via(): array
     {
@@ -42,7 +43,7 @@ class OrderStatusNotification extends Notification implements ShouldQueue
             default => "Order Update — {$this->order->reference}",
         };
 
-        return (new MailMessage)->subject($subject)->view('mails.orders.status', [
+        return (new MailMessage)->subject($subject)->view('mails.orders.status-update', [
             'order' => $this->order->loadMissing('items'),
             'newStatus' => $this->newStatus,
             'customerName' => $this->order->user?->name ?? 'Customer',

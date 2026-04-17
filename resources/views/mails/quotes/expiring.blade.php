@@ -1,126 +1,255 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:v="urn:schemas-microsoft-com:vml">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title>Quotation Expiring Soon — {{ $quote->reference }}</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { background-color: #f4f4f5; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #18181b; }
-        a { color: #18181b; }
-        .wrapper { background: #f4f4f5; padding: 32px 16px; }
-        .container { background: #ffffff; max-width: 600px; margin: 0 auto; border-radius: 8px; overflow: hidden; border: 1px solid #e4e4e7; }
-        .header { background: #18181b; padding: 28px 32px; text-align: center; }
-        .header .logo { color: #ffffff; font-size: 20px; font-weight: 700; letter-spacing: -0.5px; text-decoration: none; }
-        .header .tagline { color: #a1a1aa; font-size: 12px; margin-top: 4px; }
-        .urgency-bar { padding: 16px 32px; text-align: center; }
-        .urgency-pill { display: inline-block; padding: 6px 18px; border-radius: 20px; font-size: 13px; font-weight: 700; letter-spacing: 0.3px; }
-        .hero { padding: 28px 32px; text-align: center; border-bottom: 1px solid #f4f4f5; }
-        .hero .icon { width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 18px; }
-        .hero h1 { font-size: 22px; font-weight: 700; color: #18181b; margin-bottom: 8px; }
-        .hero p { color: #71717a; font-size: 14px; line-height: 1.6; }
-        .section { padding: 24px 32px; border-bottom: 1px solid #f4f4f5; }
-        .section-title { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.8px; color: #a1a1aa; margin-bottom: 14px; }
-        .detail-row { display: flex; justify-content: space-between; align-items: center; padding: 7px 0; font-size: 14px; border-bottom: 1px solid #f9f9f9; }
-        .detail-row:last-child { border-bottom: none; }
-        .detail-label { color: #71717a; }
-        .detail-value { font-weight: 600; color: #18181b; }
-        .cta { padding: 28px 32px; text-align: center; }
-        .btn { display: inline-block; background: #18181b; color: #ffffff !important; text-decoration: none; padding: 13px 32px; border-radius: 6px; font-size: 14px; font-weight: 600; }
-        .footer { background: #fafafa; border-top: 1px solid #e4e4e7; padding: 20px 32px; text-align: center; }
-        .footer p { font-size: 12px; color: #a1a1aa; line-height: 1.6; }
-        .footer a { color: #71717a; }
-        @media (max-width: 600px) {
-            .hero, .section, .cta, .urgency-bar { padding-left: 20px; padding-right: 20px; }
-            .header { padding: 20px; }
-        }
-    </style>
+  <meta charset="utf-8">
+  <meta name="x-apple-disable-message-reformatting">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="format-detection" content="telephone=no, date=no, address=no, email=no, url=no">
+  <meta name="color-scheme" content="light dark">
+  <meta name="supported-color-schemes" content="light dark">
+  <!--[if mso]>
+  <noscript>
+    <xml>
+      <o:OfficeDocumentSettings xmlns:o="urn:schemas-microsoft-com:office:office">
+        <o:PixelsPerInch>96</o:PixelsPerInch>
+      </o:OfficeDocumentSettings>
+    </xml>
+  </noscript>
+  <style>
+    td,th,div,p,a,h1,h2,h3,h4,h5,h6 {font-family: "Segoe UI", sans-serif; mso-line-height-rule: exactly;}
+  </style>
+  <![endif]-->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" media="screen">
+  <style>
+    .hover-bg-_a0272b:hover {
+      background-color: #a0272b !important;
+    }
+    @media (max-width: 600px) {
+      .sm-p-6 {
+        padding: 24px !important;
+      }
+      .sm-px-4 {
+        padding-left: 16px !important;
+        padding-right: 16px !important;
+      }
+      .sm-px-6 {
+        padding-left: 24px !important;
+        padding-right: 24px !important;
+      }
+      .sm-text-xs {
+        font-size: 12px !important;
+      }
+    }
+  </style>
 </head>
-<body>
-<div class="wrapper">
-    <div class="container">
-
-        {{-- Header --}}
-        <div class="header">
-            <a href="{{ config('app.url') }}" class="logo">{{ config('app.name') }}</a>
-            <p class="tagline">Sheffield Africa Steel Systems</p>
-        </div>
-
-        {{-- Urgency pill --}}
-        @php
-            $isLastDay = $daysLeft <= 1;
-            $pillBg    = $isLastDay ? '#fee2e2' : '#fef9c3';
-            $pillColor = $isLastDay ? '#b91c1c' : '#854d0e';
-            $iconBg    = $isLastDay ? '#fef2f2' : '#fefce8';
-            $iconColor = $isLastDay ? '#dc2626' : '#ca8a04';
-        @endphp
-
-        <div class="urgency-bar" style="background: {{ $pillBg }}; border-bottom: 1px solid {{ $isLastDay ? '#fecaca' : '#fef08a' }};">
-            <span class="urgency-pill" style="background: {{ $pillBg }}; color: {{ $pillColor }};">
-                ⏰ {{ $isLastDay ? 'Expires Tomorrow!' : "Expires in {$daysLeft} days" }}
-            </span>
-        </div>
-
-        {{-- Hero --}}
-        <div class="hero">
-            <div class="icon" style="background: {{ $iconBg }};">
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
-                    <circle cx="12" cy="12" r="10" stroke="{{ $iconColor }}" stroke-width="2"/>
-                    <polyline points="12 6 12 12 16 14" stroke="{{ $iconColor }}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-            </div>
-            <h1>Your Quotation {{ $isLastDay ? 'Expires Tomorrow' : "Expires in {$daysLeft} Days" }}</h1>
-            <p>
-                Hi {{ $customerName }}, this is a reminder that your quotation
-                <strong style="color: #18181b;">{{ $quote->reference }}</strong> is about to expire.
-                Please review and respond before it's too late.
-            </p>
-        </div>
-
-        {{-- Quote details --}}
-        <div class="section">
-            <p class="section-title">Quotation Details</p>
-            <div class="detail-row">
-                <span class="detail-label">Reference</span>
-                <span class="detail-value">{{ $quote->reference }}</span>
-            </div>
-            <div class="detail-row">
-                <span class="detail-label">Total</span>
-                <span class="detail-value">{{ format_currency($quote->total) }}</span>
-            </div>
-            <div class="detail-row">
-                <span class="detail-label">Items</span>
-                <span class="detail-value">{{ $quote->items->count() }} item(s)</span>
-            </div>
-            <div class="detail-row">
-                <span class="detail-label">Expires On</span>
-                <span class="detail-value" style="color: {{ $pillColor }};">
-                    {{ $quote->expires_at?->format('d M Y') }}
-                </span>
-            </div>
-        </div>
-
-        {{-- CTA --}}
-        <div class="cta">
-            <a href="{{ $portalUrl }}" class="btn">View &amp; Respond to Quotation</a>
-            <p style="margin-top: 14px; font-size: 12px; color: #a1a1aa;">
-                Once expired, you'll need to submit a new quote request.<br />
-                Questions? <a href="mailto:info@sheffieldafrica.com" style="color: #71717a;">Contact our sales team</a>
-                or call <strong style="color: #3f3f46;">+254 713 777 111</strong>.
-            </p>
-        </div>
-
-        {{-- Footer --}}
-        <div class="footer">
-            <p>
-                {{ config('app.name') }} · Sheffield Africa Steel Systems<br />
-                Off Old Mombasa Road, Nairobi, Kenya<br /><br />
-                <span style="color: #d4d4d8;">You're receiving this reminder because you have an active quotation at {{ config('app.name') }}.</span>
-            </p>
-        </div>
-
+<body style="margin: 0; width: 100%; background-color: #f8fafc; padding: 0; -webkit-font-smoothing: antialiased; word-break: break-word;">
+  <div style="display: none;">
+    Order Confirmation email template
+    &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847; &#8199;&#65279;&#847;
+  </div>
+  <div role="article" aria-roledescription="email" aria-label lang="en">
+    <div class="sm-px-4" style="background-color: #f8fafc; font-family: Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif">
+      <table align="center" style="margin: 0 auto;" cellpadding="0" cellspacing="0" role="none">
+        <tr>
+          <td style="width: 552px; max-width: 100%;">
+            <div role="separator" style="line-height: 24px">&zwj;</div>
+            <table style="width: 100%;" cellpadding="0" cellspacing="0" role="none">
+              <tr>
+                <td class="sm-p-6" style="border-radius: 6px; background-color: #fffffe; padding: 24px 36px; border: 1px solid #c02434">
+                  <div style="display: flex; align-items: center; justify-content: center;">
+                    <a href="https://demo.ecommerce.sheffieldafrica.com">
+                      <img src="{{ asset('images/mails/logo.png') }}" width="120" height="auto" alt="Sheffield logo" style="max-width: 100%; vertical-align: middle;">
+                    </a>
+                  </div>
+                  <div role="separator" style="height: 1px; line-height: 1px; margin-top: 24px; margin-bottom: 24px; background-color: #c02434;">&zwj;</div>
+                  <p style="margin: 0 0 12px; font-size: 16px; line-height: 24px; color: #475569;">Hi {{$customerName}},</p>
+                  <p style="margin: 0 0 24px; font-size: 16px; line-height: 24px; color: #475569;">
+                    Just a quick reminder that your quotation <span style="font-weight: 600; color: #1e293b;">{{$quote->reference}}</span>
+                    is expiring in <span style="font-weight: 700; color: #c93237;">{{$daysRemaining}}
+                    days</span>.
+                  </p>
+                  <table cellpadding="0" cellspacing="0" role="presentation" style="margin-bottom: 32px; width: 100%;">
+                    <tr>
+                      <td style="width: 33.333333%; text-align: center; vertical-align: top;">
+                        <table cellpadding="0" cellspacing="0" role="presentation" style="width: 100%;">
+                          <tr>
+                            <td style="width: 50%; vertical-align: middle;">
+                              <div style="height: 4px; width: 100%; background-color: transparent;"></div>
+                            </td>
+                            <td style="width: 40px; vertical-align: middle;">
+                              <div style="margin-left: auto; margin-right: auto; display: flex; height: 40px; width: 40px; align-items: center; justify-content: center; border-radius: 9999px; border-width: 3px; border-color: #16a34a; background-color: #f0fdf4; padding: 8px; text-align: center; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);">
+                                <span style="font-size: 18px; font-weight: 700; color: #16a34a;">&#10003;</span>
+                              </div>
+                            </td>
+                            <td style="width: 50%; vertical-align: middle;">
+                              <div style="height: 4px; width: 100%; background-color: #16a34a;"></div>
+                            </td>
+                          </tr>
+                        </table>
+                        <p class="sm-text-xs" style="margin: 12px 0 0; white-space: nowrap; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #16a34a">
+                          Requested
+                        </p>
+                      </td>
+                      <td style="width: 33.333333%; text-align: center; vertical-align: top;">
+                        <table cellpadding="0" cellspacing="0" role="presentation" style="width: 100%;">
+                          <tr>
+                            <td style="width: 50%; vertical-align: middle;">
+                              <div style="height: 4px; width: 100%; background-color: #16a34a;"></div>
+                            </td>
+                            <td style="width: 40px; vertical-align: middle;">
+                              <div style="margin-left: auto; margin-right: auto; display: flex; height: 40px; width: 40px; align-items: center; justify-content: center; border-radius: 9999px; border-width: 3px; border-color: #16a34a; background-color: #f0fdf4; padding: 8px; text-align: center; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);">
+                                <span style="font-size: 18px; font-weight: 700; color: #16a34a;">&#10003;</span>
+                              </div>
+                            </td>
+                            <td style="width: 50%; vertical-align: middle;">
+                              <div style="height: 4px; width: 100%; background-color: #e2e8f0;"></div>
+                            </td>
+                          </tr>
+                        </table>
+                        <p class="sm-text-xs" style="margin: 12px 0 0; white-space: nowrap; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #16a34a">
+                          Quoted
+                        </p>
+                      </td>
+                      <td style="width: 33.333333%; text-align: center; vertical-align: top;">
+                        <table cellpadding="0" cellspacing="0" role="presentation" style="width: 100%;">
+                          <tr>
+                            <td style="width: 50%; vertical-align: middle;">
+                              <div style="height: 4px; width: 100%; background-color: #e2e8f0;"></div>
+                            </td>
+                            <td style="width: 40px; vertical-align: middle;">
+                              <div style="margin-left: auto; margin-right: auto; display: flex; height: 40px; width: 40px; align-items: center; justify-content: center; border-radius: 9999px; background-color: #f1f5f9; padding: 8px; text-align: center; border: 1px solid #e2e8f0;">
+                                <svg version="1.1" x="0px" y="0px" viewBox="0 0 100 125" fill="currentColor" style="height: 16px; width: 16px;">
+                                  <path d="M41.3,78.9c0.1,0.5,0.5,0.8,1.1,0.8H45c0-0.1,0-0.3,0-0.5c0-3.2,2.5-5.7,5.7-5.7c3.2,0,5.7,2.5,5.7,5.7c0,0.2,0,0.3,0,0.5  h18c0-0.1,0-0.3,0-0.5c0-3.2,2.5-5.7,5.7-5.7c3.2,0,5.7,2.5,5.7,5.7c0,0.2,0,0.3,0,0.5h3.2c0.9,0,1.7-0.8,1.5-1.7l-0.6-4.2  c-0.1-0.3-0.1-0.6-0.3-0.9c-1.1-1.9-2.8-3.4-4.9-4.3l-5.3-2.3c-0.2-0.1-0.5-0.2-0.7-0.4l-7.3-5.2c-0.8-0.6-1.9-0.9-2.9-0.9h-17  c-0.1,0-0.1,0-0.1,0h-5.4c-0.6,0-1.1,0.6-0.8,1.1l0.5,1.5c-0.6,0.6-1.1,1.5-1.3,2.3l-2.9,7.6C40.9,74.2,40.9,76.5,41.3,78.9z   M68.1,61.7c0.2,0,0.5,0.1,0.7,0.2l6.3,4.6c0.9,0.7,0.4,2.2-0.7,2.2l-11.5-0.4l-1.2-6.6H68.1z M64.7,70.2l2.9,4.5l-3.2-0.5L67,79  l-7.8-6.5l3.8,0.1l-2.1-2.7L64.7,70.2z M49.4,66.6l1.7-4.2c0.2-0.5,0.6-0.7,1.1-0.7h7.2l0.5,6.5l-9.4-0.3  C49.8,67.9,49.1,67.3,49.4,66.6z"></path>
+                                  <path d="M92.6,83.6H81.1c1.9-0.5,3.3-2.3,3.3-4.3c0-2.5-2-4.5-4.5-4.5s-4.5,2-4.5,4.5c0,2.1,1.4,3.8,3.3,4.3H52  c1.9-0.5,3.3-2.3,3.3-4.3c0-2.5-2-4.5-4.5-4.5s-4.5,2-4.5,4.5c0,2.1,1.4,3.8,3.3,4.3H8.1v3h84.5V83.6z"></path>
+                                  <polygon points="66.2,26.4 66.2,13.4 35.4,13.4 35.4,47.8 6.6,47.8 6.6,77.3 9.6,77.3 9.6,50.8 35.4,50.8 35.4,76.1 38.4,76.1   38.4,16.4 63.2,16.4 63.2,56.3 66.2,56.3 66.2,29.4 90.4,29.3 90.4,65.7 93.4,65.7 93.4,26.3 "></polygon>
+                                </svg>
+                              </div>
+                            </td>
+                            <td style="width: 50%; vertical-align: middle;">
+                              <div style="height: 4px; width: 100%; background-color: transparent;"></div>
+                            </td>
+                          </tr>
+                        </table>
+                        <p class="sm-text-xs" style="margin: 12px 0 0; white-space: nowrap; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: #94a3b8">
+                          Accepted
+                        </p>
+                      </td>
+                    </tr>
+                  </table>
+                  <table cellpadding="0" cellspacing="0" role="presentation" style="margin-bottom: 32px; width: 100%;">
+                    <thead style="background-color: #d02e3a;">
+                      <tr>
+                        <th style="padding: 8px 12px; text-align: left; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #fffffe;">
+                          Item</th>
+                        <th style="padding: 8px 12px; text-align: center; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #fffffe;">
+                          Qty</th>
+                        <th style="padding: 8px 12px; text-align: right; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #fffffe;">
+                          Price</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td style="border-bottom-width: 1px; border-color: #f1f5f9; padding: 12px;">
+                          <div style="display: flex; align-items: center;">
+                            <div style="margin-right: 12px; height: 48px; width: 48px; border-radius: 6px; background-color: #f1f5f9;"> </div>
+                            <div>
+                              <p style="margin: 0; font-size: 14px; font-weight: 600; color: #1e293b;">Commercial
+                                Gas Range</p>
+                              <p style="margin: 0; font-size: 12px; color: #64748b;">6 Burners, 36-inch</p>
+                            </div>
+                          </div>
+                        </td>
+                        <td style="border-bottom-width: 1px; border-color: #f1f5f9; padding: 12px; text-align: center; font-size: 14px; color: #475569;">
+                          1</td>
+                        <td style="border-bottom-width: 1px; border-color: #f1f5f9; padding: 12px; text-align: right; font-size: 14px; font-weight: 600; color: #1e293b;">
+                          KES 145,000</td>
+                      </tr>
+                      <tr>
+                        <td style="border-bottom-width: 1px; border-color: #f1f5f9; padding: 12px;">
+                          <div style="display: flex; align-items: center;">
+                            <div style="margin-right: 12px; height: 48px; width: 48px; border-radius: 6px; background-color: #f1f5f9;"></div>
+                            <div>
+                              <p style="margin: 0; font-size: 14px; font-weight: 600; color: #1e293b;">Stainless
+                                Steel Prep Table</p>
+                              <p style="margin: 0; font-size: 12px; color: #64748b;">48 x 30 inches</p>
+                            </div>
+                          </div>
+                        </td>
+                        <td style="border-bottom-width: 1px; border-color: #f1f5f9; padding: 12px; text-align: center; font-size: 14px; color: #475569;">
+                          2</td>
+                        <td style="border-bottom-width: 1px; border-color: #f1f5f9; padding: 12px; text-align: right; font-size: 14px; font-weight: 600; color: #1e293b;">
+                          KES 44,000</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <table cellpadding="0" cellspacing="0" role="presentation" style="margin-bottom: 32px; width: 100%;">
+                    <tr>
+                      <td style="width: 50%; vertical-align: bottom;">
+                        <p style="margin: 0 0 4px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #c93237;">
+                          Valid Until</p>
+                        <p style="margin: 0; font-size: 14px; font-weight: 700; color: #c93237;">15 Nov 2026</p>
+                      </td>
+                      <td style="width: 50%;">
+                        <table cellpadding="0" cellspacing="0" role="presentation" style="width: 100%;">
+                          <tr>
+                            <td style="padding-top: 4px; padding-bottom: 4px; font-size: 14px; color: #475569;">Subtotal</td>
+                            <td style="padding-top: 4px; padding-bottom: 4px; text-align: right; font-size: 14px; font-weight: 600; color: #1e293b;">KES
+                              189,000</td>
+                          </tr>
+                          <tr>
+                            <td style="padding-top: 4px; padding-bottom: 4px; font-size: 14px; color: #475569;">Tax (16%)</td>
+                            <td style="padding-top: 4px; padding-bottom: 4px; text-align: right; font-size: 14px; font-weight: 600; color: #1e293b;">KES
+                              30,240</td>
+                          </tr>
+                          <tr>
+                            <td style="border-top-width: 1px; border-color: #e2e8f0; padding-top: 12px; font-size: 16px; font-weight: 700; color: #1e293b;">
+                              Total Quote Amount</td>
+                            <td style="border-top-width: 1px; border-color: #e2e8f0; padding-top: 12px; text-align: right; font-size: 16px; font-weight: 700; color: #c02434;">
+                              KES 221,740</td>
+                          </tr>
+                        </table>
+                      </td>
+                    </tr>
+                  </table>
+                  <p style="margin: 0; font-size: 16px; line-height: 24px; color: #475569;">
+                    Please review it as soon as possible. Feel free to reply to this email if you need
+                    any adjustments before the offer expires!
+                  </p>
+                  <div role="separator" style="line-height: 32px">&zwj;</div>
+                  <div>
+                    <a href="https://sheffieldafrica.com" style="display: inline-block; text-decoration: none; padding: 16px 24px; font-size: 16px; line-height: 1; border-radius: 4px; background-color: #c93237; text-align: center; color: #fffffe;" class="hover-bg-_a0272b">
+                      <!--[if mso]><i style="mso-font-width: 150%; mso-text-raise: 31px;" hidden>&emsp;</i><![endif]-->
+                      <span style="mso-text-raise: 16px">Review & Accept Quote NOW</span>
+                      <!--[if mso]><i hidden style="mso-font-width: 150%;">&emsp;&#8203;</i><![endif]-->
+                    </a>
+                  </div>
+                  <div role="separator" style="line-height: 24px">&zwj;</div>
+                  <p style="margin: 0; font-size: 16px; line-height: 24px; color: #475569;">
+                    Thank you for choosing Sheffield Africa!
+                    <br>
+                    <br>
+                    Best regards,
+                    <br>
+                    <span style="font-weight: 600; color: #1e293b;">Sheffield Africa Support Team</span>
+                  </p>
+                </td>
+              </tr>
+            </table>
+            <table style="width: 100%;" cellpadding="0" cellspacing="0" role="none">
+              <tr>
+                <td class="sm-px-6" style="padding: 24px 36px">
+                  <p style="margin: 0; font-size: 12px; color: #64748b;">
+                    &copy; 2026 Sheffieldafrica. All rights reserved.
+                  </p>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
     </div>
-</div>
+  </div>
 </body>
 </html>

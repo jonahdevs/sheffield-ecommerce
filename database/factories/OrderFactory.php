@@ -20,7 +20,7 @@ class OrderFactory extends Factory
         $status = $this->faker->randomElement(OrderStatus::cases());
         $createdAt = $this->faker->dateTimeBetween('-60 days', 'now');
         $county = $this->faker->randomElement(['Nairobi', 'Mombasa', 'Kisumu', 'Nakuru', 'Eldoret']);
-        
+
         return [
             'user_id' => User::where('is_staff', false)->inRandomOrder()->first()?->id ?? User::factory(),
             'quote_id' => null,
@@ -140,17 +140,18 @@ class OrderFactory extends Factory
     {
         return $this->afterCreating(function (Order $order) use ($count) {
             $itemCount = $count ?? $this->faker->numberBetween(1, 5);
-            $products = Product::active()->inRandomOrder()->take($itemCount)->get();
-            
+            $products = Product::active()->with('brand')->inRandomOrder()->take($itemCount)->get();
+
             $subtotal = 0;
-            
+
             foreach ($products as $product) {
                 $quantity = $this->faker->numberBetween(1, 5);
                 $unitPrice = $product->sale_price ?? $product->price;
+                $originalPrice = $product->price;
                 $unitPriceCents = $unitPrice * 100;
                 $lineTotal = $unitPriceCents * $quantity;
                 $subtotal += $lineTotal;
-                
+
                 OrderItem::create([
                     'order_id' => $order->id,
                     'product_id' => $product->id,
@@ -158,19 +159,26 @@ class OrderFactory extends Factory
                     'quantity' => $quantity,
                     'unit_price_cents' => (int) $unitPriceCents,
                     'unit_tax_cents' => 0,
-                    'discount_cents' => 0,
+                    'discount_cents' => (int) (($originalPrice - $unitPrice) * 100 * $quantity),
                     'total_cents' => (int) $lineTotal,
                     'product_snapshot' => [
+                        'id' => $product->id,
                         'name' => $product->name,
                         'sku' => $product->sku,
+                        'slug' => $product->slug,
                         'image_path' => $product->image_path,
+                        'price' => $originalPrice,
+                        'sale_price' => $product->sale_price,
+                        'final_price' => $unitPrice,
+                        'weight_kg' => $product->weight ?? 0.5,
                         'brand' => $product->brand?->name,
+                        'variant' => null,
                     ],
                 ]);
             }
-            
+
             $total = $subtotal - $order->discount_cents + $order->shipping_cents;
-            
+
             $order->update([
                 'subtotal_cents' => (int) $subtotal,
                 'total_cents' => (int) $total,

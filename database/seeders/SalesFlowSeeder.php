@@ -101,37 +101,60 @@ class SalesFlowSeeder extends Seeder
 
         // Pending orders (awaiting payment)
         for ($i = 0; $i < 5; $i++) {
-            $this->createOrder($customers->random(), $products, OrderStatus::PENDING, PaymentStatus::PENDING, rand(1, 4));
+            Order::factory()
+                ->pending()
+                ->withItems(rand(1, 4))
+                ->create();
         }
         $this->command->info('    ✓ 5 pending orders');
 
         // Confirmed orders (paid, awaiting processing)
         for ($i = 0; $i < 8; $i++) {
-            $this->createOrder($customers->random(), $products, OrderStatus::CONFIRMED, PaymentStatus::PAID, rand(1, 5), withDelivery: true);
+            Order::factory()
+                ->confirmed()
+                ->withItems(rand(1, 5))
+                ->withPayment()
+                ->create();
         }
         $this->command->info('    ✓ 8 confirmed orders');
 
         // Processing orders
         for ($i = 0; $i < 6; $i++) {
-            $this->createOrder($customers->random(), $products, OrderStatus::PROCESSING, PaymentStatus::PAID, rand(1, 4), withDelivery: true);
+            Order::factory()
+                ->processing()
+                ->withItems(rand(1, 4))
+                ->withPayment()
+                ->create();
         }
         $this->command->info('    ✓ 6 processing orders');
 
         // Shipped orders
         for ($i = 0; $i < 10; $i++) {
-            $this->createOrder($customers->random(), $products, OrderStatus::SHIPPED, PaymentStatus::PAID, rand(1, 5), withDelivery: true);
+            Order::factory()
+                ->shipped()
+                ->withItems(rand(1, 5))
+                ->withPayment()
+                ->create();
         }
         $this->command->info('    ✓ 10 shipped orders');
 
         // Delivered orders (spread over 60 days for charts)
         for ($i = 0; $i < 25; $i++) {
-            $this->createOrder($customers->random(), $products, OrderStatus::DELIVERED, PaymentStatus::PAID, rand(1, 6), withDelivery: true, daysAgo: rand(1, 60));
+            Order::factory()
+                ->delivered()
+                ->withItems(rand(1, 6))
+                ->withPayment()
+                ->recentDays(60)
+                ->create();
         }
         $this->command->info('    ✓ 25 delivered orders');
 
         // Cancelled orders
         for ($i = 0; $i < 4; $i++) {
-            $this->createOrder($customers->random(), $products, OrderStatus::CANCELLED, PaymentStatus::REFUNDED, rand(1, 3));
+            Order::factory()
+                ->cancelled()
+                ->withItems(rand(1, 3))
+                ->create();
         }
         $this->command->info('    ✓ 4 cancelled orders');
     }
@@ -144,7 +167,7 @@ class SalesFlowSeeder extends Seeder
         for ($i = 0; $i < 15; $i++) {
             $quote = $this->createQuote($customers->random(), $products, QuoteStatus::ACCEPTED, rand(2, 5));
             $order = $this->convertQuoteToOrder($quote);
-            
+
             // Vary the order status
             $statuses = [
                 OrderStatus::CONFIRMED,
@@ -155,9 +178,9 @@ class SalesFlowSeeder extends Seeder
                 OrderStatus::DELIVERED,
             ];
             $status = fake()->randomElement($statuses);
-            
+
             $order->update(['status' => $status->value]);
-            
+
             if (in_array($status, [OrderStatus::CONFIRMED, OrderStatus::PROCESSING, OrderStatus::SHIPPED, OrderStatus::DELIVERED])) {
                 $this->createDeliveryOrder($order, $status);
             }
@@ -230,7 +253,7 @@ class SalesFlowSeeder extends Seeder
         if ($status !== QuoteStatus::PENDING && $status !== QuoteStatus::CANCELLED) {
             $shipping = fake()->numberBetween(50000, 200000);
             $quotedAt = fake()->dateTimeBetween($createdAt, 'now');
-            
+
             if ($expiringSoon) {
                 $expiresAt = now()->addHours(fake()->numberBetween(6, 36));
             } else {
@@ -339,101 +362,6 @@ class SalesFlowSeeder extends Seeder
                 'created_at' => fake()->dateTimeBetween($createdAt, 'now'),
             ]);
         }
-    }
-
-    private function createOrder(User $customer, $products, OrderStatus $status, PaymentStatus $paymentStatus, int $itemCount, bool $withDelivery = false, int $daysAgo = null): Order
-    {
-        $createdAt = $daysAgo ? now()->subDays($daysAgo) : fake()->dateTimeBetween('-30 days', 'now');
-        $county = fake()->randomElement(['Nairobi', 'Mombasa', 'Kisumu', 'Nakuru', 'Eldoret']);
-
-        $order = Order::create([
-            'user_id' => $customer->id,
-            'reference' => Order::generateReference(),
-            'status' => $status->value,
-            'payment_status' => $paymentStatus->value,
-            'currency' => 'KES',
-            'subtotal_cents' => 0,
-            'discount_cents' => 0,
-            'shipping_cents' => fake()->numberBetween(50000, 200000),
-            'tax_cents' => 0,
-            'total_cents' => 0,
-            'shipping_address' => [
-                'full_name' => $customer->name,
-                'phone_number' => $customer->phone_number ?? fake()->phoneNumber(),
-                'address' => fake()->streetAddress(),
-                'county' => $county,
-                'area' => fake()->streetName(),
-            ],
-            'billing_address' => [
-                'full_name' => $customer->name,
-                'phone_number' => $customer->phone_number ?? fake()->phoneNumber(),
-                'address' => fake()->streetAddress(),
-                'county' => $county,
-                'area' => fake()->streetName(),
-            ],
-            'shipping_snapshot' => [
-                'method' => 'Standard Delivery',
-                'zone' => $county,
-                'estimated_days' => fake()->numberBetween(2, 5),
-            ],
-            'preferred_county' => $county,
-            'created_at' => $createdAt,
-            'updated_at' => $createdAt,
-        ]);
-
-        // Add items
-        $selectedProducts = $products->random(min($itemCount, $products->count()));
-        $subtotal = 0;
-
-        foreach ($selectedProducts as $product) {
-            $quantity = fake()->numberBetween(1, 5);
-            $unitPrice = ($product->sale_price ?? $product->price) * 100;
-            $lineTotal = $unitPrice * $quantity;
-            $subtotal += $lineTotal;
-
-            OrderItem::create([
-                'order_id' => $order->id,
-                'product_id' => $product->id,
-                'quantity' => $quantity,
-                'unit_price_cents' => (int) $unitPrice,
-                'unit_tax_cents' => 0,
-                'discount_cents' => 0,
-                'total_cents' => (int) $lineTotal,
-                'product_snapshot' => [
-                    'name' => $product->name,
-                    'sku' => $product->sku,
-                    'image_path' => $product->image_path,
-                    'brand' => $product->brand?->name,
-                ],
-            ]);
-        }
-
-        $total = $subtotal + $order->shipping_cents;
-        $order->update([
-            'subtotal_cents' => (int) $subtotal,
-            'total_cents' => (int) $total,
-        ]);
-
-        // Create payment if paid
-        if ($paymentStatus === PaymentStatus::PAID) {
-            Payment::create([
-                'order_id' => $order->id,
-                'gateway' => fake()->randomElement(['mpesa', 'stripe', 'bank_transfer']),
-                'transaction_id' => strtoupper(fake()->bothify('TXN-########')),
-                'amount_cents' => $order->total_cents,
-                'currency' => 'KES',
-                'status' => PaymentStatus::PAID,
-                'paid_at' => fake()->dateTimeBetween($createdAt, 'now'),
-                'meta' => [],
-            ]);
-        }
-
-        // Create delivery order if needed
-        if ($withDelivery) {
-            $this->createDeliveryOrder($order, $status);
-        }
-
-        return $order;
     }
 
     private function convertQuoteToOrder(Quote $quote): Order
@@ -549,7 +477,7 @@ class SalesFlowSeeder extends Seeder
         $this->command->info('');
         $this->command->info('✅ Sales flow seeding complete!');
         $this->command->info('');
-        
+
         $this->command->info('📊 Summary:');
         $this->command->info('   Quotations: ' . Quote::count());
         $this->command->info('     - Pending: ' . Quote::where('status', QuoteStatus::PENDING)->count());

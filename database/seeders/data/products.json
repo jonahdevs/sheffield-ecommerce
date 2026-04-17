@@ -399,9 +399,10 @@
         "category": "Potato Processors",
         "price": 285615.4,
         "quantity": 2,
-        "image": null,
+        "image": "products/1775801507__gallery_Capture.png",
         "short_description": "SYSTEMATIC JSPCC-08 commercial potato chipper on stand for french fry preparation. Heavy-duty construction for restaurants and commercial kitchens in Kenya.",
-        "description": null
+        "description": "<p>Potato peeling machine - Capacity: 20 kg. </p><p>1.1kW 900 D / Dk-220 V / motor power.</p><p>500x500 mm stainless steel peeler.</p><p>Digital control panel with time adjustment. </p><p>Long lasting and strong sandpaper. </p><p>Potato peeling time for 1-2 min. </p><p>Stainless steel body.</p>",
+        "technical_specification": "<p><span style=\"color: rgb(51, 51, 51);\">&nbsp;Motor Power: 1.1kw 900 rpm-220 V / 380 V</span></p><p><span style=\"color: rgb(51, 51, 51);\">– Stainless steel housing dimension:500×500 mm</span></p><p><span style=\"color: rgb(51, 51, 51);\">– Equipped with timer and control panel.</span></p><p><span style=\"color: rgb(51, 51, 51);\">– Removable rotating plate and housing covered with durable abrasive.</span></p><p><span style=\"color: rgb(51, 51, 51);\">– Peeling time: 1-2 minute.</span></p><p><span style=\"color: rgb(51, 51, 51);\">– Stainless steel body.</span></p><p><span style=\"color: rgb(51, 51, 51);\">-Dimensions: 552x800x1168mm</span></p>"
     },
     {
         "name": "POTATO PEELER 25KG SKYMSEN",
@@ -439,9 +440,10 @@
         "category": "Potato Processors",
         "price": 204250,
         "quantity": 2,
-        "image": null,
+        "image": "products/1775801882__gallery_FOTO1552.jfif",
         "short_description": "SYSTEMATIC JSPCC-08 commercial potato chipper on stand for french fry preparation. Heavy-duty construction for restaurants and commercial kitchens in Kenya.",
-        "description": null
+        "description": "<p>The Skymsen DB-10 Potato Peeler is engineered for high-efficiency potato preparation in professional kitchens, offering speed, safety, and durability. Constructed entirely from stainless steel, this robust machine is built to last and ensures optimal hygiene. It can peel up to 10 kg of potatoes in approximately 2 minutes, drastically optimizing your kitchen's workflow. A key feature is its innovative door for fast and safe removal of peeled products, streamlining the entire process from start to finish.</p><p><br></p>",
+        "technical_specification": "<p>Voltage - 220v/60hz/1; </p><p>Power - 0.5hp; </p><p>Consumption - 0.37kw; </p><p>Approximage out put - 200kg/hr; </p><p>Capacity per cycle - 10kg;</p>"
     },
     {
         "name": "MEAT SLICER Ø 300MM",
@@ -709,9 +711,10 @@
         "category": "Meat Processors",
         "price": 14904,
         "quantity": 18,
-        "image": null,
+        "image": "products/1775802200_Blue.png",
         "short_description": "Color-coded chopping board for food safety and hygiene. Professional kitchen equipment for restaurants and commercial kitchens in Kenya.",
-        "description": null
+        "description": "<h3><span style=\"color: rgb(34, 34, 34);\">Professional color coded cutting boards helps you segregate the different&nbsp;food groups to avoid cross contamination.</span></h3><h3><span style=\"color: rgb(34, 34, 34);\">Made of polythylene plastic, this ensures the board's resistance to bending,&nbsp;chipping and cracking, the non-absorbent and non-porous surface will not&nbsp;absorb liquids, odors or harbor bacteria, they are stain resistant, easy to&nbsp;clean and are commercial dishwasher safe, they are made to last in the&nbsp;most demanding commercial environments, they are not harsh on your&nbsp;knives and hence will not dull them, they comply with food preparation&nbsp;and sanitary standard.</span></h3><p><br></p>",
+        "technical_specification": "<h3>Material: Polyethylene</h3><h3>Dimensions:500x350mm</h3><h3>Thickness: 20mm</h3><p><br></p>"
     },
     {
         "name": "CHOPPING BOARD WHITE",
@@ -721,9 +724,10 @@
         "category": "Meat Processors",
         "price": 14904,
         "quantity": 20,
-        "image": null,
+        "image": "products/1775803425_White.png",
         "short_description": "Professional white chopping board for bakery and dairy preparation. Food-safe equipment for commercial kitchens in Kenya.",
-        "description": null
+        "description": "<h3><span style=\"color: rgb(34, 34, 34);\">Professional color coded cutting boards helps you segregate the different&nbsp;food groups to avoid cross contamination.</span></h3><h3><span style=\"color: rgb(34, 34, 34);\">Made of polythylene plastic, this ensures the board's resistance to bending,&nbsp;chipping and cracking, the non-absorbent and non-porous surface will not&nbsp;absorb liquids, odors or harbor bacteria, they are stain resistant, easy to&nbsp;clean and are commercial dishwasher safe, they are made to last in the&nbsp;most demanding commercial environments, they are not harsh on your&nbsp;knives and hence will not dull them, they comply with food preparation&nbsp;and sanitary standard.</span></h3><p><br></p>",
+        "technical_specification": "<h3>Material: Polyethylene</h3><h3>Dimensions:500x350mm</h3><h3>Thickness: 20mm</h3><p><br></p>"
     },
     {
         "name": "CHOPPING BOARD YELLOW",
@@ -733,7 +737,7 @@
         "category": "Meat Processors",
         "price": 14904,
         "quantity": 20,
-        "image": "products/1743594449__gallery_download.json",
+        "image": "products/1743594449__gallery_download.jpg",
         "short_description": "Color-coded yellow chopping board for poultry and raw meat preparation. Professional kitchen equipment for food safety in Kenya.",
         "description": "<h3><span style=\"color: rgb(34, 34, 34);\">Professional color coded cutting boards helps you segregate the different&nbsp;food groups to avoid cross contamination.</span></h3><h3><span style=\"color: rgb(34, 34, 34);\">Made of polythylene plastic, this ensures the board's resistance to bending,&nbsp;chipping and cracking, the non-absorbent and non-porous surface will not&nbsp;absorb liquids, odors or harbor bacteria, they are stain resistant, easy to&nbsp;clean and are commercial dishwasher safe, they are made to last in the&nbsp;most demanding commercial environments, they are not harsh on your&nbsp;knives and hence will not dull them, they comply with food preparation&nbsp;and sanitary standard.</span></h3>",
         "technical_specification": "<h3>Material: Polyethylene</h3><h3>Dimensions:500x350mm</h3><h3>Thickness: 20mm</h3><p><br></p>"
@@ -746,9 +750,10 @@
         "category": "Meat Processors",
         "price": 14904,
         "quantity": 18,
-        "image": null,
+        "image": "products/1775803807_Green.png",
         "short_description": "Green color-coded chopping board for vegetables and salads. Professional food safety equipment for commercial kitchens in Kenya.",
-        "description": null
+        "description": "<h3><span style=\"color: rgb(34, 34, 34);\">Professional color coded cutting boards helps you segregate the different&nbsp;food groups to avoid cross contamination.</span></h3><h3><span style=\"color: rgb(34, 34, 34);\">Made of polythylene plastic, this ensures the board's resistance to bending,&nbsp;chipping and cracking, the non-absorbent and non-porous surface will not&nbsp;absorb liquids, odors or harbor bacteria, they are stain resistant, easy to&nbsp;clean and are commercial dishwasher safe, they are made to last in the&nbsp;most demanding commercial environments, they are not harsh on your&nbsp;knives and hence will not dull them, they comply with food preparation&nbsp;and sanitary standard.</span></h3><p><br></p>",
+        "technical_specification": "<h3>Material: Polyethylene</h3><h3>Dimensions:500x350mm</h3><h3>Thickness: 20mm</h3><p><br></p>"
     },
     {
         "name": "CHOPPING BLOCK 600X600X100",
@@ -758,9 +763,13 @@
         "category": "Meat Processors",
         "price": 40500,
         "quantity": 2,
-        "image": null,
+        "image": "products/1775804804_51aviTQqgvL._SL1500_-removebg-preview.png",
         "short_description": "Heavy-duty wooden chopping block for butchery and meat preparation. Professional equipment for commercial kitchens in Kenya.",
-        "description": null
+        "description": "<p>High Density, Extra thick Chopping Board.</p><h3><span style=\"color: rgb(34, 34, 34);\">Made of polythylene plastic, this ensures the board's resistance to bending,&nbsp;chipping and cracking, the non-absorbent and non-porous surface will not&nbsp;absorb liquids, odors or harbor bacteria, they are stain resistant, easy to&nbsp;clean and are commercial dishwasher safe, they are made to last in the&nbsp;most demanding commercial environments, they are not harsh on your&nbsp;knives and hence will not dull them, they comply with food preparation&nbsp;and sanitary standard.</span></h3><p><br></p>",
+        "technical_specification": "<p>600x600x100</p><p><br></p>",
+        "length": 600,
+        "width": 600,
+        "height": 100
     },
     {
         "name": "CHOPPING BOARD RED",
@@ -770,9 +779,10 @@
         "category": "Meat Processors",
         "price": 14904,
         "quantity": 2,
-        "image": null,
+        "image": "products/1775804128_Red.png",
         "short_description": "Red color-coded chopping board for raw meat preparation. Professional food safety equipment for commercial kitchens in Kenya.",
-        "description": null
+        "description": "<h3><span style=\"color: rgb(34, 34, 34);\">Professional color coded cutting boards helps you segregate the different&nbsp;food groups to avoid cross contamination.</span></h3><h3><span style=\"color: rgb(34, 34, 34);\">Made of polythylene plastic, this ensures the board's resistance to bending,&nbsp;chipping and cracking, the non-absorbent and non-porous surface will not&nbsp;absorb liquids, odors or harbor bacteria, they are stain resistant, easy to&nbsp;clean and are commercial dishwasher safe, they are made to last in the&nbsp;most demanding commercial environments, they are not harsh on your&nbsp;knives and hence will not dull them, they comply with food preparation&nbsp;and sanitary standard.</span></h3><p><br></p>",
+        "technical_specification": "<h3>Material: Polyethylene</h3><h3>Dimensions:500x350mm</h3><h3>Thickness: 20mm</h3><p><br></p>"
     },
     {
         "name": "MEAT DISPLAY COUNTER 1500",
@@ -1329,9 +1339,10 @@
         "category": "Juice Processors",
         "price": 100750,
         "quantity": 6,
-        "image": null,
+        "image": "products/1775805421__gallery_images.jfif",
         "short_description": "High-performance HK-Redline juice extractor. Professional commercial equipment for diverse juice extraction in Kenya's hospitality sector.",
-        "description": null
+        "description": "<p>Fresh fruits and vegetables of all kinds can be easily processed, including watermelon, cantaloupe, apple, pear, orange, pomelo, peach, almond, pineapple, grape, carrot, celery, and more.</p><p>Designed for convenience and efficiency, this compact machine is simple to operate throughout the entire process. It delivers juice quickly while effectively separating juice from pulp. The pulp is automatically expelled, making handling and cleaning effortless.</p><p>With a high juice extraction rate of up to 75%, it ensures maximum yield from your ingredients. Enjoy fresh, natural juice instantly—providing a refreshing and healthy way to stay energized.</p>",
+        "technical_specification": "<p><span style=\"color: rgb(34, 34, 34);\">Product capacity:&nbsp;&nbsp;&nbsp;&nbsp;80-100kg/hr</span></p><p><span style=\"color: rgb(34, 34, 34);\">Frequency:&nbsp;&nbsp;&nbsp;&nbsp;50/60Hz</span></p><p><span style=\"color: rgb(34, 34, 34);\">Motor Power:&nbsp;&nbsp;&nbsp;&nbsp;370W</span></p><p><span style=\"color: rgb(34, 34, 34);\">Voltage:&nbsp;&nbsp;&nbsp;&nbsp;110/220v</span></p><p><span style=\"color: rgb(34, 34, 34);\">Speed:&nbsp;&nbsp;&nbsp;&nbsp;2800r/min</span></p><p><span style=\"color: rgb(34, 34, 34);\">N.W./G.W.:&nbsp;&nbsp;&nbsp;&nbsp;13/14KGS</span></p><p><span style=\"color: rgb(34, 34, 34);\">Product Size:&nbsp;&nbsp;&nbsp;&nbsp;34x20x36cm</span></p><p><span style=\"color: rgb(34, 34, 34);\">Single Package:&nbsp;&nbsp;&nbsp;&nbsp;427x290x435mm</span></p>"
     },
     {
         "name": "SUGARCANE JUICING MACHINE SYSTEMATIC",
@@ -1497,9 +1508,10 @@
         "category": "Refrigeration",
         "price": 433750,
         "quantity": 3,
-        "image": null,
+        "image": "products/1775806455__gallery_1686497004_9 GN1410TN.jpg",
         "short_description": "Combination chiller and freezer unit by Sheffield Blueline. Dual-temperature commercial refrigeration for versatile food storage in Kenya.",
-        "description": null
+        "description": "<p>2 door solid Dual fridge &amp; Freezer</p><p>Features - 4 pcs castors - 8 shelves </p><p>Dixell thermostat</p><p> Stainless steel material </p><p>Specifications  Volume (L) fridge: 537/ freezer 537. </p><p>Net Weight (kg) 195. </p><p>Gross Weight (kg) 210.</p><p>Temperature Range fridge: +2?+8 ? freezer: -18?-22 ?.</p><p> - Climate Class 4.</p><p> - Refrigerant R134a/R404a. </p><p>- Power Source (V/Hz) 220-240V 50Hz</p>",
+        "technical_specification": "<p>2 door solid Dual fridge &amp; Freezer</p><p>Features - 4 pcs castors - 8 shelves </p><p>Dixell thermostat</p><p> Stainless steel material </p><p>Specifications  Volume (L) fridge: 537/ freezer 537. </p><p>Net Weight (kg) 195. </p><p>Gross Weight (kg) 210.</p><p>Temperature Range fridge: +2?+8 ? freezer: -18?-22 ?.</p><p> - Climate Class 4.</p><p> - Refrigerant R134a/R404a. </p><p>- Power Source (V/Hz) 220-240V 50Hz</p><p>1340x810x2010mm</p>"
     },
     {
         "sku": "IMG/REF/00043",
@@ -1857,9 +1869,13 @@
         "category": "Refrigeration",
         "price": 384250,
         "quantity": 3,
-        "image": null,
+        "image": "products/1775809103__gallery_Capture.png",
         "short_description": "Combination drawer and door refrigerated counter by Sheffield Blueline. Versatile chef base for professional kitchens in Kenya.",
-        "description": null
+        "description": "<p>Stainless Steel exterior and interior. </p><p>Digital Thermostat. Foaming Agent Cyclopentane. </p><p>Digital thermostat - Dixell. Removable Gasket. </p><p>Automatic compressor cycle defrost.</p><p>Door with self closing (Not reversable). </p><p>Adjustable shelves 600x400mm : 2 Pcs (N.1 for each door). </p><p>N.4&nbsp;S/S Adjustable feet&nbsp;- (Lockable castor as Optional). </p><p>The items can be supplied either with adjustable feet or lockable castor.</p><p>Bevel/Curved edge for easy cleaning.</p><p>Technical specification.Inner Depth-580 mm. Inner Height-589 mm. Inner Width-1230 mm. </p><p>Temperature Range-2 ~ +8°C.</p><p>Power(V/Hz) 230V/50H. </p><p>Volume(L)-465 L. </p><p>Noise Level-dB(A). </p><p>Consumption kWh/E24h. </p><p>Compressor Famous Embraco/ZEL brand. Refrigerant-R290.</p>",
+        "technical_specification": "<p>1340x810x2000mm</p>",
+        "length": 1340,
+        "width": 810,
+        "height": 2000
     },
     {
         "sku": "IMG/REF/00168",
@@ -1869,9 +1885,10 @@
         "category": "Refrigeration",
         "price": 253750,
         "quantity": 6,
-        "image": null,
+        "image": "products/1776158834__gallery_Capture 1.png",
         "short_description": "Three-door saladette refrigerated prep table by Sheffield Blueline. Professional sandwich and salad prep station for Kenya's food service industry.",
-        "description": null
+        "description": "<p>GN1/1 Refrigerated saladette. </p><p>Stainless Steel exterior and interior. </p><p>Automatic compressor cycle defrost.</p><p>Foaming Agent Cyclopentane.</p><p>Digital Thermostat. </p><p>Easy removable condenser filter. </p><p>Separated plastic water tray. </p><p>Front panel tilted holes for better air circulation. </p><p>Adjustable shelves GN1/1: 3 Pcs. </p><p>Removable Gasket. </p><p>Engine room lock fitted as standard. </p><p>N.4 Adjustable feet. </p><p>Bevel/Curved edge for easy cleaning. </p><p>Inner Depth-595 mm. </p><p>Inner Height-500 mm. </p><p>Inner Width-1295 mm. </p><p>Temperature Range+2 ~ +8°C. </p><p>Power(V/Hz)-230V/50H. </p><p>Volume(L)-400 L. </p><p>Noise Level- dB(A). </p><p>Rated current(A)-1.0A. </p><p>Net Weight-107 Kg. </p><p>Compressor-Famous Embraco/ZEL brand. </p><p>Refrigerant-R290.</p>",
+        "technical_specification": "<p>GN1/1 Refrigerated saladette. </p><p>Stainless Steel exterior and interior. </p><p>Automatic compressor cycle defrost.</p><p>Foaming Agent Cyclopentane.</p><p>Digital Thermostat. </p><p>Easy removable condenser filter. </p><p>Separated plastic water tray. </p><p>Front panel tilted holes for better air circulation. </p><p>Adjustable shelves GN1/1: 3 Pcs. </p><p>Removable Gasket. </p><p>Engine room lock fitted as standard. </p><p>N.4 Adjustable feet. </p><p>Bevel/Curved edge for easy cleaning. </p><p>Inner Depth-595 mm. </p><p>Inner Height-500 mm. </p><p>Inner Width-1295 mm. </p><p>Temperature Range+2 ~ +8°C. </p><p>Power(V/Hz)-230V/50H. </p><p>Volume(L)-400 L. </p><p>Noise Level- dB(A). </p><p>Rated current(A)-1.0A. </p><p>Net Weight-107 Kg. </p><p>Compressor-Famous Embraco/ZEL brand. </p><p>Refrigerant-R290.</p>"
     },
     {
         "sku": "IMG/REF/00177",
@@ -1913,9 +1930,13 @@
         "category": "Refrigeration",
         "price": 375250,
         "quantity": 1,
-        "image": null,
+        "image": "products/1776171200__gallery_Capture.png",
         "short_description": "Large combination refrigerated counter by Sheffield Blueline. Maximum versatility chef base with doors and drawers for Kenyan kitchens.",
-        "description": null
+        "description": "<h3><strong>Refrigerated Counter Chiller – 2 Doors &amp; 4 Drawers (2230 × 700 mm)</strong></h3><p>A high-performance refrigerated counter chiller designed for efficiency, durability, and convenience in commercial kitchens.</p><p><strong>Key Features:</strong></p><ul><li><strong>Robust Stainless Steel Construction</strong> – Ensures durability, hygiene, and long-lasting performance.</li><li><strong>Ventilated Cooling System</strong> – Provides uniform temperature distribution for optimal food preservation.</li><li><strong>High-Density Insulation</strong> – Enhances energy efficiency and maintains consistent cooling.</li><li><strong>Smart Automatic Defrosting</strong> – Reduces maintenance and ensures uninterrupted operation.</li><li><strong>Hygienic Interior Design</strong> – Rounded internal corners for easy cleaning and improved sanitation.</li><li><strong>Self-Closing Doors</strong> – Equipped with magnetic gaskets for secure sealing and energy saving.</li></ul><p><br></p>",
+        "technical_specification": "<p><strong>Configuration:</strong> 2 Doors &amp; 4 Drawers</p><p><strong>Dimensions:</strong> 2230 × 700 x 850 mm</p><p><strong>Temperature Range:</strong> -2°C to +8°C</p><p><strong>Net Capacity:</strong> 616 Litres</p><p><strong>Power Supply:</strong> 230V / 50Hz</p>",
+        "length": 2230,
+        "width": 700,
+        "height": 850
     },
     {
         "sku": "IMG/REF/00184",
@@ -1957,9 +1978,13 @@
         "category": "Refrigeration",
         "price": 1041250,
         "quantity": 2,
-        "image": null,
+        "image": "products/1687164177__gallery_AT10ISO.jpg",
         "short_description": "High-capacity 10-tray blast chiller by Tecnodom. Industrial rapid cooling system for large-scale food production in Kenya.",
-        "description": null
+        "description": "<ul><li>Stainless steel interior and exterior, with the exception of the external&nbsp;base in galvanised steel</li><li>Rounded internal corners</li><li>High-pressure injected CFCs free polyurethane insulation</li><li>Insulation thickness: 40 mm</li><li>Self-closing door with hinges on the left and magnetic gasket</li><li>Front panel with electronic control board</li><li>Condensing unit with openable front grid for easy maintenace</li><li>Electrical compartment on the right (front view), accessible for inspection</li><li>Defrosting with open door, without the use of resistors or hot gas</li><li>Removable plastic bottom tray for condensate water collection</li><li>Cycles can be set with a core probe +3°C and -18°C. On request down to -40°C</li><li>Kit of no. 4 adjustable stainless steel feet (height: 60/90 mm)</li><li>Suitable for both GN1/1 grids and 600x400 mm trays</li></ul>",
+        "technical_specification": "<ul><li>Length 750 mm</li><li>Width 750 mm</li><li>Height 1260 mm</li><li>Temperature Range (+2), (-18, (-40)°C</li><li>Capacity 10 trays, 600*400 mm</li><li>Power(V/Hz) 230V/50H</li></ul><p><br></p>",
+        "length": 750,
+        "width": 750,
+        "height": 1260
     },
     {
         "sku": "IMG/REF/00194",
@@ -1969,9 +1994,13 @@
         "category": "Refrigeration",
         "price": 195250,
         "quantity": 13,
-        "image": null,
+        "image": "products/1687160385__gallery_22 SNACK2100TN.jpg",
         "short_description": "Compact two-door counter refrigerator by Blueline. Space-efficient commercial chiller for small professional kitchens in Kenya.",
-        "description": null
+        "description": "<ul><li>Foaming Agent Cyclopentane</li><li>Digital thermostat - Dixell</li><li>Removable Gasket</li><li>Automatic compressor cycle defrost</li><li>Door with self closing (Not reversable)</li><li>N.4&nbsp;S/S Adjustable feet&nbsp;- (Lockable castor as Optional)</li><li>The items can be supplied either with adjustable feet or lockable castor</li><li>Bevel/Curved edge for easy cleaning</li></ul>",
+        "technical_specification": "<ul><li>1200x600x860mm LXWXH</li><li>Temperature Range -2 ~ +8°C</li><li>Power(V/Hz) 230V/50H</li><li>Volume(L) 260 L</li></ul>",
+        "length": 1200,
+        "width": 600,
+        "height": 860
     },
     {
         "sku": "IMG/REF/00195",
@@ -1981,9 +2010,13 @@
         "category": "Refrigeration",
         "price": 213250,
         "quantity": 17,
-        "image": null,
+        "image": "products/1776172376__gallery_1687160385__gallery_22 SNACK2100TN 1500.jpg",
         "short_description": "Medium two-door under-counter refrigerator by Blueline. Versatile commercial chiller for professional food service in Kenya.",
-        "description": null
+        "description": "<ul><li>Foaming Agent Cyclopentane</li><li>Digital thermostat - Dixell</li><li>Removable Gasket</li><li>Automatic compressor cycle defrost</li><li>Door with self closing (Not reversable)</li><li>N.4&nbsp;S/S Adjustable feet&nbsp;- (Lockable castor as Optional)</li><li>The items can be supplied either with adjustable feet or lockable castor</li><li>Bevel/Curved edge for easy cleaning</li></ul><p><br></p>",
+        "technical_specification": "<ul><li>1500x600x860mm LXWXH</li><li>Temperature Range -2 ~ +8°C</li><li>Power(V/Hz) 230V/50H</li><li>Volume(L) 390 L</li></ul><p><br></p>",
+        "length": 1500,
+        "width": 600,
+        "height": 860
     },
     {
         "sku": "IMG/REF/00196",
@@ -1993,9 +2026,13 @@
         "category": "Refrigeration",
         "price": 258250,
         "quantity": 5,
-        "image": null,
+        "image": "products/1776240548__gallery_4 door.png",
         "short_description": "Four-door under-counter refrigerator by Blueline. Large-capacity counter chiller for busy commercial kitchens in Kenya.",
-        "description": null
+        "description": "<ul><li>Foaming Agent Cyclopentane</li><li>Digital thermostat - Dixell</li><li>Removable Gasket</li><li>Automatic compressor cycle defrost</li><li>Door with self closing (Not reversable)</li><li>N.4&nbsp;S/S Adjustable feet&nbsp;- (Lockable castor as Optional)</li><li>The items can be supplied either with adjustable feet or lockable castor</li><li>Bevel/Curved edge for easy cleaning</li></ul>",
+        "technical_specification": "<ul><li>LXWXH 2230X600X860mm</li><li>Temperature Range -2 ~ +8°C</li><li>Power(V/Hz) 230V/50H</li><li>Volume(L) 386 L</li></ul>",
+        "length": 2230,
+        "width": 600,
+        "height": 860
     },
     {
         "sku": "IMG/REF/00215",
@@ -2005,9 +2042,13 @@
         "category": "Refrigeration",
         "price": 172750,
         "quantity": 2,
-        "image": null,
+        "image": "products/1776321198__gallery_Capture.png",
         "short_description": "Entry-level under-counter refrigerator by Sheffield Blueline. Affordable commercial chiller for small food service operations in Kenya.",
-        "description": null
+        "description": "<p>1 door Counter fridge </p><p>Features - 4 pcs castors</p><p>1 shelf </p><p>Dixell thermostat </p><p> S/S material </p><p><br></p><p>Specifications </p><p>Volume (L)&nbsp;124. </p><p>Net Weight (kg) 60. </p><p>Gross Weight (kg) 68. </p><p>Temperature Range&nbsp;-2?+8?.</p><p>Climate Class 4.</p><p>Refrigerant R134a. </p><p>Power Source (V/Hz) 220-240 V 50Hz</p><p>Dimensions 925*600*860mm</p>",
+        "technical_specification": "<p>Specifications </p><p>Volume (L)&nbsp;124. </p><p>Net Weight (kg) 60. </p><p>Gross Weight (kg) 68. </p><p>Temperature Range&nbsp;-2?+8?.</p><p>Climate Class 4.</p><p>Refrigerant R134a. </p><p>Power Source (V/Hz) 220-240 V 50Hz</p><p>Dimensions 925*600*860mm</p>",
+        "length": 925,
+        "width": 600,
+        "height": 860
     },
     {
         "sku": "IMG/REF/00220",
@@ -2017,9 +2058,13 @@
         "category": "Refrigeration",
         "price": 221530,
         "quantity": 3,
-        "image": null,
+        "image": "products/1776321589__gallery_Capture.png",
         "short_description": "Medium glass door bar refrigerator by Sheffield Blueline. Professional back-bar chiller for beverage service in Kenya.",
-        "description": null
+        "description": "<p>2 door bar line fridge </p><p>Features - 4 pcs castors </p><p>2 shelves </p><p>Dixell thermostat </p><p>S/S material </p><p>Tempered Double Glass </p><p>LED light </p><p><br></p><p>Specifications </p><p>Volume (L)&nbsp;314. </p><p>Temperature Range +2?+8?.</p><p>Climate Class 4. </p><p>Refrigerant R134a. </p><p>Power Source (V/Hz) 220-240V 50Hz</p><p>Dimensions: 1500x600x860mm</p>",
+        "technical_specification": "<p>Specifications </p><p>Volume (L)&nbsp;314. </p><p>Temperature Range +2?+8?.</p><p>Climate Class 4. </p><p>Refrigerant R134a. </p><p>Power Source (V/Hz) 220-240V 50Hz</p><p>Dimensions: 1500x600x860mm</p>",
+        "length": 1500,
+        "width": 600,
+        "height": 860
     },
     {
         "sku": "IMG/REF/00231",
@@ -2029,9 +2074,13 @@
         "category": "Refrigeration",
         "price": null,
         "quantity": 10,
-        "image": null,
+        "image": "products/1776326376__gallery_Capture.png",
         "short_description": "Maximum-capacity engineering counter chiller by SV-Blueline. Industrial-grade refrigerator for heavy-duty commercial use in Kenya.",
-        "description": null
+        "description": "<p>Under counter chiller. Air cooled. Temperature (deg C) 0-10; Volume(L)- 212; Power(W)- 275;</p><p>Refrigerant - R290</p><p>Dimensions: 1800*700*800</p>",
+        "technical_specification": "<p>Under counter chiller. Air cooled. Temperature (deg C) 0-10; Volume(L)- 212; Power(W)- 275;</p><p>Refrigerant - R290</p><p>Dimensions: 1800*700*800</p>",
+        "length": 1800,
+        "width": 700,
+        "height": 800
     },
     {
         "sku": "IMG/REF/00031",
@@ -2057,9 +2106,13 @@
         "category": "Refrigeration",
         "price": 312250,
         "quantity": 3,
-        "image": "",
+        "image": "products/1727253087__gallery_images.jpeg",
         "short_description": "",
-        "description": ""
+        "description": "<ul><li>Foaming Agent Cyclopentane</li><li>Digital thermostat - Dixell</li><li>Removable Gasket</li><li>LED light and lock fitted as standard</li><li>Door: Self closing and reversible door fitted as standard</li><li>Adjustable shelves GN2/1: 3</li><li>N.4&nbsp;S/S Adjustable feet&nbsp;- (Lockable castor as Optional)</li><li>The items can be supplied either with adjustable feet or lockable castor</li><li>All shelves mounted with anti-tipping system</li><li>Curved edge for easy cleaning</li></ul>",
+        "technical_specification": "<ul><li>Inner Depth\t700 mm</li><li>Inner Height\t1401 mm</li><li>Inner Width\t624 mm</li><li>Depth 830 mm</li><li>Height 2010 mm</li><li>Width\t740 mm</li><li>Temperature Range\t-18 ~ -22°C</li><li>Power(V/Hz)\t230V/50H</li><li>Volume(L)\t685 L</li></ul>",
+        "length": 830,
+        "width": 740,
+        "height": 2010
     },
     {
         "sku": "IMG/REF/00035",
@@ -2213,13 +2266,13 @@
         "category": "Refrigeration",
         "price": 292945,
         "quantity": 5,
-        "image": "",
+        "image": "products/1776326960__gallery_1692858095__gallery_1686508856_14 SNACK2100BT.jpg",
         "short_description": "Commercial 600 series under-counter freezer with digital thermostat, automatic defrost, and self-closing door. Designed for professional kitchens requiring compact and reliable frozen storage.",
-        "description": "<ul><li>Foaming Agent Cyclopentane   </li><li>Digital thermostat - Dixell   </li><li>Removable Gasket  </li><li> Automatic compressor cycle defrost   </li><li>Door with self closing (Not reversable)   </li><li>N.4&nbsp;S/S Adjustable feet&nbsp;- (Lockable castor as Optional)   </li><li>The items can be supplied either with adjustable feet or lockable castor   Bevel/Curved edge for easy cleaning  </li></ul>",
-        "length": 600,
-        "width": 860,
-        "height": 1360,
-        "technical_specification": "<ul><li>Inner Depth 480 mm   </li><li>Inner Height 589 mm   </li><li>Inner Width 795 mm   </li><li>Depth 600 mm   </li><li>Height 860 mm   </li><li>Width 1360 mm   </li><li>Temperature Range -10 ~ -20°C   </li><li>Power(V/Hz) 230V/50H   </li><li>Volume(L) 260 L </li></ul>"
+        "description": "<p>2 door Counter Freezer</p><p>Features </p><p>4 pcs castors </p><p>2 shelves</p><p>Dixell thermostat </p><p>S/S material </p><p><br></p><p>Specifications </p><p>Volume (L)&nbsp;314. </p><p>Net Weight (kg) 93. </p><p>Gross Weight (kg) 108.</p><p>Temperature Range&nbsp;-2 to +8. </p><p>Climate Class 4. </p><p>Refrigerant R134a. </p><p>Power Source (V/Hz) 220-240V 50Hz</p><p>Dimensions: 1360x600x860</p>",
+        "length": 1360,
+        "width": 600,
+        "height": 860,
+        "technical_specification": "<p>Specifications </p><p>Volume (L)&nbsp;314. </p><p>Net Weight (kg) 93. </p><p>Gross Weight (kg) 108.</p><p>Temperature Range&nbsp;-2 to +8. </p><p>Climate Class 4. </p><p>Refrigerant R134a. </p><p>Power Source (V/Hz) 220-240V 50Hz</p><p>Dimensions: 1360x600x860</p>"
     },
     {
         "sku": "IMG/REF/00128",
@@ -2245,9 +2298,13 @@
         "category": "Refrigeration",
         "price": 118750,
         "quantity": 7,
-        "image": "",
+        "image": "products/1776338494__gallery_Capture.png",
         "short_description": "",
-        "description": ""
+        "description": "<p>The DF200 S/S Solid Door Under Counter Freezer is a compact and reliable freezing solution designed for commercial kitchens with limited space. Built with a durable stainless steel structure, it ensures long-lasting performance while maintaining high hygiene standards.</p><p><strong>Key Features:</strong></p><ul><li>Durable stainless steel construction (S/S)</li><li>Compact under-counter design for space optimization</li><li>Solid self-closing door with magnetic gasket</li><li>Efficient cooling system for consistent freezing performance</li><li>Easy-to-clean interior with rounded corners</li><li>Ideal for commercial kitchens, cafes, and food service outlets</li></ul><p><strong>Technical Specifications:</strong></p><ul><li><strong>Model:</strong> DF200 S/S</li><li><strong>Type:</strong> Under Counter Freezer (1 Solid Door)</li><li><strong>Gross Capacity:</strong> 113 – 140 Litres </li><li><strong>Temperature Range:</strong> -10°C to -22°C </li><li><strong>Climate Class:</strong> Suitable for commercial kitchen environments</li><li><strong>Cooling System:</strong> Static cooling</li><li><strong>Defrost System:</strong> Manual defrost</li><li>Dimensions: 600x615x870mm</li></ul><p><br></p>",
+        "technical_specification": "<p><strong>Technical Specifications:</strong></p><ul><li><strong>Model:</strong> DF200 S/S</li><li><strong>Type:</strong> Under Counter Freezer (1 Solid Door)</li><li><strong>Gross Capacity:</strong> 113 – 140 Litres </li><li><strong>Temperature Range:</strong> -10°C to -22°C </li><li><strong>Climate Class:</strong> Suitable for commercial kitchen environments</li><li><strong>Cooling System:</strong> Static cooling</li><li><strong>Defrost System:</strong> Manual defrost</li><li>Dimensions: 600x615x870mm</li></ul><p><br></p><p><br></p>",
+        "length": 600,
+        "width": 615,
+        "height": 870
     },
     {
         "sku": "IMG/REF/00159",
@@ -2257,9 +2314,13 @@
         "category": "Refrigeration",
         "price": 159250,
         "quantity": 7,
-        "image": "",
+        "image": "products/1776331561__gallery_armario-congelacion-df400-ss.jpg",
         "short_description": "",
-        "description": ""
+        "description": "<ul><li>Made of AISI 201 stainless steel.</li><li>Static cooling.</li><li>ABS thermoformed interior with curved joints for easy cleaning.</li><li>Carel digital thermostat.</li><li>6 fixed evaporator shelves.</li><li>Lock.</li><li>2 adjustable legs + 2 rollers on the back.</li><li>Internal dimensions: 510x485x1625mm.</li><li>Capacity: 360 liters.</li><li>Self-defrost.</li><li>Weight: 72 Kg.</li></ul><p><br></p>",
+        "technical_specification": "<ul><li>Internal dimensions: 510x485x1625mm.</li><li>Capacity: 360 liters.</li><li>Self-defrost.</li><li>Weight: 72 Kg.</li><li><strong>Sizes </strong>600x615x1870mm</li><li><strong>Temperature range </strong>-10ºC / -22ºC</li><li><strong>Tension </strong>220-240V AC</li><li>Compresor Gas R29</li></ul><p><br></p>",
+        "length": 600,
+        "width": 615,
+        "height": 1800
     },
     {
         "sku": "IMG/REF/00217",
@@ -2269,9 +2330,13 @@
         "category": "Refrigeration",
         "price": null,
         "quantity": 6,
-        "image": "",
+        "image": "products/1776339516__gallery_1692858095__gallery_1686508856_14 SNACK2100BT.jpg",
         "short_description": "",
-        "description": ""
+        "description": "<h3>The <strong>SNACK2100BT-1500 2 Door Counter Freezer</strong> is a high-performance commercial refrigeration unit designed to deliver reliable frozen storage while maximizing workspace efficiency. Built for busy professional kitchens, it combines durable construction with powerful freezing capability, making it ideal for restaurants, hotels, cafés, and catering operations.</h3><p><strong>Key Features</strong></p><ul><li><strong>Dimensions:</strong> 1500 × 600 × 860 mm</li><li><strong>Temperature Range:</strong> -18°C to -22°C for optimal freezing</li><li><strong>Capacity:</strong> Approx. 220–280 litres</li><li><strong>Construction:</strong> Stainless steel interior &amp; exterior for durability and hygiene</li><li><strong>Cooling System:</strong> Ventilated cooling for uniform temperature distribution</li><li><strong>Doors:</strong> 2 self-closing solid doors with magnetic gaskets</li><li><strong>Shelving:</strong> Adjustable shelves per door for flexible storage</li><li><strong>Worktop Design:</strong> Flat top surface suitable for food prep</li><li><strong>Refrigerant:</strong> Eco-friendly (R290 / R404a depending on model) </li><li><strong>Controller:</strong> Digital thermostat for precise temperature control</li><li><strong>Power Supply:</strong> 220–240V / 50Hz</li></ul><p><br></p>",
+        "technical_specification": "<h3><strong>Key Features</strong></h3><ul><li><strong>Dimensions:</strong> 1500 × 600 × 860 mm</li><li><strong>Temperature Range:</strong> -18°C to -22°C for optimal freezing</li><li><strong>Capacity:</strong> Approx. 220–280 litres </li><li><strong>Construction:</strong> Stainless steel interior &amp; exterior for durability and hygiene</li><li><strong>Cooling System:</strong> Ventilated cooling for uniform temperature distribution</li><li><strong>Doors:</strong> 2 self-closing solid doors with magnetic gaskets</li><li><strong>Shelving:</strong> Adjustable shelves per door for flexible storage</li><li><strong>Worktop Design:</strong> Flat top surface suitable for food prep</li><li><strong>Refrigerant:</strong> Eco-friendly (R290 / R404a depending on model) </li><li><strong>Controller:</strong> Digital thermostat for precise temperature control</li><li><strong>Power Supply:</strong> 220–240V / 50Hz</li></ul><p><br></p>",
+        "length": 1500,
+        "width": 600,
+        "height": 860
     },
     {
         "sku": "IMG/REF/00218",
@@ -2281,9 +2346,13 @@
         "category": "Refrigeration",
         "price": null,
         "quantity": 8,
-        "image": "",
+        "image": "products/1776345929__gallery_1692858095__gallery_1686508856_14 SNACK2100BT.jpg",
         "short_description": "",
-        "description": ""
+        "description": "<p>The&nbsp;<strong>SNACK2100BT-1200 2 Door Counter Freezer</strong>&nbsp;is a high-performance commercial refrigeration unit designed to deliver reliable frozen storage while maximizing workspace efficiency. Built for busy professional kitchens, it combines durable construction with powerful freezing capability, making it ideal for restaurants, hotels, cafés, and catering operations.kitchens where efficiency and space utilization are essential.</p><h3><strong>Key Specifications</strong></h3><ul><li><strong>Dimensions:</strong> 1200 × 600 × 860 mm</li><li><strong>Temperature Range:</strong> -18°C to -22°C</li><li><strong>Capacity:</strong> Approx. 180–220 Litres</li><li><strong>Construction:</strong> Stainless steel interior &amp; exterior</li><li><strong>Cooling System:</strong> Ventilated cooling</li><li><strong>Doors:</strong> 2 solid, self-closing doors with magnetic gaskets</li><li><strong>Shelving:</strong> Adjustable shelves per door</li><li><strong>Worktop:</strong> Flat stainless steel prep surface</li><li><strong>Refrigerant:</strong> Eco-friendly (R290 / R404a depending on model)</li><li><strong>Controller:</strong> Digital thermostat for precise control</li><li><strong>Power Supply:</strong> 220–240V / 50Hz&nbsp;</li></ul><h3><br></h3><p><br></p>",
+        "technical_specification": "<h3><strong>Key Specifications</strong></h3><ul><li><strong>Dimensions:</strong> 1200 × 600 × 860 mm</li><li><strong>Temperature Range:</strong> -18°C to -22°C</li><li><strong>Capacity:</strong> Approx. 180–220 Litres</li><li><strong>Construction:</strong> Stainless steel interior &amp; exterior</li><li><strong>Cooling System:</strong> Ventilated cooling</li><li><strong>Doors:</strong> 2 solid, self-closing doors with magnetic gaskets</li><li><strong>Shelving:</strong> Adjustable shelves per door</li><li><strong>Worktop:</strong> Flat stainless steel prep surface</li><li><strong>Refrigerant:</strong> Eco-friendly (R290 / R404a depending on model)</li><li><strong>Controller:</strong> Digital thermostat for precise control</li><li><strong>Power Supply:</strong> 220–240V / 50Hz&nbsp;</li></ul><h3><br></h3><p><br></p>",
+        "length": 1200,
+        "width": 600,
+        "height": 860
     },
     {
         "sku": "IMG/REF/00219",
@@ -2293,9 +2362,13 @@
         "category": "Refrigeration",
         "price": null,
         "quantity": 4,
-        "image": "",
+        "image": "products/1776346365__gallery_1686640031_16 GN1100TN.jpg",
         "short_description": "",
-        "description": ""
+        "description": "<ul><li>Foaming Agent Cyclopentane</li><li>Digital thermostat - Dixell</li><li>Removable Gasket</li><li>Automatic compressor cycle defrost</li><li>Door with self closing (Not reversable)</li><li>N.4&nbsp;S/S Adjustable feet&nbsp;- (Lockable castor as Optional)</li><li>The items can be supplied either with adjustable feet or lockable castor Bevel/Curved edge for easy cleaning</li></ul><p><br></p>",
+        "technical_specification": "<ul><li>Dimensions LXWXH 900X600X860</li><li>Temperature Range -10 ~ -20°C</li><li>Power(V/Hz) 230V/50H</li><li>Volume(L) 124 L</li></ul><p><br></p>",
+        "length": 900,
+        "width": 600,
+        "height": 860
     },
     {
         "sku": "IMG/DIS/00069",
@@ -2337,9 +2410,13 @@
         "category": "Refrigeration",
         "price": 161950,
         "quantity": 3,
-        "image": "",
+        "image": "products/1776346815__gallery_Capture.png",
         "short_description": "",
-        "description": ""
+        "description": "<p>This compact and space-efficient refrigeration unit is specifically designed to store and display a wide variety of fresh salads, toppings, and ingredients at the perfect temperature. </p><p>These innovative counters enhance efficiency and freshness in food production. </p><p>Glass Cover. </p><p>Supplied with 8 x 1/3 GN Pans. </p><p>Temperature Range: 2~8℃.</p><p>Input Power: 150 W. 230v/50Hz.</p>",
+        "technical_specification": "<p>This compact and space-efficient refrigeration unit is specifically designed to store and display a wide variety of fresh salads, toppings, and ingredients at the perfect temperature. </p><p>These innovative counters enhance efficiency and freshness in food production. </p><p>Glass Cover. </p><p>Supplied with 8 x 1/3 GN Pans. </p><p>Temperature Range: 2~8℃.</p><p>Input Power: 150 W. 230v/50Hz.</p>",
+        "length": 1800,
+        "width": 740,
+        "height": 380
     },
     {
         "sku": "IMG/REF/00179",
@@ -2351,10 +2428,10 @@
         "quantity": 9,
         "image": "products/1713346038__gallery_Untitled design.png",
         "short_description": "Commercial engineering-grade under-counter chiller with air-cooled system and eco-friendly refrigerant. Built for professional kitchens requiring reliable chilled storage at counter level.",
-        "description": "<p>Under counter chiller. Air cooled. Temperature (deg C) 0-10; Volume(L)- 212; Power(W)- 275;</p><p>Refrigerant - R290</p>",
+        "description": "<p>Under counter chiller. Air cooled. Temperature (deg C) 0-10; Volume(L)- 212; Power(W)- 275;</p><p>Refrigerant - R290</p><p>Dimensions: 1800*600*800</p>",
         "length": 1800,
-        "width": 800,
-        "height": 700,
+        "width": 600,
+        "height": 800,
         "technical_specification": "<p>LENGTH: 1800MM</p><p>WIDTH: 700MM</p><p>HEIGHT: 800MM </p><p>POWER RATING: 275W</p><p><br></p><p><br></p><p><br></p>"
     },
     {
@@ -2397,9 +2474,13 @@
         "category": "Refrigeration",
         "price": 127750,
         "quantity": 7,
-        "image": "",
+        "image": "products/1776404570__gallery_images.jfif",
         "short_description": "",
-        "description": ""
+        "description": "<p>Single temperature operation with dual top doors. </p><p>Temperature range of 0 to +10 °C or ≤ –18 °C. </p><p>Equipped with four casters (without a brake system) for easy mobility. </p><p>Features automatic evaporation of condensation water for hassle-free operation. </p><p>Includes a built-in electronic voltage protector to guard against electrical surges. </p><p>The exterior is made of pre-coated sheet metal, while the interior uses double-layer glass with electric heating on the front glass for improved insulation and anti-fog performance.</p><p>Insulated with CFC-free cyclopentane for optimal energy efficiency.</p><p>Capacity of 388 Litres</p><p>Dimensions of 1440x695x900mm</p>",
+        "technical_specification": "<p><span style=\"color: rgb(81, 83, 101);\">Temperature range of 0 to +10 °C or ≤ –18 °C. </span></p><p>Capacity of 388 Litres</p><p>Dimensions of 1440x695x900mm</p>",
+        "length": 1440,
+        "width": 695,
+        "height": 900
     },
     {
         "sku": "IMG/REF/00198",
@@ -2441,7 +2522,7 @@
         "category": "Refrigeration",
         "price": 253750,
         "quantity": 4,
-        "image": "",
+        "image": "products/1776407851_Under-Counter-Commercial-Freezer-–-Air-Cooled.jpg",
         "short_description": "",
         "description": ""
     },

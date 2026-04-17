@@ -37,10 +37,17 @@ class DocumentService
         try {
             // Choose template based on PDF driver
             $view = $this->getQuotationView();
+            $driver = config('laravel-pdf.driver', 'browsershot');
 
             $pdf = Pdf::view($view, ['quote' => $quote->load(['items', 'user'])])
                 ->format('a4')
                 ->name("{$quote->reference}.pdf");
+
+            // Add footer for Chromium-based drivers
+            if (in_array($driver, ['browsershot', 'cloudflare', 'gotenberg'])) {
+                $pdf->footerView('pdf.browsershot.footer', ['order' => null])
+                    ->margins(0, 0, 40, 0);
+            }
 
             $filename = "{$quote->reference}.pdf";
             $path = self::QUOTATION_DIR . '/' . $filename;
@@ -83,12 +90,11 @@ class DocumentService
 
         // Use Tailwind version for Chromium-based drivers (better CSS support)
         if (in_array($driver, ['browsershot', 'cloudflare', 'gotenberg'])) {
-            // TODO: Create pdf.browsershot.quotation when needed
-            return 'pdf.quotation'; // Fallback to original plain CSS for now
+            return 'pdf.browsershot.quotation';
         }
 
         // Use custom CSS version for limited drivers (dompdf, weasyprint)
-        return 'pdf.quotation';
+        return 'pdf.dompdf.quotation';
     }
 
     // =========================================================================

@@ -11,9 +11,9 @@ return new class extends SettingsMigration {
         $this->migrator->add('general.store_logo', null);
         $this->migrator->add('general.store_favicon', null);
         $this->migrator->add('general.store_email', null);
-        $this->migrator->add('general.store_phone', null);
-        $this->migrator->add('general.store_address', null);
-        $this->migrator->add('general.store_address_line_2', null);
+        $this->migrator->add('general.store_phone', '+254 713 777 111');
+        $this->migrator->add('general.store_address', 'Off Old Mombasa Road before the Nairobi SGR Terminus');
+        $this->migrator->add('general.store_address_line_2', 'Petrocity Complex 1st Floor-Off Links Road, Nyali, Mombasa');
         $this->migrator->add('general.store_city', null);
         $this->migrator->add('general.store_state', null);
         $this->migrator->add('general.store_postal_code', null);

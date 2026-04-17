@@ -18,8 +18,8 @@ use Artesaos\SEOTools\Facades\TwitterCard;
 new #[Layout('layouts.guest')] class extends Component {
     use WithPagination;
 
-    const TTL_PRODUCTS = 60 * 60 * 2;   // 2 hours
-    const TTL_BRANDS = 60 * 60 * 6;     // 6 hours
+    const TTL_PRODUCTS = 60 * 60 * 2; // 2 hours
+    const TTL_BRANDS = 60 * 60 * 6; // 6 hours
     const TTL_CATEGORIES = 60 * 60 * 6; // 6 hours
 
     #[Url(as: 'search')]
@@ -86,10 +86,7 @@ new #[Layout('layouts.guest')] class extends Component {
         TwitterCard::setImage(asset('images/og-home.jpg'));
 
         JsonLd::setType('BreadcrumbList');
-        JsonLd::addValue('itemListElement', [
-            ['@type' => 'ListItem', 'position' => 1, 'name' => 'Home', 'item' => route('home')],
-            ['@type' => 'ListItem', 'position' => 2, 'name' => 'Shop', 'item' => route('shop.index')],
-        ]);
+        JsonLd::addValue('itemListElement', [['@type' => 'ListItem', 'position' => 1, 'name' => 'Home', 'item' => route('home')], ['@type' => 'ListItem', 'position' => 2, 'name' => 'Shop', 'item' => route('shop.index')]]);
     }
 
     // =========================================================================
@@ -174,7 +171,7 @@ new #[Layout('layouts.guest')] class extends Component {
             default => $query->orderBy('created_at', 'desc'),
         };
 
-        return $query->paginate(20);
+        return $query->paginate(100);
     }
 
     #[Computed]

@@ -12,8 +12,12 @@
 /** @type {import('@maizzle/framework').Config} */
 export default {
   build: {
+    static: {
+      source: ['images/**/*'], destination: '../../../public/images/mails'
+    },
     output: {
-      path: 'build_production',
+      path: '../resources/views/mails',
+      extension: 'blade.php',
     },
   },
   css: {

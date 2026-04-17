@@ -344,7 +344,7 @@ if (app()->isLocal()) {
         $order = Order::with('items', 'payment', 'user')->latest()->first();
         $newStatus = OrderStatus::from($status);
 
-        return view('mails.orders.status', [
+        return view('mails.orders.status-update', [
             'order' => $order,
             'newStatus' => $newStatus,
             'customerName' => $order->user?->name ?? 'Customer',
@@ -454,23 +454,36 @@ if (app()->isLocal()) {
             $quote->load('items.product', 'user');
         }
 
-        return view('pdf.quotation', ['quote' => $quote]);
+        return Pdf::view('pdf.browsershot.quotation', ['quote' => $quote])
+            ->format('a4')
+            ->footerView('pdf.browsershot.footer', ['order' => null])
+            ->margins(0, 0, 40, 0);
     })->name('dev.quotation-preview');
 
     // Preview the invoice Blade template in the browser (no PDF conversion).
     // Uses the most recent paid order, or a factory order if none exists.
     Route::get('dev/invoice-preview', function () {
-        // Always create a new order with many items for multi-page testing
-        $order = Order::factory()
-            ->confirmed()
-            ->withItems(25) // Create 25 items to test multi-page layout
-            ->withPayment()
-            ->create([
-                'kra_cu_number' => 'CU-PREVIEW-' . now()->timestamp,
-                'kra_validated_at' => now(),
-            ]);
+        // Try to find an existing order with many items for multi-page testing
+        $order = Order::with('items.product', 'payment', 'user')
+            ->whereNotNull('kra_cu_number')
+            ->whereNotNull('kra_validated_at')
+            ->has('items', '>=', 5) // At least 5 items for good testing
+            ->latest()
+            ->first();
 
-        $order->load('items.product', 'payment', 'user');
+        // If no suitable order exists, create one
+        if (!$order) {
+            $order = Order::factory()
+                ->confirmed()
+                ->withItems(25) // Create 25 items to test multi-page layout
+                ->withPayment()
+                ->create([
+                    'kra_cu_number' => 'CU-PREVIEW-' . now()->timestamp,
+                    'kra_validated_at' => now(),
+                ]);
+
+            $order->load('items.product', 'payment', 'user');
+        }
 
         return Pdf::view('pdf.browsershot.invoice', ['order' => $order])
             ->format('a4')
