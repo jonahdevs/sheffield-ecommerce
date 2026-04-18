@@ -233,6 +233,6 @@ class Quote extends Model
 
     protected function getLoggedAttributes(): array
     {
-        return ['status', 'admin_notes'];
+        return ['status', 'customer_notes', 'admin_notes'];
     }
 }
