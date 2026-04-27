@@ -425,7 +425,7 @@ new #[Layout('layouts.guest')] class extends Component {
         </flux:breadcrumbs>
     </div>
 
-    {{-- Category Hero Banner --}}
+    {{-- Category Hero Banner good --}}
     @if ($category->image_url || $category->description)
         <div class="relative bg-zinc-800 overflow-hidden">
             @if ($category->image_url)
