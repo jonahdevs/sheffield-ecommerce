@@ -145,16 +145,61 @@
 /* ============================================================
    5. TOKEN BRIDGE
    Placed AFTER DaisyUI so our unlayered :root always wins.
-   DaisyUI v4 also declares --color-primary / --color-secondary
-   as unlayered styles — source order decides the winner.
+   DaisyUI v5 declares --color-primary / --color-secondary as
+   unlayered :root styles — source order decides the winner,
+   so we re-assert every MD3 token here to guarantee ours land.
    ============================================================ */
 :root {
-    --color-accent: var(--primary);
-    --color-accent-content: var(--primary);
+    /* ── MD3 colors re-asserted ──────────────────────────────── */
+    --color-primary:              var(--primary);
+    --color-primary-hover:        var(--primary-hover);
+    --color-primary-container:    var(--primary-container);
+    --color-on-primary:           var(--on-primary);
+    --color-on-primary-container: var(--on-primary-container);
+
+    --color-secondary:              var(--secondary);
+    --color-secondary-hover:        var(--secondary-hover);
+    --color-secondary-container:    var(--secondary-container);
+    --color-on-secondary:           var(--on-secondary);
+    --color-on-secondary-container: var(--on-secondary-container);
+
+    --color-surface:            var(--surface);
+    --color-surface-variant:    var(--surface-variant);
+    --color-on-surface:         var(--on-surface);
+    --color-on-surface-variant: var(--on-surface-variant);
+
+    --color-outline:         var(--outline);
+    --color-outline-variant: var(--outline-variant);
+
+    --color-success:              var(--success);
+    --color-success-container:    var(--success-container);
+    --color-on-success:           var(--on-success);
+    --color-on-success-container: var(--on-success-container);
+
+    --color-warning:              var(--warning);
+    --color-warning-container:    var(--warning-container);
+    --color-on-warning:           var(--on-warning);
+    --color-on-warning-container: var(--on-warning-container);
+
+    --color-error:              var(--error);
+    --color-error-container:    var(--error-container);
+    --color-on-error:           var(--on-error);
+    --color-on-error-container: var(--on-error-container);
+
+    --color-inverse-surface:          var(--inverse-surface);
+    --color-inverse-on-surface:       var(--inverse-on-surface);
+    --color-inverse-on-surface-muted: var(--inverse-on-surface-muted);
+    --color-inverse-outline:          var(--inverse-outline);
+
+    /* ── Flux accent bridge ──────────────────────────────────── */
+    --color-accent:            var(--primary);
+    --color-accent-content:    var(--primary);
     --color-accent-foreground: var(--on-primary);
 
-    --color-input-ring: #64748b; /* slate-500 — neutral, never primary */
+    --color-input-ring:        #64748b; /* slate-500 — neutral, never primary */
     --color-input-ring-offset: #ffffff;
+
+    --color-surface-alt: var(--surface-variant);
 }
 
 /* ============================================================
