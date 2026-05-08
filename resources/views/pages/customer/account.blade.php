@@ -48,8 +48,9 @@ new #[Layout('layouts.customer')] class extends Component {
                 <flux:icon.user />
             </x-slot:icon>
             <x-slot:action>
-                <a href="{{ route('customer.settings.profile') }}" wire:navigate
-                    class="flex items-center gap-1.5 text-[11px] font-bold tracking-wider uppercase text-primary transition-opacity hover:opacity-70">
+
+                <a href=""
+                    class="flex items-center gap-1.5 text-xs font-bold tracking-wider uppercase text-primary hover:opacity-70 transition-opacity">
                     <flux:icon.cog-6-tooth class="w-3.5 h-3.5" />
                     Edit in Settings
                 </a>
@@ -86,8 +87,8 @@ new #[Layout('layouts.customer')] class extends Component {
                 <flux:icon.map-pin />
             </x-slot:icon>
             <x-slot:action>
-                <a href="{{ route('customer.address-book.index') }}" wire:navigate
-                    class="flex items-center gap-1.5 text-[11px] font-bold tracking-wider uppercase text-brand-primary transition-opacity hover:opacity-70">
+                <a href="{{ route('customer.address-book.index') }}"
+                    class="flex items-center gap-1.5 text-[11px] font-bold tracking-wider uppercase text-primary hover:opacity-70 transition-opacity">
                     <flux:icon.chevron-right class="w-3.5 h-3.5" />
                     Manage
                 </a>
@@ -110,11 +111,10 @@ new #[Layout('layouts.customer')] class extends Component {
                 </div>
             @else
                 <div class="text-[13px] text-zinc-500 italic mb-4">No default address set.</div>
-                {{-- <x-ui.button tag="a" href="{{ route('customer.address-book.index') }}" wire:navigate
-                    size="sm">
+                <flux:button href="{{ route('customer.address-book.index') }}" wire:navigate size="sm">
                     <flux:icon.plus class="w-3.5 h-3.5" />
                     Add Address
-                </x-ui.button> --}}
+                </flux:button>
             @endif
         </x-customer.card>
     </div>

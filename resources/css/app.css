@@ -281,7 +281,18 @@ select:focus[data-flux-control] {
 }
 
 /* ============================================================
-   9. PUBLIC NAVBAR
+   9. CUSTOMER SIDEBAR
+   ============================================================ */
+.customer-sidebar [data-flux-navlist-item] {
+    @apply rounded-none py-5! font-normal!;
+}
+
+.customer-sidebar [data-flux-navlist-item][data-current] {
+    @apply bg-primary/5 text-zinc-800 border-l-[3px] border-primary;
+}
+
+/* ============================================================
+   10. PUBLIC NAVBAR
    ============================================================ */
 [data-navbar],
 .navbar-public {

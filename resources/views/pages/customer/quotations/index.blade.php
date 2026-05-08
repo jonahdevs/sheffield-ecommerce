@@ -51,12 +51,7 @@ new #[Layout('layouts.customer')] class extends Component {
     public function closedQuotations()
     {
         return Quote::where('user_id', auth()->id())
-            ->whereIn('status', [
-                QuoteStatus::ACCEPTED,
-                QuoteStatus::REJECTED,
-                QuoteStatus::EXPIRED,
-                QuoteStatus::CANCELLED,
-            ])
+            ->whereIn('status', [QuoteStatus::ACCEPTED, QuoteStatus::REJECTED, QuoteStatus::EXPIRED, QuoteStatus::CANCELLED])
             ->with(['items' => fn($q) => $q->with('product')->limit(1)])
             ->withCount('items')
             ->latest()
@@ -78,226 +73,127 @@ new #[Layout('layouts.customer')] class extends Component {
 };
 ?>
 
-<div>
-    <flux:card class="p-0 rounded-md">
+@php
+    $tabClass =
+        'px-[18px] py-2.5 text-[11px] font-bold tracking-[0.08em] uppercase cursor-pointer border-r border-zinc-200 last:border-r-0 whitespace-nowrap font-barlow transition-all';
+    $tabActive = 'bg-primary text-white';
+    $tabInactive = 'bg-transparent text-zinc-500 hover:bg-zinc-50 hover:text-zinc-950';
+@endphp
 
-        {{-- Page Header --}}
-        <div class="px-4 py-3 border-b flex items-center justify-between">
-            <flux:heading size="lg" level="1">My Quotations</flux:heading>
-            <flux:link :href="route('customer.orders.index')" wire:navigate class="text-xs flex items-center gap-1">
-                <flux:icon.shopping-bag class="size-3.5 inline-block me-2" />
-                <span>My Orders</span>
-            </flux:link>
+<div>
+    @if (!$this->hasQuotations)
+        <x-customer.card title="My" titleEm="Quotations"
+            bodyClass="p-8 min-h-[50svh] flex flex-col items-center gap-2 justify-center text-center">
+            <x-slot:icon>
+                <flux:icon.tag />
+            </x-slot:icon>
+
+            <flux:icon.tag class="size-12 text-zinc-300" />
+            <h4 class="text-lg font-medium text-zinc-900">No quotations yet</h4>
+            <p class="text-sm text-zinc-500 max-w-sm">
+                When you request a quote for a product, it will appear here.
+            </p>
+            {{-- <x-ui.button tag="a" href="{{ route('shop.index') }}" wire:navigate class="mt-4">
+                Browse Products
+            </x-ui.button> --}}
+        </x-customer.card>
+    @else
+        @if ($this->awaitingResponseCount > 0)
+            <div class="flex items-start gap-3 p-3 bg-amber-50 border border-amber-200 rounded-sm mb-4">
+                <flux:icon.clock class="size-5 shrink-0 mt-0.5 text-amber-500" />
+                <div class="text-[13px] flex-1">
+                    <p class="font-bold text-amber-900">
+                        {{ $this->awaitingResponseCount }} {{ Str::plural('quotation', $this->awaitingResponseCount) }}
+                        awaiting your response
+                    </p>
+                    <p class="text-amber-800 mt-0.5">
+                        Review the priced quotation(s) below and accept or reject before they expire.
+                    </p>
+                </div>
+            </div>
+        @endif
+
+        {{-- Filter tabs --}}
+        <div class="flex border-[1.5px] border-zinc-200 bg-white overflow-x-auto mb-5">
+            <button wire:click="$set('selectedTab', 'active')"
+                class="{{ $tabClass }} {{ $selectedTab === 'active' ? $tabActive : $tabInactive }}">
+                Active ({{ $this->activeQuotations->total() }})
+            </button>
+            <button wire:click="$set('selectedTab', 'closed')"
+                class="{{ $tabClass }} {{ $selectedTab === 'closed' ? $tabActive : $tabInactive }}">
+                Closed ({{ $this->closedQuotations->total() }})
+            </button>
         </div>
 
-        <div class="px-4 py-4">
+        {{-- Quotations list --}}
+        <div class="flex flex-col bg-white border border-zinc-200">
+            @php $quotations = $selectedTab === 'active' ? $this->activeQuotations : $this->closedQuotations; @endphp
 
-            @if (!$this->hasQuotations)
-                {{-- Empty state --}}
-                <div class="min-h-[50svh] flex flex-col items-center gap-2 justify-center text-center">
-                    <flux:icon.tag class="size-12 text-zinc-300" />
-                    <flux:heading>No quotations yet</flux:heading>
-                    <flux:text class="text-zinc-500 max-w-sm">
-                        When you request a quote for a product,
-                        it will appear here.
-                    </flux:text>
-                    <flux:button :href="route('shop.index')" variant="primary" icon="shopping-bag" wire:navigate
-                        class="mt-2">
-                        Browse Products
-                    </flux:button>
-                </div>
-            @else
-                {{-- Action needed banner — only shown when a quote is waiting for response --}}
-                @if ($this->awaitingResponseCount > 0)
-                    <div class="flex items-start gap-3 p-3 bg-amber-50 border border-amber-200 rounded-lg mb-4">
-                        <flux:icon.clock class="size-5 shrink-0 mt-0.5 text-amber-500" />
-                        <div class="text-sm flex-1">
-                            <p class="font-medium text-amber-800">
-                                {{ $this->awaitingResponseCount }}
-                                {{ Str::plural('quotation', $this->awaitingResponseCount) }}
-                                awaiting your response
-                            </p>
-                            <p class="text-amber-700 mt-0.5 text-xs">
-                                Review the priced quotation(s) below and accept or reject before they expire.
-                            </p>
+            @forelse ($quotations as $quotation)
+                @php
+                    $firstItem = $quotation->items->first();
+                    $firstProductName =
+                        $firstItem?->product_snapshot['name'] ?? ($firstItem?->product?->name ?? 'Product');
+                    $needsResponse = $quotation->status === QuoteStatus::SENT;
+                    $img = $firstItem?->product_snapshot['image_url'] ?? $firstItem?->product?->image_url;
+                @endphp
+                <a href="{{ route('customer.quotations.show', $quotation) }}" wire:navigate
+                    @class([
+                        'p-4.5 border-b border-zinc-200 last:border-b-0 flex items-center gap-4 transition-colors hover:bg-zinc-50 cursor-pointer',
+                        'bg-amber-50/30' => $needsResponse,
+                    ])>
+                    <div class="hidden md:flex">
+                        <div
+                            class="w-12 h-12 bg-zinc-50 flex items-center justify-center shrink-0 overflow-hidden border-2 border-white">
+                            @if ($img)
+                                <img src="{{ asset($img) }}" alt="{{ $firstProductName }}"
+                                    class="w-[85%] h-[85%] object-contain" />
+                            @else
+                                <flux:icon.photo class="w-full h-full p-2 text-zinc-200" />
+                            @endif
                         </div>
                     </div>
-                @endif
-
-                <x-my-tabs wire:model="selectedTab">
-
-                    {{-- Active quotations --}}
-                    <x-my-tab name="active" label="Active">
-                        <div class="space-y-3">
-                            @forelse ($this->activeQuotations as $quotation)
-                                @php
-                                    $firstItem = $quotation->items->first();
-                                    $firstProductName =
-                                        $firstItem?->product_snapshot['name'] ??
-                                        ($firstItem?->product?->name ?? 'Product');
-                                    $extraCount = $quotation->items_count - 1;
-                                    $needsResponse = $quotation->status === QuoteStatus::SENT;
-                                    $img = $firstItem?->product_snapshot['image_url'] ?? $firstItem?->product?->image_url;
-                                @endphp
-
-                                <div wire:key="active-{{ $quotation->id }}"
-                                    class="border rounded-md p-4 hover:bg-zinc-50 transition-colors
-                                        {{ $needsResponse ? 'border-amber-300 bg-amber-50/50' : '' }}">
-                                    <div class="flex items-center justify-between gap-4">
-
-                                        {{-- Product image --}}
-                                        <div class="shrink-0">
-                                            <div class="w-12 h-12 rounded-md border bg-zinc-100 overflow-hidden">
-                                                @if ($img)
-                                                    <img src="{{ asset($img) }}" alt="{{ $firstProductName }}"
-                                                        class="w-full h-full object-cover" />
-                                                @else
-                                                    <flux:icon.photo class="w-full h-full p-2 text-zinc-300" />
-                                                @endif
-                                            </div>
-                                        </div>
-
-                                        {{-- Quotation info --}}
-                                        <div class="flex-1 min-w-0">
-                                            <p class="text-sm font-medium text-zinc-800 truncate">
-                                                {{ $firstProductName }}
-                                                @if ($extraCount > 0)
-                                                    <span class="text-zinc-400 font-normal">
-                                                        + {{ $extraCount }} more
-                                                    </span>
-                                                @endif
-                                            </p>
-                                            <div class="flex items-center gap-2 mt-1 flex-wrap">
-                                                <flux:text class="text-xs text-zinc-400">
-                                                    {{ $quotation->reference }}
-                                                </flux:text>
-                                                <span class="text-zinc-200">·</span>
-                                                <flux:text class="text-xs text-zinc-400">
-                                                    {{ $quotation->created_at->format('M j, Y') }}
-                                                </flux:text>
-                                                <flux:badge size="sm" :color="$quotation->status->color()">
-                                                    {{ $quotation->status->label() }}
-                                                </flux:badge>
-                                            </div>
-
-                                            {{-- Expiry warning --}}
-                                            @if ($quotation->expires_at && $quotation->status === QuoteStatus::SENT)
-                                                <flux:text
-                                                    class="text-xs mt-1
-                                                    {{ $quotation->expires_at->isPast()
-                                                        ? 'text-rose-500'
-                                                        : ($quotation->expires_at->diffInHours() <= 48
-                                                            ? 'text-amber-600'
-                                                            : 'text-zinc-400') }}">
-                                                    {{ $quotation->expires_at->isPast() ? 'Expired' : 'Expires' }}
-                                                    {{ $quotation->expires_at->diffForHumans() }}
-                                                </flux:text>
-                                            @endif
-                                        </div>
-
-                                        {{-- Action --}}
-                                        <flux:button :href="route('customer.quotations.show', $quotation)" wire:navigate
-                                            :variant="$needsResponse ? 'primary' : 'ghost'" size="sm"
-                                            class="shrink-0">
-                                            {{ $needsResponse ? 'Respond' : 'See details' }}
-                                        </flux:button>
-                                    </div>
-                                </div>
-                            @empty
-                                <div class="flex flex-col items-center justify-center py-16 text-center">
-                                    <flux:icon.tag class="w-12 h-12 text-zinc-300 mb-3" />
-                                    <flux:heading size="sm">No active quotations</flux:heading>
-                                    <flux:text class="text-zinc-500 mt-1 text-sm">
-                                        You have no active quotations at the moment.
-                                    </flux:text>
-                                </div>
-                            @endforelse
+                    <div class="flex-1 min-w-0">
+                        <div class="text-[13px] font-bold text-zinc-950 mb-0.5">#{{ $quotation->reference }}</div>
+                        <div class="text-[11px] text-zinc-500">{{ $quotation->created_at->format('d M Y') }}</div>
+                        <div class="text-[11px] text-zinc-500 mt-0.5">
+                            {{ $quotation->items_count }} {{ Str::plural('item', $quotation->items_count) }}
+                            @if ($quotation->expires_at && $quotation->status === QuoteStatus::SENT)
+                                · <span @class([
+                                    'font-bold',
+                                    'text-rose-600' => $quotation->expires_at->isPast(),
+                                    'text-amber-600' =>
+                                        !$quotation->expires_at->isPast() &&
+                                        $quotation->expires_at->diffInHours() <= 48,
+                                ])>
+                                    {{ $quotation->expires_at->isPast() ? 'Expired' : 'Expires' }}
+                                    {{ $quotation->expires_at->diffForHumans() }}
+                                </span>
+                            @endif
                         </div>
-
-                        @if ($this->activeQuotations->hasPages())
-                            <div class="mt-4">
-                                <flux:pagination :paginator="$this->activeQuotations" />
-                            </div>
-                        @endif
-                    </x-my-tab>
-
-                    {{-- Closed quotations --}}
-                    <x-my-tab name="closed" label="Closed">
-                        <div class="space-y-3">
-                            @forelse ($this->closedQuotations as $quotation)
-                                @php
-                                    $firstItem = $quotation->items->first();
-                                    $firstProductName =
-                                        $firstItem?->product_snapshot['name'] ??
-                                        ($firstItem?->product?->name ?? 'Product');
-                                    $extraCount = $quotation->items_count - 1;
-                                    $img = $firstItem?->product_snapshot['image_url'] ?? $firstItem?->product?->image_url;
-                                @endphp
-
-                                <div wire:key="closed-{{ $quotation->id }}"
-                                    class="border rounded-md p-4 hover:bg-zinc-50 transition-colors opacity-75">
-                                    <div class="flex items-center justify-between gap-4">
-
-                                        <div class="shrink-0">
-                                            <div class="w-12 h-12 rounded-md border bg-zinc-100 overflow-hidden">
-                                                @if ($img)
-                                                    <img src="{{ asset($img) }}" alt="{{ $firstProductName }}"
-                                                        class="w-full h-full object-cover opacity-60" />
-                                                @else
-                                                    <flux:icon.photo class="w-full h-full p-2 text-zinc-300" />
-                                                @endif
-                                            </div>
-                                        </div>
-
-                                        <div class="flex-1 min-w-0">
-                                            <p class="text-sm font-medium text-zinc-500 truncate">
-                                                {{ $firstProductName }}
-                                                @if ($extraCount > 0)
-                                                    <span class="text-zinc-400 font-normal">
-                                                        + {{ $extraCount }} more
-                                                    </span>
-                                                @endif
-                                            </p>
-                                            <div class="flex items-center gap-2 mt-1 flex-wrap">
-                                                <flux:text class="text-xs text-zinc-400">
-                                                    {{ $quotation->reference }}
-                                                </flux:text>
-                                                <span class="text-zinc-200">·</span>
-                                                <flux:text class="text-xs text-zinc-400">
-                                                    {{ $quotation->created_at->format('M j, Y') }}
-                                                </flux:text>
-                                                <flux:badge size="sm" :color="$quotation->status->color()">
-                                                    {{ $quotation->status->label() }}
-                                                </flux:badge>
-                                            </div>
-                                        </div>
-
-                                        <flux:button :href="route('customer.quotations.show', $quotation)" wire:navigate
-                                            variant="ghost" size="sm" class="shrink-0">
-                                            See details
-                                        </flux:button>
-                                    </div>
-                                </div>
-                            @empty
-                                <div class="flex flex-col items-center justify-center py-16 text-center">
-                                    <flux:icon.check-circle class="w-12 h-12 text-zinc-300 mb-3" />
-                                    <flux:heading size="sm">No closed quotations</flux:heading>
-                                    <flux:text class="text-zinc-500 mt-1 text-sm">
-                                        You have no rejected, expired, or cancelled quotations.
-                                    </flux:text>
-                                </div>
-                            @endforelse
-                        </div>
-
-                        @if ($this->closedQuotations->hasPages())
-                            <div class="mt-4">
-                                <flux:pagination :paginator="$this->closedQuotations" />
-                            </div>
-                        @endif
-                    </x-my-tab>
-
-                </x-my-tabs>
-            @endif
+                    </div>
+                    <flux:badge size="sm" :color="$quotation->status->color()">
+                        {{ $quotation->status->label() }}
+                    </flux:badge>
+                    <div class="text-zinc-400 shrink-0">
+                        <flux:icon.chevron-right class="w-4 h-4" />
+                    </div>
+                </a>
+            @empty
+                <div class="p-12 text-center flex flex-col items-center justify-center">
+                    <flux:icon.tag class="w-12 h-12 text-zinc-300 mb-3" />
+                    <h4 class="text-lg font-medium text-zinc-900">No quotations found</h4>
+                    <p class="text-sm text-zinc-500 mt-1">
+                        {{ $selectedTab === 'active' ? 'You have no active quotations at the moment.' : 'You have no closed quotations.' }}
+                    </p>
+                </div>
+            @endforelse
         </div>
-    </flux:card>
+
+        @if ($quotations->hasPages())
+            <div class="mt-6">
+                {{ $quotations->links() }}
+            </div>
+        @endif
+    @endif
 </div>

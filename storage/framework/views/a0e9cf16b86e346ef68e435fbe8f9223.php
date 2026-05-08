@@ -45,8 +45,9 @@ use Artesaos\SEOTools\Facades\SEOMeta;
 <?php endif; ?>
              <?php $__env->endSlot(); ?>
              <?php $__env->slot('action', null, []); ?> 
-                <a href="<?php echo e(route('customer.settings.profile')); ?>" wire:navigate
-                    class="flex items-center gap-1.5 text-[11px] font-bold tracking-wider uppercase text-primary transition-opacity hover:opacity-70">
+
+                <a href=""
+                    class="flex items-center gap-1.5 text-xs font-bold tracking-wider uppercase text-primary hover:opacity-70 transition-opacity">
                     <?php if (isset($component)) { $__componentOriginal85f9e6c3832e289a25340c3790632afa = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginal85f9e6c3832e289a25340c3790632afa = $attributes; } ?>
 <?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::icon.cog-6-tooth','data' => ['class' => 'w-3.5 h-3.5']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
@@ -187,8 +188,8 @@ use Artesaos\SEOTools\Facades\SEOMeta;
 <?php endif; ?>
              <?php $__env->endSlot(); ?>
              <?php $__env->slot('action', null, []); ?> 
-                <a href="<?php echo e(route('customer.address-book.index')); ?>" wire:navigate
-                    class="flex items-center gap-1.5 text-[11px] font-bold tracking-wider uppercase text-brand-primary transition-opacity hover:opacity-70">
+                <a href="<?php echo e(route('customer.address-book.index')); ?>"
+                    class="flex items-center gap-1.5 text-[11px] font-bold tracking-wider uppercase text-primary hover:opacity-70 transition-opacity">
                     <?php if (isset($component)) { $__componentOriginal31cb76c8d087d4f00797aeea7232b4c3 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginal31cb76c8d087d4f00797aeea7232b4c3 = $attributes; } ?>
 <?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::icon.chevron-right','data' => ['class' => 'w-3.5 h-3.5']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
@@ -233,7 +234,51 @@ use Artesaos\SEOTools\Facades\SEOMeta;
                 </div>
             <?php else: ?>
                 <div class="text-[13px] text-zinc-500 italic mb-4">No default address set.</div>
-                
+                <?php if (isset($component)) { $__componentOriginalc04b147acd0e65cc1a77f86fb0e81580 = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginalc04b147acd0e65cc1a77f86fb0e81580 = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::button.index','data' => ['href' => ''.e(route('customer.address-book.index')).'','wire:navigate' => true,'size' => 'sm']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('flux::button'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes(['href' => ''.e(route('customer.address-book.index')).'','wire:navigate' => true,'size' => 'sm']); ?>
+<?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
+
+                    <?php if (isset($component)) { $__componentOriginal37c717510e7a32140849d8d5dd9d632e = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginal37c717510e7a32140849d8d5dd9d632e = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::icon.plus','data' => ['class' => 'w-3.5 h-3.5']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('flux::icon.plus'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes(['class' => 'w-3.5 h-3.5']); ?>
+<?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
+
+<?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginal37c717510e7a32140849d8d5dd9d632e)): ?>
+<?php $attributes = $__attributesOriginal37c717510e7a32140849d8d5dd9d632e; ?>
+<?php unset($__attributesOriginal37c717510e7a32140849d8d5dd9d632e); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginal37c717510e7a32140849d8d5dd9d632e)): ?>
+<?php $component = $__componentOriginal37c717510e7a32140849d8d5dd9d632e; ?>
+<?php unset($__componentOriginal37c717510e7a32140849d8d5dd9d632e); ?>
+<?php endif; ?>
+                    Add Address
+                 <?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginalc04b147acd0e65cc1a77f86fb0e81580)): ?>
+<?php $attributes = $__attributesOriginalc04b147acd0e65cc1a77f86fb0e81580; ?>
+<?php unset($__attributesOriginalc04b147acd0e65cc1a77f86fb0e81580); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginalc04b147acd0e65cc1a77f86fb0e81580)): ?>
+<?php $component = $__componentOriginalc04b147acd0e65cc1a77f86fb0e81580; ?>
+<?php unset($__componentOriginalc04b147acd0e65cc1a77f86fb0e81580); ?>
+<?php endif; ?>
             <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
          <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
