@@ -1,6 +1,6 @@
 <x-layouts::guest>
     {{-- BREADCRUMB --}}
-    <div class="bg-zinc-100 py-2.5">
+    <div class="bg-white border-b border-zinc-200 py-3">
         <flux:breadcrumbs class="container mx-auto px-4">
             <flux:breadcrumbs.item href="{{ route('home') }}" wire:navigate>Home</flux:breadcrumbs.item>
             <flux:breadcrumbs.item current>{{ $title ?? 'My Account' }}</flux:breadcrumbs.item>

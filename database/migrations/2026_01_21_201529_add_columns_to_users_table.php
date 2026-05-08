@@ -4,7 +4,8 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+return new class extends Migration
+{
     /**
      * Run the migrations.
      */
@@ -15,7 +16,11 @@ return new class extends Migration {
                 $table->string('phone_number', 20)->nullable();
                 $table->string('phone_number_verified_at', 20)->nullable();
                 $table->string('avatar')->nullable();
+                $table->string('display_name')->nullable();
+                $table->date('date_of_birth')->nullable();
                 $table->boolean('newsletter_subscribed')->default(value: false);
+                $table->json('notification_preferences')->nullable();
+                $table->json('privacy_preferences')->nullable();
                 $table->string('default_payment_method')->nullable();
                 $table->boolean('is_staff')->default(false);
                 $table->string('status')->default('active');
@@ -24,7 +29,7 @@ return new class extends Migration {
 
                 $table->string('provider')->nullable()->after('email');
                 $table->string('provider_id')->nullable()->after('provider');
-                $table->text('provider_token')->nullable()->after('provider_id');
+                $table->string('provider_token')->nullable()->after('provider_id');
                 $table->string('password')->nullable()->change();
                 $table->softDeletes();
             });

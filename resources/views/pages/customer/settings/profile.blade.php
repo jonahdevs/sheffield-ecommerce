@@ -7,9 +7,11 @@ use Illuminate\Support\Facades\Storage;
 use Livewire\Attributes\{Computed, Layout, Title};
 use Livewire\Component;
 use Livewire\WithFileUploads;
+use App\Models\User;
 
 new #[Layout('layouts.customer-settings'), Title('Profile Settings')] class extends Component {
     use WithFileUploads;
+    public User $user;
 
     public string $name = '';
 
@@ -25,12 +27,12 @@ new #[Layout('layouts.customer-settings'), Title('Profile Settings')] class exte
 
     public function mount(): void
     {
-        $user = Auth::user();
-        $this->name = $user->name;
-        $this->display_name = $user->display_name;
-        $this->email = $user->email;
-        $this->phone_number = $user->phone_number;
-        $this->date_of_birth = $user->date_of_birth?->format('Y-m-d');
+        $this->user = auth()->user();
+        $this->name = $this->user->name;
+        $this->display_name = $this->user->display_name;
+        $this->email = $this->user->email;
+        $this->phone_number = $this->user->phone_number;
+        $this->date_of_birth = $this->user->date_of_birth?->format('Y-m-d');
     }
 
     public function save(): void
@@ -124,8 +126,8 @@ new #[Layout('layouts.customer-settings'), Title('Profile Settings')] class exte
 
 @php
     $inputClass =
-        'w-full border-[1.5px] border-zinc-200 px-3 py-2.5 text-[13px] font-medium outline-none transition-all focus:border-brand-primary focus:ring-[3px] focus:ring-brand-primary/8';
-    $labelClass = 'block text-[10px] font-bold tracking-[0.1em] uppercase text-zinc-500 mb-1.5';
+        'w-full border-[1.5px] border-zinc-200 px-3 py-2.5 text-[13px] font-medium outline-none transition-all focus:border-primary focus:ring-[3px] focus:ring-primary/8';
+    $labelClass = 'block text-[10px] font-bold tracking-widest uppercase text-zinc-500 mb-1.5';
 @endphp
 
 <div class="flex flex-col gap-5">
@@ -137,16 +139,15 @@ new #[Layout('layouts.customer-settings'), Title('Profile Settings')] class exte
 
         <div class="flex items-center gap-6 px-5 py-5">
             <label for="avatarInput"
-                class="relative w-20 h-20 rounded-full bg-zinc-950 text-white font-barlow-condensed text-[26px] font-black flex items-center justify-center shrink-0 cursor-pointer hover:brightness-75 transition-all overflow-hidden">
+                class="relative size-20 rounded-full  text-white font-sherif text-[26px] font-black flex items-center justify-center shrink-0 cursor-pointer hover:brightness-75 transition-all">
                 @if (auth()->user()->avatar)
-                    <img src="{{ auth()->user()->avatarUrl() }}" alt="{{ auth()->user()->name }}"
-                        class="w-full h-full object-cover" />
+                    <flux:avatar circle class="w-full h-full shrink-0" src="{{ $user->avatar }}" />
                 @else
-                    {{ $this->initials }}
+                    <flux:avatar circle class="w-full h-full shrink-0" name="{{ $user->name }}" />
                 @endif
                 <div
-                    class="absolute bottom-0 right-0 w-6 h-6 rounded-full bg-brand-primary flex items-center justify-center border-2 border-white">
-                    <flux:icon.pencil-square class="w-[11px] h-[11px] text-white" />
+                    class="absolute bottom-0 right-0 w-6 h-6 rounded-full bg-primary flex items-center justify-center border-2 border-white">
+                    <flux:icon.pencil-square class="w-2.75 h-2.75 text-white" />
                 </div>
             </label>
 
@@ -253,7 +254,7 @@ new #[Layout('layouts.customer-settings'), Title('Profile Settings')] class exte
 
             <div class="flex items-center gap-2.5 mt-5 pt-4 border-t border-zinc-200">
                 <button type="submit"
-                    class="inline-flex items-center gap-1.5 bg-brand-primary text-white px-6 py-2.5 font-barlow-condensed text-[13px] font-extrabold tracking-wider uppercase transition-colors hover:bg-[#e03d00] cursor-pointer">
+                    class="inline-flex items-center gap-1.5 bg-primary text-white px-6 py-2.5 font-barlow-condensed text-[13px] font-extrabold tracking-wider uppercase transition-colors hover:bg-[#e03d00] cursor-pointer">
                     <span wire:loading.remove wire:target="save">{{ __('Save Changes') }}</span>
                     <span wire:loading wire:target="save">{{ __('Saving...') }}</span>
                 </button>
@@ -269,12 +270,12 @@ new #[Layout('layouts.customer-settings'), Title('Profile Settings')] class exte
 
         <div class="grid grid-cols-1 md:grid-cols-2 px-5 py-5">
             <div class="py-2.5 md:pr-5 md:border-r md:border-zinc-200">
-                <div class="text-[10px] font-bold tracking-[0.1em] uppercase text-zinc-500">Member Since</div>
+                <div class="text-[10px] font-bold tracking-widest uppercase text-zinc-500">Member Since</div>
                 <div class="text-[14px] font-bold text-zinc-950 mt-1">{{ auth()->user()->created_at->format('F Y') }}
                 </div>
             </div>
             <div class="py-2.5 md:pl-5">
-                <div class="text-[10px] font-bold tracking-[0.1em] uppercase text-zinc-500">Account Type</div>
+                <div class="text-[10px] font-bold tracking-widest uppercase text-zinc-500">Account Type</div>
                 <div class="flex items-center gap-2 mt-1">
                     <span class="text-[14px] font-bold text-zinc-950">Standard</span>
                     <span

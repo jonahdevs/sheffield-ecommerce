@@ -5,8 +5,7 @@ use Livewire\Attributes\{Layout, Title};
 use Livewire\Component;
 use Artesaos\SEOTools\Facades\SEOMeta;
 
-new #[Layout('layouts.customer-settings'), Title('Notification Preferences')] class extends Component
-{
+new #[Layout('layouts.customer-settings'), Title('Notification Preferences')] class extends Component {
     /**
      * Per-topic, per-channel preferences. Persisted as JSON on users.notification_preferences.
      *
@@ -45,7 +44,7 @@ new #[Layout('layouts.customer-settings'), Title('Notification Preferences')] cl
 
         // Merge defaults so newly added topics default sensibly even on existing users.
         $this->prefs = array_replace_recursive(self::defaults(), $stored);
-        
+
         // Load newsletter subscription
         $this->newsletter_subscribed = Auth::user()->newsletter_subscribed ?? false;
     }
@@ -69,62 +68,75 @@ new #[Layout('layouts.customer-settings'), Title('Notification Preferences')] cl
 
         {{-- Channel headers --}}
         <div class="flex items-center justify-end px-5 py-2.5 border-b border-zinc-200 gap-5">
-            <span class="text-[9px] font-extrabold tracking-[0.1em] uppercase text-zinc-500 w-9 text-center">Email</span>
-            <span class="text-[9px] font-extrabold tracking-[0.1em] uppercase text-zinc-500 w-9 text-center">SMS</span>
-            <span class="text-[9px] font-extrabold tracking-[0.1em] uppercase text-zinc-500 w-9 text-center">Push</span>
+            <span class="text-[9px] font-extrabold tracking-widest uppercase text-zinc-500 w-9 text-center">Email</span>
+            <span class="text-[9px] font-extrabold tracking-widest uppercase text-zinc-500 w-9 text-center">SMS</span>
+            <span class="text-[9px] font-extrabold tracking-widest uppercase text-zinc-500 w-9 text-center">Push</span>
         </div>
 
         {{-- Orders & Shipping --}}
         <div class="flex items-center gap-2 px-5 py-3.5 border-b border-zinc-200 bg-zinc-50/40">
-            <flux:icon.shopping-bag class="w-3.5 h-3.5 text-brand-primary shrink-0" />
-            <span class="text-[11px] font-bold tracking-[0.1em] uppercase text-zinc-500">Orders & Shipping</span>
+            <flux:icon.shopping-bag class="w-3.5 h-3.5 text-primary shrink-0" />
+            <span class="text-[11px] font-bold tracking-widest uppercase text-zinc-500">Orders & Shipping</span>
         </div>
-        <x-customer.notification-row topic="order_confirmations" title="Order Confirmations" description="Receive confirmation when your order is placed" />
-        <x-customer.notification-row topic="shipping_updates" title="Shipping Updates" description="Get notified when your order ships and is delivered" />
+        <x-customer.notification-row topic="order_confirmations" title="Order Confirmations"
+            description="Receive confirmation when your order is placed" />
+        <x-customer.notification-row topic="shipping_updates" title="Shipping Updates"
+            description="Get notified when your order ships and is delivered" />
 
         {{-- Promotions --}}
         <div class="flex items-center gap-2 px-5 py-3.5 border-b border-zinc-200 bg-zinc-50/40">
-            <flux:icon.tag class="w-3.5 h-3.5 text-brand-primary shrink-0" />
-            <span class="text-[11px] font-bold tracking-[0.1em] uppercase text-zinc-500">Promotions & Offers</span>
+            <flux:icon.tag class="w-3.5 h-3.5 text-primary shrink-0" />
+            <span class="text-[11px] font-bold tracking-widest uppercase text-zinc-500">Promotions & Offers</span>
         </div>
-        <x-customer.notification-row topic="special_offers" title="Special Offers" description="Exclusive deals, discounts and promotions" />
-        <x-customer.notification-row topic="new_arrivals" title="New Arrivals" description="Be the first to know about new products" />
+        <x-customer.notification-row topic="special_offers" title="Special Offers"
+            description="Exclusive deals, discounts and promotions" />
+        <x-customer.notification-row topic="new_arrivals" title="New Arrivals"
+            description="Be the first to know about new products" />
 
         {{-- Reviews --}}
         <div class="flex items-center gap-2 px-5 py-3.5 border-b border-zinc-200 bg-zinc-50/40">
-            <flux:icon.star class="w-3.5 h-3.5 text-brand-primary shrink-0" />
-            <span class="text-[11px] font-bold tracking-[0.1em] uppercase text-zinc-500">Reviews & Feedback</span>
+            <flux:icon.star class="w-3.5 h-3.5 text-primary shrink-0" />
+            <span class="text-[11px] font-bold tracking-widest uppercase text-zinc-500">Reviews & Feedback</span>
         </div>
-        <x-customer.notification-row topic="review_reminders" title="Review Reminders" description="Reminders to review products you've purchased" />
+        <x-customer.notification-row topic="review_reminders" title="Review Reminders"
+            description="Reminders to review products you've purchased" />
 
         {{-- Account & Security --}}
         <div class="flex items-center gap-2 px-5 py-3.5 border-b border-zinc-200 bg-zinc-50/40">
-            <flux:icon.shield-check class="w-3.5 h-3.5 text-brand-primary shrink-0" />
-            <span class="text-[11px] font-bold tracking-[0.1em] uppercase text-zinc-500">Account & Security</span>
+            <flux:icon.shield-check class="w-3.5 h-3.5 text-primary shrink-0" />
+            <span class="text-[11px] font-bold tracking-widest uppercase text-zinc-500">Account & Security</span>
         </div>
-        <x-customer.notification-row topic="security_alerts" title="Security Alerts" description="Important updates about your account security" />
-        <x-customer.notification-row topic="password_changes" title="Password Changes" description="Notifications when your password is changed" />
+        <x-customer.notification-row topic="security_alerts" title="Security Alerts"
+            description="Important updates about your account security" />
+        <x-customer.notification-row topic="password_changes" title="Password Changes"
+            description="Notifications when your password is changed" />
 
         {{-- Marketing & Newsletter --}}
         <div class="flex items-center gap-2 px-5 py-3.5 border-b border-zinc-200 bg-zinc-50/40">
-            <flux:icon.envelope class="w-3.5 h-3.5 text-brand-primary shrink-0" />
-            <span class="text-[11px] font-bold tracking-[0.1em] uppercase text-zinc-500">Marketing Communications</span>
+            <flux:icon.envelope class="w-3.5 h-3.5 text-primary shrink-0" />
+            <span class="text-[11px] font-bold tracking-widest uppercase text-zinc-500">Marketing Communications</span>
         </div>
         <div class="flex items-center justify-between px-5 py-3.5">
             <div class="flex-1">
                 <div class="text-[13px] font-semibold text-zinc-950 mb-0.5">Newsletter Subscription</div>
-                <div class="text-[12px] text-zinc-500">Receive updates about new products, promotions, and special offers</div>
+                <div class="text-[12px] text-zinc-500">Receive updates about new products, promotions, and special
+                    offers</div>
             </div>
-            <button type="button"
-                wire:click="$toggle('newsletter_subscribed')"
-                @class(['relative w-9.5 h-5.5 rounded-full shrink-0 transition-colors cursor-pointer ml-4', 'bg-brand-primary' => $newsletter_subscribed, 'bg-zinc-200' => ! $newsletter_subscribed])>
-                <div @class(['absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white shadow transition-transform', 'translate-x-4' => $newsletter_subscribed])></div>
+            <button type="button" wire:click="$toggle('newsletter_subscribed')" @class([
+                'relative w-9.5 h-5.5 rounded-full shrink-0 transition-colors cursor-pointer ml-4',
+                'bg-primary' => $newsletter_subscribed,
+                'bg-zinc-200' => !$newsletter_subscribed,
+            ])>
+                <div @class([
+                    'absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white shadow transition-transform',
+                    'translate-x-4' => $newsletter_subscribed,
+                ])></div>
             </button>
         </div>
 
         <x-slot:footer>
             <button type="button" wire:click="save"
-                class="inline-flex items-center gap-1.5 bg-brand-primary text-white px-6 py-2.5 font-barlow-condensed text-[13px] font-extrabold tracking-wider uppercase transition-colors hover:bg-[#e03d00] cursor-pointer">
+                class="inline-flex items-center gap-1.5 bg-primary text-white px-6 py-2.5 font-barlow-condensed text-[13px] font-extrabold tracking-wider uppercase transition-colors hover:bg-[#e03d00] cursor-pointer">
                 <span wire:loading.remove wire:target="save">Save Preferences</span>
                 <span wire:loading wire:target="save">Saving...</span>
             </button>

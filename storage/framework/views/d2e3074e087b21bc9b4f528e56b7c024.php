@@ -8,7 +8,7 @@ use Livewire\WithPagination;
 <?php
     $tabClass =
         'px-[18px] py-2.5 text-[11px] font-bold tracking-[0.08em] uppercase cursor-pointer border-r border-zinc-200 last:border-r-0 whitespace-nowrap font-serif transition-all';
-    $tabActive = 'bg-secondary text-white';
+    $tabActive = 'bg-primary text-white';
     $tabInactive = 'bg-transparent text-zinc-500 hover:bg-zinc-50 hover:text-zinc-950';
 ?>
 

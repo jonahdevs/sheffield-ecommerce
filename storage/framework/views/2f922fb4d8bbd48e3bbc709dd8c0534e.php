@@ -43,19 +43,19 @@ unset($__defined_vars, $__key, $__value); ?>
                 <div class="<?php echo \Illuminate\Support\Arr::toCssClasses([
                     '[&_svg]:w-[15px] [&_svg]:h-[15px]',
                     'text-red-500' => $danger,
-                    'text-brand-primary' => !$danger,
+                    'text-primary' => !$danger,
                 ]); ?>">
                     <?php echo e($icon); ?>
 
                 </div>
             <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
-            <h3 class="font-barlow-condensed text-[16px] font-extrabold uppercase tracking-wide">
+            <h3 class="font-serif text-[16px] font-extrabold uppercase tracking-wide">
                 <span class="<?php echo \Illuminate\Support\Arr::toCssClasses(['text-red-500' => $danger, 'text-zinc-950' => !$danger]); ?>"><?php echo e($title); ?></span>
                 <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($titleEm): ?>
                     <em class="<?php echo \Illuminate\Support\Arr::toCssClasses([
                         'not-italic',
                         'text-red-500' => $danger,
-                        'text-brand-primary' => !$danger,
+                        'text-primary' => !$danger,
                     ]); ?>"><?php echo e($titleEm); ?></em>
                 <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
             </h3>

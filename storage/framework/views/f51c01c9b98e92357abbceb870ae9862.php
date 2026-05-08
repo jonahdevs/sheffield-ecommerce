@@ -6,12 +6,13 @@ use Illuminate\Support\Facades\Storage;
 use Livewire\Attributes\{Computed, Layout, Title};
 use Livewire\Component;
 use Livewire\WithFileUploads;
+use App\Models\User;
 ?>
 
 <?php
     $inputClass =
-        'w-full border-[1.5px] border-zinc-200 px-3 py-2.5 text-[13px] font-medium outline-none transition-all focus:border-brand-primary focus:ring-[3px] focus:ring-brand-primary/8';
-    $labelClass = 'block text-[10px] font-bold tracking-[0.1em] uppercase text-zinc-500 mb-1.5';
+        'w-full border-[1.5px] border-zinc-200 px-3 py-2.5 text-[13px] font-medium outline-none transition-all focus:border-primary focus:ring-[3px] focus:ring-primary/8';
+    $labelClass = 'block text-[10px] font-bold tracking-widest uppercase text-zinc-500 mb-1.5';
 ?>
 
 <div class="flex flex-col gap-5">
@@ -55,26 +56,66 @@ use Livewire\WithFileUploads;
 
         <div class="flex items-center gap-6 px-5 py-5">
             <label for="avatarInput"
-                class="relative w-20 h-20 rounded-full bg-zinc-950 text-white font-barlow-condensed text-[26px] font-black flex items-center justify-center shrink-0 cursor-pointer hover:brightness-75 transition-all overflow-hidden">
+                class="relative size-20 rounded-full  text-white font-sherif text-[26px] font-black flex items-center justify-center shrink-0 cursor-pointer hover:brightness-75 transition-all">
                 <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(auth()->user()->avatar): ?>
-                    <img src="<?php echo e(auth()->user()->avatarUrl()); ?>" alt="<?php echo e(auth()->user()->name); ?>"
-                        class="w-full h-full object-cover" />
-                <?php else: ?>
-                    <?php echo e($this->initials); ?>
+                    <?php if (isset($component)) { $__componentOriginal4dcb6e757bd07b9aa3bf7ee84cfc8690 = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginal4dcb6e757bd07b9aa3bf7ee84cfc8690 = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::avatar.index','data' => ['circle' => true,'class' => 'w-full h-full shrink-0','src' => ''.e($user->avatar).'']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('flux::avatar'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes(['circle' => true,'class' => 'w-full h-full shrink-0','src' => ''.e($user->avatar).'']); ?>
+<?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
 
+<?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginal4dcb6e757bd07b9aa3bf7ee84cfc8690)): ?>
+<?php $attributes = $__attributesOriginal4dcb6e757bd07b9aa3bf7ee84cfc8690; ?>
+<?php unset($__attributesOriginal4dcb6e757bd07b9aa3bf7ee84cfc8690); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginal4dcb6e757bd07b9aa3bf7ee84cfc8690)): ?>
+<?php $component = $__componentOriginal4dcb6e757bd07b9aa3bf7ee84cfc8690; ?>
+<?php unset($__componentOriginal4dcb6e757bd07b9aa3bf7ee84cfc8690); ?>
+<?php endif; ?>
+                <?php else: ?>
+                    <?php if (isset($component)) { $__componentOriginal4dcb6e757bd07b9aa3bf7ee84cfc8690 = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginal4dcb6e757bd07b9aa3bf7ee84cfc8690 = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::avatar.index','data' => ['circle' => true,'class' => 'w-full h-full shrink-0','name' => ''.e($user->name).'']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('flux::avatar'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes(['circle' => true,'class' => 'w-full h-full shrink-0','name' => ''.e($user->name).'']); ?>
+<?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
+
+<?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginal4dcb6e757bd07b9aa3bf7ee84cfc8690)): ?>
+<?php $attributes = $__attributesOriginal4dcb6e757bd07b9aa3bf7ee84cfc8690; ?>
+<?php unset($__attributesOriginal4dcb6e757bd07b9aa3bf7ee84cfc8690); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginal4dcb6e757bd07b9aa3bf7ee84cfc8690)): ?>
+<?php $component = $__componentOriginal4dcb6e757bd07b9aa3bf7ee84cfc8690; ?>
+<?php unset($__componentOriginal4dcb6e757bd07b9aa3bf7ee84cfc8690); ?>
+<?php endif; ?>
                 <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
                 <div
-                    class="absolute bottom-0 right-0 w-6 h-6 rounded-full bg-brand-primary flex items-center justify-center border-2 border-white">
+                    class="absolute bottom-0 right-0 w-6 h-6 rounded-full bg-primary flex items-center justify-center border-2 border-white">
                     <?php if (isset($component)) { $__componentOriginal736a3246944d2d8ec1919ce8cba6f0a6 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginal736a3246944d2d8ec1919ce8cba6f0a6 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::icon.pencil-square','data' => ['class' => 'w-[11px] h-[11px] text-white']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::icon.pencil-square','data' => ['class' => 'w-2.75 h-2.75 text-white']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('flux::icon.pencil-square'); ?>
 <?php if ($component->shouldRender()): ?>
 <?php $__env->startComponent($component->resolveView(), $component->data()); ?>
 <?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
 <?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
 <?php endif; ?>
-<?php $component->withAttributes(['class' => 'w-[11px] h-[11px] text-white']); ?>
+<?php $component->withAttributes(['class' => 'w-2.75 h-2.75 text-white']); ?>
 <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
 
 <?php echo $__env->renderComponent(); ?>
@@ -320,7 +361,7 @@ unset($__errorArgs, $__bag); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendB
 
             <div class="flex items-center gap-2.5 mt-5 pt-4 border-t border-zinc-200">
                 <button type="submit"
-                    class="inline-flex items-center gap-1.5 bg-brand-primary text-white px-6 py-2.5 font-barlow-condensed text-[13px] font-extrabold tracking-wider uppercase transition-colors hover:bg-[#e03d00] cursor-pointer">
+                    class="inline-flex items-center gap-1.5 bg-primary text-white px-6 py-2.5 font-barlow-condensed text-[13px] font-extrabold tracking-wider uppercase transition-colors hover:bg-[#e03d00] cursor-pointer">
                     <span wire:loading.remove wire:target="save"><?php echo e(__('Save Changes')); ?></span>
                     <span wire:loading wire:target="save"><?php echo e(__('Saving...')); ?></span>
                 </button>
@@ -377,13 +418,13 @@ unset($__errorArgs, $__bag); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendB
 
         <div class="grid grid-cols-1 md:grid-cols-2 px-5 py-5">
             <div class="py-2.5 md:pr-5 md:border-r md:border-zinc-200">
-                <div class="text-[10px] font-bold tracking-[0.1em] uppercase text-zinc-500">Member Since</div>
+                <div class="text-[10px] font-bold tracking-widest uppercase text-zinc-500">Member Since</div>
                 <div class="text-[14px] font-bold text-zinc-950 mt-1"><?php echo e(auth()->user()->created_at->format('F Y')); ?>
 
                 </div>
             </div>
             <div class="py-2.5 md:pl-5">
-                <div class="text-[10px] font-bold tracking-[0.1em] uppercase text-zinc-500">Account Type</div>
+                <div class="text-[10px] font-bold tracking-widest uppercase text-zinc-500">Account Type</div>
                 <div class="flex items-center gap-2 mt-1">
                     <span class="text-[14px] font-bold text-zinc-950">Standard</span>
                     <span

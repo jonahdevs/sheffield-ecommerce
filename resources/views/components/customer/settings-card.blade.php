@@ -15,18 +15,18 @@
                 <div @class([
                     '[&_svg]:w-[15px] [&_svg]:h-[15px]',
                     'text-red-500' => $danger,
-                    'text-brand-primary' => !$danger,
+                    'text-primary' => !$danger,
                 ])>
                     {{ $icon }}
                 </div>
             @endif
-            <h3 class="font-barlow-condensed text-[16px] font-extrabold uppercase tracking-wide">
+            <h3 class="font-serif text-[16px] font-extrabold uppercase tracking-wide">
                 <span @class(['text-red-500' => $danger, 'text-zinc-950' => !$danger])>{{ $title }}</span>
                 @if ($titleEm)
                     <em @class([
                         'not-italic',
                         'text-red-500' => $danger,
-                        'text-brand-primary' => !$danger,
+                        'text-primary' => !$danger,
                     ])>{{ $titleEm }}</em>
                 @endif
             </h3>
