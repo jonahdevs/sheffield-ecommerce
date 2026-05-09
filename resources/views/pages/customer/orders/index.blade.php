@@ -65,7 +65,7 @@ new #[Layout('layouts.customer')] class extends Component {
 
 <div>
     {{-- Filter tabs --}}
-    <div class="flex border-[1.5px] border-zinc-200 bg-white overflow-x-auto mb-5">
+    <div class="flex border-[1.5px] border-zinc-200 bg-white overflow-x-auto mb-5 rounded-sm overflow-hidden">
         <button wire:click="$set('selectedTab', 'ongoing')"
             class="{{ $tabClass }} {{ $selectedTab === 'ongoing' ? $tabActive : $tabInactive }}">
             Ongoing / Delivered ({{ $this->ongoingOrders->total() }})
@@ -82,7 +82,7 @@ new #[Layout('layouts.customer')] class extends Component {
 
         @forelse ($orders as $order)
             <a href="{{ route('customer.orders.show', $order) }}" wire:navigate
-                class="p-4.5 border-b border-zinc-200 last:border-b-0 flex items-center gap-4 transition-colors hover:bg-zinc-50 cursor-pointer">
+                class="p-4.5 border-b border-zinc-200 last:border-b-0 flex items-center gap-4 transition-colors hover:bg-zinc-50 cursor-pointer rounded-sm">
                 <div class="hidden md:flex -space-x-2">
                     @foreach ($order->items->take(3) as $item)
                         <div

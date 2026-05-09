@@ -88,8 +88,8 @@ new #[Layout('layouts.customer')] class extends Component {
             </x-slot:icon>
             <x-slot:action>
                 <a href="{{ route('customer.address-book.index') }}"
-                    class="flex items-center gap-1.5 text-[11px] font-bold tracking-wider uppercase text-primary hover:opacity-70 transition-opacity">
-                    <flux:icon.chevron-right class="w-3.5 h-3.5" />
+                    class="flex items-center gap-1.5 text-xs font-bold tracking-wider uppercase text-primary hover:opacity-70 transition-opacity">
+                    <flux:icon.chevron-right class="w-3.5 h-3.5 stroke-2" />
                     Manage
                 </a>
             </x-slot:action>
@@ -111,7 +111,8 @@ new #[Layout('layouts.customer')] class extends Component {
                 </div>
             @else
                 <div class="text-[13px] text-zinc-500 italic mb-4">No default address set.</div>
-                <flux:button href="{{ route('customer.address-book.index') }}" wire:navigate size="sm">
+                <flux:button variant="primary" href="{{ route('customer.address-book.index') }}" wire:navigate
+                    size="sm">
                     <flux:icon.plus class="w-3.5 h-3.5" />
                     Add Address
                 </flux:button>

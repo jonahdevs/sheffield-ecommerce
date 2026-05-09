@@ -56,7 +56,7 @@
                         ],
                     ];
                 @endphp
-                <div class="grid grid-cols-2 md:grid-cols-4 bg-white border-[1.5px] border-zinc-200">
+                <div class="grid grid-cols-2 md:grid-cols-4 bg-white border-[1.5px] border-zinc-200 rounded-sm">
                     @foreach ($stats as $stat)
                         <div
                             class="flex items-center gap-3.5 p-5 border-zinc-200 max-md:odd:border-r max-md:nth-3:border-t max-md:nth-4:border-t md:border-r md:last:border-r-0">

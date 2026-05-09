@@ -14,7 +14,7 @@ use Livewire\WithPagination;
 
 <div>
     
-    <div class="flex border-[1.5px] border-zinc-200 bg-white overflow-x-auto mb-5">
+    <div class="flex border-[1.5px] border-zinc-200 bg-white overflow-x-auto mb-5 rounded-sm overflow-hidden">
         <button wire:click="$set('selectedTab', 'ongoing')"
             class="<?php echo e($tabClass); ?> <?php echo e($selectedTab === 'ongoing' ? $tabActive : $tabInactive); ?>">
             Ongoing / Delivered (<?php echo e($this->ongoingOrders->total()); ?>)
@@ -31,7 +31,7 @@ use Livewire\WithPagination;
 
         <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__empty_1 = true; $__currentLoopData = $orders; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $order): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoopIteration(); ?><?php endif; ?>
             <a href="<?php echo e(route('customer.orders.show', $order)); ?>" wire:navigate
-                class="p-4.5 border-b border-zinc-200 last:border-b-0 flex items-center gap-4 transition-colors hover:bg-zinc-50 cursor-pointer">
+                class="p-4.5 border-b border-zinc-200 last:border-b-0 flex items-center gap-4 transition-colors hover:bg-zinc-50 cursor-pointer rounded-sm">
                 <div class="hidden md:flex -space-x-2">
                     <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $order->items->take(3); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoopIteration(); ?><?php endif; ?>
                         <div

@@ -4,7 +4,7 @@
     'bodyClass' => 'p-5',
 ])
 
-<div {{ $attributes->merge(['class' => 'bg-white border border-zinc-200']) }}>
+<div {{ $attributes->merge(['class' => 'bg-white border border-zinc-200 rounded-sm']) }}>
     @if ($title || isset($icon) || isset($action))
         <div class="flex items-center justify-between px-5 py-4 border-b border-zinc-200">
             <div

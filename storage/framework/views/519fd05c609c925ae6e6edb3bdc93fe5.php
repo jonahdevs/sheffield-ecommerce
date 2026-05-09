@@ -36,7 +36,7 @@ foreach ($attributes->all() as $__key => $__value) {
 
 unset($__defined_vars, $__key, $__value); ?>
 
-<div <?php echo e($attributes->merge(['class' => 'bg-white border border-zinc-200'])); ?>>
+<div <?php echo e($attributes->merge(['class' => 'bg-white border border-zinc-200 rounded-sm'])); ?>>
     <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($title || isset($icon) || isset($action)): ?>
         <div class="flex items-center justify-between px-5 py-4 border-b border-zinc-200">
             <div

@@ -106,14 +106,6 @@
     --color-inverse-on-surface-muted: var(--inverse-on-surface-muted);
     --color-inverse-outline: var(--inverse-outline);
 
-    /* Shape — rounded-sm / rounded-md / rounded-lg / rounded-xl all scale together */
-    --radius-sm: calc(var(--radius) - 4px);
-    --radius-md: var(--radius);
-    --radius-lg: calc(var(--radius) + 4px);
-    --radius-xl: calc(var(--radius) + 8px);
-    --radius-2xl: calc(var(--radius) + 16px);
-    --radius-full: 9999px;
-
     /* Zinc → Slate remap (Flux uses zinc internally — keeps Flux neutral) */
     --color-zinc-50: var(--color-slate-50);
     --color-zinc-100: var(--color-slate-100);
