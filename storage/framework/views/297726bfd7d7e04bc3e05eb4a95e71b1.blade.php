@@ -1,1 +1,0 @@
-<x-customer.form-field name="logout_password"><x-slot:append><button type="submit">Sign Out</button></x-slot:append><input type="password" class="customer-input flex-1"></x-customer.form-field>

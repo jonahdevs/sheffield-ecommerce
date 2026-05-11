@@ -215,8 +215,7 @@ new #[Layout('layouts.customer-settings'), Title('Password & Security')] class e
                             style="width: {{ $strength['strength'] }}%; background-color: {{ $strength['color'] }}">
                         </div>
                     </div>
-                    <div class="text-[10px] font-bold tracking-wider uppercase"
-                        style="color: {{ $strength['color'] }}">
+                    <div class="text-[10px] font-bold tracking-wider uppercase" style="color: {{ $strength['color'] }}">
                         {{ $strength['label'] }}
                     </div>
                 </div>
@@ -237,11 +236,10 @@ new #[Layout('layouts.customer-settings'), Title('Password & Security')] class e
             @endif
 
             <div class="flex items-center gap-2.5 mt-5 pt-4 border-t border-zinc-200">
-                <button type="submit"
-                    class="inline-flex items-center gap-1.5 bg-primary text-white px-6 py-2.5 font-serif text-[13px] font-extrabold tracking-wider uppercase transition-colors hover:bg-[#e03d00] cursor-pointer">
+                <flux:button type="submit" variant="customer-primary" size="customer-lg">
                     <span wire:loading.remove wire:target="updatePassword">Update Password</span>
                     <span wire:loading wire:target="updatePassword">Updating...</span>
-                </button>
+                </flux:button>
             </div>
         </form>
     </x-customer.settings-card>
@@ -313,21 +311,19 @@ new #[Layout('layouts.customer-settings'), Title('Password & Security')] class e
                     </div>
 
                     <div class="flex items-center gap-2 flex-wrap">
-                        <button type="button" wire:click="regenerateRecoveryCodes"
-                            class="border-[1.5px] border-zinc-200 px-3.5 py-1.5 font-serif text-[11px] font-extrabold tracking-wider uppercase transition-all hover:border-zinc-950 hover:bg-zinc-950 hover:text-white cursor-pointer">
+                        <flux:button type="button" wire:click="regenerateRecoveryCodes" variant="customer-outline"
+                            size="customer">
                             Regenerate Recovery Codes
-                        </button>
-                        <button type="button" wire:click="disableTwoFactor"
-                            wire:confirm="Disable two-factor authentication?"
-                            class="border-[1.5px] border-red-500 text-red-500 px-3.5 py-1.5 font-serif text-[11px] font-extrabold tracking-wider uppercase transition-all hover:bg-red-500 hover:text-white cursor-pointer">
+                        </flux:button>
+                        <flux:button type="button" wire:click="disableTwoFactor" variant="customer-danger"
+                            size="customer" wire:confirm="Disable two-factor authentication?">
                             Disable
-                        </button>
+                        </flux:button>
                     </div>
                 @else
-                    <button type="button" wire:click="enableTwoFactor"
-                        class="border-[1.5px] border-zinc-950 px-3.5 py-1.5 font-serif text-[11px] font-extrabold tracking-wider uppercase transition-all hover:bg-zinc-950 hover:text-white cursor-pointer">
+                    <flux:button type="button" wire:click="enableTwoFactor" variant="customer-outline" size="customer">
                         Enable
-                    </button>
+                    </flux:button>
                 @endif
             </div>
         </x-customer.settings-card>
@@ -363,10 +359,9 @@ new #[Layout('layouts.customer-settings'), Title('Password & Security')] class e
             <form wire:submit="logoutOtherDevices">
                 <x-customer.form-field name="logout_password">
                     <x-slot:append>
-                        <button type="submit"
-                            class="border-[1.5px] border-red-500 text-red-500 px-3.5 font-serif text-[11px] font-extrabold tracking-wider uppercase transition-all hover:bg-red-500 hover:text-white cursor-pointer whitespace-nowrap">
+                        <flux:button type="submit" variant="customer-danger" size="customer" class="whitespace-nowrap">
                             Sign Out Everywhere Else
-                        </button>
+                        </flux:button>
                     </x-slot:append>
                     <input type="password" wire:model="logout_password" placeholder="Confirm your password"
                         class="customer-input flex-1">

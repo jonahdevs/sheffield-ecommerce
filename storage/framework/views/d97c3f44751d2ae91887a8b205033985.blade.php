@@ -1,1 +1,0 @@
-<x-customer.form-field><input type="text" class="customer-input" placeholder="Test"></x-customer.form-field>

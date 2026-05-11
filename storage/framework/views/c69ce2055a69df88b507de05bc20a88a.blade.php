@@ -1,1 +1,0 @@
-<x-customer.form-field><x-slot:suffix><button>Eye</button></x-slot:suffix><input type="text"></x-customer.form-field>

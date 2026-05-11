@@ -1,1 +1,0 @@
-<x-customer.form-field label="Full Name" />

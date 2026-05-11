@@ -1,7 +1,7 @@
 @props(['title', 'titleEm' => '', 'danger' => false])
 
 <div @class([
-    'bg-white border',
+    'bg-white border rounded',
     'border-red-500' => $danger,
     'border-zinc-200' => !$danger,
 ])>

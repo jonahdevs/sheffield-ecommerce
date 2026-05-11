@@ -89,25 +89,28 @@ new #[Title('Order Details')] #[Layout('layouts.customer')] class extends Compon
 ?>
 
 <div>
-    <flux:card class="rounded-md p-0">
-
-        {{-- Header --}}
-        <div class="flex items-center gap-3 px-3 py-2 border-b">
-            <flux:button size="xs" icon="arrow-long-left" variant="ghost" class="cursor-pointer"
-                :href="route('customer.orders.index')" wire:navigate />
-            <flux:heading size="lg">Order Details</flux:heading>
+    <div class="bg-white border border-zinc-200">
+        <div class="p-4 bg-white border-b border-zinc-200 flex items-center justify-between flex-wrap gap-3">
+            <a href="{{ route('customer.orders.index') }}" wire:navigate
+                class="flex items-center gap-1.5 text-[12px] font-bold tracking-widest uppercase text-zinc-500 transition-colors hover:text-primary cursor-pointer">
+                <flux:icon.chevron-left class="w-3.5 h-3.5" />
+                Back to Orders
+            </a>
+            <div class="font-serif text-[18px] font-black text-zinc-950">
+                ORDER <em class="text-primary not-italic">#{{ $order->reference }}</em>
+            </div>
+            <flux:badge :color="$order->status->color()">{{ $order->status->label() }}
+            </flux:badge>
         </div>
 
-        <section class="p-5">
+        <div class="p-5 flex flex-col gap-5">
 
             {{-- ============================================================ --}}
             {{-- CONVERTED FROM QUOTE NOTICE                                   --}}
             {{-- Shown when this order was converted from an accepted quote.   --}}
-            {{-- $order->quote relationship will be populated once the         --}}
-            {{-- Quote system is built. Hidden until then.                     --}}
             {{-- ============================================================ --}}
             @if ($order->wasConvertedFromQuote() && $order->quote)
-                <div class="flex items-center gap-3 p-3 bg-blue-50 border border-blue-200 rounded-lg mb-5">
+                <div class="flex items-center gap-3 p-3 bg-blue-50 border border-blue-200 rounded-sm mb-6">
                     <flux:icon.tag class="size-4 shrink-0 text-blue-500" />
                     <flux:text class="text-sm text-blue-800 flex-1">
                         This order was created from quote
@@ -119,330 +122,278 @@ new #[Title('Order Details')] #[Layout('layouts.customer')] class extends Compon
                 </div>
             @endif
 
-            {{-- Order meta --}}
-            <div class="space-y-1">
-                <flux:heading>Order n° {{ $order->reference }}</flux:heading>
-                <flux:text>
-                    {{ $order->items_count }} {{ Str::plural('item', $order->items_count) }}
-                </flux:text>
-                <flux:text>Placed on {{ $order->created_at->format('M j, Y') }}</flux:text>
-                <flux:heading>{{ format_currency($order->total) }}</flux:heading>
+            {{-- Order Quick Summary --}}
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 pb-6 border-b border-zinc-200">
+                <div>
+                    <div class="text-[10px] font-bold tracking-widest uppercase text-zinc-500 mb-1">Placed On</div>
+                    <div class="text-[14px] font-semibold text-zinc-950">{{ $order->created_at->format('M j, Y') }}
+                    </div>
+                </div>
             </div>
 
-            <flux:separator class="my-5" />
+            {{-- Items List --}}
+            <div class="">
+                <h3 class="text-base font-bold uppercase tracking-wider text-zinc-900 mb-4 font-serif">Items in Your
+                    Order
+                </h3>
 
-            {{-- ── Items ── --}}
-            <flux:heading class="text-lg mb-4">Items in Your Order</flux:heading>
+                <div class="flex flex-col border border-zinc-200">
+                    @foreach ($order->items as $item)
+                        @php
+                            $name = $item->product_snapshot['name'] ?? ($item->product?->name ?? '—');
+                            $sku = $item->product_snapshot['sku'] ?? null;
+                            $brand = $item->product?->brand?->name ?? null;
+                            $imagePath = $item->product_image_url ?? $item->product?->image_url;
+                            $inStock = ($item->product?->stock_quantity ?? 0) > 0;
+                        @endphp
 
-            <div class="space-y-4">
-                @foreach ($order->items as $item)
-                    @php
-                        $name = $item->product_snapshot['name'] ?? ($item->product?->name ?? '—');
-                        $sku = $item->product_snapshot['sku'] ?? null;
-                        $imagePath = $item->product_image_url ?? $item->product?->image_url;
-                        $inStock = ($item->product?->stock_quantity ?? 0) > 0;
-                    @endphp
-
-                    <div class="border rounded-md p-4">
-
-                        <div class="mb-3">
-                            <flux:badge size="sm" :color="$order->status->color()">
-                                {{ $order->status->label() }}
-                            </flux:badge>
-                        </div>
-
-                        <div class="flex flex-col sm:flex-row gap-4">
-
-                            {{-- Image --}}
-                            <div class="shrink-0">
+                        <div class="flex items-center gap-3.5 p-3.5 border-b border-zinc-200 last:border-b-0">
+                            <div class="w-14 h-14 bg-zinc-50 flex items-center justify-center shrink-0 relative">
                                 @if ($imagePath)
-                                    <a href="{{ route('products.show', $item->product) }}" wire:navigate>
-                                        <img src="{{ asset($imagePath) }}" alt="{{ $name }}"
-                                            class="w-full sm:w-20 sm:h-20 h-48 object-contain rounded" />
-                                    </a>
+                                    <img src="{{ asset($imagePath) }}" alt="{{ $name }}"
+                                        class="w-[90%] h-[90%] object-contain">
                                 @else
-                                    <div
-                                        class="w-full sm:w-20 sm:h-20 h-48 bg-zinc-100 rounded flex items-center justify-center">
-                                        <flux:icon.photo class="w-8 h-8 text-zinc-300" />
-                                    </div>
+                                    <flux:icon.photo class="w-8 h-8 text-zinc-200" />
                                 @endif
                             </div>
-
-                            {{-- Details + Actions --}}
-                            <div class="flex flex-1 gap-4 justify-between">
-                                <div class="flex-1">
-                                    <flux:heading size="sm">{{ $name }}</flux:heading>
-                                    @if ($sku)
-                                        <flux:text size="sm" class="text-zinc-400">SKU: {{ $sku }}
-                                        </flux:text>
+                            <div class="flex-1 min-w-0">
+                                <div class="text-[9px] font-bold tracking-widest uppercase text-zinc-500 mb-0.5">
+                                    {{ $brand }} @if ($sku)
+                                        · SKU: {{ $sku }}
                                     @endif
-                                    <flux:text size="sm" class="text-zinc-500 mt-1">
-                                        {{ $item->quantity }} × {{ format_currency($item->unit_price_cents / 100) }}
-                                    </flux:text>
-                                    <flux:text size="sm" class="font-semibold mt-1">
-                                        {{ format_currency($item->total_cents / 100) }}
-                                    </flux:text>
                                 </div>
-
-                                <div class="shrink-0 flex flex-col items-end gap-2">
-                                    <flux:button size="sm" variant="primary" icon="shopping-cart"
-                                        class="cursor-pointer" wire:click="buyAgain({{ $item->product_id }})"
-                                        :disabled="!$inStock">
-                                        {{ $inStock ? 'Buy Again' : 'Out of Stock' }}
-                                    </flux:button>
-
-                                    <flux:link href="{{ route('customer.orders.tracking', $order) }}" wire:navigate
-                                        class="text-xs!">
-                                        See Status History
-                                    </flux:link>
+                                <div class="text-[13px] font-semibold text-zinc-950 mb-0.5 truncate">
+                                    {{ $name }}
                                 </div>
+                                <div class="text-[11px] text-zinc-500">Qty: {{ $item->quantity }}</div>
+                            </div>
+                            <div class="flex flex-col items-end gap-2">
+                                <div class="text-[13px] font-bold text-zinc-950 shrink-0">
+                                    {{ format_currency($item->total_cents / 100) }}</div>
+                                <button
+                                    class="text-[10px] font-bold uppercase text-primary tracking-widest hover:underline cursor-pointer"
+                                    wire:click="buyAgain({{ $item->product_id }})"
+                                    @if (!$inStock) disabled @endif>
+                                    {{ $inStock ? 'Buy Again' : 'Out of Stock' }}
+                                </button>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-5">
+                    {{-- Summary --}}
+                    {{-- <div class="border border-zinc-200">
+                        <div class="flex justify-between p-3 border-b border-zinc-200 text-[13px]">
+                            <span class="text-zinc-500">Subtotal</span>
+                            <span class="font-bold text-zinc-950">{{ format_currency($order->subtotal) }}</span>
+                        </div>
+                        @if ($order->discount > 0)
+                            <div class="flex justify-between p-3 border-b border-zinc-200 text-[13px]">
+                                <span class="text-zinc-500">Discount</span>
+                                <span class="font-bold text-green-600">- {{ format_currency($order->discount) }}</span>
+                            </div>
+                        @endif
+                        <div class="flex justify-between p-3 border-b border-zinc-200 text-[13px]">
+                            <span class="text-zinc-500">Shipping</span>
+                            <span
+                                class="font-bold text-zinc-950">{{ $order->shipping == 0 ? 'FREE' : format_currency($order->shipping) }}</span>
+                        </div>
+                        <div class="flex justify-between p-3 bg-zinc-50 ">
+                            <span class="font-sans text-[15px] font-bold uppercase">Total</span>
+                            <span
+                                class="font-sans text-[22px] font-bold text-primary">{{ format_currency($order->total) }}</span>
+                        </div>
+                    </div> --}}
+
+                    {{-- Order Totals --}}
+                    <div class="bg-zinc-50 border border-zinc-200 rounded-sm overflow-hidden">
+                        <div class="px-5 py-4 border-b border-zinc-200 bg-white">
+                            <h3 class="text-[13px] font-bold uppercase tracking-widest text-zinc-950 font-serif">Order
+                                Summary</h3>
+                        </div>
+                        <div class="p-5 space-y-3">
+                            <div class="flex justify-between text-[13px]">
+                                <span class="text-zinc-500 font-medium">Subtotal</span>
+                                <span class="text-zinc-950 font-bold">{{ format_currency($order->subtotal) }}</span>
+                            </div>
+                            @if ($order->discount > 0)
+                                <div class="flex justify-between text-[13px]">
+                                    <span class="text-green-600 font-medium">Discount</span>
+                                    <span class="text-green-600 font-bold">−
+                                        {{ format_currency($order->discount) }}</span>
+                                </div>
+                            @endif
+                            <div class="flex justify-between text-[13px]">
+                                <span class="text-zinc-500 font-medium">Shipping</span>
+                                <span class="text-zinc-950 font-bold">
+                                    {{ $order->shipping == 0 ? 'FREE' : format_currency($order->shipping) }}
+                                </span>
+                            </div>
+                            <div class="pt-3 border-t border-zinc-200 flex justify-between items-baseline">
+                                <span class="text-[14px] font-bold uppercase tracking-widest text-zinc-950">Total</span>
+                                <span class="text-[24px] font-black text-primary font-barlow-condensed leading-none">
+                                    {{ format_currency($order->total) }}
+                                </span>
                             </div>
                         </div>
                     </div>
-                @endforeach
-            </div>
 
-            {{-- ── Order total breakdown ── --}}
-            <div class="mt-6 space-y-1.5 max-w-xs ml-auto">
-                <div class="flex justify-between text-sm">
-                    <flux:text>Subtotal</flux:text>
-                    <span>{{ format_currency($order->subtotal) }}</span>
-                </div>
-
-                @if ($order->discount > 0)
-                    <div class="flex justify-between text-sm text-green-600">
-                        <span>Discount</span>
-                        <span>− {{ format_currency($order->discount) }}</span>
-                    </div>
-                @endif
-
-                <div class="flex justify-between text-sm">
-                    <flux:text>Shipping</flux:text>
-                    <span>
-                        @if ($order->shipping == 0)
-                            <span class="text-green-600">Free</span>
-                        @else
-                            {{ format_currency($order->shipping) }}
-                        @endif
-                    </span>
-                </div>
-
-                <div class="flex justify-between font-semibold border-t pt-2">
-                    <span>Total</span>
-                    <span>{{ format_currency($order->total) }}</span>
-                </div>
-            </div>
-
-            <flux:separator class="my-8" />
-
-            {{-- ── Payment & Delivery ── --}}
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-0 md:divide-x">
-
-                {{-- Payment Information --}}
-                <div class="px-4">
-                    <flux:heading class="text-lg mb-4">Payment Information</flux:heading>
-
-                    @if ($order->payment)
-                        <div class="space-y-3">
-
-                            <div class="flex items-center justify-between">
-                                <flux:text class="text-sm text-zinc-500">Status</flux:text>
-                                <flux:badge size="sm" :color="$order->payment->status->color()">
-                                    {{ $order->payment->status->label() }}
-                                </flux:badge>
-                            </div>
-
-                            <div class="flex items-center justify-between">
-                                <flux:text class="text-sm text-zinc-500">Method</flux:text>
-                                <flux:text class="text-sm font-medium uppercase">
-                                    {{ $order->payment->gateway ?? '—' }}
-                                </flux:text>
-                            </div>
-
-                            <div class="flex items-center justify-between">
-                                <flux:text class="text-sm text-zinc-500">Amount</flux:text>
-                                <flux:text class="text-sm font-medium">
-                                    {{ format_currency(($order->payment->amount_cents ?? 0) / 100) }}
-                                    {{ $order->currency }}
-                                </flux:text>
-                            </div>
-
-                            @if ($order->payment->paid_at)
-                                <div class="flex items-center justify-between">
-                                    <flux:text class="text-sm text-zinc-500">Paid on</flux:text>
-                                    <flux:text class="text-sm font-medium">
-                                        {{ $order->payment->paid_at->format('M j, Y') }}
-                                        <span class="text-zinc-400 font-normal">
-                                            {{ $order->payment->paid_at->format('g:i A') }}
-                                        </span>
-                                    </flux:text>
-                                </div>
-                            @endif
-
-                            @if ($order->payment->card_brand && $order->payment->card_last4)
-                                <div class="flex items-center justify-between">
-                                    <flux:text class="text-sm text-zinc-500">Card</flux:text>
-                                    <flux:text class="text-sm font-medium">
-                                        {{ ucfirst($order->payment->card_brand) }}
-                                        ending {{ $order->payment->card_last4 }}
-                                    </flux:text>
-                                </div>
-                            @endif
-
+                    <x-customer.card title="Delivery Information" bodyClass="py-3 px-5 text-[13px]">
+                        <div class="font-bold text-zinc-950 mb-1">
+                            {{ trim(($order->shipping_address['first_name'] ?? '') . ' ' . ($order->shipping_address['last_name'] ?? '')) ?: $order->shipping_address['full_name'] ?? 'N/A' }}
                         </div>
-
-                        @if (in_array($order->payment->status->value, [PaymentStatus::PENDING->value, PaymentStatus::PROCESSING->value]))
-                            <div class="mt-3 flex items-start gap-2 p-3 bg-amber-50 border border-amber-200 rounded-lg">
-                                <flux:icon.clock class="size-4 shrink-0 mt-0.5 text-amber-500" />
-                                <flux:text class="text-xs text-amber-700">
-                                    Payment is being processed. Your order will be confirmed shortly.
-                                </flux:text>
-                            </div>
-                        @endif
-
-                        @if ($order->payment->status->value === PaymentStatus::FAILED->value)
-                            <div class="mt-3 flex items-start gap-2 p-3 bg-rose-50 border border-rose-200 rounded-lg">
-                                <flux:icon.x-circle class="size-4 shrink-0 mt-0.5 text-rose-500" />
-                                <flux:text class="text-xs text-rose-700">
-                                    Payment was not completed. Please contact support if you believe this is an error.
-                                </flux:text>
-                            </div>
-                        @endif
-                    @else
-                        <div class="flex items-start gap-3 p-3 bg-zinc-50 border border-zinc-200 rounded-lg">
-                            <flux:icon.information-circle class="size-5 shrink-0 mt-0.5 text-zinc-400" />
-                            <flux:text class="text-sm text-zinc-500">
-                                No payment information available yet.
-                            </flux:text>
+                        <div class="text-zinc-500">
+                            {{ format_phone($order->shipping_address['phone_number'] ?? '') }}<br>
+                            {{ $order->shipping_address['address'] ?? 'N/A' }}<br>
+                            {{ implode(', ', array_filter([$order->shipping_address['area'] ?? null, $order->shipping_address['county'] ?? null])) }}
                         </div>
-                    @endif
+                        @if ($order->shipping_snapshot['method_name'] ?? null)
+                            <div class="mt-2 pt-2 border-t border-zinc-100">
+                                <span class="text-[11px] font-bold uppercase text-zinc-400 block mb-0.5">Method</span>
+                                <span class="font-semibold">{{ $order->shipping_snapshot['method_name'] }}</span>
+                                @if ($order->shipping_snapshot['delivery_window'] ?? null)
+                                    <span class="text-zinc-400 block text-[11px]">Est.
+                                        {{ $order->shipping_snapshot['delivery_window'] }}</span>
+                                @endif
+                            </div>
+                        @endif
+                    </x-customer.card>
 
-                    {{-- ============================================================ --}}
-                    {{-- INVOICE SECTION                                              --}}
-                    {{-- Shows different states depending on SAP sync progress.       --}}
-                    {{--                                                              --}}
-                    {{-- State 1 — cu_received: invoice ready, show download button  --}}
-                    {{-- State 2 — cu_pending:  SAP done, waiting for KRA webhook    --}}
-                    {{-- State 3 — failed:      SAP sync failed, show support notice --}}
-                    {{-- State 4 — pending/syncing: SAP not yet started              --}}
-                    {{-- ============================================================ --}}
-                    @if ($this->isPaid)
-                        <div class="mt-5">
-                            <flux:separator class="mb-4" />
-                            <flux:heading class="text-sm mb-3">Tax Invoice</flux:heading>
+                    <div class="bg-white border border-zinc-200 rounded-sm overflow-hidden">
+                        <div class="px-5 py-3 border-b border-zinc-200">
+                            <h3 class="text-[12px] font-bold uppercase tracking-widest text-zinc-950 font-serif">
+                                Payment Method</h3>
+                        </div>
+                        <div class="p-5">
+                            @if ($order->payment)
+                                <div class="flex items-center justify-between mb-4">
+                                    <div class="text-[13px] font-bold text-zinc-950 uppercase tracking-tight">
+                                        {{ $order->payment->gateway ?? '—' }}
+                                    </div>
+                                    <flux:badge size="sm" :color="$order->payment->status->color()">
+                                        {{ $order->payment->status->label() }}
+                                    </flux:badge>
+                                </div>
+                                <div class="space-y-2">
+                                    <div class="flex justify-between text-[12px]">
+                                        <span class="text-zinc-500">Amount Paid</span>
+                                        <span
+                                            class="font-bold text-zinc-950">{{ format_currency(($order->payment->amount_cents ?? 0) / 100) }}</span>
+                                    </div>
+                                    @if ($order->payment->paid_at)
+                                        <div class="flex justify-between text-[12px]">
+                                            <span class="text-zinc-500">Transaction Date</span>
+                                            <span
+                                                class="font-bold text-zinc-950">{{ $order->payment->paid_at->format('M j, Y') }}</span>
+                                        </div>
+                                    @endif
+                                </div>
 
-                            {{-- State 1: Invoice ready --}}
-                            @if ($this->hasKraReceipt)
-                                <div
-                                    class="flex items-start gap-3 p-3 bg-emerald-50 border border-emerald-200 rounded-lg mb-3">
-                                    <flux:icon.check-circle class="size-4 shrink-0 mt-0.5 text-emerald-600" />
-                                    <div>
-                                        <flux:text class="text-xs font-medium text-emerald-800">
-                                            KRA validated
-                                        </flux:text>
-                                        <flux:text class="text-xs text-emerald-700 mt-0.5">
-                                            CU No: {{ $order->kra_cu_number }}
-                                        </flux:text>
-                                        @if ($order->kra_validated_at)
-                                            <flux:text class="text-xs text-emerald-600 mt-0.5">
-                                                {{ $order->kra_validated_at->format('M j, Y g:i A') }}
-                                            </flux:text>
+                                {{-- Tax Invoice Section --}}
+                                @if ($this->isPaid)
+                                    <div class="mt-6 pt-5 border-t border-zinc-200">
+                                        <h4 class="text-[11px] font-bold uppercase tracking-widest text-zinc-400 mb-3">
+                                            Tax Invoice</h4>
+
+                                        @if ($this->hasKraReceipt)
+                                            <flux:button tag="a" :href="route('customer.orders.receipt', $order)"
+                                                size="sm" variant="primary" icon="arrow-down-tray"
+                                                class="w-full font-bold uppercase tracking-wider text-[10px]">
+                                                Download Invoice
+                                            </flux:button>
+                                            <div class="mt-2 text-center">
+                                                <div
+                                                    class="text-[10px] text-emerald-600 font-bold uppercase tracking-wide">
+                                                    KRA Validated</div>
+                                                <div class="text-[9px] text-zinc-500 mt-0.5">CU No:
+                                                    {{ $order->kra_cu_number }}</div>
+                                            </div>
+                                        @elseif ($this->isAwaitingKraValidation)
+                                            <div
+                                                class="p-3 bg-purple-50 border border-purple-100 rounded-sm text-[11px] text-purple-700 leading-relaxed font-medium">
+                                                Pending KRA validation. This usually takes a few minutes.
+                                            </div>
+                                        @elseif ($this->hasSapSyncFailed)
+                                            <div
+                                                class="p-3 bg-red-50 border border-red-100 rounded-sm text-[11px] text-red-700 leading-relaxed font-medium">
+                                                Invoice generation issue. Support has been notified.
+                                            </div>
+                                        @else
+                                            <div
+                                                class="p-3 bg-zinc-50 border border-zinc-100 rounded-sm text-[11px] text-zinc-500 leading-relaxed italic">
+                                                Your invoice is being prepared...
+                                            </div>
                                         @endif
                                     </div>
-                                </div>
-
-                                <flux:button size="sm" icon="arrow-down-tray" class="cursor-pointer w-full"
-                                    tag="a" href="{{ route('customer.orders.receipt', $order) }}">
-                                    Download Invoice
-                                </flux:button>
-
-                                {{-- State 2: Waiting for CU number --}}
-                            @elseif ($this->isAwaitingKraValidation)
-                                <div
-                                    class="flex items-start gap-2 p-3 bg-purple-50 border border-purple-200 rounded-lg">
-                                    <flux:icon.clock class="size-4 shrink-0 mt-0.5 text-purple-500" />
-                                    <flux:text class="text-xs text-purple-700">
-                                        Invoice pending KRA validation. This usually completes within a few minutes.
-                                        We'll email you once it's ready.
-                                    </flux:text>
-                                </div>
-
-                                {{-- State 3: SAP sync failed --}}
-                            @elseif ($this->hasSapSyncFailed)
-                                <div class="flex items-start gap-2 p-3 bg-rose-50 border border-rose-200 rounded-lg">
-                                    <flux:icon.exclamation-triangle class="size-4 shrink-0 mt-0.5 text-rose-500" />
-                                    <flux:text class="text-xs text-rose-700">
-                                        Invoice generation encountered an issue. Our team has been notified.
-                                        Please contact support if this persists.
-                                    </flux:text>
-                                </div>
-
-                                {{-- State 4: SAP sync pending or in progress --}}
+                                @endif
                             @else
-                                <div class="flex items-start gap-2 p-3 bg-zinc-50 border border-zinc-200 rounded-lg">
-                                    <flux:icon.clock class="size-4 shrink-0 mt-0.5 text-zinc-400" />
-                                    <flux:text class="text-xs text-zinc-500">
-                                        Your invoice is being prepared. Check back shortly.
-                                    </flux:text>
+                                <div class="p-4 bg-zinc-50 border border-zinc-200 border-dashed text-center">
+                                    <div class="text-[12px] text-zinc-400 italic">No payment info available</div>
                                 </div>
                             @endif
                         </div>
-                    @endif
-
-                </div>
-
-                {{-- Delivery Information --}}
-                <div class="px-4">
-                    <flux:heading class="text-lg mb-4">Delivery Information</flux:heading>
-
-                    <div class="space-y-1">
-                        <flux:text class="font-medium">
-                            {{ trim(($order->shipping_address['first_name'] ?? '') . ' ' . ($order->shipping_address['last_name'] ?? '')) ?: $order->shipping_address['full_name'] ?? 'N/A' }}
-                        </flux:text>
-                        <flux:text class="text-sm text-zinc-500">
-                            {{ format_phone($order->shipping_address['phone_number'] ?? '') }}
-                        </flux:text>
-                        <flux:text class="text-sm text-zinc-500">
-                            {{ $order->shipping_address['address'] ?? 'N/A' }}
-                        </flux:text>
-                        <flux:text class="text-sm text-zinc-500">
-                            {{ implode(
-                                ', ',
-                                array_filter([$order->shipping_address['area'] ?? null, $order->shipping_address['county'] ?? null]),
-                            ) }}
-                        </flux:text>
                     </div>
-
-                    @if ($order->shipping_snapshot['method_name'] ?? null)
-                        <flux:separator class="my-3" />
-                        <flux:text class="text-xs text-zinc-400 mb-1">Shipping method</flux:text>
-                        <flux:text class="text-sm font-medium">
-                            {{ $order->shipping_snapshot['method_name'] }}
-                        </flux:text>
-                        @if ($order->shipping_snapshot['delivery_window'] ?? null)
-                            <flux:text class="text-xs text-zinc-400 mt-0.5">
-                                Est. {{ $order->shipping_snapshot['delivery_window'] }}
-                            </flux:text>
-                        @endif
-                        @if ($order->shipping_snapshot['station_name'] ?? null)
-                            <flux:text class="text-xs text-zinc-400 mt-0.5">
-                                Pickup: {{ $order->shipping_snapshot['station_name'] }}
-                            </flux:text>
-                        @endif
-                    @endif
                 </div>
             </div>
 
-            <flux:separator class="my-8" />
+            {{-- Actions --}}
+            <div class="flex flex-wrap gap-2.5">
+                <flux:button tag="a" variant="outline" href="{{ route('customer.orders.tracking', $order) }}"
+                    wire:navigate size="sm" class="px-5!">
+                    <flux:icon.clock class="w-3.5 h-3.5" />
+                    Track Order
+                </flux:button>
 
-            {{-- Footer actions --}}
-            <div class="flex flex-col items-center gap-3">
-                <flux:text>
-                    Need help?
-                    <flux:link>Contact Support</flux:link>
-                </flux:text>
+                @if ($this->isPaid && $this->hasKraReceipt)
+                    <flux:button tag="a" variant="outline" href="{{ route('customer.orders.receipt', $order) }}"
+                        size="sm" class="px-5!">
+                        <flux:icon.arrow-down-tray class="w-3.5 h-3.5" />
+                        Download Invoice
+                    </flux:button>
+                @endif
+
+                @if ($order->status->value === OrderStatus::DELIVERED->value)
+                    <flux:button size="sm" class="px-5!">
+                        <flux:icon.star class="w-3.5 h-3.5" />
+                        Leave Review
+                    </flux:button>
+                @endif
             </div>
 
-        </section>
-    </flux:card>
+            {{-- KRA Validation messages --}}
+            @if ($this->isPaid)
+                <div class="mt-2">
+                    @if ($this->isAwaitingKraValidation)
+                        <div class="flex items-start gap-2 p-3 bg-purple-50 border border-purple-200 rounded-sm">
+                            <flux:icon.clock class="size-4 shrink-0 mt-0.5 text-purple-500" />
+                            <div class="text-xs text-purple-700">
+                                Invoice pending KRA validation. This usually completes within a few minutes. We'll email
+                                you
+                                once it's ready.
+                            </div>
+                        </div>
+                    @elseif ($this->hasSapSyncFailed)
+                        <div class="flex items-start gap-2 p-3 bg-rose-50 border border-rose-200 rounded-sm">
+                            <flux:icon.exclamation-triangle class="size-4 shrink-0 mt-0.5 text-rose-500" />
+                            <div class="text-xs text-rose-700">
+                                Invoice generation encountered an issue. Our team has been notified. Please contact
+                                support
+                                if this persists.
+                            </div>
+                        </div>
+                    @endif
+                </div>
+            @endif
+
+
+            <div class="text-center mt-6">
+                <div class="text-[13px] text-zinc-500">
+                    Need help with this order? <a href="#"
+                        class="text-primary font-bold hover:underline">Contact
+                        Support</a>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

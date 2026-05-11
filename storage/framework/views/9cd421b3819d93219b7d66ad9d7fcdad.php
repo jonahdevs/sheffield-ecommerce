@@ -91,7 +91,7 @@ use Artesaos\SEOTools\Facades\SEOMeta;
                     'bg-zinc-100 text-zinc-500 border-zinc-200' => !$on,
                 ]); ?>"><?php echo e($on ? $row['on'] : $row['off']); ?></span>
                 <button type="button" wire:click="togglePref('<?php echo e($row['key']); ?>')"
-                    class="border-[1.5px] border-zinc-200 px-3 py-1 font-serif text-[11px] font-extrabold tracking-wider uppercase transition-all hover:border-zinc-950 hover:bg-zinc-950 hover:text-white cursor-pointer">
+                    class="border-[1.5px] border-zinc-200 px-3 py-1 font-serif text-[11px] font-extrabold tracking-wider uppercase transition-all hover:border-primary hover:bg-primary hover:text-white cursor-pointer">
                     <?php echo e($on ? 'Disable' : 'Enable'); ?>
 
                 </button>
@@ -167,11 +167,30 @@ use Artesaos\SEOTools\Facades\SEOMeta;
 <?php $component->withAttributes(['title' => 'Download Your Data','description' => 'Download a JSON export of your personal data, orders, addresses, reviews and preferences.']); ?>
 <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
 
-            <button type="button" wire:click="downloadData"
-                class="border-[1.5px] border-zinc-950 px-3.5 py-1.5 font-serif text-[11px] font-extrabold tracking-wider uppercase transition-all hover:bg-zinc-950 hover:text-white cursor-pointer">
+            <?php if (isset($component)) { $__componentOriginalc04b147acd0e65cc1a77f86fb0e81580 = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginalc04b147acd0e65cc1a77f86fb0e81580 = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::button.index','data' => ['type' => 'button','wire:click' => 'downloadData','variant' => 'customer-outline','size' => 'customer']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('flux::button'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes(['type' => 'button','wire:click' => 'downloadData','variant' => 'customer-outline','size' => 'customer']); ?>
+<?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
+
                 <span wire:loading.remove wire:target="downloadData">Download</span>
                 <span wire:loading wire:target="downloadData">Preparing...</span>
-            </button>
+             <?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginalc04b147acd0e65cc1a77f86fb0e81580)): ?>
+<?php $attributes = $__attributesOriginalc04b147acd0e65cc1a77f86fb0e81580; ?>
+<?php unset($__attributesOriginalc04b147acd0e65cc1a77f86fb0e81580); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginalc04b147acd0e65cc1a77f86fb0e81580)): ?>
+<?php $component = $__componentOriginalc04b147acd0e65cc1a77f86fb0e81580; ?>
+<?php unset($__componentOriginalc04b147acd0e65cc1a77f86fb0e81580); ?>
+<?php endif; ?>
          <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
 <?php if (isset($__attributesOriginalb2f93bb703dcfebf8daccb3ec58a8406)): ?>
@@ -304,11 +323,30 @@ if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
 
-                <button type="submit" wire:confirm="This will sign you out and disable your account. Are you sure?"
-                    class="border-[1.5px] border-red-500 bg-red-500 text-white px-4 py-2 font-serif text-[12px] font-extrabold tracking-wider uppercase transition-all hover:bg-red-600 hover:border-red-600 cursor-pointer">
+                <?php if (isset($component)) { $__componentOriginalc04b147acd0e65cc1a77f86fb0e81580 = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginalc04b147acd0e65cc1a77f86fb0e81580 = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::button.index','data' => ['type' => 'submit','variant' => 'customer-danger','size' => 'customer-lg','wire:confirm' => 'This will sign you out and disable your account. Are you sure?','class' => 'bg-red-500! border-red-500! text-white! hover:bg-red-600! hover:border-red-600!']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('flux::button'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes(['type' => 'submit','variant' => 'customer-danger','size' => 'customer-lg','wire:confirm' => 'This will sign you out and disable your account. Are you sure?','class' => 'bg-red-500! border-red-500! text-white! hover:bg-red-600! hover:border-red-600!']); ?>
+<?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
+
                     <span wire:loading.remove wire:target="deleteAccount">Delete My Account</span>
                     <span wire:loading wire:target="deleteAccount">Deleting...</span>
-                </button>
+                 <?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginalc04b147acd0e65cc1a77f86fb0e81580)): ?>
+<?php $attributes = $__attributesOriginalc04b147acd0e65cc1a77f86fb0e81580; ?>
+<?php unset($__attributesOriginalc04b147acd0e65cc1a77f86fb0e81580); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginalc04b147acd0e65cc1a77f86fb0e81580)): ?>
+<?php $component = $__componentOriginalc04b147acd0e65cc1a77f86fb0e81580; ?>
+<?php unset($__componentOriginalc04b147acd0e65cc1a77f86fb0e81580); ?>
+<?php endif; ?>
             </form>
         </div>
      <?php echo $__env->renderComponent(); ?>

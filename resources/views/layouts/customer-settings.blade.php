@@ -13,7 +13,7 @@
         <div class="grid grid-cols-1 md:grid-cols-[220px_1fr] gap-6 items-start">
 
             <aside
-                class="customer-sidebar bg-white border border-zinc-200 sticky top-[calc(var(--nav-h,64px)+16px)] overflow-hidden max-md:static max-md:flex max-md:overflow-x-auto">
+                class="customer-sidebar bg-white border border-zinc-200 sticky top-[calc(var(--nav-h,64px)+16px)] overflow-hidden max-md:static max-md:flex max-md:overflow-x-auto rounded-md">
                 <flux:navlist class="w-full [&_svg]:w-5 [&_svg]:h-5">
 
                     <flux:navlist.item :href="route('customer.settings.profile')" icon="user" wire:navigate

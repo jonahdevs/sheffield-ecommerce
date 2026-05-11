@@ -16,55 +16,49 @@ new #[Title('Order Tracking')] #[Layout('layouts.customer')] class extends Compo
             return;
         }
 
-        $this->order = $order->load([
-            'statusHistories.changedBy',
-            'quote', // loaded so we can show "converted from quote" notice
-        ]);
+        $this->order = $order->load(['statusHistories.changedBy', 'quote']);
     }
 };
 ?>
 
 <div>
-    <flux:card class="rounded-md p-0">
+    <x-customer.card title="Order" titleEm="Tracking">
+        <x-slot:icon>
+            <flux:icon.truck />
+        </x-slot:icon>
+        <x-slot:action>
+            <a href="{{ route('customer.orders.show', $order) }}" wire:navigate
+                class="flex items-center gap-1.5 text-xs font-bold tracking-wider uppercase text-zinc-500 hover:text-primary transition-colors">
+                <flux:icon.chevron-left class="w-3.5 h-3.5 stroke-2" />
+                Back to Details
+            </a>
+        </x-slot:action>
 
-        {{-- Header --}}
-        <div class="flex items-center gap-3 px-3 py-2 border-b">
-            <flux:button size="xs" icon="arrow-long-left" variant="ghost" class="cursor-pointer"
-                :href="route('customer.orders.show', $order)" wire:navigate />
-            <flux:heading size="lg">Order Tracking</flux:heading>
-        </div>
+        <div class="py-3">
+            <div class="text-[10px] font-bold uppercase tracking-[0.15em] text-zinc-400 mb-1">Order Reference</div>
+            <h2 class="font-barlow-condensed text-[24px] font-black text-zinc-950 leading-tight">#{{ $order->reference }}
+            </h2>
+            <div class="text-[13px] text-zinc-500 mt-1">
+                Placed on {{ $order->created_at->format('d M Y') }} at {{ $order->created_at->format('g:i A') }}
+            </div>
 
-        {{-- Order reference --}}
-        <div class="px-6 py-4 border-b bg-zinc-50 dark:bg-zinc-800/30">
-            <flux:text class="text-xs text-zinc-400 uppercase tracking-wide mb-1">Order Reference</flux:text>
-            <flux:heading>{{ $order->reference }}</flux:heading>
-            <flux:text class="text-sm text-zinc-500 mt-0.5">
-                Placed on {{ $order->created_at->format('M j, Y') }}
-            </flux:text>
-
-            {{-- Show quotation origin when this sales order was converted from a quote.
-                 Gives the customer a clear link back to the original quotation document. --}}
             @if ($order->wasConvertedFromQuote() && $order->quote)
-                <div class="flex items-center gap-2 mt-2">
-                    <flux:icon.tag class="size-3.5 text-zinc-400" />
-                    <flux:text class="text-xs text-zinc-400">
-                        Converted from quotation
-                        <flux:link :href="route('customer.quotations.show', $order->quote)" wire:navigate
-                            class="text-xs!">
+                <div class="flex items-center gap-2 mt-3 p-2 bg-blue-50 border border-blue-100 rounded-sm">
+                    <flux:icon.tag class="size-3.5 text-blue-500" />
+                    <span class="text-[11px] font-bold uppercase tracking-wider text-blue-800">
+                        Converted from quote
+                        <a href="{{ route('customer.quotations.show', $order->quote) }}" wire:navigate
+                            class="underline ml-1">
                             {{ $order->quote->reference }}
-                        </flux:link>
-                    </flux:text>
+                        </a>
+                    </span>
                 </div>
             @endif
         </div>
 
         {{-- Timeline --}}
-        <div class="p-6">
+        <div class="relative px-2">
             @php
-                // Standard sales order path — always the same regardless of
-                // how the order was created (direct checkout or converted from quote).
-                // The PENDING_QUOTE path has been removed — quotations have their
-                // own timeline on the customer.quotations.show page.
                 $mainPath = [
                     OrderStatus::PENDING,
                     OrderStatus::CONFIRMED,
@@ -73,14 +67,23 @@ new #[Title('Order Tracking')] #[Layout('layouts.customer')] class extends Compo
                     OrderStatus::DELIVERED,
                 ];
 
-                $isCancelled = $order->status === OrderStatus::CANCELLED;
-                $isReturned = $order->status === OrderStatus::RETURNED;
-                $isTerminal = $isCancelled || $isReturned;
-
+                $currentStatus = $order->status;
+                $currentStatusIndex = array_search($currentStatus, $mainPath);
+                $isTerminal = in_array($currentStatus, [OrderStatus::CANCELLED, OrderStatus::RETURNED]);
                 $histories = $order->statusHistories->keyBy('to_status');
 
-                // Customer-friendly labels and descriptions for each step.
-                // These are intentionally plain and reassuring — no technical jargon.
+                $maxReachedIndex = 0;
+                if ($currentStatusIndex !== false) {
+                    $maxReachedIndex = $currentStatusIndex;
+                }
+                foreach ($histories as $to_status => $history) {
+                    foreach ($mainPath as $i => $step) {
+                        if ($step->value === $to_status && $i > $maxReachedIndex) {
+                            $maxReachedIndex = $i;
+                        }
+                    }
+                }
+
                 $stepMeta = [
                     'pending' => [
                         'label' => 'Order Placed',
@@ -110,161 +113,145 @@ new #[Title('Order Tracking')] #[Layout('layouts.customer')] class extends Compo
                 {{-- Main path --}}
                 @foreach ($mainPath as $index => $step)
                     @php
+                        $reached = $index <= $maxReachedIndex;
+                        $isCurrent = $currentStatusIndex !== false && $index === $currentStatusIndex;
+                        
                         $history = $histories->get($step->value);
-                        $reached = (bool) $history;
+                        if (!$history && $step === OrderStatus::PENDING) {
+                            $history = (object) ['created_at' => $order->created_at];
+                        }
+                        
                         $isLast = $index === count($mainPath) - 1;
-                        $next = $mainPath[$index + 1] ?? null;
-                        $nextReached = $next && $histories->has($next->value);
-                        $dimmed = $isTerminal && !$reached;
+                        $injectTerminalHere = $isTerminal && $index === $maxReachedIndex;
                         $meta = $stepMeta[$step->value];
-                        $isCurrent = $order->status === $step && !$isTerminal;
                     @endphp
 
-                    <div class="relative flex gap-5 {{ $isLast && !$isTerminal ? 'pb-0' : 'pb-8' }}">
+                    <div class="relative flex gap-6 {{ ($isLast && !$injectTerminalHere) ? 'pb-0' : 'pb-10' }}">
 
                         {{-- Connector line --}}
-                        @if (!$isLast)
+                        @if (!$isLast && !$injectTerminalHere)
+                            @php
+                                $nextStepIndex = $index + 1;
+                                $nextReached = $nextStepIndex <= $maxReachedIndex;
+                            @endphp
                             <div
-                                class="absolute left-4 top-8 bottom-0 w-0.5 z-0
-                                {{ $nextReached ? 'bg-green-500' : 'bg-zinc-200 dark:bg-zinc-700' }}">
+                                class="absolute left-4.5 top-9 bottom-0 w-0.75 z-0
+                                {{ $nextReached ? 'bg-primary' : 'bg-zinc-100' }}">
+                            </div>
+                        @elseif ($injectTerminalHere)
+                            <div
+                                class="absolute left-4.5 top-9 bottom-0 w-0.75 z-0 bg-primary">
                             </div>
                         @endif
 
                         {{-- Step dot --}}
                         <div
-                            class="relative z-10 shrink-0 w-8 h-8 rounded-full flex items-center justify-center transition-colors
+                            class="relative z-10 shrink-0 w-9 h-9 rounded-full flex items-center justify-center transition-all duration-300
                             {{ $reached
-                                ? 'bg-green-500 dark:bg-white text-white'
-                                : ($isCurrent
-                                    ? 'bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 ring-4 ring-zinc-200 dark:ring-zinc-700'
-                                    : ($dimmed
-                                        ? 'bg-zinc-100 dark:bg-zinc-800 text-zinc-300 dark:text-zinc-600'
-                                        : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-400')) }}">
-                            <flux:icon name="{{ $step->icon() }}" class="size-4" />
+                                ? 'bg-primary text-white ring-4 ring-[#fff8f6]'
+                                : 'bg-zinc-50 text-zinc-300 border border-zinc-100' }}">
+                            <flux:icon name="{{ $step->icon() }}" class="size-4.5" />
                         </div>
 
                         {{-- Content --}}
-                        <div class="flex-1 pt-1 pb-1">
-                            <div class="flex items-start justify-between gap-4">
+                        <div class="flex-1 pt-0.5">
+                            <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
                                 <div class="min-w-0">
-                                    <flux:text
-                                        class="text-sm font-semibold
-                                        {{ $reached || $isCurrent
-                                            ? 'text-zinc-900 dark:text-white'
-                                            : ($dimmed
-                                                ? 'text-zinc-300 dark:text-zinc-600'
-                                                : 'text-zinc-400') }}">
+                                    <div
+                                        class="text-[14px] font-bold
+                                        {{ $reached ? 'text-zinc-950' : 'text-zinc-400' }}">
                                         {{ $meta['label'] }}
 
-                                        {{-- Pulsing "Current" indicator --}}
+                                        {{-- Current step indicator --}}
                                         @if ($isCurrent)
                                             <span
-                                                class="ml-2 inline-flex items-center gap-1 text-xs font-normal text-zinc-500">
-                                                <span class="relative flex h-2 w-2">
+                                                class="ml-2 inline-flex items-center gap-1.5 text-[10px] font-extrabold tracking-widest uppercase text-primary bg-[#fff4f0] px-2 py-0.5 border border-[#ffe4da] rounded-sm">
+                                                <span class="relative flex h-1.5 w-1.5">
                                                     <span
-                                                        class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                                                        class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
                                                     <span
-                                                        class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                                                        class="relative inline-flex rounded-full h-1.5 w-1.5 bg-primary"></span>
                                                 </span>
                                                 Current
                                             </span>
                                         @endif
-                                    </flux:text>
+                                    </div>
 
-                                    <flux:text
-                                        class="text-xs mt-0.5
-                                        {{ $reached || $isCurrent ? 'text-zinc-500' : 'text-zinc-300 dark:text-zinc-600' }}">
-                                        {{ $history ? $meta['desc'] : ($dimmed ? '—' : 'Pending') }}
-                                    </flux:text>
+                                    <div
+                                        class="text-[12px] mt-1 leading-relaxed
+                                        {{ $reached ? 'text-zinc-500 font-medium' : 'text-zinc-300' }}">
+                                        {{ $history ? $meta['desc'] : ($reached ? $meta['desc'] : 'Pending...') }}
+                                    </div>
                                 </div>
 
                                 {{-- Date / time --}}
                                 @if ($history)
-                                    <div class="text-right shrink-0">
-                                        <flux:text class="text-xs font-medium text-zinc-700 dark:text-zinc-300">
+                                    <div class="sm:text-right shrink-0">
+                                        <div class="text-[12px] font-bold text-zinc-950">
                                             {{ $history->created_at->format('M j, Y') }}
-                                        </flux:text>
-                                        <flux:text class="text-xs text-zinc-400 mt-0.5">
+                                        </div>
+                                        <div class="text-[11px] text-zinc-500 font-medium mt-0.5">
                                             {{ $history->created_at->format('g:i A') }}
-                                        </flux:text>
+                                        </div>
                                     </div>
                                 @endif
                             </div>
                         </div>
                     </div>
+                    
+                    @if ($injectTerminalHere)
+                        {{-- Render Terminal Step --}}
+                        <div class="relative flex gap-6 pb-0">
+                            <div
+                                class="relative z-10 shrink-0 w-9 h-9 rounded-full flex items-center justify-center
+                                {{ $currentStatus === OrderStatus::CANCELLED ? 'bg-red-50 text-red-600 border border-red-100 ring-4 ring-red-50/50' : 'bg-orange-50 text-brand-primary border border-orange-100 ring-4 ring-orange-50/50' }}">
+                                <flux:icon name="{{ $currentStatus->icon() }}" class="size-4.5" />
+                            </div>
+                            <div class="flex-1 pt-0.5">
+                                <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+                                    <div>
+                                        <div class="text-[14px] font-bold {{ $currentStatus === OrderStatus::CANCELLED ? 'text-red-600' : 'text-brand-primary' }}">
+                                            {{ $currentStatus === OrderStatus::CANCELLED ? 'Order Cancelled' : 'Order Returned' }}
+                                            
+                                            <span class="ml-2 inline-flex items-center gap-1.5 text-[10px] font-extrabold tracking-widest uppercase {{ $currentStatus === OrderStatus::CANCELLED ? 'text-red-600 bg-red-50 border-red-100' : 'text-brand-primary bg-orange-50 border-orange-100' }} px-2 py-0.5 border rounded-sm">
+                                                <span class="relative flex h-1.5 w-1.5">
+                                                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full {{ $currentStatus === OrderStatus::CANCELLED ? 'bg-red-600' : 'bg-brand-primary' }} opacity-75"></span>
+                                                    <span class="relative inline-flex rounded-full h-1.5 w-1.5 {{ $currentStatus === OrderStatus::CANCELLED ? 'bg-red-600' : 'bg-brand-primary' }}"></span>
+                                                </span>
+                                                Current
+                                            </span>
+                                        </div>
+                                        <div class="text-[12px] text-zinc-500 mt-1 font-medium">
+                                            {{ $currentStatus === OrderStatus::CANCELLED ? 'This order has been cancelled and will not be processed further.' : 'This order was returned by the customer.' }}
+                                        </div>
+                                    </div>
+                                    @php $terminalHistory = $histories->get($currentStatus->value); @endphp
+                                    @if ($terminalHistory)
+                                        <div class="sm:text-right shrink-0">
+                                            <div class="text-[12px] font-bold text-zinc-950">
+                                                {{ $terminalHistory->created_at->format('M j, Y') }}
+                                            </div>
+                                            <div class="text-[11px] text-zinc-500 font-medium mt-0.5">
+                                                {{ $terminalHistory->created_at->format('g:i A') }}
+                                            </div>
+                                        </div>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                        @break
+                    @endif
                 @endforeach
-
-                {{-- Branch: Cancelled --}}
-                @if ($isCancelled)
-                    @php $cancelHistory = $histories->get('cancelled'); @endphp
-                    <div class="relative flex gap-5 pt-2">
-                        <div
-                            class="relative z-10 shrink-0 w-8 h-8 rounded-full flex items-center justify-center
-                            bg-rose-100 dark:bg-rose-950 text-rose-500 dark:text-rose-400">
-                            <flux:icon name="{{ OrderStatus::CANCELLED->icon() }}" class="size-4" />
-                        </div>
-                        <div class="flex-1 pt-1">
-                            <div class="flex items-start justify-between gap-4">
-                                <div>
-                                    <flux:text class="text-sm font-semibold text-rose-600 dark:text-rose-400">
-                                        Order Cancelled
-                                    </flux:text>
-                                    <flux:text class="text-xs text-zinc-500 mt-0.5">
-                                        This order has been cancelled.
-                                    </flux:text>
-
-                                </div>
-                                @if ($cancelHistory)
-                                    <div class="text-right shrink-0">
-                                        <flux:text class="text-xs font-medium text-zinc-700 dark:text-zinc-300">
-                                            {{ $cancelHistory->created_at->format('M j, Y') }}
-                                        </flux:text>
-                                        <flux:text class="text-xs text-zinc-400 mt-0.5">
-                                            {{ $cancelHistory->created_at->format('g:i A') }}
-                                        </flux:text>
-                                    </div>
-                                @endif
-                            </div>
-                        </div>
-                    </div>
-                @endif
-
-                {{-- Branch: Returned --}}
-                @if ($isReturned)
-                    @php $returnHistory = $histories->get('returned'); @endphp
-                    <div class="relative flex gap-5 pt-2">
-                        <div
-                            class="relative z-10 shrink-0 w-8 h-8 rounded-full flex items-center justify-center
-                            bg-orange-100 dark:bg-orange-950 text-orange-500 dark:text-orange-400">
-                            <flux:icon name="{{ OrderStatus::RETURNED->icon() }}" class="size-4" />
-                        </div>
-                        <div class="flex-1 pt-1">
-                            <div class="flex items-start justify-between gap-4">
-                                <div>
-                                    <flux:text class="text-sm font-semibold text-orange-600 dark:text-orange-400">
-                                        Order Returned
-                                    </flux:text>
-                                    <flux:text class="text-xs text-zinc-500 mt-0.5">
-                                        This order has been returned.
-                                    </flux:text>
-                                </div>
-                                @if ($returnHistory)
-                                    <div class="text-right shrink-0">
-                                        <flux:text class="text-xs font-medium text-zinc-700 dark:text-zinc-300">
-                                            {{ $returnHistory->created_at->format('M j, Y') }}
-                                        </flux:text>
-                                        <flux:text class="text-xs text-zinc-400 mt-0.5">
-                                            {{ $returnHistory->created_at->format('g:i A') }}
-                                        </flux:text>
-                                    </div>
-                                @endif
-                            </div>
-                        </div>
-                    </div>
-                @endif
-
             </div>
         </div>
 
-    </flux:card>
+        {{-- Footer Help --}}
+        <div class="mt-12 pt-8 border-t border-zinc-200 text-center">
+            <div class="text-[13px] text-zinc-500">
+                Have questions about your order status?
+                <flux:link href="#" class="font-bold text-zinc-950 hover:text-primary ml-1">Contact Support
+                </flux:link>
+            </div>
+        </div>
+    </x-customer.card>
 </div>

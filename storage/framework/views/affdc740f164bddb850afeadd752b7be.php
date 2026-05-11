@@ -104,7 +104,7 @@ Settings <?php echo $__env->renderComponent(); ?>
         <div class="grid grid-cols-1 md:grid-cols-[220px_1fr] gap-6 items-start">
 
             <aside
-                class="customer-sidebar bg-white border border-zinc-200 sticky top-[calc(var(--nav-h,64px)+16px)] overflow-hidden max-md:static max-md:flex max-md:overflow-x-auto">
+                class="customer-sidebar bg-white border border-zinc-200 sticky top-[calc(var(--nav-h,64px)+16px)] overflow-hidden max-md:static max-md:flex max-md:overflow-x-auto rounded-md">
                 <?php if (isset($component)) { $__componentOriginalacac6a48a34186ea0abd369a00e5e2d4 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginalacac6a48a34186ea0abd369a00e5e2d4 = $attributes; } ?>
 <?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::navlist.index','data' => ['class' => 'w-full [&_svg]:w-5 [&_svg]:h-5']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>

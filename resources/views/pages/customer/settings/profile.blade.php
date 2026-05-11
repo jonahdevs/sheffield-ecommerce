@@ -151,17 +151,15 @@ new #[Layout('layouts.customer-settings'), Title('Profile Settings')] class exte
                 <div class="text-[12px] text-zinc-500 mb-2.5">{{ auth()->user()->email }}</div>
 
                 <div class="flex items-center gap-2">
-                    <label for="avatarInput"
-                        class="inline-flex items-center gap-1.5 border-[1.5px] border-zinc-950 px-3.5 py-1.5 font-serif text-[12px] font-extrabold tracking-wider uppercase transition-all hover:bg-zinc-950 hover:text-white cursor-pointer">
-                        <flux:icon.arrow-up-tray class="w-3.5 h-3.5" />
+                    <flux:button tag="label" for="avatarInput" variant="customer-outline" size="customer"
+                        icon="arrow-up-tray">
                         <span wire:loading.remove wire:target="avatar">Upload Photo</span>
                         <span wire:loading wire:target="avatar">Uploading...</span>
-                    </label>
+                    </flux:button>
                     @if (auth()->user()->avatar)
-                        <button type="button" wire:click="removeAvatar"
-                            class="inline-flex items-center gap-1.5 border-[1.5px] border-red-500 text-red-500 px-3.5 py-1.5 font-serif text-[12px] font-extrabold tracking-wider uppercase transition-all hover:bg-red-500 hover:text-white cursor-pointer">
+                        <flux:button type="button" wire:click="removeAvatar" variant="customer-danger" size="customer">
                             Remove
-                        </button>
+                        </flux:button>
                     @endif
                 </div>
 
@@ -227,11 +225,10 @@ new #[Layout('layouts.customer-settings'), Title('Profile Settings')] class exte
             </div>
 
             <div class="flex items-center gap-2.5 mt-5 pt-4 border-t border-zinc-200">
-                <button type="submit"
-                    class="inline-flex items-center gap-1.5 bg-primary text-white px-6 py-2.5 font-serif text-[13px] font-extrabold tracking-wider uppercase transition-colors hover:bg-[#e03d00] cursor-pointer">
+                <flux:button type="submit" variant="customer-primary" size="customer-lg">
                     <span wire:loading.remove wire:target="save">{{ __('Save Changes') }}</span>
                     <span wire:loading wire:target="save">{{ __('Saving...') }}</span>
-                </button>
+                </flux:button>
             </div>
         </form>
     </x-customer.settings-card>

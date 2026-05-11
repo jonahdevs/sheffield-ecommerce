@@ -29,7 +29,7 @@ foreach ($attributes->all() as $__key => $__value) {
 unset($__defined_vars, $__key, $__value); ?>
 
 <div class="<?php echo \Illuminate\Support\Arr::toCssClasses([
-    'bg-white border',
+    'bg-white border rounded',
     'border-red-500' => $danger,
     'border-zinc-200' => !$danger,
 ]); ?>">
