@@ -37,18 +37,20 @@ unset($__defined_vars, $__key, $__value); ?>
 
 <body <?php echo e($attributes->merge(['class' => 'bg-white text-on-surface font-sans min-h-screen'])); ?>>
 
-    <?php $general = app('App\Settings\GeneralSettings'); ?>
-
     
-    <div class="bg-primary text-on-primary">
-        <section class="container mx-auto px-4">
-            <div class="flex items-center justify-between py-2 text-sm gap-4">
+    <div class="sticky top-0 left-0 z-20 w-full">
+        <?php $general = app('App\Settings\GeneralSettings'); ?>
 
-                
-                <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($general->store_phone): ?>
-                    <div class="hidden md:flex items-center gap-3 lg:gap-4">
-                        <div class="flex items-center gap-2">
-                            <?php if (isset($component)) { $__componentOriginal3b273e6b331c9518de08da49e1886441 = $component; } ?>
+        
+        <div class="bg-primary text-on-primary">
+            <section class="container mx-auto px-4">
+                <div class="flex items-center justify-between py-2 text-sm gap-4">
+
+                    
+                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($general->store_phone): ?>
+                        <div class="hidden md:flex items-center gap-3 lg:gap-4">
+                            <div class="flex items-center gap-2">
+                                <?php if (isset($component)) { $__componentOriginal3b273e6b331c9518de08da49e1886441 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginal3b273e6b331c9518de08da49e1886441 = $attributes; } ?>
 <?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::icon.phone','data' => ['class' => 'w-3.5 h-3.5 sm:w-4 sm:h-4 lg:w-4.5 lg:h-4.5 shrink-0']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('flux::icon.phone'); ?>
@@ -70,71 +72,71 @@ unset($__defined_vars, $__key, $__value); ?>
 <?php $component = $__componentOriginal3b273e6b331c9518de08da49e1886441; ?>
 <?php unset($__componentOriginal3b273e6b331c9518de08da49e1886441); ?>
 <?php endif; ?>
-                            <span class="text-xs sm:text-sm"><?php echo e($general->store_phone); ?></span>
+                                <span class="text-xs sm:text-sm"><?php echo e($general->store_phone); ?></span>
+                            </div>
                         </div>
-                    </div>
-                <?php else: ?>
-                    <div class="hidden md:block"></div>
-                <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
+                    <?php else: ?>
+                        <div class="hidden md:block"></div>
+                    <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
 
-                
-                <div class="flex-1 md:flex-none md:max-w-md lg:max-w-lg mx-auto overflow-hidden h-6"
-                    x-data="{
-                        swiper: null,
-                        init() {
-                            this.$nextTick(() => {
-                                this.initializeSwiper();
-                            });
-                        },
-                        initializeSwiper() {
-                            this.swiper = new Swiper('.promoSwiper', {
-                                direction: 'vertical',
-                                loop: true,
-                                speed: 800,
-                                autoplay: {
-                                    delay: 3000,
-                                    disableOnInteraction: false,
-                                },
-                            });
-                        },
-                        destroy() {
-                            if (this.swiper) {
-                                this.swiper.destroy(true, true);
+                    
+                    <div class="flex-1 md:flex-none md:max-w-md lg:max-w-lg mx-auto overflow-hidden h-6"
+                        x-data="{
+                            swiper: null,
+                            init() {
+                                this.$nextTick(() => {
+                                    this.initializeSwiper();
+                                });
+                            },
+                            initializeSwiper() {
+                                this.swiper = new Swiper('.promoSwiper', {
+                                    direction: 'vertical',
+                                    loop: true,
+                                    speed: 800,
+                                    autoplay: {
+                                        delay: 3000,
+                                        disableOnInteraction: false,
+                                    },
+                                });
+                            },
+                            destroy() {
+                                if (this.swiper) {
+                                    this.swiper.destroy(true, true);
+                                }
                             }
-                        }
-                    }">
-                    <div class="swiper promoSwiper h-full">
-                        <div class="swiper-wrapper">
-                            <div class="swiper-slide flex items-center justify-center">
-                                <a href="#"
-                                    class="text-center text-xs sm:text-sm hover:opacity-90 transition-opacity">
-                                    Get 50% off on Member Exclusive Month <span class="underline font-medium">Shop
-                                        Now</span>
-                                </a>
-                            </div>
-                            <div class="swiper-slide flex items-center justify-center">
-                                <a href="#"
-                                    class="text-center text-xs sm:text-sm hover:opacity-90 transition-opacity">
-                                    Free Shipping on Orders Over <?php echo e(get_currency_symbol()); ?> 10,000 <span
-                                        class="underline font-medium">Learn
-                                        More</span>
-                                </a>
-                            </div>
-                            <div class="swiper-slide flex items-center justify-center">
-                                <a href="#"
-                                    class="text-center text-xs sm:text-sm hover:opacity-90 transition-opacity">
-                                    New Arrivals: Latest Kitchen Equipment <span
-                                        class="underline font-medium">Explore</span>
-                                </a>
+                        }">
+                        <div class="swiper promoSwiper h-full">
+                            <div class="swiper-wrapper">
+                                <div class="swiper-slide flex items-center justify-center">
+                                    <a href="#"
+                                        class="text-center text-xs sm:text-sm hover:opacity-90 transition-opacity">
+                                        Get 50% off on Member Exclusive Month <span class="underline font-medium">Shop
+                                            Now</span>
+                                    </a>
+                                </div>
+                                <div class="swiper-slide flex items-center justify-center">
+                                    <a href="#"
+                                        class="text-center text-xs sm:text-sm hover:opacity-90 transition-opacity">
+                                        Free Shipping on Orders Over <?php echo e(get_currency_symbol()); ?> 10,000 <span
+                                            class="underline font-medium">Learn
+                                            More</span>
+                                    </a>
+                                </div>
+                                <div class="swiper-slide flex items-center justify-center">
+                                    <a href="#"
+                                        class="text-center text-xs sm:text-sm hover:opacity-90 transition-opacity">
+                                        New Arrivals: Latest Kitchen Equipment <span
+                                            class="underline font-medium">Explore</span>
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                
-                <div class="hidden md:flex items-center gap-4">
-                    <a href="" class="flex items-center gap-2 group hover:opacity-90 transition-opacity">
-                        <?php if (isset($component)) { $__componentOriginal7ff90a4ec719b449b03bf1ad0e63e8a9 = $component; } ?>
+                    
+                    <div class="hidden md:flex items-center gap-4">
+                        <a href="" class="flex items-center gap-2 group hover:opacity-90 transition-opacity">
+                            <?php if (isset($component)) { $__componentOriginal7ff90a4ec719b449b03bf1ad0e63e8a9 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginal7ff90a4ec719b449b03bf1ad0e63e8a9 = $attributes; } ?>
 <?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::icon.question-mark-circle','data' => ['class' => 'size-4 sm:size-5 shrink-0']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('flux::icon.question-mark-circle'); ?>
@@ -156,22 +158,21 @@ unset($__defined_vars, $__key, $__value); ?>
 <?php $component = $__componentOriginal7ff90a4ec719b449b03bf1ad0e63e8a9; ?>
 <?php unset($__componentOriginal7ff90a4ec719b449b03bf1ad0e63e8a9); ?>
 <?php endif; ?>
-                        <span class="group-hover:underline text-xs sm:text-sm">Support</span>
-                    </a>
+                            <span class="group-hover:underline text-xs sm:text-sm">Support</span>
+                        </a>
+                    </div>
+
                 </div>
+            </section>
+        </div>
 
-            </div>
-        </section>
-    </div>
-
-    <div class="sticky top-0 left-0 z-20 w-full">
         
-        <?php app("livewire")->forceAssetInjection(); ?><div x-persist="<?php echo e('app-bar'); ?>">
+        <?php app("livewire")->forceAssetInjection(); ?><div x-persist="<?php echo e('app-bar-header'); ?>">
             <?php
 $__split = function ($name, $params = []) {
     return [$name, $params];
 };
-[$__name, $__params] = $__split('app-bar', []);
+[$__name, $__params] = $__split('app-bar-header', []);
 
 $__keyOuter = $__key ?? null;
 
@@ -194,9 +195,38 @@ unset($__componentSlots);
 unset($__split);
 ?>
         </div>
-
     </div>
     
+
+    
+    <?php app("livewire")->forceAssetInjection(); ?><div x-persist="<?php echo e('app-bar-categories'); ?>">
+        <?php
+$__split = function ($name, $params = []) {
+    return [$name, $params];
+};
+[$__name, $__params] = $__split('app-bar-categories', []);
+
+$__keyOuter = $__key ?? null;
+
+$__key = null;
+$__componentSlots = [];
+
+$__key ??= \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::generateKey('lw-3477001781-1', $__key);
+
+$__html = app('livewire')->mount($__name, $__params, $__key, $__componentSlots);
+
+echo $__html;
+
+unset($__html);
+unset($__key);
+$__key = $__keyOuter;
+unset($__keyOuter);
+unset($__name);
+unset($__params);
+unset($__componentSlots);
+unset($__split);
+?>
+    </div>
 
     <main>
         <?php echo e($slot); ?>

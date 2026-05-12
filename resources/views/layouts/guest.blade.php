@@ -9,99 +9,104 @@
 
 <body {{ $attributes->merge(['class' => 'bg-white text-on-surface font-sans min-h-screen']) }}>
 
-    @inject('general', 'App\Settings\GeneralSettings')
-
-    {{-- Announcement / Promo Bar --}}
-    <div class="bg-primary text-on-primary">
-        <section class="container mx-auto px-4">
-            <div class="flex items-center justify-between py-2 text-sm gap-4">
-
-                {{-- Contact info — hidden on mobile --}}
-                @if ($general->store_phone)
-                    <div class="hidden md:flex items-center gap-3 lg:gap-4">
-                        <div class="flex items-center gap-2">
-                            <flux:icon.phone class="w-3.5 h-3.5 sm:w-4 sm:h-4 lg:w-4.5 lg:h-4.5 shrink-0" />
-                            <span class="text-xs sm:text-sm">{{ $general->store_phone }}</span>
-                        </div>
-                    </div>
-                @else
-                    <div class="hidden md:block"></div>
-                @endif
-
-                {{-- Vertical Promotion Carousel --}}
-                <div class="flex-1 md:flex-none md:max-w-md lg:max-w-lg mx-auto overflow-hidden h-6"
-                    x-data="{
-                        swiper: null,
-                        init() {
-                            this.$nextTick(() => {
-                                this.initializeSwiper();
-                            });
-                        },
-                        initializeSwiper() {
-                            this.swiper = new Swiper('.promoSwiper', {
-                                direction: 'vertical',
-                                loop: true,
-                                speed: 800,
-                                autoplay: {
-                                    delay: 3000,
-                                    disableOnInteraction: false,
-                                },
-                            });
-                        },
-                        destroy() {
-                            if (this.swiper) {
-                                this.swiper.destroy(true, true);
-                            }
-                        }
-                    }">
-                    <div class="swiper promoSwiper h-full">
-                        <div class="swiper-wrapper">
-                            <div class="swiper-slide flex items-center justify-center">
-                                <a href="#"
-                                    class="text-center text-xs sm:text-sm hover:opacity-90 transition-opacity">
-                                    Get 50% off on Member Exclusive Month <span class="underline font-medium">Shop
-                                        Now</span>
-                                </a>
-                            </div>
-                            <div class="swiper-slide flex items-center justify-center">
-                                <a href="#"
-                                    class="text-center text-xs sm:text-sm hover:opacity-90 transition-opacity">
-                                    Free Shipping on Orders Over {{ get_currency_symbol() }} 10,000 <span
-                                        class="underline font-medium">Learn
-                                        More</span>
-                                </a>
-                            </div>
-                            <div class="swiper-slide flex items-center justify-center">
-                                <a href="#"
-                                    class="text-center text-xs sm:text-sm hover:opacity-90 transition-opacity">
-                                    New Arrivals: Latest Kitchen Equipment <span
-                                        class="underline font-medium">Explore</span>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                {{-- Support link — hidden on mobile --}}
-                <div class="hidden md:flex items-center gap-4">
-                    <a href="" class="flex items-center gap-2 group hover:opacity-90 transition-opacity">
-                        <flux:icon.question-mark-circle class="size-4 sm:size-5 shrink-0" />
-                        <span class="group-hover:underline text-xs sm:text-sm">Support</span>
-                    </a>
-                </div>
-
-            </div>
-        </section>
-    </div>
-
+    {{-- STICKY SECTION: Promo Bar + Main Header --}}
     <div class="sticky top-0 left-0 z-20 w-full">
-        {{-- App Bar (logo + search + nav categories) --}}
-        @persist('app-bar')
-            <livewire:app-bar />
-        @endpersist
+        @inject('general', 'App\Settings\GeneralSettings')
 
+        {{-- Announcement / Promo Bar --}}
+        <div class="bg-primary text-on-primary">
+            <section class="container mx-auto px-4">
+                <div class="flex items-center justify-between py-2 text-sm gap-4">
+
+                    {{-- Contact info — hidden on mobile --}}
+                    @if ($general->store_phone)
+                        <div class="hidden md:flex items-center gap-3 lg:gap-4">
+                            <div class="flex items-center gap-2">
+                                <flux:icon.phone class="w-3.5 h-3.5 sm:w-4 sm:h-4 lg:w-4.5 lg:h-4.5 shrink-0" />
+                                <span class="text-xs sm:text-sm">{{ $general->store_phone }}</span>
+                            </div>
+                        </div>
+                    @else
+                        <div class="hidden md:block"></div>
+                    @endif
+
+                    {{-- Vertical Promotion Carousel --}}
+                    <div class="flex-1 md:flex-none md:max-w-md lg:max-w-lg mx-auto overflow-hidden h-6"
+                        x-data="{
+                            swiper: null,
+                            init() {
+                                this.$nextTick(() => {
+                                    this.initializeSwiper();
+                                });
+                            },
+                            initializeSwiper() {
+                                this.swiper = new Swiper('.promoSwiper', {
+                                    direction: 'vertical',
+                                    loop: true,
+                                    speed: 800,
+                                    autoplay: {
+                                        delay: 3000,
+                                        disableOnInteraction: false,
+                                    },
+                                });
+                            },
+                            destroy() {
+                                if (this.swiper) {
+                                    this.swiper.destroy(true, true);
+                                }
+                            }
+                        }">
+                        <div class="swiper promoSwiper h-full">
+                            <div class="swiper-wrapper">
+                                <div class="swiper-slide flex items-center justify-center">
+                                    <a href="#"
+                                        class="text-center text-xs sm:text-sm hover:opacity-90 transition-opacity">
+                                        Get 50% off on Member Exclusive Month <span class="underline font-medium">Shop
+                                            Now</span>
+                                    </a>
+                                </div>
+                                <div class="swiper-slide flex items-center justify-center">
+                                    <a href="#"
+                                        class="text-center text-xs sm:text-sm hover:opacity-90 transition-opacity">
+                                        Free Shipping on Orders Over {{ get_currency_symbol() }} 10,000 <span
+                                            class="underline font-medium">Learn
+                                            More</span>
+                                    </a>
+                                </div>
+                                <div class="swiper-slide flex items-center justify-center">
+                                    <a href="#"
+                                        class="text-center text-xs sm:text-sm hover:opacity-90 transition-opacity">
+                                        New Arrivals: Latest Kitchen Equipment <span
+                                            class="underline font-medium">Explore</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Support link — hidden on mobile --}}
+                    <div class="hidden md:flex items-center gap-4">
+                        <a href="" class="flex items-center gap-2 group hover:opacity-90 transition-opacity">
+                            <flux:icon.question-mark-circle class="size-4 sm:size-5 shrink-0" />
+                            <span class="group-hover:underline text-xs sm:text-sm">Support</span>
+                        </a>
+                    </div>
+
+                </div>
+            </section>
+        </div>
+
+        {{-- Main Header (Livewire component for cart/wishlist counts) --}}
+        @persist('app-bar-header')
+            <livewire:app-bar-header />
+        @endpersist
     </div>
-    {{-- END sticky header wrapper --}}
+    {{-- END STICKY SECTION --}}
+
+    {{-- Category Navigation (scrolls with page) --}}
+    @persist('app-bar-categories')
+        <livewire:app-bar-categories />
+    @endpersist
 
     <main>
         {{ $slot }}
