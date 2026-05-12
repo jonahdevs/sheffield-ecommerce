@@ -1,8 +1,10 @@
+
+
 <?php $attributes ??= new \Illuminate\View\ComponentAttributeBag;
 
 $__newAttributes = [];
 $__propNames = \Illuminate\View\ComponentAttributeBag::extractPropNames(([
-    'status',
+    'kbd' => null,
 ]));
 
 foreach ($attributes->all() as $__key => $__value) {
@@ -19,7 +21,7 @@ unset($__propNames);
 unset($__newAttributes);
 
 foreach (array_filter(([
-    'status',
+    'kbd' => null,
 ]), 'is_string', ARRAY_FILTER_USE_KEY) as $__key => $__value) {
     $$__key = $$__key ?? $__value;
 }
@@ -32,10 +34,22 @@ foreach ($attributes->all() as $__key => $__value) {
 
 unset($__defined_vars, $__key, $__value); ?>
 
-<?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($status): ?>
-    <div <?php echo e($attributes->merge(['class' => 'font-medium text-sm text-green-600'])); ?>>
-        <?php echo e($status); ?>
+<?php
+$classes = Flux::classes([
+    'relative py-2 px-2.5',
+    'rounded-md',
+    'text-xs text-white font-medium',
+    'bg-zinc-800 dark:bg-zinc-700 dark:border dark:border-white/10',
+    'p-0 overflow-visible',
+]);
+?>
 
-    </div>
-<?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
-<?php /**PATH C:\Users\jonah.wakahiu\Desktop\ecommerce\sheffield_ecommerce\resources\views/components/auth-session-status.blade.php ENDPATH**/ ?>
+<div popover="manual" <?php echo e($attributes->class($classes)); ?> data-flux-tooltip-content>
+    <?php echo e($slot); ?>
+
+
+    <?php if ($kbd): ?>
+        <span class="ps-1 text-zinc-300"><?php echo e($kbd); ?></span>
+    <?php endif; ?>
+</div>
+<?php /**PATH C:\Users\jonah.wakahiu\Desktop\ecommerce\sheffield_ecommerce\vendor\livewire\flux\src/../stubs/resources/views/flux/tooltip/content.blade.php ENDPATH**/ ?>

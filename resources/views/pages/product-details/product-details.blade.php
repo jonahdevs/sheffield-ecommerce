@@ -12,10 +12,12 @@
                 <flux:breadcrumbs.item href="{{ route('shop.index') }}" wire:navigate>
                     Shop
                 </flux:breadcrumbs.item>
-                <flux:breadcrumbs.item href="{{ route('shop.category', ['category' => $this->primaryCategory->slug]) }}"
-                    wire:navigate>
-                    {{ $this->primaryCategory->name }}
-                </flux:breadcrumbs.item>
+                @if ($this->primaryCategory)
+                    <flux:breadcrumbs.item
+                        href="{{ route('shop.category', ['category' => $this->primaryCategory->slug]) }}" wire:navigate>
+                        {{ $this->primaryCategory->name }}
+                    </flux:breadcrumbs.item>
+                @endif
                 <flux:breadcrumbs.item>{{ $product->name }}</flux:breadcrumbs.item>
             </flux:breadcrumbs>
         </div>
@@ -278,23 +280,6 @@
                                     </div>
                                 </div>
                             </div>
-
-                            {{-- Cart Actions for Grouped Products --}}
-                            <div class="flex flex-col gap-2">
-                                <flux:button wire:click="addFullKitToCart" variant="customer-primary" size="customer-lg"
-                                    class="w-full cursor-pointer" wire:loading.attr="disabled"
-                                    wire:target="addFullKitToCart">
-                                    Add Full Kit to Cart
-                                </flux:button>
-
-                                @if (!empty($selectedGroupedItems) && count($selectedGroupedItems) < $this->groupedProducts->count())
-                                    <flux:button wire:click="addSelectedGroupedToCart" variant="customer-outline"
-                                        size="customer-lg" class="w-full cursor-pointer" wire:loading.attr="disabled"
-                                        wire:target="addSelectedGroupedToCart">
-                                        Add Selected Items ({{ count($selectedGroupedItems) }})
-                                    </flux:button>
-                                @endif
-                            </div>
                         @else
                             {{-- ══════════════════════════════════════════════ --}}
                             {{-- REGULAR PRODUCT: VARIANTS, PRICE, CART        --}}
@@ -469,7 +454,6 @@
                                 </div>
                             @endif
 
-                            <flux:separator />
 
                             @if ($this->accessories->count() > 0)
                                 <a href="#accessories"
@@ -489,111 +473,8 @@
                                     </span>
                                 </a>
                             @endif
-
-                            {{-- CART ACTIONS --}}
-                            <div class="flex items-center gap-2 flex-wrap">
-
-                                @if ($product->requires_quotation)
-                                    {{-- Quotation products — no cart, quote only --}}
-                                    <flux:button wire:click="addToQuoteBasket" variant="customer-primary"
-                                        class="w-full cursor-pointer" wire:loading.attr="disabled"
-                                        wire:target="addToQuoteBasket">
-                                        Add to Quote
-                                    </flux:button>
-
-                                    @if ($inQuoteBasket)
-                                        <flux:button href="{{ route('quote') }}" wire:navigate
-                                            variant="customer-outline" size="customer-lg"
-                                            class="w-full cursor-pointer">
-                                            View Quote Basket
-                                        </flux:button>
-                                    @endif
-                                @else
-                                    {{-- Quantity stepper — hidden when out of stock --}}
-                                    @if ($state !== 'out_of_stock' && $state !== 'none')
-                                        <flux:button.group>
-                                            <flux:button icon="minus" wire:click="decreaseCartQuantity"
-                                                class="cursor-pointer text-zinc-500!" title="Decrease"
-                                                size="customer-lg" />
-                                            <flux:input readonly value="{{ $cartQuantity }}"
-                                                class="max-w-9! outline-none! border-none! ring-0!"
-                                                class:input="text-center! h-[42px]! p-0!"
-                                                size="customer-lg" />
-                                            <flux:button icon="plus" wire:click="increaseCartQuantity"
-                                                class="cursor-pointer text-zinc-500!" title="Increase"
-                                                size="customer-lg" />
-                                            @if ($inCart)
-                                                <flux:button icon="trash" icon-variant="outline"
-                                                    wire:click="removeFromCart" class="cursor-pointer text-red-500!"
-                                                    title="Remove" size="customer-lg" />
-                                            @endif
-                                        </flux:button.group>
-                                    @endif
-
-                                    {{-- Primary action --}}
-                                    @if ($product->type === ProductType::VARIABLE && !$selectedVariantId)
-                                        <flux:button variant="customer-primary" size="customer-lg"
-                                            class="flex-1 cursor-pointer" disabled>
-                                            Select Options
-                                        </flux:button>
-                                    @elseif ($state === 'out_of_stock')
-                                        <flux:button variant="customer-outline" size="customer-lg"
-                                            class="flex-1 cursor-not-allowed" disabled>
-                                            Out of Stock
-                                        </flux:button>
-                                    @elseif ($state === 'backorder' && !$inCart)
-                                        <flux:button wire:click="addToCart" size="customer-lg"
-                                            class="flex-1 cursor-pointer bg-amber-500! border-amber-500! hover:bg-amber-600! text-white!"
-                                            wire:loading.attr="disabled" wire:target="addToCart">
-                                            Pre-order
-                                        </flux:button>
-                                    @elseif (!$inCart)
-                                        <flux:button wire:click="addToCart" variant="customer-primary"
-                                            icon="shopping-bag" size="customer-lg" class="flex-1 cursor-pointer"
-                                            wire:loading.attr="disabled" wire:target="addToCart">
-                                            Add to Cart
-                                        </flux:button>
-                                    @endif
-
-                                @endif
-
-                                {{-- Share --}}
-                                <div x-data="{
-                                    share() {
-                                        if (navigator.share) {
-                                            navigator.share({
-                                                title: '{{ addslashes($product->name) }}',
-                                                text: '{{ addslashes(Str::limit($product->short_description, 100)) }}',
-                                                url: '{{ url()->current() }}',
-                                            })
-                                        } else {
-                                            navigator.clipboard.writeText('{{ url()->current() }}').then(() => {
-                                                $flux.toast({ text: 'Link copied!', variant: 'success' })
-                                            })
-                                        }
-                                    }
-                                }">
-                                    <flux:button icon="share" icon-variant="outline" title="Share"
-                                        variant="customer-outline" size="customer-lg" class="cursor-pointer"
-                                        @click="share()" />
-                                </div>
-
-                            </div>
                         @endif
 
-                        {{-- SHARED ACTION BUTTONS --}}
-                        <div class="flex items-center gap-2">
-                            <flux:button wire:click.stop="toggleWishlist" icon="heart" size="customer-lg"
-                                variant="customer-outline" icon-variant="{{ $wishlisted ? 'solid' : 'outline' }}"
-                                title="Wishlist" @class(['cursor-pointer', 'text-red-500!' => $wishlisted]) />
-
-                            <flux:button wire:click="toggleCompare" icon="{{ $inCompare ? 'x-mark' : 'scale' }}"
-                                size="customer-lg" variant="customer-outline" title="Compare"
-                                @class(['cursor-pointer', 'text-secondary!' => $inCompare]) />
-
-                            <flux:button icon="share" icon-variant="outline" title="Share" size="customer-lg"
-                                variant="customer-outline" class="cursor-pointer" />
-                        </div>
                     </div>
                 </div>
 
@@ -766,58 +647,165 @@
             </div>
 
             {{-- DELIVERY SIDEBAR --}}
-            <div class="lg:col-span-1 border rounded h-fit">
-                <div class="sticky top-44 p-0">
+            <div class="lg:col-span-1 border border-zinc-200 dark:border-zinc-700 rounded h-fit sticky top-44 p-4">
+                {{-- Dynamic Policies --}}
+                <div class="flex flex-col">
+                    <a href="#" class="flex items-center justify-between py-1.5">
+                        <div class="flex items-center gap-2">
+                            <flux:icon.arrow-uturn-left class="size-4 text-primary" variant="outline" />
+                            <span class="text-sm text-zinc-800 dark:text-zinc-100">Return & refund
+                                policy</span>
+                        </div>
+                        <flux:icon.chevron-right class="size-4 text-zinc-400" />
+                    </a>
 
-                    {{-- Header --}}
-                    <div class="border-b dark:border-zinc-700 px-4 py-3">
-                        <flux:heading size="sm">Warranty & returns</flux:heading>
-                    </div>
+                    <a href="#" class="flex items-center justify-between py-1.5">
+                        <div class="flex items-center gap-2">
+                            <flux:icon.shield-check class="size-4 text-primary" variant="outline" />
+                            <span class="text-sm text-zinc-800 dark:text-zinc-100">Warranty
+                                policy</span>
+                        </div>
+                        <flux:icon.chevron-right class="size-4 text-zinc-400" />
+                    </a>
 
-                    {{-- Return policy --}}
-                    {{-- Shows product-specific override, falls back to global store policy --}}
-                    <div class="px-2">
+                    <a href="#" class="flex items-center justify-between py-1.5">
+                        <div class="flex items-center gap-2">
 
-                        <div class="flex items-start gap-3 px-2 py-3 border-b dark:border-zinc-700">
-                            <div class="border dark:border-zinc-700 rounded-md p-1.5 shrink-0 mt-0.5">
-                                <flux:icon.arrow-uturn-left class="size-5 text-zinc-500" variant="outline" />
-                            </div>
-                            <div>
-                                <p class="text-xs sm:text-sm font-medium text-zinc-800 dark:text-zinc-100">Return
-                                    policy</p>
-                                @if ($product->return_policy)
-                                    <p class="text-xs text-amber-700 dark:text-amber-400 mt-0.5 leading-relaxed">
-                                        {{ $product->return_policy }}
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+                                class="bi bi-shield-shaded size-4 text-primary" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd"
+                                    d="M8 14.933a1 1 0 0 0 .1-.025q.114-.034.294-.118c.24-.113.547-.29.893-.533a10.7 10.7 0 0 0 2.287-2.233c1.527-1.997 2.807-5.031 2.253-9.188a.48.48 0 0 0-.328-.39c-.651-.213-1.75-.56-2.837-.855C9.552 1.29 8.531 1.067 8 1.067zM5.072.56C6.157.265 7.31 0 8 0s1.843.265 2.928.56c1.11.3 2.229.655 2.887.87a1.54 1.54 0 0 1 1.044 1.262c.596 4.477-.787 7.795-2.465 9.99a11.8 11.8 0 0 1-2.517 2.453 7 7 0 0 1-1.048.625c-.28.132-.581.24-.829.24s-.548-.108-.829-.24a7 7 0 0 1-1.048-.625 11.8 11.8 0 0 1-2.517-2.453C1.928 10.487.545 7.169 1.141 2.692A1.54 1.54 0 0 1 2.185 1.43 63 63 0 0 1 5.072.56" />
+                            </svg>
+                            <span class="text-sm text-zinc-800 dark:text-zinc-100">Secure
+                                privacy</span>
+                        </div>
+                        <flux:icon.chevron-right class="size-4 text-zinc-400" />
+                    </a>
+                </div>
+
+                <flux:separator class="my-2" />
+
+                {{-- Actions --}}
+                <div class="flex flex-col gap-3">
+                    @if ($product->type->value === 'grouped')
+                        {{-- Cart Actions for Grouped Products --}}
+                        <flux:button wire:click="addFullKitToCart" variant="customer-primary" size="customer-lg"
+                            class="w-full cursor-pointer" wire:loading.attr="disabled"
+                            wire:target="addFullKitToCart">
+                            Buy Full Kit
+                        </flux:button>
+
+                        @if (!empty($selectedGroupedItems) && count($selectedGroupedItems) < $this->groupedProducts->count())
+                            <flux:button wire:click="addSelectedGroupedToCart" variant="customer-outline"
+                                size="customer-lg" class="w-full cursor-pointer" wire:loading.attr="disabled"
+                                wire:target="addSelectedGroupedToCart">
+                                Add Selected ({{ count($selectedGroupedItems) }})
+                            </flux:button>
+                        @endif
+                    @else
+                        {{-- Cart Actions for Regular Products --}}
+                        @if ($product->requires_quotation)
+                            <flux:button wire:click="addToQuoteBasket" variant="customer-primary" size="customer-lg"
+                                class="w-full cursor-pointer" wire:loading.attr="disabled"
+                                wire:target="addToQuoteBasket">
+                                Add to Quote
+                            </flux:button>
+
+                            @if ($inQuoteBasket)
+                                <flux:button href="{{ route('quote') }}" wire:navigate variant="customer-outline"
+                                    size="customer-lg" class="w-full cursor-pointer">
+                                    View Quote Basket
+                                </flux:button>
+                            @endif
+                        @else
+                            {{-- Quantity stepper — hidden when out of stock --}}
+                            @if ($state !== 'out_of_stock' && $state !== 'none')
+                                <div class="mb-1">
+                                    <p class="text-sm font-medium text-zinc-800 dark:text-zinc-100 mb-2">Quantity
                                     </p>
-                                @else
-                                    <p class="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5 leading-relaxed">
-                                        {{ config('shop.return_policy', 'Easy returns within 30 days of purchase.') }}
-                                    </p>
-                                @endif
-                            </div>
+                                    <flux:button.group class="w-max">
+                                        <flux:button icon="minus" wire:click="decreaseCartQuantity"
+                                            class="cursor-pointer text-zinc-500!" title="Decrease"
+                                            size="customer-lg" />
+                                        <flux:input readonly value="{{ $cartQuantity }}"
+                                            class="w-14! outline-none! border-none! ring-0!"
+                                            class:input="text-center! h-[42px]! p-0!" size="customer-lg" />
+                                        <flux:button icon="plus" wire:click="increaseCartQuantity"
+                                            class="cursor-pointer text-zinc-500!" title="Increase"
+                                            size="customer-lg" />
+                                    </flux:button.group>
+                                    @if ($inCart)
+                                        <div class="mt-2 text-sm text-green-600 flex items-center gap-1">
+                                            <flux:icon.check-circle class="size-4" /> In Cart
+                                        </div>
+                                    @endif
+                                </div>
+                            @endif
+
+                            {{-- Primary actions --}}
+                            @if ($product->type === ProductType::VARIABLE && !$selectedVariantId)
+                                <flux:button variant="customer-primary" size="customer-lg"
+                                    class="w-full cursor-pointer" disabled>
+                                    Select Options
+                                </flux:button>
+                            @elseif ($state === 'out_of_stock')
+                                <flux:button variant="customer-outline" size="customer-lg"
+                                    class="w-full cursor-not-allowed" disabled>
+                                    Out of Stock
+                                </flux:button>
+                            @elseif ($state === 'backorder' && !$inCart)
+                                <flux:button wire:click="addToCart" size="customer-lg"
+                                    class="w-full cursor-pointer bg-amber-500! border-amber-500! hover:bg-amber-600! text-white!"
+                                    wire:loading.attr="disabled" wire:target="addToCart">
+                                    Pre-order
+                                </flux:button>
+                            @elseif (!$inCart)
+                                <flux:button wire:click="addToCart" variant="customer-primary" size="customer-lg"
+                                    class="w-full cursor-pointer" wire:loading.attr="disabled"
+                                    wire:target="addToCart">
+                                    Add to cart
+                                </flux:button>
+                            @endif
+                        @endif
+                    @endif
+
+                    {{-- Secondary Actions (Share / Wishlist) --}}
+                    <div class="flex items-center gap-2 mt-2">
+                        <div x-data="{
+                            share() {
+                                if (navigator.share) {
+                                    navigator.share({
+                                        title: '{{ addslashes($product->name) }}',
+                                        text: '{{ addslashes(Str::limit($product->short_description, 100)) }}',
+                                        url: '{{ url()->current() }}',
+                                    })
+                                } else {
+                                    navigator.clipboard.writeText('{{ url()->current() }}').then(() => {
+                                        $flux.toast({ text: 'Link copied!', variant: 'success' })
+                                    })
+                                }
+                            }
+                        }">
+                            <flux:button icon="share" icon-variant="outline" title="Share"
+                                variant="customer-outline" size="customer-lg" class="cursor-pointer"
+                                @click="share()">
+                            </flux:button>
                         </div>
 
-                        {{-- Warranty --}}
-                        <div class="flex items-start gap-3 px-2 py-3">
-                            <div class="border dark:border-zinc-700 rounded-md p-1.5 shrink-0 mt-0.5">
-                                <flux:icon.shield-check class="size-5 text-zinc-500" variant="outline" />
-                            </div>
-                            <div>
-                                <p class="text-xs sm:text-sm font-medium text-zinc-800 dark:text-zinc-100">Warranty
-                                </p>
-                                @if ($product->warranty_information)
-                                    <p class="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5 leading-relaxed">
-                                        {{ $product->warranty_information }}
-                                    </p>
-                                @else
-                                    <p class="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5 leading-relaxed">
-                                        {{ config('shop.warranty_policy', 'Covered against manufacturing defects.') }}
-                                    </p>
-                                @endif
-                            </div>
-                        </div>
-                    </div>
+                        <flux:button wire:click="toggleCompare" icon="{{ $inCompare ? 'x-mark' : 'scale' }}"
+                            size="customer-lg" variant="customer-outline" title="Compare"
+                            @class(['cursor-pointer', 'hover:text-white' => $inCompare])>
 
+                        </flux:button>
+
+                        <flux:button wire:click.stop="toggleWishlist" icon="heart" size="customer-lg"
+                            variant="customer-outline" icon-variant="{{ $wishlisted ? 'solid' : 'outline' }}"
+                            title="Wishlist" @class([
+                                'cursor-pointer',
+                                'text-red-500 hover:text-white' => $wishlisted,
+                            ])>
+                        </flux:button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -926,7 +914,6 @@
                 </div>
             </flux:card>
         @endif
-
 
         <livewire:product-recommendations type="similar" :context="['product' => $product]" />
         <livewire:product-recommendations type="recently_viewed" />

@@ -1,12 +1,13 @@
 
 
-
 <?php $attributes ??= new \Illuminate\View\ComponentAttributeBag;
 
 $__newAttributes = [];
 $__propNames = \Illuminate\View\ComponentAttributeBag::extractPropNames(([
-    'name' => null,
-    'variant' => null,
+    'name' => $attributes->whereStartsWith('wire:model')->first(),
+    'resize' => 'vertical',
+    'invalid' => null,
+    'rows' => 4,
 ]));
 
 foreach ($attributes->all() as $__key => $__value) {
@@ -23,8 +24,10 @@ unset($__propNames);
 unset($__newAttributes);
 
 foreach (array_filter(([
-    'name' => null,
-    'variant' => null,
+    'name' => $attributes->whereStartsWith('wire:model')->first(),
+    'resize' => 'vertical',
+    'invalid' => null,
+    'rows' => 4,
 ]), 'is_string', ARRAY_FILTER_USE_KEY) as $__key => $__value) {
     $$__key = $$__key ?? $__value;
 }
@@ -38,19 +41,22 @@ foreach ($attributes->all() as $__key => $__value) {
 unset($__defined_vars, $__key, $__value); ?>
 
 <?php
-// We only want to show the name attribute it has been set manually
-// but not if it has been set from the `wire:model` attribute...
-$showName = isset($name);
-if (! isset($name)) {
-    $name = $attributes->whereStartsWith('wire:model')->first();
-}
-
 $classes = Flux::classes()
-    // Adjust spacing between fields...
-    ->add('*:data-flux-field:mb-3')
-    ->add('[&>[data-flux-field]:has(>[data-flux-description])]:mb-4')
-    ->add('[&>[data-flux-field]:last-child]:mb-0!')
+    ->add('block p-3 w-full')
+    ->add('shadow-xs disabled:shadow-none border rounded-lg')
+    ->add('bg-white dark:bg-white/10 dark:disabled:bg-white/[7%]')
+    ->add($resize ? 'resize-y' : 'resize-none')
+    ->add('text-base sm:text-sm text-zinc-700 disabled:text-zinc-500 placeholder-zinc-400 disabled:placeholder-zinc-400/70 dark:text-zinc-300 dark:disabled:text-zinc-400 dark:placeholder-zinc-400 dark:disabled:placeholder-zinc-500')
+    ->add('border-zinc-200 border-b-zinc-300/80 dark:border-white/10')
+    ->add('data-invalid:shadow-none data-invalid:border-red-500 dark:data-invalid:border-red-500')
     ;
+
+$resizeStyle = match ($resize) {
+    'none' => 'resize: none',
+    'both' => 'resize: both',
+    'horizontal' => 'resize: horizontal',
+    'vertical' => 'resize: vertical',
+};
 ?>
 
 <?php if (isset($component)) { $__componentOriginal33e2911d6f1e72999cb4ebd3c5d00431 = $component; } ?>
@@ -65,10 +71,20 @@ $classes = Flux::classes()
 <?php $component->withAttributes(['attributes' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute($attributes)]); ?>
 <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
 
-    <ui-radio-group <?php echo e($attributes->class($classes)); ?> <?php if($showName): ?> name="<?php echo e($name); ?>" <?php endif; ?> data-flux-radio-group>
-        <?php echo e($slot); ?>
+    <textarea
+        <?php echo e($attributes->class($classes)); ?>
 
-    </ui-radio-group>
+        rows="<?php echo e($rows); ?>"
+        style="<?php echo e($resizeStyle); ?>; <?php echo e($rows === 'auto' ? 'field-sizing: content' : ''); ?>"
+        <?php if(isset($name)): ?> name="<?php echo e($name); ?>" <?php endif; ?>
+        <?php $__getScope = fn($scope = []) => $scope; ?><?php if (isset($scope)) $__scope = $scope; ?><?php $scope = $__getScope(scope: ['name' => $name ?? null, 'invalid' => $invalid ?? false]); ?>
+        <?php if ($scope['invalid'] || ($scope['name'] && $errors->has($scope['name']))): ?>
+        aria-invalid="true" data-invalid
+        <?php endif; ?>
+        <?php if (isset($__scope)) { $scope = $__scope; unset($__scope); } ?>
+        data-flux-control
+        data-flux-textarea
+    ><?php echo e($slot); ?></textarea>
  <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
 <?php if (isset($__attributesOriginal33e2911d6f1e72999cb4ebd3c5d00431)): ?>
@@ -79,4 +95,4 @@ $classes = Flux::classes()
 <?php $component = $__componentOriginal33e2911d6f1e72999cb4ebd3c5d00431; ?>
 <?php unset($__componentOriginal33e2911d6f1e72999cb4ebd3c5d00431); ?>
 <?php endif; ?>
-<?php /**PATH C:\Users\jonah.wakahiu\Desktop\ecommerce\sheffield_ecommerce\vendor\livewire\flux\src/../stubs/resources/views/flux/radio/group/variants/default.blade.php ENDPATH**/ ?>
+<?php /**PATH C:\Users\jonah.wakahiu\Desktop\ecommerce\sheffield_ecommerce\vendor\livewire\flux\src/../stubs/resources/views/flux/textarea.blade.php ENDPATH**/ ?>
