@@ -268,6 +268,23 @@ class Product extends Model
     }
 
     /**
+     * Get bundle products (children of a bundle)
+     */
+    public function bundleProducts(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            Product::class,
+            'product_relationships',
+            'product_id',
+            'related_product_id'
+        )
+            ->wherePivot('type', ProductRelationshipType::BUNDLE)
+            ->withPivot('sort_order', 'quantity')
+            ->withTimestamps()
+            ->orderByPivot('sort_order');
+    }
+
+    /**
      * Get all reviews for the product
      */
     public function reviews(): HasMany
@@ -326,7 +343,7 @@ class Product extends Model
     protected function visibleInCatalog(Builder $query): void
     {
         $query->whereIn('products.visibility', [
-            ProductVisibility::PUBLIC,
+            ProductVisibility::PUBLIC ,
             ProductVisibility::CATALOG,
         ]);
     }
@@ -339,7 +356,7 @@ class Product extends Model
     protected function visibleInSearch(Builder $query): void
     {
         $query->whereIn('products.visibility', [
-            ProductVisibility::PUBLIC,
+            ProductVisibility::PUBLIC ,
             ProductVisibility::SEARCH,
         ]);
     }
@@ -370,28 +387,28 @@ class Product extends Model
     protected function imageUrl(): Attribute
     {
         return Attribute::make(
-            get: fn () => $this->image_path ? asset('storage/'.$this->image_path) : null,
+            get: fn() => $this->image_path ? asset('storage/' . $this->image_path) : null,
         );
     }
 
     protected function webpImageUrl(): Attribute
     {
         return Attribute::make(
-            get: fn () => $this->image_webp ? asset('storage/'.$this->image_webp) : null,
+            get: fn() => $this->image_webp ? asset('storage/' . $this->image_webp) : null,
         );
     }
 
     protected function finalPrice(): Attribute
     {
         return Attribute::make(
-            get: fn () => $this->sale_price ?? $this->price,
+            get: fn() => $this->sale_price ?? $this->price,
         );
     }
 
     protected function formattedFinalPrice(): Attribute
     {
         return Attribute::make(
-            get: fn () => $this->final_price !== null
+            get: fn() => $this->final_price !== null
             ? format_currency($this->final_price)
             : null,
         );
@@ -400,14 +417,14 @@ class Product extends Model
     protected function formattedSalePrice(): Attribute
     {
         return Attribute::make(
-            get: fn () => $this->sale_price ? format_currency($this->sale_price ?? 0) : null
+            get: fn() => $this->sale_price ? format_currency($this->sale_price ?? 0) : null
         );
     }
 
     protected function formattedPrice(): Attribute
     {
         return Attribute::make(
-            get: fn () => $this->price !== null ? format_currency($this->price) : null
+            get: fn() => $this->price !== null ? format_currency($this->price) : null
         );
     }
 
@@ -428,7 +445,7 @@ class Product extends Model
                 }
 
                 // Guard against null type — fall back to simple behaviour
-                if (! $this->type) {
+                if (!$this->type) {
                     return $this->formatted_final_price;
                 }
 
@@ -453,7 +470,7 @@ class Product extends Model
                     return null;
                 }
 
-                if (! $this->type) {
+                if (!$this->type) {
                     return null;
                 }
 
@@ -472,7 +489,7 @@ class Product extends Model
     protected function hasPricePrefix(): Attribute
     {
         return Attribute::make(
-            get: fn () => ! is_null($this->display_price_prefix)
+            get: fn() => !is_null($this->display_price_prefix)
         );
     }
 
@@ -490,12 +507,12 @@ class Product extends Model
         // Use already-loaded variants if available - avoids extra query
         $variants = $this->relationLoaded('variants')
             ? $this->variants
-            : $this->variants()->where('is_active', true)->where(fn ($q) => $q->whereNotNull('price')->orWhereNotNull('sale_price'))->get();
+            : $this->variants()->where('is_active', true)->where(fn($q) => $q->whereNotNull('price')->orWhereNotNull('sale_price'))->get();
 
         $minPrice = $variants
             ->where('is_active', true)
-            ->filter(fn ($v) => ($v->sale_price ?? $v->price) !== null)
-            ->min(fn ($v) => $v->sale_price ?? $v->price);
+            ->filter(fn($v) => ($v->sale_price ?? $v->price) !== null)
+            ->min(fn($v) => $v->sale_price ?? $v->price);
 
         return $minPrice !== null ? format_currency($minPrice) : null;
     }
@@ -528,8 +545,8 @@ class Product extends Model
 
     public function hasDiscount(): bool
     {
-        return ! is_null($this->sale_price)
-            && ! is_null($this->price)
+        return !is_null($this->sale_price)
+            && !is_null($this->price)
             && $this->sale_price < $this->price;
     }
 
@@ -567,10 +584,61 @@ class Product extends Model
         return (bool) $this->is_downloadable;
     }
 
+    public function isBundle(): bool
+    {
+        return $this->type === ProductType::BUNDLE;
+    }
+
     public function isPhysical(): bool
     {
-        return ! $this->isVirtual()
-            && ! $this->isDownloadable()
-            && ! $this->isGrouped();
+        return !$this->isVirtual()
+            && !$this->isDownloadable()
+            && !$this->isGrouped()
+            && !$this->isBundle();
+    }
+
+    /**
+     * Calculate the total value of bundle children (sum of child prices × quantities).
+     * Used to show "Save X%" on bundle pages.
+     */
+    public function getBundleValueAttribute(): ?float
+    {
+        if (!$this->isBundle()) {
+            return null;
+        }
+
+        $items = $this->relationLoaded('bundleProducts')
+            ? $this->bundleProducts
+            : $this->bundleProducts()->get();
+
+        if ($items->isEmpty()) {
+            return null;
+        }
+
+        return $items->sum(function ($item) {
+            $price = $item->sale_price ?? $item->price ?? 0;
+            $qty = $item->pivot->quantity ?? 1;
+            return $price * $qty;
+        });
+    }
+
+    /**
+     * Calculate the discount percentage for a bundle.
+     * Compares bundle price to sum of children prices.
+     */
+    public function getBundleSavingsPercentAttribute(): ?float
+    {
+        if (!$this->isBundle()) {
+            return null;
+        }
+
+        $bundlePrice = $this->sale_price ?? $this->price;
+        $bundleValue = $this->bundle_value;
+
+        if (!$bundlePrice || !$bundleValue || $bundleValue <= $bundlePrice) {
+            return null;
+        }
+
+        return round((($bundleValue - $bundlePrice) / $bundleValue) * 100, 1);
     }
 }

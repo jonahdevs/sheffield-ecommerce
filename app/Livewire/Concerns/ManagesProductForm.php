@@ -21,6 +21,10 @@ trait ManagesProductForm
 
     public string $accessoryQuery = '';
 
+    public string $groupedQuery = '';
+
+    public string $bundleQuery = '';
+
     // ── Tag management state ───────────────────────────────────────────────────
 
     public string $tagQuery = '';
@@ -150,6 +154,18 @@ trait ManagesProductForm
     }
 
     #[Computed]
+    public function groupedResults(): array
+    {
+        return $this->searchGroupedProducts($this->groupedQuery);
+    }
+
+    #[Computed]
+    public function bundleResults(): array
+    {
+        return $this->searchBundleProducts($this->bundleQuery);
+    }
+
+    #[Computed]
     public function selectedTags()
     {
         if (empty($this->form->tag_ids)) {
@@ -183,6 +199,7 @@ trait ManagesProductForm
             array_column($this->form->upsell_products, 'id'),
             array_column($this->form->cross_sell_products, 'id'),
             array_column($this->form->accessory_products, 'id'),
+            array_column($this->form->grouped_products, 'id'),
         );
 
         return Product::where(function ($q) use ($query) {
@@ -192,6 +209,58 @@ trait ManagesProductForm
             ->whereNotIn('id', array_filter($excluded))
             ->limit(8)
             ->get(['id', 'name', 'sku'])
+            ->toArray();
+    }
+
+    /**
+     * Search for products to add to a grouped product.
+     * Only returns simple products (not grouped or variable).
+     */
+    private function searchGroupedProducts(string $query): array
+    {
+        if (strlen(trim($query)) < 2) {
+            return [];
+        }
+
+        $excluded = array_merge(
+            [$this->product?->id ?? 0],
+            array_column($this->form->grouped_products, 'id'),
+        );
+
+        return Product::where(function ($q) use ($query) {
+            $q->where('name', 'like', "%{$query}%")
+                ->orWhere('sku', 'like', "%{$query}%");
+        })
+            ->whereNotIn('id', array_filter($excluded))
+            ->where('type', 'simple') // Only simple products can be children of grouped
+            ->limit(8)
+            ->get(['id', 'name', 'sku', 'price'])
+            ->toArray();
+    }
+
+    /**
+     * Search for products to add to a bundle.
+     * Only returns simple products (not grouped, variable, or bundle).
+     */
+    private function searchBundleProducts(string $query): array
+    {
+        if (strlen(trim($query)) < 2) {
+            return [];
+        }
+
+        $excluded = array_merge(
+            [$this->product?->id ?? 0],
+            array_column($this->form->bundle_products, 'id'),
+        );
+
+        return Product::where(function ($q) use ($query) {
+            $q->where('name', 'like', "%{$query}%")
+                ->orWhere('sku', 'like', "%{$query}%");
+        })
+            ->whereNotIn('id', array_filter($excluded))
+            ->where('type', 'simple') // Only simple products can be children of bundle
+            ->limit(8)
+            ->get(['id', 'name', 'sku', 'price'])
             ->toArray();
     }
 
@@ -215,6 +284,7 @@ trait ManagesProductForm
             'upsell' => $this->upsellQuery = '',
             'cross_sell' => $this->crossSellQuery = '',
             'accessory' => $this->accessoryQuery = '',
+            default => null,
         };
     }
 
@@ -231,7 +301,103 @@ trait ManagesProductForm
             'upsell' => 'upsell_products',
             'cross_sell' => 'cross_sell_products',
             'accessory' => 'accessory_products',
+            default => throw new \InvalidArgumentException("Unknown linked product type: {$type}"),
         };
+    }
+
+    // ── Grouped product actions ────────────────────────────────────────────────
+
+    public function addGroupedProduct(int $productId): void
+    {
+        $product = Product::find($productId, ['id', 'name', 'sku', 'price']);
+        if (!$product) {
+            return;
+        }
+
+        if (!collect($this->form->grouped_products)->contains('id', $productId)) {
+            $this->form->grouped_products[] = [
+                'id' => $product->id,
+                'name' => $product->name,
+                'sku' => $product->sku,
+                'price' => $product->price,
+                'quantity' => 1,
+            ];
+        }
+
+        $this->groupedQuery = '';
+    }
+
+    public function removeGroupedProduct(int $index): void
+    {
+        array_splice($this->form->grouped_products, $index, 1);
+        $this->form->grouped_products = array_values($this->form->grouped_products);
+    }
+
+    public function updateGroupedProductQuantity(int $index, int $quantity): void
+    {
+        if (isset($this->form->grouped_products[$index])) {
+            $this->form->grouped_products[$index]['quantity'] = max(1, $quantity);
+        }
+    }
+
+    // ── Bundle product actions ─────────────────────────────────────────────────
+
+    public function addBundleProduct(int $productId): void
+    {
+        $product = Product::find($productId, ['id', 'name', 'sku', 'price']);
+        if (!$product) {
+            return;
+        }
+
+        if (!collect($this->form->bundle_products)->contains('id', $productId)) {
+            $this->form->bundle_products[] = [
+                'id' => $product->id,
+                'name' => $product->name,
+                'sku' => $product->sku,
+                'price' => $product->price,
+                'quantity' => 1,
+            ];
+        }
+
+        $this->bundleQuery = '';
+    }
+
+    public function removeBundleProduct(int $index): void
+    {
+        array_splice($this->form->bundle_products, $index, 1);
+        $this->form->bundle_products = array_values($this->form->bundle_products);
+    }
+
+    public function updateBundleProductQuantity(int $index, int $quantity): void
+    {
+        if (isset($this->form->bundle_products[$index])) {
+            $this->form->bundle_products[$index]['quantity'] = max(1, $quantity);
+        }
+    }
+
+    /**
+     * Calculate the total value of bundle children (what they would cost if bought separately).
+     */
+    #[Computed]
+    public function bundleValue(): float
+    {
+        return collect($this->form->bundle_products)->sum(fn($p) => ($p['price'] ?? 0) * ($p['quantity'] ?? 1));
+    }
+
+    /**
+     * Calculate the savings percentage if bundle price is set.
+     */
+    #[Computed]
+    public function bundleSavingsPercent(): ?float
+    {
+        $bundlePrice = $this->form->sale_price !== '' ? (float) $this->form->sale_price : ($this->form->price !== '' ? (float) $this->form->price : null);
+        $bundleValue = $this->bundleValue;
+
+        if (!$bundlePrice || !$bundleValue || $bundleValue <= $bundlePrice) {
+            return null;
+        }
+
+        return round((($bundleValue - $bundlePrice) / $bundleValue) * 100, 1);
     }
 
     // ── Attribute actions ──────────────────────────────────────────────────────

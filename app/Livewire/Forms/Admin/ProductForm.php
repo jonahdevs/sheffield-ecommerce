@@ -132,6 +132,12 @@ class ProductForm extends Form
     /** @var array<int, array{id: int, name: string, sku: string|null}> */
     public array $accessory_products = [];
 
+    /** @var array<int, array{id: int, name: string, sku: string|null, price: float|null, quantity: int}> */
+    public array $grouped_products = [];
+
+    /** @var array<int, array{id: int, name: string, sku: string|null, price: float|null, quantity: int}> */
+    public array $bundle_products = [];
+
     // ── Attributes ─────────────────────────────────────────────────────────────
 
     /**
@@ -393,6 +399,24 @@ class ProductForm extends Form
         if ($product->relationLoaded('accessories')) {
             $this->accessory_products = $product->accessories->map(fn($p) => ['id' => $p->id, 'name' => $p->name, 'sku' => $p->sku])->toArray();
         }
+        if ($product->relationLoaded('groupedProducts')) {
+            $this->grouped_products = $product->groupedProducts->map(fn($p) => [
+                'id' => $p->id,
+                'name' => $p->name,
+                'sku' => $p->sku,
+                'price' => $p->price,
+                'quantity' => $p->pivot->quantity ?? 1,
+            ])->toArray();
+        }
+        if ($product->relationLoaded('bundleProducts')) {
+            $this->bundle_products = $product->bundleProducts->map(fn($p) => [
+                'id' => $p->id,
+                'name' => $p->name,
+                'sku' => $p->sku,
+                'price' => $p->price,
+                'quantity' => $p->pivot->quantity ?? 1,
+            ])->toArray();
+        }
 
         // Attributes
         if ($product->relationLoaded('attributes')) {
@@ -544,6 +568,26 @@ class ProductForm extends Form
         $product->upsells()->sync(array_column($this->upsell_products, 'id'));
         $product->crossSells()->sync(array_column($this->cross_sell_products, 'id'));
         $product->accessories()->sync(array_column($this->accessory_products, 'id'));
+
+        // Sync grouped products with quantity pivot data
+        $groupedSyncData = [];
+        foreach ($this->grouped_products as $index => $gp) {
+            $groupedSyncData[$gp['id']] = [
+                'quantity' => $gp['quantity'] ?? 1,
+                'sort_order' => $index,
+            ];
+        }
+        $product->groupedProducts()->sync($groupedSyncData);
+
+        // Sync bundle products with quantity pivot data
+        $bundleSyncData = [];
+        foreach ($this->bundle_products as $index => $bp) {
+            $bundleSyncData[$bp['id']] = [
+                'quantity' => $bp['quantity'] ?? 1,
+                'sort_order' => $index,
+            ];
+        }
+        $product->bundleProducts()->sync($bundleSyncData);
     }
 
     protected function syncProductAttributes(Product $product): void

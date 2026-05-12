@@ -408,64 +408,271 @@
 
                         {{-- ── Linked Products ── --}}
                         <div x-show="tab === 'linked'" x-cloak class="space-y-6">
-                            @foreach ([['type' => 'upsell', 'label' => 'Upsells', 'query' => 'upsellQuery', 'results' => 'upsellResults', 'list' => 'upsell_products', 'desc' => 'Premium or complementary products shown on the product page.'], ['type' => 'cross_sell', 'label' => 'Cross-sells', 'query' => 'crossSellQuery', 'results' => 'crossSellResults', 'list' => 'cross_sell_products', 'desc' => 'Products promoted on the cart page alongside this item.'], ['type' => 'accessory', 'label' => 'Accessories', 'query' => 'accessoryQuery', 'results' => 'accessoryResults', 'list' => 'accessory_products', 'desc' => 'Optional add-ons shown on the product detail page.']] as $lp)
-                                <div>
-                                    <flux:heading size="sm">{{ $lp['label'] }}</flux:heading>
-                                    <flux:text class="text-xs text-zinc-500 mb-2">{{ $lp['desc'] }}</flux:text>
 
-                                    {{-- Search input --}}
-                                    <div class="relative mb-2" x-data="{ open: false }"
-                                        x-on:click.outside="open = false">
-                                        <flux:input wire:model.live.debounce.300ms="{{ $lp['query'] }}"
-                                            placeholder="Search by name or SKU..." icon="magnifying-glass"
-                                            @focus="open = true" />
+                            {{-- Grouped Products Section - Only for grouped product type --}}
+                            <div x-show="$wire.form.type === 'grouped'" x-cloak>
+                                <flux:heading size="sm">Grouped Products</flux:heading>
+                                <flux:text class="text-xs text-zinc-500 mb-2">
+                                    Products that make up this grouped product. Customers can select which items to
+                                    purchase.
+                                </flux:text>
 
-                                        @if (count($this->{$lp['results']}) > 0)
-                                            <div x-show="open"
-                                                class="absolute z-20 w-full mt-1 bg-white dark:bg-zinc-800 border dark:border-zinc-700 rounded-lg shadow-lg overflow-hidden">
-                                                @foreach ($this->{$lp['results']} as $p)
-                                                    <button type="button"
-                                                        wire:click="addLinkedProduct({{ $p['id'] }}, '{{ $lp['type'] }}')"
-                                                        @click="open = false"
-                                                        class="flex items-center gap-2 w-full px-3 py-2 text-sm hover:bg-zinc-50 dark:hover:bg-zinc-700 text-left cursor-pointer">
+                                {{-- Search input --}}
+                                <div class="relative mb-2" x-data="{ open: false }" x-on:click.outside="open = false">
+                                    <flux:input wire:model.live.debounce.300ms="groupedQuery"
+                                        placeholder="Search simple products by name or SKU..." icon="magnifying-glass"
+                                        @focus="open = true" @keydown.enter.prevent />
+
+                                    @if (count($this->groupedResults) > 0)
+                                        <div x-show="open"
+                                            class="absolute z-20 w-full mt-1 bg-white dark:bg-zinc-800 border dark:border-zinc-700 rounded-lg shadow-lg overflow-hidden">
+                                            @foreach ($this->groupedResults as $p)
+                                                <button type="button"
+                                                    wire:click="addGroupedProduct({{ $p['id'] }})"
+                                                    @click="open = false"
+                                                    class="flex items-center gap-2 w-full px-3 py-2 text-sm hover:bg-zinc-50 dark:hover:bg-zinc-700 text-left cursor-pointer">
+                                                    <span
+                                                        class="font-medium text-zinc-900 dark:text-zinc-100 flex-1">{{ $p['name'] }}</span>
+                                                    @if ($p['sku'] ?? null)
+                                                        <span class="text-xs text-zinc-400">{{ $p['sku'] }}</span>
+                                                    @endif
+                                                    @if ($p['price'] ?? null)
                                                         <span
-                                                            class="font-medium text-zinc-900 dark:text-zinc-100 flex-1">{{ $p['name'] }}</span>
-                                                        @if ($p['sku'] ?? null)
-                                                            <span
-                                                                class="text-xs text-zinc-400">{{ $p['sku'] }}</span>
-                                                        @endif
-                                                    </button>
-                                                @endforeach
-                                            </div>
-                                        @endif
-                                    </div>
+                                                            class="text-xs text-zinc-500">{{ format_currency($p['price']) }}</span>
+                                                    @endif
+                                                </button>
+                                            @endforeach
+                                        </div>
+                                    @endif
+                                </div>
 
-                                    {{-- Selected products --}}
-                                    @if (!empty($form->{$lp['list']}))
-                                        <div class="space-y-1">
-                                            @foreach ($form->{$lp['list']} as $idx => $p)
-                                                <div class="flex items-center justify-between px-3 py-2 bg-zinc-50 dark:bg-zinc-800/60 rounded-md border dark:border-zinc-700"
-                                                    wire:key="{{ $lp['type'] }}-{{ $p['id'] }}">
-                                                    <div class="text-sm">
+                                {{-- Selected grouped products --}}
+                                @if (!empty($form->grouped_products))
+                                    <div class="space-y-1">
+                                        @foreach ($form->grouped_products as $idx => $p)
+                                            <div class="flex items-center justify-between px-3 py-2 bg-zinc-50 dark:bg-zinc-800/60 rounded-md border dark:border-zinc-700"
+                                                wire:key="grouped-{{ $p['id'] }}">
+                                                <div class="flex-1 text-sm">
+                                                    <span
+                                                        class="font-medium text-zinc-800 dark:text-zinc-200">{{ $p['name'] }}</span>
+                                                    @if ($p['sku'] ?? null)
+                                                        <span class="text-zinc-400 ms-2">{{ $p['sku'] }}</span>
+                                                    @endif
+                                                    @if ($p['price'] ?? null)
                                                         <span
-                                                            class="font-medium text-zinc-800 dark:text-zinc-200">{{ $p['name'] }}</span>
-                                                        @if ($p['sku'] ?? null)
-                                                            <span
-                                                                class="text-zinc-400 ms-2">{{ $p['sku'] }}</span>
-                                                        @endif
+                                                            class="text-zinc-500 ms-2">{{ format_currency($p['price']) }}</span>
+                                                    @endif
+                                                </div>
+                                                <div class="flex items-center gap-2">
+                                                    <div class="flex items-center gap-1">
+                                                        <span class="text-xs text-zinc-500">Qty:</span>
+                                                        <flux:input type="number" min="1"
+                                                            wire:model.live="form.grouped_products.{{ $idx }}.quantity"
+                                                            class="w-16 text-center" size="xs"
+                                                            @keydown.enter.prevent />
                                                     </div>
                                                     <flux:button type="button" icon="x-mark" variant="ghost"
                                                         size="xs"
                                                         class="text-zinc-400 hover:text-red-500 cursor-pointer"
-                                                        wire:click="removeLinkedProduct({{ $idx }}, '{{ $lp['type'] }}')" />
+                                                        wire:click="removeGroupedProduct({{ $idx }})" />
                                                 </div>
+                                            </div>
+                                        @endforeach
+                                    </div>
+
+                                    {{-- Total summary --}}
+                                    @php
+                                        $groupedTotal = collect($form->grouped_products)->sum(
+                                            fn($p) => ($p['price'] ?? 0) * ($p['quantity'] ?? 1),
+                                        );
+                                    @endphp
+                                    <div
+                                        class="mt-3 pt-3 border-t dark:border-zinc-700 flex justify-between items-center">
+                                        <span class="text-sm text-zinc-500">{{ count($form->grouped_products) }}
+                                            product(s)</span>
+                                        <span class="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+                                            Kit Total: {{ format_currency($groupedTotal) }}
+                                        </span>
+                                    </div>
+                                @else
+                                    <p class="text-xs text-zinc-400">No products added yet. Search and add simple
+                                        products above.</p>
+                                @endif
+                            </div>
+
+                            {{-- Bundle Products Section - Only for bundle product type --}}
+                            <div x-show="$wire.form.type === 'bundle'" x-cloak>
+                                <flux:heading size="sm">Bundle Contents</flux:heading>
+                                <flux:text class="text-xs text-zinc-500 mb-2">
+                                    Products included in this bundle. The bundle is sold as one item at the bundle
+                                    price.
+                                </flux:text>
+
+                                {{-- Search input --}}
+                                <div class="relative mb-2" x-data="{ open: false }" x-on:click.outside="open = false">
+                                    <flux:input wire:model.live.debounce.300ms="bundleQuery"
+                                        placeholder="Search simple products by name or SKU..." icon="magnifying-glass"
+                                        @focus="open = true" @keydown.enter.prevent />
+
+                                    @if (count($this->bundleResults) > 0)
+                                        <div x-show="open"
+                                            class="absolute z-20 w-full mt-1 bg-white dark:bg-zinc-800 border dark:border-zinc-700 rounded-lg shadow-lg overflow-hidden">
+                                            @foreach ($this->bundleResults as $p)
+                                                <button type="button"
+                                                    wire:click="addBundleProduct({{ $p['id'] }})"
+                                                    @click="open = false"
+                                                    class="flex items-center gap-2 w-full px-3 py-2 text-sm hover:bg-zinc-50 dark:hover:bg-zinc-700 text-left cursor-pointer">
+                                                    <span
+                                                        class="font-medium text-zinc-900 dark:text-zinc-100 flex-1">{{ $p['name'] }}</span>
+                                                    @if ($p['sku'] ?? null)
+                                                        <span class="text-xs text-zinc-400">{{ $p['sku'] }}</span>
+                                                    @endif
+                                                    @if ($p['price'] ?? null)
+                                                        <span
+                                                            class="text-xs text-zinc-500">{{ format_currency($p['price']) }}</span>
+                                                    @endif
+                                                </button>
                                             @endforeach
                                         </div>
-                                    @else
-                                        <p class="text-xs text-zinc-400">None added yet.</p>
                                     @endif
                                 </div>
-                            @endforeach
+
+                                {{-- Selected bundle products --}}
+                                @if (!empty($form->bundle_products))
+                                    <div class="space-y-1">
+                                        @foreach ($form->bundle_products as $idx => $p)
+                                            <div class="flex items-center justify-between px-3 py-2 bg-zinc-50 dark:bg-zinc-800/60 rounded-md border dark:border-zinc-700"
+                                                wire:key="bundle-{{ $p['id'] }}">
+                                                <div class="flex-1 text-sm">
+                                                    <span
+                                                        class="font-medium text-zinc-800 dark:text-zinc-200">{{ $p['name'] }}</span>
+                                                    @if ($p['sku'] ?? null)
+                                                        <span class="text-zinc-400 ms-2">{{ $p['sku'] }}</span>
+                                                    @endif
+                                                    @if ($p['price'] ?? null)
+                                                        <span
+                                                            class="text-zinc-500 ms-2">{{ format_currency($p['price']) }}</span>
+                                                    @endif
+                                                </div>
+                                                <div class="flex items-center gap-2">
+                                                    <div class="flex items-center gap-1">
+                                                        <span class="text-xs text-zinc-500">Qty:</span>
+                                                        <flux:input type="number" min="1"
+                                                            wire:model.live="form.bundle_products.{{ $idx }}.quantity"
+                                                            class="w-16 text-center" size="xs"
+                                                            @keydown.enter.prevent />
+                                                    </div>
+                                                    <flux:button type="button" icon="x-mark" variant="ghost"
+                                                        size="xs"
+                                                        class="text-zinc-400 hover:text-red-500 cursor-pointer"
+                                                        wire:click="removeBundleProduct({{ $idx }})" />
+                                                </div>
+                                            </div>
+                                        @endforeach
+                                    </div>
+
+                                    {{-- Bundle value and savings summary --}}
+                                    <div class="mt-3 pt-3 border-t dark:border-zinc-700 space-y-2">
+                                        <div class="flex justify-between items-center text-sm">
+                                            <span class="text-zinc-500">{{ count($form->bundle_products) }}
+                                                product(s)</span>
+                                            <span class="text-zinc-500">
+                                                Items Value: <span
+                                                    class="font-medium text-zinc-700 dark:text-zinc-300">{{ format_currency($this->bundleValue) }}</span>
+                                            </span>
+                                        </div>
+                                        @if ($this->bundleSavingsPercent)
+                                            <div class="flex justify-between items-center text-sm">
+                                                <span class="text-zinc-500">Bundle Price:</span>
+                                                <span class="font-medium text-green-600 dark:text-green-400">
+                                                    {{ format_currency($form->sale_price !== '' ? $form->sale_price : $form->price) }}
+                                                    <span class="text-xs">(Save
+                                                        {{ $this->bundleSavingsPercent }}%)</span>
+                                                </span>
+                                            </div>
+                                        @elseif ($form->price !== '')
+                                            <div class="flex justify-between items-center text-sm">
+                                                <span class="text-zinc-500">Bundle Price:</span>
+                                                <span class="font-medium text-zinc-700 dark:text-zinc-300">
+                                                    {{ format_currency($form->sale_price !== '' ? $form->sale_price : $form->price) }}
+                                                </span>
+                                            </div>
+                                        @else
+                                            <p class="text-xs text-amber-600 dark:text-amber-400">
+                                                <flux:icon.exclamation-triangle variant="mini"
+                                                    class="size-3.5 inline" />
+                                                Set a bundle price in the General tab to show savings.
+                                            </p>
+                                        @endif
+                                    </div>
+                                @else
+                                    <p class="text-xs text-zinc-400">No products added yet. Search and add simple
+                                        products above.</p>
+                                @endif
+                            </div>
+
+                            {{-- Upsells, Cross-sells, Accessories - Hidden for grouped and bundle products --}}
+                            <div x-show="$wire.form.type !== 'grouped' && $wire.form.type !== 'bundle'" x-cloak
+                                class="space-y-6">
+                                @foreach ([['type' => 'upsell', 'label' => 'Upsells', 'query' => 'upsellQuery', 'results' => 'upsellResults', 'list' => 'upsell_products', 'desc' => 'Premium or complementary products shown on the product page.'], ['type' => 'cross_sell', 'label' => 'Cross-sells', 'query' => 'crossSellQuery', 'results' => 'crossSellResults', 'list' => 'cross_sell_products', 'desc' => 'Products promoted on the cart page alongside this item.'], ['type' => 'accessory', 'label' => 'Accessories', 'query' => 'accessoryQuery', 'results' => 'accessoryResults', 'list' => 'accessory_products', 'desc' => 'Optional add-ons shown on the product detail page.']] as $lp)
+                                    <div>
+                                        <flux:heading size="sm">{{ $lp['label'] }}</flux:heading>
+                                        <flux:text class="text-xs text-zinc-500 mb-2">{{ $lp['desc'] }}</flux:text>
+
+                                        {{-- Search input --}}
+                                        <div class="relative mb-2" x-data="{ open: false }"
+                                            x-on:click.outside="open = false">
+                                            <flux:input wire:model.live.debounce.300ms="{{ $lp['query'] }}"
+                                                placeholder="Search by name or SKU..." icon="magnifying-glass"
+                                                @focus="open = true" @keydown.enter.prevent />
+
+                                            @if (count($this->{$lp['results']}) > 0)
+                                                <div x-show="open"
+                                                    class="absolute z-20 w-full mt-1 bg-white dark:bg-zinc-800 border dark:border-zinc-700 rounded-lg shadow-lg overflow-hidden">
+                                                    @foreach ($this->{$lp['results']} as $p)
+                                                        <button type="button"
+                                                            wire:click="addLinkedProduct({{ $p['id'] }}, '{{ $lp['type'] }}')"
+                                                            @click="open = false"
+                                                            class="flex items-center gap-2 w-full px-3 py-2 text-sm hover:bg-zinc-50 dark:hover:bg-zinc-700 text-left cursor-pointer">
+                                                            <span
+                                                                class="font-medium text-zinc-900 dark:text-zinc-100 flex-1">{{ $p['name'] }}</span>
+                                                            @if ($p['sku'] ?? null)
+                                                                <span
+                                                                    class="text-xs text-zinc-400">{{ $p['sku'] }}</span>
+                                                            @endif
+                                                        </button>
+                                                    @endforeach
+                                                </div>
+                                            @endif
+                                        </div>
+
+                                        {{-- Selected products --}}
+                                        @if (!empty($form->{$lp['list']}))
+                                            <div class="space-y-1">
+                                                @foreach ($form->{$lp['list']} as $idx => $p)
+                                                    <div class="flex items-center justify-between px-3 py-2 bg-zinc-50 dark:bg-zinc-800/60 rounded-md border dark:border-zinc-700"
+                                                        wire:key="{{ $lp['type'] }}-{{ $p['id'] }}">
+                                                        <div class="text-sm">
+                                                            <span
+                                                                class="font-medium text-zinc-800 dark:text-zinc-200">{{ $p['name'] }}</span>
+                                                            @if ($p['sku'] ?? null)
+                                                                <span
+                                                                    class="text-zinc-400 ms-2">{{ $p['sku'] }}</span>
+                                                            @endif
+                                                        </div>
+                                                        <flux:button type="button" icon="x-mark" variant="ghost"
+                                                            size="xs"
+                                                            class="text-zinc-400 hover:text-red-500 cursor-pointer"
+                                                            wire:click="removeLinkedProduct({{ $idx }}, '{{ $lp['type'] }}')" />
+                                                    </div>
+                                                @endforeach
+                                            </div>
+                                        @else
+                                            <p class="text-xs text-zinc-400">None added yet.</p>
+                                        @endif
+                                    </div>
+                                @endforeach
+                            </div>
                         </div>
 
                         {{-- ── Attributes ── --}}

@@ -8,6 +8,7 @@ enum ProductRelationshipType: string
     case CROSS_SELL = 'cross_sell';
     case GROUPED = 'grouped';
     case ACCESSORY = 'accessory';
+    case BUNDLE = 'bundle';
 
     public function label()
     {
@@ -16,6 +17,7 @@ enum ProductRelationshipType: string
             self::CROSS_SELL => 'Cross Sell',
             self::GROUPED => 'Grouped',
             self::ACCESSORY => 'Accessory',
+            self::BUNDLE => 'Bundle',
         };
     }
 }

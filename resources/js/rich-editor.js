@@ -1,10 +1,8 @@
 import { Editor } from '@tiptap/core'
 import StarterKit from '@tiptap/starter-kit'
-import { Placeholder } from '@tiptap/extensions'
+import Placeholder from '@tiptap/extension-placeholder'
 import TextAlign from '@tiptap/extension-text-align'
-
-// Note: In Tiptap v3, StarterKit already includes Underline and Link.
-// Importing them separately would cause duplicate extension errors.
+import Underline from '@tiptap/extension-underline'
 
 export default (wireProperty, placeholder = 'Start writing...', initialContent = '') => ({
     editor: null,
@@ -16,14 +14,14 @@ export default (wireProperty, placeholder = 'Start writing...', initialContent =
                 StarterKit,
                 Placeholder.configure({ placeholder }),
                 TextAlign.configure({ types: ['heading', 'paragraph'] }),
+                Underline,
             ],
-            // Use the server-rendered initial value passed from Blade so the
-            // editor is populated immediately — $wire.get() is not reliable
-            // at Alpine init time in Livewire 4 (can return null before hydration).
             content: initialContent || '',
             editorProps: {
                 attributes: {
-                    class: 'prose max-w-none min-h-48 p-4 focus:outline-none',
+                    // Remove prose class to inherit body font styles
+                    // Use minimal styling that doesn't override font-family
+                    class: 'min-h-48 p-4 focus:outline-none [&_h1]:text-2xl [&_h1]:font-bold [&_h1]:mb-4 [&_h2]:text-xl [&_h2]:font-bold [&_h2]:mb-3 [&_h3]:text-lg [&_h3]:font-semibold [&_h3]:mb-2 [&_p]:mb-2 [&_ul]:list-disc [&_ul]:ml-6 [&_ul]:mb-2 [&_ol]:list-decimal [&_ol]:ml-6 [&_ol]:mb-2 [&_li]:mb-1 [&_blockquote]:border-l-4 [&_blockquote]:border-zinc-300 [&_blockquote]:pl-4 [&_blockquote]:italic [&_blockquote]:text-zinc-600 dark:[&_blockquote]:border-zinc-600 dark:[&_blockquote]:text-zinc-400',
                 },
             },
             onUpdate: ({ editor }) => {
@@ -32,7 +30,6 @@ export default (wireProperty, placeholder = 'Start writing...', initialContent =
         })
 
         // Keep the editor in sync if the Livewire property changes from outside
-        // (e.g. a server-side action resets the form).
         this.$wire.$watch(wireProperty, (value) => {
             if (value !== this.editor.getHTML()) {
                 this.editor.commands.setContent(value || '', false)
@@ -44,7 +41,7 @@ export default (wireProperty, placeholder = 'Start writing...', initialContent =
         this.editor?.destroy()
     },
 
-    // Toolbar actions
+    // Toolbar actions - use mousedown to prevent focus loss
     toggleBold() { this.editor.chain().focus().toggleBold().run() },
     toggleItalic() { this.editor.chain().focus().toggleItalic().run() },
     toggleUnderline() { this.editor.chain().focus().toggleUnderline().run() },

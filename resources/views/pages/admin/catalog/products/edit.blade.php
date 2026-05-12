@@ -22,7 +22,7 @@ new #[Title('Edit Product')] class extends Component {
         $this->authorize('update', $product);
 
         $this->product = $product;
-        $this->form->setProduct($product->load('images', 'categories', 'upsells', 'crossSells', 'accessories', 'attributes', 'variants', 'downloads'));
+        $this->form->setProduct($product->load('images', 'categories', 'upsells', 'crossSells', 'accessories', 'groupedProducts', 'bundleProducts', 'attributes', 'variants', 'downloads'));
     }
 
     #[Computed]
