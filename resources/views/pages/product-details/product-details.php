@@ -94,7 +94,25 @@ new #[Layout('layouts.guest')] class extends Component {
 
             if ($defaultVariant) {
                 $this->selectedVariantId = $defaultVariant->id;
-                $this->selectedAttributeValues = $defaultVariant->attributeValues->mapWithKeys(fn($av) => [$av->attribute->name => $av->value])->toArray();
+
+                // Try to get attribute values from relationship first
+                $this->selectedAttributeValues = $defaultVariant->attributeValues
+                    ->mapWithKeys(fn($av) => [$av->attribute->name => $av->value])
+                    ->toArray();
+
+                // Fallback: if relationship is empty, build from attributes JSON
+                if (empty($this->selectedAttributeValues) && !empty($defaultVariant->attributes)) {
+                    $variantAttrIds = collect($defaultVariant->attributes)->map(fn($id) => (int) $id)->toArray();
+
+                    // Load attribute values and map them to attribute names
+                    $attrValues = AttributeValue::with('attribute')
+                        ->whereIn('id', $variantAttrIds)
+                        ->get();
+
+                    $this->selectedAttributeValues = $attrValues
+                        ->mapWithKeys(fn($av) => [$av->attribute->name => $av->value])
+                        ->toArray();
+                }
             }
         }
 
@@ -278,19 +296,29 @@ new #[Layout('layouts.guest')] class extends Component {
         $valueStateMap = [];
 
         foreach ($this->product->variants as $variant) {
-            foreach ($variant->attributeValues as $av) {
-                $existing = $valueStateMap[$av->id] ?? 'out_of_stock';
+            if (!$variant->is_active) {
+                continue;
+            }
 
-                if (!$variant->is_active) {
-                    continue;
-                }
+            $state = $this->resolveVariantStockState($variant);
 
-                $state = $this->resolveVariantStockState($variant);
+            // First try to get attribute values from the relationship
+            $variantAttributeValueIds = $variant->attributeValues->pluck('id')->toArray();
+
+            // Fallback: if relationship is empty, try the attributes JSON field
+            if (empty($variantAttributeValueIds) && !empty($variant->attributes)) {
+                $variantAttributeValueIds = collect($variant->attributes)
+                    ->map(fn($id) => (int) $id)
+                    ->toArray();
+            }
+
+            foreach ($variantAttributeValueIds as $avId) {
+                $existing = $valueStateMap[$avId] ?? 'out_of_stock';
 
                 // Upgrade state — available beats backorder beats out_of_stock
                 $priority = ['available' => 3, 'backorder' => 2, 'out_of_stock' => 1];
                 if (($priority[$state] ?? 0) > ($priority[$existing] ?? 0)) {
-                    $valueStateMap[$av->id] = $state;
+                    $valueStateMap[$avId] = $state;
                 }
             }
         }
@@ -404,17 +432,52 @@ new #[Layout('layouts.guest')] class extends Component {
     {
         $this->selectedAttributeValues[$attributeName] = $value;
 
-        // Search ALL active variants — including out-of-stock and backorder
-        $matched = $this->product->variants->where('is_active', true)->first(function ($variant) {
-            $variantAttrs = $variant->attributeValues->mapWithKeys(fn($av) => [$av->attribute->name => $av->value])->toArray();
-
-            foreach ($this->selectedAttributeValues as $attrName => $attrValue) {
-                if (($variantAttrs[$attrName] ?? null) !== $attrValue) {
-                    return false;
+        // Build a map of attribute name => selected value ID for matching
+        // We need to find the attribute value IDs for the selected values
+        $selectedValueIds = [];
+        foreach ($this->selectedAttributeValues as $attrName => $attrValue) {
+            // Find the attribute value ID from the variationAttributes
+            foreach ($this->variationAttributes as $attr) {
+                if ($attr['name'] === $attrName) {
+                    foreach ($attr['values'] as $v) {
+                        if ($v['value'] === $attrValue) {
+                            $selectedValueIds[$attrName] = $v['id'];
+                            break;
+                        }
+                    }
+                    break;
                 }
             }
+        }
 
-            return true;
+        // Search ALL active variants — including out-of-stock and backorder
+        $matched = $this->product->variants->where('is_active', true)->first(function ($variant) use ($selectedValueIds) {
+            // First try to match using attributeValues relationship
+            $variantAttrs = $variant->attributeValues->mapWithKeys(fn($av) => [$av->attribute->name => $av->value])->toArray();
+
+            if (!empty($variantAttrs)) {
+                foreach ($this->selectedAttributeValues as $attrName => $attrValue) {
+                    if (($variantAttrs[$attrName] ?? null) !== $attrValue) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+
+            // Fallback: match using attributes JSON field
+            if (!empty($variant->attributes) && !empty($selectedValueIds)) {
+                $variantAttrIds = collect($variant->attributes)->map(fn($id) => (int) $id)->toArray();
+
+                // Check if all selected value IDs are in the variant's attributes
+                foreach ($selectedValueIds as $attrName => $valueId) {
+                    if (!in_array($valueId, $variantAttrIds)) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+
+            return false;
         });
 
         $this->selectedVariantId = $matched?->id;

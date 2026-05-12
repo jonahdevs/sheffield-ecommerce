@@ -57,7 +57,8 @@ use Livewire\WithFileUploads;
 <?php endif; ?>
 <?php $component->withAttributes(['href' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute(route('admin.catalog.products.index')),'wire:navigate' => true]); ?>
 <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
-Products <?php echo $__env->renderComponent(); ?>
+Products
+         <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
 <?php if (isset($__attributesOriginalced986e8ff6641d3797206c3198c2b83)): ?>
 <?php $attributes = $__attributesOriginalced986e8ff6641d3797206c3198c2b83; ?>
@@ -132,7 +133,8 @@ Products <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
 <?php $component->withAttributes([]); ?>
 <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
-SKU: <?php echo e($product->sku ?? '—'); ?> &mdash; Last updated <?php echo e($product->updated_at->diffForHumans()); ?> <?php echo $__env->renderComponent(); ?>
+SKU: <?php echo e($product->sku ?? '—'); ?> &mdash; Last updated
+            <?php echo e($product->updated_at->diffForHumans()); ?> <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
 <?php if (isset($__attributesOriginal43e8c568bbb8b06b9124aad3ccf4ec97)): ?>
 <?php $attributes = $__attributesOriginal43e8c568bbb8b06b9124aad3ccf4ec97; ?>
@@ -144,7 +146,81 @@ SKU: <?php echo e($product->sku ?? '—'); ?> &mdash; Last updated <?php echo e(
 <?php endif; ?>
     </div>
 
-    <form wire:submit="save" class="space-y-5">
+    <form wire:submit="save" class="space-y-5" novalidate>
+        
+        <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($errors->any()): ?>
+            <?php if (isset($component)) { $__componentOriginal065de3c539910b33a853577ac5a78fe5 = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginal065de3c539910b33a853577ac5a78fe5 = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::callout.index','data' => ['variant' => 'danger','icon' => 'exclamation-triangle','class' => 'mb-4']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('flux::callout'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes(['variant' => 'danger','icon' => 'exclamation-triangle','class' => 'mb-4']); ?>
+<?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
+
+                <?php if (isset($component)) { $__componentOriginal6a8b23bb7915f0ff2da225b8cc3cc705 = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginal6a8b23bb7915f0ff2da225b8cc3cc705 = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::callout.heading','data' => []] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('flux::callout.heading'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes([]); ?>
+<?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
+Please correct the following errors: <?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginal6a8b23bb7915f0ff2da225b8cc3cc705)): ?>
+<?php $attributes = $__attributesOriginal6a8b23bb7915f0ff2da225b8cc3cc705; ?>
+<?php unset($__attributesOriginal6a8b23bb7915f0ff2da225b8cc3cc705); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginal6a8b23bb7915f0ff2da225b8cc3cc705)): ?>
+<?php $component = $__componentOriginal6a8b23bb7915f0ff2da225b8cc3cc705; ?>
+<?php unset($__componentOriginal6a8b23bb7915f0ff2da225b8cc3cc705); ?>
+<?php endif; ?>
+                <?php if (isset($component)) { $__componentOriginal16e285112e6431fda7b3d6f23c122381 = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginal16e285112e6431fda7b3d6f23c122381 = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::callout.text','data' => []] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('flux::callout.text'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes([]); ?>
+<?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
+
+                    <ul class="list-disc list-inside space-y-1">
+                        <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $errors->all(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $error): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoopIteration(); ?><?php endif; ?>
+                            <li><?php echo e($error); ?></li>
+                        <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
+                    </ul>
+                 <?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginal16e285112e6431fda7b3d6f23c122381)): ?>
+<?php $attributes = $__attributesOriginal16e285112e6431fda7b3d6f23c122381; ?>
+<?php unset($__attributesOriginal16e285112e6431fda7b3d6f23c122381); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginal16e285112e6431fda7b3d6f23c122381)): ?>
+<?php $component = $__componentOriginal16e285112e6431fda7b3d6f23c122381; ?>
+<?php unset($__componentOriginal16e285112e6431fda7b3d6f23c122381); ?>
+<?php endif; ?>
+             <?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginal065de3c539910b33a853577ac5a78fe5)): ?>
+<?php $attributes = $__attributesOriginal065de3c539910b33a853577ac5a78fe5; ?>
+<?php unset($__attributesOriginal065de3c539910b33a853577ac5a78fe5); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginal065de3c539910b33a853577ac5a78fe5)): ?>
+<?php $component = $__componentOriginal065de3c539910b33a853577ac5a78fe5; ?>
+<?php unset($__componentOriginal065de3c539910b33a853577ac5a78fe5); ?>
+<?php endif; ?>
+        <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
+
         <?php echo $__env->make('pages.admin.catalog.products._form-fields', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
 
         <?php if (isset($component)) { $__componentOriginalc4bce27d2c09d2f98a63d67977c1c3ec = $component; } ?>

@@ -205,17 +205,17 @@ class ProductForm extends Form
         return [
             'name' => ['required', 'string', 'min:2', 'max:255'],
             'model_number' => ['nullable', 'string', 'max:100'],
-            'slug' => ['nullable', 'string', 'max:255', 'unique:products,slug,'.$productId],
-            'type' => ['required', 'string', 'in:'.implode(',', array_column(ProductType::cases(), 'value'))],
+            'slug' => ['nullable', 'string', 'max:255', 'unique:products,slug,' . $productId],
+            'type' => ['required', 'string', 'in:' . implode(',', array_column(ProductType::cases(), 'value'))],
             'description' => ['nullable', 'string'],
             'short_description' => ['nullable', 'string'],
-            'status' => ['required', 'string', 'in:'.implode(',', array_column(ProductStatus::cases(), 'value'))],
+            'status' => ['required', 'string', 'in:' . implode(',', array_column(ProductStatus::cases(), 'value'))],
             'published_at' => ['nullable', 'date', 'required_if:status,scheduled'],
-            'visibility' => ['required', 'string', 'in:'.implode(',', array_column(ProductVisibility::cases(), 'value'))],
+            'visibility' => ['required', 'string', 'in:' . implode(',', array_column(ProductVisibility::cases(), 'value'))],
             'price' => ['nullable', 'numeric', 'min:0'],
             'sale_price' => ['nullable', 'numeric', 'min:0'],
             'tax_class_id' => ['nullable', 'integer', 'exists:tax_classes,id'],
-            'sku' => ['nullable', 'string', 'max:255', 'unique:products,sku,'.$productId],
+            'sku' => ['nullable', 'string', 'max:255', 'unique:products,sku,' . $productId],
             'manage_stock' => ['boolean'],
             'stock_quantity' => ['integer', 'min:0'],
             'weight' => ['nullable', 'numeric', 'min:0'],
@@ -239,9 +239,9 @@ class ProductForm extends Form
             'product_attributes.*.attribute_id' => ['nullable', 'integer', 'exists:attributes,id'],
             'product_attributes.*.values' => ['nullable'],
             'variations' => ['nullable', 'array'],
-            'variations.*.price' => ['nullable', 'numeric', 'min:0'],
-            'variations.*.sale_price' => ['nullable', 'numeric', 'min:0'],
-            'variations.*.cost_price' => ['nullable', 'numeric', 'min:0'],
+            'variations.*.price' => ['nullable', 'numeric', 'min:0', 'sometimes'],
+            'variations.*.sale_price' => ['nullable', 'numeric', 'min:0', 'sometimes'],
+            'variations.*.cost_price' => ['nullable', 'numeric', 'min:0', 'sometimes'],
             'variations.*.sku' => ['nullable', 'string', 'max:255'],
             'variations.*.weight' => ['nullable', 'numeric', 'min:0'],
             'variations.*.height' => ['nullable', 'numeric', 'min:0'],
@@ -284,6 +284,38 @@ class ProductForm extends Form
             'published_at.required_if' => 'A publish date and time is required when status is Scheduled.',
             'published_at.date' => 'The publish date must be a valid date.',
         ];
+    }
+
+    protected function prepareForValidation($attributes): array
+    {
+        // Convert empty strings to null for numeric fields in variations
+        // This prevents validation errors when variants have no prices set
+        if (!empty($this->variations)) {
+            $this->variations = array_map(function ($variation) {
+                $numericFields = [
+                    'price',
+                    'sale_price',
+                    'cost_price',
+                    'weight',
+                    'height',
+                    'width',
+                    'length',
+                    'stock_quantity',
+                    'low_stock_threshold',
+                    'max_backorder_quantity'
+                ];
+
+                foreach ($numericFields as $field) {
+                    if (isset($variation[$field]) && $variation[$field] === '') {
+                        $variation[$field] = null;
+                    }
+                }
+
+                return $variation;
+            }, $this->variations);
+        }
+
+        return $attributes;
     }
 
     // ── Hydration ──────────────────────────────────────────────────────────────
@@ -330,7 +362,7 @@ class ProductForm extends Form
         $this->download_limit = $product->download_limit !== null ? (string) $product->download_limit : '';
         $this->download_expiry = $product->download_expiry !== null ? (string) $product->download_expiry : '';
         if ($product->relationLoaded('downloads')) {
-            $this->existing_downloads = $product->downloads->map(fn ($d) => [
+            $this->existing_downloads = $product->downloads->map(fn($d) => [
                 'id' => $d->id,
                 'name' => $d->name,
                 'file_name' => $d->file_name,
@@ -340,7 +372,7 @@ class ProductForm extends Form
 
         // Media
         $this->existing_image = $product->image_path;
-        $this->existing_images = $product->images->map(fn (ProductImage $img) => [
+        $this->existing_images = $product->images->map(fn(ProductImage $img) => [
             'id' => $img->id,
             'url' => $img->url,
             'alt_text' => $img->alt_text,
@@ -353,18 +385,18 @@ class ProductForm extends Form
 
         // Linked products
         if ($product->relationLoaded('upsells')) {
-            $this->upsell_products = $product->upsells->map(fn ($p) => ['id' => $p->id, 'name' => $p->name, 'sku' => $p->sku])->toArray();
+            $this->upsell_products = $product->upsells->map(fn($p) => ['id' => $p->id, 'name' => $p->name, 'sku' => $p->sku])->toArray();
         }
         if ($product->relationLoaded('crossSells')) {
-            $this->cross_sell_products = $product->crossSells->map(fn ($p) => ['id' => $p->id, 'name' => $p->name, 'sku' => $p->sku])->toArray();
+            $this->cross_sell_products = $product->crossSells->map(fn($p) => ['id' => $p->id, 'name' => $p->name, 'sku' => $p->sku])->toArray();
         }
         if ($product->relationLoaded('accessories')) {
-            $this->accessory_products = $product->accessories->map(fn ($p) => ['id' => $p->id, 'name' => $p->name, 'sku' => $p->sku])->toArray();
+            $this->accessory_products = $product->accessories->map(fn($p) => ['id' => $p->id, 'name' => $p->name, 'sku' => $p->sku])->toArray();
         }
 
         // Attributes
         if ($product->relationLoaded('attributes')) {
-            $this->product_attributes = $product->attributes->map(fn ($attr) => [
+            $this->product_attributes = $product->attributes->map(fn($attr) => [
                 'attribute_id' => $attr->id,
                 'name' => $attr->name,
                 'values' => is_array($attr->pivot->values)
@@ -378,7 +410,7 @@ class ProductForm extends Form
 
         // Variations
         if ($product->relationLoaded('variants')) {
-            $this->variations = $product->variants->map(fn (ProductVariant $v) => [
+            $this->variations = $product->variants->map(fn(ProductVariant $v) => [
                 'id' => $v->id,
                 'name' => $v->name ?? '',
                 'sku' => $v->sku ?? '',
@@ -503,7 +535,7 @@ class ProductForm extends Form
     protected function syncTags(Product $product): void
     {
         $product->tags()->sync(
-            array_filter($this->tag_ids, fn ($id) => $id > 0)
+            array_filter($this->tag_ids, fn($id) => $id > 0)
         );
     }
 
@@ -523,7 +555,7 @@ class ProductForm extends Form
             if ($attr['is_new'] ?? false) {
                 // Create or reuse attribute + values from pipe-separated input
                 $name = trim($attr['name'] ?? '');
-                if (! $name) {
+                if (!$name) {
                     continue;
                 }
 
@@ -533,7 +565,7 @@ class ProductForm extends Form
                 );
 
                 $valueIds = [];
-                if (! empty($attr['values'])) {
+                if (!empty($attr['values'])) {
                     foreach (array_filter(array_map('trim', explode('|', $attr['values']))) as $rawValue) {
                         $value = AttributeValue::firstOrCreate(
                             ['attribute_id' => $attribute->id, 'slug' => Str::slug($rawValue)],
@@ -569,27 +601,32 @@ class ProductForm extends Form
         $existingIds = array_filter(array_column($this->variations, 'id'));
 
         // Delete removed variants
-        if (! empty($existingIds)) {
+        if (!empty($existingIds)) {
             $product->variants()->whereNotIn('id', $existingIds)->delete();
         } else {
             // All variations are new — only delete if we have variations at all
-            if (! empty($this->variations)) {
+            if (!empty($this->variations)) {
                 $product->variants()->delete();
             }
         }
 
         foreach ($this->variations as $v) {
+            // Convert allow_backorders from string "0"/"1" to boolean
+            $allowBackorders = false;
+            if (isset($v['allow_backorders'])) {
+                $allowBackorders = $v['allow_backorders'] === '1' || $v['allow_backorders'] === 1 || $v['allow_backorders'] === true;
+            }
+
             $data = [
-                'product_id' => $product->id,
                 'name' => $v['name'] ?: null,
                 'sku' => $v['sku'] ?: null,
                 'price' => $v['price'] !== '' ? $v['price'] : null,
                 'sale_price' => $v['sale_price'] !== '' ? $v['sale_price'] : null,
                 'cost_price' => $v['cost_price'] !== '' ? $v['cost_price'] : null,
-                'manage_stock' => $v['manage_stock'],
-                'stock_quantity' => $v['stock_quantity'],
-                'stock_status' => $v['stock_status'],
-                'allow_backorders' => $v['allow_backorders'] ?? false,
+                'manage_stock' => (bool) $v['manage_stock'],
+                'stock_quantity' => (int) ($v['stock_quantity'] ?? 0),
+                'stock_status' => $v['stock_status'] ?? 'in_stock',
+                'allow_backorders' => $allowBackorders,
                 'backorder_message' => $v['backorder_message'] ?: null,
                 'max_backorder_quantity' => $v['max_backorder_quantity'] !== '' ? $v['max_backorder_quantity'] : null,
                 'expected_restock_date' => $v['expected_restock_date'] !== '' ? $v['expected_restock_date'] : null,
@@ -599,23 +636,34 @@ class ProductForm extends Form
                 'width' => $v['width'] !== '' ? $v['width'] : null,
                 'length' => $v['length'] !== '' ? $v['length'] : null,
                 'image_path' => $v['image_path'] ?? null,
-                'is_default' => $v['is_default'],
-                'is_active' => $v['is_active'],
+                'is_default' => (bool) $v['is_default'],
+                'is_active' => (bool) $v['is_active'],
                 'description' => $v['description'] ?: null,
-                'attributes' => $v['attributes'],
+                'attributes' => $v['attributes'] ?? [],
             ];
 
+            // Get attribute value IDs for syncing the relationship
+            $attributeValueIds = collect($v['attributes'] ?? [])->map(fn($id) => (int) $id)->filter()->toArray();
+
             if ($v['id']) {
-                ProductVariant::where('id', $v['id'])->where('product_id', $product->id)->update($data);
+                $variant = ProductVariant::where('id', $v['id'])->where('product_id', $product->id)->first();
+                if ($variant) {
+                    $variant->update($data);
+                    // Sync attribute values relationship
+                    $variant->attributeValues()->sync($attributeValueIds);
+                }
             } else {
-                $product->variants()->create($data);
+                $data['product_id'] = $product->id;
+                $variant = $product->variants()->create($data);
+                // Sync attribute values relationship
+                $variant->attributeValues()->sync($attributeValueIds);
             }
         }
     }
 
     protected function syncGalleryImages(Product $product): void
     {
-        if (! empty($this->images_to_delete)) {
+        if (!empty($this->images_to_delete)) {
             ProductImage::whereIn('id', $this->images_to_delete)
                 ->where('product_id', $product->id)
                 ->get()
@@ -642,7 +690,7 @@ class ProductForm extends Form
 
     protected function syncDownloads(Product $product): void
     {
-        if (! empty($this->downloads_to_delete)) {
+        if (!empty($this->downloads_to_delete)) {
             $product->downloads()->whereIn('id', $this->downloads_to_delete)
                 ->get()
                 ->each(function ($download) {
@@ -659,7 +707,7 @@ class ProductForm extends Form
             if ($file && is_object($file)) {
                 $path = $file->store('products/downloads', 'private');
                 $product->downloads()->create([
-                    'name' => ! empty($this->new_download_names[$index])
+                    'name' => !empty($this->new_download_names[$index])
                         ? $this->new_download_names[$index]
                         : pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME),
                     'file_path' => $path,

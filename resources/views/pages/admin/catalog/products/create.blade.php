@@ -66,7 +66,8 @@ new #[Title('Create Product')] class extends Component {
 <div>
     <flux:breadcrumbs class="mb-2">
         <flux:breadcrumbs.item :href="route('admin.dashboard')" icon="home" icon-variant="outline" wire:navigate />
-        <flux:breadcrumbs.item :href="route('admin.catalog.products.index')" wire:navigate>Products</flux:breadcrumbs.item>
+        <flux:breadcrumbs.item :href="route('admin.catalog.products.index')" wire:navigate>Products
+        </flux:breadcrumbs.item>
         <flux:breadcrumbs.item>Create</flux:breadcrumbs.item>
     </flux:breadcrumbs>
 
@@ -75,15 +76,30 @@ new #[Title('Create Product')] class extends Component {
         <flux:subheading>Add a new product to your catalogue.</flux:subheading>
     </div>
 
-    <form wire:submit="save" class="space-y-5">
+    <form wire:submit="save" class="space-y-5" novalidate>
+        {{-- General validation errors display --}}
+        @if ($errors->any())
+            <flux:callout variant="danger" icon="exclamation-triangle" class="mb-4">
+                <flux:callout.heading>Please correct the following errors:</flux:callout.heading>
+                <flux:callout.text>
+                    <ul class="list-disc list-inside space-y-1">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </flux:callout.text>
+            </flux:callout>
+        @endif
+
         @include('pages.admin.catalog.products._form-fields')
 
         <flux:card class="flex justify-end gap-3 p-4 bg-zinc-50 dark:bg-zinc-900">
-            <flux:button variant="ghost" :href="route('admin.catalog.products.index')" wire:navigate class="cursor-pointer">
+            <flux:button variant="ghost" :href="route('admin.catalog.products.index')" wire:navigate
+                class="cursor-pointer">
                 Cancel
             </flux:button>
-            <flux:button type="submit" variant="primary" class="cursor-pointer min-w-36"
-                wire:loading.attr="disabled" wire:target="save">
+            <flux:button type="submit" variant="primary" class="cursor-pointer min-w-36" wire:loading.attr="disabled"
+                wire:target="save">
                 <span wire:loading.remove wire:target="save">Create Product</span>
                 <span wire:loading wire:target="save">Saving...</span>
             </flux:button>

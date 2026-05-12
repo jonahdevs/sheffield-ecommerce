@@ -89,6 +89,7 @@
             x-effect="
                 if (tab === 'shipping' && $wire.form.is_virtual) { tab = 'general'; }
                 if (tab === 'downloads' && !$wire.form.is_downloadable) { tab = 'general'; }
+                if (tab === 'variations' && $wire.form.type !== 'variable') { tab = 'general'; }
             ">
 
             {{-- Card header --}}
@@ -142,7 +143,7 @@
                                     'text-zinc-500 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 hover:text-zinc-700 dark:hover:text-zinc-300'"
                                 @if ($t['id'] === 'shipping') x-show="!$wire.form.is_virtual" @endif
                                 @if ($t['id'] === 'downloads') x-show="$wire.form.is_downloadable" @endif
-                            >
+                                @if ($t['id'] === 'variations') x-show="$wire.form.type === 'variable'" @endif>
                                 <flux:icon :name="$t['icon']" variant="outline" class="size-4 shrink-0" />
                                 {{ $t['label'] }}
                             </button>
@@ -306,7 +307,8 @@
                                 <flux:field>
                                     <div class="flex items-center gap-1.5 mb-1">
                                         <flux:label>Download Limit</flux:label>
-                                        <flux:tooltip content="Number of times each customer can download. Leave blank for unlimited.">
+                                        <flux:tooltip
+                                            content="Number of times each customer can download. Leave blank for unlimited.">
                                             <flux:icon.information-circle variant="outline"
                                                 class="size-3.5 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 cursor-help" />
                                         </flux:tooltip>
@@ -319,7 +321,8 @@
                                 <flux:field>
                                     <div class="flex items-center gap-1.5 mb-1">
                                         <flux:label>Download Expiry (days)</flux:label>
-                                        <flux:tooltip content="Days after purchase before the download link expires. Leave blank for no expiry.">
+                                        <flux:tooltip
+                                            content="Days after purchase before the download link expires. Leave blank for no expiry.">
                                             <flux:icon.information-circle variant="outline"
                                                 class="size-3.5 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 cursor-help" />
                                         </flux:tooltip>
@@ -350,8 +353,8 @@
                                                     @endif
                                                 </p>
                                             </div>
-                                            <flux:button type="button" icon="trash" variant="ghost" size="xs"
-                                                class="text-red-500! cursor-pointer shrink-0"
+                                            <flux:button type="button" icon="trash" variant="ghost"
+                                                size="xs" class="text-red-500! cursor-pointer shrink-0"
                                                 wire:click="removeDownload({{ $dl['id'] }})"
                                                 wire:confirm="Remove this download file?" />
                                         </div>
@@ -369,16 +372,15 @@
                                             <flux:icon.document variant="outline"
                                                 class="size-5 text-blue-400 shrink-0" />
                                             <div class="flex-1 min-w-0">
-                                                <flux:input
-                                                    wire:model="form.new_download_names.{{ $nIdx }}"
+                                                <flux:input wire:model="form.new_download_names.{{ $nIdx }}"
                                                     size="sm"
                                                     placeholder="{{ $nFile->getClientOriginalName() }}" />
                                                 <p class="text-xs text-zinc-400 mt-0.5">
                                                     {{ $nFile->getClientOriginalName() }}
                                                 </p>
                                             </div>
-                                            <flux:button type="button" icon="x-mark" variant="ghost" size="xs"
-                                                class="text-red-500! cursor-pointer shrink-0"
+                                            <flux:button type="button" icon="x-mark" variant="ghost"
+                                                size="xs" class="text-red-500! cursor-pointer shrink-0"
                                                 wire:click="removeNewDownload({{ $nIdx }})" />
                                         </div>
                                     @endforeach
@@ -394,8 +396,8 @@
                                 <flux:icon.loading class="size-4" /> Uploading...
                             </div>
 
-                            <flux:button wire:loading.remove wire:target="form.new_download_files"
-                                type="button" icon="paper-clip" variant="ghost"
+                            <flux:button wire:loading.remove wire:target="form.new_download_files" type="button"
+                                icon="paper-clip" variant="ghost"
                                 class="cursor-pointer border border-dashed dark:border-zinc-600"
                                 @click="document.getElementById('download-files-input').click()">
                                 Add Downloadable File
@@ -484,7 +486,7 @@
                                 <div x-data>
                                     <select x-ref="attrSelect"
                                         @change="if ($event.target.value) { $wire.addExistingAttribute(parseInt($event.target.value)).then(() => { $refs.attrSelect.value = '' }) }"
-                                        class="{{ $selectClass }} !py-1.5 !text-sm">
+                                        class="{{ $selectClass }} py-1.5! text-sm!">
                                         <option value="">Add existing...</option>
                                         @foreach ($this->selectableAttributes as $selAttr)
                                             <option value="{{ $selAttr->id }}">{{ ucfirst($selAttr->name) }}
@@ -613,6 +615,41 @@
                                 }
                             }" class="space-y-4">
 
+                                {{-- Default Variant Selector --}}
+                                @if (!empty($form->variations) && !empty($this->variationAttributesForSelector))
+                                    <div class="flex items-center gap-3 flex-wrap" x-data="{
+                                        selectedValues: @js($this->defaultVariantAttributeValues),
+                                        updateDefault() {
+                                            const values = Object.values(this.selectedValues).filter(v => v);
+                                            $wire.setDefaultVariantByAttributes(values);
+                                        }
+                                    }">
+                                        <div class="flex items-center gap-1.5">
+                                            <flux:label class="text-sm whitespace-nowrap">Default Form Values:
+                                            </flux:label>
+                                            <flux:tooltip
+                                                content="The variant that will be pre-selected when customers view this product">
+                                                <flux:icon.information-circle variant="outline"
+                                                    class="size-4 text-zinc-400 cursor-help" />
+                                            </flux:tooltip>
+                                        </div>
+
+                                        @foreach ($this->variationAttributesForSelector as $attr)
+                                            <flux:select x-model="selectedValues[{{ $attr['id'] }}]"
+                                                @change="updateDefault()" size="sm" class="min-w-32">
+                                                <flux:select.option value="">— {{ $attr['name'] }} —
+                                                </flux:select.option>
+                                                @foreach ($attr['values'] as $val)
+                                                    <flux:select.option value="{{ $val['id'] }}"
+                                                        :selected="in_array($val['id'], $this->defaultVariantAttributeValues)">
+                                                        {{ $val['label'] }}
+                                                    </flux:select.option>
+                                                @endforeach
+                                            </flux:select>
+                                        @endforeach
+                                    </div>
+                                @endif
+
                                 {{-- Toolbar --}}
                                 <div class="flex items-center gap-2 flex-wrap">
                                     @if (!empty($form->variations))
@@ -638,37 +675,118 @@
                                         <flux:dropdown>
                                             <flux:button size="sm" icon:trailing="chevron-down"
                                                 class="cursor-pointer">Bulk Actions</flux:button>
-                                            <flux:menu class="min-w-40">
+                                            <flux:menu class="min-w-48 max-h-96 overflow-y-auto">
                                                 <flux:menu.group heading="Status">
-                                                    <flux:menu.item wire:click="toggleAllVariantsActive"
+                                                    <flux:menu.item wire:click="activateAllVariants"
                                                         class="cursor-pointer">
-                                                        Toggle "Active"
+                                                        Activate All
+                                                    </flux:menu.item>
+                                                    <flux:menu.item wire:click="deactivateAllVariants"
+                                                        wire:confirm="This will hide all variants from customers. Continue?"
+                                                        class="cursor-pointer">
+                                                        Deactivate All
+                                                    </flux:menu.item>
+                                                    <flux:menu.item wire:click="setFirstActiveAsDefault"
+                                                        class="cursor-pointer">
+                                                        Set First Active as Default
                                                     </flux:menu.item>
                                                 </flux:menu.group>
-                                                <flux:menu.group heading="Inventory">
-                                                    <flux:menu.item wire:click="toggleAllVariantsManageStock"
+
+                                                <flux:menu.group heading="Pricing">
+                                                    <flux:menu.item
+                                                        x-on:click="$flux.modal('open-bulk-price-modal').show()"
                                                         class="cursor-pointer">
-                                                        Toggle "Manage stock"
+                                                        Set Price...
+                                                    </flux:menu.item>
+                                                    <flux:menu.item
+                                                        x-on:click="$flux.modal('open-bulk-sale-price-modal').show()"
+                                                        class="cursor-pointer">
+                                                        Set Sale Price...
+                                                    </flux:menu.item>
+                                                    <flux:menu.item
+                                                        x-on:click="$flux.modal('open-bulk-cost-price-modal').show()"
+                                                        class="cursor-pointer">
+                                                        Set Cost Price...
+                                                    </flux:menu.item>
+                                                    <flux:menu.item wire:click="bulkClearSalePrice"
+                                                        class="cursor-pointer">
+                                                        Clear Sale Prices
+                                                    </flux:menu.item>
+                                                    <flux:menu.item
+                                                        x-on:click="$flux.modal('open-bulk-adjust-price-modal').show()"
+                                                        class="cursor-pointer">
+                                                        Adjust Prices by %...
+                                                    </flux:menu.item>
+                                                </flux:menu.group>
+
+                                                <flux:menu.group heading="Inventory">
+                                                    <flux:menu.item wire:click="enableAllVariantsStockManagement"
+                                                        class="cursor-pointer">
+                                                        Enable Stock Management
+                                                    </flux:menu.item>
+                                                    <flux:menu.item wire:click="disableAllVariantsStockManagement"
+                                                        class="cursor-pointer">
+                                                        Disable Stock Management
+                                                    </flux:menu.item>
+                                                    <flux:menu.item
+                                                        x-on:click="$flux.modal('open-bulk-stock-quantity-modal').show()"
+                                                        class="cursor-pointer">
+                                                        Set Stock Quantity...
                                                     </flux:menu.item>
                                                     <flux:menu.item wire:click="setAllVariantsStockStatus('in_stock')"
                                                         class="cursor-pointer">
-                                                        Set status — In stock
+                                                        Set Status → In Stock
                                                     </flux:menu.item>
                                                     <flux:menu.item
                                                         wire:click="setAllVariantsStockStatus('out_of_stock')"
                                                         class="cursor-pointer">
-                                                        Set status — Out of stock
+                                                        Set Status → Out of Stock
                                                     </flux:menu.item>
                                                     <flux:menu.item wire:click="setAllVariantsStockStatus('backorder')"
                                                         class="cursor-pointer">
-                                                        Set status — Backorder
+                                                        Set Status → Backorder
+                                                    </flux:menu.item>
+                                                    <flux:menu.item wire:click="bulkEnableBackorders"
+                                                        class="cursor-pointer">
+                                                        Enable Backorders
+                                                    </flux:menu.item>
+                                                    <flux:menu.item wire:click="bulkDisableBackorders"
+                                                        class="cursor-pointer">
+                                                        Disable Backorders
                                                     </flux:menu.item>
                                                 </flux:menu.group>
+
+                                                <flux:menu.group heading="Attributes">
+                                                    <flux:menu.item
+                                                        x-on:click="$flux.modal('open-bulk-sku-modal').show()"
+                                                        class="cursor-pointer">
+                                                        Generate SKUs...
+                                                    </flux:menu.item>
+                                                    <flux:menu.item wire:click="bulkClearSKUs"
+                                                        wire:confirm="Clear all variant SKUs?" class="cursor-pointer">
+                                                        Clear SKUs
+                                                    </flux:menu.item>
+                                                    <flux:menu.item
+                                                        x-on:click="$flux.modal('open-bulk-weight-modal').show()"
+                                                        class="cursor-pointer">
+                                                        Set Weight...
+                                                    </flux:menu.item>
+                                                    <flux:menu.item
+                                                        x-on:click="$flux.modal('open-bulk-dimensions-modal').show()"
+                                                        class="cursor-pointer">
+                                                        Set Dimensions...
+                                                    </flux:menu.item>
+                                                    <flux:menu.item wire:click="bulkCopyDimensionsFromParent"
+                                                        class="cursor-pointer">
+                                                        Copy from Parent Product
+                                                    </flux:menu.item>
+                                                </flux:menu.group>
+
                                                 <flux:menu.group heading="Danger">
                                                     <flux:menu.item wire:click="clearAllVariants"
                                                         wire:confirm="Delete all variations? This cannot be undone."
                                                         variant="danger" class="cursor-pointer">
-                                                        Delete all variations
+                                                        Delete All Variations
                                                     </flux:menu.item>
                                                 </flux:menu.group>
                                             </flux:menu>
@@ -690,6 +808,62 @@
                                         </div>
                                     @endif
                                 </div>
+
+                                {{-- Default Variant Selector --}}
+                                @if (!empty($form->variations) && !empty($this->variationAttributesForSelector))
+                                    <div
+                                        class="bg-zinc-50 dark:bg-zinc-800/50 rounded-lg p-4 border border-zinc-200 dark:border-zinc-700">
+                                        <div class="flex items-start gap-4 flex-wrap">
+                                            <div class="shrink-0">
+                                                <flux:label class="text-sm font-medium">Default Variant</flux:label>
+                                                <p class="text-xs text-zinc-500 mt-0.5">Select the combination that
+                                                    will be pre-selected on the storefront</p>
+                                            </div>
+                                            <div class="flex-1 flex items-end gap-3 flex-wrap"
+                                                x-data="{
+                                                    selectedValues: @js($this->defaultVariantAttributeValues),
+                                                    attributes: @js($this->variationAttributesForSelector),
+                                                    updateDefault() {
+                                                        // Collect all selected values
+                                                        const values = Object.values(this.selectedValues).filter(v => v);
+                                                        $wire.setDefaultVariantByAttributes(values);
+                                                    }
+                                                }">
+                                                @foreach ($this->variationAttributesForSelector as $attrIndex => $attr)
+                                                    <div class="min-w-32">
+                                                        <flux:label class="text-xs mb-1">{{ $attr['name'] }}
+                                                        </flux:label>
+                                                        <select x-model="selectedValues[{{ $attr['id'] }}]"
+                                                            @change="updateDefault()"
+                                                            class="{{ $selectClass }} text-sm py-1.5">
+                                                            <option value="">— Select —</option>
+                                                            @foreach ($attr['values'] as $val)
+                                                                <option value="{{ $val['id'] }}"
+                                                                    {{ in_array($val['id'], $this->defaultVariantAttributeValues) ? 'selected' : '' }}>
+                                                                    {{ $val['label'] }}
+                                                                </option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                @endforeach
+
+                                                @php
+                                                    $currentDefault = collect($form->variations)->firstWhere(
+                                                        'is_default',
+                                                        true,
+                                                    );
+                                                @endphp
+                                                @if ($currentDefault)
+                                                    <div
+                                                        class="flex items-center gap-2 text-xs text-green-600 dark:text-green-400 pb-1">
+                                                        <flux:icon.check-circle class="size-4" />
+                                                        <span>{{ $currentDefault['name'] ?: 'Unnamed' }}</span>
+                                                    </div>
+                                                @endif
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
 
                                 {{-- Unpriced variants warning --}}
                                 @if ($this->unpricedVariantsCount > 0)
@@ -1200,8 +1374,7 @@
 
                 @if ($form->image || $form->existing_image)
                     <flux:button type="button" variant="ghost" size="xs" icon="trash"
-                        class="text-red-500 cursor-pointer"
-                        wire:click="$set('form.image', null); $set('form.existing_image', null)">
+                        class="text-red-500 cursor-pointer" wire:click="removeProductImage">
                         Remove image
                     </flux:button>
                 @endif
@@ -1421,4 +1594,183 @@
             </div>
         </flux:card>
     </div>
+</div>
+
+
+{{-- Bulk Action Modals (Global) --}}
+<div x-data="{
+    bulkPrice: '',
+    bulkCostPrice: '',
+    bulkSalePrice: '',
+    bulkAdjustPercent: '',
+    bulkSkuPrefix: '',
+    bulkStockQuantity: '',
+    bulkWeight: '',
+    bulkLength: '',
+    bulkWidth: '',
+    bulkHeight: ''
+}">
+    {{-- Bulk Set Price Modal --}}
+    <flux:modal name="open-bulk-price-modal" class="space-y-4">
+        <flux:heading size="lg">Set Price for All Variants</flux:heading>
+        <flux:text>This will set the same price for all variants.</flux:text>
+
+        <flux:input type="number" step="0.01" min="0" x-model="bulkPrice"
+            label="Price ({{ get_currency_symbol() }})" placeholder="0.00"
+            @keydown.enter.prevent="$wire.bulkSetPrice(parseFloat(bulkPrice)).then(() => { $flux.modal('open-bulk-price-modal').close(); bulkPrice = ''; })" />
+
+        <div class="flex gap-2 justify-end">
+            <flux:modal.close>
+                <flux:button variant="ghost">Cancel</flux:button>
+            </flux:modal.close>
+            <flux:button variant="primary" type="button"
+                @click="$wire.bulkSetPrice(parseFloat(bulkPrice)).then(() => { $flux.modal('open-bulk-price-modal').close(); bulkPrice = ''; })">
+                Apply
+            </flux:button>
+        </div>
+    </flux:modal>
+
+    {{-- Bulk Set Sale Price Modal --}}
+    <flux:modal name="open-bulk-sale-price-modal" class="space-y-4">
+        <flux:heading size="lg">Set Sale Price for All Variants</flux:heading>
+        <flux:text>This will set the same sale price for all variants.</flux:text>
+
+        <flux:input type="number" step="0.01" min="0" x-model="bulkSalePrice"
+            label="Sale Price ({{ get_currency_symbol() }})" placeholder="0.00"
+            @keydown.enter.prevent="$wire.bulkSetSalePrice(parseFloat(bulkSalePrice)).then(() => { $flux.modal('open-bulk-sale-price-modal').close(); bulkSalePrice = ''; })" />
+
+        <div class="flex gap-2 justify-end">
+            <flux:modal.close>
+                <flux:button variant="ghost">Cancel</flux:button>
+            </flux:modal.close>
+            <flux:button variant="primary" type="button"
+                @click="$wire.bulkSetSalePrice(parseFloat(bulkSalePrice)).then(() => { $flux.modal('open-bulk-sale-price-modal').close(); bulkSalePrice = ''; })">
+                Apply
+            </flux:button>
+        </div>
+    </flux:modal>
+
+    {{-- Bulk Adjust Price by Percent Modal --}}
+    <flux:modal name="open-bulk-adjust-price-modal" class="space-y-4">
+        <flux:heading size="lg">Adjust Prices by Percentage</flux:heading>
+        <flux:text>Enter a positive number to increase prices or negative to decrease.</flux:text>
+
+        <flux:input type="number" step="0.1" x-model="bulkAdjustPercent" label="Percentage (%)"
+            placeholder="e.g., 10 or -15"
+            @keydown.enter.prevent="$wire.bulkAdjustPriceByPercent(parseFloat(bulkAdjustPercent)).then(() => { $flux.modal('open-bulk-adjust-price-modal').close(); bulkAdjustPercent = ''; })" />
+
+        <div class="flex gap-2 justify-end">
+            <flux:modal.close>
+                <flux:button variant="ghost">Cancel</flux:button>
+            </flux:modal.close>
+            <flux:button variant="primary" type="button"
+                @click="$wire.bulkAdjustPriceByPercent(parseFloat(bulkAdjustPercent)).then(() => { $flux.modal('open-bulk-adjust-price-modal').close(); bulkAdjustPercent = ''; })">
+                Apply
+            </flux:button>
+        </div>
+    </flux:modal>
+
+    {{-- Bulk Generate SKUs Modal --}}
+    <flux:modal name="open-bulk-sku-modal" class="space-y-4">
+        <flux:heading size="lg">Generate SKUs for Variants</flux:heading>
+        <flux:text>SKUs will be generated for variants that don't have one. Format: PREFIX-SUFFIX</flux:text>
+
+        <flux:input type="text" x-model="bulkSkuPrefix" label="SKU Prefix" placeholder="e.g., PROD"
+            @keydown.enter.prevent="$wire.bulkGenerateSKUs(bulkSkuPrefix).then(() => { $flux.modal('open-bulk-sku-modal').close(); bulkSkuPrefix = ''; })" />
+
+        <div class="flex gap-2 justify-end">
+            <flux:modal.close>
+                <flux:button variant="ghost">Cancel</flux:button>
+            </flux:modal.close>
+            <flux:button variant="primary" type="button"
+                @click="$wire.bulkGenerateSKUs(bulkSkuPrefix).then(() => { $flux.modal('open-bulk-sku-modal').close(); bulkSkuPrefix = ''; })">
+                Generate
+            </flux:button>
+        </div>
+    </flux:modal>
+
+    {{-- Bulk Set Weight Modal --}}
+    <flux:modal name="open-bulk-weight-modal" class="space-y-4">
+        <flux:heading size="lg">Set Weight for All Variants</flux:heading>
+        <flux:text>This will set the same weight for all variants.</flux:text>
+
+        <flux:input type="number" step="0.001" min="0" x-model="bulkWeight" label="Weight (kg)"
+            placeholder="0.000"
+            @keydown.enter.prevent="$wire.bulkSetWeight(parseFloat(bulkWeight)).then(() => { $flux.modal('open-bulk-weight-modal').close(); bulkWeight = ''; })" />
+
+        <div class="flex gap-2 justify-end">
+            <flux:modal.close>
+                <flux:button variant="ghost">Cancel</flux:button>
+            </flux:modal.close>
+            <flux:button variant="primary" type="button"
+                @click="$wire.bulkSetWeight(parseFloat(bulkWeight)).then(() => { $flux.modal('open-bulk-weight-modal').close(); bulkWeight = ''; })">
+                Apply
+            </flux:button>
+        </div>
+    </flux:modal>
+
+    {{-- Bulk Set Dimensions Modal --}}
+    <flux:modal name="open-bulk-dimensions-modal" class="space-y-4" @keydown.enter.prevent>
+        <flux:heading size="lg">Set Dimensions for All Variants</flux:heading>
+        <flux:text>This will set the same dimensions for all variants.</flux:text>
+
+        <div class="grid grid-cols-3 gap-3">
+            <flux:input type="number" step="0.01" min="0" x-model="bulkLength" label="Length (cm)"
+                placeholder="0.00" />
+            <flux:input type="number" step="0.01" min="0" x-model="bulkWidth" label="Width (cm)"
+                placeholder="0.00" />
+            <flux:input type="number" step="0.01" min="0" x-model="bulkHeight" label="Height (cm)"
+                placeholder="0.00" />
+        </div>
+
+        <div class="flex gap-2 justify-end">
+            <flux:modal.close>
+                <flux:button variant="ghost">Cancel</flux:button>
+            </flux:modal.close>
+            <flux:button variant="primary" type="button"
+                @click="$wire.bulkSetDimensions(parseFloat(bulkLength), parseFloat(bulkWidth), parseFloat(bulkHeight)).then(() => { $flux.modal('open-bulk-dimensions-modal').close(); bulkLength = ''; bulkWidth = ''; bulkHeight = ''; })">
+                Apply
+            </flux:button>
+        </div>
+    </flux:modal>
+
+    {{-- Bulk Set Cost Price Modal --}}
+    <flux:modal name="open-bulk-cost-price-modal" class="space-y-4">
+        <flux:heading size="lg">Set Cost Price for All Variants</flux:heading>
+        <flux:text>This will set the same cost price for all variants.</flux:text>
+
+        <flux:input type="number" step="0.01" min="0" x-model="bulkCostPrice"
+            label="Cost Price ({{ get_currency_symbol() }})" placeholder="0.00"
+            @keydown.enter.prevent="$wire.bulkSetCostPrice(parseFloat(bulkCostPrice)).then(() => { $flux.modal('open-bulk-cost-price-modal').close(); bulkCostPrice = ''; })" />
+
+        <div class="flex gap-2 justify-end">
+            <flux:modal.close>
+                <flux:button variant="ghost">Cancel</flux:button>
+            </flux:modal.close>
+            <flux:button variant="primary" type="button"
+                @click="$wire.bulkSetCostPrice(parseFloat(bulkCostPrice)).then(() => { $flux.modal('open-bulk-cost-price-modal').close(); bulkCostPrice = ''; })">
+                Apply
+            </flux:button>
+        </div>
+    </flux:modal>
+
+    {{-- Bulk Set Stock Quantity Modal --}}
+    <flux:modal name="open-bulk-stock-quantity-modal" class="space-y-4">
+        <flux:heading size="lg">Set Stock Quantity for All Variants</flux:heading>
+        <flux:text>This will set the same stock quantity for all variants with stock management enabled.</flux:text>
+
+        <flux:input type="number" min="0" x-model="bulkStockQuantity" label="Stock Quantity"
+            placeholder="0"
+            @keydown.enter.prevent="$wire.bulkSetStockQuantity(parseInt(bulkStockQuantity)).then(() => { $flux.modal('open-bulk-stock-quantity-modal').close(); bulkStockQuantity = ''; })" />
+
+        <div class="flex gap-2 justify-end">
+            <flux:modal.close>
+                <flux:button variant="ghost">Cancel</flux:button>
+            </flux:modal.close>
+            <flux:button variant="primary" type="button"
+                @click="$wire.bulkSetStockQuantity(parseInt(bulkStockQuantity)).then(() => { $flux.modal('open-bulk-stock-quantity-modal').close(); bulkStockQuantity = ''; })">
+                Apply
+            </flux:button>
+        </div>
+    </flux:modal>
 </div>
