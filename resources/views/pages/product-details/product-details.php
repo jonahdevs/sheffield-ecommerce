@@ -327,6 +327,7 @@ new #[Layout('layouts.guest')] class extends Component {
             ->map(
                 fn($attr) => [
                     'name' => $attr->name,
+                    'watch_type' => $attr->watch_type ?? 'label', // select, label, color, image
                     'values' => collect(json_decode($attr->pivot->values ?? '[]', true) ?? [])
                         ->map(fn($id) => $allValues->get($id))
                         ->filter()
@@ -336,6 +337,8 @@ new #[Layout('layouts.guest')] class extends Component {
                                 'value' => $v->value,
                                 'label' => $v->label ?: $v->value,
                                 'state' => $valueStateMap[$v->id] ?? 'out_of_stock',
+                                'color_code' => $v->color_code,
+                                'image_path' => $v->image_path,
                             ],
                         )
                         ->toArray(),

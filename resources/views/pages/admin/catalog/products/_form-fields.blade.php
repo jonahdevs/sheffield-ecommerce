@@ -636,7 +636,7 @@
 
                                         @foreach ($this->variationAttributesForSelector as $attr)
                                             <flux:select x-model="selectedValues[{{ $attr['id'] }}]"
-                                                @change="updateDefault()" size="sm" class="min-w-32">
+                                                @change="updateDefault()" size="sm" class="w-fit">
                                                 <flux:select.option value="">— {{ $attr['name'] }} —
                                                 </flux:select.option>
                                                 @foreach ($attr['values'] as $val)

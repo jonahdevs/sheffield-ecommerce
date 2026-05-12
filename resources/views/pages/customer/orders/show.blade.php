@@ -145,6 +145,7 @@ new #[Title('Order Details')] #[Layout('layouts.customer')] class extends Compon
                             $brand = $item->product?->brand?->name ?? null;
                             $imagePath = $item->product_image_url ?? $item->product?->image_url;
                             $inStock = ($item->product?->stock_quantity ?? 0) > 0;
+                            $variantAttrs = $item->product_snapshot['variant']['attributes'] ?? [];
                         @endphp
 
                         <div class="flex items-center gap-3.5 p-3.5 border-b border-zinc-200 last:border-b-0">
@@ -165,6 +166,11 @@ new #[Title('Order Details')] #[Layout('layouts.customer')] class extends Compon
                                 <div class="text-[13px] font-semibold text-zinc-950 mb-0.5 truncate">
                                     {{ $name }}
                                 </div>
+                                @if (!empty($variantAttrs))
+                                    <div class="text-[10px] text-zinc-400 mb-0.5">
+                                        {{ collect($variantAttrs)->map(fn($v, $k) => "$k: $v")->join(' · ') }}
+                                    </div>
+                                @endif
                                 <div class="text-[11px] text-zinc-500">Qty: {{ $item->quantity }}</div>
                             </div>
                             <div class="flex flex-col items-end gap-2">

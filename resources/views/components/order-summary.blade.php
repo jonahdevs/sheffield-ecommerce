@@ -8,6 +8,7 @@ use App\Models\{Order, Address};
 use App\Enums\{OrderStatus, PaymentStatus};
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 new class extends Component {
     public bool $isProcessing = false;
@@ -25,7 +26,11 @@ new class extends Component {
     #[Computed]
     public function cartItems()
     {
-        return app(CartService::class)->getCart()->items()->with('product')->get();
+        return app(CartService::class)
+            ->getCart()
+            ->items()
+            ->with(['product', 'variant' => fn($q) => $q->with(['attributeValues:id,attribute_id,value,label', 'attributeValues.attribute:id,name'])])
+            ->get();
     }
 
     // =====================================================
@@ -141,10 +146,20 @@ new class extends Component {
     {{-- Items list --}}
     <div class="divide-y divide-zinc-200 max-h-52 overflow-y-auto">
         @foreach ($this->cartItems as $item)
+            @php
+                $variant = $item->variant;
+                $imageUrl = $variant?->image_path ? Storage::url($variant->image_path) : $item->product?->image_url;
+                $unitPrice = $variant?->final_price ?? $item->product->final_price;
+                $variantAttrs = $variant
+                    ? $variant->attributeValues->mapWithKeys(
+                        fn($av) => [$av->attribute->name => $av->label ?: $av->value],
+                    )
+                    : collect();
+            @endphp
             <div class="flex items-center gap-2.5 px-4 py-3">
                 <div class="w-10 h-10 rounded border border-zinc-200 bg-zinc-50 overflow-hidden shrink-0">
-                    @if ($item->product?->image_path)
-                        <img src="{{ $item->product->image_url }}" alt="{{ $item->product->name }}"
+                    @if ($imageUrl)
+                        <img src="{{ $imageUrl }}" alt="{{ $item->product->name }}"
                             class="w-full h-full object-cover" />
                     @else
                         <flux:icon.photo class="w-full h-full p-1.5 text-zinc-300" />
@@ -152,11 +167,16 @@ new class extends Component {
                 </div>
                 <div class="flex-1 min-w-0">
                     <p class="text-[11px] font-semibold truncate text-zinc-950">{{ $item->product->name }}</p>
+                    @if ($variantAttrs->isNotEmpty())
+                        <p class="text-[9px] text-zinc-400 truncate">
+                            {{ $variantAttrs->map(fn($v, $k) => "$k: $v")->join(' · ') }}
+                        </p>
+                    @endif
                     <p class="text-[10px] text-zinc-400 font-medium">× {{ $item->quantity }}</p>
                 </div>
                 <div class="flex items-center gap-2 shrink-0">
                     <span class="text-[12px] font-bold text-zinc-950">
-                        {{ format_currency($item->product->final_price * $item->quantity) }}
+                        {{ format_currency($unitPrice * $item->quantity) }}
                     </span>
                     <button wire:click="removeItem({{ $item->id }})" wire:confirm="Remove this item from your cart?"
                         class="text-zinc-300 hover:text-red-500 transition-colors cursor-pointer" title="Remove item">

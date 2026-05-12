@@ -304,6 +304,9 @@ new #[Layout('layouts.guest')] class extends Component {
 
                     <div class="divide-y divide-zinc-100">
                         @foreach ($order->items as $item)
+                            @php
+                                $variantAttrs = $item->product_snapshot['variant']['attributes'] ?? [];
+                            @endphp
                             <div class="flex items-center gap-4 px-6 py-4">
                                 <div
                                     class="w-16 h-16 rounded-xl border border-zinc-100 bg-zinc-50 overflow-hidden shrink-0">
@@ -320,6 +323,11 @@ new #[Layout('layouts.guest')] class extends Component {
                                     <p class="text-sm font-semibold text-zinc-800 leading-snug line-clamp-2 mb-1">
                                         {{ $item->product_snapshot['name'] ?? $item->product?->name }}
                                     </p>
+                                    @if (!empty($variantAttrs))
+                                        <p class="text-xs text-zinc-400 mb-1">
+                                            {{ collect($variantAttrs)->map(fn($v, $k) => "$k: $v")->join(' · ') }}
+                                        </p>
+                                    @endif
                                     <p class="text-xs text-zinc-400">Qty: {{ $item->quantity }}</p>
                                 </div>
 

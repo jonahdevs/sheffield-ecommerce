@@ -141,12 +141,18 @@
                         $name = $item->product_snapshot['name'] ?? ($item->product?->name ?? '—');
                         $sku = $item->product_snapshot['sku'] ?? '—';
                         $discountAmount = $item->discount_cents / 100;
+                        $variantAttrs = $item->product_snapshot['variant']['attributes'] ?? [];
                     @endphp
                     <tr class="border-b border-gray-200">
                         <td class="py-3 text-xs text-gray-500">{{ $index + 1 }}</td>
                         <td class="py-3">
                             <div class="text-sm font-semibold text-gray-900">{{ $name }}</div>
-                            <div class="text-xs text-gray-500 mt-0.5">{{ $sku }}</div>
+                            @if (!empty($variantAttrs))
+                                <div class="text-xs text-gray-500 mt-0.5">
+                                    {{ collect($variantAttrs)->map(fn($v, $k) => "$k: $v")->join(' · ') }}
+                                </div>
+                            @endif
+                            <div class="text-xs text-gray-400 mt-0.5">SKU: {{ $sku }}</div>
                         </td>
                         <td class="py-3 text-sm text-gray-900 text-center">{{ $item->quantity }}</td>
                         <td class="py-3 text-sm text-gray-900 text-right">
