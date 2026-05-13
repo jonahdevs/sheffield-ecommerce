@@ -212,7 +212,9 @@
                                 $hasGroupedRange = $groupedPriceRange['min'] > 0 && $groupedPriceRange['max'] > 0;
                                 $sameGroupedPrice = $groupedPriceRange['min'] === $groupedPriceRange['max'];
                             @endphp
-                            <div
+                            <div id="main-product-price"
+                                x-intersect:enter="window.dispatchEvent(new CustomEvent('price-in-view'))"
+                                x-intersect:leave="window.dispatchEvent(new CustomEvent('price-out-of-view'))"
                                 class="relative overflow-hidden rounded-lg bg-gradient-to-r from-secondary/10 to-secondary/5 border border-secondary/20">
                                 {{-- Decorative icon --}}
                                 <div class="absolute -right-2 -top-2 opacity-10">
@@ -261,7 +263,9 @@
                                 $savings = $this->bundleSavingsPercent;
                                 $bundlePriceRange = $this->bundlePriceRange;
                             @endphp
-                            <div
+                            <div id="main-product-price"
+                                x-intersect:enter="window.dispatchEvent(new CustomEvent('price-in-view'))"
+                                x-intersect:leave="window.dispatchEvent(new CustomEvent('price-out-of-view'))"
                                 class="relative overflow-hidden rounded-lg bg-gradient-to-r from-green-500/10 to-green-500/5 border border-green-500/20">
                                 {{-- Decorative icon --}}
                                 <div class="absolute -right-2 -top-2 opacity-10">
@@ -466,7 +470,9 @@
 
                             {{-- PRICE --}}
                             @if (!$product->requires_quotation)
-                                <div id="main-product-price">
+                                <div id="main-product-price"
+                                    x-intersect:enter="window.dispatchEvent(new CustomEvent('price-in-view'))"
+                                    x-intersect:leave="window.dispatchEvent(new CustomEvent('price-out-of-view'))">
                                     @php
                                         $displaySource = $this->selectedVariant ?? $product;
                                         $regularPrice = $displaySource->price;
@@ -776,12 +782,8 @@
 
             {{-- DELIVERY SIDEBAR --}}
             <div class="lg:col-span-1 border border-zinc-200 dark:border-zinc-700 rounded h-fit sticky top-44 p-4"
-                x-data="{ priceVisible: false }" x-init="const el = document.getElementById('main-product-price');
-                if (el) {
-                    new IntersectionObserver(
-                        ([entry]) => { priceVisible = !entry.isIntersecting; }, { threshold: 0 }
-                    ).observe(el);
-                }">
+                x-data="{ priceVisible: false }" x-on:price-out-of-view.window="priceVisible = true"
+                x-on:price-in-view.window="priceVisible = false">
 
                 {{-- Price — slides in when main price scrolls out of view --}}
                 @if ($product->requires_quotation)

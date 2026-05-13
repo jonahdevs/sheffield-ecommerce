@@ -476,7 +476,9 @@
                                 $hasGroupedRange = $groupedPriceRange['min'] > 0 && $groupedPriceRange['max'] > 0;
                                 $sameGroupedPrice = $groupedPriceRange['min'] === $groupedPriceRange['max'];
                             ?>
-                            <div
+                            <div id="main-product-price"
+                                x-intersect:enter="window.dispatchEvent(new CustomEvent('price-in-view'))"
+                                x-intersect:leave="window.dispatchEvent(new CustomEvent('price-out-of-view'))"
                                 class="relative overflow-hidden rounded-lg bg-gradient-to-r from-secondary/10 to-secondary/5 border border-secondary/20">
                                 
                                 <div class="absolute -right-2 -top-2 opacity-10">
@@ -569,7 +571,9 @@
                                 $savings = $this->bundleSavingsPercent;
                                 $bundlePriceRange = $this->bundlePriceRange;
                             ?>
-                            <div
+                            <div id="main-product-price"
+                                x-intersect:enter="window.dispatchEvent(new CustomEvent('price-in-view'))"
+                                x-intersect:leave="window.dispatchEvent(new CustomEvent('price-out-of-view'))"
                                 class="relative overflow-hidden rounded-lg bg-gradient-to-r from-green-500/10 to-green-500/5 border border-green-500/20">
                                 
                                 <div class="absolute -right-2 -top-2 opacity-10">
@@ -880,7 +884,9 @@ Save <?php echo e($savings); ?>%
 
                             
                             <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(!$product->requires_quotation): ?>
-                                <div id="main-product-price">
+                                <div id="main-product-price"
+                                    x-intersect:enter="window.dispatchEvent(new CustomEvent('price-in-view'))"
+                                    x-intersect:leave="window.dispatchEvent(new CustomEvent('price-out-of-view'))">
                                     <?php
                                         $displaySource = $this->selectedVariant ?? $product;
                                         $regularPrice = $displaySource->price;
@@ -1643,12 +1649,8 @@ unset($__split);
 
             
             <div class="lg:col-span-1 border border-zinc-200 dark:border-zinc-700 rounded h-fit sticky top-44 p-4"
-                x-data="{ priceVisible: false }" x-init="const el = document.getElementById('main-product-price');
-                if (el) {
-                    new IntersectionObserver(
-                        ([entry]) => { priceVisible = !entry.isIntersecting; }, { threshold: 0 }
-                    ).observe(el);
-                }">
+                x-data="{ priceVisible: false }" x-on:price-out-of-view.window="priceVisible = true"
+                x-on:price-in-view.window="priceVisible = false">
 
                 
                 <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($product->requires_quotation): ?>

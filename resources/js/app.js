@@ -6,8 +6,10 @@
 
 import './echo';
 import richEditor from './rich-editor';
+import Intersect from '@alpinejs/intersect';
 
 document.addEventListener('alpine:init', () => {
+    Alpine.plugin(Intersect);
     Alpine.data('richEditor', richEditor);
 
     /**
