@@ -255,28 +255,6 @@ unset($__split);
 <?php $component = $__componentOriginalefb8450f00a7938d7dc7cce1f5a06186; ?>
 <?php unset($__componentOriginalefb8450f00a7938d7dc7cce1f5a06186); ?>
 <?php endif; ?>
-    <?php if (isset($component)) { $__componentOriginalf98a32c06d8462f5513d0fb3554f9141 = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginalf98a32c06d8462f5513d0fb3554f9141 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.toast-notification','data' => []] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('toast-notification'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes([]); ?>
-<?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
-
-<?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginalf98a32c06d8462f5513d0fb3554f9141)): ?>
-<?php $attributes = $__attributesOriginalf98a32c06d8462f5513d0fb3554f9141; ?>
-<?php unset($__attributesOriginalf98a32c06d8462f5513d0fb3554f9141); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginalf98a32c06d8462f5513d0fb3554f9141)): ?>
-<?php $component = $__componentOriginalf98a32c06d8462f5513d0fb3554f9141; ?>
-<?php unset($__componentOriginalf98a32c06d8462f5513d0fb3554f9141); ?>
-<?php endif; ?>
 
     <?php app("livewire")->forceAssetInjection(); ?><div x-persist="<?php echo e('footer'); ?>">
         <?php if (isset($component)) { $__componentOriginal8a8716efb3c62a45938aca52e78e0322 = $component; } ?>

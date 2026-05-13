@@ -436,7 +436,7 @@ new #[Title('Cart')] #[Layout('layouts.guest')] class extends Component {
 
             {{-- Cart Summary --}}
             @if ($this->cartItems->isNotEmpty())
-                <div class="w-full lg:w-96 shrink-0 mt-4 lg:mt-0 lg:sticky lg:top-44">
+                <div class="w-full lg:w-96 shrink-0 mt-4 lg:mt-0 lg:sticky lg:top-34">
                     <div class="bg-white border border-zinc-200 rounded-sm overflow-hidden">
 
                         {{-- Header --}}

@@ -156,6 +156,8 @@ new class extends Component {
 
                     <flux:navmenu class="rounded-sm! shadow-2xl! min-w-56!">
 
+
+
                         @auth
                             {{-- User identity header --}}
                             <div class="px-3 py-3 border-b border-zinc-100 dark:border-zinc-700 flex items-center gap-3">
@@ -180,7 +182,36 @@ new class extends Component {
                                 icon-variant="outline">
                                 Orders
                             </flux:navmenu.item>
+
+                            {{-- Available to all users --}}
+                            <flux:navmenu.item :href="route('quote')" wire:navigate icon="document-text"
+                                icon-variant="outline">
+                                <span class="flex items-center gap-2 w-full">
+                                    Quote Basket
+                                    @if ($quoteCount > 0)
+                                        <span
+                                            class="ms-auto bg-amber-500 text-white text-xs font-medium rounded-full h-5 w-5 flex items-center justify-center">
+                                            {{ $quoteCount }}
+                                        </span>
+                                    @endif
+                                </span>
+                            </flux:navmenu.item>
                         @else
+                            {{-- Available to all users --}}
+                            <flux:navmenu.item :href="route('quote')" wire:navigate icon="document-text"
+                                icon-variant="outline">
+                                <span class="flex items-center gap-2 w-full">
+                                    Quote Basket
+                                    @if ($quoteCount > 0)
+                                        <span
+                                            class="ms-auto bg-amber-500 text-white text-xs font-medium rounded-full h-5 w-5 flex items-center justify-center">
+                                            {{ $quoteCount }}
+                                        </span>
+                                    @endif
+                                </span>
+                            </flux:navmenu.item>
+
+
                             {{-- Guest links --}}
                             <flux:navmenu.item href="{{ route('login') }}" wire:navigate
                                 icon="arrow-left-start-on-rectangle" class="cursor-pointer">
@@ -192,19 +223,7 @@ new class extends Component {
                             </flux:navmenu.item>
                         @endauth
 
-                        {{-- Available to all users --}}
-                        <flux:navmenu.item :href="route('quote')" wire:navigate icon="document-text"
-                            icon-variant="outline">
-                            <span class="flex items-center gap-2 w-full">
-                                Quote Basket
-                                @if ($quoteCount > 0)
-                                    <span
-                                        class="ms-auto bg-amber-500 text-white text-xs font-medium rounded-full h-5 w-5 flex items-center justify-center">
-                                        {{ $quoteCount }}
-                                    </span>
-                                @endif
-                            </span>
-                        </flux:navmenu.item>
+
 
                         {{-- Mobile-only: Wishlist & Compare are visible on desktop app-bar --}}
                         <div class="lg:hidden">

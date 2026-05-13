@@ -403,7 +403,7 @@ Filters
 
             
             <aside class="hidden lg:block w-64 shrink-0">
-                <div class="sticky top-44">
+                <div class="sticky top-34">
                     <div class="bg-white rounded-sm border">
                         <div class="px-3 py-2 border-b flex items-center justify-between">
                             <?php if (isset($component)) { $__componentOriginale0fd5b6a0986beffac17a0a103dfd7b9 = $component; } ?>

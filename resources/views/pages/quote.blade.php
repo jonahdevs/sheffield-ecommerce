@@ -200,12 +200,13 @@ new #[Defer] #[Layout('layouts.guest')] class extends Component {
             </flux:heading>
             <div class="flex items-center gap-2">
                 <flux:modal.trigger name="quote-product-picker">
-                    <flux:button size="sm" variant="primary" icon="plus" class="cursor-pointer">
+                    <flux:button size="customer" variant="customer-primary" icon="plus" class="cursor-pointer">
                         Add Items
                     </flux:button>
                 </flux:modal.trigger>
                 @if (!$this->isEmpty)
-                    <flux:button variant="filled" wire:click="clearBasket" size="sm" class="cursor-pointer">
+                    <flux:button variant="customer-outline" wire:click="clearBasket" size="customer"
+                        class="cursor-pointer">
                         Clear all
                     </flux:button>
                 @endif
@@ -269,15 +270,50 @@ new #[Defer] #[Layout('layouts.guest')] class extends Component {
                                 </x-customer.form-field>
                             </div>
                         @else
-                            <div
-                                class="flex items-center gap-3 px-4 py-3 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700">
-                                <flux:icon.user-circle class="size-5 text-zinc-400 shrink-0" />
-                                <div>
-                                    <p class="text-sm font-medium text-zinc-800 dark:text-zinc-200">
-                                        {{ Auth::user()->name }}</p>
-                                    <p class="text-xs text-zinc-500 dark:text-zinc-400">Quote will be sent to
-                                        {{ Auth::user()->email }}</p>
-                                </div>
+                            {{-- Authenticated: show pre-populated fields (readonly for name/email) --}}
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <x-customer.form-field label="Full Name" name="guestName">
+                                    <input type="text" wire:model="guestName"
+                                        class="customer-input bg-zinc-50 dark:bg-zinc-800/50" readonly />
+                                </x-customer.form-field>
+                                <x-customer.form-field label="Phone Number" name="guestPhone">
+                                    <input type="tel" wire:model="guestPhone" class="customer-input"
+                                        placeholder="+254 7XX XXX XXX" />
+                                </x-customer.form-field>
+                            </div>
+
+                            <x-customer.form-field label="Email Address" name="guestEmail">
+                                <input type="email" wire:model="guestEmail"
+                                    class="customer-input bg-zinc-50 dark:bg-zinc-800/50" readonly />
+                            </x-customer.form-field>
+
+                            {{-- Delivery location --}}
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <x-customer.form-field label="County" name="selectedCounty">
+                                    <select wire:model.live="selectedCounty"
+                                        class="customer-input {{ $selectArrow }}">
+                                        <option value="">Select county...</option>
+                                        @foreach ($this->counties as $county)
+                                            <option value="{{ $county->id }}">{{ $county->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </x-customer.form-field>
+
+                                <x-customer.form-field label="Area" name="selectedArea">
+                                    @if ($this->areas->isNotEmpty())
+                                        <select wire:model="selectedArea" class="customer-input {{ $selectArrow }}">
+                                            <option value="">Select area...</option>
+                                            @foreach ($this->areas as $area)
+                                                <option value="{{ $area->id }}">{{ $area->name }}</option>
+                                            @endforeach
+                                        </select>
+                                    @else
+                                        <select disabled
+                                            class="customer-input {{ $selectArrow }} opacity-50 cursor-not-allowed">
+                                            <option>Select county first</option>
+                                        </select>
+                                    @endif
+                                </x-customer.form-field>
                             </div>
                         @endif
                     </div>
@@ -320,110 +356,124 @@ new #[Defer] #[Layout('layouts.guest')] class extends Component {
                 </div>
 
                 {{-- Items list --}}
-                <div
-                    class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 rounded-lg overflow-hidden">
+                <div class="bg-white border border-zinc-200 rounded-sm overflow-hidden">
                     @if ($this->isEmpty)
                         <div class="flex flex-col items-center justify-center py-12 px-6 text-center">
                             <flux:icon.document-text class="w-12 h-12 text-zinc-300 stroke-1 mb-3" />
-                            <p class="text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1">Your quote basket is
-                                empty</p>
+                            <p class="text-sm font-medium text-zinc-700 mb-1">Your quote basket is empty</p>
                             <p class="text-xs text-zinc-400 mb-4">Search and add products you'd like to request a quote
                                 for.</p>
                             <flux:modal.trigger name="quote-product-picker">
-                                <flux:button size="sm" variant="primary" icon="plus" class="cursor-pointer">
+                                <flux:button size="customer" variant="customer-primary" icon="plus"
+                                    class="cursor-pointer">
                                     Add Items
                                 </flux:button>
                             </flux:modal.trigger>
                         </div>
                     @else
-                        @foreach ($this->basketItems as $item)
-                            @php
-                                $variant = $item['variant'];
-                                $product = $item['product'];
-                                $imageUrl = $variant?->image_path
-                                    ? Storage::url($variant->image_path)
-                                    : $product->image_url;
-                                $sku = $variant?->sku ?? $product->sku;
-                                $variantAttrs = $variant
-                                    ? $variant->attributeValues->mapWithKeys(
-                                        fn($av) => [$av->attribute->name => $av->label ?: $av->value],
-                                    )
-                                    : collect();
-                            @endphp
+                        <table class="w-full">
+                            <thead class="bg-zinc-50">
+                                <tr>
+                                    <th
+                                        class="px-6 py-4 text-left text-[11px] font-bold uppercase tracking-widest text-zinc-500 border-b border-zinc-200">
+                                        Product
+                                    </th>
+                                    <th
+                                        class="px-4 py-4 text-center text-[11px] font-bold uppercase tracking-widest text-zinc-500 border-b border-zinc-200">
+                                        Quantity
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-zinc-200">
+                                @foreach ($this->basketItems as $item)
+                                    @php
+                                        $variant = $item['variant'];
+                                        $product = $item['product'];
+                                        $imageUrl = $variant?->image_path
+                                            ? Storage::url($variant->image_path)
+                                            : $product->image_url;
+                                        $sku = $variant?->sku ?? $product->sku;
+                                        $variantAttrs = $variant
+                                            ? $variant->attributeValues->mapWithKeys(
+                                                fn($av) => [$av->attribute->name => $av->label ?: $av->value],
+                                            )
+                                            : collect();
+                                    @endphp
 
-                            <div wire:key="qi-{{ $item['product_id'] }}-{{ $item['variant_id'] }}"
-                                class="flex items-start gap-3 p-4
-                                    {{ !$loop->last ? 'border-b border-zinc-100 dark:border-zinc-800' : '' }}">
+                                    <tr wire:key="qi-{{ $item['product_id'] }}-{{ $item['variant_id'] }}">
 
-                                {{-- Image --}}
-                                <div
-                                    class="w-14 h-14 rounded-md border border-zinc-100 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-800 overflow-hidden flex-shrink-0">
-                                    @if ($imageUrl)
-                                        <img src="{{ $imageUrl }}" alt="{{ $product->name }}"
-                                            class="w-full h-full object-contain" loading="lazy" />
-                                    @else
-                                        <flux:icon.photo class="w-full h-full p-2 text-zinc-300 stroke-1" />
-                                    @endif
-                                </div>
+                                        {{-- Product column --}}
+                                        <td class="px-6 py-5">
+                                            <div class="flex items-center gap-4">
+                                                <div
+                                                    class="w-16 h-16 rounded border border-zinc-200 bg-zinc-50 overflow-hidden shrink-0">
+                                                    @if ($imageUrl)
+                                                        <img src="{{ $imageUrl }}" alt="{{ $product->name }}"
+                                                            class="w-full h-full object-contain" loading="lazy" />
+                                                    @else
+                                                        <flux:icon.photo
+                                                            class="w-full h-full p-2 text-zinc-300 stroke-1" />
+                                                    @endif
+                                                </div>
+                                                <div class="flex-1 min-w-0">
+                                                    @if ($product->brand)
+                                                        <p
+                                                            class="text-[10px] font-bold uppercase tracking-widest text-zinc-400 mb-0.5">
+                                                            {{ $product->brand->name }}
+                                                        </p>
+                                                    @endif
+                                                    <a href="{{ route('products.show', $product) }}" wire:navigate
+                                                        class="text-sm font-medium text-zinc-950 hover:underline block leading-snug mb-1">
+                                                        {{ $product->name }}
+                                                    </a>
+                                                    @if ($variantAttrs->isNotEmpty())
+                                                        <div class="flex flex-wrap gap-1 mb-1">
+                                                            @foreach ($variantAttrs as $attrName => $attrValue)
+                                                                <span
+                                                                    class="text-[10px] text-zinc-500">{{ $attrName }}:
+                                                                    {{ $attrValue }}</span>
+                                                            @endforeach
+                                                        </div>
+                                                    @elseif ($sku)
+                                                        <p class="text-[10px] text-zinc-400 mb-1">SKU:
+                                                            {{ $sku }}</p>
+                                                    @endif
+                                                    <button type="button"
+                                                        wire:click="removeItem({{ $item['product_id'] }}, {{ $item['variant_id'] ?? 'null' }})"
+                                                        class="text-[11px] text-zinc-500 hover:text-red-500 transition-colors cursor-pointer">
+                                                        <flux:icon.trash class="size-3 inline mr-0.5" />
+                                                        Remove
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </td>
 
-                                {{-- Details --}}
-                                <div class="flex-1 min-w-0">
-                                    <a href="{{ route('products.show', $product) }}" wire:navigate
-                                        class="text-sm font-medium text-zinc-800 dark:text-zinc-100
-                                            hover:text-secondary hover:underline block truncate">
-                                        {{ $product->name }}
-                                    </a>
-
-                                    @if ($variantAttrs->isNotEmpty())
-                                        <div class="flex flex-wrap gap-1 mt-1.5">
-                                            @foreach ($variantAttrs as $attrName => $attrValue)
-                                                <span
-                                                    class="text-[11px] bg-zinc-100 dark:bg-zinc-800
-                                                    border border-zinc-200 dark:border-zinc-700
-                                                    rounded px-1.5 py-0.5 text-zinc-600 dark:text-zinc-400">
-                                                    {{ $attrName }}: {{ $attrValue }}
-                                                </span>
-                                            @endforeach
-                                        </div>
-                                    @elseif ($sku)
-                                        <p class="text-xs text-zinc-400 mt-1">SKU: {{ $sku }}</p>
-                                    @endif
-
-                                    {{-- Quantity stepper + remove --}}
-                                    <div class="flex items-center gap-3 mt-2.5">
-                                        <div
-                                            class="flex items-center border border-zinc-200 dark:border-zinc-700 rounded-md overflow-hidden">
-                                            <button type="button"
-                                                wire:click="updateQuantity({{ $item['product_id'] }}, {{ $item['variant_id'] ?? 'null' }}, {{ $item['quantity'] - 1 }})"
-                                                class="w-7 h-7 flex items-center justify-center text-zinc-500
-                                                    hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors
-                                                    cursor-pointer text-base leading-none">
-                                                −
-                                            </button>
-                                            <span
-                                                class="w-8 h-7 flex items-center justify-center text-xs
-                                                font-medium text-zinc-800 dark:text-zinc-100
-                                                border-l border-r border-zinc-200 dark:border-zinc-700">
-                                                {{ $item['quantity'] }}
-                                            </span>
-                                            <button type="button"
-                                                wire:click="updateQuantity({{ $item['product_id'] }}, {{ $item['variant_id'] ?? 'null' }}, {{ $item['quantity'] + 1 }})"
-                                                class="w-7 h-7 flex items-center justify-center text-zinc-500
-                                                    hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors
-                                                    cursor-pointer text-base leading-none">
-                                                +
-                                            </button>
-                                        </div>
-
-                                        <button type="button"
-                                            wire:click="removeItem({{ $item['product_id'] }}, {{ $item['variant_id'] ?? 'null' }})"
-                                            class="ml-auto text-zinc-400 hover:text-red-500 transition-colors cursor-pointer">
-                                            <flux:icon.trash class="size-4" variant="outline" />
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        @endforeach
+                                        {{-- Quantity column --}}
+                                        <td class="px-4 py-5 text-center">
+                                            <div class="flex items-center justify-center">
+                                                <div
+                                                    class="flex items-center border border-zinc-200 rounded overflow-hidden">
+                                                    <button type="button"
+                                                        wire:click="updateQuantity({{ $item['product_id'] }}, {{ $item['variant_id'] ?? 'null' }}, {{ $item['quantity'] - 1 }})"
+                                                        class="w-8 h-8 flex items-center justify-center text-zinc-500 hover:text-zinc-700 hover:bg-zinc-50 transition-colors border-r border-zinc-200 cursor-pointer">
+                                                        <flux:icon.minus class="size-3" />
+                                                    </button>
+                                                    <span
+                                                        class="w-10 h-8 flex items-center justify-center text-sm font-medium bg-white">
+                                                        {{ $item['quantity'] }}
+                                                    </span>
+                                                    <button type="button"
+                                                        wire:click="updateQuantity({{ $item['product_id'] }}, {{ $item['variant_id'] ?? 'null' }}, {{ $item['quantity'] + 1 }})"
+                                                        class="w-8 h-8 flex items-center justify-center text-zinc-500 hover:text-zinc-700 hover:bg-zinc-50 transition-colors border-l border-zinc-200 cursor-pointer">
+                                                        <flux:icon.plus class="size-3" />
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
                     @endif
                 </div>
             </div>

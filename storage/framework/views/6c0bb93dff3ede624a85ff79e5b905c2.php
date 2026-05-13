@@ -295,6 +295,8 @@ unset($__split);
 <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
 
 
+
+
                         <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(auth()->guard()->check()): ?>
                             
                             <div class="px-3 py-3 border-b border-zinc-100 dark:border-zinc-700 flex items-center gap-3">
@@ -399,7 +401,76 @@ unset($__split);
 <?php $component = $__componentOriginal6498d2c45a9cd193b85bf4c51011baaf; ?>
 <?php unset($__componentOriginal6498d2c45a9cd193b85bf4c51011baaf); ?>
 <?php endif; ?>
+
+                            
+                            <?php if (isset($component)) { $__componentOriginal6498d2c45a9cd193b85bf4c51011baaf = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginal6498d2c45a9cd193b85bf4c51011baaf = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::navmenu.item','data' => ['href' => route('quote'),'wire:navigate' => true,'icon' => 'document-text','iconVariant' => 'outline']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('flux::navmenu.item'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes(['href' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute(route('quote')),'wire:navigate' => true,'icon' => 'document-text','icon-variant' => 'outline']); ?>
+<?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
+
+                                <span class="flex items-center gap-2 w-full">
+                                    Quote Basket
+                                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($quoteCount > 0): ?>
+                                        <span
+                                            class="ms-auto bg-amber-500 text-white text-xs font-medium rounded-full h-5 w-5 flex items-center justify-center">
+                                            <?php echo e($quoteCount); ?>
+
+                                        </span>
+                                    <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
+                                </span>
+                             <?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginal6498d2c45a9cd193b85bf4c51011baaf)): ?>
+<?php $attributes = $__attributesOriginal6498d2c45a9cd193b85bf4c51011baaf; ?>
+<?php unset($__attributesOriginal6498d2c45a9cd193b85bf4c51011baaf); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginal6498d2c45a9cd193b85bf4c51011baaf)): ?>
+<?php $component = $__componentOriginal6498d2c45a9cd193b85bf4c51011baaf; ?>
+<?php unset($__componentOriginal6498d2c45a9cd193b85bf4c51011baaf); ?>
+<?php endif; ?>
                         <?php else: ?>
+                            
+                            <?php if (isset($component)) { $__componentOriginal6498d2c45a9cd193b85bf4c51011baaf = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginal6498d2c45a9cd193b85bf4c51011baaf = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::navmenu.item','data' => ['href' => route('quote'),'wire:navigate' => true,'icon' => 'document-text','iconVariant' => 'outline']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('flux::navmenu.item'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes(['href' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute(route('quote')),'wire:navigate' => true,'icon' => 'document-text','icon-variant' => 'outline']); ?>
+<?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
+
+                                <span class="flex items-center gap-2 w-full">
+                                    Quote Basket
+                                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($quoteCount > 0): ?>
+                                        <span
+                                            class="ms-auto bg-amber-500 text-white text-xs font-medium rounded-full h-5 w-5 flex items-center justify-center">
+                                            <?php echo e($quoteCount); ?>
+
+                                        </span>
+                                    <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
+                                </span>
+                             <?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginal6498d2c45a9cd193b85bf4c51011baaf)): ?>
+<?php $attributes = $__attributesOriginal6498d2c45a9cd193b85bf4c51011baaf; ?>
+<?php unset($__attributesOriginal6498d2c45a9cd193b85bf4c51011baaf); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginal6498d2c45a9cd193b85bf4c51011baaf)): ?>
+<?php $component = $__componentOriginal6498d2c45a9cd193b85bf4c51011baaf; ?>
+<?php unset($__componentOriginal6498d2c45a9cd193b85bf4c51011baaf); ?>
+<?php endif; ?>
+
+
                             
                             <?php if (isset($component)) { $__componentOriginal6498d2c45a9cd193b85bf4c51011baaf = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginal6498d2c45a9cd193b85bf4c51011baaf = $attributes; } ?>
@@ -449,39 +520,7 @@ unset($__split);
 <?php endif; ?>
                         <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
 
-                        
-                        <?php if (isset($component)) { $__componentOriginal6498d2c45a9cd193b85bf4c51011baaf = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginal6498d2c45a9cd193b85bf4c51011baaf = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::navmenu.item','data' => ['href' => route('quote'),'wire:navigate' => true,'icon' => 'document-text','iconVariant' => 'outline']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('flux::navmenu.item'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes(['href' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute(route('quote')),'wire:navigate' => true,'icon' => 'document-text','icon-variant' => 'outline']); ?>
-<?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
 
-                            <span class="flex items-center gap-2 w-full">
-                                Quote Basket
-                                <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($quoteCount > 0): ?>
-                                    <span
-                                        class="ms-auto bg-amber-500 text-white text-xs font-medium rounded-full h-5 w-5 flex items-center justify-center">
-                                        <?php echo e($quoteCount); ?>
-
-                                    </span>
-                                <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
-                            </span>
-                         <?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginal6498d2c45a9cd193b85bf4c51011baaf)): ?>
-<?php $attributes = $__attributesOriginal6498d2c45a9cd193b85bf4c51011baaf; ?>
-<?php unset($__attributesOriginal6498d2c45a9cd193b85bf4c51011baaf); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginal6498d2c45a9cd193b85bf4c51011baaf)): ?>
-<?php $component = $__componentOriginal6498d2c45a9cd193b85bf4c51011baaf; ?>
-<?php unset($__componentOriginal6498d2c45a9cd193b85bf4c51011baaf); ?>
-<?php endif; ?>
 
                         
                         <div class="lg:hidden">
