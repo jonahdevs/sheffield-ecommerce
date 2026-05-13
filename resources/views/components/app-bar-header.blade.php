@@ -91,21 +91,8 @@ new class extends Component {
                 {{-- Compare — desktop only --}}
                 <a href="{{ route('products.compare') }}" wire:navigate class="hidden lg:flex items-center gap-2 group">
                     <div class="relative">
-                        <svg class="w-5 h-5 lg:w-6 lg:h-6 text-zinc-800 group-hover:text-primary transition-colors"
-                            viewBox="0 0 24 24" fill="none">
-                            <g clip-path="url(#clip0_105_1836)">
-                                <path
-                                    d="M13 3.99976H6C4.89543 3.99976 4 4.89519 4 5.99976V17.9998C4 19.1043 4.89543 19.9998 6 19.9998H13M17 3.99976H18C19.1046 3.99976 20 4.89519 20 5.99976V6.99976M20 16.9998V17.9998C20 19.1043 19.1046 19.9998 18 19.9998H17M20 10.9998V12.9998M12 1.99976V21.9998"
-                                    stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                    stroke-width="2" />
-                            </g>
-                            <defs>
-                                <clipPath id="clip0_105_1836">
-                                    <rect fill="white" height="24" transform="translate(0 -0.000244141)"
-                                        width="24" />
-                                </clipPath>
-                            </defs>
-                        </svg>
+                        <x-icon.compare
+                            class="size-5 lg:size-6 text-zinc-800 group-hover:text-primary transition-colors" />
                         @if ($compareCount > 0)
                             <span
                                 class="absolute -top-2 -right-2 bg-primary text-on-primary text-[10px] sm:text-xs font-medium rounded-full h-4 w-4 sm:h-5 sm:w-5 flex items-center justify-center">
@@ -154,11 +141,7 @@ new class extends Component {
                         </button>
                     @else
                         <button type="button" class="flex items-center gap-2 hover:text-secondary transition-colors">
-                            <svg class="w-5 h-5 sm:w-6 sm:h-6 text-zinc-800" fill="none" stroke="currentColor"
-                                viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                            </svg>
+                            <flux:icon.user class="w-5 h-5 sm:w-6 sm:h-6 text-zinc-800" variant="outline" />
                             <div class="hidden lg:block">
                                 <div class="text-xs lg:text-sm font-medium text-zinc-800">Account</div>
                             </div>
@@ -171,19 +154,45 @@ new class extends Component {
                         </button>
                     @endauth
 
-                    <flux:navmenu @class([
-                        'rounded-sm! shadow-2xl!',
-                        'mt-[9px]! md:mt-4.5! ' => auth()->check(),
-                        'mt-5.5!' => !auth()->check(),
-                    ])>
-                        <flux:navmenu.item :href="route('customer.account')" wire:navigate icon="user"
-                            icon-variant="outline">
-                            Account
-                        </flux:navmenu.item>
-                        <flux:navmenu.item :href="route('customer.orders.index')" wire:navigate icon="package"
-                            icon-variant="outline">
-                            Orders
-                        </flux:navmenu.item>
+                    <flux:navmenu class="rounded-sm! shadow-2xl! min-w-56!">
+
+                        @auth
+                            {{-- User identity header --}}
+                            <div class="px-3 py-3 border-b border-zinc-100 dark:border-zinc-700 flex items-center gap-3">
+                                @if (auth()->user()->avatar)
+                                    <flux:avatar circle size="sm" src="{{ auth()->user()->avatar }}" />
+                                @else
+                                    <flux:avatar circle size="sm" name="{{ auth()->user()->name }}" />
+                                @endif
+                                <div class="min-w-0">
+                                    <p class="text-sm font-semibold text-zinc-900 dark:text-zinc-100 truncate">
+                                        {{ auth()->user()->name }}</p>
+                                    <p class="text-xs text-zinc-500 truncate">{{ auth()->user()->email }}</p>
+                                </div>
+                            </div>
+
+                            {{-- Auth-only links --}}
+                            <flux:navmenu.item :href="route('customer.account')" wire:navigate icon="user"
+                                icon-variant="outline">
+                                Account
+                            </flux:navmenu.item>
+                            <flux:navmenu.item :href="route('customer.orders.index')" wire:navigate icon="package"
+                                icon-variant="outline">
+                                Orders
+                            </flux:navmenu.item>
+                        @else
+                            {{-- Guest links --}}
+                            <flux:navmenu.item href="{{ route('login') }}" wire:navigate
+                                icon="arrow-left-start-on-rectangle" class="cursor-pointer">
+                                Log in
+                            </flux:navmenu.item>
+                            <flux:navmenu.item href="{{ route('register') }}" wire:navigate icon="user-plus"
+                                icon-variant="outline" class="cursor-pointer">
+                                Create Account
+                            </flux:navmenu.item>
+                        @endauth
+
+                        {{-- Available to all users --}}
                         <flux:navmenu.item :href="route('quote')" wire:navigate icon="document-text"
                             icon-variant="outline">
                             <span class="flex items-center gap-2 w-full">
@@ -196,32 +205,37 @@ new class extends Component {
                                 @endif
                             </span>
                         </flux:navmenu.item>
-                        <flux:navmenu.item :href="route('wishlist')" wire:navigate icon="heart"
-                            icon-variant="outline">
-                            <span class="flex items-center gap-2 w-full">
-                                Wishlist
-                                @if ($wishlistCount > 0)
-                                    <span
-                                        class="ms-auto bg-primary text-on-primary text-xs font-medium rounded-full h-5 w-5 flex items-center justify-center">
-                                        {{ $wishlistCount }}
-                                    </span>
-                                @endif
-                            </span>
-                        </flux:navmenu.item>
-                        <flux:navmenu.item :href="route('products.compare')" wire:navigate icon="arrows-right-left"
-                            icon-variant="outline">
-                            <span class="flex items-center gap-2 w-full">
-                                Compare
-                                @if ($compareCount > 0)
-                                    <span
-                                        class="ms-auto bg-primary text-on-primary text-xs font-medium rounded-full h-5 w-5 flex items-center justify-center">
-                                        {{ $compareCount }}
-                                    </span>
-                                @endif
-                            </span>
-                        </flux:navmenu.item>
-                        <flux:menu.separator />
+
+                        {{-- Mobile-only: Wishlist & Compare are visible on desktop app-bar --}}
+                        <div class="lg:hidden">
+                            <flux:navmenu.item :href="route('wishlist')" wire:navigate icon="heart"
+                                icon-variant="outline">
+                                <span class="flex items-center gap-2 w-full">
+                                    Wishlist
+                                    @if ($wishlistCount > 0)
+                                        <span
+                                            class="ms-auto bg-primary text-on-primary text-xs font-medium rounded-full h-5 w-5 flex items-center justify-center">
+                                            {{ $wishlistCount }}
+                                        </span>
+                                    @endif
+                                </span>
+                            </flux:navmenu.item>
+                            <flux:navmenu.item :href="route('products.compare')" wire:navigate>
+                                <x-slot name="icon"><x-icon.compare class="size-4" /></x-slot>
+                                <span class="flex items-center gap-2 w-full">
+                                    Compare
+                                    @if ($compareCount > 0)
+                                        <span
+                                            class="ms-auto bg-primary text-on-primary text-xs font-medium rounded-full h-5 w-5 flex items-center justify-center">
+                                            {{ $compareCount }}
+                                        </span>
+                                    @endif
+                                </span>
+                            </flux:navmenu.item>
+                        </div>
+
                         @auth
+                            <flux:menu.separator />
                             <form action="{{ route('logout') }}" method="post">
                                 @csrf
                                 <flux:navmenu.item type="submit" icon="arrow-right-start-on-rectangle" variant="danger"
@@ -229,12 +243,8 @@ new class extends Component {
                                     Logout
                                 </flux:navmenu.item>
                             </form>
-                        @else
-                            <flux:navmenu.item href="{{ route('login') }}" wire:navigate
-                                icon="arrow-left-start-on-rectangle" class="cursor-pointer">
-                                Log in
-                            </flux:navmenu.item>
                         @endauth
+
                     </flux:navmenu>
                 </flux:dropdown>
 

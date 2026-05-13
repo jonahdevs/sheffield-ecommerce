@@ -986,10 +986,15 @@
                             </flux:button>
                         </div>
 
-                        <flux:button wire:click="toggleCompare" icon="{{ $inCompare ? 'x-mark' : 'scale' }}"
-                            size="customer-lg" variant="customer-outline" title="Compare"
-                            @class(['cursor-pointer', 'hover:text-white' => $inCompare])>
-
+                        <flux:button wire:click="toggleCompare" size="customer-lg" variant="customer-outline"
+                            title="Compare" @class(['cursor-pointer', 'hover:text-white' => $inCompare])>
+                            <x-slot name="icon">
+                                @if ($inCompare)
+                                    <flux:icon.x-mark class="size-5" />
+                                @else
+                                    <x-icon.compare class="size-5" />
+                                @endif
+                            </x-slot>
                         </flux:button>
 
                         <flux:button wire:click.stop="toggleWishlist" icon="heart" size="customer-lg"

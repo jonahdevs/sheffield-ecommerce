@@ -256,8 +256,16 @@ new class extends Component {
                         title="Quick View" class="cursor-pointer" />
                 </flux:modal.trigger>
 
-                <flux:button wire:click.stop="toggleCompare" size="sm" icon-variant="outline"
-                    icon="{{ $inCompare ? 'x-mark' : 'scale' }}" title="Compare" @class(['cursor-pointer', 'text-secondary!' => $inCompare]) />
+                <flux:button wire:click.stop="toggleCompare" size="sm" title="Compare"
+                    @class(['cursor-pointer', 'text-secondary!' => $inCompare])>
+                    <x-slot name="icon">
+                        @if ($inCompare)
+                            <flux:icon.x-mark class="size-4" />
+                        @else
+                            <x-icon.compare class="size-4" />
+                        @endif
+                    </x-slot>
+                </flux:button>
 
                 @if ($product->requires_quotation)
                     <flux:button wire:click="goToProduct" icon="document-text" size="sm" icon-variant="outline"
@@ -291,10 +299,10 @@ new class extends Component {
             {{-- Price --}}
             <div class="pt-2 mt-auto">
                 @if ($product->requires_quotation)
-                    <a href="{{ route('products.show', $product) }}" wire:navigate
-                        class="text-sm font-medium text-amber-600 hover:underline">
-                        Request a quote
-                    </a>
+                    <flux:button wire:click="goToProduct" size="sm" variant="primary" class="cursor-pointer w-full"
+                        icon="document-text" icon-variant="outline">
+                        Request a Quote
+                    </flux:button>
                 @elseif ($product->display_price)
                     <div class="flex items-baseline gap-1 flex-wrap">
                         @if ($product->has_price_prefix)
@@ -440,7 +448,8 @@ new class extends Component {
                         </div>
                     @elseif ($product->requires_quotation)
                         <div class="mt-3">
-                            <flux:button wire:click="goToProduct" variant="primary" class="uppercase cursor-pointer">
+                            <flux:button wire:click="goToProduct" variant="primary" class="uppercase cursor-pointer"
+                                size="customer">
                                 Request Quote
                             </flux:button>
                         </div>

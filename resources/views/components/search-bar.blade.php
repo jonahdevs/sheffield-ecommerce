@@ -90,15 +90,24 @@ new class extends Component {
 <div class="w-full">
 
     {{-- ── DESKTOP ── --}}
-    <div class="hidden lg:block w-full max-w-xl relative">
-        <flux:input wire:model.live.debounce.300ms="search" wire:loading.attr.remove="disabled" icon="magnifying-glass"
-            placeholder="Search products..." class="w-full" autocomplete="off" clearable
-            @focus="$wire.showSuggestions = ($wire.suggestions?.products?.length > 0)"
-            @keydown.escape="$wire.showSuggestions = false"
-            @keydown.enter="window.location.href = '{{ route('shop.index') }}?search=' + encodeURIComponent($wire.search)" />
+    <div class="hidden lg:block w-full relative">
+        <div class="relative flex items-center">
+            <flux:icon.magnifying-glass class="absolute left-3 size-4 text-zinc-400 pointer-events-none" />
+            <input type="text" wire:model.live.debounce.300ms="search" placeholder="Search products..."
+                autocomplete="off" class="customer-input pl-9 pr-10 w-full bg-white"
+                @focus="$wire.showSuggestions = ($wire.suggestions?.products?.length > 0)"
+                @keydown.escape="$wire.showSuggestions = false"
+                @keydown.enter="window.location.href = '{{ route('shop.index') }}?search=' + encodeURIComponent($wire.search)" />
+            {{-- Clear button --}}
+            <button x-show="$wire.search.length > 0" type="button" wire:click="$set('search', '')"
+                class="absolute right-3 text-zinc-400 hover:text-zinc-700 transition-colors cursor-pointer"
+                aria-label="Clear search">
+                <flux:icon.x-mark class="size-4" />
+            </button>
+        </div>
 
         <div wire:show="showSuggestions" @click.outside="$wire.showSuggestions = false"
-            class="absolute z-50 w-full bg-white rounded-lg shadow-lg border border-zinc-200 top-full mt-1 max-h-[30rem] overflow-y-auto">
+            class="absolute z-50 w-full bg-white shadow-lg border border-zinc-200 top-full mt-1 max-h-[30rem] overflow-y-auto">
             @include('partials.search-suggestions')
         </div>
     </div>
@@ -131,13 +140,21 @@ new class extends Component {
                     </svg>
                 </button>
 
-                <flux:input wire:model.live.debounce.300ms="search" icon="magnifying-glass"
-                    placeholder="Search products..." class="w-full" autocomplete="off" clearable x-init="$nextTick(() => $el.querySelector('input')?.focus())"
-                    @keydown.escape="$wire.closeMobile()"
-                    @keydown.enter="
-                        window.location.href = '{{ route('shop.index') }}?search=' + encodeURIComponent($wire.search);
-                        $wire.closeMobile();
-                    " />
+                <div class="relative flex-1 flex items-center">
+                    <flux:icon.magnifying-glass class="absolute left-3 size-4 text-zinc-400 pointer-events-none" />
+                    <input type="text" wire:model.live.debounce.300ms="search" placeholder="Search products..."
+                        autocomplete="off" class="customer-input pl-9 pr-10 w-full" x-init="$nextTick(() => $el.focus())"
+                        @keydown.escape="$wire.closeMobile()"
+                        @keydown.enter="
+                            window.location.href = '{{ route('shop.index') }}?search=' + encodeURIComponent($wire.search);
+                            $wire.closeMobile();
+                        " />
+                    <button x-show="$wire.search.length > 0" type="button" wire:click="$set('search', '')"
+                        class="absolute right-3 text-zinc-400 hover:text-zinc-700 transition-colors cursor-pointer"
+                        aria-label="Clear search">
+                        <flux:icon.x-mark class="size-4" />
+                    </button>
+                </div>
             </div>
 
             {{-- Results --}}

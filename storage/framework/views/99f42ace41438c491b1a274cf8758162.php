@@ -8,32 +8,66 @@ use App\Models\Category;
 <div class="w-full">
 
     
-    <div class="hidden lg:block w-full max-w-xl relative">
-        <?php if (isset($component)) { $__componentOriginal26c546557cdc09040c8dd00b2090afd0 = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginal26c546557cdc09040c8dd00b2090afd0 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::input.index','data' => ['wire:model.live.debounce.300ms' => 'search','wire:loading.attr.remove' => 'disabled','icon' => 'magnifying-glass','placeholder' => 'Search products...','class' => 'w-full','autocomplete' => 'off','clearable' => true,'@focus' => '$wire.showSuggestions = ($wire.suggestions?.products?.length > 0)','@keydown.escape' => '$wire.showSuggestions = false','@keydown.enter' => 'window.location.href = \''.e(route('shop.index')).'?search=\' + encodeURIComponent($wire.search)']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('flux::input'); ?>
+    <div class="hidden lg:block w-full relative">
+        <div class="relative flex items-center">
+            <?php if (isset($component)) { $__componentOriginalc3d062a579167d374258253d48d4177f = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginalc3d062a579167d374258253d48d4177f = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::icon.magnifying-glass','data' => ['class' => 'absolute left-3 size-4 text-zinc-400 pointer-events-none']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('flux::icon.magnifying-glass'); ?>
 <?php if ($component->shouldRender()): ?>
 <?php $__env->startComponent($component->resolveView(), $component->data()); ?>
 <?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
 <?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
 <?php endif; ?>
-<?php $component->withAttributes(['wire:model.live.debounce.300ms' => 'search','wire:loading.attr.remove' => 'disabled','icon' => 'magnifying-glass','placeholder' => 'Search products...','class' => 'w-full','autocomplete' => 'off','clearable' => true,'@focus' => '$wire.showSuggestions = ($wire.suggestions?.products?.length > 0)','@keydown.escape' => '$wire.showSuggestions = false','@keydown.enter' => 'window.location.href = \''.e(route('shop.index')).'?search=\' + encodeURIComponent($wire.search)']); ?>
+<?php $component->withAttributes(['class' => 'absolute left-3 size-4 text-zinc-400 pointer-events-none']); ?>
 <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
 
 <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
-<?php if (isset($__attributesOriginal26c546557cdc09040c8dd00b2090afd0)): ?>
-<?php $attributes = $__attributesOriginal26c546557cdc09040c8dd00b2090afd0; ?>
-<?php unset($__attributesOriginal26c546557cdc09040c8dd00b2090afd0); ?>
+<?php if (isset($__attributesOriginalc3d062a579167d374258253d48d4177f)): ?>
+<?php $attributes = $__attributesOriginalc3d062a579167d374258253d48d4177f; ?>
+<?php unset($__attributesOriginalc3d062a579167d374258253d48d4177f); ?>
 <?php endif; ?>
-<?php if (isset($__componentOriginal26c546557cdc09040c8dd00b2090afd0)): ?>
-<?php $component = $__componentOriginal26c546557cdc09040c8dd00b2090afd0; ?>
-<?php unset($__componentOriginal26c546557cdc09040c8dd00b2090afd0); ?>
+<?php if (isset($__componentOriginalc3d062a579167d374258253d48d4177f)): ?>
+<?php $component = $__componentOriginalc3d062a579167d374258253d48d4177f; ?>
+<?php unset($__componentOriginalc3d062a579167d374258253d48d4177f); ?>
 <?php endif; ?>
+            <input type="text" wire:model.live.debounce.300ms="search" placeholder="Search products..."
+                autocomplete="off" class="customer-input pl-9 pr-10 w-full bg-white"
+                @focus="$wire.showSuggestions = ($wire.suggestions?.products?.length > 0)"
+                @keydown.escape="$wire.showSuggestions = false"
+                @keydown.enter="window.location.href = '<?php echo e(route('shop.index')); ?>?search=' + encodeURIComponent($wire.search)" />
+            
+            <button x-show="$wire.search.length > 0" type="button" wire:click="$set('search', '')"
+                class="absolute right-3 text-zinc-400 hover:text-zinc-700 transition-colors cursor-pointer"
+                aria-label="Clear search">
+                <?php if (isset($component)) { $__componentOriginal155e76c41fe51242bc25d269fabf82f5 = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginal155e76c41fe51242bc25d269fabf82f5 = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::icon.x-mark','data' => ['class' => 'size-4']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('flux::icon.x-mark'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes(['class' => 'size-4']); ?>
+<?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
+
+<?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginal155e76c41fe51242bc25d269fabf82f5)): ?>
+<?php $attributes = $__attributesOriginal155e76c41fe51242bc25d269fabf82f5; ?>
+<?php unset($__attributesOriginal155e76c41fe51242bc25d269fabf82f5); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginal155e76c41fe51242bc25d269fabf82f5)): ?>
+<?php $component = $__componentOriginal155e76c41fe51242bc25d269fabf82f5; ?>
+<?php unset($__componentOriginal155e76c41fe51242bc25d269fabf82f5); ?>
+<?php endif; ?>
+            </button>
+        </div>
 
         <div wire:show="showSuggestions" @click.outside="$wire.showSuggestions = false"
-            class="absolute z-50 w-full bg-white rounded-lg shadow-lg border border-zinc-200 top-full mt-1 max-h-[30rem] overflow-y-auto">
+            class="absolute z-50 w-full bg-white shadow-lg border border-zinc-200 top-full mt-1 max-h-[30rem] overflow-y-auto">
             <?php echo $__env->make('partials.search-suggestions', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
         </div>
     </div>
@@ -66,34 +100,63 @@ use App\Models\Category;
                     </svg>
                 </button>
 
-                <?php if (isset($component)) { $__componentOriginal26c546557cdc09040c8dd00b2090afd0 = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginal26c546557cdc09040c8dd00b2090afd0 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::input.index','data' => ['wire:model.live.debounce.300ms' => 'search','icon' => 'magnifying-glass','placeholder' => 'Search products...','class' => 'w-full','autocomplete' => 'off','clearable' => true,'xInit' => '$nextTick(() => $el.querySelector(\'input\')?.focus())','@keydown.escape' => '$wire.closeMobile()','@keydown.enter' => '
-                        window.location.href = \''.e(route('shop.index')).'?search=\' + encodeURIComponent($wire.search);
-                        $wire.closeMobile();
-                    ']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('flux::input'); ?>
+                <div class="relative flex-1 flex items-center">
+                    <?php if (isset($component)) { $__componentOriginalc3d062a579167d374258253d48d4177f = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginalc3d062a579167d374258253d48d4177f = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::icon.magnifying-glass','data' => ['class' => 'absolute left-3 size-4 text-zinc-400 pointer-events-none']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('flux::icon.magnifying-glass'); ?>
 <?php if ($component->shouldRender()): ?>
 <?php $__env->startComponent($component->resolveView(), $component->data()); ?>
 <?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
 <?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
 <?php endif; ?>
-<?php $component->withAttributes(['wire:model.live.debounce.300ms' => 'search','icon' => 'magnifying-glass','placeholder' => 'Search products...','class' => 'w-full','autocomplete' => 'off','clearable' => true,'x-init' => '$nextTick(() => $el.querySelector(\'input\')?.focus())','@keydown.escape' => '$wire.closeMobile()','@keydown.enter' => '
-                        window.location.href = \''.e(route('shop.index')).'?search=\' + encodeURIComponent($wire.search);
-                        $wire.closeMobile();
-                    ']); ?>
+<?php $component->withAttributes(['class' => 'absolute left-3 size-4 text-zinc-400 pointer-events-none']); ?>
 <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
 
 <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
-<?php if (isset($__attributesOriginal26c546557cdc09040c8dd00b2090afd0)): ?>
-<?php $attributes = $__attributesOriginal26c546557cdc09040c8dd00b2090afd0; ?>
-<?php unset($__attributesOriginal26c546557cdc09040c8dd00b2090afd0); ?>
+<?php if (isset($__attributesOriginalc3d062a579167d374258253d48d4177f)): ?>
+<?php $attributes = $__attributesOriginalc3d062a579167d374258253d48d4177f; ?>
+<?php unset($__attributesOriginalc3d062a579167d374258253d48d4177f); ?>
 <?php endif; ?>
-<?php if (isset($__componentOriginal26c546557cdc09040c8dd00b2090afd0)): ?>
-<?php $component = $__componentOriginal26c546557cdc09040c8dd00b2090afd0; ?>
-<?php unset($__componentOriginal26c546557cdc09040c8dd00b2090afd0); ?>
+<?php if (isset($__componentOriginalc3d062a579167d374258253d48d4177f)): ?>
+<?php $component = $__componentOriginalc3d062a579167d374258253d48d4177f; ?>
+<?php unset($__componentOriginalc3d062a579167d374258253d48d4177f); ?>
 <?php endif; ?>
+                    <input type="text" wire:model.live.debounce.300ms="search" placeholder="Search products..."
+                        autocomplete="off" class="customer-input pl-9 pr-10 w-full" x-init="$nextTick(() => $el.focus())"
+                        @keydown.escape="$wire.closeMobile()"
+                        @keydown.enter="
+                            window.location.href = '<?php echo e(route('shop.index')); ?>?search=' + encodeURIComponent($wire.search);
+                            $wire.closeMobile();
+                        " />
+                    <button x-show="$wire.search.length > 0" type="button" wire:click="$set('search', '')"
+                        class="absolute right-3 text-zinc-400 hover:text-zinc-700 transition-colors cursor-pointer"
+                        aria-label="Clear search">
+                        <?php if (isset($component)) { $__componentOriginal155e76c41fe51242bc25d269fabf82f5 = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginal155e76c41fe51242bc25d269fabf82f5 = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::icon.x-mark','data' => ['class' => 'size-4']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('flux::icon.x-mark'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes(['class' => 'size-4']); ?>
+<?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
+
+<?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginal155e76c41fe51242bc25d269fabf82f5)): ?>
+<?php $attributes = $__attributesOriginal155e76c41fe51242bc25d269fabf82f5; ?>
+<?php unset($__attributesOriginal155e76c41fe51242bc25d269fabf82f5); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginal155e76c41fe51242bc25d269fabf82f5)): ?>
+<?php $component = $__componentOriginal155e76c41fe51242bc25d269fabf82f5; ?>
+<?php unset($__componentOriginal155e76c41fe51242bc25d269fabf82f5); ?>
+<?php endif; ?>
+                    </button>
+                </div>
             </div>
 
             

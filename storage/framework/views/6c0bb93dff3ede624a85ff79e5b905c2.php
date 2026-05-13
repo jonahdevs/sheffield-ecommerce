@@ -122,21 +122,28 @@ unset($__split);
                 
                 <a href="<?php echo e(route('products.compare')); ?>" wire:navigate class="hidden lg:flex items-center gap-2 group">
                     <div class="relative">
-                        <svg class="w-5 h-5 lg:w-6 lg:h-6 text-zinc-800 group-hover:text-primary transition-colors"
-                            viewBox="0 0 24 24" fill="none">
-                            <g clip-path="url(#clip0_105_1836)">
-                                <path
-                                    d="M13 3.99976H6C4.89543 3.99976 4 4.89519 4 5.99976V17.9998C4 19.1043 4.89543 19.9998 6 19.9998H13M17 3.99976H18C19.1046 3.99976 20 4.89519 20 5.99976V6.99976M20 16.9998V17.9998C20 19.1043 19.1046 19.9998 18 19.9998H17M20 10.9998V12.9998M12 1.99976V21.9998"
-                                    stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                    stroke-width="2" />
-                            </g>
-                            <defs>
-                                <clipPath id="clip0_105_1836">
-                                    <rect fill="white" height="24" transform="translate(0 -0.000244141)"
-                                        width="24" />
-                                </clipPath>
-                            </defs>
-                        </svg>
+                        <?php if (isset($component)) { $__componentOriginald5a897b0ee22b6aaa0496659ac878337 = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginald5a897b0ee22b6aaa0496659ac878337 = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.icon.compare','data' => ['class' => 'size-5 lg:size-6 text-zinc-800 group-hover:text-primary transition-colors']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('icon.compare'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes(['class' => 'size-5 lg:size-6 text-zinc-800 group-hover:text-primary transition-colors']); ?>
+<?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
+
+<?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginald5a897b0ee22b6aaa0496659ac878337)): ?>
+<?php $attributes = $__attributesOriginald5a897b0ee22b6aaa0496659ac878337; ?>
+<?php unset($__attributesOriginald5a897b0ee22b6aaa0496659ac878337); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginald5a897b0ee22b6aaa0496659ac878337)): ?>
+<?php $component = $__componentOriginald5a897b0ee22b6aaa0496659ac878337; ?>
+<?php unset($__componentOriginald5a897b0ee22b6aaa0496659ac878337); ?>
+<?php endif; ?>
                         <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($compareCount > 0): ?>
                             <span
                                 class="absolute -top-2 -right-2 bg-primary text-on-primary text-[10px] sm:text-xs font-medium rounded-full h-4 w-4 sm:h-5 sm:w-5 flex items-center justify-center">
@@ -241,11 +248,28 @@ unset($__split);
                         </button>
                     <?php else: ?>
                         <button type="button" class="flex items-center gap-2 hover:text-secondary transition-colors">
-                            <svg class="w-5 h-5 sm:w-6 sm:h-6 text-zinc-800" fill="none" stroke="currentColor"
-                                viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                            </svg>
+                            <?php if (isset($component)) { $__componentOriginalcbe89caa4ae8c58f7efd0ed6343c35ff = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginalcbe89caa4ae8c58f7efd0ed6343c35ff = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::icon.user','data' => ['class' => 'w-5 h-5 sm:w-6 sm:h-6 text-zinc-800','variant' => 'outline']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('flux::icon.user'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes(['class' => 'w-5 h-5 sm:w-6 sm:h-6 text-zinc-800','variant' => 'outline']); ?>
+<?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
+
+<?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginalcbe89caa4ae8c58f7efd0ed6343c35ff)): ?>
+<?php $attributes = $__attributesOriginalcbe89caa4ae8c58f7efd0ed6343c35ff; ?>
+<?php unset($__attributesOriginalcbe89caa4ae8c58f7efd0ed6343c35ff); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginalcbe89caa4ae8c58f7efd0ed6343c35ff)): ?>
+<?php $component = $__componentOriginalcbe89caa4ae8c58f7efd0ed6343c35ff; ?>
+<?php unset($__componentOriginalcbe89caa4ae8c58f7efd0ed6343c35ff); ?>
+<?php endif; ?>
                             <div class="hidden lg:block">
                                 <div class="text-xs lg:text-sm font-medium text-zinc-800">Account</div>
                             </div>
@@ -260,25 +284,76 @@ unset($__split);
 
                     <?php if (isset($component)) { $__componentOriginal0acbef9d8e9b45c80d953734a49636ad = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginal0acbef9d8e9b45c80d953734a49636ad = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::navmenu.index','data' => ['class' => \Illuminate\Support\Arr::toCssClasses([
-                        'rounded-sm! shadow-2xl!',
-                        'mt-[9px]! md:mt-4.5! ' => auth()->check(),
-                        'mt-5.5!' => !auth()->check(),
-                    ])]] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::navmenu.index','data' => ['class' => 'rounded-sm! shadow-2xl! min-w-56!']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('flux::navmenu'); ?>
 <?php if ($component->shouldRender()): ?>
 <?php $__env->startComponent($component->resolveView(), $component->data()); ?>
 <?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
 <?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
 <?php endif; ?>
-<?php $component->withAttributes(['class' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute(\Illuminate\Support\Arr::toCssClasses([
-                        'rounded-sm! shadow-2xl!',
-                        'mt-[9px]! md:mt-4.5! ' => auth()->check(),
-                        'mt-5.5!' => !auth()->check(),
-                    ]))]); ?>
+<?php $component->withAttributes(['class' => 'rounded-sm! shadow-2xl! min-w-56!']); ?>
 <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
 
-                        <?php if (isset($component)) { $__componentOriginal6498d2c45a9cd193b85bf4c51011baaf = $component; } ?>
+
+                        <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(auth()->guard()->check()): ?>
+                            
+                            <div class="px-3 py-3 border-b border-zinc-100 dark:border-zinc-700 flex items-center gap-3">
+                                <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(auth()->user()->avatar): ?>
+                                    <?php if (isset($component)) { $__componentOriginal4dcb6e757bd07b9aa3bf7ee84cfc8690 = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginal4dcb6e757bd07b9aa3bf7ee84cfc8690 = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::avatar.index','data' => ['circle' => true,'size' => 'sm','src' => ''.e(auth()->user()->avatar).'']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('flux::avatar'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes(['circle' => true,'size' => 'sm','src' => ''.e(auth()->user()->avatar).'']); ?>
+<?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
+
+<?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginal4dcb6e757bd07b9aa3bf7ee84cfc8690)): ?>
+<?php $attributes = $__attributesOriginal4dcb6e757bd07b9aa3bf7ee84cfc8690; ?>
+<?php unset($__attributesOriginal4dcb6e757bd07b9aa3bf7ee84cfc8690); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginal4dcb6e757bd07b9aa3bf7ee84cfc8690)): ?>
+<?php $component = $__componentOriginal4dcb6e757bd07b9aa3bf7ee84cfc8690; ?>
+<?php unset($__componentOriginal4dcb6e757bd07b9aa3bf7ee84cfc8690); ?>
+<?php endif; ?>
+                                <?php else: ?>
+                                    <?php if (isset($component)) { $__componentOriginal4dcb6e757bd07b9aa3bf7ee84cfc8690 = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginal4dcb6e757bd07b9aa3bf7ee84cfc8690 = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::avatar.index','data' => ['circle' => true,'size' => 'sm','name' => ''.e(auth()->user()->name).'']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('flux::avatar'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes(['circle' => true,'size' => 'sm','name' => ''.e(auth()->user()->name).'']); ?>
+<?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
+
+<?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginal4dcb6e757bd07b9aa3bf7ee84cfc8690)): ?>
+<?php $attributes = $__attributesOriginal4dcb6e757bd07b9aa3bf7ee84cfc8690; ?>
+<?php unset($__attributesOriginal4dcb6e757bd07b9aa3bf7ee84cfc8690); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginal4dcb6e757bd07b9aa3bf7ee84cfc8690)): ?>
+<?php $component = $__componentOriginal4dcb6e757bd07b9aa3bf7ee84cfc8690; ?>
+<?php unset($__componentOriginal4dcb6e757bd07b9aa3bf7ee84cfc8690); ?>
+<?php endif; ?>
+                                <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
+                                <div class="min-w-0">
+                                    <p class="text-sm font-semibold text-zinc-900 dark:text-zinc-100 truncate">
+                                        <?php echo e(auth()->user()->name); ?></p>
+                                    <p class="text-xs text-zinc-500 truncate"><?php echo e(auth()->user()->email); ?></p>
+                                </div>
+                            </div>
+
+                            
+                            <?php if (isset($component)) { $__componentOriginal6498d2c45a9cd193b85bf4c51011baaf = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginal6498d2c45a9cd193b85bf4c51011baaf = $attributes; } ?>
 <?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::navmenu.item','data' => ['href' => route('customer.account'),'wire:navigate' => true,'icon' => 'user','iconVariant' => 'outline']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('flux::navmenu.item'); ?>
@@ -290,8 +365,8 @@ unset($__split);
 <?php $component->withAttributes(['href' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute(route('customer.account')),'wire:navigate' => true,'icon' => 'user','icon-variant' => 'outline']); ?>
 <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
 
-                            Account
-                         <?php echo $__env->renderComponent(); ?>
+                                Account
+                             <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
 <?php if (isset($__attributesOriginal6498d2c45a9cd193b85bf4c51011baaf)): ?>
 <?php $attributes = $__attributesOriginal6498d2c45a9cd193b85bf4c51011baaf; ?>
@@ -301,7 +376,7 @@ unset($__split);
 <?php $component = $__componentOriginal6498d2c45a9cd193b85bf4c51011baaf; ?>
 <?php unset($__componentOriginal6498d2c45a9cd193b85bf4c51011baaf); ?>
 <?php endif; ?>
-                        <?php if (isset($component)) { $__componentOriginal6498d2c45a9cd193b85bf4c51011baaf = $component; } ?>
+                            <?php if (isset($component)) { $__componentOriginal6498d2c45a9cd193b85bf4c51011baaf = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginal6498d2c45a9cd193b85bf4c51011baaf = $attributes; } ?>
 <?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::navmenu.item','data' => ['href' => route('customer.orders.index'),'wire:navigate' => true,'icon' => 'package','iconVariant' => 'outline']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('flux::navmenu.item'); ?>
@@ -313,8 +388,8 @@ unset($__split);
 <?php $component->withAttributes(['href' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute(route('customer.orders.index')),'wire:navigate' => true,'icon' => 'package','icon-variant' => 'outline']); ?>
 <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
 
-                            Orders
-                         <?php echo $__env->renderComponent(); ?>
+                                Orders
+                             <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
 <?php if (isset($__attributesOriginal6498d2c45a9cd193b85bf4c51011baaf)): ?>
 <?php $attributes = $__attributesOriginal6498d2c45a9cd193b85bf4c51011baaf; ?>
@@ -324,6 +399,57 @@ unset($__split);
 <?php $component = $__componentOriginal6498d2c45a9cd193b85bf4c51011baaf; ?>
 <?php unset($__componentOriginal6498d2c45a9cd193b85bf4c51011baaf); ?>
 <?php endif; ?>
+                        <?php else: ?>
+                            
+                            <?php if (isset($component)) { $__componentOriginal6498d2c45a9cd193b85bf4c51011baaf = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginal6498d2c45a9cd193b85bf4c51011baaf = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::navmenu.item','data' => ['href' => ''.e(route('login')).'','wire:navigate' => true,'icon' => 'arrow-left-start-on-rectangle','class' => 'cursor-pointer']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('flux::navmenu.item'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes(['href' => ''.e(route('login')).'','wire:navigate' => true,'icon' => 'arrow-left-start-on-rectangle','class' => 'cursor-pointer']); ?>
+<?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
+
+                                Log in
+                             <?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginal6498d2c45a9cd193b85bf4c51011baaf)): ?>
+<?php $attributes = $__attributesOriginal6498d2c45a9cd193b85bf4c51011baaf; ?>
+<?php unset($__attributesOriginal6498d2c45a9cd193b85bf4c51011baaf); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginal6498d2c45a9cd193b85bf4c51011baaf)): ?>
+<?php $component = $__componentOriginal6498d2c45a9cd193b85bf4c51011baaf; ?>
+<?php unset($__componentOriginal6498d2c45a9cd193b85bf4c51011baaf); ?>
+<?php endif; ?>
+                            <?php if (isset($component)) { $__componentOriginal6498d2c45a9cd193b85bf4c51011baaf = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginal6498d2c45a9cd193b85bf4c51011baaf = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::navmenu.item','data' => ['href' => ''.e(route('register')).'','wire:navigate' => true,'icon' => 'user-plus','iconVariant' => 'outline','class' => 'cursor-pointer']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('flux::navmenu.item'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes(['href' => ''.e(route('register')).'','wire:navigate' => true,'icon' => 'user-plus','icon-variant' => 'outline','class' => 'cursor-pointer']); ?>
+<?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
+
+                                Create Account
+                             <?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginal6498d2c45a9cd193b85bf4c51011baaf)): ?>
+<?php $attributes = $__attributesOriginal6498d2c45a9cd193b85bf4c51011baaf; ?>
+<?php unset($__attributesOriginal6498d2c45a9cd193b85bf4c51011baaf); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginal6498d2c45a9cd193b85bf4c51011baaf)): ?>
+<?php $component = $__componentOriginal6498d2c45a9cd193b85bf4c51011baaf; ?>
+<?php unset($__componentOriginal6498d2c45a9cd193b85bf4c51011baaf); ?>
+<?php endif; ?>
+                        <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
+
+                        
                         <?php if (isset($component)) { $__componentOriginal6498d2c45a9cd193b85bf4c51011baaf = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginal6498d2c45a9cd193b85bf4c51011baaf = $attributes; } ?>
 <?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::navmenu.item','data' => ['href' => route('quote'),'wire:navigate' => true,'icon' => 'document-text','iconVariant' => 'outline']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
@@ -356,7 +482,10 @@ unset($__split);
 <?php $component = $__componentOriginal6498d2c45a9cd193b85bf4c51011baaf; ?>
 <?php unset($__componentOriginal6498d2c45a9cd193b85bf4c51011baaf); ?>
 <?php endif; ?>
-                        <?php if (isset($component)) { $__componentOriginal6498d2c45a9cd193b85bf4c51011baaf = $component; } ?>
+
+                        
+                        <div class="lg:hidden">
+                            <?php if (isset($component)) { $__componentOriginal6498d2c45a9cd193b85bf4c51011baaf = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginal6498d2c45a9cd193b85bf4c51011baaf = $attributes; } ?>
 <?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::navmenu.item','data' => ['href' => route('wishlist'),'wire:navigate' => true,'icon' => 'heart','iconVariant' => 'outline']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('flux::navmenu.item'); ?>
@@ -368,17 +497,17 @@ unset($__split);
 <?php $component->withAttributes(['href' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute(route('wishlist')),'wire:navigate' => true,'icon' => 'heart','icon-variant' => 'outline']); ?>
 <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
 
-                            <span class="flex items-center gap-2 w-full">
-                                Wishlist
-                                <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($wishlistCount > 0): ?>
-                                    <span
-                                        class="ms-auto bg-primary text-on-primary text-xs font-medium rounded-full h-5 w-5 flex items-center justify-center">
-                                        <?php echo e($wishlistCount); ?>
+                                <span class="flex items-center gap-2 w-full">
+                                    Wishlist
+                                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($wishlistCount > 0): ?>
+                                        <span
+                                            class="ms-auto bg-primary text-on-primary text-xs font-medium rounded-full h-5 w-5 flex items-center justify-center">
+                                            <?php echo e($wishlistCount); ?>
 
-                                    </span>
-                                <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
-                            </span>
-                         <?php echo $__env->renderComponent(); ?>
+                                        </span>
+                                    <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
+                                </span>
+                             <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
 <?php if (isset($__attributesOriginal6498d2c45a9cd193b85bf4c51011baaf)): ?>
 <?php $attributes = $__attributesOriginal6498d2c45a9cd193b85bf4c51011baaf; ?>
@@ -388,29 +517,51 @@ unset($__split);
 <?php $component = $__componentOriginal6498d2c45a9cd193b85bf4c51011baaf; ?>
 <?php unset($__componentOriginal6498d2c45a9cd193b85bf4c51011baaf); ?>
 <?php endif; ?>
-                        <?php if (isset($component)) { $__componentOriginal6498d2c45a9cd193b85bf4c51011baaf = $component; } ?>
+                            <?php if (isset($component)) { $__componentOriginal6498d2c45a9cd193b85bf4c51011baaf = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginal6498d2c45a9cd193b85bf4c51011baaf = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::navmenu.item','data' => ['href' => route('products.compare'),'wire:navigate' => true,'icon' => 'arrows-right-left','iconVariant' => 'outline']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::navmenu.item','data' => ['href' => route('products.compare'),'wire:navigate' => true]] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('flux::navmenu.item'); ?>
 <?php if ($component->shouldRender()): ?>
 <?php $__env->startComponent($component->resolveView(), $component->data()); ?>
 <?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
 <?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
 <?php endif; ?>
-<?php $component->withAttributes(['href' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute(route('products.compare')),'wire:navigate' => true,'icon' => 'arrows-right-left','icon-variant' => 'outline']); ?>
+<?php $component->withAttributes(['href' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute(route('products.compare')),'wire:navigate' => true]); ?>
 <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
 
-                            <span class="flex items-center gap-2 w-full">
-                                Compare
-                                <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($compareCount > 0): ?>
-                                    <span
-                                        class="ms-auto bg-primary text-on-primary text-xs font-medium rounded-full h-5 w-5 flex items-center justify-center">
-                                        <?php echo e($compareCount); ?>
+                                 <?php $__env->slot('icon', null, []); ?> <?php if (isset($component)) { $__componentOriginald5a897b0ee22b6aaa0496659ac878337 = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginald5a897b0ee22b6aaa0496659ac878337 = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.icon.compare','data' => ['class' => 'size-4']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('icon.compare'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes(['class' => 'size-4']); ?>
+<?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
 
-                                    </span>
-                                <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
-                            </span>
-                         <?php echo $__env->renderComponent(); ?>
+<?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginald5a897b0ee22b6aaa0496659ac878337)): ?>
+<?php $attributes = $__attributesOriginald5a897b0ee22b6aaa0496659ac878337; ?>
+<?php unset($__attributesOriginald5a897b0ee22b6aaa0496659ac878337); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginald5a897b0ee22b6aaa0496659ac878337)): ?>
+<?php $component = $__componentOriginald5a897b0ee22b6aaa0496659ac878337; ?>
+<?php unset($__componentOriginald5a897b0ee22b6aaa0496659ac878337); ?>
+<?php endif; ?> <?php $__env->endSlot(); ?>
+                                <span class="flex items-center gap-2 w-full">
+                                    Compare
+                                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($compareCount > 0): ?>
+                                        <span
+                                            class="ms-auto bg-primary text-on-primary text-xs font-medium rounded-full h-5 w-5 flex items-center justify-center">
+                                            <?php echo e($compareCount); ?>
+
+                                        </span>
+                                    <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
+                                </span>
+                             <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
 <?php if (isset($__attributesOriginal6498d2c45a9cd193b85bf4c51011baaf)): ?>
 <?php $attributes = $__attributesOriginal6498d2c45a9cd193b85bf4c51011baaf; ?>
@@ -420,7 +571,10 @@ unset($__split);
 <?php $component = $__componentOriginal6498d2c45a9cd193b85bf4c51011baaf; ?>
 <?php unset($__componentOriginal6498d2c45a9cd193b85bf4c51011baaf); ?>
 <?php endif; ?>
-                        <?php if (isset($component)) { $__componentOriginald5e1eb3ae521062f8474178ba08933ca = $component; } ?>
+                        </div>
+
+                        <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(auth()->guard()->check()): ?>
+                            <?php if (isset($component)) { $__componentOriginald5e1eb3ae521062f8474178ba08933ca = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginald5e1eb3ae521062f8474178ba08933ca = $attributes; } ?>
 <?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::menu.separator','data' => []] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('flux::menu.separator'); ?>
@@ -442,7 +596,6 @@ unset($__split);
 <?php $component = $__componentOriginald5e1eb3ae521062f8474178ba08933ca; ?>
 <?php unset($__componentOriginald5e1eb3ae521062f8474178ba08933ca); ?>
 <?php endif; ?>
-                        <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(auth()->guard()->check()): ?>
                             <form action="<?php echo e(route('logout')); ?>" method="post">
                                 <?php echo csrf_field(); ?>
                                 <?php if (isset($component)) { $__componentOriginal6498d2c45a9cd193b85bf4c51011baaf = $component; } ?>
@@ -469,31 +622,8 @@ unset($__split);
 <?php unset($__componentOriginal6498d2c45a9cd193b85bf4c51011baaf); ?>
 <?php endif; ?>
                             </form>
-                        <?php else: ?>
-                            <?php if (isset($component)) { $__componentOriginal6498d2c45a9cd193b85bf4c51011baaf = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginal6498d2c45a9cd193b85bf4c51011baaf = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::navmenu.item','data' => ['href' => ''.e(route('login')).'','wire:navigate' => true,'icon' => 'arrow-left-start-on-rectangle','class' => 'cursor-pointer']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('flux::navmenu.item'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes(['href' => ''.e(route('login')).'','wire:navigate' => true,'icon' => 'arrow-left-start-on-rectangle','class' => 'cursor-pointer']); ?>
-<?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
-
-                                Log in
-                             <?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginal6498d2c45a9cd193b85bf4c51011baaf)): ?>
-<?php $attributes = $__attributesOriginal6498d2c45a9cd193b85bf4c51011baaf; ?>
-<?php unset($__attributesOriginal6498d2c45a9cd193b85bf4c51011baaf); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginal6498d2c45a9cd193b85bf4c51011baaf)): ?>
-<?php $component = $__componentOriginal6498d2c45a9cd193b85bf4c51011baaf; ?>
-<?php unset($__componentOriginal6498d2c45a9cd193b85bf4c51011baaf); ?>
-<?php endif; ?>
                         <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
+
                      <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
 <?php if (isset($__attributesOriginal0acbef9d8e9b45c80d953734a49636ad)): ?>
