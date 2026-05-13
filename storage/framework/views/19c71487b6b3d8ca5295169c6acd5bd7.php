@@ -880,7 +880,7 @@ Save <?php echo e($savings); ?>%
 
                             
                             <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(!$product->requires_quotation): ?>
-                                <div>
+                                <div id="main-product-price">
                                     <?php
                                         $displaySource = $this->selectedVariant ?? $product;
                                         $regularPrice = $displaySource->price;
@@ -1642,7 +1642,50 @@ unset($__split);
             </div>
 
             
-            <div class="lg:col-span-1 border border-zinc-200 dark:border-zinc-700 rounded h-fit sticky top-44 p-4">
+            <div class="lg:col-span-1 border border-zinc-200 dark:border-zinc-700 rounded h-fit sticky top-44 p-4"
+                x-data="{ priceVisible: false }" x-init="const el = document.getElementById('main-product-price');
+                if (el) {
+                    new IntersectionObserver(
+                        ([entry]) => { priceVisible = !entry.isIntersecting; }, { threshold: 0 }
+                    ).observe(el);
+                }">
+
+                
+                <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($product->requires_quotation): ?>
+                    <div x-show="priceVisible" x-cloak x-transition:enter="transition ease-out duration-200"
+                        x-transition:enter-start="opacity-0 -translate-y-1"
+                        x-transition:enter-end="opacity-100 translate-y-0"
+                        x-transition:leave="transition ease-in duration-150"
+                        x-transition:leave-start="opacity-100 translate-y-0"
+                        x-transition:leave-end="opacity-0 -translate-y-1"
+                        class="mb-3 pb-3 border-b border-zinc-200 dark:border-zinc-700">
+                        <p class="text-xs text-zinc-400 uppercase tracking-wide mb-0.5">Price</p>
+                        <span class="text-sm font-medium text-amber-600">Request a quote</span>
+                    </div>
+                <?php elseif($product->display_price): ?>
+                    <div x-show="priceVisible" x-cloak x-transition:enter="transition ease-out duration-200"
+                        x-transition:enter-start="opacity-0 -translate-y-1"
+                        x-transition:enter-end="opacity-100 translate-y-0"
+                        x-transition:leave="transition ease-in duration-150"
+                        x-transition:leave-start="opacity-100 translate-y-0"
+                        x-transition:leave-end="opacity-0 -translate-y-1"
+                        class="mb-3 pb-3 border-b border-zinc-200 dark:border-zinc-700">
+                        <p class="text-xs text-zinc-400 uppercase tracking-wide mb-0.5">Price</p>
+                        <div class="flex items-baseline gap-1.5 flex-wrap">
+                            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($product->has_price_prefix): ?>
+                                <span class="text-xs text-zinc-400"><?php echo e($product->display_price_prefix); ?></span>
+                            <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
+                            <span class="text-lg font-bold text-primary"><?php echo e($product->display_price); ?></span>
+                            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($product->type === \App\Enums\ProductType::SIMPLE && $product->hasDiscount()): ?>
+                                <span
+                                    class="text-xs text-zinc-400 line-through"><?php echo e($product->formatted_price); ?></span>
+                                <span
+                                    class="text-xs font-medium text-green-600">-<?php echo e($product->discountPercentage()); ?></span>
+                            <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
+                        </div>
+                    </div>
+                <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
+
                 
                 <div class="flex flex-col">
                     <a href="#" class="flex items-center justify-between py-1.5">

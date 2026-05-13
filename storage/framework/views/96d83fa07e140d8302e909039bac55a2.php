@@ -233,6 +233,28 @@ unset($__split);
 
     </main>
 
+    <?php if (isset($component)) { $__componentOriginalefb8450f00a7938d7dc7cce1f5a06186 = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginalefb8450f00a7938d7dc7cce1f5a06186 = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.customer-notification','data' => []] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('customer-notification'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes([]); ?>
+<?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
+
+<?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginalefb8450f00a7938d7dc7cce1f5a06186)): ?>
+<?php $attributes = $__attributesOriginalefb8450f00a7938d7dc7cce1f5a06186; ?>
+<?php unset($__attributesOriginalefb8450f00a7938d7dc7cce1f5a06186); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginalefb8450f00a7938d7dc7cce1f5a06186)): ?>
+<?php $component = $__componentOriginalefb8450f00a7938d7dc7cce1f5a06186; ?>
+<?php unset($__componentOriginalefb8450f00a7938d7dc7cce1f5a06186); ?>
+<?php endif; ?>
     <?php if (isset($component)) { $__componentOriginalf98a32c06d8462f5513d0fb3554f9141 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginalf98a32c06d8462f5513d0fb3554f9141 = $attributes; } ?>
 <?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.toast-notification','data' => []] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>

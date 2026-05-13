@@ -796,6 +796,25 @@ new #[Layout('layouts.guest')] class extends Component {
 
             $this->dispatch('cart-updated');
             $this->dispatch('notify', title: 'Cart Updated', variant: 'success', message: 'Product added to your cart');
+
+            // If product has accessories and none have been added to cart yet, prompt the customer
+            if ($this->product->accessories->isNotEmpty()) {
+                $anyAccessoryInCart = $this->product->accessories->contains(
+                    fn($acc) => $cartService->has($acc->id)
+                );
+
+                if (!$anyAccessoryInCart) {
+                    $this->dispatch(
+                        'notify-action',
+                        variant: 'info',
+                        message: 'This product has accessories that go well with it.',
+                        action: [
+                            'label' => 'View Accessories',
+                            'js' => '$flux.modal("accessories-modal").show()',
+                        ]
+                    );
+                }
+            }
         } catch (Throwable $th) {
             $this->dispatch('notify', title: 'Add to Cart Failed', variant: 'danger', message: $th->getMessage() ?: 'Unable to add product to cart');
         }

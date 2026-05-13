@@ -475,7 +475,6 @@ class Product extends Model
                 }
 
                 return match ($this->type->value) {
-                    'variable' => 'from',
                     default => null,
                 };
             }
@@ -509,12 +508,23 @@ class Product extends Model
             ? $this->variants
             : $this->variants()->where('is_active', true)->where(fn($q) => $q->whereNotNull('price')->orWhereNotNull('sale_price'))->get();
 
-        $minPrice = $variants
+        $prices = $variants
             ->where('is_active', true)
             ->filter(fn($v) => ($v->sale_price ?? $v->price) !== null)
-            ->min(fn($v) => $v->sale_price ?? $v->price);
+            ->map(fn($v) => $v->sale_price ?? $v->price);
 
-        return $minPrice !== null ? format_currency($minPrice) : null;
+        if ($prices->isEmpty()) {
+            return null;
+        }
+
+        $minPrice = $prices->min();
+        $maxPrice = $prices->max();
+
+        if ($minPrice === $maxPrice) {
+            return format_currency($minPrice);
+        }
+
+        return format_currency($minPrice) . ' — ' . format_currency($maxPrice);
     }
 
     /**

@@ -112,6 +112,7 @@
         {{ $slot }}
     </main>
 
+    <x-customer-notification />
     <x-toast-notification />
 
     @persist('footer')
