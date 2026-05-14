@@ -8,17 +8,17 @@ new #[Title('Coming Soon')] class extends Component {
 }; ?>
 
 <div>
-    <flux:breadcrumbs class="mb-2">
-        <flux:breadcrumbs.item :href="route('admin.dashboard')" icon="home" icon-variant="outline" wire:navigate>
-        </flux:breadcrumbs.item>
-        <flux:breadcrumbs.item>Coming Soon</flux:breadcrumbs.item>
-    </flux:breadcrumbs>
+    @push('breadcrumbs')
+        <flux:breadcrumbs><flux:breadcrumbs.item>Coming Soon</flux:breadcrumbs.item>
+        </flux:breadcrumbs>
+    @endpush
 
     <div class="flex items-center justify-center min-h-[60vh] px-4 py-16">
         <div class="text-center max-w-lg w-full">
 
             {{-- Icon --}}
-            <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-blue-50 dark:bg-blue-950/50 mb-6">
+            <div
+                class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-blue-50 dark:bg-blue-950/50 mb-6">
                 <flux:icon.rocket-launch class="w-10 h-10 text-blue-600 dark:text-blue-400" />
             </div>
 
@@ -47,7 +47,8 @@ new #[Title('Coming Soon')] class extends Component {
                     </div>
                     <div class="flex items-start gap-3">
                         <flux:icon.check-circle class="w-5 h-5 text-green-600 dark:text-green-400 shrink-0 mt-0.5" />
-                        <p class="text-sm text-zinc-600 dark:text-zinc-300">Powerful features to streamline your workflow</p>
+                        <p class="text-sm text-zinc-600 dark:text-zinc-300">Powerful features to streamline your
+                            workflow</p>
                     </div>
                     <div class="flex items-start gap-3">
                         <flux:icon.check-circle class="w-5 h-5 text-green-600 dark:text-green-400 shrink-0 mt-0.5" />

@@ -64,12 +64,12 @@ new #[Title('Create Product')] class extends Component {
 }; ?>
 
 <div>
-    <flux:breadcrumbs class="mb-2">
-        <flux:breadcrumbs.item :href="route('admin.dashboard')" icon="home" icon-variant="outline" wire:navigate />
-        <flux:breadcrumbs.item :href="route('admin.catalog.products.index')" wire:navigate>Products
+    @push('breadcrumbs')
+    <flux:breadcrumbs><flux:breadcrumbs.item :href="route('admin.catalog.products.index')" wire:navigate>Products
         </flux:breadcrumbs.item>
         <flux:breadcrumbs.item>Create</flux:breadcrumbs.item>
     </flux:breadcrumbs>
+@endpush
 
     <div class="mt-2 mb-6">
         <flux:heading size="xl">Create New Product</flux:heading>

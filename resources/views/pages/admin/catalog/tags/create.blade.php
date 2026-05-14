@@ -30,11 +30,11 @@ new #[Title('Create Tag')] class extends Component {
 ?>
 
 <div>
-    <flux:breadcrumbs class="mb-2">
-        <flux:breadcrumbs.item :href="route('admin.dashboard')" icon="home" icon-variant="outline" wire:navigate />
-        <flux:breadcrumbs.item :href="route('admin.catalog.tags.index')" wire:navigate>Tags</flux:breadcrumbs.item>
-        <flux:breadcrumbs.item>Create</flux:breadcrumbs.item>
-    </flux:breadcrumbs>
+    @push('breadcrumbs')
+        <flux:breadcrumbs><flux:breadcrumbs.item :href="route('admin.catalog.tags.index')" wire:navigate>Tags</flux:breadcrumbs.item>
+            <flux:breadcrumbs.item>Create</flux:breadcrumbs.item>
+        </flux:breadcrumbs>
+    @endpush
 
     <div class="mt-2 mb-6">
         <flux:heading size="xl">Create Tag</flux:heading>

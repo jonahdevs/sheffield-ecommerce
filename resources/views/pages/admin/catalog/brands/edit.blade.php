@@ -38,12 +38,11 @@ new class extends Component {
 }; ?>
 
 <div>
-    <flux:breadcrumbs class="mb-2">
-        <flux:breadcrumbs.item :href="route('admin.dashboard')" icon="home" icon-variant="outline" wire:navigate>
-        </flux:breadcrumbs.item>
-        <flux:breadcrumbs.item :href="route('admin.catalog.brands.index')" wire:navigate>Brands</flux:breadcrumbs.item>
+    @push('breadcrumbs')
+    <flux:breadcrumbs><flux:breadcrumbs.item :href="route('admin.catalog.brands.index')" wire:navigate>Brands</flux:breadcrumbs.item>
         <flux:breadcrumbs.item>Edit</flux:breadcrumbs.item>
     </flux:breadcrumbs>
+@endpush
 
     <div class="mt-2 mb-6">
         <flux:heading size="xl">Edit Brand: {{ $brand->name }}</flux:heading>

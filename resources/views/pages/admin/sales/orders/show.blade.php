@@ -159,14 +159,13 @@ new #[Title('Order Details')] class extends Component {
     {{-- ================================================================== --}}
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
         <div>
-            <flux:breadcrumbs class="mb-2">
-                <flux:breadcrumbs.item :href="route('admin.dashboard')" icon="home" wire:navigate
-                    icon-variant="outline" />
-                <flux:breadcrumbs.item :href="route('admin.orders.index')" wire:navigate>
+            @push('breadcrumbs')
+    <flux:breadcrumbs><flux:breadcrumbs.item :href="route('admin.orders.index')" wire:navigate>
                     Orders
                 </flux:breadcrumbs.item>
                 <flux:breadcrumbs.item>#{{ $order->reference }}</flux:breadcrumbs.item>
             </flux:breadcrumbs>
+@endpush
 
             <div class="flex items-center gap-3">
                 <flux:heading size="xl" class="font-bold! tracking-tight">

@@ -290,11 +290,11 @@ new #[Title('Customer Insights')] class extends Component {
 
 <div>
     {{-- Breadcrumb --}}
-    <flux:breadcrumbs class="mb-2">
-        <flux:breadcrumbs.item :href="route('admin.dashboard')" icon="home" icon-variant="outline" wire:navigate />
-        <flux:breadcrumbs.item>Reports</flux:breadcrumbs.item>
+    @push('breadcrumbs')
+    <flux:breadcrumbs><flux:breadcrumbs.item>Reports</flux:breadcrumbs.item>
         <flux:breadcrumbs.item>Customer Insights</flux:breadcrumbs.item>
     </flux:breadcrumbs>
+@endpush
 
     {{-- Page header --}}
     <div class="flex items-start justify-between mb-6">

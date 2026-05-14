@@ -160,10 +160,10 @@ new #[Title('Transactions')] class extends Component {
 }">
 
     {{-- Breadcrumb --}}
-    <flux:breadcrumbs class="mb-2">
-        <flux:breadcrumbs.item :href="route('admin.dashboard')" icon="home" icon-variant="outline" wire:navigate />
-        <flux:breadcrumbs.item>Transactions</flux:breadcrumbs.item>
+    @push('breadcrumbs')
+    <flux:breadcrumbs><flux:breadcrumbs.item>Transactions</flux:breadcrumbs.item>
     </flux:breadcrumbs>
+@endpush
 
     {{-- Page header --}}
     <div class="flex items-start justify-between mb-6">

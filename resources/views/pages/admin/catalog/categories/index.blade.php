@@ -183,10 +183,10 @@ new #[Title('Categories')] class extends Component {
 }; ?>
 
 <div>
-    <flux:breadcrumbs class="mb-2">
-        <flux:breadcrumbs.item :href="route('admin.dashboard')" icon="home" icon-variant="outline" wire:navigate />
-        <flux:breadcrumbs.item>Categories</flux:breadcrumbs.item>
+    @push('breadcrumbs')
+    <flux:breadcrumbs><flux:breadcrumbs.item>Categories</flux:breadcrumbs.item>
     </flux:breadcrumbs>
+@endpush
 
     <div class="flex justify-between items-center mb-6 mt-2">
         <div>

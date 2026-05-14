@@ -211,11 +211,11 @@ new #[Title('Change Log')] class extends Component
 ?>
 
 <div>
-    <flux:breadcrumbs class="mb-2">
-        <flux:breadcrumbs.item :href="route('admin.dashboard')" icon="home" icon-variant="outline" wire:navigate />
-        <flux:breadcrumbs.item :href="$crumbUrl" wire:navigate>{{ $config['crumbLabel'] }}</flux:breadcrumbs.item>
+    @push('breadcrumbs')
+    <flux:breadcrumbs><flux:breadcrumbs.item :href="$crumbUrl" wire:navigate>{{ $config['crumbLabel'] }}</flux:breadcrumbs.item>
         <flux:breadcrumbs.item>Change Log</flux:breadcrumbs.item>
     </flux:breadcrumbs>
+@endpush
 
     <div class="flex items-center justify-between mb-6">
         <div>

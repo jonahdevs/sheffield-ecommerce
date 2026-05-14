@@ -90,13 +90,12 @@ new class extends Component {
 }; ?>
 
 <div>
-    <flux:breadcrumbs class="mb-2">
-        <flux:breadcrumbs.item :href="route('admin.dashboard')" icon="home" icon-variant="outline" wire:navigate>
-        </flux:breadcrumbs.item>
-        <flux:breadcrumbs.item :href="route('admin.catalog.attributes.index')" wire:navigate>Attributes
+    @push('breadcrumbs')
+    <flux:breadcrumbs><flux:breadcrumbs.item :href="route('admin.catalog.attributes.index')" wire:navigate>Attributes
         </flux:breadcrumbs.item>
         <flux:breadcrumbs.item>Values</flux:breadcrumbs.item>
     </flux:breadcrumbs>
+@endpush
 
     <flux:heading size="xl" class="mb-6">{{ $attribute->name }} Values</flux:heading>
 

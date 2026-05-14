@@ -292,11 +292,11 @@ new #[Title('Products')] class extends Component {
         selected = selected.filter(id => allIds.includes(id));
     ">
 
-    {{-- Breadcrumb --}}
-    <flux:breadcrumbs class="mb-2">
-        <flux:breadcrumbs.item :href="route('admin.dashboard')" icon="home" icon-variant="outline" wire:navigate />
-        <flux:breadcrumbs.item>Products</flux:breadcrumbs.item>
-    </flux:breadcrumbs>
+    {{-- Push breadcrumbs to the header --}}
+    @push('breadcrumbs')
+        <flux:breadcrumbs><flux:breadcrumbs.item>Products</flux:breadcrumbs.item>
+        </flux:breadcrumbs>
+    @endpush
 
     {{-- Page header --}}
     <div class="flex items-center justify-between mb-6">
@@ -707,7 +707,8 @@ new #[Title('Products')] class extends Component {
 
                                     {{-- Change Log --}}
                                     <flux:menu.item icon="clock" icon-variant="outline"
-                                        href="{{ route('admin.changelog', ['modelType' => 'product', 'id' => $product->id]) }}" wire:navigate>
+                                        href="{{ route('admin.changelog', ['modelType' => 'product', 'id' => $product->id]) }}"
+                                        wire:navigate>
                                         Change Log
                                     </flux:menu.item>
 

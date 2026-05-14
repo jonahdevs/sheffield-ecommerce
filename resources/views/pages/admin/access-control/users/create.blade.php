@@ -38,11 +38,11 @@ new #[Title('Create Staff User')] class extends Component {
 }; ?>
 
 <div>
-    <flux:breadcrumbs class="mb-2">
-        <flux:breadcrumbs.item :href="route('admin.dashboard')" icon="home" icon-variant="outline" wire:navigate />
-        <flux:breadcrumbs.item :href="route('admin.access-control.roles.index')" wire:navigate>Roles</flux:breadcrumbs.item>
+    @push('breadcrumbs')
+    <flux:breadcrumbs><flux:breadcrumbs.item :href="route('admin.access-control.roles.index')" wire:navigate>Roles</flux:breadcrumbs.item>
         <flux:breadcrumbs.item>Create Staff User</flux:breadcrumbs.item>
     </flux:breadcrumbs>
+@endpush
 
     <flux:heading size="xl">Create Staff User</flux:heading>
     <flux:subheading>Add a new staff member and assign their role</flux:subheading>

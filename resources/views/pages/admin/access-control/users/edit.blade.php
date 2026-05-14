@@ -49,11 +49,11 @@ new #[Title('Edit Staff User')] class extends Component {
 }; ?>
 
 <div>
-    <flux:breadcrumbs class="mb-2">
-        <flux:breadcrumbs.item :href="route('admin.dashboard')" icon="home" icon-variant="outline" wire:navigate />
-        <flux:breadcrumbs.item :href="route('admin.access-control.roles.index')" wire:navigate>Roles</flux:breadcrumbs.item>
+    @push('breadcrumbs')
+    <flux:breadcrumbs><flux:breadcrumbs.item :href="route('admin.access-control.roles.index')" wire:navigate>Roles</flux:breadcrumbs.item>
         <flux:breadcrumbs.item>Edit {{ $user->name }}</flux:breadcrumbs.item>
     </flux:breadcrumbs>
+@endpush
 
     <flux:heading size="xl">Edit {{ $user->name }}</flux:heading>
     <flux:subheading>Update staff member details and role</flux:subheading>

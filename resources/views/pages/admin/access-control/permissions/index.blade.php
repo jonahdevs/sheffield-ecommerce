@@ -40,10 +40,10 @@ new #[Title('Permissions')] class extends Component {
 }; ?>
 
 <div>
-    <flux:breadcrumbs class="mb-2">
-        <flux:breadcrumbs.item :href="route('admin.dashboard')" icon="home" icon-variant="outline" wire:navigate />
-        <flux:breadcrumbs.item>Permissions</flux:breadcrumbs.item>
+    @push('breadcrumbs')
+    <flux:breadcrumbs><flux:breadcrumbs.item>Permissions</flux:breadcrumbs.item>
     </flux:breadcrumbs>
+@endpush
 
     <flux:heading size="xl">Permissions</flux:heading>
     <flux:subheading>View and filter all permissions across roles</flux:subheading>

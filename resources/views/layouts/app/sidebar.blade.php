@@ -9,7 +9,7 @@
 </head>
 
 <body class="min-h-screen bg-white dark:bg-zinc-800 app-layout">
-    <flux:sidebar sticky stashable class="border-e border-zinc-200 ">
+    <flux:sidebar sticky stashable collapsible class="border-e border-zinc-200">
         <flux:sidebar.header>
             <img src="{{ asset('logo-inverse.png') }}" alt="" class="w-40 h-auto mx-auto">
         </flux:sidebar.header>
@@ -111,8 +111,8 @@
                     :current="request()->routeIs('admin.reports.customers')">Customer Insights
                 </flux:navlist.item>
                 <flux:navlist.item icon="clipboard-document-list" wire:navigate
-                    :href="route('admin.reports.inventory')"
-                    :current="request()->routeIs('admin.reports.inventory')">Inventory Health
+                    :href="route('admin.reports.inventory')" :current="request()->routeIs('admin.reports.inventory')">
+                    Inventory Health
                 </flux:navlist.item>
                 <flux:navlist.item icon="clipboard-document-list" wire:navigate
                     :href="route('admin.activity-logs.index')" :current="request()->routeIs('admin.activity-logs.*')">
@@ -147,9 +147,14 @@
         </flux:navlist>
     </flux:sidebar>
 
-    <!-- Mobile User Menu -->
+    <!-- Header with Breadcrumbs -->
     <flux:header class="bg-white dark:bg-zinc-900/90 border-b border-zinc-200 dark:border-zinc-700">
         <flux:sidebar.toggle class="lg:hidden" icon="bars-2" inset="left" />
+
+        {{-- Breadcrumbs on the left side --}}
+        <div class="hidden lg:flex items-center ml-4 text-sm">
+            @stack('breadcrumbs')
+        </div>
 
         <flux:spacer />
 

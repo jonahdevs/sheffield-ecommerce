@@ -457,11 +457,11 @@ new #[Title('Create Order')] class extends Component {
     {{-- PAGE HEADER                                                         --}}
     {{-- ================================================================== --}}
     <div class="mb-6">
-        <flux:breadcrumbs class="mb-2">
-            <flux:breadcrumbs.item :href="route('admin.dashboard')" icon="home" wire:navigate icon-variant="outline" />
-            <flux:breadcrumbs.item :href="route('admin.orders.index')" wire:navigate>Orders</flux:breadcrumbs.item>
+        @push('breadcrumbs')
+    <flux:breadcrumbs><flux:breadcrumbs.item :href="route('admin.orders.index')" wire:navigate>Orders</flux:breadcrumbs.item>
             <flux:breadcrumbs.item>Create Order</flux:breadcrumbs.item>
         </flux:breadcrumbs>
+@endpush
         <flux:heading size="xl" class="font-bold! tracking-tight">Create Order</flux:heading>
         <flux:subheading class="mt-1">Place an order on behalf of a customer.</flux:subheading>
     </div>

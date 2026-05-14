@@ -275,13 +275,12 @@ new #[Title('Quotation Details')] class extends Component {
     {{-- ================================================================== --}}
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
         <div>
-            <flux:breadcrumbs class="mb-2">
-                <flux:breadcrumbs.item :href="route('admin.dashboard')" icon="home" icon-variant="outline"
-                    wire:navigate />
-                <flux:breadcrumbs.item :href="route('admin.quotations.index')" wire:navigate>Quotations
+            @push('breadcrumbs')
+    <flux:breadcrumbs><flux:breadcrumbs.item :href="route('admin.quotations.index')" wire:navigate>Quotations
                 </flux:breadcrumbs.item>
                 <flux:breadcrumbs.item>{{ $quote->reference }}</flux:breadcrumbs.item>
             </flux:breadcrumbs>
+@endpush
 
             <div class="flex items-center gap-3 flex-wrap">
                 <flux:heading size="xl" class="font-bold tracking-tight">
