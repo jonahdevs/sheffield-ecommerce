@@ -198,7 +198,6 @@
    Re-asserted after DaisyUI loads so they always win.
    ============================================================ */
 @layer theme {
-
     /* Global dark — for Flux components outside the admin layout */
     .dark {
         --color-accent: #ffffff;
@@ -224,7 +223,6 @@
    7. BASE LAYER
    ============================================================ */
 @layer base {
-
     /* Explicit reset — Tailwind v4 preflight no longer guarantees
        body { margin: 0 } and third-party CSS (e.g. Swiper) loads
        before ours and can re-introduce browser defaults. */
@@ -337,7 +335,7 @@ select:focus[data-flux-control] {
 /* ============================================================
    11. MARYUI OVERRIDES
    ============================================================ */
-.mary-table-pagination span[aria-current="page"]>span {
+.mary-table-pagination span[aria-current="page"] > span {
     background-color: var(--primary);
     @apply text-white;
 }
@@ -406,8 +404,8 @@ select:focus[data-flux-control] {
     @apply text-white;
 }
 
-[data-flux-sidebar] [data-flux-navlist-group]>div,
-[data-flux-sidebar] [data-flux-navlist-group]>ul {
+[data-flux-sidebar] [data-flux-navlist-group] > div,
+[data-flux-sidebar] [data-flux-navlist-group] > ul {
     @apply bg-transparent;
 }
 
@@ -545,4 +543,106 @@ ui-modal:has(dialog[open])::before {
 
 .page-transition {
     animation: fadeInUp 0.5s ease;
+}
+
+/* ============================================================
+   15. CONTAINER QUERIES
+   ============================================================ */
+@layer utilities {
+    /* Container types */
+    .container-type-normal {
+        container-type: normal;
+    }
+
+    .container-type-size {
+        container-type: size;
+    }
+
+    .container-type-inline-size {
+        container-type: inline-size;
+    }
+
+    /* Named containers */
+    .container-dashboard {
+        container-name: dashboard;
+        container-type: inline-size;
+    }
+
+    .container-card {
+        container-name: card;
+        container-type: inline-size;
+    }
+
+    /* Container query utilities - width based */
+    @container (min-width: 640px) {
+        .@sm\:grid-cols-2 {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .@sm\:flex-row {
+            flex-direction: row;
+        }
+
+        .@sm\:gap-4 {
+            gap: 1rem;
+        }
+    }
+
+    @container (min-width: 768px) {
+        .@md\:grid-cols-2 {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .@md\:grid-cols-3 {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+
+        .@md\:flex-row {
+            flex-direction: row;
+        }
+
+        .@md\:border-b-0 {
+            border-bottom-width: 0;
+        }
+
+        .@md\:border-r {
+            border-right-width: 1px;
+        }
+
+        .@md\:w-48 {
+            width: 12rem;
+        }
+    }
+
+    @container (min-width: 1024px) {
+        .@lg\:grid-cols-2 {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .@lg\:grid-cols-3 {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+
+        .@lg\:grid-cols-4 {
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+        }
+
+        .@lg\:col-span-2 {
+            grid-column: span 2 / span 2;
+        }
+
+        .@lg\:flex-row {
+            flex-direction: row;
+        }
+    }
+
+    @container (min-width: 1280px) {
+        .@xl\:grid-cols-4 {
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+        }
+
+        .@xl\:grid-cols-5 {
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+        }
+    }
 }

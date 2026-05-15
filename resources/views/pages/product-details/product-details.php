@@ -387,7 +387,7 @@ new #[Defer] #[Layout('layouts.guest')] class extends Component {
      *   - id, value, label
      *   - state: 'available' | 'out_of_stock' | 'backorder' | 'unavailable'
      */
-    #[Computed]
+    #[Computed(persist: true)]
     public function variationAttributes(): array
     {
         if ($this->product->type->value !== 'variable') {
@@ -640,7 +640,7 @@ new #[Defer] #[Layout('layouts.guest')] class extends Component {
      * Order: main product image → variant images (for variable) → child product images (for grouped/bundle) → gallery images.
      * Each slide carries: url, alt, variantId (null for non-variant slides), childProductId (for grouped/bundle).
      */
-    #[Computed]
+    #[Computed(persist: true)]
     public function imageSlides(): array
     {
         $slides = [];

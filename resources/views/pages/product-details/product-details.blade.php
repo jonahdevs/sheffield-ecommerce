@@ -22,11 +22,11 @@
         <div class="container @container/page mx-auto px-4 py-4">
             <div class="grid @4xl/page:grid-cols-5 gap-5">
                 {{-- Main content area --}}
-                <div class="@4xl/page:col-span-4 space-y-5">
-                    <div class="@container/details grid grid-cols-1 @3xl/details:grid-cols-7 gap-5">
+                <div class="@4xl/page:col-span-4 @container/details space-y-5">
+                    <div class="grid grid-cols-1 @xl/details:grid-cols-7 gap-5">
                         {{-- Image gallery skeleton --}}
-                        <div class="@3xl/details:col-span-3">
-                            <div class="@3xl/details:sticky @3xl/details:top-24">
+                        <div class="@xl/details:col-span-3">
+                            <div class="@xl/details:sticky @xl/details:top-24">
                                 <div class="flex flex-col gap-3 md:flex-row md:items-start">
                                     {{-- Main image --}}
                                     <div class="w-full md:flex-1 md:min-w-0">
@@ -45,7 +45,7 @@
                         </div>
 
                         {{-- Product details skeleton --}}
-                        <div class="@3xl/details:col-span-4 space-y-4">
+                        <div class="@xl/details:col-span-4 space-y-4">
                             {{-- Title --}}
                             <flux:skeleton animate="shimmer" class="w-3/4 h-8" />
 
@@ -166,14 +166,14 @@
     <div class="container @container/page mx-auto px-4 py-4">
         <div class="grid @4xl/page:grid-cols-5 gap-5">
 
-            <div class="@4xl/page:col-span-4 space-y-5">
+            <div class="@4xl/page:col-span-4 @container/details space-y-5">
 
-                <div class="@container/details grid grid-cols-1 @3xl/details:grid-cols-7 gap-5">
+                <div class="grid grid-cols-1 @xl/details:grid-cols-7 gap-5">
 
                     {{-- ═══════════════════════════════════════════════════ --}}
                     {{-- IMAGE SLIDER (SHARED BETWEEN BOTH TYPES)           --}}
                     {{-- ═══════════════════════════════════════════════════ --}}
-                    <div class="@3xl/details:col-span-3">
+                    <div class="@xl/details:col-span-3">
                         @if (count($this->imageSlides) > 0)
                             <div wire:ignore x-data="{
                                 mainSwiper: null,
@@ -248,7 +248,7 @@
                                     if (thumbEl) thumbEl.classList.remove('opacity-0');
                                     if (mainEl) mainEl.classList.remove('opacity-0');
                                 },
-                            }" class="@3xl/details:sticky @3xl/details:top-24">
+                            }" class="@xl/details:sticky @xl/details:top-24">
 
                                 {{-- Flex col on mobile (thumbs below), flex row on md+ (thumbs left) --}}
                                 <div class="flex flex-col gap-3 md:flex-row md:items-stretch">
@@ -292,7 +292,7 @@
                             </div>
                         @else
                             {{-- No image placeholder --}}
-                            <div class="@3xl/details:sticky @3xl/details:top-24">
+                            <div class="@xl/details:sticky @xl/details:top-24">
                                 <div
                                     class="bg-zinc-100 dark:bg-zinc-800 aspect-square w-full rounded-lg flex items-center justify-center">
                                     <div class="text-center text-zinc-400 dark:text-zinc-500">
@@ -307,7 +307,7 @@
                     {{-- ═══════════════════════════════════════════════════ --}}
                     {{-- PRODUCT DETAILS (DIFFERENT FOR EACH TYPE)          --}}
                     {{-- ═══════════════════════════════════════════════════ --}}
-                    <div class="@3xl/details:col-span-4 space-y-4">
+                    <div class="@xl/details:col-span-4 space-y-4">
 
                         {{-- SHARED HEADER SECTION --}}
                         {{-- Name --}}
@@ -952,7 +952,8 @@
             </div>
 
             {{-- DELIVERY SIDEBAR --}}
-            <div class="@4xl/page:col-span-1 border border-zinc-200 dark:border-zinc-700 rounded h-fit sticky top-44 p-4">
+            <div
+                class="@4xl/page:col-span-1 border border-zinc-200 dark:border-zinc-700 rounded h-fit sticky top-44 p-4">
 
                 {{-- Price — slides in when main price scrolls out of view.
                      wire:ignore keeps Alpine state alive across Livewire re-renders. --}}
