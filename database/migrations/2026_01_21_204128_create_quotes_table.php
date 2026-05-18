@@ -23,6 +23,7 @@ return new class extends Migration {
             $table->bigInteger('total_cents')->default(0);
 
             // Customer preferences for delivery
+            $table->string('delivery_type')->default('delivery')->comment('delivery or pickup');
             $table->string('preferred_county')->nullable();
             $table->string('preferred_area')->nullable();
             $table->text('customer_notes')->nullable();

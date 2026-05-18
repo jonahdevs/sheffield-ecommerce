@@ -43,7 +43,7 @@ return Application::configure(basePath: dirname(__DIR__))
             $status = $e->getStatusCode();
             $view = "errors.{$status}";
 
-            if (in_array($status, [403, 404, 419, 500, 503]) && view()->exists($view)) {
+            if (in_array($status, [401, 403, 404, 419, 429, 500, 503]) && view()->exists($view)) {
                 view()->share('isErrorPage', true);
 
                 return response()->view($view, ['exception' => $e], $status);

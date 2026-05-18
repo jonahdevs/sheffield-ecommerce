@@ -9,7 +9,7 @@ use App\Enums\QuoteStatus;
 use Carbon\Carbon;
 use Livewire\Component;
 use Livewire\WithPagination;
-use Livewire\Attributes\{Title, Computed};
+use Livewire\Attributes\{Title, Computed, On};
 use Illuminate\Support\Facades\Response;
 
 new #[Title('Orders')] class extends Component {
@@ -368,6 +368,24 @@ new #[Title('Orders')] class extends Component {
         $this->dateFrom = '';
         $this->dateTo = '';
         $this->resetPage();
+    }
+
+    #[On('echo-private:admin.orders,.order.updated')]
+    public function handleOrderUpdate(array $data): void
+    {
+        $messages = [
+            'created' => "New order {$data['reference']} received!",
+            'status' => "Order {$data['reference']} is now {$data['status_label']}",
+            'payment' => "Payment updated for {$data['reference']}",
+        ];
+
+        $this->dispatch('notify',
+            title: $data['update_type'] === 'created' ? 'New Order!' : 'Order Updated',
+            variant: $data['update_type'] === 'created' ? 'success' : 'info',
+            message: $messages[$data['update_type']] ?? "Order {$data['reference']} was updated",
+        );
+
+        unset($this->orders, $this->stats, $this->statusCounts, $this->pendingQuotesCount);
     }
 
     public function rendered(): void
@@ -1073,34 +1091,5 @@ new #[Title('Orders')] class extends Component {
             }
         });
 
-        // =====================================================================
-        // REAL-TIME UPDATES
-        // =====================================================================
-        if (window.Echo) {
-            window.Echo.private('admin.orders')
-                .listen('.order.updated', (e) => {
-                    console.log('Order updated:', e);
-
-                    // Show toast notification
-                    const updateMessages = {
-                        'created': `New order ${e.reference} received!`,
-                        'status': `Order ${e.reference} is now ${e.status_label}`,
-                        'payment': `Payment updated for ${e.reference}`,
-                        'general': `Order ${e.reference} was updated`,
-                    };
-
-                    const message = updateMessages[e.update_type] || updateMessages.general;
-
-                    // Dispatch notification to Livewire
-                    $wire.dispatch('notify', {
-                        title: e.update_type === 'created' ? 'New Order!' : 'Order Updated',
-                        variant: e.update_type === 'created' ? 'success' : 'info',
-                        message: message,
-                    });
-
-                    // Refresh the orders list
-                    $wire.$refresh();
-                });
-        }
     </script>
 @endscript

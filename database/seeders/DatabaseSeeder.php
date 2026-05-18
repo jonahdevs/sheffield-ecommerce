@@ -2,9 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Attribute;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -22,10 +19,11 @@ class DatabaseSeeder extends Seeder
             CategorySeeder::class,
             TagSeeder::class,
             ProductSeeder::class,
-            ReviewSeeder::class,
+            // ReviewSeeder::class,
             ShippingSeeder::class,
             CountyCoordinatesSeeder::class,
             SalesFlowSeeder::class,
+            DeliveryOrderSeeder::class,
         ]);
     }
 }

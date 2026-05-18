@@ -3,6 +3,7 @@
 use App\Enums\OrderStatus;
 use App\Http\Controllers\Auth\SocialiteController;
 use App\Http\Controllers\Orders\OrderReceiptController;
+use App\Http\Controllers\Admin\AdminQuotationPdfController;
 use App\Http\Controllers\Orders\PackingSlipController;
 use App\Http\Controllers\Orders\QuotationPdfController;
 use App\Http\Controllers\Payment\CallbackController;
@@ -177,6 +178,7 @@ Route::middleware(['auth', 'staff', 'verified'])->prefix('admin')->name('admin.'
     Route::prefix('quotations')->name('quotations.')->group(function () {
         Route::livewire('/', 'pages::admin.sales.quotations.index')->name('index');
         Route::livewire('/{quote}', 'pages::admin.sales.quotations.show')->name('show');
+        Route::get('/{quote}/pdf', AdminQuotationPdfController::class)->name('pdf');
     });
 
     Route::prefix('payments')->name('payments.')->group(function () {

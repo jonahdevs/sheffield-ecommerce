@@ -12,7 +12,7 @@ class QuotePolicy
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -20,7 +20,7 @@ class QuotePolicy
      */
     public function view(User $user, Quote $quote): bool
     {
-        return false;
+        return $user->id === $quote->user_id;
     }
 
     /**

@@ -3,7 +3,7 @@ use App\Enums\{OrderStatus, PaymentStatus};
 use App\Models\Payment;
 use App\Notifications\RefundProcessedNotification;
 use Livewire\Component;
-use Livewire\Attributes\{Title, Computed};
+use Livewire\Attributes\{Computed, On, Title};
 use Illuminate\Support\Facades\DB;
 
 new class extends Component {
@@ -29,6 +29,16 @@ new class extends Component {
         $this->refundAmount = $this->payment->amount;
         $this->refundReason = '';
         $this->showRefundModal = true;
+    }
+
+    #[On('echo-private:admin.orders,.order.updated')]
+    public function handleOrderUpdate(array $data): void
+    {
+        if ((int) $data['order_id'] !== $this->payment->order_id) {
+            return;
+        }
+
+        $this->payment->refresh()->load(['order' => ['user', 'items']]);
     }
 
     public function processRefund(): void

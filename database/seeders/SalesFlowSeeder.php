@@ -6,7 +6,11 @@ use App\Enums\DeliveryOrderStatus;
 use App\Enums\OrderStatus;
 use App\Enums\PaymentStatus;
 use App\Enums\QuoteStatus;
+use App\Models\Address;
+use App\Models\Area;
+use App\Models\County;
 use App\Models\DeliveryOrder;
+use App\Models\LogisticsProvider;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Payment;
@@ -44,14 +48,92 @@ class SalesFlowSeeder extends Seeder
         $products = Product::active()->get();
         if ($products->isEmpty()) {
             $this->command->error('No products found. Run ProductSeeder first.');
+
             return;
         }
 
+        $this->seedAddresses($customers);
         $this->seedQuotations($customers, $products);
         $this->seedDirectOrders($customers, $products);
         $this->seedQuoteToOrderFlow($customers, $products);
 
         $this->printSummary();
+    }
+
+    private function seedAddresses($customers): void
+    {
+        $this->command->info('  🏠 Creating customer addresses...');
+
+        $nairobi = County::where('name', 'Nairobi')->first();
+
+        if (! $nairobi) {
+            $this->command->warn('  ⚠ Nairobi county not found — skipping addresses');
+
+            return;
+        }
+
+        $nairobiAreas = Area::where('county_id', $nairobi->id)->get();
+        $addressCount = 0;
+
+        // customer@sheffieldafrica.com — 3 saved addresses, first one default
+        $knownCustomer = User::where('email', 'customer@sheffieldafrica.com')->first();
+
+        if ($knownCustomer) {
+            [$firstName, $lastName] = $this->splitName($knownCustomer->name);
+
+            $nairobiAddresses = [
+                ['address' => 'Sarit Centre, Westlands', 'is_default' => true],
+                ['address' => 'Garden City Mall, Thika Road', 'is_default' => false],
+                ['address' => 'T-Mall, Langata Road', 'is_default' => false],
+            ];
+
+            foreach ($nairobiAddresses as $stub) {
+                $area = $nairobiAreas->isNotEmpty() ? $nairobiAreas->random() : null;
+                Address::create([
+                    'user_id' => $knownCustomer->id,
+                    'first_name' => $firstName,
+                    'last_name' => $lastName,
+                    'phone_number' => '+254712345678',
+                    'county_id' => $nairobi->id,
+                    'area_id' => $area?->id,
+                    'address' => $stub['address'],
+                    'shipping_zone_id' => $nairobi->shipping_zone_id,
+                    'is_default' => $stub['is_default'],
+                ]);
+                $addressCount++;
+            }
+        }
+
+        // Give every other customer 1–2 Nairobi addresses
+        foreach ($customers->where('email', '!=', 'customer@sheffieldafrica.com') as $customer) {
+            [$firstName, $lastName] = $this->splitName($customer->name);
+            $count = fake()->numberBetween(1, 2);
+
+            foreach (range(1, $count) as $i) {
+                $area = $nairobiAreas->isNotEmpty() ? $nairobiAreas->random() : null;
+                Address::create([
+                    'user_id' => $customer->id,
+                    'first_name' => $firstName,
+                    'last_name' => $lastName,
+                    'phone_number' => fake()->numerify('+2547########'),
+                    'county_id' => $nairobi->id,
+                    'area_id' => $area?->id,
+                    'address' => fake()->streetAddress(),
+                    'shipping_zone_id' => $nairobi->shipping_zone_id,
+                    'is_default' => $i === 1,
+                ]);
+                $addressCount++;
+            }
+        }
+
+        $this->command->info("    ✓ {$addressCount} addresses created");
+    }
+
+    private function splitName(string $name): array
+    {
+        $parts = explode(' ', trim($name), 2);
+
+        return [$parts[0], $parts[1] ?? 'User'];
     }
 
     private function seedQuotations($customers, $products): void
@@ -452,7 +534,7 @@ class SalesFlowSeeder extends Seeder
 
         DeliveryOrder::create([
             'order_id' => $order->id,
-            'logistics_provider_id' => 1,
+            'logistics_provider_id' => LogisticsProvider::where('status', 'active')->first()?->id ?? 1,
             'shipping_method_id' => $method?->id,
             'shipping_zone_id' => $zone?->id,
             'shipping_rate_id' => $rate?->id,
@@ -479,18 +561,19 @@ class SalesFlowSeeder extends Seeder
         $this->command->info('');
 
         $this->command->info('📊 Summary:');
-        $this->command->info('   Quotations: ' . Quote::count());
-        $this->command->info('     - Pending: ' . Quote::where('status', QuoteStatus::PENDING)->count());
-        $this->command->info('     - Sent: ' . Quote::where('status', QuoteStatus::SENT)->count());
-        $this->command->info('     - Accepted: ' . Quote::where('status', QuoteStatus::ACCEPTED)->count());
-        $this->command->info('     - Rejected: ' . Quote::where('status', QuoteStatus::REJECTED)->count());
-        $this->command->info('     - Expired: ' . Quote::where('status', QuoteStatus::EXPIRED)->count());
+        $this->command->info('   Quotations: '.Quote::count());
+        $this->command->info('     - Pending: '.Quote::where('status', QuoteStatus::PENDING)->count());
+        $this->command->info('     - Sent: '.Quote::where('status', QuoteStatus::SENT)->count());
+        $this->command->info('     - Accepted: '.Quote::where('status', QuoteStatus::ACCEPTED)->count());
+        $this->command->info('     - Rejected: '.Quote::where('status', QuoteStatus::REJECTED)->count());
+        $this->command->info('     - Expired: '.Quote::where('status', QuoteStatus::EXPIRED)->count());
         $this->command->info('');
-        $this->command->info('   Orders: ' . Order::count());
-        $this->command->info('     - From quotes: ' . Order::whereNotNull('quote_id')->count());
-        $this->command->info('     - Direct: ' . Order::whereNull('quote_id')->count());
-        $this->command->info('     - Paid: ' . Order::where('payment_status', PaymentStatus::PAID)->count());
+        $this->command->info('   Orders: '.Order::count());
+        $this->command->info('     - From quotes: '.Order::whereNotNull('quote_id')->count());
+        $this->command->info('     - Direct: '.Order::whereNull('quote_id')->count());
+        $this->command->info('     - Paid: '.Order::where('payment_status', PaymentStatus::PAID)->count());
         $this->command->info('');
-        $this->command->info('   Delivery Orders: ' . DeliveryOrder::count());
+        $this->command->info('   Delivery Orders: '.DeliveryOrder::count());
+        $this->command->info('   Addresses: '.Address::count());
     }
 }

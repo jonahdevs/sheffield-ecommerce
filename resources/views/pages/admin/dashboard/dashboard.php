@@ -9,15 +9,20 @@ use App\Models\Order;
 use App\Models\Product;
 use App\Models\Quote;
 use App\Models\User;
-use Livewire\Attributes\{Computed, Title};
-use Livewire\Component;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
+use Livewire\Attributes\Computed;
+use Livewire\Attributes\On;
+use Livewire\Attributes\Title;
+use Livewire\Component;
+use Spatie\Activitylog\Models\Activity;
 
-new #[Title('Dashboard')] class extends Component {
+new #[Title('Dashboard')] class extends Component
+{
     public string $preset = 'today';
+
     public string $dateFrom = '';
+
     public string $dateTo = '';
 
     public function mount(): void
@@ -39,6 +44,20 @@ new #[Title('Dashboard')] class extends Component {
         $this->js(sprintf("window.history.replaceState({}, '', '?preset=%s&from=%s&to=%s')", urlencode($preset), urlencode($from), urlencode($to)));
     }
 
+    #[On('echo-private:admin.orders,.order.updated')]
+    public function handleOrderUpdate(array $data): void
+    {
+        if ($data['update_type'] === 'created') {
+            $this->dispatch('notify',
+                title: 'New Order!',
+                variant: 'success',
+                message: "Order {$data['reference']} received from {$data['customer_name']}",
+            );
+        }
+
+        $this->clearComputedCache();
+    }
+
     private function clearComputedCache(): void
     {
         unset($this->dateRange, $this->periodLabel, $this->salesStats, $this->quotationStats, $this->productStats, $this->customerStats, $this->revenueChartData, $this->topProductsChartData, $this->recentOrders, $this->recentDeliveries, $this->recentCustomers, $this->satisfactionStats, $this->categoryStats, $this->stockReport);
@@ -54,7 +73,8 @@ new #[Title('Dashboard')] class extends Component {
     public function periodLabel(): string
     {
         [$from, $to] = $this->dateRange;
-        return $from->isSameDay($to) ? $from->format('M j, Y') : $from->format('M j') . ' – ' . $to->format('M j, Y');
+
+        return $from->isSameDay($to) ? $from->format('M j, Y') : $from->format('M j').' – '.$to->format('M j, Y');
     }
 
     #[Computed]
@@ -181,10 +201,10 @@ new #[Title('Dashboard')] class extends Component {
         // Union all periods so every series has the same x-axis labels
         $allPeriods = collect($revenueRows->keys())->merge($orderRows->keys())->merge($refundRows->keys())->unique()->sort()->values();
 
-        $labels = $allPeriods->map(fn($p) => Carbon::parse($p)->format($phpFormat))->toArray();
-        $revenueVals = $allPeriods->map(fn($p) => round((float) ($revenueRows[$p] ?? 0), 2))->toArray();
-        $orderVals = $allPeriods->map(fn($p) => (int) ($orderRows[$p] ?? 0))->toArray();
-        $refundVals = $allPeriods->map(fn($p) => (int) ($refundRows[$p] ?? 0))->toArray();
+        $labels = $allPeriods->map(fn ($p) => Carbon::parse($p)->format($phpFormat))->toArray();
+        $revenueVals = $allPeriods->map(fn ($p) => round((float) ($revenueRows[$p] ?? 0), 2))->toArray();
+        $orderVals = $allPeriods->map(fn ($p) => (int) ($orderRows[$p] ?? 0))->toArray();
+        $refundVals = $allPeriods->map(fn ($p) => (int) ($refundRows[$p] ?? 0))->toArray();
 
         return [
             'labels' => $labels,
@@ -201,7 +221,7 @@ new #[Title('Dashboard')] class extends Component {
         $lastStart = now()->subMonth()->startOfMonth();
         $lastEnd = now()->subMonth()->endOfMonth();
 
-        $query = fn($from, $to) => Order::where('payment_status', PaymentStatus::PAID->value)
+        $query = fn ($from, $to) => Order::where('payment_status', PaymentStatus::PAID->value)
             ->whereBetween('created_at', [$from, $to])
             ->selectRaw('DATE(created_at) as day, SUM(total_cents) / 100 as revenue')
             ->groupBy('day')
@@ -267,7 +287,7 @@ new #[Title('Dashboard')] class extends Component {
             'total' => $total,
             'categories' => $rows
                 ->map(
-                    fn($r) => [
+                    fn ($r) => [
                         'name' => $r->category,
                         'units' => (int) $r->units,
                         'revenue' => round((float) $r->revenue, 2),
@@ -315,7 +335,7 @@ new #[Title('Dashboard')] class extends Component {
         return [
             'items' => $rows
                 ->map(
-                    fn($r) => [
+                    fn ($r) => [
                         'name' => $r->product_name ?? 'Unknown',
                         'units' => (int) $r->units_sold,
                         'revenue' => round((float) $r->revenue, 2),
@@ -339,7 +359,7 @@ new #[Title('Dashboard')] class extends Component {
     #[Computed]
     public function recentActivities()
     {
-        return \Spatie\Activitylog\Models\Activity::with(['subject', 'causer'])
+        return Activity::with(['subject', 'causer'])
             ->whereIn('description', ['order_created', 'order_marked_paid', 'order_cancelled', 'payment_initiated', 'payment_confirmed', 'payment_failed', 'inventory_deducted', 'inventory_reserved', 'sap_sync_success', 'sap_sync_failed', 'quote_requested', 'quote_sent', 'quote_accepted', 'user_registered', 'webhook_received_mpesa', 'webhook_received_pesawise'])
             ->latest()
             ->limit(6)

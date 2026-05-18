@@ -1,5 +1,5 @@
 {{--
-    Shared error body — included by 404, 403, 419, 429, 500, 503.
+    Shared error body — included by 401, 403, 404, 419, 429, 500, 503.
     Variables expected:
       $code    — HTTP status code string e.g. '404'
       $title   — Short error title
@@ -11,23 +11,20 @@
     <div class="text-center max-w-lg w-full">
 
         {{-- Error code --}}
-        <p
-            class="text-8xl font-bold tracking-tight leading-none {{ $isAdmin ? 'text-secondary dark:text-secondary-hover' : 'text-primary' }}">
+        <p class="font-serif font-black text-8xl leading-none {{ $isAdmin ? 'text-secondary dark:text-secondary-hover' : 'text-primary' }}">
             {{ $code }}
         </p>
 
         {{-- Divider --}}
-        <div
-            class="w-12 h-1 rounded-full mx-auto my-5 {{ $isAdmin ? 'bg-secondary dark:bg-secondary-hover' : 'bg-primary' }}">
-        </div>
+        <div class="w-12 h-1 mx-auto my-5 {{ $isAdmin ? 'bg-secondary dark:bg-secondary-hover' : 'bg-primary' }}"></div>
 
         {{-- Title --}}
-        <h1 class="text-xl font-semibold text-zinc-800 dark:text-zinc-100 mb-3">
+        <h1 class="font-serif font-extrabold uppercase tracking-tight text-xl text-zinc-950 dark:text-zinc-100 mb-3">
             {{ $title }}
         </h1>
 
         {{-- Message --}}
-        <p class="text-zinc-500 dark:text-zinc-400 text-sm leading-relaxed mb-8">
+        <p class="text-[13px] text-zinc-500 dark:text-zinc-400 font-medium leading-relaxed mb-8">
             {{ $message }}
         </p>
 
@@ -37,7 +34,7 @@
             @if ($code === '419')
                 {{-- Session expired — refresh only --}}
                 <button onclick="window.location.reload()"
-                    class="inline-flex items-center gap-2 px-5 py-2.5 text-white text-sm font-medium rounded-md transition-colors cursor-pointer {{ $isAdmin ? 'bg-secondary hover:bg-secondary-hover' : 'bg-primary hover:bg-primary-hover' }}">
+                    class="inline-flex items-center gap-2 px-5 py-2.5 text-white text-[13px] font-extrabold uppercase tracking-wider transition-colors cursor-pointer {{ $isAdmin ? 'bg-secondary hover:bg-secondary-hover' : 'bg-primary hover:bg-[#e03d00]' }}">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
                         stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -45,28 +42,28 @@
                     </svg>
                     Refresh page
                 </button>
-            @elseif($code === '503')
+            @elseif ($code === '503')
                 {{-- Maintenance — support link only --}}
-                <a href="#" {{-- TODO: replace with route('contact') when available --}}
-                    class="inline-flex items-center gap-2 px-5 py-2.5 border border-zinc-300 dark:border-zinc-600 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-700 text-sm font-medium rounded-md transition-colors">
+                <a href="#"
+                    class="inline-flex items-center gap-2 px-5 py-2.5 border border-zinc-300 dark:border-zinc-600 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-700 text-[13px] font-extrabold uppercase tracking-wider transition-colors">
                     Contact support
                 </a>
             @else
                 {{-- All others — home/dashboard + support --}}
                 @if ($isAdmin)
                     <a href="{{ route('admin.dashboard') }}"
-                        class="inline-flex items-center gap-2 px-5 py-2.5 bg-secondary hover:bg-secondary-hover text-white text-sm font-medium rounded-md transition-colors">
+                        class="inline-flex items-center gap-2 px-5 py-2.5 bg-secondary hover:bg-secondary-hover text-white text-[13px] font-extrabold uppercase tracking-wider transition-colors">
                         Back to dashboard
                     </a>
                 @else
                     <a href="{{ url('/') }}"
-                        class="inline-flex items-center gap-2 px-5 py-2.5 bg-primary hover:bg-primary-hover text-white text-sm font-medium rounded-md transition-colors">
+                        class="inline-flex items-center gap-2 px-5 py-2.5 bg-primary hover:bg-[#e03d00] text-white text-[13px] font-extrabold uppercase tracking-wider transition-colors">
                         Back to homepage
                     </a>
                 @endif
 
-                <a href="#" {{-- TODO: replace with route('contact') when available --}}
-                    class="inline-flex items-center gap-2 px-5 py-2.5 border border-zinc-300 dark:border-zinc-600 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-700 text-sm font-medium rounded-md transition-colors">
+                <a href="#"
+                    class="inline-flex items-center gap-2 px-5 py-2.5 border border-zinc-300 dark:border-zinc-600 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-700 text-[13px] font-extrabold uppercase tracking-wider transition-colors">
                     Contact support
                 </a>
             @endif

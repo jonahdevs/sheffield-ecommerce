@@ -5,6 +5,7 @@ namespace Database\Factories;
 use App\Enums\DeliveryOrderStatus;
 use App\Models\DeliveryOrder;
 use App\Models\LogisticsProvider;
+use App\Models\Order;
 use App\Models\PickupStation;
 use App\Models\ShippingMethod;
 use App\Models\ShippingRate;
@@ -57,7 +58,7 @@ class DeliveryOrderFactory extends Factory
         $createdAt = $this->faker->dateTimeBetween('-60 days', 'now');
 
         return [
-            'order_id' => $this->faker->unique()->numberBetween(10000, 99999),
+            'order_id' => Order::inRandomOrder()->first()?->id ?? Order::factory(),
             'logistics_provider_id' => $provider?->id ?? 1,
             'shipping_method_id' => $method?->id,
             'shipping_zone_id' => $zone?->id,
@@ -205,7 +206,7 @@ class DeliveryOrderFactory extends Factory
         });
     }
 
-    //  Status states 
+    //  Status states
 
     public function pending(): static
     {
@@ -229,7 +230,7 @@ class DeliveryOrderFactory extends Factory
 
     public function delivered(): static
     {
-        return $this->state(fn() => [
+        return $this->state(fn () => [
             'status' => DeliveryOrderStatus::DELIVERED->value,
             'delivered_at' => $this->faker->dateTimeBetween('-30 days', 'now'),
         ]);
@@ -260,7 +261,7 @@ class DeliveryOrderFactory extends Factory
 
     public function collected(): static
     {
-        return $this->state(fn() => [
+        return $this->state(fn () => [
             'status' => DeliveryOrderStatus::COLLECTED->value,
             'delivered_at' => $this->faker->dateTimeBetween('-14 days', 'now'),
         ]);
@@ -273,7 +274,7 @@ class DeliveryOrderFactory extends Factory
 
     public function returned(): static
     {
-        return $this->state(fn() => [
+        return $this->state(fn () => [
             'status' => DeliveryOrderStatus::RETURNED->value,
             'delivered_at' => $this->faker->dateTimeBetween('-14 days', 'now'),
         ]);
@@ -284,7 +285,7 @@ class DeliveryOrderFactory extends Factory
         return $this->state(['status' => DeliveryOrderStatus::CANCELLED->value, 'delivered_at' => null]);
     }
 
-    //  Other helpers 
+    //  Other helpers
 
     /**
      * Reverse logistics order (customer → seller).
@@ -318,12 +319,12 @@ class DeliveryOrderFactory extends Factory
      */
     public function recentDays(int $days = 30): static
     {
-        return $this->state(fn() => [
+        return $this->state(fn () => [
             'created_at' => $this->faker->dateTimeBetween("-{$days} days", 'now'),
         ]);
     }
 
-    //  Private helpers 
+    //  Private helpers
 
     private function randomForwardStatus(): DeliveryOrderStatus
     {
@@ -385,19 +386,20 @@ class DeliveryOrderFactory extends Factory
     private function estimatedDelivery(\DateTime $createdAt, ?ShippingRate $rate): ?string
     {
         $days = $rate?->estimated_days_max ?? $this->faker->numberBetween(2, 5);
+
         return (clone $createdAt)->modify("+{$days} days")->format('Y-m-d H:i:s');
     }
 
     private function deliveredAt(DeliveryOrderStatus $status, \DateTime $createdAt): ?string
     {
-        if (!in_array($status, [DeliveryOrderStatus::DELIVERED, DeliveryOrderStatus::COLLECTED])) {
+        if (! in_array($status, [DeliveryOrderStatus::DELIVERED, DeliveryOrderStatus::COLLECTED])) {
             return null;
         }
 
         return $this->faker->dateTimeBetween($createdAt, 'now')->format('Y-m-d H:i:s');
     }
 
-    //  Cost breakdown builders 
+    //  Cost breakdown builders
 
     private function flatBreakdown(?ShippingZone $zone, ?ShippingRate $rate, float $weight, float $cost): array
     {

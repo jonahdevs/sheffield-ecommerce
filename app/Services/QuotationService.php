@@ -2,13 +2,13 @@
 
 namespace App\Services;
 
-use App\Enums\QuoteStatus;
 use App\Enums\OrderStatus;
 use App\Enums\PaymentStatus;
+use App\Enums\QuoteStatus;
 use App\Enums\SapSyncStatus;
-use App\Models\Quote;
 use App\Models\Order;
 use App\Models\Payment;
+use App\Models\Quote;
 use App\Notifications\QuoteAcceptedNotification;
 use App\Notifications\QuoteExpiringNotification;
 use App\Notifications\QuoteRejectedNotification;
@@ -32,8 +32,7 @@ class QuotationService
         private readonly NotificationSettings $notificationSettings,
         private readonly CustomerNotificationSettings $customerNotificationSettings,
         private readonly PaymentService $paymentService,
-    ) {
-    }
+    ) {}
 
     // =========================================================================
     // ADMIN NOTIFICATION ROUTING
@@ -51,10 +50,11 @@ class QuotationService
     {
         $email = $this->adminEmail();
 
-        if (!$email) {
+        if (! $email) {
             Log::warning('Admin notification skipped: no admin email configured', [
                 'notification' => get_class($notification),
             ]);
+
             return;
         }
 
@@ -128,7 +128,7 @@ class QuotationService
         $items = $basket->hydratedItems();
 
         $subtotalCents = (int) $items->sum(
-            fn($item) => round($item['unit_price'] * $item['quantity'] * 100)
+            fn ($item) => round($item['unit_price'] * $item['quantity'] * 100)
         );
 
         $quote = DB::transaction(function () use ($items, $subtotalCents, $data) {
@@ -143,6 +143,7 @@ class QuotationService
                 'shipping_cents' => 0,
                 'tax_cents' => 0,
                 'total_cents' => $subtotalCents,
+                'delivery_type' => $data['delivery_type'] ?? 'delivery',
                 'preferred_county' => $data['preferred_county'] ?? null,
                 'preferred_area' => $data['preferred_area'] ?? null,
                 'customer_notes' => $data['customer_notes'] ?? null,
@@ -179,7 +180,7 @@ class QuotationService
                         'brand' => $product->brand?->name,
                         'variant' => $variant
                             ? $variant->attributeValues
-                                ->mapWithKeys(fn($av) => [$av->attribute->name => $av->label ?: $av->value])
+                                ->mapWithKeys(fn ($av) => [$av->attribute->name => $av->label ?: $av->value])
                                 ->toArray()
                             : null,
                     ],
@@ -202,7 +203,7 @@ class QuotationService
 
     public function notifyRequested(Quote $quote): void
     {
-        if (!$this->notificationSettings->notify_new_quote) {
+        if (! $this->notificationSettings->notify_new_quote) {
             return;
         }
 
@@ -240,7 +241,7 @@ class QuotationService
 
         DB::transaction(function () use ($quote, $shippingCents, $validityDays, $note, $itemPrices) {
 
-            if (!empty($itemPrices)) {
+            if (! empty($itemPrices)) {
                 $subtotalCents = 0;
 
                 foreach ($quote->items as $item) {
@@ -261,6 +262,7 @@ class QuotationService
                     'subtotal_cents' => $subtotalCents,
                     'shipping_cents' => $shippingCents,
                     'total_cents' => $totalCents,
+                    'expires_at' => now()->addDays($validityDays),
                 ]);
             } else {
                 $totalCents = max(
@@ -271,10 +273,10 @@ class QuotationService
                 $quote->update([
                     'shipping_cents' => $shippingCents,
                     'total_cents' => $totalCents,
+                    'expires_at' => now()->addDays($validityDays),
                 ]);
             }
 
-            // Store admin notes if provided
             if ($note) {
                 $quote->update(['admin_notes' => $note]);
             }
@@ -306,7 +308,7 @@ class QuotationService
 
         DB::transaction(function () use ($quote, $shippingCents, $validityDays, $note, $itemPrices) {
 
-            if (!empty($itemPrices)) {
+            if (! empty($itemPrices)) {
                 $subtotalCents = 0;
 
                 foreach ($quote->items as $item) {
@@ -441,7 +443,7 @@ class QuotationService
         ] : [
             'full_name' => $quote->customerName(),
             'phone_number' => $quote->customerPhone(),
-            'address' => $quote->preferred_area . ', ' . $quote->preferred_county,
+            'address' => $quote->preferred_area.', '.$quote->preferred_county,
             'area' => $quote->preferred_area,
             'county' => $quote->preferred_county,
         ];
@@ -569,7 +571,7 @@ class QuotationService
 
     public function expireOverdue(): int
     {
-        if (!$this->quotationSettings->auto_expire_enabled) {
+        if (! $this->quotationSettings->auto_expire_enabled) {
             return 0;
         }
 
@@ -610,7 +612,7 @@ class QuotationService
 
     public function sendExpiringReminders(): int
     {
-        if (!$this->customerNotificationSettings->quote_expiring_reminder) {
+        if (! $this->customerNotificationSettings->quote_expiring_reminder) {
             return 0;
         }
 
@@ -639,6 +641,7 @@ class QuotationService
                     Log::warning('QuoteExpiringNotification: no customer email available', [
                         'quote_id' => $quote->id,
                     ]);
+
                     continue;
                 }
 

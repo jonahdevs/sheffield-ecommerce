@@ -24,7 +24,7 @@ beforeEach(function () {
 });
 
 test('quote changelog page displays activities in reverse chronological order', function () {
-    $quote = Quote::factory()->create(['reference' => 'QT-2026-000001']);
+    $quote = Quote::factory()->pending()->create(['reference' => 'QT-2026-000001']);
 
     Activity::where('subject_type', Quote::class)
         ->where('subject_id', $quote->id)
@@ -106,7 +106,7 @@ test('quote changelog page displays dash for null values', function () {
 });
 
 test('quote changelog page displays System when causer is null', function () {
-    $quote = Quote::factory()->create(['reference' => 'QT-2026-000004']);
+    $quote = Quote::factory()->pending()->create(['reference' => 'QT-2026-000004']);
 
     Activity::where('subject_type', Quote::class)
         ->where('subject_id', $quote->id)

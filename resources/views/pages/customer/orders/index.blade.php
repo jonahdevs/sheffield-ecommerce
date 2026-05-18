@@ -2,13 +2,25 @@
 
 use App\Enums\OrderStatus;
 use Livewire\Component;
-use Livewire\Attributes\{Layout, Computed};
+use Livewire\Attributes\{Layout, Computed, On};
 use Livewire\WithPagination;
 
 new #[Layout('layouts.customer')] class extends Component {
     use WithPagination;
 
     public string $selectedTab = 'ongoing';
+    public int $userId;
+
+    public function mount(): void
+    {
+        $this->userId = auth()->id();
+    }
+
+    #[On('echo-private:App.Models.User.{userId},.order.updated')]
+    public function handleOrderUpdate(): void
+    {
+        unset($this->hasOrders, $this->ongoingOrders, $this->cancelledOrders);
+    }
 
     // =========================================================================
     //  COMPUTED — ORDER EXISTENCE CHECK
@@ -183,13 +195,3 @@ new #[Layout('layouts.customer')] class extends Component {
     @endif
 </div>
 
-@script
-<script>
-    if (window.Echo) {
-        window.Echo.private('App.Models.User.{{ auth()->id() }}')
-            .listen('.order.updated', (e) => {
-                $wire.$refresh();
-            });
-    }
-</script>
-@endscript

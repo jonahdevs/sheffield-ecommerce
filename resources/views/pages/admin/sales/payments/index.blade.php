@@ -4,7 +4,7 @@ use App\Models\Payment;
 use App\Enums\PaymentStatus;
 use Livewire\Component;
 use Livewire\WithPagination;
-use Livewire\Attributes\{Title, Computed};
+use Livewire\Attributes\{Computed, On, Title};
 
 new #[Title('Transactions')] class extends Component {
     use WithPagination;
@@ -142,6 +142,12 @@ new #[Title('Transactions')] class extends Component {
         $this->dateFrom = '';
         $this->dateTo = '';
         $this->resetPage();
+    }
+
+    #[On('echo-private:admin.orders,.order.updated')]
+    public function handleOrderUpdate(array $data): void
+    {
+        unset($this->payments, $this->stats, $this->statusCounts);
     }
 };
 ?>

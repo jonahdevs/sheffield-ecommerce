@@ -34,6 +34,7 @@ class Quote extends Model
         'shipping_cents',
         'tax_cents',
         'total_cents',
+        'delivery_type',
         'preferred_county',
         'preferred_area',
         'customer_notes',
@@ -94,22 +95,22 @@ class Quote extends Model
 
     protected function subtotal(): Attribute
     {
-        return Attribute::make(get: fn() => $this->subtotal_cents / 100);
+        return Attribute::make(get: fn () => $this->subtotal_cents / 100);
     }
 
     protected function discount(): Attribute
     {
-        return Attribute::make(get: fn() => $this->discount_cents / 100);
+        return Attribute::make(get: fn () => $this->discount_cents / 100);
     }
 
     protected function shipping(): Attribute
     {
-        return Attribute::make(get: fn() => $this->shipping_cents / 100);
+        return Attribute::make(get: fn () => $this->shipping_cents / 100);
     }
 
     protected function total(): Attribute
     {
-        return Attribute::make(get: fn() => $this->total_cents / 100);
+        return Attribute::make(get: fn () => $this->total_cents / 100);
     }
 
     // =====================================================
@@ -205,6 +206,10 @@ class Quote extends Model
 
     public function transitionTo(QuoteStatus $new, ?string $notes = null, string $changedByType = 'system'): void
     {
+        if (! $this->status->canTransitionTo($new)) {
+            throw new \RuntimeException("Cannot transition quote from {$this->status->value} to {$new->value}");
+        }
+
         $old = $this->status;
 
         $this->update(['status' => $new]);

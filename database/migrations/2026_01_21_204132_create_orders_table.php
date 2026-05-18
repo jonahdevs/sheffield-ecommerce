@@ -133,10 +133,43 @@ return new class extends Migration
             $table->index(['order_id', 'operation'], 'idx_sap_logs_order_operation');
             $table->index('created_at', 'idx_sap_logs_created_at');
         });
+
+        Schema::create('order_notes', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('order_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete();
+            $table->text('content');
+            $table->boolean('is_pinned')->default(false);
+            $table->timestamps();
+
+            $table->index(['order_id', 'created_at']);
+            $table->index(['order_id', 'is_pinned']);
+        });
+
+        Schema::create('order_tags', function (Blueprint $table) {
+            $table->id();
+            $table->string('name', 50)->unique();
+            $table->string('color', 20)->default('zinc');
+            $table->text('description')->nullable();
+            $table->timestamps();
+        });
+
+        Schema::create('order_order_tag', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('order_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('order_tag_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('added_by_user_id')->nullable()->constrained('users')->nullOnDelete();
+            $table->timestamps();
+
+            $table->unique(['order_id', 'order_tag_id']);
+        });
     }
 
     public function down(): void
     {
+        Schema::dropIfExists('order_order_tag');
+        Schema::dropIfExists('order_tags');
+        Schema::dropIfExists('order_notes');
         Schema::dropIfExists('sap_sync_logs');
         Schema::dropIfExists('order_status_history');
         Schema::dropIfExists('order_items');

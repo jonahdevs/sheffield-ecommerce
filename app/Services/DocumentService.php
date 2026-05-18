@@ -6,6 +6,7 @@ use App\Models\Quote;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Spatie\LaravelPdf\Facades\Pdf;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class DocumentService
 {
@@ -18,6 +19,7 @@ class DocumentService
     // =========================================================================
 
     private const DISK = 'local';
+
     private const QUOTATION_DIR = 'quotations';
 
     // =========================================================================
@@ -50,9 +52,9 @@ class DocumentService
             }
 
             $filename = "{$quote->reference}.pdf";
-            $path = self::QUOTATION_DIR . '/' . $filename;
+            $path = self::QUOTATION_DIR.'/'.$filename;
 
-            Storage::disk(self::DISK)->put($path, $pdf->pdf());
+            Storage::disk(self::DISK)->put($path, $pdf->generatePdfContent());
 
             $quote->update(['document_path' => $path]);
 
@@ -109,10 +111,11 @@ class DocumentService
     //  Returns null if the file doesn't exist — caller should handle gracefully.
     // =========================================================================
 
-    public function serve(string $path, string $label = 'Document'): ?\Symfony\Component\HttpFoundation\StreamedResponse
+    public function serve(string $path, string $label = 'Document'): ?StreamedResponse
     {
-        if (!Storage::disk(self::DISK)->exists($path)) {
+        if (! Storage::disk(self::DISK)->exists($path)) {
             Log::warning('PDF serve requested but file not found.', ['path' => $path]);
+
             return null;
         }
 
@@ -133,10 +136,11 @@ class DocumentService
     //  Returns null if the file doesn't exist — caller should handle gracefully.
     // =========================================================================
 
-    public function stream(string $path, string $label = 'Document'): ?\Symfony\Component\HttpFoundation\StreamedResponse
+    public function stream(string $path, string $label = 'Document'): ?StreamedResponse
     {
-        if (!Storage::disk(self::DISK)->exists($path)) {
+        if (! Storage::disk(self::DISK)->exists($path)) {
             Log::warning('PDF stream requested but file not found.', ['path' => $path]);
+
             return null;
         }
 

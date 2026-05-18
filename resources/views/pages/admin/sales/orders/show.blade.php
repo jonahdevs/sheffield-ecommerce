@@ -5,7 +5,7 @@ use App\Jobs\SyncOrderToSapJob;
 use App\Models\{Order, DeliveryOrder, OrderNote, OrderTag};
 use App\Settings\TaxSettings;
 use Illuminate\Validation\Rule;
-use Livewire\Attributes\{Computed, Title};
+use Livewire\Attributes\{Computed, On, Title};
 use Livewire\Component;
 use Illuminate\Support\Facades\DB;
 
@@ -38,6 +38,31 @@ new #[Title('Order Details')] class extends Component {
 
         $allowed = $order->status->allowedTransitions();
         $this->status = !empty($allowed) ? $allowed[0]->value : '';
+    }
+
+    // =========================================================================
+    //  REAL-TIME UPDATES
+    // =========================================================================
+
+    #[On('echo-private:admin.orders,.order.updated')]
+    public function handleOrderUpdate(array $data): void
+    {
+        if ((int) $data['order_id'] !== $this->order->id) {
+            return;
+        }
+
+        if (isset($data['updated_by']) && (int) $data['updated_by'] !== auth()->id()) {
+            $this->dispatch('notify',
+                title: 'Order Updated',
+                variant: 'info',
+                message: "This order was updated by another user. Status: {$data['status_label']}",
+            );
+        }
+
+        $this->order->refresh()->load([
+            'payment', 'user', 'statusHistories.changedBy',
+            'items.product', 'quote', 'sapSyncLogs', 'notes.user', 'tags',
+        ]);
     }
 
     // =========================================================================
@@ -1177,33 +1202,3 @@ new #[Title('Order Details')] class extends Component {
 
 </div>
 
-@script
-    <script>
-        // =====================================================================
-        // REAL-TIME UPDATES FOR ORDER DETAIL PAGE
-        // =====================================================================
-        if (window.Echo) {
-            const orderId = {{ $order->id }};
-
-            window.Echo.private('admin.orders')
-                .listen('.order.updated', (e) => {
-                    // Only refresh if this is the order we're viewing
-                    if (e.order_id === orderId) {
-                        console.log('This order was updated:', e);
-
-                        // Show notification if updated by someone else
-                        if (e.updated_by && e.updated_by !== {{ auth()->id() }}) {
-                            $wire.dispatch('notify', {
-                                title: 'Order Updated',
-                                variant: 'info',
-                                message: `This order was updated by another user. Status: ${e.status_label}`,
-                            });
-                        }
-
-                        // Refresh the page data
-                        $wire.$refresh();
-                    }
-                });
-        }
-    </script>
-@endscript

@@ -2,7 +2,7 @@
 
 use App\Enums\{OrderStatus, PaymentStatus};
 use App\Models\Order;
-use Livewire\Attributes\{Computed, Layout, Title};
+use Livewire\Attributes\{Computed, Layout, On, Title};
 use Livewire\Component;
 use App\Services\CartService;
 
@@ -36,6 +36,7 @@ new #[Title('Order Details')] #[Layout('layouts.customer')] class extends Compon
     // Real-time Updates
     // =====================================================
 
+    #[On('echo-private:order.{order.id},.order.updated')]
     public function handleOrderUpdate(array $data): void
     {
         // Refresh the order from database
@@ -435,13 +436,3 @@ new #[Title('Order Details')] #[Layout('layouts.customer')] class extends Compon
     </div>
 </div>
 
-@script
-<script>
-    if (window.Echo) {
-        window.Echo.private('order.{{ $order->id }}')
-            .listen('.order.updated', (e) => {
-                $wire.handleOrderUpdate(e);
-            });
-    }
-</script>
-@endscript

@@ -83,7 +83,7 @@ if ($flyout) {
         ->add(
             match ($variant) {
                 default
-                    => 'bg-white dark:bg-zinc-800 ring ring-black/5 dark:ring-zinc-700 shadow-lg rounded-none z-100!',
+                    => 'bg-white dark:bg-zinc-800 ring ring-black/5 dark:ring-zinc-700 shadow-lg rounded-md z-100!',
                 'bare' => 'bg-transparent',
             },
         );

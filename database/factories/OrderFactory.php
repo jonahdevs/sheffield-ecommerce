@@ -49,7 +49,7 @@ class OrderFactory extends Factory
                 'area' => $this->faker->streetName(),
             ],
             'shipping_snapshot' => [
-                'method' => 'Standard Delivery',
+                'method' => $this->faker->randomElement(['Standard Delivery', 'Standard Delivery', 'Pickup Station']),
                 'zone' => $county,
                 'estimated_days' => $this->faker->numberBetween(2, 5),
             ],
@@ -128,7 +128,7 @@ class OrderFactory extends Factory
 
     public function recentDays(int $days = 30): static
     {
-        return $this->state(fn() => [
+        return $this->state(fn () => [
             'created_at' => $this->faker->dateTimeBetween("-{$days} days", 'now'),
         ]);
     }
@@ -136,7 +136,7 @@ class OrderFactory extends Factory
     /**
      * Create order with items and calculate totals.
      */
-    public function withItems(int $count = null): static
+    public function withItems(?int $count = null): static
     {
         return $this->afterCreating(function (Order $order) use ($count) {
             $itemCount = $count ?? $this->faker->numberBetween(1, 5);

@@ -6,18 +6,37 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
+            $table->string('provider')->nullable();
+            $table->string('provider_id')->nullable();
+            $table->string('provider_token')->nullable();
+            $table->string('phone_number', 20)->nullable();
+            $table->string('phone_number_verified_at', 20)->nullable();
+            $table->string('avatar')->nullable();
+            $table->string('display_name')->nullable();
+            $table->date('date_of_birth')->nullable();
+            $table->boolean('newsletter_subscribed')->default(false);
+            $table->json('notification_preferences')->nullable();
+            $table->json('privacy_preferences')->nullable();
+            $table->string('default_payment_method')->nullable();
+            $table->boolean('is_staff')->default(false);
+            $table->string('status')->default('active');
+            $table->string('status_reason')->nullable();
+            $table->timestamp('suspended_until')->nullable();
+            $table->string('password')->nullable();
+            $table->text('two_factor_secret')->nullable();
+            $table->text('two_factor_recovery_codes')->nullable();
+            $table->timestamp('two_factor_confirmed_at')->nullable();
             $table->rememberToken();
+            $table->timestamp('email_verified_at')->nullable();
+            $table->timestamp('terms_accepted_at')->nullable();
+            $table->ipAddress('terms_accepted_ip')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
 
@@ -37,13 +56,10 @@ return new class extends Migration
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
-        Schema::dropIfExists('users');
-        Schema::dropIfExists('password_reset_tokens');
         Schema::dropIfExists('sessions');
+        Schema::dropIfExists('password_reset_tokens');
+        Schema::dropIfExists('users');
     }
 };

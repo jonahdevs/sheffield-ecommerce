@@ -30,7 +30,7 @@ class KraReceiptService
      */
     public function generate(Order $order): string
     {
-        if (!$this->canGenerate($order)) {
+        if (! $this->canGenerate($order)) {
             throw new \LogicException(
                 "Cannot generate invoice for order {$order->reference}: KRA validation not yet complete."
             );
@@ -55,9 +55,9 @@ class KraReceiptService
         $pdf->name("{$order->reference}.pdf");
 
         $filename = "{$order->reference}.pdf";
-        $path = self::INVOICE_DIR . '/' . $filename;
+        $path = self::INVOICE_DIR.'/'.$filename;
 
-        Storage::disk(self::DISK)->put($path, $pdf->pdf());
+        Storage::disk(self::DISK)->put($path, $pdf->generatePdfContent());
 
         $order->update(['invoice_path' => $path]);
 
@@ -95,7 +95,7 @@ class KraReceiptService
      */
     public function canGenerate(Order $order): bool
     {
-        return !is_null($order->kra_cu_number);
+        return ! is_null($order->kra_cu_number);
     }
 
     /**
@@ -106,7 +106,7 @@ class KraReceiptService
     {
         $email = $order->customerEmail();
 
-        if (!$email) {
+        if (! $email) {
             Log::warning('Invoice: no customer email, skipping send', [
                 'order_id' => $order->id,
             ]);
@@ -114,7 +114,7 @@ class KraReceiptService
             return;
         }
 
-        if (!$order->invoice_path || !Storage::disk(self::DISK)->exists($order->invoice_path)) {
+        if (! $order->invoice_path || ! Storage::disk(self::DISK)->exists($order->invoice_path)) {
             Log::warning('Invoice: PDF not found, skipping send', [
                 'order_id' => $order->id,
                 'path' => $order->invoice_path,

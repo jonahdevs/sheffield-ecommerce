@@ -13,6 +13,9 @@ use Livewire\Component;
 use Artesaos\SEOTools\Facades\SEOMeta;
 
 new #[Defer] #[Layout('layouts.guest')] class extends Component {
+    #[Validate('in:delivery,pickup')]
+    public string $deliveryType = 'delivery';
+
     #[Validate('nullable|integer|exists:counties,id')]
     public ?int $selectedCounty = null;
 
@@ -78,6 +81,15 @@ new #[Defer] #[Layout('layouts.guest')] class extends Component {
         return Area::where('county_id', $this->selectedCounty)->orderBy('name')->get(['id', 'name']);
     }
 
+    public function updatedDeliveryType(): void
+    {
+        if ($this->deliveryType === 'pickup') {
+            $this->selectedCounty = null;
+            $this->selectedArea = null;
+            unset($this->areas);
+        }
+    }
+
     public function updatedSelectedCounty(): void
     {
         $this->selectedArea = null;
@@ -129,8 +141,9 @@ new #[Defer] #[Layout('layouts.guest')] class extends Component {
             $area = $this->selectedArea ? Area::find($this->selectedArea)?->name : null;
 
             $order = $quotationService->createFromBasket(app(QuoteBasketService::class), [
-                'preferred_county' => $county,
-                'preferred_area' => $area,
+                'delivery_type' => $this->deliveryType,
+                'preferred_county' => $this->deliveryType === 'pickup' ? null : $county,
+                'preferred_area' => $this->deliveryType === 'pickup' ? null : $area,
                 'customer_notes' => $this->customerNotes ?: null,
                 'name' => $this->guestName,
                 'email' => $this->guestEmail,
@@ -301,41 +314,12 @@ new #[Defer] #[Layout('layouts.guest')] class extends Component {
                                 <input type="email" wire:model="guestEmail" class="customer-input"
                                     placeholder="john@business.co.ke" />
                             </x-customer.form-field>
-
-                            {{-- Delivery location --}}
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                <x-customer.form-field label="County" name="selectedCounty">
-                                    <select wire:model.live="selectedCounty"
-                                        class="customer-input {{ $selectArrow }}">
-                                        <option value="">Select county...</option>
-                                        @foreach ($this->counties as $county)
-                                            <option value="{{ $county->id }}">{{ $county->name }}</option>
-                                        @endforeach
-                                    </select>
-                                </x-customer.form-field>
-
-                                <x-customer.form-field label="Area" name="selectedArea">
-                                    @if ($this->areas->isNotEmpty())
-                                        <select wire:model="selectedArea" class="customer-input {{ $selectArrow }}">
-                                            <option value="">Select area...</option>
-                                            @foreach ($this->areas as $area)
-                                                <option value="{{ $area->id }}">{{ $area->name }}</option>
-                                            @endforeach
-                                        </select>
-                                    @else
-                                        <select disabled
-                                            class="customer-input {{ $selectArrow }} opacity-50 cursor-not-allowed">
-                                            <option>Select county first</option>
-                                        </select>
-                                    @endif
-                                </x-customer.form-field>
-                            </div>
                         @else
                             {{-- Authenticated: show pre-populated fields (readonly for name/email) --}}
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <x-customer.form-field label="Full Name" name="guestName">
                                     <input type="text" wire:model="guestName"
-                                        class="customer-input bg-zinc-50 dark:bg-zinc-800/50" readonly />
+                                        class="customer-input bg-zinc-50" readonly />
                                 </x-customer.form-field>
                                 <x-customer.form-field label="Phone Number" name="guestPhone">
                                     <input type="tel" wire:model="guestPhone" class="customer-input"
@@ -345,39 +329,99 @@ new #[Defer] #[Layout('layouts.guest')] class extends Component {
 
                             <x-customer.form-field label="Email Address" name="guestEmail">
                                 <input type="email" wire:model="guestEmail"
-                                    class="customer-input bg-zinc-50 dark:bg-zinc-800/50" readonly />
+                                    class="customer-input bg-zinc-50" readonly />
                             </x-customer.form-field>
-
-                            {{-- Delivery location --}}
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                <x-customer.form-field label="County" name="selectedCounty">
-                                    <select wire:model.live="selectedCounty"
-                                        class="customer-input {{ $selectArrow }}">
-                                        <option value="">Select county...</option>
-                                        @foreach ($this->counties as $county)
-                                            <option value="{{ $county->id }}">{{ $county->name }}</option>
-                                        @endforeach
-                                    </select>
-                                </x-customer.form-field>
-
-                                <x-customer.form-field label="Area" name="selectedArea">
-                                    @if ($this->areas->isNotEmpty())
-                                        <select wire:model="selectedArea" class="customer-input {{ $selectArrow }}">
-                                            <option value="">Select area...</option>
-                                            @foreach ($this->areas as $area)
-                                                <option value="{{ $area->id }}">{{ $area->name }}</option>
-                                            @endforeach
-                                        </select>
-                                    @else
-                                        <select disabled
-                                            class="customer-input {{ $selectArrow }} opacity-50 cursor-not-allowed">
-                                            <option>Select county first</option>
-                                        </select>
-                                    @endif
-                                </x-customer.form-field>
-                            </div>
                         @endif
                     </div>
+
+                    {{-- Delivery type --}}
+                    <div>
+                        <p class="text-[10px] font-bold tracking-widest uppercase text-zinc-500 mb-3">Fulfilment
+                            Preference</p>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+
+                            {{-- Deliver to my location --}}
+                            <label wire:click="$set('deliveryType','delivery')"
+                                @class([
+                                    'flex items-start gap-3.5 px-4 py-3.5 border-[1.5px] cursor-pointer transition-all relative',
+                                    'border-primary bg-[#fff8f6] before:content-[\'\'] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-[3px] before:bg-primary' => $deliveryType === 'delivery',
+                                    'border-zinc-200 hover:border-zinc-300' => $deliveryType !== 'delivery',
+                                ])>
+                                <div @class([
+                                    'w-4 h-4 rounded-full border-2 shrink-0 mt-0.5 flex items-center justify-center transition-colors',
+                                    'border-primary' => $deliveryType === 'delivery',
+                                    'border-zinc-300' => $deliveryType !== 'delivery',
+                                ])>
+                                    <div @class([
+                                        'w-2 h-2 rounded-full bg-primary transition-opacity',
+                                        'opacity-100' => $deliveryType === 'delivery',
+                                        'opacity-0' => $deliveryType !== 'delivery',
+                                    ])></div>
+                                </div>
+                                <div>
+                                    <p class="text-[13px] font-bold text-zinc-950 mb-0.5">Deliver to my location</p>
+                                    <p class="text-[11px] text-zinc-500 font-medium leading-snug">We'll price shipping
+                                        to your county & area</p>
+                                </div>
+                            </label>
+
+                            {{-- Pick up --}}
+                            <label wire:click="$set('deliveryType','pickup')"
+                                @class([
+                                    'flex items-start gap-3.5 px-4 py-3.5 border-[1.5px] cursor-pointer transition-all relative',
+                                    'border-primary bg-[#fff8f6] before:content-[\'\'] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-[3px] before:bg-primary' => $deliveryType === 'pickup',
+                                    'border-zinc-200 hover:border-zinc-300' => $deliveryType !== 'pickup',
+                                ])>
+                                <div @class([
+                                    'w-4 h-4 rounded-full border-2 shrink-0 mt-0.5 flex items-center justify-center transition-colors',
+                                    'border-primary' => $deliveryType === 'pickup',
+                                    'border-zinc-300' => $deliveryType !== 'pickup',
+                                ])>
+                                    <div @class([
+                                        'w-2 h-2 rounded-full bg-primary transition-opacity',
+                                        'opacity-100' => $deliveryType === 'pickup',
+                                        'opacity-0' => $deliveryType !== 'pickup',
+                                    ])></div>
+                                </div>
+                                <div>
+                                    <p class="text-[13px] font-bold text-zinc-950 mb-0.5">Pick up from our store</p>
+                                    <p class="text-[11px] text-zinc-500 font-medium leading-snug">Collect your items
+                                        directly from our warehouse</p>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    {{-- Delivery location (only when delivering) --}}
+                    @if ($deliveryType === 'delivery')
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <x-customer.form-field label="County" name="selectedCounty">
+                                <select wire:model.live="selectedCounty"
+                                    class="customer-input {{ $selectArrow }}">
+                                    <option value="">Select county...</option>
+                                    @foreach ($this->counties as $county)
+                                        <option value="{{ $county->id }}">{{ $county->name }}</option>
+                                    @endforeach
+                                </select>
+                            </x-customer.form-field>
+
+                            <x-customer.form-field label="Area" name="selectedArea">
+                                @if ($this->areas->isNotEmpty())
+                                    <select wire:model="selectedArea" class="customer-input {{ $selectArrow }}">
+                                        <option value="">Select area...</option>
+                                        @foreach ($this->areas as $area)
+                                            <option value="{{ $area->id }}">{{ $area->name }}</option>
+                                        @endforeach
+                                    </select>
+                                @else
+                                    <select disabled
+                                        class="customer-input {{ $selectArrow }} opacity-50 cursor-not-allowed">
+                                        <option>Select county first</option>
+                                    </select>
+                                @endif
+                            </x-customer.form-field>
+                        </div>
+                    @endif
 
                     {{-- Notes --}}
                     <x-customer.form-field label="Additional Notes" name="customerNotes"

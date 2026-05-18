@@ -1295,26 +1295,5 @@
             });
         });
 
-        // =====================================================================
-        // REAL-TIME UPDATES
-        // =====================================================================
-        if (window.Echo) {
-            window.Echo.private('admin.orders')
-                .listen('.order.updated', (e) => {
-                    console.log('Dashboard: Order updated', e);
-
-                    // Show toast notification for new orders
-                    if (e.update_type === 'created') {
-                        $wire.dispatch('notify', {
-                            title: 'New Order!',
-                            variant: 'success',
-                            message: `Order ${e.reference} received from ${e.customer_name}`,
-                        });
-                    }
-
-                    // Refresh dashboard data
-                    $wire.$refresh();
-                });
-        }
     </script>
 @endscript

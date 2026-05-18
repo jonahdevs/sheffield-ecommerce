@@ -2,9 +2,7 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Str;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
@@ -16,27 +14,27 @@ class RoleSeeder extends Seeder
     public function run(): void
     {
         $permissions = [
-            'users'          => ['view', 'create', 'edit', 'delete'],
-            'roles'          => ['view', 'create', 'edit', 'delete'],
-            'products'       => ['view', 'create', 'edit', 'delete'],
+            'users' => ['view', 'create', 'edit', 'delete'],
+            'roles' => ['view', 'create', 'edit', 'delete'],
+            'products' => ['view', 'create', 'edit', 'delete'],
             'product-variants' => ['view', 'create', 'edit', 'delete'],
             'product-images' => ['view', 'create', 'edit', 'delete'],
-            'categories'     => ['view', 'create', 'edit', 'delete'],
-            'brands'         => ['view', 'create', 'edit', 'delete'],
-            'attributes'     => ['view', 'create', 'edit', 'delete'],
-            'tags'           => ['view', 'create', 'edit', 'delete'],
-            'orders'         => ['view', 'edit', 'delete'],
-            'order-status'   => ['manage'],
-            'payments'       => ['view', 'manage'],
-            'inventory'      => ['view', 'manage'],
-            'reviews'        => ['view', 'edit', 'delete', 'approve'],
-            'shipping'       => ['view', 'create', 'edit', 'delete'],
+            'categories' => ['view', 'create', 'edit', 'delete'],
+            'brands' => ['view', 'create', 'edit', 'delete'],
+            'attributes' => ['view', 'create', 'edit', 'delete'],
+            'tags' => ['view', 'create', 'edit', 'delete'],
+            'orders' => ['view', 'edit', 'delete'],
+            'order-status' => ['manage'],
+            'payments' => ['view', 'manage'],
+            'inventory' => ['view', 'manage'],
+            'reviews' => ['view', 'edit', 'delete', 'approve'],
+            'shipping' => ['view', 'create', 'edit', 'delete'],
             'shipping-zones' => ['view', 'create', 'edit', 'delete'],
             'shipping-rules' => ['view', 'create', 'edit', 'delete'],
             'pickup-stations' => ['view', 'create', 'edit', 'delete'],
-            'areas'          => ['view', 'create', 'edit', 'delete'],
-            'settings'       => ['view', 'manage'],
-            'reports'        => ['view', 'export'],
+            'areas' => ['view', 'create', 'edit', 'delete'],
+            'settings' => ['view', 'manage'],
+            'reports' => ['view', 'export'],
         ];
 
         foreach ($permissions as $resource => $actions) {
@@ -46,13 +44,13 @@ class RoleSeeder extends Seeder
         }
 
         Role::firstOrCreate([
-            'name' => 'super_admin'
+            'name' => 'super_admin',
         ], [
             'is_system' => true,
         ]);
 
         $admin = Role::firstOrCreate([
-            'name' => 'admin'
+            'name' => 'admin',
         ], [
             'is_system' => true,
         ]);

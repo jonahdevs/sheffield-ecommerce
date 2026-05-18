@@ -2,47 +2,47 @@
 
 use App\Enums\QuoteStatus;
 use App\Models\Quote;
-use App\Services\{QuotationService, DocumentService};
-use Livewire\Attributes\{Computed, Title};
+use App\Services\DocumentService;
+use App\Services\QuotationService;
+use App\Settings\QuotationSettings;
+use Livewire\Attributes\Computed;
+use Livewire\Attributes\Title;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 
-new #[Title('Quotation Details')] class extends Component {
+new #[Title('Quotation Details')] class extends Component
+{
     use WithFileUploads;
 
     public Quote $quote;
 
-    // Price & Send form fields
     public string $quotedShipping = '';
-    public int $validityDays = 7;
-    public string $note = '';
 
-    // Admin can override unit prices per item (keyed by quote_item.id)
+    public int $validityDays = 7;
+
+    public string $adminNote = '';
+
     public array $itemPrices = [];
 
-    // Cancel form
     public string $cancelNote = '';
 
-    // SAP-prepared PDF upload
     public $sapPdfUpload = null;
-
-    // =========================================================================
-    //  MOUNT
-    // =========================================================================
 
     public function mount(Quote $quote): void
     {
         $this->quote = $quote->load(['user', 'items.product', 'statusHistories.changedBy', 'order']);
 
-        // Pre-populate item prices so the pricing form shows current prices
         foreach ($quote->items as $item) {
             $price = $item->quoted_price_cents ?? $item->original_price_cents;
             $this->itemPrices[$item->id] = number_format($price / 100, 2, '.', '');
         }
+
+        $settings = app(QuotationSettings::class);
+        $this->validityDays = $settings->default_validity_days;
     }
 
     // =========================================================================
-    //  COMPUTED — UI state helpers
+    //  COMPUTED
     // =========================================================================
 
     #[Computed]
@@ -57,100 +57,110 @@ new #[Title('Quotation Details')] class extends Component {
         return $this->quote->status->canTransitionTo(QuoteStatus::CANCELLED);
     }
 
-    // Live total preview as admin types in the pricing form
     #[Computed]
     public function quotedTotal(): float
     {
-        $shipping = (float) str_replace(',', '', $this->quotedShipping ?? '0');
+        $shipping = (float) str_replace(',', '', $this->quotedShipping ?: '0');
         $itemsTotal = 0;
 
         foreach ($this->itemPrices as $itemId => $price) {
             $item = $this->quote->items->firstWhere('id', (int) $itemId);
-            $itemsTotal += (float) str_replace(',', '', $price ?? '0') * ($item?->quantity ?? 1);
+            $itemsTotal += (float) str_replace(',', '', $price ?: '0') * ($item?->quantity ?? 1);
         }
 
         return max(0, $itemsTotal - $this->quote->discount_cents / 100 + $shipping);
     }
 
+    #[Computed]
+    public function quotedSubtotal(): float
+    {
+        $total = 0;
+
+        foreach ($this->itemPrices as $itemId => $price) {
+            $item = $this->quote->items->firstWhere('id', (int) $itemId);
+            $total += (float) str_replace(',', '', $price ?: '0') * ($item?->quantity ?? 1);
+        }
+
+        return max(0, $total);
+    }
+
     // =========================================================================
-    //  SAVE QUOTE (prepare without sending)
+    //  SAVE DRAFT
     // =========================================================================
 
-    public function saveQuote(): void
+    public function saveDraft(): void
     {
         $this->validate([
-            'quotedShipping' => ['required', 'numeric', 'min:0'],
-            'validityDays' => ['required', 'integer', 'min:1', 'max:90'],
-            'note' => ['nullable', 'string', 'max:1000'],
+            'quotedShipping' => ['nullable', 'numeric', 'min:0'],
+            'validityDays' => ['required', 'integer', 'min:'.app(QuotationSettings::class)->min_validity_days, 'max:'.app(QuotationSettings::class)->max_validity_days],
+            'adminNote' => ['nullable', 'string', 'max:1000'],
             'itemPrices.*' => ['nullable', 'numeric', 'min:0'],
         ]);
 
-        if (!$this->canPrice) {
-            $this->dispatch('notify', title: 'Action Not Allowed', variant: 'danger', message: 'This quotation can no longer be priced');
+        if (! $this->canPrice) {
+            $this->dispatch('notify', variant: 'danger', message: 'This quotation can no longer be priced');
+
             return;
         }
 
         try {
             app(QuotationService::class)->prepare($this->quote, [
-                'shipping' => $this->quotedShipping,
+                'shipping' => $this->quotedShipping ?: 0,
                 'validity_days' => $this->validityDays,
-                'note' => $this->note ?: null,
+                'note' => $this->adminNote ?: null,
                 'item_prices' => $this->itemPrices,
             ]);
 
             $this->quote->refresh();
-            $this->modal('price-quote')->close();
-
-            $this->dispatch('notify', title: 'Quotation Saved', variant: 'success', message: 'The quotation has been saved and is ready to be sent');
-        } catch (\Throwable $e) {
-            $this->dispatch('notify', title: 'Save Failed', variant: 'danger', message: 'Something went wrong. Please try again');
+            $this->dispatch('notify', variant: 'success', message: 'Draft saved — prices updated');
+        } catch (Throwable $e) {
+            $this->dispatch('notify', variant: 'danger', message: 'Something went wrong. Please try again');
         }
     }
 
     // =========================================================================
-    //  PRICE & SEND QUOTE
+    //  SEND QUOTE
     // =========================================================================
 
     public function sendQuote(): void
     {
         $this->validate([
-            'quotedShipping' => ['required', 'numeric', 'min:0'],
-            'validityDays' => ['required', 'integer', 'min:1', 'max:90'],
-            'note' => ['nullable', 'string', 'max:1000'],
+            'quotedShipping' => ['nullable', 'numeric', 'min:0'],
+            'validityDays' => ['required', 'integer', 'min:'.app(QuotationSettings::class)->min_validity_days, 'max:'.app(QuotationSettings::class)->max_validity_days],
+            'adminNote' => ['nullable', 'string', 'max:1000'],
             'itemPrices.*' => ['nullable', 'numeric', 'min:0'],
         ]);
 
-        if (!$this->canPrice) {
-            $this->dispatch('notify', title: 'Action Not Allowed', variant: 'danger', message: 'This quotation can no longer be priced');
+        if (! $this->canPrice) {
+            $this->dispatch('notify', variant: 'danger', message: 'This quotation can no longer be priced');
+
             return;
         }
 
         try {
             app(QuotationService::class)->send($this->quote, [
-                'shipping' => $this->quotedShipping,
+                'shipping' => $this->quotedShipping ?: 0,
                 'validity_days' => $this->validityDays,
-                'note' => $this->note ?: null,
+                'note' => $this->adminNote ?: null,
                 'item_prices' => $this->itemPrices,
             ]);
 
             $this->quote->refresh();
-            $this->note = '';
-            $this->modal('price-quote')->close();
-
-            $this->dispatch('notify', title: 'Quotation Sent', variant: 'success', message: 'The quotation has been sent to the customer successfully');
-        } catch (\Throwable $e) {
-            $this->dispatch('notify', title: 'Send Failed', variant: 'danger', message: 'Something went wrong while sending the quotation. Please try again');
+            $this->modal('confirm-send')->close();
+            $this->dispatch('notify', variant: 'success', message: 'Quotation sent to customer successfully');
+        } catch (Throwable $e) {
+            $this->dispatch('notify', variant: 'danger', message: 'Something went wrong while sending the quotation. Please try again');
         }
     }
 
     // =========================================================================
-    //  UPLOAD QUOTATION PDF
+    //  UPLOAD SAP PDF
     // =========================================================================
 
     public function uploadSapPdf(): void
     {
         $this->validate([
-            'sapPdfUpload' => ['required', 'file', 'mimes:pdf', 'max:10240'], // 10MB max
+            'sapPdfUpload' => ['required', 'file', 'mimes:pdf', 'max:10240'],
         ]);
 
         try {
@@ -160,15 +170,14 @@ new #[Title('Quotation Details')] class extends Component {
 
             $this->sapPdfUpload = null;
             $this->modal('upload-sap-pdf')->close();
-
-            $this->dispatch('notify', title: 'Upload Successful', variant: 'success', message: 'Quotation PDF uploaded successfully.');
-        } catch (\Throwable $e) {
-            $this->dispatch('notify', title: 'Upload Failed', variant: 'danger', message: 'Failed to upload the PDF. Please try again.');
+            $this->dispatch('notify', variant: 'success', message: 'Quotation PDF uploaded successfully');
+        } catch (Throwable $e) {
+            $this->dispatch('notify', variant: 'danger', message: 'Failed to upload the PDF. Please try again');
         }
     }
 
     // =========================================================================
-    //  CANCEL QUOTATION
+    //  CANCEL
     // =========================================================================
 
     public function cancelQuotation(): void
@@ -177,8 +186,9 @@ new #[Title('Quotation Details')] class extends Component {
             'cancelNote' => ['nullable', 'string', 'max:1000'],
         ]);
 
-        if (!$this->canCancel) {
-            $this->dispatch('notify', title: 'Action Not Allowed', variant: 'danger', message: 'This quotation cannot be cancelled.');
+        if (! $this->canCancel) {
+            $this->dispatch('notify', variant: 'danger', message: 'This quotation cannot be cancelled');
+
             return;
         }
 
@@ -188,82 +198,52 @@ new #[Title('Quotation Details')] class extends Component {
             $this->quote->refresh();
             $this->cancelNote = '';
             $this->modal('cancel-quote')->close();
-            $this->dispatch('notify', title: 'Quotation Cancelled', variant: 'warning', message: 'Quotation cancelled.');
-        } catch (\Throwable $e) {
-            $this->dispatch('notify', title: 'Cancellation Failed', variant: 'danger', message: 'Something went wrong. Please try again.');
+            $this->dispatch('notify', variant: 'warning', message: 'Quotation cancelled');
+        } catch (Throwable $e) {
+            $this->dispatch('notify', variant: 'danger', message: 'Something went wrong. Please try again');
         }
     }
 
     // =========================================================================
-    //  PREVIEW QUOTATION PDF (stream inline)
+    //  PREVIEW DOCUMENT (pending — saves draft then regenerates PDF)
     // =========================================================================
 
-    public function previewPdf(): mixed
+    public function previewDocument(): void
     {
-        $quote = $this->quote;
+        $settings = app(QuotationSettings::class);
 
-        if (!$quote->document_path) {
-            $path = app(DocumentService::class)->generateQuotation($quote);
+        $this->validate([
+            'quotedShipping' => ['nullable', 'numeric', 'min:0'],
+            'validityDays' => ['required', 'integer', "min:{$settings->min_validity_days}", "max:{$settings->max_validity_days}"],
+            'adminNote' => ['nullable', 'string', 'max:1000'],
+            'itemPrices.*' => ['nullable', 'numeric', 'min:0'],
+        ]);
 
-            if (!$path) {
-                $this->dispatch('notify', title: 'Generation Failed', variant: 'danger', message: 'Unable to generate PDF. Please try again.');
-                return null;
+        try {
+            if ($this->canPrice) {
+                app(QuotationService::class)->prepare($this->quote, [
+                    'shipping' => $this->quotedShipping ?: 0,
+                    'validity_days' => $this->validityDays,
+                    'note' => $this->adminNote ?: null,
+                    'item_prices' => $this->itemPrices,
+                ]);
+                $this->quote->refresh();
             }
 
-            $quote->refresh();
-        }
+            $path = app(DocumentService::class)->generateQuotation($this->quote);
 
-        $response = app(DocumentService::class)->stream($quote->document_path, 'Quotation');
+            if (! $path) {
+                $this->dispatch('notify', variant: 'danger', message: 'Unable to generate preview. Please try again');
 
-        if (!$response) {
-            $path = app(DocumentService::class)->generateQuotation($quote);
-
-            if (!$path) {
-                $this->dispatch('notify', title: 'PDF Not Found', variant: 'danger', message: 'PDF not found. Please try again.');
-                return null;
+                return;
             }
 
-            $quote->refresh();
-            return app(DocumentService::class)->stream($quote->document_path, 'Quotation');
+            $this->quote->refresh();
+
+            $this->dispatch('open-pdf', url: route('admin.quotations.pdf', $this->quote));
+        } catch (Throwable $e) {
+            $this->dispatch('notify', variant: 'danger', message: 'Something went wrong generating the preview');
         }
-
-        return $response;
-    }
-
-    // =========================================================================
-    //  DOWNLOAD QUOTATION PDF
-    // =========================================================================
-
-    public function downloadPdf(): mixed
-    {
-        $quote = $this->quote;
-
-        if (!$quote->document_path) {
-            $path = app(DocumentService::class)->generateQuotation($quote);
-
-            if (!$path) {
-                $this->dispatch('notify', title: 'Generation Failed', variant: 'danger', message: 'Unable to generate PDF. Please try again.');
-                return null;
-            }
-
-            $quote->refresh();
-        }
-
-        $response = app(DocumentService::class)->serve($quote->document_path, 'Quotation');
-
-        if (!$response) {
-            $path = app(DocumentService::class)->generateQuotation($quote);
-
-            if (!$path) {
-                $this->dispatch('notify', title: 'PDF Not Found', variant: 'danger', message: 'PDF not found. Please try again.');
-                return null;
-            }
-
-            $quote->refresh();
-            return app(DocumentService::class)->serve($quote->document_path, 'Quotation');
-        }
-
-        return $response;
     }
 };
 ?>
@@ -276,11 +256,12 @@ new #[Title('Quotation Details')] class extends Component {
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
         <div>
             @push('breadcrumbs')
-    <flux:breadcrumbs><flux:breadcrumbs.item :href="route('admin.quotations.index')" wire:navigate>Quotations
-                </flux:breadcrumbs.item>
-                <flux:breadcrumbs.item>{{ $quote->reference }}</flux:breadcrumbs.item>
-            </flux:breadcrumbs>
-@endpush
+                <flux:breadcrumbs>
+                    <flux:breadcrumbs.item :href="route('admin.quotations.index')" wire:navigate>Quotations
+                    </flux:breadcrumbs.item>
+                    <flux:breadcrumbs.item>{{ $quote->reference }}</flux:breadcrumbs.item>
+                </flux:breadcrumbs>
+            @endpush
 
             <div class="flex items-center gap-3 flex-wrap">
                 <flux:heading size="xl" class="font-bold tracking-tight">
@@ -294,41 +275,35 @@ new #[Title('Quotation Details')] class extends Component {
 
             <flux:text class="mt-1 flex items-center gap-2">
                 <flux:icon name="calendar" class="size-4 text-zinc-400" />
-                Submitted on {{ $quote->created_at->format('M d, Y') }} at {{ $quote->created_at->format('g:i A') }}
+                Submitted {{ $quote->created_at->format('M d, Y') }} at {{ $quote->created_at->format('g:i A') }}
             </flux:text>
         </div>
 
-        {{-- Primary actions --}}
-        <div class="flex items-center gap-3 flex-wrap">
-            @if ($quote->document_path)
-                <flux:button variant="outline" icon="eye" size="sm" wire:click="previewPdf"
-                    class="cursor-pointer">
-                    <span wire:loading.remove wire:target="previewPdf">Preview PDF</span>
-                    <span wire:loading wire:target="previewPdf">Loading...</span>
-                </flux:button>
-                <flux:button variant="outline" icon="arrow-down-tray" size="sm" wire:click="downloadPdf"
-                    class="cursor-pointer">
-                    <span wire:loading.remove wire:target="downloadPdf">Download</span>
-                    <span wire:loading wire:target="downloadPdf">Downloading...</span>
-                </flux:button>
-            @elseif ($quote->isSent())
-                <flux:button variant="outline" icon="document-text" size="sm" wire:click="previewPdf"
-                    class="cursor-pointer">
-                    <span wire:loading.remove wire:target="previewPdf">Generate & Preview</span>
-                    <span wire:loading wire:target="previewPdf">Generating...</span>
-                </flux:button>
-            @endif
+        {{-- Header actions --}}
+        <div class="flex items-center gap-2 flex-wrap">
+
+            <flux:button variant="outline" icon="document-magnifying-glass" size="sm" wire:click="previewDocument"
+                class="cursor-pointer">
+                <span wire:loading.remove wire:target="previewDocument">Preview Document</span>
+                <span wire:loading wire:target="previewDocument">Opening...</span>
+            </flux:button>
 
             @if ($this->canPrice)
                 <flux:modal.trigger name="upload-sap-pdf">
                     <flux:button size="sm" variant="outline" icon="arrow-up-tray" class="cursor-pointer">
-                        Upload Quote
+                        Upload PDF
                     </flux:button>
                 </flux:modal.trigger>
 
-                <flux:modal.trigger name="price-quote">
-                    <flux:button size="sm" variant="primary" icon="pencil-square" class="cursor-pointer">
-                        Price & Send Quote
+                <flux:button size="sm" variant="outline" icon="bookmark" wire:click="saveDraft"
+                    class="cursor-pointer">
+                    <span wire:loading.remove wire:target="saveDraft">Save Draft</span>
+                    <span wire:loading wire:target="saveDraft">Saving...</span>
+                </flux:button>
+
+                <flux:modal.trigger name="confirm-send">
+                    <flux:button size="sm" variant="primary" icon="paper-airplane" class="cursor-pointer">
+                        Send to Customer
                     </flux:button>
                 </flux:modal.trigger>
             @endif
@@ -340,6 +315,7 @@ new #[Title('Quotation Details')] class extends Component {
                     </flux:button>
                 </flux:modal.trigger>
             @endif
+
         </div>
     </div>
 
@@ -347,28 +323,25 @@ new #[Title('Quotation Details')] class extends Component {
     {{-- CONTEXT ALERTS                                                      --}}
     {{-- ================================================================== --}}
 
-    {{-- Awaiting admin pricing --}}
     @if ($quote->isPending())
         <flux:callout icon="clock" variant="warning" class="mb-5">
-            <flux:heading size="sm" class="font-medium!">This quotation is awaiting your pricing</flux:heading>
+            <flux:heading size="sm" class="font-medium!">Awaiting your pricing</flux:heading>
             <flux:subheading class="mt-0.5">
-                Review the items and delivery preferences below, then click
-                <strong>Price & Send Quote</strong> to notify the customer.
+                Fill in the quoted prices below and click <strong>Send to Customer</strong> when ready.
             </flux:subheading>
         </flux:callout>
     @endif
 
-    {{-- Expiring soon --}}
-    @if ($quote->isSent() && $quote->expires_at?->diffInHours(now()) <= 48 && !$quote->expires_at?->isPast())
+    @if ($quote->isSent() && $quote->expires_at?->diffInHours(now()) <= 48 && ! $quote->expires_at?->isPast())
         <flux:callout icon="exclamation-triangle" variant="danger" class="mb-5">
             <flux:heading size="sm" class="font-medium!">
-                This quotation expires {{ $quote->expires_at->diffForHumans() }}
+                Expires {{ $quote->expires_at->diffForHumans() }}
             </flux:heading>
-            <flux:subheading class="mt-0.5">Follow up with the customer to ensure they have seen the quote.</flux:subheading>
+            <flux:subheading class="mt-0.5">Follow up with the customer — they may not have seen the quote yet.
+            </flux:subheading>
         </flux:callout>
     @endif
 
-    {{-- Converted to sales order --}}
     @if ($quote->order)
         <flux:callout icon="check-circle" variant="success" class="mb-5">
             <div class="flex items-center justify-between w-full">
@@ -384,45 +357,57 @@ new #[Title('Quotation Details')] class extends Component {
         </flux:callout>
     @endif
 
-
     {{-- ================================================================== --}}
     {{-- MAIN LAYOUT                                                         --}}
     {{-- ================================================================== --}}
-    <div class="grid grid-cols-1 lg:grid-cols-4 gap-5 mt-6">
+    <div class="grid grid-cols-1 lg:grid-cols-4 gap-5">
 
-        {{-- ── Left: Main content (3 cols) ── --}}
+        {{-- ── Left: main content ── --}}
         <div class="lg:col-span-3 space-y-5">
 
-            {{-- Items table --}}
+            {{-- ── ITEMS TABLE ── --}}
             <flux:card
                 class="p-0 overflow-hidden **:data-flux-columns:bg-zinc-50 dark:**:data-flux-columns:bg-zinc-800">
-                <div class="px-6 py-2 border-b border-zinc-200 dark:border-zinc-600 flex justify-between items-center">
+                <div
+                    class="px-6 py-3 border-b border-zinc-200 dark:border-zinc-600 flex items-center justify-between">
                     <flux:heading level="3" class="font-semibold">Items</flux:heading>
                     <flux:badge variant="outline">{{ $quote->items->sum('quantity') }} items</flux:badge>
                 </div>
 
                 <flux:table>
                     <flux:table.columns>
-                        <flux:table.column class="ps-6!">Product</flux:table.column>
+                        <flux:table.column class="ps-6! w-[40%]">Product</flux:table.column>
                         <flux:table.column>SKU</flux:table.column>
                         <flux:table.column>Qty</flux:table.column>
-                        <flux:table.column>Original Price</flux:table.column>
-                        <flux:table.column>Quoted Price</flux:table.column>
-                        <flux:table.column>Total</flux:table.column>
+                        <flux:table.column>List Price</flux:table.column>
+                        <flux:table.column>
+                            @if ($this->canPrice)
+                                <span class="text-primary">Quoted Price</span>
+                            @else
+                                Quoted Price
+                            @endif
+                        </flux:table.column>
+                        <flux:table.column>Line Total</flux:table.column>
                     </flux:table.columns>
 
                     <flux:table.rows>
                         @forelse ($quote->items as $item)
+                            @php
+                                $lineTotal =
+                                    (float) str_replace(',', '', $itemPrices[$item->id] ?? '0') * $item->quantity;
+                            @endphp
                             <flux:table.row :key="$item->id">
+
                                 <flux:table.cell class="ps-6!">
                                     <div class="flex items-center gap-3">
-                                        <div class="shrink-0 w-12 h-12 rounded border overflow-hidden bg-zinc-50">
+                                        <div class="shrink-0 w-10 h-10 rounded border overflow-hidden bg-zinc-50">
                                             @if ($item->productImageUrl())
                                                 <img src="{{ asset($item->productImageUrl()) }}"
                                                     alt="{{ $item->productName() }}"
                                                     class="w-full h-full object-cover" />
                                             @else
-                                                <flux:icon name="photo" class="w-full h-full p-2 text-zinc-300" />
+                                                <flux:icon name="photo"
+                                                    class="w-full h-full p-2 text-zinc-300" />
                                             @endif
                                         </div>
                                         <div>
@@ -436,24 +421,49 @@ new #[Title('Quotation Details')] class extends Component {
                                         </div>
                                     </div>
                                 </flux:table.cell>
+
                                 <flux:table.cell>
                                     <flux:text class="text-xs text-zinc-400">{{ $item->productSku() }}</flux:text>
                                 </flux:table.cell>
+
                                 <flux:table.cell>{{ $item->quantity }}</flux:table.cell>
-                                <flux:table.cell>{{ format_currency($item->original_price) }}</flux:table.cell>
+
                                 <flux:table.cell>
-                                    @if ($item->quoted_price_cents)
-                                        <span
-                                            class="{{ $item->hasCustomPrice() ? 'text-blue-600 dark:text-blue-400 font-medium' : '' }}">
-                                            {{ format_currency($item->quoted_price) }}
-                                        </span>
+                                    <flux:text class="text-sm text-zinc-400">
+                                        {{ format_currency($item->original_price) }}
+                                    </flux:text>
+                                </flux:table.cell>
+
+                                <flux:table.cell>
+                                    @if ($this->canPrice)
+                                        <div class="w-32">
+                                            <input type="number" step="0.01" min="0"
+                                                wire:model.live.debounce.400ms="itemPrices.{{ $item->id }}"
+                                                placeholder="{{ number_format($item->original_price, 2) }}"
+                                                class="w-full border border-zinc-200 dark:border-zinc-600 bg-white dark:bg-zinc-900 px-2.5 py-1.5 text-sm rounded focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors" />
+                                        </div>
                                     @else
-                                        <span class="text-zinc-400">—</span>
+                                        @if ($item->quoted_price_cents)
+                                            <span
+                                                class="{{ $item->hasCustomPrice() ? 'text-blue-600 dark:text-blue-400 font-medium' : '' }}">
+                                                {{ format_currency($item->quoted_price) }}
+                                            </span>
+                                        @else
+                                            <span class="text-zinc-400">—</span>
+                                        @endif
                                     @endif
                                 </flux:table.cell>
+
                                 <flux:table.cell class="font-medium">
-                                    {{ format_currency($item->effective_price * $item->quantity) }}
+                                    @if ($this->canPrice)
+                                        <span wire:key="line-{{ $item->id }}" class="tabular-nums">
+                                            {{ format_currency($lineTotal) }}
+                                        </span>
+                                    @else
+                                        {{ format_currency($item->effective_price * $item->quantity) }}
+                                    @endif
                                 </flux:table.cell>
+
                             </flux:table.row>
                         @empty
                             <flux:table.row>
@@ -471,48 +481,81 @@ new #[Title('Quotation Details')] class extends Component {
                         <div class="w-full max-w-xs space-y-2">
                             <div class="flex justify-between text-sm">
                                 <flux:text>Subtotal</flux:text>
-                                <flux:text class="font-medium">{{ format_currency($quote->subtotal) }}</flux:text>
+                                <flux:text class="font-medium tabular-nums">
+                                    {{ $this->canPrice ? format_currency($this->quotedSubtotal) : format_currency($quote->subtotal) }}
+                                </flux:text>
                             </div>
                             @if ($quote->discount > 0)
                                 <div class="flex justify-between text-sm">
                                     <flux:text>Discount</flux:text>
-                                    <flux:text class="font-medium text-green-600">
+                                    <flux:text class="font-medium text-green-600 tabular-nums">
                                         − {{ format_currency($quote->discount) }}
                                     </flux:text>
                                 </div>
                             @endif
-                            <div class="flex justify-between text-sm">
+                            <div class="flex justify-between items-center text-sm">
                                 <flux:text>Shipping</flux:text>
-                                <flux:text class="font-medium">
-                                    @if ($quote->shipping_cents === 0 && !$quote->status->isTerminal())
-                                        <span class="text-amber-500">TBD</span>
-                                    @elseif ($quote->shipping_cents === 0)
-                                        <span class="text-green-600">Free</span>
-                                    @else
-                                        {{ format_currency($quote->shipping) }}
-                                    @endif
-                                </flux:text>
+                                @if ($this->canPrice)
+                                    <input type="number" step="0.01" min="0"
+                                        wire:model.live.debounce.400ms="quotedShipping"
+                                        placeholder="0.00"
+                                        class="w-28 border border-zinc-200 dark:border-zinc-600 bg-white dark:bg-zinc-900 px-2.5 py-1 text-sm text-right rounded focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors tabular-nums" />
+                                @else
+                                    <flux:text class="font-medium tabular-nums">
+                                        @if ($quote->shipping_cents === 0 && ! $quote->status->isTerminal())
+                                            <span class="text-amber-500">TBD</span>
+                                        @elseif ($quote->shipping_cents === 0)
+                                            <span class="text-green-600">Free</span>
+                                        @else
+                                            {{ format_currency($quote->shipping) }}
+                                        @endif
+                                    </flux:text>
+                                @endif
                             </div>
-                            <div class="flex justify-between pt-2 border-t border-zinc-200 dark:border-zinc-600">
+                            <div
+                                class="flex justify-between pt-2 border-t border-zinc-200 dark:border-zinc-600">
                                 <flux:heading size="lg">Total</flux:heading>
-                                <div class="text-right">
-                                    <flux:heading size="lg" class="font-bold">
-                                        {{ format_currency($quote->total) }}
-                                    </flux:heading>
-                                    @if ($quote->shipping_cents === 0 && !$quote->status->isTerminal())
-                                        <p class="text-xs text-amber-500 font-normal">Excludes shipping</p>
-                                    @endif
-                                </div>
+                                <flux:heading size="lg" class="font-bold tabular-nums">
+                                    {{ $this->canPrice ? format_currency($this->quotedTotal) : format_currency($quote->total) }}
+                                </flux:heading>
                             </div>
                         </div>
                     </div>
                 </div>
             </flux:card>
 
+            {{-- ── PRICING CONFIGURATION (pending only) ── --}}
+            @if ($this->canPrice)
+                <flux:card class="p-6">
+                    <flux:heading level="3" class="font-semibold mb-5">Quote Configuration</flux:heading>
 
-            {{-- Timeline --}}
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                        <flux:field>
+                            <flux:label>Validity Period (days)</flux:label>
+                            <flux:input type="number"
+                                min="{{ app(QuotationSettings::class)->min_validity_days }}"
+                                max="{{ app(QuotationSettings::class)->max_validity_days }}"
+                                wire:model="validityDays" />
+                            <flux:description>Default from settings. Override per quote if needed.</flux:description>
+                        </flux:field>
+                    </div>
+
+                    <div class="mt-5">
+                        <flux:field>
+                            <flux:label>Note to Customer <span
+                                    class="text-zinc-400 font-normal">(optional)</span></flux:label>
+                            <flux:textarea wire:model="adminNote"
+                                placeholder="Additional terms, installation notes, payment instructions..." rows="3" />
+                        </flux:field>
+                    </div>
+                </flux:card>
+
+            @endif
+
+            {{-- ── TIMELINE ── --}}
             <flux:card class="p-0">
-                <div class="px-5 py-3 border-b border-zinc-200 dark:border-zinc-600 flex items-center justify-between">
+                <div
+                    class="px-5 py-3 border-b border-zinc-200 dark:border-zinc-600 flex items-center justify-between">
                     <flux:heading>Quotation Timeline</flux:heading>
                     <flux:badge :color="$quote->status->color()" variant="solid" size="sm">
                         {{ $quote->status->label() }}
@@ -528,7 +571,6 @@ new #[Title('Quotation Details')] class extends Component {
                         $isTerminal = $isCancelled || $isRejected || $isExpired;
                         $histories = $quote->statusHistories->keyBy('to_status');
 
-                        // Find the current active step (last reached step)
                         $currentStepIndex = -1;
                         foreach ($mainPath as $idx => $step) {
                             if ($histories->has($step->value)) {
@@ -542,15 +584,15 @@ new #[Title('Quotation Details')] class extends Component {
                             @php
                                 $history = $histories->get($step->value);
                                 $reached = (bool) $history;
-                                $isActive = $index === $currentStepIndex && !$isTerminal;
+                                $isActive = $index === $currentStepIndex && ! $isTerminal;
                                 $isLast = $index === count($mainPath) - 1;
                                 $next = $mainPath[$index + 1] ?? null;
                                 $nextReached = $next && $histories->has($next->value);
-                                $dimmed = $isTerminal && !$reached;
+                                $dimmed = $isTerminal && ! $reached;
                             @endphp
 
                             <div class="relative flex gap-4 {{ $isLast ? 'pb-0' : 'pb-6' }}">
-                                @if (!$isLast)
+                                @if (! $isLast)
                                     <div @class([
                                         'absolute left-4 top-8 bottom-0 w-px z-0',
                                         'bg-green-500' => $nextReached,
@@ -582,8 +624,7 @@ new #[Title('Quotation Details')] class extends Component {
 
                                         @if ($step === QuoteStatus::SENT && $quote->expires_at && $reached)
                                             <flux:text
-                                                class="text-xs mt-0.5
-                                                {{ $quote->expires_at->isPast() ? 'text-rose-500' : 'text-zinc-400' }}">
+                                                class="text-xs mt-0.5 {{ $quote->expires_at->isPast() ? 'text-rose-500' : 'text-zinc-400' }}">
                                                 {{ $quote->expires_at->isPast() ? 'Expired' : 'Expires' }}
                                                 {{ $quote->expires_at->diffForHumans() }}
                                                 ({{ $quote->expires_at->format('M d, Y') }})
@@ -614,7 +655,6 @@ new #[Title('Quotation Details')] class extends Component {
                             </div>
                         @endforeach
 
-                        {{-- Branch: Converted --}}
                         @if ($quote->order)
                             <div class="relative flex gap-4 pt-6">
                                 <div class="absolute left-4 top-0 h-6 w-px bg-green-500 z-0"></div>
@@ -633,7 +673,6 @@ new #[Title('Quotation Details')] class extends Component {
                             </div>
                         @endif
 
-                        {{-- Branch: Rejected --}}
                         @if ($isRejected)
                             @php $h = $histories->get(QuoteStatus::REJECTED->value); @endphp
                             <div class="relative flex gap-4 pt-6">
@@ -665,7 +704,6 @@ new #[Title('Quotation Details')] class extends Component {
                             </div>
                         @endif
 
-                        {{-- Branch: Expired --}}
                         @if ($isExpired)
                             @php $h = $histories->get(QuoteStatus::EXPIRED->value); @endphp
                             <div class="relative flex gap-4 pt-6">
@@ -690,7 +728,6 @@ new #[Title('Quotation Details')] class extends Component {
                             </div>
                         @endif
 
-                        {{-- Branch: Cancelled --}}
                         @if ($isCancelled)
                             @php $h = $histories->get(QuoteStatus::CANCELLED->value); @endphp
                             <div class="relative flex gap-4 pt-6">
@@ -726,8 +763,7 @@ new #[Title('Quotation Details')] class extends Component {
             </flux:card>
         </div>
 
-
-        {{-- ── Right: Sidebar (1 col) ── --}}
+        {{-- ── Right: Sidebar ── --}}
         <div class="space-y-5">
 
             {{-- Customer info --}}
@@ -753,7 +789,8 @@ new #[Title('Quotation Details')] class extends Component {
                         @if ($quote->customerEmail())
                             <div class="flex items-center gap-2">
                                 <flux:icon name="envelope" class="size-4 text-zinc-400" />
-                                <flux:link href="mailto:{{ $quote->customerEmail() }}">{{ $quote->customerEmail() }}
+                                <flux:link href="mailto:{{ $quote->customerEmail() }}">
+                                    {{ $quote->customerEmail() }}
                                 </flux:link>
                             </div>
                         @endif
@@ -767,33 +804,40 @@ new #[Title('Quotation Details')] class extends Component {
 
                     @if ($quote->user)
                         <flux:button size="sm" variant="ghost" icon="arrow-top-right-on-square"
-                            :href="route('admin.customers.show', $quote->user)" wire:navigate class="w-full">
+                            :href="route('admin.customers.show', $quote->user)" wire:navigate
+                            class="w-full">
                             View Customer
                         </flux:button>
                     @endif
                 </div>
             </flux:card>
 
-            {{-- Delivery preferences --}}
+            {{-- Delivery preference --}}
             <flux:card class="p-0">
                 <div class="px-5 py-3 border-b border-zinc-200 dark:border-zinc-600">
-                    <flux:heading>Delivery Preferences</flux:heading>
+                    <flux:heading>Fulfilment</flux:heading>
                 </div>
                 <div class="p-5 space-y-3 text-sm">
-                    @if ($quote->preferred_county || $quote->preferred_area)
+                    @if (($quote->delivery_type ?? 'delivery') === 'pickup')
+                        <div class="flex items-center gap-2">
+                            <flux:icon name="building-storefront" class="size-4 text-zinc-400" />
+                            <flux:text class="font-medium">In-store pickup</flux:text>
+                        </div>
+                        <flux:text class="text-xs text-zinc-400">Customer will collect from your warehouse.</flux:text>
+                    @else
                         <div class="flex items-start gap-2">
                             <flux:icon name="map-pin" class="size-4 text-zinc-400 mt-0.5" />
                             <div>
-                                @if ($quote->preferred_area)
-                                    <flux:text>{{ $quote->preferred_area }}</flux:text>
-                                @endif
-                                @if ($quote->preferred_county)
-                                    <flux:text class="text-zinc-400">{{ $quote->preferred_county }}</flux:text>
+                                <flux:text class="font-medium mb-0.5">Deliver to location</flux:text>
+                                @if ($quote->preferred_area || $quote->preferred_county)
+                                    <flux:text class="text-zinc-500">
+                                        {{ implode(', ', array_filter([$quote->preferred_area, $quote->preferred_county])) }}
+                                    </flux:text>
+                                @else
+                                    <flux:text class="text-zinc-400 text-xs">No location specified</flux:text>
                                 @endif
                             </div>
                         </div>
-                    @else
-                        <flux:text class="text-zinc-400">No delivery preferences specified.</flux:text>
                     @endif
                 </div>
             </flux:card>
@@ -810,8 +854,8 @@ new #[Title('Quotation Details')] class extends Component {
                 </flux:card>
             @endif
 
-            {{-- Admin notes --}}
-            @if ($quote->admin_notes)
+            {{-- Admin notes (display only when not pricing) --}}
+            @if (! $this->canPrice && $quote->admin_notes)
                 <flux:card class="p-0">
                     <div class="px-5 py-3 border-b border-zinc-200 dark:border-zinc-600">
                         <flux:heading>Admin Notes</flux:heading>
@@ -821,6 +865,7 @@ new #[Title('Quotation Details')] class extends Component {
                     </div>
                 </flux:card>
             @endif
+
         </div>
     </div>
 
@@ -829,80 +874,38 @@ new #[Title('Quotation Details')] class extends Component {
     {{-- MODALS                                                              --}}
     {{-- ================================================================== --}}
 
-    {{-- Price & Send Quote Modal --}}
-    <flux:modal name="price-quote" class="max-w-2xl">
-        <div class="space-y-6">
+    {{-- Confirm send --}}
+    <flux:modal name="confirm-send" class="max-w-sm">
+        <div class="space-y-5">
             <div>
-                <flux:heading size="lg">Price & Send Quote</flux:heading>
-                <flux:text class="mt-1">Set item prices and shipping, then send the quotation to the customer.
+                <flux:heading size="lg">Send Quotation?</flux:heading>
+                <flux:text class="mt-1">
+                    This will email the priced quote to
+                    <strong>{{ $quote->customerName() }}</strong> and mark it as sent. The quote will be valid for
+                    <strong>{{ $validityDays }} {{ Str::plural('day', $validityDays) }}</strong>.
                 </flux:text>
             </div>
 
-            <form wire:submit="sendQuote" class="space-y-5">
-                {{-- Item prices --}}
-                <div class="space-y-3">
-                    <flux:label>Item Prices</flux:label>
-                    @foreach ($quote->items as $item)
-                        <div class="flex items-center gap-4 p-3 bg-zinc-50 dark:bg-zinc-800 rounded-lg">
-                            <div class="flex-1 min-w-0">
-                                <flux:text class="text-sm font-medium truncate">{{ $item->productName() }}</flux:text>
-                                <flux:text class="text-xs text-zinc-400">Qty: {{ $item->quantity }} × Original:
-                                    {{ format_currency($item->original_price) }}</flux:text>
-                            </div>
-                            <div class="w-32">
-                                <flux:input type="number" step="0.01" min="0"
-                                    wire:model.live.debounce.300ms="itemPrices.{{ $item->id }}"
-                                    placeholder="Unit price" />
-                            </div>
-                        </div>
-                    @endforeach
-                </div>
-
-                {{-- Shipping --}}
-                <flux:input type="number" step="0.01" min="0"
-                    wire:model.live.debounce.300ms="quotedShipping"
-                    label="Shipping Cost ({{ get_currency_symbol() }})" placeholder="0.00" />
-
-                {{-- Validity --}}
-                <flux:input type="number" min="1" max="90" wire:model="validityDays"
-                    label="Validity Period (days)" description="How long the customer has to accept this quote." />
-
-                {{-- Note --}}
-                <flux:textarea wire:model="note" label="Note to Customer (optional)"
-                    placeholder="Any additional information for the customer..." rows="3" />
-
-                {{-- Live total preview --}}
-                <div class="p-4 bg-zinc-100 dark:bg-zinc-800 rounded-lg">
-                    <div class="flex justify-between items-center">
-                        <flux:text class="font-medium">Quoted Total</flux:text>
-                        <flux:heading size="lg" class="font-bold">{{ format_currency($this->quotedTotal) }}
-                        </flux:heading>
-                    </div>
-                </div>
-
-                <div class="flex justify-end gap-3 pt-4">
-                    <flux:modal.close>
-                        <flux:button variant="ghost">Cancel</flux:button>
-                    </flux:modal.close>
-                    <flux:button wire:click="saveQuote" variant="outline" icon="bookmark">
-                        <span wire:loading.remove wire:target="saveQuote">Save Only</span>
-                        <span wire:loading wire:target="saveQuote">Saving...</span>
-                    </flux:button>
-                    <flux:button type="submit" variant="primary" icon="paper-airplane">
-                        <span wire:loading.remove wire:target="sendQuote">Send Quote</span>
-                        <span wire:loading wire:target="sendQuote">Sending...</span>
-                    </flux:button>
-                </div>
-            </form>
+            <div class="flex justify-end gap-3">
+                <flux:modal.close>
+                    <flux:button variant="ghost">Go Back</flux:button>
+                </flux:modal.close>
+                <flux:button variant="primary" icon="paper-airplane" wire:click="sendQuote"
+                    class="cursor-pointer">
+                    <span wire:loading.remove wire:target="sendQuote">Confirm & Send</span>
+                    <span wire:loading wire:target="sendQuote">Sending...</span>
+                </flux:button>
+            </div>
         </div>
     </flux:modal>
 
-    {{-- Upload SAP PDF Modal --}}
+    {{-- Upload SAP PDF --}}
     <flux:modal name="upload-sap-pdf" class="max-w-md">
         <div class="space-y-6">
             <div>
-                <flux:heading size="lg">Upload Quotation</flux:heading>
-                <flux:text class="mt-1">Upload a quotation PDF. This will replace any existing document.</flux:text>
+                <flux:heading size="lg">Upload Quotation PDF</flux:heading>
+                <flux:text class="mt-1">Upload a prepared quotation PDF. This replaces any existing document.
+                </flux:text>
             </div>
 
             <form wire:submit="uploadSapPdf" class="space-y-5">
@@ -910,12 +913,9 @@ new #[Title('Quotation Details')] class extends Component {
                     <flux:label>PDF File</flux:label>
                     <input type="file" wire:model="sapPdfUpload" accept=".pdf"
                         class="mt-1 block w-full text-sm text-zinc-500
-                            file:mr-4 file:py-2 file:px-4
-                            file:rounded-md file:border-0
-                            file:text-sm file:font-medium
-                            file:bg-zinc-100 file:text-zinc-700
-                            hover:file:bg-zinc-200
-                            dark:file:bg-zinc-800 dark:file:text-zinc-300
+                            file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0
+                            file:text-sm file:font-medium file:bg-zinc-100 file:text-zinc-700
+                            hover:file:bg-zinc-200 dark:file:bg-zinc-800 dark:file:text-zinc-300
                             dark:hover:file:bg-zinc-700" />
                     @error('sapPdfUpload')
                         <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
@@ -934,11 +934,12 @@ new #[Title('Quotation Details')] class extends Component {
                     </div>
                 @endif
 
-                <div class="flex justify-end gap-3 pt-4">
+                <div class="flex justify-end gap-3 pt-2">
                     <flux:modal.close>
                         <flux:button variant="ghost">Cancel</flux:button>
                     </flux:modal.close>
-                    <flux:button type="submit" variant="primary" icon="arrow-up-tray" :disabled="!$sapPdfUpload">
+                    <flux:button type="submit" variant="primary" icon="arrow-up-tray"
+                        :disabled="!$sapPdfUpload">
                         <span wire:loading.remove wire:target="uploadSapPdf">Upload PDF</span>
                         <span wire:loading wire:target="uploadSapPdf">Uploading...</span>
                     </flux:button>
@@ -947,12 +948,12 @@ new #[Title('Quotation Details')] class extends Component {
         </div>
     </flux:modal>
 
-    {{-- Cancel Quote Modal --}}
+    {{-- Cancel --}}
     <flux:modal name="cancel-quote" class="max-w-md">
         <div class="space-y-6">
             <div>
                 <flux:heading size="lg">Cancel Quotation</flux:heading>
-                <flux:text class="mt-1">Are you sure you want to cancel this quotation? This action cannot be undone.
+                <flux:text class="mt-1">This action cannot be undone. The customer will not be notified automatically.
                 </flux:text>
             </div>
 
@@ -960,7 +961,7 @@ new #[Title('Quotation Details')] class extends Component {
                 <flux:textarea wire:model="cancelNote" label="Reason (optional)"
                     placeholder="Why is this quotation being cancelled?" rows="3" />
 
-                <div class="flex justify-end gap-3 pt-4">
+                <div class="flex justify-end gap-3">
                     <flux:modal.close>
                         <flux:button variant="ghost">Keep Quote</flux:button>
                     </flux:modal.close>
@@ -972,4 +973,13 @@ new #[Title('Quotation Details')] class extends Component {
             </form>
         </div>
     </flux:modal>
+
 </div>
+
+@script
+<script>
+    $wire.on('open-pdf', ({ url }) => {
+        window.open(url, '_blank');
+    });
+</script>
+@endscript

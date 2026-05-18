@@ -150,38 +150,34 @@
                       </tr>
                     </thead>
                     <tbody>
-                      <tr>
-                        <td style="border-bottom-width: 1px; border-color: #f1f5f9; padding: 12px;">
-                          <div style="display: flex; align-items: center;">
-                            <div style="margin-right: 12px; height: 48px; width: 48px; border-radius: 6px; background-color: #f1f5f9;"> </div>
-                            <div>
-                              <p style="margin: 0; font-size: 14px; font-weight: 600; color: #1e293b;">Commercial
-                                Gas Range</p>
-                              <p style="margin: 0; font-size: 12px; color: #64748b;">6 Burners, 36-inch</p>
+                      @foreach ($quote->items as $item)
+                        @php
+                          $variantLabel = collect($item->product_snapshot['variant']['attributes'] ?? [])->map(fn ($v, $k) => "$k: $v")->join(', ');
+                          $subtitle = $variantLabel ?: ($item->productSku() ? 'SKU: ' . $item->productSku() : null);
+                        @endphp
+                        <tr>
+                          <td style="border-bottom-width: 1px; border-color: #f1f5f9; padding: 12px;">
+                            <div style="display: flex; align-items: center;">
+                              <div style="margin-right: 12px; height: 48px; width: 48px; border-radius: 6px; background-color: #f1f5f9; flex-shrink: 0;"></div>
+                              <div>
+                                <p style="margin: 0; font-size: 14px; font-weight: 600; color: #1e293b;">{{ $item->productName() }}</p>
+                                @if ($subtitle)
+                                  <p style="margin: 0; font-size: 12px; color: #64748b;">{{ $subtitle }}</p>
+                                @endif
+                              </div>
                             </div>
-                          </div>
-                        </td>
-                        <td style="border-bottom-width: 1px; border-color: #f1f5f9; padding: 12px; text-align: center; font-size: 14px; color: #475569;">
-                          1</td>
-                        <td style="border-bottom-width: 1px; border-color: #f1f5f9; padding: 12px; text-align: right; font-size: 14px; font-weight: 600; color: #1e293b;">
-                          KES 145,000</td>
-                      </tr>
-                      <tr>
-                        <td style="border-bottom-width: 1px; border-color: #f1f5f9; padding: 12px;">
-                          <div style="display: flex; align-items: center;">
-                            <div style="margin-right: 12px; height: 48px; width: 48px; border-radius: 6px; background-color: #f1f5f9;"></div>
-                            <div>
-                              <p style="margin: 0; font-size: 14px; font-weight: 600; color: #1e293b;">Stainless
-                                Steel Prep Table</p>
-                              <p style="margin: 0; font-size: 12px; color: #64748b;">48 x 30 inches</p>
-                            </div>
-                          </div>
-                        </td>
-                        <td style="border-bottom-width: 1px; border-color: #f1f5f9; padding: 12px; text-align: center; font-size: 14px; color: #475569;">
-                          2</td>
-                        <td style="border-bottom-width: 1px; border-color: #f1f5f9; padding: 12px; text-align: right; font-size: 14px; font-weight: 600; color: #1e293b;">
-                          KES 44,000</td>
-                      </tr>
+                          </td>
+                          <td style="border-bottom-width: 1px; border-color: #f1f5f9; padding: 12px; text-align: center; font-size: 14px; color: #475569;">
+                            {{ $item->quantity }}</td>
+                          <td style="border-bottom-width: 1px; border-color: #f1f5f9; padding: 12px; text-align: right; font-size: 14px; font-weight: 600; color: #1e293b;">
+                            @if ($item->total_cents > 0)
+                              {{ format_currency($item->total_cents / 100) }}
+                            @else
+                              <span style="color: #94a3b8; font-weight: 400; font-style: italic;">TBD</span>
+                            @endif
+                          </td>
+                        </tr>
+                      @endforeach
                     </tbody>
                   </table>
                   <table cellpadding="0" cellspacing="0" role="presentation" style="margin-bottom: 32px; width: 100%;">
@@ -189,25 +185,31 @@
                       <td style="width: 50%; vertical-align: bottom;">
                         <p style="margin: 0 0 4px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #94a3b8;">
                           Valid Until</p>
-                        <p style="margin: 0; font-size: 14px; font-weight: 600; color: #1e293b;">15 Nov 2026</p>
+                        <p style="margin: 0; font-size: 14px; font-weight: 600; color: #1e293b;">{{ $quote->expires_at?->format('d M Y') ?? 'TBD' }}</p>
                       </td>
                       <td style="width: 50%;">
                         <table cellpadding="0" cellspacing="0" role="presentation" style="width: 100%;">
                           <tr>
                             <td style="padding-top: 4px; padding-bottom: 4px; font-size: 14px; color: #475569;">Subtotal</td>
-                            <td style="padding-top: 4px; padding-bottom: 4px; text-align: right; font-size: 14px; font-weight: 600; color: #1e293b;">KES
-                              189,000</td>
+                            <td style="padding-top: 4px; padding-bottom: 4px; text-align: right; font-size: 14px; font-weight: 600; color: #1e293b;">{{ format_currency($quote->subtotal) }}</td>
                           </tr>
+                          @if ($quote->discount > 0)
                           <tr>
-                            <td style="padding-top: 4px; padding-bottom: 4px; font-size: 14px; color: #475569;">Tax (16%)</td>
-                            <td style="padding-top: 4px; padding-bottom: 4px; text-align: right; font-size: 14px; font-weight: 600; color: #1e293b;">KES
-                              30,240</td>
+                            <td style="padding-top: 4px; padding-bottom: 4px; font-size: 14px; color: #475569;">Discount</td>
+                            <td style="padding-top: 4px; padding-bottom: 4px; text-align: right; font-size: 14px; font-weight: 600; color: #16a34a;">− {{ format_currency($quote->discount) }}</td>
                           </tr>
+                          @endif
+                          @if ($quote->shipping > 0)
+                          <tr>
+                            <td style="padding-top: 4px; padding-bottom: 4px; font-size: 14px; color: #475569;">Shipping</td>
+                            <td style="padding-top: 4px; padding-bottom: 4px; text-align: right; font-size: 14px; font-weight: 600; color: #1e293b;">{{ format_currency($quote->shipping) }}</td>
+                          </tr>
+                          @endif
                           <tr>
                             <td style="border-top-width: 1px; border-color: #e2e8f0; padding-top: 12px; font-size: 16px; font-weight: 700; color: #1e293b;">
                               Total Quote Amount</td>
                             <td style="border-top-width: 1px; border-color: #e2e8f0; padding-top: 12px; text-align: right; font-size: 16px; font-weight: 700; color: #c02434;">
-                              KES 221,740</td>
+                              {{ format_currency($quote->total) }}</td>
                           </tr>
                         </table>
                       </td>
@@ -219,7 +221,7 @@
                   </p>
                   <div role="separator" style="line-height: 32px">&zwj;</div>
                   <div>
-                    <a href="https://sheffieldafrica.com" style="display: inline-block; text-decoration: none; padding: 16px 24px; font-size: 16px; line-height: 1; border-radius: 4px; background-color: #c02434; text-align: center; color: #fffffe;" class="hover-bg-_c93237">
+                    <a href="{{ $portalUrl }}" style="display: inline-block; text-decoration: none; padding: 16px 24px; font-size: 16px; line-height: 1; border-radius: 4px; background-color: #c02434; text-align: center; color: #fffffe;" class="hover-bg-_c93237">
                       <!--[if mso]><i style="mso-font-width: 150%; mso-text-raise: 31px;" hidden>&emsp;</i><![endif]-->
                       <span style="mso-text-raise: 16px">Review & Accept Quote</span>
                       <!--[if mso]><i hidden style="mso-font-width: 150%;">&emsp;&#8203;</i><![endif]-->
