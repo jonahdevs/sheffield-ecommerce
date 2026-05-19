@@ -73,8 +73,8 @@ new #[Layout('layouts.customer')] class extends Component {
     @if ($this->pendingProducts->isEmpty())
         <div class="text-center py-16 flex flex-col items-center justify-center">
             <flux:icon.star class="w-12 h-12 text-zinc-300 mb-4" />
-            <h4 class="text-lg font-medium text-zinc-900">{{ __('No pending reviews') }}</h4>
-            <p class="text-sm text-zinc-500 mt-1">{{ __('You have reviewed all your purchased products.') }}</p>
+            <h4 class="text-lg font-medium text-on-surface">{{ __('No pending reviews') }}</h4>
+            <p class="text-sm text-on-surface-variant mt-1">{{ __('You have reviewed all your purchased products.') }}</p>
             <flux:button variant="customer-primary" href="{{ route('customer.orders.index') }}" wire:navigate
                 class="mt-6">
                 {{ __('View Orders') }}
@@ -98,10 +98,10 @@ new #[Layout('layouts.customer')] class extends Component {
 
                     {{-- Product Info --}}
                     <div class="flex-1 min-w-0">
-                        <div class="text-[13px] font-bold text-zinc-950 mb-0.5 truncate">
+                        <div class="text-[13px] font-bold text-on-surface mb-0.5 truncate">
                             {{ $item->product?->name ?? ($item->product_snapshot['name'] ?? 'Product') }}
                         </div>
-                        <div class="text-[11px] text-zinc-500 mt-0.5">
+                        <div class="text-[11px] text-on-surface-variant mt-0.5">
                             {{ __('Order') }}: #{{ $item->order->reference }}
                         </div>
                     </div>

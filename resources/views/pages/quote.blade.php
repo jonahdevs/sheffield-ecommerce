@@ -140,7 +140,7 @@ new #[Defer] #[Layout('layouts.guest')] class extends Component {
 
             $area = $this->selectedArea ? Area::find($this->selectedArea)?->name : null;
 
-            $order = $quotationService->createFromBasket(app(QuoteBasketService::class), [
+            $quote = $quotationService->createFromBasket(app(QuoteBasketService::class), [
                 'delivery_type' => $this->deliveryType,
                 'preferred_county' => $this->deliveryType === 'pickup' ? null : $county,
                 'preferred_area' => $this->deliveryType === 'pickup' ? null : $area,
@@ -150,10 +150,19 @@ new #[Defer] #[Layout('layouts.guest')] class extends Component {
                 'phone' => $this->guestPhone,
             ]);
 
+            // QuotationService::createFromBasket() clears the basket internally,
+            // so unsetting the computed cache makes the empty-state render on the next pass.
             unset($this->basketItems, $this->isEmpty);
-            $this->dispatch('quote-basket-updated');
+            $this->customerNotes = '';
+            $this->submitting = false;
 
-            $this->redirect(route('checkout.quote-success', $order->reference), navigate: true);
+            $this->dispatch('quote-basket-updated');
+            $this->dispatch(
+                'notify',
+                title: 'Quote Request Sent',
+                variant: 'success',
+                message: "Reference {$quote->reference} — we'll email you the priced quotation shortly.",
+            );
         } catch (\Throwable $th) {
             $this->submitting = false;
             $this->dispatch('notify', title: 'Quote Submission Failed', variant: 'danger', message: $th->getMessage() ?: 'Unable to submit quote request. Please try again.');
@@ -336,7 +345,7 @@ new #[Defer] #[Layout('layouts.guest')] class extends Component {
 
                     {{-- Delivery type --}}
                     <div>
-                        <p class="text-[10px] font-bold tracking-widest uppercase text-zinc-500 mb-3">Fulfilment
+                        <p class="text-[10px] font-bold tracking-widest uppercase text-on-surface-variant mb-3">Fulfilment
                             Preference</p>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
 
@@ -359,8 +368,8 @@ new #[Defer] #[Layout('layouts.guest')] class extends Component {
                                     ])></div>
                                 </div>
                                 <div>
-                                    <p class="text-[13px] font-bold text-zinc-950 mb-0.5">Deliver to my location</p>
-                                    <p class="text-[11px] text-zinc-500 font-medium leading-snug">We'll price shipping
+                                    <p class="text-[13px] font-bold text-on-surface mb-0.5">Deliver to my location</p>
+                                    <p class="text-[11px] text-on-surface-variant font-medium leading-snug">We'll price shipping
                                         to your county & area</p>
                                 </div>
                             </label>
@@ -384,8 +393,8 @@ new #[Defer] #[Layout('layouts.guest')] class extends Component {
                                     ])></div>
                                 </div>
                                 <div>
-                                    <p class="text-[13px] font-bold text-zinc-950 mb-0.5">Pick up from our store</p>
-                                    <p class="text-[11px] text-zinc-500 font-medium leading-snug">Collect your items
+                                    <p class="text-[13px] font-bold text-on-surface mb-0.5">Pick up from our store</p>
+                                    <p class="text-[11px] text-on-surface-variant font-medium leading-snug">Collect your items
                                         directly from our warehouse</p>
                                 </div>
                             </label>
@@ -454,7 +463,7 @@ new #[Defer] #[Layout('layouts.guest')] class extends Component {
             <div class="col-span-12 lg:col-span-5 space-y-4 lg:sticky lg:top-44">
 
                 <div class="flex items-center justify-between">
-                    <p class="text-xs sm:text-sm font-medium text-zinc-700 dark:text-zinc-300">
+                    <p class="text-xs sm:text-sm font-medium text-on-surface">
                         {{ $this->basketItems->count() }}
                         {{ Str::plural('item', $this->basketItems->count()) }} in your quote
                     </p>
@@ -465,8 +474,8 @@ new #[Defer] #[Layout('layouts.guest')] class extends Component {
                     @if ($this->isEmpty)
                         <div class="flex flex-col items-center justify-center py-12 px-6 text-center">
                             <flux:icon.document-text class="w-12 h-12 text-zinc-300 stroke-1 mb-3" />
-                            <p class="text-sm font-medium text-zinc-700 mb-1">Your quote basket is empty</p>
-                            <p class="text-xs text-zinc-400 mb-4">Search and add products you'd like to request a quote
+                            <p class="text-sm font-medium text-on-surface mb-1">Your quote basket is empty</p>
+                            <p class="text-xs text-on-surface-variant mb-4">Search and add products you'd like to request a quote
                                 for.</p>
                             <flux:modal.trigger name="quote-product-picker">
                                 <flux:button size="customer" variant="customer-primary" icon="plus"
@@ -480,11 +489,11 @@ new #[Defer] #[Layout('layouts.guest')] class extends Component {
                             <thead class="bg-zinc-50">
                                 <tr>
                                     <th
-                                        class="px-6 py-4 text-left text-[11px] font-bold uppercase tracking-widest text-zinc-500 border-b border-zinc-200">
+                                        class="px-6 py-4 text-left text-[11px] font-bold uppercase tracking-widest text-on-surface-variant border-b border-zinc-200">
                                         Product
                                     </th>
                                     <th
-                                        class="px-4 py-4 text-center text-[11px] font-bold uppercase tracking-widest text-zinc-500 border-b border-zinc-200">
+                                        class="px-4 py-4 text-center text-[11px] font-bold uppercase tracking-widest text-on-surface-variant border-b border-zinc-200">
                                         Quantity
                                     </th>
                                 </tr>
@@ -523,29 +532,29 @@ new #[Defer] #[Layout('layouts.guest')] class extends Component {
                                                 <div class="flex-1 min-w-0">
                                                     @if ($product->brand)
                                                         <p
-                                                            class="text-[10px] font-bold uppercase tracking-widest text-zinc-400 mb-0.5">
+                                                            class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-0.5">
                                                             {{ $product->brand->name }}
                                                         </p>
                                                     @endif
                                                     <a href="{{ route('products.show', $product) }}" wire:navigate
-                                                        class="text-sm font-medium text-zinc-950 hover:underline block leading-snug mb-1">
+                                                        class="text-sm font-medium text-on-surface hover:underline block leading-snug mb-1">
                                                         {{ $product->name }}
                                                     </a>
                                                     @if ($variantAttrs->isNotEmpty())
                                                         <div class="flex flex-wrap gap-1 mb-1">
                                                             @foreach ($variantAttrs as $attrName => $attrValue)
                                                                 <span
-                                                                    class="text-[10px] text-zinc-500">{{ $attrName }}:
+                                                                    class="text-[10px] text-on-surface-variant">{{ $attrName }}:
                                                                     {{ $attrValue }}</span>
                                                             @endforeach
                                                         </div>
                                                     @elseif ($sku)
-                                                        <p class="text-[10px] text-zinc-400 mb-1">SKU:
+                                                        <p class="text-[10px] text-on-surface-variant mb-1">SKU:
                                                             {{ $sku }}</p>
                                                     @endif
                                                     <button type="button"
                                                         wire:click="removeItem({{ $item['product_id'] }}, {{ $item['variant_id'] ?? 'null' }})"
-                                                        class="text-[11px] text-zinc-500 hover:text-red-500 transition-colors cursor-pointer">
+                                                        class="text-[11px] text-on-surface-variant hover:text-red-500 transition-colors cursor-pointer">
                                                         <flux:icon.trash class="size-3 inline mr-0.5" />
                                                         Remove
                                                     </button>
@@ -560,7 +569,7 @@ new #[Defer] #[Layout('layouts.guest')] class extends Component {
                                                     class="flex items-center border border-zinc-200 rounded overflow-hidden">
                                                     <button type="button"
                                                         wire:click="updateQuantity({{ $item['product_id'] }}, {{ $item['variant_id'] ?? 'null' }}, {{ $item['quantity'] - 1 }})"
-                                                        class="w-8 h-8 flex items-center justify-center text-zinc-500 hover:text-zinc-700 hover:bg-zinc-50 transition-colors border-r border-zinc-200 cursor-pointer">
+                                                        class="w-8 h-8 flex items-center justify-center text-on-surface-variant hover:text-on-surface hover:bg-zinc-50 transition-colors border-r border-zinc-200 cursor-pointer">
                                                         <flux:icon.minus class="size-3" />
                                                     </button>
                                                     <span
@@ -569,7 +578,7 @@ new #[Defer] #[Layout('layouts.guest')] class extends Component {
                                                     </span>
                                                     <button type="button"
                                                         wire:click="updateQuantity({{ $item['product_id'] }}, {{ $item['variant_id'] ?? 'null' }}, {{ $item['quantity'] + 1 }})"
-                                                        class="w-8 h-8 flex items-center justify-center text-zinc-500 hover:text-zinc-700 hover:bg-zinc-50 transition-colors border-l border-zinc-200 cursor-pointer">
+                                                        class="w-8 h-8 flex items-center justify-center text-on-surface-variant hover:text-on-surface hover:bg-zinc-50 transition-colors border-l border-zinc-200 cursor-pointer">
                                                         <flux:icon.plus class="size-3" />
                                                     </button>
                                                 </div>

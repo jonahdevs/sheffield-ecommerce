@@ -213,7 +213,7 @@ new #[Defer] #[Layout('layouts.guest')] class extends Component {
                         <thead>
                             <tr class="border-b dark:border-zinc-700">
                                 <th
-                                    class="p-4 text-left text-xs sm:text-sm font-medium text-zinc-600 dark:text-zinc-400 w-48">
+                                    class="p-4 text-left text-xs sm:text-sm font-medium text-on-surface-variant w-48">
                                     Products</th>
                                 @foreach ($this->products as $product)
                                     <th class="p-4 text-center border-l dark:border-zinc-700">
@@ -227,7 +227,7 @@ new #[Defer] #[Layout('layouts.guest')] class extends Component {
 
                                             <!-- Product Name -->
                                             <a href="{{ route('products.show', $product) }}" wire:navigate
-                                                class="block font-medium text-xs sm:text-sm text-zinc-900 dark:text-white hover:text-secondary hover:underline">
+                                                class="block font-medium text-xs sm:text-sm text-on-surface dark:text-white hover:text-secondary hover:underline">
                                                 {{ $product->name }}
                                             </a>
                                         </div>
@@ -239,7 +239,7 @@ new #[Defer] #[Layout('layouts.guest')] class extends Component {
                         <tbody class="divide-y dark:divide-zinc-700">
                             <!-- Star Review -->
                             <tr>
-                                <td class="p-4 font-medium text-zinc-900 dark:text-white text-xs sm:text-sm">
+                                <td class="p-4 font-medium text-on-surface dark:text-white text-xs sm:text-sm">
                                     Review</td>
                                 @foreach ($this->products as $product)
                                     <td class="p-4 text-center border-l dark:border-zinc-700">
@@ -271,7 +271,7 @@ new #[Defer] #[Layout('layouts.guest')] class extends Component {
                                             </div>
                                             @if ($product->reviews_avg_rating)
                                                 <span
-                                                    class="text-xs text-zinc-500">{{ number_format($product->reviews_avg_rating, 1) }}</span>
+                                                    class="text-xs text-on-surface-variant">{{ number_format($product->reviews_avg_rating, 1) }}</span>
                                             @endif
                                         </div>
                                     </td>
@@ -279,7 +279,7 @@ new #[Defer] #[Layout('layouts.guest')] class extends Component {
                             </tr>
                             <!-- Pricing Row -->
                             <tr>
-                                <td class="p-4 font-medium text-zinc-900 dark:text-white text-xs sm:text-sm">
+                                <td class="p-4 font-medium text-on-surface dark:text-white text-xs sm:text-sm">
                                     Price</td>
                                 @foreach ($this->products as $product)
                                     <td class="p-4 text-center border-l dark:border-zinc-700">
@@ -288,7 +288,7 @@ new #[Defer] #[Layout('layouts.guest')] class extends Component {
                                                 <div class="flex items-center justify-center flex-wrap gap-x-2">
                                                     <p class="text-base sm:text-lg font-semibold text-secondary">
                                                         {{ $product->formatted_final_price }}</p>
-                                                    <p class="text-xs sm:text-sm text-zinc-500 line-through">
+                                                    <p class="text-xs sm:text-sm text-on-surface-variant line-through">
                                                         {{ $product->formatted_price }}</p>
                                                 </div>
                                             @else
@@ -302,11 +302,11 @@ new #[Defer] #[Layout('layouts.guest')] class extends Component {
 
                             <!-- Brand Row -->
                             <tr>
-                                <td class="p-4 font-medium text-zinc-900 dark:text-white text-xs sm:text-sm">
+                                <td class="p-4 font-medium text-on-surface dark:text-white text-xs sm:text-sm">
                                     Brand</td>
                                 @foreach ($this->products as $product)
                                     <td class="p-4 text-center border-l dark:border-zinc-700">
-                                        <p class="text-zinc-600 text-xs sm:text-sm uppercase tracking-wide">
+                                        <p class="text-on-surface-variant text-xs sm:text-sm uppercase tracking-wide">
                                             {{ $product->brand?->name }}</p>
                                     </td>
                                 @endforeach
@@ -314,15 +314,15 @@ new #[Defer] #[Layout('layouts.guest')] class extends Component {
 
                             <!-- Categories Row -->
                             <tr>
-                                <td class="p-4 font-medium text-zinc-900 dark:text-white text-xs sm:text-sm">
+                                <td class="p-4 font-medium text-on-surface dark:text-white text-xs sm:text-sm">
                                     Categories</td>
                                 @foreach ($this->products as $product)
                                     <td
-                                        class="p-4 text-center text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 border-l dark:border-zinc-700">
+                                        class="p-4 text-center text-xs sm:text-sm text-on-surface-variant border-l dark:border-zinc-700">
                                         @if ($product->categories->isNotEmpty())
                                             {{ $product->categories->pluck('name')->join(', ') }}
                                         @else
-                                            <span class="text-zinc-400 dark:text-zinc-600">N/A</span>
+                                            <span class="text-on-surface-variant">N/A</span>
                                         @endif
                                     </td>
                                 @endforeach
@@ -331,11 +331,11 @@ new #[Defer] #[Layout('layouts.guest')] class extends Component {
 
                             <!-- Description Row -->
                             <tr>
-                                <td class="p-4 font-medium text-zinc-900 dark:text-white text-xs sm:text-sm">
+                                <td class="p-4 font-medium text-on-surface dark:text-white text-xs sm:text-sm">
                                     Description</td>
                                 @foreach ($this->products as $product)
                                     <td
-                                        class="p-4 text-center text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 border-l dark:border-zinc-700">
+                                        class="p-4 text-center text-xs sm:text-sm text-on-surface-variant border-l dark:border-zinc-700">
                                         {{ Str::limit($product->short_description ?? $product->description, 200) }}
                                     </td>
                                 @endforeach
@@ -344,11 +344,11 @@ new #[Defer] #[Layout('layouts.guest')] class extends Component {
                             <!-- Weight Row -->
                             @if ($this->products->pluck('weight')->filter()->isNotEmpty())
                                 <tr>
-                                    <td class="p-4 font-medium text-zinc-900 dark:text-white text-xs sm:text-sm">
+                                    <td class="p-4 font-medium text-on-surface dark:text-white text-xs sm:text-sm">
                                         Weight</td>
                                     @foreach ($this->products as $product)
                                         <td
-                                            class="p-4 text-center text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 border-l dark:border-zinc-700">
+                                            class="p-4 text-center text-xs sm:text-sm text-on-surface-variant border-l dark:border-zinc-700">
                                             {{ $product->weight ? $product->weight . ' ' . $this->regionalSettings->weight_unit : 'N/A' }}
                                         </td>
                                     @endforeach
@@ -361,11 +361,11 @@ new #[Defer] #[Layout('layouts.guest')] class extends Component {
                                     $this->products->pluck('width')->filter()->isNotEmpty() ||
                                     $this->products->pluck('height')->filter()->isNotEmpty())
                                 <tr>
-                                    <td class="p-4 font-medium text-zinc-900 dark:text-white text-xs sm:text-sm">
+                                    <td class="p-4 font-medium text-on-surface dark:text-white text-xs sm:text-sm">
                                         Dimensions (L x W x H)</td>
                                     @foreach ($this->products as $product)
                                         <td
-                                            class="p-4 text-center text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 border-l dark:border-zinc-700">
+                                            class="p-4 text-center text-xs sm:text-sm text-on-surface-variant border-l dark:border-zinc-700">
                                             @if ($product->length || $product->width || $product->height)
                                                 {{ $product->length ?? 'N/A' }} x {{ $product->width ?? 'N/A' }} x
                                                 {{ $product->height ?? 'N/A' }}
@@ -380,18 +380,18 @@ new #[Defer] #[Layout('layouts.guest')] class extends Component {
 
                             <!-- Technical Specifications -->
                             <tr>
-                                <td class="p-4 font-medium text-zinc-900 dark:text-white text-xs sm:text-sm">
+                                <td class="p-4 font-medium text-on-surface dark:text-white text-xs sm:text-sm">
                                     Technical Specifications
                                 </td>
                                 @foreach ($this->products as $product)
                                     <td
-                                        class="p-4 text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 border-l dark:border-zinc-700">
+                                        class="p-4 text-xs sm:text-sm text-on-surface-variant border-l dark:border-zinc-700">
                                         @if (!empty($product->technical_specification))
                                             <div class="prose prose-sm max-w-none dark:prose-invert">
                                                 {!! $product->technical_specification !!}
                                             </div>
                                         @else
-                                            <span class="text-zinc-400 dark:text-zinc-600">N/A</span>
+                                            <span class="text-on-surface-variant">N/A</span>
                                         @endif
                                     </td>
                                 @endforeach
@@ -399,7 +399,7 @@ new #[Defer] #[Layout('layouts.guest')] class extends Component {
 
                             <!-- Stock Status Row -->
                             <tr>
-                                <td class="p-4 font-medium text-zinc-900 dark:text-white text-xs sm:text-sm">
+                                <td class="p-4 font-medium text-on-surface dark:text-white text-xs sm:text-sm">
                                     Stock Status</td>
                                 @foreach ($this->products as $product)
                                     <td class="p-4 text-center border-l dark:border-zinc-700">
@@ -419,7 +419,7 @@ new #[Defer] #[Layout('layouts.guest')] class extends Component {
                             @island
                                 <!-- Buy Now Row -->
                                 <tr>
-                                    <td class="p-4 font-medium text-zinc-900 dark:text-white text-xs sm:text-sm">
+                                    <td class="p-4 font-medium text-on-surface dark:text-white text-xs sm:text-sm">
                                         Actions</td>
                                     @foreach ($this->products as $product)
                                         <td class="p-4 text-center border-l dark:border-zinc-700">
@@ -434,7 +434,7 @@ new #[Defer] #[Layout('layouts.guest')] class extends Component {
 
                                 <!-- Remove Row -->
                                 <tr>
-                                    <td class="p-4 font-medium text-zinc-900 dark:text-white text-xs sm:text-sm">
+                                    <td class="p-4 font-medium text-on-surface dark:text-white text-xs sm:text-sm">
                                         Remove</td>
                                     @foreach ($this->products as $product)
                                         <td class="p-4 text-center border-l dark:border-zinc-700">

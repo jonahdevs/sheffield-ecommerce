@@ -296,19 +296,19 @@ new #[Defer] #[Title('Cart')] #[Layout('layouts.guest')] class extends Component
                             <thead class="bg-zinc-50">
                                 <tr>
                                     <th
-                                        class="px-6 py-4 text-left text-[11px] font-bold uppercase tracking-widest text-zinc-500 border-b border-zinc-200">
+                                        class="px-6 py-4 text-left text-[11px] font-bold uppercase tracking-widest text-on-surface-variant border-b border-zinc-200">
                                         Product
                                     </th>
                                     <th
-                                        class="px-4 py-4 text-center text-[11px] font-bold uppercase tracking-widest text-zinc-500 border-b border-zinc-200">
+                                        class="px-4 py-4 text-center text-[11px] font-bold uppercase tracking-widest text-on-surface-variant border-b border-zinc-200">
                                         Price
                                     </th>
                                     <th
-                                        class="px-4 py-4 text-center text-[11px] font-bold uppercase tracking-widest text-zinc-500 border-b border-zinc-200">
+                                        class="px-4 py-4 text-center text-[11px] font-bold uppercase tracking-widest text-on-surface-variant border-b border-zinc-200">
                                         Quantity
                                     </th>
                                     <th
-                                        class="px-6 py-4 text-right text-[11px] font-bold uppercase tracking-widest text-zinc-500 border-b border-zinc-200">
+                                        class="px-6 py-4 text-right text-[11px] font-bold uppercase tracking-widest text-on-surface-variant border-b border-zinc-200">
                                         Subtotal
                                     </th>
                                 </tr>
@@ -357,7 +357,7 @@ new #[Defer] #[Title('Cart')] #[Layout('layouts.guest')] class extends Component
                                                     {{-- Brand/Category --}}
                                                     @if ($item->product->brand)
                                                         <p
-                                                            class="text-[10px] font-bold uppercase tracking-widest text-zinc-400 mb-1">
+                                                            class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-1">
                                                             {{ $item->product->brand->name }}
                                                         </p>
                                                     @endif
@@ -365,7 +365,7 @@ new #[Defer] #[Title('Cart')] #[Layout('layouts.guest')] class extends Component
                                                     {{-- Product Name --}}
                                                     <a href="{{ route('products.show', $item->product) }}"
                                                         wire:navigate
-                                                        class="font-medium hover:underline block text-sm text-zinc-950 mb-1">
+                                                        class="font-medium hover:underline block text-sm text-on-surface mb-1">
                                                         {{ $item->product->name }}
                                                     </a>
 
@@ -373,7 +373,7 @@ new #[Defer] #[Title('Cart')] #[Layout('layouts.guest')] class extends Component
                                                     @if ($variantAttrs->isNotEmpty())
                                                         <div class="flex flex-wrap gap-1 mb-2">
                                                             @foreach ($variantAttrs as $attrName => $attrValue)
-                                                                <span class="text-[10px] text-zinc-500">
+                                                                <span class="text-[10px] text-on-surface-variant">
                                                                     {{ $attrName }}: {{ $attrValue }}
                                                                 </span>
                                                             @endforeach
@@ -383,7 +383,7 @@ new #[Defer] #[Title('Cart')] #[Layout('layouts.guest')] class extends Component
                                                     {{-- Actions --}}
                                                     <div class="flex items-center gap-3 mt-2">
                                                         <button wire:click="toggleWishlist({{ $item->product->id }})"
-                                                            class="text-[11px] text-zinc-500 hover:text-zinc-700 transition-colors cursor-pointer">
+                                                            class="text-[11px] text-on-surface-variant hover:text-on-surface transition-colors cursor-pointer">
                                                             <flux:icon.heart
                                                                 variant="{{ $wishlisted ? 'solid' : 'outline' }}"
                                                                 @class(['size-3 inline mr-1', 'text-red-500' => $wishlisted]) />
@@ -391,7 +391,7 @@ new #[Defer] #[Title('Cart')] #[Layout('layouts.guest')] class extends Component
                                                         </button>
 
                                                         <button wire:click="removeItem({{ $item->id }})"
-                                                            class="text-[11px] text-zinc-500 hover:text-red-500 transition-colors cursor-pointer">
+                                                            class="text-[11px] text-on-surface-variant hover:text-red-500 transition-colors cursor-pointer">
                                                             <flux:icon.trash class="size-3 inline mr-1" />
                                                             Remove
                                                         </button>
@@ -409,14 +409,14 @@ new #[Defer] #[Title('Cart')] #[Layout('layouts.guest')] class extends Component
                                             @endphp
 
                                             @if ($hasDiscount)
-                                                <p class="text-sm font-semibold text-zinc-950">
+                                                <p class="text-sm font-semibold text-on-surface">
                                                     {{ format_currency($salePrice) }}
                                                 </p>
-                                                <p class="text-xs text-zinc-400 line-through">
+                                                <p class="text-xs text-on-surface-variant line-through">
                                                     {{ format_currency($regularPrice) }}
                                                 </p>
                                             @else
-                                                <p class="text-sm font-semibold text-zinc-950">
+                                                <p class="text-sm font-semibold text-on-surface">
                                                     {{ format_currency($unitPrice) }}
                                                 </p>
                                             @endif
@@ -429,7 +429,7 @@ new #[Defer] #[Title('Cart')] #[Layout('layouts.guest')] class extends Component
                                                     class="flex items-center border border-zinc-200 rounded overflow-hidden">
                                                     <button
                                                         wire:click="updateQuantity({{ $item->id }}, {{ $item->quantity - 1 }})"
-                                                        class="w-8 h-8 flex items-center justify-center text-zinc-500 hover:text-zinc-700 hover:bg-zinc-50 transition-colors border-r border-zinc-200 cursor-pointer">
+                                                        class="w-8 h-8 flex items-center justify-center text-on-surface-variant hover:text-on-surface hover:bg-zinc-50 transition-colors border-r border-zinc-200 cursor-pointer">
                                                         <flux:icon.minus class="size-3" />
                                                     </button>
                                                     <span
@@ -438,7 +438,7 @@ new #[Defer] #[Title('Cart')] #[Layout('layouts.guest')] class extends Component
                                                     </span>
                                                     <button
                                                         wire:click="updateQuantity({{ $item->id }}, {{ $item->quantity + 1 }})"
-                                                        class="w-8 h-8 flex items-center justify-center text-zinc-500 hover:text-zinc-700 hover:bg-zinc-50 transition-colors border-l border-zinc-200 cursor-pointer">
+                                                        class="w-8 h-8 flex items-center justify-center text-on-surface-variant hover:text-on-surface hover:bg-zinc-50 transition-colors border-l border-zinc-200 cursor-pointer">
                                                         <flux:icon.plus class="size-3" />
                                                     </button>
                                                 </div>
@@ -447,7 +447,7 @@ new #[Defer] #[Title('Cart')] #[Layout('layouts.guest')] class extends Component
 
                                         {{-- Subtotal Column --}}
                                         <td class="px-6 py-6 text-right">
-                                            <p class="text-sm font-semibold text-zinc-950">
+                                            <p class="text-sm font-semibold text-on-surface">
                                                 {{ format_currency($lineTotal) }}
                                             </p>
                                         </td>
@@ -475,16 +475,16 @@ new #[Defer] #[Title('Cart')] #[Layout('layouts.guest')] class extends Component
 
                         {{-- Header --}}
                         <div class="px-5 py-4 border-b border-zinc-200 bg-white">
-                            <h3 class="text-[13px] font-bold uppercase tracking-widest text-zinc-950 font-serif">Cart
+                            <h3 class="text-[13px] font-bold uppercase tracking-widest text-on-surface font-serif">Cart
                                 Summary</h3>
                         </div>
 
                         {{-- Totals --}}
                         <div class="px-5 py-4 space-y-3">
                             <div class="flex justify-between text-[13px]">
-                                <span class="text-zinc-500 font-medium">Subtotal</span>
+                                <span class="text-on-surface-variant font-medium">Subtotal</span>
                                 <span
-                                    class="text-zinc-950 font-bold">{{ format_currency($this->cartSummary['subtotal']) }}</span>
+                                    class="text-on-surface font-bold">{{ format_currency($this->cartSummary['subtotal']) }}</span>
                             </div>
 
                             @if ($this->cartSummary['discount'] > 0)
@@ -496,23 +496,23 @@ new #[Defer] #[Title('Cart')] #[Layout('layouts.guest')] class extends Component
                             @endif
 
                             <div class="flex justify-between text-[13px]">
-                                <span class="text-zinc-500 font-medium">Shipping</span>
-                                <span class="text-zinc-500 text-[11px] font-medium">Calculated at checkout</span>
+                                <span class="text-on-surface-variant font-medium">Shipping</span>
+                                <span class="text-on-surface-variant text-[11px] font-medium">Calculated at checkout</span>
                             </div>
 
                             @if ($this->cartSummary['tax_enabled'] && !$this->cartSummary['tax_inclusive'] && $this->cartSummary['tax'] > 0)
                                 <div class="flex justify-between text-[13px]">
-                                    <span class="text-zinc-500 font-medium">
+                                    <span class="text-on-surface-variant font-medium">
                                         {{ $this->cartSummary['tax_name'] }} ({{ $this->cartSummary['tax_rate'] }})
                                     </span>
                                     <span
-                                        class="text-zinc-950 font-bold">{{ format_currency($this->cartSummary['tax']) }}</span>
+                                        class="text-on-surface font-bold">{{ format_currency($this->cartSummary['tax']) }}</span>
                                 </div>
                             @endif
 
                             <div class="pt-3 border-t border-zinc-200 flex justify-between items-baseline">
                                 <span
-                                    class="text-[14px] font-bold uppercase tracking-widest text-zinc-950">Total</span>
+                                    class="text-[14px] font-bold uppercase tracking-widest text-on-surface">Total</span>
                                 <span class="text-[24px] font-black text-primary font-barlow-condensed leading-none">
                                     {{ format_currency($this->cartSummary['subtotal'] - $this->cartSummary['discount'] + ($this->cartSummary['tax_enabled'] && !$this->cartSummary['tax_inclusive'] ? $this->cartSummary['tax'] : 0)) }}
                                 </span>
@@ -530,7 +530,7 @@ new #[Defer] #[Title('Cart')] #[Layout('layouts.guest')] class extends Component
                                 </x-slot>
                             </flux:button>
 
-                            <div class="mt-3 flex items-center justify-center gap-1.5 text-xs text-zinc-400">
+                            <div class="mt-3 flex items-center justify-center gap-1.5 text-xs text-on-surface-variant">
                                 <flux:icon.shield-check class="size-3" />
                                 <span class="uppercase tracking-widest">SSL Encrypted & Secure</span>
                             </div>
@@ -538,22 +538,22 @@ new #[Defer] #[Title('Cart')] #[Layout('layouts.guest')] class extends Component
 
                         {{-- We Accept & Trust --}}
                         <div class="py-4 px-5 border-t border-zinc-100">
-                            <div class="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-3">We accept
+                            <div class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest mb-3">We accept
                             </div>
                             <div class="flex flex-wrap gap-1.5 mb-6">
                                 @foreach (['VISA', 'MPESA', 'MASTERCARD', 'PAYPAL'] as $pay)
                                     <span
-                                        class="inline-block px-2 py-1 bg-zinc-100 border border-zinc-200 rounded text-[9px] font-bold text-zinc-600 tracking-wider">{{ $pay }}</span>
+                                        class="inline-block px-2 py-1 bg-zinc-100 border border-zinc-200 rounded text-[9px] font-bold text-on-surface-variant tracking-wider">{{ $pay }}</span>
                                 @endforeach
                             </div>
 
                             <div class="space-y-3">
-                                <div class="flex items-center gap-2 text-xs text-zinc-500">
-                                    <flux:icon.arrow-path class="size-3.5 text-zinc-400" />
+                                <div class="flex items-center gap-2 text-xs text-on-surface-variant">
+                                    <flux:icon.arrow-path class="size-3.5 text-on-surface-variant" />
                                     <span>30-Day Easy Returns Policy</span>
                                 </div>
-                                <div class="flex items-center gap-2 text-xs text-zinc-500">
-                                    <flux:icon.truck class="size-3.5 text-zinc-400" />
+                                <div class="flex items-center gap-2 text-xs text-on-surface-variant">
+                                    <flux:icon.truck class="size-3.5 text-on-surface-variant" />
                                     <span>Free delivery on orders over KES 5,000</span>
                                 </div>
                             </div>

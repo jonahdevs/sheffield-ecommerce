@@ -54,14 +54,14 @@ use Livewire\Attributes\Computed;
                     <?php else: ?>
                         <?php if (isset($component)) { $__componentOriginal2d7605e1adbee8a1737ebec29a91da61 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginal2d7605e1adbee8a1737ebec29a91da61 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::icon.photo','data' => ['class' => 'w-16 h-16 text-zinc-400 stroke-1']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::icon.photo','data' => ['class' => 'w-16 h-16 text-on-surface-variant stroke-1']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('flux::icon.photo'); ?>
 <?php if ($component->shouldRender()): ?>
 <?php $__env->startComponent($component->resolveView(), $component->data()); ?>
 <?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
 <?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
 <?php endif; ?>
-<?php $component->withAttributes(['class' => 'w-16 h-16 text-zinc-400 stroke-1']); ?>
+<?php $component->withAttributes(['class' => 'w-16 h-16 text-on-surface-variant stroke-1']); ?>
 <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
 
 <?php echo $__env->renderComponent(); ?>
@@ -333,12 +333,12 @@ use Livewire\Attributes\Computed;
 
             
             <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($product->brand): ?>
-                <p class="text-zinc-400 text-xs uppercase tracking-wide"><?php echo e($product->brand->name); ?></p>
+                <p class="text-on-surface-variant text-xs uppercase tracking-wide"><?php echo e($product->brand->name); ?></p>
             <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
 
             
             <a href="<?php echo e(route('products.show', $product)); ?>" wire:navigate
-                class="text-sm text-zinc-700 line-clamp-2 font-medium tracking-wide hover:text-secondary transition-colors">
+                class="text-sm text-on-surface line-clamp-2 font-medium tracking-wide hover:text-secondary transition-colors">
                 <?php echo e($product->name); ?>
 
             </a>
@@ -396,15 +396,15 @@ use Livewire\Attributes\Computed;
                 <?php elseif($product->display_price): ?>
                     <div class="flex items-baseline gap-1 flex-wrap">
                         <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($product->has_price_prefix): ?>
-                            <span class="text-xs text-zinc-400"><?php echo e($product->display_price_prefix); ?></span>
+                            <span class="text-xs text-on-surface-variant"><?php echo e($product->display_price_prefix); ?></span>
                         <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
                         <span class="font-extrabold text-primary tracking-wide"><?php echo e($product->display_price); ?></span>
                         <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($product->type === ProductType::SIMPLE && $product->hasDiscount()): ?>
-                            <span class="text-xs text-zinc-400 line-through"><?php echo e($product->formatted_price); ?></span>
+                            <span class="text-xs text-on-surface-variant line-through"><?php echo e($product->formatted_price); ?></span>
                         <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
                     </div>
                 <?php else: ?>
-                    <span class="text-sm text-zinc-400">Price unavailable</span>
+                    <span class="text-sm text-on-surface-variant">Price unavailable</span>
                 <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
             </div>
         </div>
@@ -487,7 +487,7 @@ use Livewire\Attributes\Computed;
                 
                 <div class="col-span-1 md:col-span-2 pt-5 md:pt-0 md:pl-6">
                     <a href="<?php echo e(route('products.show', $product)); ?>" wire:navigate
-                        class="text-xl font-bold mt-2 mb-1 text-zinc-800 hover:text-secondary hover:underline transition-colors">
+                        class="text-xl font-bold mt-2 mb-1 text-on-surface hover:text-secondary hover:underline transition-colors">
                         <?php echo e($product->name); ?>
 
                     </a>
@@ -515,7 +515,7 @@ use Livewire\Attributes\Computed;
 <?php unset($__componentOriginalfa87e49ca3cdf62358bbc468aaf3394b); ?>
 <?php endif; ?>
 
-                    <div class="my-4 text-zinc-500 text-sm line-clamp-3"><?php echo $product->short_description; ?></div>
+                    <div class="my-4 text-on-surface-variant text-sm line-clamp-3"><?php echo $product->short_description; ?></div>
 
                     
                     <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($product->requires_quotation): ?>
@@ -526,11 +526,11 @@ use Livewire\Attributes\Computed;
                     <?php elseif($product->display_price): ?>
                         <div class="flex items-baseline gap-1 flex-wrap">
                             <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($product->has_price_prefix): ?>
-                                <span class="text-sm text-zinc-400"><?php echo e($product->display_price_prefix); ?></span>
+                                <span class="text-sm text-on-surface-variant"><?php echo e($product->display_price_prefix); ?></span>
                             <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
                             <span class="text-lg font-semibold text-secondary"><?php echo e($product->display_price); ?></span>
                             <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($product->type === ProductType::SIMPLE && $product->hasDiscount()): ?>
-                                <span class="text-sm text-zinc-400 line-through"><?php echo e($product->formatted_price); ?></span>
+                                <span class="text-sm text-on-surface-variant line-through"><?php echo e($product->formatted_price); ?></span>
                                 <?php if (isset($component)) { $__componentOriginal4cc377eda9b63b796b6668ee7832d023 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginal4cc377eda9b63b796b6668ee7832d023 = $attributes; } ?>
 <?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::badge.index','data' => ['color' => 'amber','size' => 'sm']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>

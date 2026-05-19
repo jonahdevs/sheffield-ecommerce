@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\Order;
+use App\Models\Quote;
 use Livewire\Attributes\{Layout, Locked};
 use Livewire\Component;
 use Artesaos\SEOTools\Facades\SEOMeta;
@@ -13,17 +13,23 @@ new #[Layout('layouts.guest')] class extends Component {
     {
         SEOMeta::setRobots('noindex,nofollow');
 
-        // Ensure the order belongs to the authenticated user
-        $order = Order::where('reference', $reference)
-            ->where('user_id', auth()->id())
-            ->first();
+        $quote = Quote::where('reference', $reference)->first();
 
-        if (!$order) {
+        if (!$quote) {
             $this->redirectRoute('home', navigate: true);
+
             return;
         }
 
-        $this->dispatch('cart-updated');
+        // If the quote has an owner, only that owner can see this page.
+        // Guest-submitted quotes (user_id = NULL) are accessible to anyone holding the reference.
+        if ($quote->user_id && $quote->user_id !== auth()->id()) {
+            $this->redirectRoute('home', navigate: true);
+
+            return;
+        }
+
+        $this->dispatch('quote-basket-updated');
         $this->reference = $reference;
     }
 };
@@ -42,22 +48,22 @@ new #[Layout('layouts.guest')] class extends Component {
         {{-- Heading --}}
         <flux:heading size="xl" class="mb-2">Quote Request Sent!</flux:heading>
 
-        <flux:text class="text-zinc-500 text-sm mb-1">
+        <flux:text class="text-on-surface-variant text-sm mb-1">
             Your quotation reference is:
         </flux:text>
-        <p class="font-mono font-semibold text-zinc-800 text-sm mb-5">
+        <p class="font-mono font-semibold text-on-surface text-sm mb-5">
             {{ $reference }}
         </p>
 
         {{-- What happens next --}}
         <div class="text-left bg-zinc-50 border border-zinc-200 rounded-lg p-4 mb-6 space-y-3">
-            <p class="text-sm font-medium text-zinc-800">What happens next:</p>
+            <p class="text-sm font-medium text-on-surface">What happens next:</p>
 
             <div class="flex items-start gap-3">
                 <div class="w-5 h-5 rounded-full bg-amber-100 flex items-center justify-center shrink-0 mt-0.5">
                     <span class="text-xs font-bold text-amber-600">1</span>
                 </div>
-                <p class="text-sm text-zinc-600">
+                <p class="text-sm text-on-surface-variant">
                     Our team reviews your request and prepares a priced quotation.
                 </p>
             </div>
@@ -66,7 +72,7 @@ new #[Layout('layouts.guest')] class extends Component {
                 <div class="w-5 h-5 rounded-full bg-amber-100 flex items-center justify-center shrink-0 mt-0.5">
                     <span class="text-xs font-bold text-amber-600">2</span>
                 </div>
-                <p class="text-sm text-zinc-600">
+                <p class="text-sm text-on-surface-variant">
                     You'll receive an email with the priced quote and a link to review it.
                 </p>
             </div>
@@ -75,7 +81,7 @@ new #[Layout('layouts.guest')] class extends Component {
                 <div class="w-5 h-5 rounded-full bg-amber-100 flex items-center justify-center shrink-0 mt-0.5">
                     <span class="text-xs font-bold text-amber-600">3</span>
                 </div>
-                <p class="text-sm text-zinc-600">
+                <p class="text-sm text-on-surface-variant">
                     Accept the quotation to proceed to payment, or reject it if it doesn't work for you.
                 </p>
             </div>

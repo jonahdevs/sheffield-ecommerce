@@ -12,12 +12,12 @@
     <section class="container mx-auto px-4 py-8 min-h-[80svh]">
         <div class="">
             <flux:heading level="1"
-                class="text-2xl! sm:text-3xl! lg:text-4xl! font-bold! text-zinc-900 dark:text-white mb-6">
+                class="text-2xl! sm:text-3xl! lg:text-4xl! font-bold! text-on-surface dark:text-white mb-6">
                 Terms of Service
             </flux:heading>
 
             <div class="prose prose-zinc dark:prose-invert max-w-none">
-                <p class="text-xs! sm:text-sm! text-zinc-500 dark:text-zinc-400 mb-6">
+                <p class="text-xs! sm:text-sm! text-on-surface-variant mb-6">
                     Last updated: {{ now()->format('F d, Y') }}
                 </p>
 

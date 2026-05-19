@@ -267,19 +267,19 @@ Your cart is empty
                             <thead class="bg-zinc-50">
                                 <tr>
                                     <th
-                                        class="px-6 py-4 text-left text-[11px] font-bold uppercase tracking-widest text-zinc-500 border-b border-zinc-200">
+                                        class="px-6 py-4 text-left text-[11px] font-bold uppercase tracking-widest text-on-surface-variant border-b border-zinc-200">
                                         Product
                                     </th>
                                     <th
-                                        class="px-4 py-4 text-center text-[11px] font-bold uppercase tracking-widest text-zinc-500 border-b border-zinc-200">
+                                        class="px-4 py-4 text-center text-[11px] font-bold uppercase tracking-widest text-on-surface-variant border-b border-zinc-200">
                                         Price
                                     </th>
                                     <th
-                                        class="px-4 py-4 text-center text-[11px] font-bold uppercase tracking-widest text-zinc-500 border-b border-zinc-200">
+                                        class="px-4 py-4 text-center text-[11px] font-bold uppercase tracking-widest text-on-surface-variant border-b border-zinc-200">
                                         Quantity
                                     </th>
                                     <th
-                                        class="px-6 py-4 text-right text-[11px] font-bold uppercase tracking-widest text-zinc-500 border-b border-zinc-200">
+                                        class="px-6 py-4 text-right text-[11px] font-bold uppercase tracking-widest text-on-surface-variant border-b border-zinc-200">
                                         Subtotal
                                     </th>
                                 </tr>
@@ -348,7 +348,7 @@ Your cart is empty
                                                     
                                                     <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($item->product->brand): ?>
                                                         <p
-                                                            class="text-[10px] font-bold uppercase tracking-widest text-zinc-400 mb-1">
+                                                            class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-1">
                                                             <?php echo e($item->product->brand->name); ?>
 
                                                         </p>
@@ -357,7 +357,7 @@ Your cart is empty
                                                     
                                                     <a href="<?php echo e(route('products.show', $item->product)); ?>"
                                                         wire:navigate
-                                                        class="font-medium hover:underline block text-sm text-zinc-950 mb-1">
+                                                        class="font-medium hover:underline block text-sm text-on-surface mb-1">
                                                         <?php echo e($item->product->name); ?>
 
                                                     </a>
@@ -366,7 +366,7 @@ Your cart is empty
                                                     <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($variantAttrs->isNotEmpty()): ?>
                                                         <div class="flex flex-wrap gap-1 mb-2">
                                                             <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $variantAttrs; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $attrName => $attrValue): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoopIteration(); ?><?php endif; ?>
-                                                                <span class="text-[10px] text-zinc-500">
+                                                                <span class="text-[10px] text-on-surface-variant">
                                                                     <?php echo e($attrName); ?>: <?php echo e($attrValue); ?>
 
                                                                 </span>
@@ -377,7 +377,7 @@ Your cart is empty
                                                     
                                                     <div class="flex items-center gap-3 mt-2">
                                                         <button wire:click="toggleWishlist(<?php echo e($item->product->id); ?>)"
-                                                            class="text-[11px] text-zinc-500 hover:text-zinc-700 transition-colors cursor-pointer">
+                                                            class="text-[11px] text-on-surface-variant hover:text-on-surface transition-colors cursor-pointer">
                                                             <?php if (isset($component)) { $__componentOriginalfcc604edd6e541ab058ff166c8353443 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginalfcc604edd6e541ab058ff166c8353443 = $attributes; } ?>
 <?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::icon.heart','data' => ['variant' => ''.e($wishlisted ? 'solid' : 'outline').'','class' => \Illuminate\Support\Arr::toCssClasses(['size-3 inline mr-1', 'text-red-500' => $wishlisted])]] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
@@ -405,7 +405,7 @@ Your cart is empty
                                                         </button>
 
                                                         <button wire:click="removeItem(<?php echo e($item->id); ?>)"
-                                                            class="text-[11px] text-zinc-500 hover:text-red-500 transition-colors cursor-pointer">
+                                                            class="text-[11px] text-on-surface-variant hover:text-red-500 transition-colors cursor-pointer">
                                                             <?php if (isset($component)) { $__componentOriginalca0d7d887f05c1393a9d98702b6659ea = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginalca0d7d887f05c1393a9d98702b6659ea = $attributes; } ?>
 <?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::icon.trash','data' => ['class' => 'size-3 inline mr-1']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
@@ -444,16 +444,16 @@ Your cart is empty
                                             ?>
 
                                             <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($hasDiscount): ?>
-                                                <p class="text-sm font-semibold text-zinc-950">
+                                                <p class="text-sm font-semibold text-on-surface">
                                                     <?php echo e(format_currency($salePrice)); ?>
 
                                                 </p>
-                                                <p class="text-xs text-zinc-400 line-through">
+                                                <p class="text-xs text-on-surface-variant line-through">
                                                     <?php echo e(format_currency($regularPrice)); ?>
 
                                                 </p>
                                             <?php else: ?>
-                                                <p class="text-sm font-semibold text-zinc-950">
+                                                <p class="text-sm font-semibold text-on-surface">
                                                     <?php echo e(format_currency($unitPrice)); ?>
 
                                                 </p>
@@ -467,7 +467,7 @@ Your cart is empty
                                                     class="flex items-center border border-zinc-200 rounded overflow-hidden">
                                                     <button
                                                         wire:click="updateQuantity(<?php echo e($item->id); ?>, <?php echo e($item->quantity - 1); ?>)"
-                                                        class="w-8 h-8 flex items-center justify-center text-zinc-500 hover:text-zinc-700 hover:bg-zinc-50 transition-colors border-r border-zinc-200 cursor-pointer">
+                                                        class="w-8 h-8 flex items-center justify-center text-on-surface-variant hover:text-on-surface hover:bg-zinc-50 transition-colors border-r border-zinc-200 cursor-pointer">
                                                         <?php if (isset($component)) { $__componentOriginal01ef35ccfb2d03cc6412dbe2dc9e1a50 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginal01ef35ccfb2d03cc6412dbe2dc9e1a50 = $attributes; } ?>
 <?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::icon.minus','data' => ['class' => 'size-3']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
@@ -498,7 +498,7 @@ Your cart is empty
                                                     </span>
                                                     <button
                                                         wire:click="updateQuantity(<?php echo e($item->id); ?>, <?php echo e($item->quantity + 1); ?>)"
-                                                        class="w-8 h-8 flex items-center justify-center text-zinc-500 hover:text-zinc-700 hover:bg-zinc-50 transition-colors border-l border-zinc-200 cursor-pointer">
+                                                        class="w-8 h-8 flex items-center justify-center text-on-surface-variant hover:text-on-surface hover:bg-zinc-50 transition-colors border-l border-zinc-200 cursor-pointer">
                                                         <?php if (isset($component)) { $__componentOriginal37c717510e7a32140849d8d5dd9d632e = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginal37c717510e7a32140849d8d5dd9d632e = $attributes; } ?>
 <?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::icon.plus','data' => ['class' => 'size-3']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
@@ -528,7 +528,7 @@ Your cart is empty
 
                                         
                                         <td class="px-6 py-6 text-right">
-                                            <p class="text-sm font-semibold text-zinc-950">
+                                            <p class="text-sm font-semibold text-on-surface">
                                                 <?php echo e(format_currency($lineTotal)); ?>
 
                                             </p>
@@ -597,16 +597,16 @@ Your cart is empty
 
                         
                         <div class="px-5 py-4 border-b border-zinc-200 bg-white">
-                            <h3 class="text-[13px] font-bold uppercase tracking-widest text-zinc-950 font-serif">Cart
+                            <h3 class="text-[13px] font-bold uppercase tracking-widest text-on-surface font-serif">Cart
                                 Summary</h3>
                         </div>
 
                         
                         <div class="px-5 py-4 space-y-3">
                             <div class="flex justify-between text-[13px]">
-                                <span class="text-zinc-500 font-medium">Subtotal</span>
+                                <span class="text-on-surface-variant font-medium">Subtotal</span>
                                 <span
-                                    class="text-zinc-950 font-bold"><?php echo e(format_currency($this->cartSummary['subtotal'])); ?></span>
+                                    class="text-on-surface font-bold"><?php echo e(format_currency($this->cartSummary['subtotal'])); ?></span>
                             </div>
 
                             <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($this->cartSummary['discount'] > 0): ?>
@@ -618,23 +618,23 @@ Your cart is empty
                             <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
 
                             <div class="flex justify-between text-[13px]">
-                                <span class="text-zinc-500 font-medium">Shipping</span>
-                                <span class="text-zinc-500 text-[11px] font-medium">Calculated at checkout</span>
+                                <span class="text-on-surface-variant font-medium">Shipping</span>
+                                <span class="text-on-surface-variant text-[11px] font-medium">Calculated at checkout</span>
                             </div>
 
                             <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($this->cartSummary['tax_enabled'] && !$this->cartSummary['tax_inclusive'] && $this->cartSummary['tax'] > 0): ?>
                                 <div class="flex justify-between text-[13px]">
-                                    <span class="text-zinc-500 font-medium">
+                                    <span class="text-on-surface-variant font-medium">
                                         <?php echo e($this->cartSummary['tax_name']); ?> (<?php echo e($this->cartSummary['tax_rate']); ?>)
                                     </span>
                                     <span
-                                        class="text-zinc-950 font-bold"><?php echo e(format_currency($this->cartSummary['tax'])); ?></span>
+                                        class="text-on-surface font-bold"><?php echo e(format_currency($this->cartSummary['tax'])); ?></span>
                                 </div>
                             <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
 
                             <div class="pt-3 border-t border-zinc-200 flex justify-between items-baseline">
                                 <span
-                                    class="text-[14px] font-bold uppercase tracking-widest text-zinc-950">Total</span>
+                                    class="text-[14px] font-bold uppercase tracking-widest text-on-surface">Total</span>
                                 <span class="text-[24px] font-black text-primary font-barlow-condensed leading-none">
                                     <?php echo e(format_currency($this->cartSummary['subtotal'] - $this->cartSummary['discount'] + ($this->cartSummary['tax_enabled'] && !$this->cartSummary['tax_inclusive'] ? $this->cartSummary['tax'] : 0))); ?>
 
@@ -692,7 +692,7 @@ Your cart is empty
 <?php unset($__componentOriginalc04b147acd0e65cc1a77f86fb0e81580); ?>
 <?php endif; ?>
 
-                            <div class="mt-3 flex items-center justify-center gap-1.5 text-xs text-zinc-400">
+                            <div class="mt-3 flex items-center justify-center gap-1.5 text-xs text-on-surface-variant">
                                 <?php if (isset($component)) { $__componentOriginalf870514c33bb1b53395ba02235f60146 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginalf870514c33bb1b53395ba02235f60146 = $attributes; } ?>
 <?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::icon.shield-check','data' => ['class' => 'size-3']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
@@ -721,27 +721,27 @@ Your cart is empty
 
                         
                         <div class="py-4 px-5 border-t border-zinc-100">
-                            <div class="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-3">We accept
+                            <div class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest mb-3">We accept
                             </div>
                             <div class="flex flex-wrap gap-1.5 mb-6">
                                 <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = ['VISA', 'MPESA', 'MASTERCARD', 'PAYPAL']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $pay): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoopIteration(); ?><?php endif; ?>
                                     <span
-                                        class="inline-block px-2 py-1 bg-zinc-100 border border-zinc-200 rounded text-[9px] font-bold text-zinc-600 tracking-wider"><?php echo e($pay); ?></span>
+                                        class="inline-block px-2 py-1 bg-zinc-100 border border-zinc-200 rounded text-[9px] font-bold text-on-surface-variant tracking-wider"><?php echo e($pay); ?></span>
                                 <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
                             </div>
 
                             <div class="space-y-3">
-                                <div class="flex items-center gap-2 text-xs text-zinc-500">
+                                <div class="flex items-center gap-2 text-xs text-on-surface-variant">
                                     <?php if (isset($component)) { $__componentOriginal18ce857dfc449fdd246010f7208cb6d5 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginal18ce857dfc449fdd246010f7208cb6d5 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::icon.arrow-path','data' => ['class' => 'size-3.5 text-zinc-400']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::icon.arrow-path','data' => ['class' => 'size-3.5 text-on-surface-variant']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('flux::icon.arrow-path'); ?>
 <?php if ($component->shouldRender()): ?>
 <?php $__env->startComponent($component->resolveView(), $component->data()); ?>
 <?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
 <?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
 <?php endif; ?>
-<?php $component->withAttributes(['class' => 'size-3.5 text-zinc-400']); ?>
+<?php $component->withAttributes(['class' => 'size-3.5 text-on-surface-variant']); ?>
 <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
 
 <?php echo $__env->renderComponent(); ?>
@@ -756,17 +756,17 @@ Your cart is empty
 <?php endif; ?>
                                     <span>30-Day Easy Returns Policy</span>
                                 </div>
-                                <div class="flex items-center gap-2 text-xs text-zinc-500">
+                                <div class="flex items-center gap-2 text-xs text-on-surface-variant">
                                     <?php if (isset($component)) { $__componentOriginal7a62c53a9a388e917a2ccf86cb1b44e8 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginal7a62c53a9a388e917a2ccf86cb1b44e8 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::icon.truck','data' => ['class' => 'size-3.5 text-zinc-400']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::icon.truck','data' => ['class' => 'size-3.5 text-on-surface-variant']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('flux::icon.truck'); ?>
 <?php if ($component->shouldRender()): ?>
 <?php $__env->startComponent($component->resolveView(), $component->data()); ?>
 <?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
 <?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
 <?php endif; ?>
-<?php $component->withAttributes(['class' => 'size-3.5 text-zinc-400']); ?>
+<?php $component->withAttributes(['class' => 'size-3.5 text-on-surface-variant']); ?>
 <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
 
 <?php echo $__env->renderComponent(); ?>

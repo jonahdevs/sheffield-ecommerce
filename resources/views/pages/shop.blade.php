@@ -484,7 +484,7 @@ new #[Defer] #[Layout('layouts.guest')] class extends Component {
         {{-- Mobile: filter toggle + sort --}}
         <div class="lg:hidden flex items-center justify-between mb-4 gap-3">
             <button wire:click="$set('showMobileFilters', true)" type="button"
-                class="flex items-center gap-2 px-3 sm:px-4 py-2 bg-white border border-zinc-200 rounded-md text-xs sm:text-sm font-medium text-zinc-700 hover:bg-zinc-50 transition-colors">
+                class="flex items-center gap-2 px-3 sm:px-4 py-2 bg-white border border-zinc-200 rounded-md text-xs sm:text-sm font-medium text-on-surface hover:bg-zinc-50 transition-colors">
                 <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-.293.707L13 13.414V19a1 1 0 01-.553.894l-4 2A1 1 0 017 21v-7.586L3.293 6.707A1 1 0 013 6V4z" />
@@ -535,7 +535,7 @@ new #[Defer] #[Layout('layouts.guest')] class extends Component {
                                 </button>
                             @endif
                             <button wire:click="$set('showMobileFilters', false)" type="button"
-                                class="text-zinc-500 hover:text-zinc-900 transition-colors">
+                                class="text-on-surface-variant hover:text-on-surface transition-colors">
                                 <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor"
                                     viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -598,12 +598,12 @@ new #[Defer] #[Layout('layouts.guest')] class extends Component {
                                     Products
                                 @endif
                             </flux:heading>
-                            <flux:text class="text-xs! @md/main:text-sm! text-zinc-600 mt-1">
+                            <flux:text class="text-xs! @md/main:text-sm! text-on-surface-variant mt-1">
                                 @if ($this->totalCount > 0)
                                     <span class="font-medium">{{ number_format($this->totalCount) }}</span>
                                     {{ Str::plural('product', $this->totalCount) }} found
                                     @if ($this->hasActiveFilters)
-                                        <span class="text-zinc-400 mx-1">•</span>
+                                        <span class="text-on-surface-variant mx-1">•</span>
                                         <button wire:click="clearAllFilters" class="text-secondary hover:underline">
                                             Clear all filters
                                         </button>
@@ -625,8 +625,8 @@ new #[Defer] #[Layout('layouts.guest')] class extends Component {
                         </flux:select>
                     </div>
 
-                    <flux:text class="lg:hidden text-xs! sm:text-sm! text-zinc-500 mb-3">
-                        <span class="font-medium text-zinc-900">{{ number_format($this->totalCount) }}</span>
+                    <flux:text class="lg:hidden text-xs! sm:text-sm! text-on-surface-variant mb-3">
+                        <span class="font-medium text-on-surface">{{ number_format($this->totalCount) }}</span>
                         {{ Str::plural('product', $this->totalCount) }} found
                     </flux:text>
 
@@ -720,7 +720,7 @@ new #[Defer] #[Layout('layouts.guest')] class extends Component {
                             </div>
                             <flux:heading size="lg" level="3" class="text-lg! sm:text-xl! mb-2">No Products
                                 Found</flux:heading>
-                            <flux:text class="text-zinc-600 mb-6 max-w-md text-xs! sm:text-sm! md:text-base!">
+                            <flux:text class="text-on-surface-variant mb-6 max-w-md text-xs! sm:text-sm! md:text-base!">
                                 We couldn't find any products matching your criteria. Try adjusting your filters or
                                 search terms.
                             </flux:text>

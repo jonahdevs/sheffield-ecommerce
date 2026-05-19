@@ -153,11 +153,11 @@ new #[Title('Quotation Details')] #[Layout('layouts.customer')] class extends Co
     <div class="bg-white border border-zinc-200">
         <div class="p-4 bg-white border-b border-zinc-200 flex items-center justify-between flex-wrap gap-3">
             <a href="{{ route('customer.quotations.index') }}" wire:navigate
-                class="flex items-center gap-1.5 text-[12px] font-bold tracking-widest uppercase text-zinc-500 transition-colors hover:text-primary cursor-pointer">
+                class="flex items-center gap-1.5 text-[12px] font-bold tracking-widest uppercase text-on-surface-variant transition-colors hover:text-primary cursor-pointer">
                 <flux:icon.chevron-left class="w-3.5 h-3.5" />
                 Back to Quotations
             </a>
-            <div class="font-serif text-[18px] font-black text-zinc-950">
+            <div class="font-serif text-[18px] font-black text-on-surface">
                 QUOTATION <em class="text-primary not-italic">#{{ $quote->reference }}</em>
             </div>
             <flux:badge :color="$quote->status->color()">{{ $quote->status->label() }}
@@ -190,10 +190,10 @@ new #[Title('Quotation Details')] #[Layout('layouts.customer')] class extends Co
 
             @if ($this->isExpired)
                 <div class="flex items-start gap-3 p-4 bg-zinc-50 border border-zinc-200 rounded-lg mb-5">
-                    <flux:icon.exclamation-triangle class="size-5 shrink-0 mt-0.5 text-zinc-400" />
+                    <flux:icon.exclamation-triangle class="size-5 shrink-0 mt-0.5 text-on-surface-variant" />
                     <div class="text-sm">
-                        <p class="font-medium text-zinc-700">This quotation has expired</p>
-                        <p class="text-zinc-500 mt-0.5">
+                        <p class="font-medium text-on-surface">This quotation has expired</p>
+                        <p class="text-on-surface-variant mt-0.5">
                             The validity period ended without a response.
                             Please contact us if you'd still like to proceed —
                             we can prepare a fresh quotation for you.
@@ -247,7 +247,7 @@ new #[Title('Quotation Details')] #[Layout('layouts.customer')] class extends Co
                 @endif
                 @if ($quote->expires_at && $this->canRespond)
                     <flux:text
-                        class="{{ $quote->expires_at->diffInHours() <= 48 ? 'text-amber-600' : 'text-zinc-500' }}">
+                        class="{{ $quote->expires_at->diffInHours() <= 48 ? 'text-amber-600' : 'text-on-surface-variant' }}">
                         Valid until {{ $quote->expires_at->format('M j, Y') }}
                         ({{ $quote->expires_at->diffForHumans() }})
                     </flux:text>
@@ -258,7 +258,7 @@ new #[Title('Quotation Details')] #[Layout('layouts.customer')] class extends Co
 
             {{-- Items List --}}
             <div>
-                <h3 class="text-base font-bold uppercase tracking-wider text-zinc-900 mb-4 font-serif">Items in Your
+                <h3 class="text-base font-bold uppercase tracking-wider text-on-surface mb-4 font-serif">Items in Your
                     Quotation
                 </h3>
 
@@ -275,21 +275,21 @@ new #[Title('Quotation Details')] #[Layout('layouts.customer')] class extends Co
                             </div>
                             <div class="flex-1 min-w-0">
                                 @if ($item->productSku())
-                                    <div class="text-[9px] font-bold tracking-widest uppercase text-zinc-500 mb-0.5">
+                                    <div class="text-[9px] font-bold tracking-widest uppercase text-on-surface-variant mb-0.5">
                                         SKU: {{ $item->productSku() }}
                                     </div>
                                 @endif
-                                <div class="text-[13px] font-semibold text-zinc-950 mb-0.5 truncate">
+                                <div class="text-[13px] font-semibold text-on-surface mb-0.5 truncate">
                                     {{ $item->productName() }}
                                 </div>
-                                <div class="text-[11px] text-zinc-500">Qty: {{ $item->quantity }}</div>
+                                <div class="text-[11px] text-on-surface-variant">Qty: {{ $item->quantity }}</div>
                             </div>
                             <div class="flex flex-col items-end gap-1">
                                 @if ($this->showPrices)
-                                    <div class="text-[13px] font-bold text-zinc-950 shrink-0">
+                                    <div class="text-[13px] font-bold text-on-surface shrink-0">
                                         {{ format_currency($item->effective_price * $item->quantity) }}
                                     </div>
-                                    <div class="text-[10px] text-zinc-400">
+                                    <div class="text-[10px] text-on-surface-variant">
                                         {{ $item->quantity }} × {{ format_currency($item->effective_price) }}
                                     </div>
                                 @else
@@ -309,14 +309,14 @@ new #[Title('Quotation Details')] #[Layout('layouts.customer')] class extends Co
                         {{-- Quote Totals --}}
                         <div class="bg-zinc-50 border border-zinc-200 rounded-sm overflow-hidden">
                             <div class="px-5 py-4 border-b border-zinc-200 bg-white">
-                                <h3 class="text-[13px] font-bold uppercase tracking-widest text-zinc-950 font-serif">
+                                <h3 class="text-[13px] font-bold uppercase tracking-widest text-on-surface font-serif">
                                     Quote Summary</h3>
                             </div>
                             <div class="p-5 space-y-3">
                                 <div class="flex justify-between text-[13px]">
-                                    <span class="text-zinc-500 font-medium">Subtotal</span>
+                                    <span class="text-on-surface-variant font-medium">Subtotal</span>
                                     <span
-                                        class="text-zinc-950 font-bold">{{ format_currency($quote->subtotal) }}</span>
+                                        class="text-on-surface font-bold">{{ format_currency($quote->subtotal) }}</span>
                                 </div>
                                 @if ($quote->discount > 0)
                                     <div class="flex justify-between text-[13px]">
@@ -326,8 +326,8 @@ new #[Title('Quotation Details')] #[Layout('layouts.customer')] class extends Co
                                     </div>
                                 @endif
                                 <div class="flex justify-between text-[13px]">
-                                    <span class="text-zinc-500 font-medium">Delivery</span>
-                                    <span class="text-zinc-950 font-bold">
+                                    <span class="text-on-surface-variant font-medium">Delivery</span>
+                                    <span class="text-on-surface font-bold">
                                         @if ($quote->shipping_cents === 0 && !$quote->status->isTerminal())
                                             <span class="text-amber-500">TBD</span>
                                         @elseif ($quote->shipping_cents === 0)
@@ -339,7 +339,7 @@ new #[Title('Quotation Details')] #[Layout('layouts.customer')] class extends Co
                                 </div>
                                 <div class="pt-3 border-t border-zinc-200 flex justify-between items-baseline">
                                     <span
-                                        class="text-[14px] font-bold uppercase tracking-widest text-zinc-950">Total</span>
+                                        class="text-[14px] font-bold uppercase tracking-widest text-on-surface">Total</span>
                                     <div class="text-right">
                                         <span
                                             class="text-[24px] font-black text-primary font-barlow-condensed leading-none">
@@ -374,8 +374,8 @@ new #[Title('Quotation Details')] #[Layout('layouts.customer')] class extends Co
                     <div
                         class="flex flex-col sm:flex-row items-center gap-3 p-4 bg-zinc-50 border border-zinc-200 rounded-sm mt-6">
                         <div class="flex-1 text-sm">
-                            <p class="font-medium text-zinc-800">Ready to decide?</p>
-                            <p class="text-zinc-500 mt-0.5">
+                            <p class="font-medium text-on-surface">Ready to decide?</p>
+                            <p class="text-on-surface-variant mt-0.5">
                                 Accept to proceed to payment, or reject if you'd like to pass on this quote.
                             </p>
                         </div>
@@ -401,7 +401,7 @@ new #[Title('Quotation Details')] #[Layout('layouts.customer')] class extends Co
                 {{-- TIMELINE                                                       --}}
                 {{-- ============================================================ --}}
                 <div class="mt-8">
-                    <h3 class="text-base font-bold uppercase tracking-wider text-zinc-900 mb-4 font-serif">Quotation
+                    <h3 class="text-base font-bold uppercase tracking-wider text-on-surface mb-4 font-serif">Quotation
                         History</h3>
 
                     @php
@@ -454,8 +454,8 @@ new #[Title('Quotation Details')] #[Layout('layouts.customer')] class extends Co
                                     'relative z-10 shrink-0 w-8 h-8 rounded-full flex items-center justify-center transition-colors',
                                     'bg-green-500 text-white ring-4 ring-green-100 dark:ring-green-900' => $isActive,
                                     'bg-green-500 text-white' => $reached && !$isActive,
-                                    'bg-zinc-100 dark:bg-zinc-800 text-zinc-300 dark:text-zinc-600' => $dimmed,
-                                    'bg-zinc-100 dark:bg-zinc-800 text-zinc-400' => !$reached && !$dimmed,
+                                    'bg-zinc-100 dark:bg-zinc-800 text-zinc-300 dark:text-on-surface-variant' => $dimmed,
+                                    'bg-zinc-100 dark:bg-zinc-800 text-on-surface-variant' => !$reached && !$dimmed,
                                 ])>
                                     <flux:icon name="{{ $step->icon() }}" class="size-4" />
                                 </div>
@@ -466,25 +466,25 @@ new #[Title('Quotation Details')] #[Layout('layouts.customer')] class extends Co
                                             <div @class([
                                                 'text-sm',
                                                 'font-semibold text-green-600 dark:text-green-400' => $isActive,
-                                                'font-semibold text-zinc-900 dark:text-white' => $reached && !$isActive,
-                                                'text-zinc-300 dark:text-zinc-600' => $dimmed,
-                                                'text-zinc-400' => !$reached && !$dimmed,
+                                                'font-semibold text-on-surface dark:text-white' => $reached && !$isActive,
+                                                'text-zinc-300 dark:text-on-surface-variant' => $dimmed,
+                                                'text-on-surface-variant' => !$reached && !$dimmed,
                                             ])>
                                                 {{ $meta['label'] }}
                                             </div>
                                             <div
                                                 class="text-xs mt-0.5
-                                        {{ $reached ? 'text-zinc-500' : 'text-zinc-300 dark:text-zinc-600' }}">
+                                        {{ $reached ? 'text-on-surface-variant' : 'text-zinc-300 dark:text-on-surface-variant' }}">
                                                 {{ $reached ? $meta['desc'] : 'Pending' }}
                                             </div>
                                         </div>
 
                                         @if ($history)
                                             <div class="text-right shrink-0">
-                                                <div class="text-xs font-medium text-zinc-700 dark:text-zinc-300">
+                                                <div class="text-xs font-medium text-on-surface">
                                                     {{ $history->created_at->format('M j, Y') }}
                                                 </div>
-                                                <div class="text-xs text-zinc-400 mt-0.5">
+                                                <div class="text-xs text-on-surface-variant mt-0.5">
                                                     {{ $history->created_at->format('g:i A') }}
                                                 </div>
                                             </div>
@@ -504,7 +504,7 @@ new #[Title('Quotation Details')] #[Layout('layouts.customer')] class extends Co
                                 <div class="flex-1 pt-1">
                                     <div class="text-sm font-semibold text-red-600">You rejected this quote
                                     </div>
-                                    <div class="text-xs text-zinc-500 mt-0.5">
+                                    <div class="text-xs text-on-surface-variant mt-0.5">
                                         Contact us if you'd like a revised quotation.
                                     </div>
                                 </div>
@@ -515,12 +515,12 @@ new #[Title('Quotation Details')] #[Layout('layouts.customer')] class extends Co
                             <div class="relative flex gap-5 pt-6">
                                 <div class="absolute left-4 top-0 h-6 w-0.5 bg-zinc-300 z-0"></div>
                                 <div
-                                    class="relative z-10 shrink-0 w-8 h-8 rounded-full flex items-center justify-center bg-zinc-100 text-zinc-400">
+                                    class="relative z-10 shrink-0 w-8 h-8 rounded-full flex items-center justify-center bg-zinc-100 text-on-surface-variant">
                                     <flux:icon name="{{ QuoteStatus::EXPIRED->icon() }}" class="size-4" />
                                 </div>
                                 <div class="flex-1 pt-1">
-                                    <div class="text-sm font-semibold text-zinc-500">Quote expired</div>
-                                    <div class="text-xs text-zinc-400 mt-0.5">
+                                    <div class="text-sm font-semibold text-on-surface-variant">Quote expired</div>
+                                    <div class="text-xs text-on-surface-variant mt-0.5">
                                         The validity period ended without a response.
                                     </div>
                                 </div>
@@ -536,7 +536,7 @@ new #[Title('Quotation Details')] #[Layout('layouts.customer')] class extends Co
                                 </div>
                                 <div class="flex-1 pt-1">
                                     <div class="text-sm font-semibold text-rose-600">Quotation cancelled</div>
-                                    <div class="text-xs text-zinc-400 mt-0.5">
+                                    <div class="text-xs text-on-surface-variant mt-0.5">
                                         This quotation was cancelled. Please contact us for assistance.
                                     </div>
                                 </div>
@@ -555,7 +555,7 @@ new #[Title('Quotation Details')] #[Layout('layouts.customer')] class extends Co
                         </flux:button>
                     @endif
 
-                    <div class="text-[13px] text-zinc-500">
+                    <div class="text-[13px] text-on-surface-variant">
                         Need help? <a href="#" class="text-primary font-bold hover:underline">Contact
                             Support</a>
                     </div>
@@ -579,16 +579,16 @@ new #[Title('Quotation Details')] #[Layout('layouts.customer')] class extends Co
 
             <div class="p-3 bg-zinc-50 dark:bg-zinc-800 rounded-sm text-sm space-y-1.5">
                 <div class="flex justify-between">
-                    <span class="text-zinc-500">Reference</span>
+                    <span class="text-on-surface-variant">Reference</span>
                     <span class="font-medium">{{ $quote->reference }}</span>
                 </div>
                 <div class="flex justify-between">
-                    <span class="text-zinc-500">Total</span>
+                    <span class="text-on-surface-variant">Total</span>
                     <span class="font-medium">{{ format_currency($quote->total) }}</span>
                 </div>
                 @if ($quote->expires_at)
                     <div class="flex justify-between">
-                        <span class="text-zinc-500">Valid until</span>
+                        <span class="text-on-surface-variant">Valid until</span>
                         <span class="font-medium">{{ $quote->expires_at->format('M d, Y') }}
                         </span>
                     </div>

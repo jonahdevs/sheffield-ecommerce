@@ -140,7 +140,7 @@ new class extends Component {
 
     {{-- Header --}}
     <div class="px-5 py-4 border-b border-zinc-200 bg-white">
-        <h3 class="text-[13px] font-bold uppercase tracking-widest text-zinc-950">Order Summary</h3>
+        <h3 class="text-[13px] font-bold uppercase tracking-widest text-on-surface">Order Summary</h3>
     </div>
 
     {{-- Items list --}}
@@ -166,16 +166,16 @@ new class extends Component {
                     @endif
                 </div>
                 <div class="flex-1 min-w-0">
-                    <p class="text-[13px] font-bold text-zinc-950 truncate mb-0.5">{{ $item->product->name }}</p>
+                    <p class="text-[13px] font-bold text-on-surface truncate mb-0.5">{{ $item->product->name }}</p>
                     @if ($variantAttrs->isNotEmpty())
-                        <p class="text-[11px] text-zinc-500 truncate font-medium mb-1">
+                        <p class="text-[11px] text-on-surface-variant truncate font-medium mb-1">
                             {{ $variantAttrs->map(fn($v, $k) => "$k: $v")->join(' · ') }}
                         </p>
                     @endif
-                    <p class="text-[11px] text-zinc-400 font-medium">Qty: {{ $item->quantity }}</p>
+                    <p class="text-[11px] text-on-surface-variant font-medium">Qty: {{ $item->quantity }}</p>
                 </div>
                 <div class="flex items-center gap-2.5 shrink-0">
-                    <span class="text-[14px] font-bold text-zinc-950">
+                    <span class="text-[14px] font-bold text-on-surface">
                         {{ format_currency($unitPrice * $item->quantity) }}
                     </span>
                     <button wire:click="removeItem({{ $item->id }})" wire:confirm="Remove this item from your cart?"
@@ -191,8 +191,8 @@ new class extends Component {
     <div class="px-5 py-4 bg-zinc-50 border-t border-zinc-200 space-y-3">
 
         <div class="flex justify-between items-center">
-            <span class="text-[13px] text-zinc-500 font-medium">Subtotal</span>
-            <span class="text-[14px] text-zinc-950 font-bold">{{ format_currency($this->summary['subtotal']) }}</span>
+            <span class="text-[13px] text-on-surface-variant font-medium">Subtotal</span>
+            <span class="text-[14px] text-on-surface font-bold">{{ format_currency($this->summary['subtotal']) }}</span>
         </div>
 
         @if ($this->summary['discount'] > 0)
@@ -204,7 +204,7 @@ new class extends Component {
         @endif
 
         <div class="flex justify-between items-center">
-            <span class="text-[13px] text-zinc-500 font-medium">Shipping</span>
+            <span class="text-[13px] text-on-surface-variant font-medium">Shipping</span>
             @if (!$this->summary['shipping_selected'])
                 <flux:link :href="route('checkout.shipping')" wire:navigate
                     class="text-primary text-[11px] font-bold uppercase tracking-wider">
@@ -214,21 +214,21 @@ new class extends Component {
                 <span class="text-[14px] text-green-600 font-bold">FREE</span>
             @else
                 <span
-                    class="text-[14px] text-zinc-950 font-bold">{{ format_currency($this->summary['shipping_cost']) }}</span>
+                    class="text-[14px] text-on-surface font-bold">{{ format_currency($this->summary['shipping_cost']) }}</span>
             @endif
         </div>
 
         @if ($this->summary['tax_enabled'] && !$this->summary['tax_inclusive'] && $this->summary['tax'] > 0)
             <div class="flex justify-between items-center">
-                <span class="text-[13px] text-zinc-500 font-medium">
+                <span class="text-[13px] text-on-surface-variant font-medium">
                     {{ $this->summary['tax_name'] }} ({{ $this->summary['tax_rate'] }})
                 </span>
-                <span class="text-[14px] text-zinc-950 font-bold">{{ format_currency($this->summary['tax']) }}</span>
+                <span class="text-[14px] text-on-surface font-bold">{{ format_currency($this->summary['tax']) }}</span>
             </div>
         @endif
 
         <div class="pt-3 border-t border-zinc-200 flex justify-between items-baseline">
-            <span class="text-[14px] font-bold uppercase tracking-widest text-zinc-950">Total</span>
+            <span class="text-[14px] font-bold uppercase tracking-widest text-on-surface">Total</span>
             <span class="text-[22px] font-black text-primary leading-none">
                 {{ format_currency($this->summary['total']) }}
             </span>
@@ -256,7 +256,7 @@ new class extends Component {
                 </x-slot>
             </flux:button>
 
-            <div class="mt-3 flex items-center justify-center gap-1.5 text-xs text-zinc-400 font-medium">
+            <div class="mt-3 flex items-center justify-center gap-1.5 text-xs text-on-surface-variant font-medium">
                 <flux:icon.shield-check class="size-3" />
                 <span class="uppercase tracking-widest">SSL Encrypted & Secure</span>
             </div>
@@ -265,21 +265,21 @@ new class extends Component {
 
     {{-- We Accept & Trust --}}
     <div class="py-4 px-5 border-t border-zinc-100">
-        <div class="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-3">We accept</div>
+        <div class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest mb-3">We accept</div>
         <div class="flex flex-wrap gap-1.5 mb-6">
             @foreach (['VISA', 'MPESA', 'MASTERCARD', 'PAYPAL'] as $pay)
                 <span
-                    class="inline-block px-2 py-1 bg-zinc-100 border border-zinc-200 rounded text-[9px] font-extrabold text-zinc-600 tracking-wider">{{ $pay }}</span>
+                    class="inline-block px-2 py-1 bg-zinc-100 border border-zinc-200 rounded text-[9px] font-extrabold text-on-surface-variant tracking-wider">{{ $pay }}</span>
             @endforeach
         </div>
 
         <div class="space-y-3">
-            <div class="flex items-center gap-2.5 text-[12px] text-zinc-500 font-medium">
-                <flux:icon.arrow-path class="size-4 text-zinc-400 shrink-0" />
+            <div class="flex items-center gap-2.5 text-[12px] text-on-surface-variant font-medium">
+                <flux:icon.arrow-path class="size-4 text-on-surface-variant shrink-0" />
                 <span>30-Day Easy Returns Policy</span>
             </div>
-            <div class="flex items-center gap-2.5 text-[12px] text-zinc-500 font-medium">
-                <flux:icon.truck class="size-4 text-zinc-400 shrink-0" />
+            <div class="flex items-center gap-2.5 text-[12px] text-on-surface-variant font-medium">
+                <flux:icon.truck class="size-4 text-on-surface-variant shrink-0" />
                 <span>Free delivery on orders over KES 5,000</span>
             </div>
         </div>
@@ -319,18 +319,18 @@ new class extends Component {
 
                 <flux:heading size="lg" class="mb-2">Check your phone</flux:heading>
 
-                <flux:text class="text-zinc-500 text-sm mb-6">
+                <flux:text class="text-on-surface-variant text-sm mb-6">
                     An M-Pesa payment request has been sent to your phone.
                     Enter your PIN to complete payment.
                 </flux:text>
 
-                <div class="text-2xl font-mono font-bold text-zinc-800 mb-2" x-text="timeLeft + 's'"></div>
+                <div class="text-2xl font-mono font-bold text-on-surface mb-2" x-text="timeLeft + 's'"></div>
                 <div class="w-full bg-zinc-100 rounded-full h-1.5 mb-6">
                     <div class="bg-green-500 h-1.5 rounded-full transition-all duration-1000"
                         :style="'width: ' + (timeLeft / 60 * 100) + '%'"></div>
                 </div>
 
-                <flux:text class="text-xs text-zinc-400">Waiting for confirmation...</flux:text>
+                <flux:text class="text-xs text-on-surface-variant">Waiting for confirmation...</flux:text>
             </div>
         </div>
     </flux:modal>

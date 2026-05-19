@@ -270,7 +270,7 @@ new #[Defer] #[Layout('layouts.guest')] class extends Component {
     <section class="container mx-auto px-4 py-4 min-h-[80svh]">
         <div class="flex items-center justify-between mb-6">
             <flux:heading level="1"
-                class="text-xl! sm:text-2xl! lg:text-3xl! font-bold! text-zinc-900 dark:text-zinc-100">
+                class="text-xl! sm:text-2xl! lg:text-3xl! font-bold! text-on-surface">
                 Customer Reviews
             </flux:heading>
         </div>
@@ -306,7 +306,7 @@ new #[Defer] #[Layout('layouts.guest')] class extends Component {
                             @endfor
                         </div>
 
-                        <div class="text-xs sm:text-sm text-zinc-600 mt-1">
+                        <div class="text-xs sm:text-sm text-on-surface-variant mt-1">
                             {{ $this->reviewStats['total'] }} {{ Str::plural('review', $this->reviewStats['total']) }}
                         </div>
                     </div>
@@ -348,7 +348,7 @@ new #[Defer] #[Layout('layouts.guest')] class extends Component {
 
                 {{-- Sort and Filter Controls --}}
                 <div class="flex items-center justify-between mb-5 pb-4 border-b">
-                    <div class="text-xs sm:text-sm text-zinc-600">
+                    <div class="text-xs sm:text-sm text-on-surface-variant">
                         @if ($filterRating)
                             Showing {{ $filterRating }}-star reviews
                         @else
@@ -391,8 +391,8 @@ new #[Defer] #[Layout('layouts.guest')] class extends Component {
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
                                 d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
                         </svg>
-                        <p class="text-zinc-500 text-base sm:text-lg mb-2">No reviews found</p>
-                        <p class="text-zinc-400 text-xs sm:text-sm">
+                        <p class="text-on-surface-variant text-base sm:text-lg mb-2">No reviews found</p>
+                        <p class="text-on-surface-variant text-xs sm:text-sm">
                             @if ($filterRating)
                                 No {{ $filterRating }}-star reviews found. Try adjusting your filters.
                             @else

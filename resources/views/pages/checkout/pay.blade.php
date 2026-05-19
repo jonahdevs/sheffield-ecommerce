@@ -171,9 +171,9 @@ new #[Layout('layouts.checkout')] class extends Component {
 
     <x-slot name="orderSummaryCta">
         <div class="px-4 py-2 text-center">
-            <p class="text-[11px] font-bold uppercase tracking-widest text-zinc-500">Choose a payment method</p>
+            <p class="text-[11px] font-bold uppercase tracking-widest text-on-surface-variant">Choose a payment method</p>
             <div
-                class="mt-3 flex items-center justify-center gap-1.5 text-[10px] text-zinc-400 font-bold uppercase tracking-widest">
+                class="mt-3 flex items-center justify-center gap-1.5 text-[10px] text-on-surface-variant font-bold uppercase tracking-widest">
                 <flux:icon.shield-check class="size-3" />
                 <span>SSL Encrypted & Secure</span>
             </div>
@@ -195,13 +195,13 @@ new #[Layout('layouts.checkout')] class extends Component {
                         :class="$wire.paymentMethod === 'card' ? 'opacity-100' : 'opacity-0'"></div>
                 </div>
 
-                <flux:icon.credit-card class="size-4 text-zinc-500" />
-                <span class="text-[13px] font-bold text-zinc-950">Card Payment</span>
+                <flux:icon.credit-card class="size-4 text-on-surface-variant" />
+                <span class="text-[13px] font-bold text-on-surface">Card Payment</span>
 
                 <div class="ml-auto flex items-center gap-1.5">
                     @foreach (['Visa', 'MC', 'Amex'] as $card)
                         <span
-                            class="text-[9px] font-extrabold px-2 py-0.5 border border-zinc-200 bg-zinc-50 text-zinc-500 tracking-wider">
+                            class="text-[9px] font-extrabold px-2 py-0.5 border border-zinc-200 bg-zinc-50 text-on-surface-variant tracking-wider">
                             {{ $card }}
                         </span>
                     @endforeach
@@ -262,7 +262,7 @@ new #[Layout('layouts.checkout')] class extends Component {
                 </button>
 
                 <div
-                    class="mt-3 flex items-center justify-center gap-1.5 text-[10px] text-zinc-400 font-bold uppercase tracking-widest">
+                    class="mt-3 flex items-center justify-center gap-1.5 text-[10px] text-on-surface-variant font-bold uppercase tracking-widest">
                     <flux:icon.lock-closed class="size-3" />
                     <span>Secured by Stripe. We never store your card details.</span>
                 </div>
@@ -286,13 +286,13 @@ new #[Layout('layouts.checkout')] class extends Component {
                     @endif
                 </div>
 
-                <flux:icon.device-phone-mobile class="size-4 text-zinc-500" />
-                <span class="text-[13px] font-bold text-zinc-950">M-Pesa</span>
-                <span class="ml-auto text-[11px] font-bold text-zinc-400 uppercase tracking-wider">Safaricom</span>
+                <flux:icon.device-phone-mobile class="size-4 text-on-surface-variant" />
+                <span class="text-[13px] font-bold text-on-surface">M-Pesa</span>
+                <span class="ml-auto text-[11px] font-bold text-on-surface-variant uppercase tracking-wider">Safaricom</span>
             </div>
 
             <div x-show="$wire.paymentMethod === 'mpesa'" x-cloak class="px-5 pb-5 border-t border-zinc-200">
-                <p class="mt-4 mb-4 text-[12px] text-zinc-500 font-medium leading-relaxed">
+                <p class="mt-4 mb-4 text-[12px] text-on-surface-variant font-medium leading-relaxed">
                     Enter the M-Pesa number you want to pay with. You will receive a
                     prompt on your phone to enter your PIN.
                 </p>
@@ -318,7 +318,7 @@ new #[Layout('layouts.checkout')] class extends Component {
                 </flux:button>
 
                 <div
-                    class="mt-3 flex items-center justify-center gap-1.5 text-[10px] text-zinc-400 font-bold uppercase tracking-widest">
+                    class="mt-3 flex items-center justify-center gap-1.5 text-[10px] text-on-surface-variant font-bold uppercase tracking-widest">
                     <flux:icon.lock-closed class="size-3" />
                     <span>Secure payment via Safaricom M-Pesa</span>
                 </div>
@@ -335,19 +335,19 @@ new #[Layout('layouts.checkout')] class extends Component {
                 <div class="w-14 h-14 bg-green-100 flex items-center justify-center mx-auto mb-5">
                     <flux:icon.device-phone-mobile class="size-7 text-green-600" />
                 </div>
-                <p class="font-serif text-base font-extrabold uppercase tracking-tight text-zinc-950 mb-2">
+                <p class="font-serif text-base font-extrabold uppercase tracking-tight text-on-surface mb-2">
                     Check your phone
                 </p>
-                <p class="text-[12px] text-zinc-500 font-medium mb-6">
+                <p class="text-[12px] text-on-surface-variant font-medium mb-6">
                     An M-Pesa payment request has been sent to your phone.
                     Enter your PIN to complete payment.
                 </p>
-                <div class="text-2xl font-mono font-bold text-zinc-800 mb-2" x-text="timeLeft + 's'"></div>
+                <div class="text-2xl font-mono font-bold text-on-surface mb-2" x-text="timeLeft + 's'"></div>
                 <div class="w-full bg-zinc-100 h-1 mb-6">
                     <div class="bg-green-500 h-1 transition-all duration-1000"
                         :style="'width: ' + (timeLeft / 60 * 100) + '%'"></div>
                 </div>
-                <p class="text-[11px] text-zinc-400 font-medium uppercase tracking-widest">Waiting for confirmation...
+                <p class="text-[11px] text-on-surface-variant font-medium uppercase tracking-widest">Waiting for confirmation...
                 </p>
             </div>
 
@@ -356,10 +356,10 @@ new #[Layout('layouts.checkout')] class extends Component {
                 <div class="w-14 h-14 bg-amber-100 flex items-center justify-center mx-auto mb-5">
                     <flux:icon.clock class="size-7 text-amber-500" />
                 </div>
-                <p class="font-serif text-base font-extrabold uppercase tracking-tight text-zinc-950 mb-2">
+                <p class="font-serif text-base font-extrabold uppercase tracking-tight text-on-surface mb-2">
                     Request Expired
                 </p>
-                <p class="text-[12px] text-zinc-500 font-medium mb-6">
+                <p class="text-[12px] text-on-surface-variant font-medium mb-6">
                     The M-Pesa request timed out. You can retry or switch to card payment.
                 </p>
                 <div class="flex flex-col gap-2">
@@ -377,7 +377,7 @@ new #[Layout('layouts.checkout')] class extends Component {
                     </flux:button>
 
                     <a href="{{ route('customer.orders.index') }}"
-                        class="text-[11px] text-zinc-400 font-medium mt-1 hover:text-zinc-600 transition-colors">
+                        class="text-[11px] text-on-surface-variant font-medium mt-1 hover:text-on-surface-variant transition-colors">
                         Cancel and view orders
                     </a>
                 </div>

@@ -121,7 +121,7 @@ new #[Layout('layouts.customer')] class extends Component {
     $tabClass =
         'px-[18px] py-2.5 text-[11px] font-bold tracking-[0.08em] uppercase cursor-pointer border-r border-zinc-200 last:border-r-0 whitespace-nowrap font-serif transition-all';
     $tabActive = 'bg-primary text-white';
-    $tabInactive = 'bg-transparent text-zinc-500 hover:bg-zinc-50 hover:text-zinc-950';
+    $tabInactive = 'bg-transparent text-on-surface-variant hover:bg-zinc-50 hover:text-on-surface';
 @endphp
 
 <div>
@@ -159,9 +159,9 @@ new #[Layout('layouts.customer')] class extends Component {
                     @endforeach
                 </div>
                 <div class="flex-1 min-w-0">
-                    <div class="text-[13px] font-bold text-zinc-950 mb-0.5">#{{ $order->reference }}</div>
-                    <div class="text-[11px] text-zinc-500">{{ $order->created_at->format('d M Y') }}</div>
-                    <div class="text-[11px] text-zinc-500 mt-0.5">
+                    <div class="text-[13px] font-bold text-on-surface mb-0.5">#{{ $order->reference }}</div>
+                    <div class="text-[11px] text-on-surface-variant">{{ $order->created_at->format('d M Y') }}</div>
+                    <div class="text-[11px] text-on-surface-variant mt-0.5">
                         {{ $order->items_count }} {{ Str::plural('item', $order->items_count) }}
                         @if ($order->payment_method)
                             · {{ str_replace('_', ' ', strtoupper($order->payment_method)) }}
@@ -173,15 +173,15 @@ new #[Layout('layouts.customer')] class extends Component {
                 </flux:badge>
                 <div class="font-sans text-base font-semibold text-primary shrink-0">
                     {{ format_currency($order->total) }}</div>
-                <div class="text-zinc-400 shrink-0">
+                <div class="text-on-surface-variant shrink-0">
                     <flux:icon.chevron-right class="w-4 h-4" />
                 </div>
             </a>
         @empty
             <div class="p-12 text-center flex flex-col items-center justify-center">
                 <flux:icon.shopping-bag class="w-12 h-12 text-zinc-300 mb-3" />
-                <h4 class="text-lg font-medium text-zinc-900">No orders found</h4>
-                <p class="text-sm text-zinc-500 mt-1">
+                <h4 class="text-lg font-medium text-on-surface">No orders found</h4>
+                <p class="text-sm text-on-surface-variant mt-1">
                     {{ $selectedTab === 'ongoing' ? "You don't have any ongoing or delivered orders yet." : "You don't have any cancelled or returned orders." }}
                 </p>
             </div>

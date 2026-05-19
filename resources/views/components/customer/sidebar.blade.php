@@ -19,8 +19,8 @@
             @endif
 
             <div class="flex-1 min-w-0">
-                <p class="font-semibold text-zinc-800 truncate">{{ $user->name }}</p>
-                <p class="text-zinc-500 text-xs truncate">{{ $user->email }}</p>
+                <p class="font-semibold text-on-surface truncate">{{ $user->name }}</p>
+                <p class="text-on-surface-variant text-xs truncate">{{ $user->email }}</p>
             </div>
         </div>
 

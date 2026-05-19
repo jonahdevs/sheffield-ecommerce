@@ -21,7 +21,7 @@
                 </div>
             @endif
             <h3 class="font-serif text-[16px] font-extrabold uppercase tracking-wide">
-                <span @class(['text-red-500' => $danger, 'text-zinc-950' => !$danger])>{{ $title }}</span>
+                <span @class(['text-red-500' => $danger, 'text-on-surface' => !$danger])>{{ $title }}</span>
                 @if ($titleEm)
                     <em @class([
                         'not-italic',

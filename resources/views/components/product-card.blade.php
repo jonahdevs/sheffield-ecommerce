@@ -215,7 +215,7 @@ new class extends Component {
                             class="w-full h-full object-contain hover:scale-105 transition-transform duration-300"
                             loading="lazy" />
                     @else
-                        <flux:icon.photo class="w-16 h-16 text-zinc-400 stroke-1" />
+                        <flux:icon.photo class="w-16 h-16 text-on-surface-variant stroke-1" />
                     @endif
                 </figure>
             </a>
@@ -297,12 +297,12 @@ new class extends Component {
 
             {{-- Brand --}}
             @if ($product->brand)
-                <p class="text-zinc-400 text-xs uppercase tracking-wide">{{ $product->brand->name }}</p>
+                <p class="text-on-surface-variant text-xs uppercase tracking-wide">{{ $product->brand->name }}</p>
             @endif
 
             {{-- Name --}}
             <a href="{{ route('products.show', $product) }}" wire:navigate
-                class="text-sm text-zinc-700 line-clamp-2 font-medium tracking-wide hover:text-secondary transition-colors">
+                class="text-sm text-on-surface line-clamp-2 font-medium tracking-wide hover:text-secondary transition-colors">
                 {{ $product->name }}
             </a>
 
@@ -320,15 +320,15 @@ new class extends Component {
                 @elseif ($product->display_price)
                     <div class="flex items-baseline gap-1 flex-wrap">
                         @if ($product->has_price_prefix)
-                            <span class="text-xs text-zinc-400">{{ $product->display_price_prefix }}</span>
+                            <span class="text-xs text-on-surface-variant">{{ $product->display_price_prefix }}</span>
                         @endif
                         <span class="font-extrabold text-primary tracking-wide">{{ $product->display_price }}</span>
                         @if ($product->type === ProductType::SIMPLE && $product->hasDiscount())
-                            <span class="text-xs text-zinc-400 line-through">{{ $product->formatted_price }}</span>
+                            <span class="text-xs text-on-surface-variant line-through">{{ $product->formatted_price }}</span>
                         @endif
                     </div>
                 @else
-                    <span class="text-sm text-zinc-400">Price unavailable</span>
+                    <span class="text-sm text-on-surface-variant">Price unavailable</span>
                 @endif
             </div>
         </div>
@@ -401,13 +401,13 @@ new class extends Component {
                 {{-- Details --}}
                 <div class="col-span-1 md:col-span-2 pt-5 md:pt-0 md:pl-6">
                     <a href="{{ route('products.show', $product) }}" wire:navigate
-                        class="text-xl font-bold mt-2 mb-1 text-zinc-800 hover:text-secondary hover:underline transition-colors">
+                        class="text-xl font-bold mt-2 mb-1 text-on-surface hover:text-secondary hover:underline transition-colors">
                         {{ $product->name }}
                     </a>
 
                     <x-star-rating :rating="$product->average_rating ?? ($product->reviews_avg_rating ?? 0)" class="mb-2 mt-1" />
 
-                    <div class="my-4 text-zinc-500 text-sm line-clamp-3">{!! $product->short_description !!}</div>
+                    <div class="my-4 text-on-surface-variant text-sm line-clamp-3">{!! $product->short_description !!}</div>
 
                     {{-- Price --}}
                     @if ($product->requires_quotation)
@@ -418,11 +418,11 @@ new class extends Component {
                     @elseif ($product->display_price)
                         <div class="flex items-baseline gap-1 flex-wrap">
                             @if ($product->has_price_prefix)
-                                <span class="text-sm text-zinc-400">{{ $product->display_price_prefix }}</span>
+                                <span class="text-sm text-on-surface-variant">{{ $product->display_price_prefix }}</span>
                             @endif
                             <span class="text-lg font-semibold text-secondary">{{ $product->display_price }}</span>
                             @if ($product->type === ProductType::SIMPLE && $product->hasDiscount())
-                                <span class="text-sm text-zinc-400 line-through">{{ $product->formatted_price }}</span>
+                                <span class="text-sm text-on-surface-variant line-through">{{ $product->formatted_price }}</span>
                                 <flux:badge color="amber" size="sm">-{{ $product->discountPercentage() }}
                                 </flux:badge>
                             @endif
@@ -434,11 +434,11 @@ new class extends Component {
                         @island
                             <div class="mt-3 flex items-center gap-4 flex-wrap">
                                 <flux:button.group>
-                                    <flux:button icon="minus" class="cursor-pointer text-zinc-500!"
+                                    <flux:button icon="minus" class="cursor-pointer text-on-surface-variant!"
                                         wire:click="decreaseCartQuantity" title="Decrease" />
                                     <flux:input readonly value="{{ $cartQuantity }}"
                                         class="max-w-9! outline-none! border-none! ring-0! text-center!" />
-                                    <flux:button icon="plus" class="cursor-pointer text-zinc-500!"
+                                    <flux:button icon="plus" class="cursor-pointer text-on-surface-variant!"
                                         wire:click="increaseCartQuantity" title="Increase" />
                                     @if ($inCart)
                                         <flux:button icon="trash" class="cursor-pointer text-red-500!"

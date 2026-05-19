@@ -75,10 +75,10 @@
      * on-surface-variant: Captions, metadata, helper text, placeholders.
      * ─────────────────────────────────────────────────────────── */
     --background: hsl(0 0% 98%);
-    --on-background: hsl(0 0% 10%);
+    --on-background: hsl(0 0% 20%);
     --surface: #f8fafc;
     --surface-variant: hsl(0 0% 94%);
-    --on-surface: hsl(0 0% 10%);
+    --on-surface: hsl(0 0% 20%);
     --on-surface-variant: hsl(0 0% 45%);
 
     /* ── Outline ────────────────────────────────────────────────

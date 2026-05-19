@@ -148,9 +148,9 @@ new #[Layout('layouts.customer')] class extends Component {
                         {{ $address->label ?? 'Home' }}
                     </span>
 
-                    <div class="text-[14px] font-bold text-zinc-950 mb-1">{{ $address->full_name }}</div>
+                    <div class="text-[14px] font-bold text-on-surface mb-1">{{ $address->full_name }}</div>
 
-                    <div class="text-[12px] text-zinc-500 leading-[1.7]">
+                    <div class="text-[12px] text-on-surface-variant leading-[1.7]">
                         {{ $address->address }}<br>
                         @if ($address->area)
                             {{ $address->area->name }},
@@ -186,10 +186,10 @@ new #[Layout('layouts.customer')] class extends Component {
                     class="border-[1.5px] border-dashed border-zinc-200 p-4 flex flex-col items-center justify-center gap-2.5 cursor-pointer min-h-40 transition-all hover:border-primary hover:bg-[#fff8f6] group w-full rounded-sm">
                     <div
                         class="w-10 h-10 rounded-full bg-zinc-100 flex items-center justify-center transition-colors group-hover:bg-[#fff0ea]">
-                        <flux:icon.plus class="w-4.5 h-4.5 text-zinc-500 group-hover:text-primary transition-colors" />
+                        <flux:icon.plus class="w-4.5 h-4.5 text-on-surface-variant group-hover:text-primary transition-colors" />
                     </div>
                     <div
-                        class="text-[12px] font-bold tracking-widest uppercase text-zinc-500 transition-colors group-hover:text-primary">
+                        class="text-[12px] font-bold tracking-widest uppercase text-on-surface-variant transition-colors group-hover:text-primary">
                         Add New Address
                     </div>
                 </button>
@@ -205,7 +205,7 @@ new #[Layout('layouts.customer')] class extends Component {
             max-width="640px" wire:click.self="closeModal">
             <x-slot:close>
                 <button wire:click="closeModal"
-                    class="text-zinc-400 hover:text-zinc-950 transition-colors cursor-pointer group">
+                    class="text-on-surface-variant hover:text-on-surface transition-colors cursor-pointer group">
                     <flux:icon.x-mark class="w-5 h-5 group-hover:rotate-90 transition-all duration-150 ease-in-out" />
                 </button>
             </x-slot:close>

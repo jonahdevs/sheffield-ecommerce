@@ -104,7 +104,7 @@ new #[Layout('layouts.customer')] class extends Component {
     $tabClass =
         'px-[18px] py-2.5 text-[11px] font-bold tracking-[0.08em] uppercase cursor-pointer border-r border-zinc-200 last:border-r-0 whitespace-nowrap font-barlow transition-all';
     $tabActive = 'bg-primary text-white';
-    $tabInactive = 'bg-transparent text-zinc-500 hover:bg-zinc-50 hover:text-zinc-950';
+    $tabInactive = 'bg-transparent text-on-surface-variant hover:bg-zinc-50 hover:text-on-surface';
 @endphp
 
 <div>
@@ -113,8 +113,8 @@ new #[Layout('layouts.customer')] class extends Component {
         <div class="flex flex-col bg-white border border-zinc-200">
             <div class="p-12 text-center flex flex-col items-center justify-center min-h-[50svh]">
                 <flux:icon.tag class="w-16 h-16 text-zinc-300 mb-4" />
-                <h4 class="text-lg font-bold text-zinc-900 mb-2">No quotations yet</h4>
-                <p class="text-sm text-zinc-500 max-w-sm">
+                <h4 class="text-lg font-bold text-on-surface mb-2">No quotations yet</h4>
+                <p class="text-sm text-on-surface-variant max-w-sm">
                     When you request a quote for a product, it will appear here.
                 </p>
             </div>
@@ -176,9 +176,9 @@ new #[Layout('layouts.customer')] class extends Component {
                         </div>
                     </div>
                     <div class="flex-1 min-w-0">
-                        <div class="text-[13px] font-bold text-zinc-950 mb-0.5">#{{ $quotation->reference }}</div>
-                        <div class="text-[11px] text-zinc-500">{{ $quotation->created_at->format('d M Y') }}</div>
-                        <div class="text-[11px] text-zinc-500 mt-0.5">
+                        <div class="text-[13px] font-bold text-on-surface mb-0.5">#{{ $quotation->reference }}</div>
+                        <div class="text-[11px] text-on-surface-variant">{{ $quotation->created_at->format('d M Y') }}</div>
+                        <div class="text-[11px] text-on-surface-variant mt-0.5">
                             {{ $quotation->items_count }} {{ Str::plural('item', $quotation->items_count) }}
                             @if ($quotation->expires_at && $quotation->status === QuoteStatus::SENT)
                                 · <span @class([
@@ -197,15 +197,15 @@ new #[Layout('layouts.customer')] class extends Component {
                     <flux:badge size="sm" :color="$quotation->status->color()">
                         {{ $quotation->status->label() }}
                     </flux:badge>
-                    <div class="text-zinc-400 shrink-0">
+                    <div class="text-on-surface-variant shrink-0">
                         <flux:icon.chevron-right class="w-4 h-4" />
                     </div>
                 </a>
             @empty
                 <div class="p-12 text-center flex flex-col items-center justify-center">
                     <flux:icon.tag class="w-12 h-12 text-zinc-300 mb-3" />
-                    <h4 class="text-lg font-medium text-zinc-900">No quotations found</h4>
-                    <p class="text-sm text-zinc-500 mt-1">
+                    <h4 class="text-lg font-medium text-on-surface">No quotations found</h4>
+                    <p class="text-sm text-on-surface-variant mt-1">
                         {{ $selectedTab === 'active' ? 'You have no active quotations at the moment.' : 'You have no closed quotations.' }}
                     </p>
                 </div>

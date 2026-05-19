@@ -123,11 +123,11 @@ new #[Title('Order Details')] #[Layout('layouts.customer')] class extends Compon
     <div class="bg-white border border-zinc-200">
         <div class="p-4 bg-white border-b border-zinc-200 flex items-center justify-between flex-wrap gap-3">
             <a href="{{ route('customer.orders.index') }}" wire:navigate
-                class="flex items-center gap-1.5 text-[12px] font-bold tracking-widest uppercase text-zinc-500 transition-colors hover:text-primary cursor-pointer">
+                class="flex items-center gap-1.5 text-[12px] font-bold tracking-widest uppercase text-on-surface-variant transition-colors hover:text-primary cursor-pointer">
                 <flux:icon.chevron-left class="w-3.5 h-3.5" />
                 Back to Orders
             </a>
-            <div class="font-serif text-[18px] font-black text-zinc-950">
+            <div class="font-serif text-[18px] font-black text-on-surface">
                 ORDER <em class="text-primary not-italic">#{{ $order->reference }}</em>
             </div>
             <flux:badge :color="$order->status->color()">{{ $order->status->label() }}
@@ -156,15 +156,15 @@ new #[Title('Order Details')] #[Layout('layouts.customer')] class extends Compon
             {{-- Order Quick Summary --}}
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4 pb-6 border-b border-zinc-200">
                 <div>
-                    <div class="text-[10px] font-bold tracking-widest uppercase text-zinc-500 mb-1">Placed On</div>
-                    <div class="text-[14px] font-semibold text-zinc-950">{{ $order->created_at->format('M j, Y') }}
+                    <div class="text-[10px] font-bold tracking-widest uppercase text-on-surface-variant mb-1">Placed On</div>
+                    <div class="text-[14px] font-semibold text-on-surface">{{ $order->created_at->format('M j, Y') }}
                     </div>
                 </div>
             </div>
 
             {{-- Items List --}}
             <div class="">
-                <h3 class="text-base font-bold uppercase tracking-wider text-zinc-900 mb-4 font-serif">Items in Your
+                <h3 class="text-base font-bold uppercase tracking-wider text-on-surface mb-4 font-serif">Items in Your
                     Order
                 </h3>
 
@@ -189,23 +189,23 @@ new #[Title('Order Details')] #[Layout('layouts.customer')] class extends Compon
                                 @endif
                             </div>
                             <div class="flex-1 min-w-0">
-                                <div class="text-[9px] font-bold tracking-widest uppercase text-zinc-500 mb-0.5">
+                                <div class="text-[9px] font-bold tracking-widest uppercase text-on-surface-variant mb-0.5">
                                     {{ $brand }} @if ($sku)
                                         · SKU: {{ $sku }}
                                     @endif
                                 </div>
-                                <div class="text-[13px] font-semibold text-zinc-950 mb-0.5 truncate">
+                                <div class="text-[13px] font-semibold text-on-surface mb-0.5 truncate">
                                     {{ $name }}
                                 </div>
                                 @if (!empty($variantAttrs))
-                                    <div class="text-[10px] text-zinc-400 mb-0.5">
+                                    <div class="text-[10px] text-on-surface-variant mb-0.5">
                                         {{ collect($variantAttrs)->map(fn($v, $k) => "$k: $v")->join(' · ') }}
                                     </div>
                                 @endif
-                                <div class="text-[11px] text-zinc-500">Qty: {{ $item->quantity }}</div>
+                                <div class="text-[11px] text-on-surface-variant">Qty: {{ $item->quantity }}</div>
                             </div>
                             <div class="flex flex-col items-end gap-2">
-                                <div class="text-[13px] font-bold text-zinc-950 shrink-0">
+                                <div class="text-[13px] font-bold text-on-surface shrink-0">
                                     {{ format_currency($item->total_cents / 100) }}</div>
                                 <button
                                     class="text-[10px] font-bold uppercase text-primary tracking-widest hover:underline cursor-pointer"
@@ -222,19 +222,19 @@ new #[Title('Order Details')] #[Layout('layouts.customer')] class extends Compon
                     {{-- Summary --}}
                     {{-- <div class="border border-zinc-200">
                         <div class="flex justify-between p-3 border-b border-zinc-200 text-[13px]">
-                            <span class="text-zinc-500">Subtotal</span>
-                            <span class="font-bold text-zinc-950">{{ format_currency($order->subtotal) }}</span>
+                            <span class="text-on-surface-variant">Subtotal</span>
+                            <span class="font-bold text-on-surface">{{ format_currency($order->subtotal) }}</span>
                         </div>
                         @if ($order->discount > 0)
                             <div class="flex justify-between p-3 border-b border-zinc-200 text-[13px]">
-                                <span class="text-zinc-500">Discount</span>
+                                <span class="text-on-surface-variant">Discount</span>
                                 <span class="font-bold text-green-600">- {{ format_currency($order->discount) }}</span>
                             </div>
                         @endif
                         <div class="flex justify-between p-3 border-b border-zinc-200 text-[13px]">
-                            <span class="text-zinc-500">Shipping</span>
+                            <span class="text-on-surface-variant">Shipping</span>
                             <span
-                                class="font-bold text-zinc-950">{{ $order->shipping == 0 ? 'FREE' : format_currency($order->shipping) }}</span>
+                                class="font-bold text-on-surface">{{ $order->shipping == 0 ? 'FREE' : format_currency($order->shipping) }}</span>
                         </div>
                         <div class="flex justify-between p-3 bg-zinc-50 ">
                             <span class="font-sans text-[15px] font-bold uppercase">Total</span>
@@ -246,13 +246,13 @@ new #[Title('Order Details')] #[Layout('layouts.customer')] class extends Compon
                     {{-- Order Totals --}}
                     <div class="bg-zinc-50 border border-zinc-200 rounded-sm overflow-hidden">
                         <div class="px-5 py-4 border-b border-zinc-200 bg-white">
-                            <h3 class="text-[13px] font-bold uppercase tracking-widest text-zinc-950 font-serif">Order
+                            <h3 class="text-[13px] font-bold uppercase tracking-widest text-on-surface font-serif">Order
                                 Summary</h3>
                         </div>
                         <div class="p-5 space-y-3">
                             <div class="flex justify-between text-[13px]">
-                                <span class="text-zinc-500 font-medium">Subtotal</span>
-                                <span class="text-zinc-950 font-bold">{{ format_currency($order->subtotal) }}</span>
+                                <span class="text-on-surface-variant font-medium">Subtotal</span>
+                                <span class="text-on-surface font-bold">{{ format_currency($order->subtotal) }}</span>
                             </div>
                             @if ($order->discount > 0)
                                 <div class="flex justify-between text-[13px]">
@@ -262,13 +262,13 @@ new #[Title('Order Details')] #[Layout('layouts.customer')] class extends Compon
                                 </div>
                             @endif
                             <div class="flex justify-between text-[13px]">
-                                <span class="text-zinc-500 font-medium">Shipping</span>
-                                <span class="text-zinc-950 font-bold">
+                                <span class="text-on-surface-variant font-medium">Shipping</span>
+                                <span class="text-on-surface font-bold">
                                     {{ $order->shipping == 0 ? 'FREE' : format_currency($order->shipping) }}
                                 </span>
                             </div>
                             <div class="pt-3 border-t border-zinc-200 flex justify-between items-baseline">
-                                <span class="text-[14px] font-bold uppercase tracking-widest text-zinc-950">Total</span>
+                                <span class="text-[14px] font-bold uppercase tracking-widest text-on-surface">Total</span>
                                 <span class="text-[24px] font-black text-primary font-barlow-condensed leading-none">
                                     {{ format_currency($order->total) }}
                                 </span>
@@ -277,20 +277,20 @@ new #[Title('Order Details')] #[Layout('layouts.customer')] class extends Compon
                     </div>
 
                     <x-customer.card title="Delivery Information" bodyClass="py-3 px-5 text-[13px]">
-                        <div class="font-bold text-zinc-950 mb-1">
+                        <div class="font-bold text-on-surface mb-1">
                             {{ trim(($order->shipping_address['first_name'] ?? '') . ' ' . ($order->shipping_address['last_name'] ?? '')) ?: $order->shipping_address['full_name'] ?? 'N/A' }}
                         </div>
-                        <div class="text-zinc-500">
+                        <div class="text-on-surface-variant">
                             {{ format_phone($order->shipping_address['phone_number'] ?? '') }}<br>
                             {{ $order->shipping_address['address'] ?? 'N/A' }}<br>
                             {{ implode(', ', array_filter([$order->shipping_address['area'] ?? null, $order->shipping_address['county'] ?? null])) }}
                         </div>
                         @if ($order->shipping_snapshot['method_name'] ?? null)
                             <div class="mt-2 pt-2 border-t border-zinc-100">
-                                <span class="text-[11px] font-bold uppercase text-zinc-400 block mb-0.5">Method</span>
+                                <span class="text-[11px] font-bold uppercase text-on-surface-variant block mb-0.5">Method</span>
                                 <span class="font-semibold">{{ $order->shipping_snapshot['method_name'] }}</span>
                                 @if ($order->shipping_snapshot['delivery_window'] ?? null)
-                                    <span class="text-zinc-400 block text-[11px]">Est.
+                                    <span class="text-on-surface-variant block text-[11px]">Est.
                                         {{ $order->shipping_snapshot['delivery_window'] }}</span>
                                 @endif
                             </div>
@@ -299,13 +299,13 @@ new #[Title('Order Details')] #[Layout('layouts.customer')] class extends Compon
 
                     <div class="bg-white border border-zinc-200 rounded-sm overflow-hidden">
                         <div class="px-5 py-3 border-b border-zinc-200">
-                            <h3 class="text-[12px] font-bold uppercase tracking-widest text-zinc-950 font-serif">
+                            <h3 class="text-[12px] font-bold uppercase tracking-widest text-on-surface font-serif">
                                 Payment Method</h3>
                         </div>
                         <div class="p-5">
                             @if ($order->payment)
                                 <div class="flex items-center justify-between mb-4">
-                                    <div class="text-[13px] font-bold text-zinc-950 uppercase tracking-tight">
+                                    <div class="text-[13px] font-bold text-on-surface uppercase tracking-tight">
                                         {{ $order->payment->gateway ?? '—' }}
                                     </div>
                                     <flux:badge size="sm" :color="$order->payment->status->color()">
@@ -314,15 +314,15 @@ new #[Title('Order Details')] #[Layout('layouts.customer')] class extends Compon
                                 </div>
                                 <div class="space-y-2">
                                     <div class="flex justify-between text-[12px]">
-                                        <span class="text-zinc-500">Amount Paid</span>
+                                        <span class="text-on-surface-variant">Amount Paid</span>
                                         <span
-                                            class="font-bold text-zinc-950">{{ format_currency(($order->payment->amount_cents ?? 0) / 100) }}</span>
+                                            class="font-bold text-on-surface">{{ format_currency(($order->payment->amount_cents ?? 0) / 100) }}</span>
                                     </div>
                                     @if ($order->payment->paid_at)
                                         <div class="flex justify-between text-[12px]">
-                                            <span class="text-zinc-500">Transaction Date</span>
+                                            <span class="text-on-surface-variant">Transaction Date</span>
                                             <span
-                                                class="font-bold text-zinc-950">{{ $order->payment->paid_at->format('M j, Y') }}</span>
+                                                class="font-bold text-on-surface">{{ $order->payment->paid_at->format('M j, Y') }}</span>
                                         </div>
                                     @endif
                                 </div>
@@ -330,7 +330,7 @@ new #[Title('Order Details')] #[Layout('layouts.customer')] class extends Compon
                                 {{-- Tax Invoice Section --}}
                                 @if ($this->isPaid)
                                     <div class="mt-6 pt-5 border-t border-zinc-200">
-                                        <h4 class="text-[11px] font-bold uppercase tracking-widest text-zinc-400 mb-3">
+                                        <h4 class="text-[11px] font-bold uppercase tracking-widest text-on-surface-variant mb-3">
                                             Tax Invoice</h4>
 
                                         @if ($this->hasKraReceipt)
@@ -343,7 +343,7 @@ new #[Title('Order Details')] #[Layout('layouts.customer')] class extends Compon
                                                 <div
                                                     class="text-[10px] text-emerald-600 font-bold uppercase tracking-wide">
                                                     KRA Validated</div>
-                                                <div class="text-[9px] text-zinc-500 mt-0.5">CU No:
+                                                <div class="text-[9px] text-on-surface-variant mt-0.5">CU No:
                                                     {{ $order->kra_cu_number }}</div>
                                             </div>
                                         @elseif ($this->isAwaitingKraValidation)
@@ -358,7 +358,7 @@ new #[Title('Order Details')] #[Layout('layouts.customer')] class extends Compon
                                             </div>
                                         @else
                                             <div
-                                                class="p-3 bg-zinc-50 border border-zinc-100 rounded-sm text-[11px] text-zinc-500 leading-relaxed italic">
+                                                class="p-3 bg-zinc-50 border border-zinc-100 rounded-sm text-[11px] text-on-surface-variant leading-relaxed italic">
                                                 Your invoice is being prepared...
                                             </div>
                                         @endif
@@ -366,7 +366,7 @@ new #[Title('Order Details')] #[Layout('layouts.customer')] class extends Compon
                                 @endif
                             @else
                                 <div class="p-4 bg-zinc-50 border border-zinc-200 border-dashed text-center">
-                                    <div class="text-[12px] text-zinc-400 italic">No payment info available</div>
+                                    <div class="text-[12px] text-on-surface-variant italic">No payment info available</div>
                                 </div>
                             @endif
                         </div>
@@ -426,7 +426,7 @@ new #[Title('Order Details')] #[Layout('layouts.customer')] class extends Compon
 
 
             <div class="text-center mt-6">
-                <div class="text-[13px] text-zinc-500">
+                <div class="text-[13px] text-on-surface-variant">
                     Need help with this order? <a href="#"
                         class="text-primary font-bold hover:underline">Contact
                         Support</a>

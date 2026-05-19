@@ -147,8 +147,8 @@ new #[Layout('layouts.customer-settings'), Title('Profile Settings')] class exte
             </label>
 
             <div class="flex-1">
-                <div class="text-[16px] font-bold text-zinc-950 mb-0.5">{{ auth()->user()->name }}</div>
-                <div class="text-[12px] text-zinc-500 mb-2.5">{{ auth()->user()->email }}</div>
+                <div class="text-[16px] font-bold text-on-surface mb-0.5">{{ auth()->user()->name }}</div>
+                <div class="text-[12px] text-on-surface-variant mb-2.5">{{ auth()->user()->email }}</div>
 
                 <div class="flex items-center gap-2">
                     <flux:button tag="label" for="avatarInput" variant="customer-outline" size="customer"
@@ -164,7 +164,7 @@ new #[Layout('layouts.customer-settings'), Title('Profile Settings')] class exte
                 </div>
 
                 <input type="file" id="avatarInput" wire:model="avatar" accept="image/*" class="hidden">
-                <div class="text-[11px] text-zinc-500 mt-2">JPG, PNG, GIF or WEBP. Max 2MB.</div>
+                <div class="text-[11px] text-on-surface-variant mt-2">JPG, PNG, GIF or WEBP. Max 2MB.</div>
                 @error('avatar')
                     <span class="text-[11px] text-red-500 font-semibold mt-1 block">{{ $message }}</span>
                 @enderror

@@ -61,7 +61,7 @@ new #[Layout('layouts.checkout')] class extends Component {
 
             {{-- Message --}}
             <flux:heading size="xl" class="mb-2">Payment was cancelled</flux:heading>
-            <flux:text class="text-zinc-500 mb-6">
+            <flux:text class="text-on-surface-variant mb-6">
                 @if ($reason)
                     {{ $reason }}
                 @else
@@ -73,11 +73,11 @@ new #[Layout('layouts.checkout')] class extends Component {
             @if ($order)
                 <div class="bg-zinc-50 rounded-lg p-4 mb-6 text-left">
                     <div class="flex justify-between items-center mb-2">
-                        <flux:text class="text-sm text-zinc-500">Order Reference</flux:text>
+                        <flux:text class="text-sm text-on-surface-variant">Order Reference</flux:text>
                         <flux:text class="font-medium">{{ $order->reference }}</flux:text>
                     </div>
                     <div class="flex justify-between items-center">
-                        <flux:text class="text-sm text-zinc-500">Total Amount</flux:text>
+                        <flux:text class="text-sm text-on-surface-variant">Total Amount</flux:text>
                         <flux:text class="font-medium">{{ format_currency($order->total) }}</flux:text>
                     </div>
                 </div>
@@ -107,7 +107,7 @@ new #[Layout('layouts.checkout')] class extends Component {
             </div>
 
             {{-- Help text --}}
-            <flux:text class="text-xs text-zinc-400 mt-6">
+            <flux:text class="text-xs text-on-surface-variant mt-6">
                 If you continue to experience issues, please contact our support team.
             </flux:text>
         </div>

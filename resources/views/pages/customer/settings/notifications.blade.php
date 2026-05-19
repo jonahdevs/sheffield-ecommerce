@@ -68,15 +68,15 @@ new #[Layout('layouts.customer-settings'), Title('Notification Preferences')] cl
 
         {{-- Channel headers --}}
         <div class="flex items-center justify-end px-5 py-2.5 border-b border-zinc-200 gap-5">
-            <span class="text-[9px] font-extrabold tracking-widest uppercase text-zinc-500 w-9 text-center">Email</span>
-            <span class="text-[9px] font-extrabold tracking-widest uppercase text-zinc-500 w-9 text-center">SMS</span>
-            <span class="text-[9px] font-extrabold tracking-widest uppercase text-zinc-500 w-9 text-center">Push</span>
+            <span class="text-[9px] font-extrabold tracking-widest uppercase text-on-surface-variant w-9 text-center">Email</span>
+            <span class="text-[9px] font-extrabold tracking-widest uppercase text-on-surface-variant w-9 text-center">SMS</span>
+            <span class="text-[9px] font-extrabold tracking-widest uppercase text-on-surface-variant w-9 text-center">Push</span>
         </div>
 
         {{-- Orders & Shipping --}}
         <div class="flex items-center gap-2 px-5 py-3.5 border-b border-zinc-200 bg-zinc-50/40">
             <flux:icon.shopping-bag class="w-3.5 h-3.5 text-primary shrink-0" />
-            <span class="text-[11px] font-bold tracking-widest uppercase text-zinc-500">Orders & Shipping</span>
+            <span class="text-[11px] font-bold tracking-widest uppercase text-on-surface-variant">Orders & Shipping</span>
         </div>
         <x-customer.notification-row topic="order_confirmations" title="Order Confirmations"
             description="Receive confirmation when your order is placed" />
@@ -86,7 +86,7 @@ new #[Layout('layouts.customer-settings'), Title('Notification Preferences')] cl
         {{-- Promotions --}}
         <div class="flex items-center gap-2 px-5 py-3.5 border-b border-zinc-200 bg-zinc-50/40">
             <flux:icon.tag class="w-3.5 h-3.5 text-primary shrink-0" />
-            <span class="text-[11px] font-bold tracking-widest uppercase text-zinc-500">Promotions & Offers</span>
+            <span class="text-[11px] font-bold tracking-widest uppercase text-on-surface-variant">Promotions & Offers</span>
         </div>
         <x-customer.notification-row topic="special_offers" title="Special Offers"
             description="Exclusive deals, discounts and promotions" />
@@ -96,7 +96,7 @@ new #[Layout('layouts.customer-settings'), Title('Notification Preferences')] cl
         {{-- Reviews --}}
         <div class="flex items-center gap-2 px-5 py-3.5 border-b border-zinc-200 bg-zinc-50/40">
             <flux:icon.star class="w-3.5 h-3.5 text-primary shrink-0" />
-            <span class="text-[11px] font-bold tracking-widest uppercase text-zinc-500">Reviews & Feedback</span>
+            <span class="text-[11px] font-bold tracking-widest uppercase text-on-surface-variant">Reviews & Feedback</span>
         </div>
         <x-customer.notification-row topic="review_reminders" title="Review Reminders"
             description="Reminders to review products you've purchased" />
@@ -104,7 +104,7 @@ new #[Layout('layouts.customer-settings'), Title('Notification Preferences')] cl
         {{-- Account & Security --}}
         <div class="flex items-center gap-2 px-5 py-3.5 border-b border-zinc-200 bg-zinc-50/40">
             <flux:icon.shield-check class="w-3.5 h-3.5 text-primary shrink-0" />
-            <span class="text-[11px] font-bold tracking-widest uppercase text-zinc-500">Account & Security</span>
+            <span class="text-[11px] font-bold tracking-widest uppercase text-on-surface-variant">Account & Security</span>
         </div>
         <x-customer.notification-row topic="security_alerts" title="Security Alerts"
             description="Important updates about your account security" />
@@ -114,12 +114,12 @@ new #[Layout('layouts.customer-settings'), Title('Notification Preferences')] cl
         {{-- Marketing & Newsletter --}}
         <div class="flex items-center gap-2 px-5 py-3.5 border-b border-zinc-200 bg-zinc-50/40">
             <flux:icon.envelope class="w-3.5 h-3.5 text-primary shrink-0" />
-            <span class="text-[11px] font-bold tracking-widest uppercase text-zinc-500">Marketing Communications</span>
+            <span class="text-[11px] font-bold tracking-widest uppercase text-on-surface-variant">Marketing Communications</span>
         </div>
         <div class="flex items-center justify-between px-5 py-3.5">
             <div class="flex-1">
-                <div class="text-[13px] font-semibold text-zinc-950 mb-0.5">Newsletter Subscription</div>
-                <div class="text-[12px] text-zinc-500">Receive updates about new products, promotions, and special
+                <div class="text-[13px] font-semibold text-on-surface mb-0.5">Newsletter Subscription</div>
+                <div class="text-[12px] text-on-surface-variant">Receive updates about new products, promotions, and special
                     offers</div>
             </div>
             <button type="button" wire:click="$toggle('newsletter_subscribed')" @class([

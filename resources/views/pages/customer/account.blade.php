@@ -65,19 +65,19 @@ new #[Layout('layouts.customer')] class extends Component {
                 @endif
 
                 <div>
-                    <div class="text-[15px] font-bold text-zinc-950 mb-0.5">{{ $user->name }}</div>
-                    <div class="text-[11px] text-zinc-500">Member since {{ $user->created_at->format('F Y') }}</div>
+                    <div class="text-[15px] font-bold text-on-surface mb-0.5">{{ $user->name }}</div>
+                    <div class="text-[11px] text-on-surface-variant">Member since {{ $user->created_at->format('F Y') }}</div>
                 </div>
             </div>
 
             {{-- Details --}}
             <div class="mb-4">
-                <div class="text-[10px] font-bold tracking-widest uppercase text-zinc-500 mb-1">Email Address</div>
-                <div class="text-[14px] font-semibold text-zinc-950">{{ $user->email }}</div>
+                <div class="text-[10px] font-bold tracking-widest uppercase text-on-surface-variant mb-1">Email Address</div>
+                <div class="text-[14px] font-semibold text-on-surface">{{ $user->email }}</div>
             </div>
             <div>
-                <div class="text-[10px] font-bold tracking-widest uppercase text-zinc-500 mb-1">Phone Number</div>
-                <div class="text-[14px] font-semibold text-zinc-950">{{ $user->phone_number ?? 'Not set' }}</div>
+                <div class="text-[10px] font-bold tracking-widest uppercase text-on-surface-variant mb-1">Phone Number</div>
+                <div class="text-[14px] font-semibold text-on-surface">{{ $user->phone_number ?? 'Not set' }}</div>
             </div>
         </x-customer.card>
 
@@ -100,17 +100,17 @@ new #[Layout('layouts.customer')] class extends Component {
                         class="inline-block text-[9px] font-extrabold tracking-widest uppercase px-2 py-0.5 bg-brand-primary text-white">Default</span>
                 </div>
                 <div class="mb-4">
-                    <div class="text-[10px] font-bold tracking-widest uppercase text-zinc-500 mb-1">Shipping Address
+                    <div class="text-[10px] font-bold tracking-widest uppercase text-on-surface-variant mb-1">Shipping Address
                     </div>
-                    <div class="text-[14px] font-semibold text-zinc-950">{{ $user->defaultAddress->full_name }}</div>
+                    <div class="text-[14px] font-semibold text-on-surface">{{ $user->defaultAddress->full_name }}</div>
                 </div>
-                <div class="text-[12px] text-zinc-500 leading-[1.7]">
+                <div class="text-[12px] text-on-surface-variant leading-[1.7]">
                     {{ $user->defaultAddress->address }}<br>
                     {{ $user->defaultAddress->area?->name }}, {{ $user->defaultAddress->county?->name }}<br>
                     {{ $user->defaultAddress->phone_number }}
                 </div>
             @else
-                <div class="text-[13px] text-zinc-500 italic mb-4">No default address set.</div>
+                <div class="text-[13px] text-on-surface-variant italic mb-4">No default address set.</div>
                 <flux:button variant="customer-primary" href="{{ route('customer.address-book.index') }}" wire:navigate
                     size="customer">
                     <flux:icon.plus class="w-3.5 h-3.5" />
@@ -130,11 +130,11 @@ new #[Layout('layouts.customer')] class extends Component {
             class="flex items-center justify-between px-5 py-3.5 border-b border-zinc-200 transition-colors hover:bg-zinc-50">
             <div class="flex items-center gap-3">
                 <div class="w-9 h-9 bg-zinc-100 flex items-center justify-center shrink-0">
-                    <flux:icon.user class="w-4 h-4 text-zinc-500" />
+                    <flux:icon.user class="w-4 h-4 text-on-surface-variant" />
                 </div>
                 <div>
-                    <div class="text-[13px] font-bold text-zinc-950">Profile Settings</div>
-                    <div class="text-[11px] text-zinc-500">Update your personal information</div>
+                    <div class="text-[13px] font-bold text-on-surface">Profile Settings</div>
+                    <div class="text-[11px] text-on-surface-variant">Update your personal information</div>
                 </div>
             </div>
         </a>
@@ -143,11 +143,11 @@ new #[Layout('layouts.customer')] class extends Component {
             class="flex items-center justify-between px-5 py-3.5 border-b border-zinc-200 transition-colors hover:bg-zinc-50">
             <div class="flex items-center gap-3">
                 <div class="w-9 h-9 bg-zinc-100 flex items-center justify-center shrink-0">
-                    <flux:icon.lock-closed class="w-4 h-4 text-zinc-500" />
+                    <flux:icon.lock-closed class="w-4 h-4 text-on-surface-variant" />
                 </div>
                 <div>
-                    <div class="text-[13px] font-bold text-zinc-950">Password & Security</div>
-                    <div class="text-[11px] text-zinc-500">Change password and manage 2FA</div>
+                    <div class="text-[13px] font-bold text-on-surface">Password & Security</div>
+                    <div class="text-[11px] text-on-surface-variant">Change password and manage 2FA</div>
                 </div>
             </div>
             @if (!$user->two_factor_confirmed_at)
@@ -161,11 +161,11 @@ new #[Layout('layouts.customer')] class extends Component {
             class="flex items-center justify-between px-5 py-3.5 border-b border-zinc-200 transition-colors hover:bg-zinc-50">
             <div class="flex items-center gap-3">
                 <div class="w-9 h-9 bg-zinc-100 flex items-center justify-center shrink-0">
-                    <flux:icon.bell class="w-4 h-4 text-zinc-500" />
+                    <flux:icon.bell class="w-4 h-4 text-on-surface-variant" />
                 </div>
                 <div>
-                    <div class="text-[13px] font-bold text-zinc-950">Notifications</div>
-                    <div class="text-[11px] text-zinc-500">Manage email, SMS and push preferences</div>
+                    <div class="text-[13px] font-bold text-on-surface">Notifications</div>
+                    <div class="text-[11px] text-on-surface-variant">Manage email, SMS and push preferences</div>
                 </div>
             </div>
         </a>
@@ -174,11 +174,11 @@ new #[Layout('layouts.customer')] class extends Component {
             class="flex items-center justify-between px-5 py-3.5 border-b-0 transition-colors hover:bg-zinc-50">
             <div class="flex items-center gap-3">
                 <div class="w-9 h-9 bg-zinc-100 flex items-center justify-center shrink-0">
-                    <flux:icon.shield-check class="w-4 h-4 text-zinc-500" />
+                    <flux:icon.shield-check class="w-4 h-4 text-on-surface-variant" />
                 </div>
                 <div>
-                    <div class="text-[13px] font-bold text-zinc-950">Privacy & Data</div>
-                    <div class="text-[11px] text-zinc-500">Control your data and privacy settings</div>
+                    <div class="text-[13px] font-bold text-on-surface">Privacy & Data</div>
+                    <div class="text-[11px] text-on-surface-variant">Control your data and privacy settings</div>
                 </div>
             </div>
         </a>

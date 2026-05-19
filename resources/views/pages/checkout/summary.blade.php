@@ -335,7 +335,7 @@ new #[Layout('layouts.checkout')] class extends Component {
         <x-slot:icon>
             <div @class([
                 'w-5.5 h-5.5 rounded-full flex items-center justify-center shrink-0 transition-all duration-300',
-                $this->address ? 'bg-green-500 text-white' : 'bg-zinc-100 text-zinc-400',
+                $this->address ? 'bg-green-500 text-white' : 'bg-zinc-100 text-on-surface-variant',
             ])>
                 @if ($this->address)
                     <flux:icon.check class="size-3" />
@@ -356,8 +356,8 @@ new #[Layout('layouts.checkout')] class extends Component {
         @if ($this->address)
             <span
                 class="inline-block text-[9px] font-extrabold uppercase tracking-widest px-2 py-0.5 bg-secondary text-white mb-2">{{ $this->address->label ?? 'Home' }}</span>
-            <div class="text-[14px] font-bold text-zinc-950 mb-1">{{ $this->address->full_name }}</div>
-            <div class="text-[12px] text-zinc-500 font-medium leading-[1.7]">
+            <div class="text-[14px] font-bold text-on-surface mb-1">{{ $this->address->full_name }}</div>
+            <div class="text-[12px] text-on-surface-variant font-medium leading-[1.7]">
                 {!! nl2br(e($this->address->address)) !!}<br>
                 {{ implode(', ', array_filter([$this->address->area?->name, $this->address->county?->name])) }}<br>
                 {{ format_phone($this->address->phone_number) }}
@@ -368,8 +368,8 @@ new #[Layout('layouts.checkout')] class extends Component {
                     <flux:icon.minus class="size-5" />
                 </div>
 
-                <p class="text-[13px] font-bold text-zinc-950 mb-1">No address saved</p>
-                <p class="text-[12px] text-zinc-500 font-medium">Add a delivery address to continue.</p>
+                <p class="text-[13px] font-bold text-on-surface mb-1">No address saved</p>
+                <p class="text-[12px] text-on-surface-variant font-medium">Add a delivery address to continue.</p>
             </div>
         @endif
     </x-customer.card>
@@ -379,7 +379,7 @@ new #[Layout('layouts.checkout')] class extends Component {
         <x-slot:icon>
             <div @class([
                 'w-5.5 h-5.5 rounded-full flex items-center justify-center shrink-0 transition-all duration-300',
-                $this->shipping ? 'bg-green-500 text-white' : 'bg-zinc-100 text-zinc-400',
+                $this->shipping ? 'bg-green-500 text-white' : 'bg-zinc-100 text-on-surface-variant',
             ])>
                 @if ($this->shipping)
                     <flux:icon.check class="size-3" />
@@ -401,12 +401,12 @@ new #[Layout('layouts.checkout')] class extends Component {
                 <div class="flex items-start gap-3">
                     <div
                         class="w-10 h-10 bg-zinc-50 flex items-center justify-center shrink-0 border border-zinc-200 rounded-sm">
-                        <flux:icon.truck class="size-5 text-zinc-950" />
+                        <flux:icon.truck class="size-5 text-on-surface" />
                     </div>
                     <div>
-                        <div class="text-[13px] font-bold text-zinc-950 mb-0.5">
+                        <div class="text-[13px] font-bold text-on-surface mb-0.5">
                             {{ $this->shipping['method_name'] }}</div>
-                        <div class="text-[11px] text-zinc-500 leading-tight font-medium">
+                        <div class="text-[11px] text-on-surface-variant leading-tight font-medium">
                             {{ $this->shipping['delivery_window'] }} · Door Delivery
                             @if ($this->shipping['station_name'])
                                 · Pickup: {{ $this->shipping['station_name'] }}
@@ -417,13 +417,13 @@ new #[Layout('layouts.checkout')] class extends Component {
                 <div @class([
                     'text-[14px] font-bold',
                     'text-green-600' => $this->shipping['cost'] == 0,
-                    'text-zinc-950' => $this->shipping['cost'] > 0,
+                    'text-on-surface' => $this->shipping['cost'] > 0,
                 ])>
                     {{ $this->shipping['cost'] == 0 ? 'FREE' : format_currency($this->shipping['cost']) }}
                 </div>
             </div>
         @else
-            <p class="text-[11px] text-zinc-500 font-bold uppercase tracking-wider">Please select an
+            <p class="text-[11px] text-on-surface-variant font-bold uppercase tracking-wider">Please select an
                 address first</p>
         @endif
     </x-customer.card>
@@ -435,7 +435,7 @@ new #[Layout('layouts.checkout')] class extends Component {
                 'w-5.5 h-5.5 rounded-full flex items-center justify-center shrink-0 transition-all duration-300',
                 $this->paymentMethod
                     ? 'bg-green-500 text-white'
-                    : 'bg-zinc-100 text-zinc-400',
+                    : 'bg-zinc-100 text-on-surface-variant',
             ])>
                 @if ($this->paymentMethod)
                     <flux:icon.check class="size-3" />
@@ -459,8 +459,8 @@ new #[Layout('layouts.checkout')] class extends Component {
                 {{ $this->paymentDisplay['icon'] }}
             </div>
             <div>
-                <div class="text-[13px] font-bold text-zinc-950 mb-0.5">{{ $this->paymentDisplay['name'] }}</div>
-                <div class="text-[11px] text-zinc-500 font-medium">
+                <div class="text-[13px] font-bold text-on-surface mb-0.5">{{ $this->paymentDisplay['name'] }}</div>
+                <div class="text-[11px] text-on-surface-variant font-medium">
                     {{ $paymentMethod === 'card' ? 'Visa, Mastercard, Amex accepted' : ($paymentMethod === 'mpesa' ? 'STK push to your Safaricom line' : 'Secure payment processing') }}
                 </div>
             </div>
@@ -470,19 +470,19 @@ new #[Layout('layouts.checkout')] class extends Component {
                 'text-[9px] font-extrabold px-2 py-1 border',
                 $paymentMethod === 'card'
                     ? 'bg-secondary border-secondary text-white'
-                    : 'bg-zinc-50 border-zinc-200 text-zinc-400',
+                    : 'bg-zinc-50 border-zinc-200 text-on-surface-variant',
             ])>VISA</span>
             <span @class([
                 'text-[9px] font-extrabold px-2 py-1 border',
                 $paymentMethod === 'card'
                     ? 'bg-secondary border-secondary text-white'
-                    : 'bg-zinc-50 border-zinc-200 text-zinc-400',
+                    : 'bg-zinc-50 border-zinc-200 text-on-surface-variant',
             ])>MASTERCARD</span>
             <span @class([
                 'text-[9px] font-extrabold px-2 py-1 border',
                 $paymentMethod === 'mpesa'
                     ? 'bg-secondary border-secondary text-white'
-                    : 'bg-zinc-50 border-zinc-200 text-zinc-400',
+                    : 'bg-zinc-50 border-zinc-200 text-on-surface-variant',
             ])>MPESA</span>
         </div>
     </x-customer.card>
@@ -510,7 +510,7 @@ new #[Layout('layouts.checkout')] class extends Component {
             </flux:button>
         </div>
 
-        <div class="mt-3 flex items-center justify-center gap-1.5 text-xs text-zinc-400 ">
+        <div class="mt-3 flex items-center justify-center gap-1.5 text-xs text-on-surface-variant ">
             <flux:icon.shield-check class="size-3" />
             <span class="uppercase tracking-widest">SSL Encrypted & Secure</span>
         </div>
@@ -520,7 +520,7 @@ new #[Layout('layouts.checkout')] class extends Component {
     <div
         class="fixed bottom-0 left-0 right-0 z-50 flex items-center justify-between px-5 py-3.5 bg-white border-t-2 border-zinc-950 md:hidden">
         <div>
-            <div class="text-[10px] font-bold uppercase tracking-widest text-zinc-400">Total</div>
+            <div class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">Total</div>
             <div class="font-sans font-bold text-[20px] text-primary leading-none">
                 {{ format_currency($this->cartSummary['total'] + ($this->shipping['cost'] ?? 0)) }}
             </div>
@@ -551,7 +551,7 @@ new #[Layout('layouts.checkout')] class extends Component {
             max-width="560px" wire:click.self="closeAddressPicker">
             <x-slot:close>
                 <button wire:click="closeAddressPicker" type="button"
-                    class="text-zinc-400 hover:text-zinc-950 transition-colors cursor-pointer group">
+                    class="text-on-surface-variant hover:text-on-surface transition-colors cursor-pointer group">
                     <flux:icon.x-mark class="w-5 h-5 group-hover:rotate-90 duration-150 ease-in-out" />
                 </button>
             </x-slot:close>
@@ -576,9 +576,9 @@ new #[Layout('layouts.checkout')] class extends Component {
                                 <div class="flex-1">
                                     <span
                                         class="inline-block text-[9px] font-extrabold uppercase tracking-widest px-2 py-0.5 bg-zinc-950 text-white mb-2">{{ $addr->label ?? 'Home' }}</span>
-                                    <div class="text-[13px] font-bold text-zinc-950 mb-0.5">{{ $addr->full_name }}
+                                    <div class="text-[13px] font-bold text-on-surface mb-0.5">{{ $addr->full_name }}
                                     </div>
-                                    <div class="text-[11px] text-zinc-500 leading-[1.7] font-medium">
+                                    <div class="text-[11px] text-on-surface-variant leading-[1.7] font-medium">
                                         {{ $addr->address }}, {{ $addr->area?->name }},
                                         {{ $addr->county?->name }}
                                     </div>
@@ -592,7 +592,7 @@ new #[Layout('layouts.checkout')] class extends Component {
                     @endforeach
 
                     <button wire:click="startCreateAddress"
-                        class="w-full border-[1.5px] border-dashed border-zinc-200 p-6 flex items-center justify-center gap-3 text-[12px] font-bold uppercase tracking-widest text-zinc-400 hover:border-primary hover:text-primary transition-all cursor-pointer group">
+                        class="w-full border-[1.5px] border-dashed border-zinc-200 p-6 flex items-center justify-center gap-3 text-[12px] font-bold uppercase tracking-widest text-on-surface-variant hover:border-primary hover:text-primary transition-all cursor-pointer group">
                         <flux:icon.plus class="size-4.5 text-zinc-300 group-hover:text-primary transition-colors" />
                         Add New Address
                     </button>
@@ -621,7 +621,7 @@ new #[Layout('layouts.checkout')] class extends Component {
             max-width="640px" wire:click.self="closeAddressForm">
             <x-slot:close>
                 <button wire:click="closeAddressForm" type="button"
-                    class="text-zinc-400 hover:text-zinc-950 transition-colors cursor-pointer group">
+                    class="text-on-surface-variant hover:text-on-surface transition-colors cursor-pointer group">
                     <flux:icon.x-mark class="w-5 h-5 group-hover:rotate-90 duration-150 ease-in-out" />
                 </button>
             </x-slot:close>
@@ -640,7 +640,7 @@ new #[Layout('layouts.checkout')] class extends Component {
             max-width="560px" wire:click.self="closeShippingModal">
             <x-slot:close>
                 <button wire:click="closeShippingModal" type="button"
-                    class="text-zinc-400 hover:text-zinc-950 transition-colors cursor-pointer group">
+                    class="text-on-surface-variant hover:text-on-surface transition-colors cursor-pointer group">
                     <flux:icon.x-mark class="w-5 h-5 group-hover:rotate-90 duration-150 ease-in-out" />
                 </button>
             </x-slot:close>
@@ -665,15 +665,15 @@ new #[Layout('layouts.checkout')] class extends Component {
                                         : 'border-zinc-300',
                                 ])></div>
                                 <div>
-                                    <div class="text-[13px] font-bold text-zinc-950">{{ $option->methodName }}
+                                    <div class="text-[13px] font-bold text-on-surface">{{ $option->methodName }}
                                     </div>
-                                    <div class="text-[11px] text-zinc-500 font-medium mt-0.5">
+                                    <div class="text-[11px] text-on-surface-variant font-medium mt-0.5">
                                         {{ $option->deliveryWindow() }}</div>
                                 </div>
                             </div>
                             <div @class([
                                 'text-[14px] font-bold',
-                                $option->isFree() ? 'text-green-600' : 'text-zinc-950',
+                                $option->isFree() ? 'text-green-600' : 'text-on-surface',
                             ])>
                                 {{ $option->isFree() ? 'FREE' : $option->formattedCost() }}
                             </div>
@@ -724,7 +724,7 @@ new #[Layout('layouts.checkout')] class extends Component {
             max-width="560px" wire:click.self="closePaymentModal">
             <x-slot:close>
                 <button wire:click="closePaymentModal" type="button"
-                    class="text-zinc-400 hover:text-zinc-950 transition-colors cursor-pointer group">
+                    class="text-on-surface-variant hover:text-on-surface transition-colors cursor-pointer group">
                     <flux:icon.x-mark class="w-5 h-5 group-hover:rotate-90 duration-150 ease-in-out" />
                 </button>
             </x-slot:close>
@@ -751,8 +751,8 @@ new #[Layout('layouts.checkout')] class extends Component {
                                 {{ $data['icon'] }}
                             </div>
                             <div>
-                                <div class="text-[13px] font-bold text-zinc-950">{{ $data['name'] }}</div>
-                                <div class="text-[11px] text-zinc-500 font-medium mt-0.5">
+                                <div class="text-[13px] font-bold text-on-surface">{{ $data['name'] }}</div>
+                                <div class="text-[11px] text-on-surface-variant font-medium mt-0.5">
                                     {{ $data['sub'] }}</div>
                             </div>
                         </div>

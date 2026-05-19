@@ -150,7 +150,7 @@ new #[Layout('layouts.customer')] class extends Component {
                 <div class="min-h-[50svh] flex flex-col items-center gap-2 justify-center text-center">
                     <flux:icon.inbox class="size-12 text-zinc-300" />
                     <flux:heading>No notifications yet</flux:heading>
-                    <flux:text class="text-zinc-500 max-w-sm">
+                    <flux:text class="text-on-surface-variant max-w-sm">
                         When you receive order updates, quotation responses, or other important messages, they'll appear
                         here.
                     </flux:text>
@@ -163,7 +163,7 @@ new #[Layout('layouts.customer')] class extends Component {
                             'inline-flex items-center gap-1.5 px-3 py-2 text-sm whitespace-nowrap transition-colors duration-150 cursor-pointer',
                             'bg-secondary text-on-secondary font-medium' =>
                                 $selectedTab === 'unread',
-                            'text-zinc-500 hover:text-zinc-800 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:text-zinc-200 dark:hover:bg-zinc-800' =>
+                            'text-on-surface-variant hover:text-on-surface hover:bg-zinc-100 dark:text-on-surface-variant dark:hover:text-zinc-200 dark:hover:bg-zinc-800' =>
                                 $selectedTab !== 'unread',
                         ])>
                             <flux:icon.envelope class="size-4" />
@@ -183,7 +183,7 @@ new #[Layout('layouts.customer')] class extends Component {
                             'inline-flex items-center gap-1.5 px-3 py-2 text-sm whitespace-nowrap transition-colors duration-150 cursor-pointer',
                             'bg-secondary text-on-secondary font-medium' =>
                                 $selectedTab === 'read',
-                            'text-zinc-500 hover:text-zinc-800 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:text-zinc-200 dark:hover:bg-zinc-800' =>
+                            'text-on-surface-variant hover:text-on-surface hover:bg-zinc-100 dark:text-on-surface-variant dark:hover:text-zinc-200 dark:hover:bg-zinc-800' =>
                                 $selectedTab !== 'read',
                         ])>
                             <flux:icon.envelope-open class="size-4" />
@@ -207,7 +207,7 @@ new #[Layout('layouts.customer')] class extends Component {
                                         'bg-green-100 text-green-600' => $data['color'] === 'green',
                                         'bg-amber-100 text-amber-600' => $data['color'] === 'amber',
                                         'bg-red-100 text-red-600' => $data['color'] === 'red',
-                                        'bg-zinc-100 text-zinc-600' => $data['color'] === 'zinc',
+                                        'bg-zinc-100 text-on-surface-variant' => $data['color'] === 'zinc',
                                     ])>
                                         <flux:icon :name="$data['icon']" class="size-5" />
                                     </div>
@@ -216,14 +216,14 @@ new #[Layout('layouts.customer')] class extends Component {
                                     <div class="flex-1 min-w-0">
                                         <div class="flex items-start justify-between gap-2">
                                             <div>
-                                                <p class="text-sm font-semibold text-zinc-800 dark:text-zinc-100">
+                                                <p class="text-sm font-semibold text-on-surface">
                                                     {{ $data['title'] }}
                                                 </p>
-                                                <p class="text-sm text-zinc-600 dark:text-zinc-400 mt-0.5">
+                                                <p class="text-sm text-on-surface-variant mt-0.5">
                                                     {{ $data['message'] }}
                                                 </p>
                                             </div>
-                                            <flux:text class="text-xs text-zinc-400 shrink-0">
+                                            <flux:text class="text-xs text-on-surface-variant shrink-0">
                                                 {{ $notification->created_at->diffForHumans() }}
                                             </flux:text>
                                         </div>
@@ -247,7 +247,7 @@ new #[Layout('layouts.customer')] class extends Component {
                             <div class="flex flex-col items-center justify-center py-16 text-center">
                                 <flux:icon.check-circle class="w-12 h-12 text-green-300 mb-3" />
                                 <flux:heading size="sm">All caught up!</flux:heading>
-                                <flux:text class="text-zinc-500 mt-1 text-sm">
+                                <flux:text class="text-on-surface-variant mt-1 text-sm">
                                     You have no unread notifications.
                                 </flux:text>
                             </div>
@@ -271,7 +271,7 @@ new #[Layout('layouts.customer')] class extends Component {
                                 <div class="flex items-start gap-3">
                                     {{-- Icon --}}
                                     <div
-                                        class="w-10 h-10 rounded-full flex items-center justify-center shrink-0 bg-zinc-100 dark:bg-zinc-800 text-zinc-400">
+                                        class="w-10 h-10 rounded-full flex items-center justify-center shrink-0 bg-zinc-100 dark:bg-zinc-800 text-on-surface-variant">
                                         <flux:icon :name="$data['icon']" class="size-5" />
                                     </div>
 
@@ -279,14 +279,14 @@ new #[Layout('layouts.customer')] class extends Component {
                                     <div class="flex-1 min-w-0">
                                         <div class="flex items-start justify-between gap-2">
                                             <div>
-                                                <p class="text-sm font-medium text-zinc-600 dark:text-zinc-300">
+                                                <p class="text-sm font-medium text-on-surface-variant">
                                                     {{ $data['title'] }}
                                                 </p>
-                                                <p class="text-sm text-zinc-500 dark:text-zinc-500 mt-0.5">
+                                                <p class="text-sm text-on-surface-variant mt-0.5">
                                                     {{ $data['message'] }}
                                                 </p>
                                             </div>
-                                            <flux:text class="text-xs text-zinc-400 shrink-0">
+                                            <flux:text class="text-xs text-on-surface-variant shrink-0">
                                                 {{ $notification->created_at->diffForHumans() }}
                                             </flux:text>
                                         </div>
@@ -310,7 +310,7 @@ new #[Layout('layouts.customer')] class extends Component {
                             <div class="flex flex-col items-center justify-center py-16 text-center">
                                 <flux:icon.inbox class="w-12 h-12 text-zinc-300 mb-3" />
                                 <flux:heading size="sm">No read notifications</flux:heading>
-                                <flux:text class="text-zinc-500 mt-1 text-sm">
+                                <flux:text class="text-on-surface-variant mt-1 text-sm">
                                     Notifications you've read will appear here.
                                 </flux:text>
                             </div>

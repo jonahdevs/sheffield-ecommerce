@@ -297,25 +297,25 @@ new #[Layout('layouts.guest')] class extends Component
                         <flux:icon.check class="size-7 text-green-600" />
                     </div>
 
-                    <h1 class="font-serif text-2xl font-extrabold uppercase tracking-tight text-zinc-950 mb-3">
+                    <h1 class="font-serif text-2xl font-extrabold uppercase tracking-tight text-on-surface mb-3">
                         {{ $justConfirmed ? 'Payment Confirmed!' : 'Thank You for Your Order!' }}
                     </h1>
 
-                    <p class="text-[13px] text-zinc-500 font-medium mb-3">
-                        Hi <span class="font-bold text-zinc-700">{{ $order->user?->name }}</span>,
+                    <p class="text-[13px] text-on-surface-variant font-medium mb-3">
+                        Hi <span class="font-bold text-on-surface">{{ $order->user?->name }}</span>,
                         your order has been placed successfully.
                     </p>
 
                     <div class="inline-flex items-center gap-2 bg-zinc-100 px-4 py-1.5 mb-3">
-                        <flux:icon.clipboard-document-check class="size-4 text-zinc-500" />
-                        <span class="text-[12px] font-mono font-bold text-zinc-700 tracking-wider">
+                        <flux:icon.clipboard-document-check class="size-4 text-on-surface-variant" />
+                        <span class="text-[12px] font-mono font-bold text-on-surface tracking-wider">
                             #{{ $order->reference }}
                         </span>
                     </div>
 
-                    <p class="text-[12px] text-zinc-400 font-medium">
+                    <p class="text-[12px] text-on-surface-variant font-medium">
                         Your order confirmation and tax invoice will be sent to
-                        <span class="font-bold text-zinc-600">{{ $order->user?->email }}</span>
+                        <span class="font-bold text-on-surface-variant">{{ $order->user?->email }}</span>
                         shortly.
                     </p>
                 </div>
@@ -323,7 +323,7 @@ new #[Layout('layouts.guest')] class extends Component
                 {{-- Order items + totals --}}
                 <div class="anim-4 bg-white border border-zinc-200 mb-6">
                     <div class="px-6 py-4 border-b border-zinc-200">
-                        <p class="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">
+                        <p class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">
                             Items Ordered
                         </p>
                     </div>
@@ -345,18 +345,18 @@ new #[Layout('layouts.guest')] class extends Component
                                 </div>
 
                                 <div class="flex-1 min-w-0">
-                                    <p class="text-[13px] font-bold text-zinc-800 leading-snug line-clamp-2 mb-1">
+                                    <p class="text-[13px] font-bold text-on-surface leading-snug line-clamp-2 mb-1">
                                         {{ $item->product_snapshot['name'] ?? $item->product?->name }}
                                     </p>
                                     @if (!empty($variantAttrs))
-                                        <p class="text-[11px] text-zinc-400 font-medium mb-1">
+                                        <p class="text-[11px] text-on-surface-variant font-medium mb-1">
                                             {{ collect($variantAttrs)->map(fn($v, $k) => "$k: $v")->join(' · ') }}
                                         </p>
                                     @endif
-                                    <p class="text-[11px] text-zinc-400 font-medium">Qty: {{ $item->quantity }}</p>
+                                    <p class="text-[11px] text-on-surface-variant font-medium">Qty: {{ $item->quantity }}</p>
                                 </div>
 
-                                <p class="text-[13px] font-bold text-zinc-800 shrink-0">
+                                <p class="text-[13px] font-bold text-on-surface shrink-0">
                                     {{ format_currency($item->total_cents / 100) }}
                                 </p>
                             </div>
@@ -364,7 +364,7 @@ new #[Layout('layouts.guest')] class extends Component
                     </div>
 
                     <div class="px-6 py-4 border-t border-zinc-200 space-y-2">
-                        <div class="flex justify-between text-[12px] text-zinc-500 font-medium">
+                        <div class="flex justify-between text-[12px] text-on-surface-variant font-medium">
                             <span>Subtotal</span>
                             <span>{{ format_currency($order->subtotal) }}</span>
                         </div>
@@ -376,12 +376,12 @@ new #[Layout('layouts.guest')] class extends Component
                             </div>
                         @endif
 
-                        <div class="flex justify-between text-[12px] text-zinc-500 font-medium">
+                        <div class="flex justify-between text-[12px] text-on-surface-variant font-medium">
                             <span>Shipping</span>
                             <span>{{ $order->shipping == 0 ? 'Free' : format_currency($order->shipping) }}</span>
                         </div>
 
-                        <div class="flex justify-between text-[14px] font-bold text-zinc-950 border-t border-zinc-200 pt-3 mt-1">
+                        <div class="flex justify-between text-[14px] font-bold text-on-surface border-t border-zinc-200 pt-3 mt-1">
                             <span>Total</span>
                             <span>{{ format_currency($order->total) }}</span>
                         </div>
@@ -401,10 +401,10 @@ new #[Layout('layouts.guest')] class extends Component
                     </flux:button>
                 </div>
 
-                <p class="anim-5 text-center text-[11px] text-zinc-400 font-medium mt-4">
+                <p class="anim-5 text-center text-[11px] text-on-surface-variant font-medium mt-4">
                     Questions about your order?
                     <a href="#"
-                        class="text-zinc-600 underline underline-offset-2 hover:text-zinc-900 transition-colors">
+                        class="text-on-surface-variant underline underline-offset-2 hover:text-on-surface transition-colors">
                         Contact support
                     </a>
                 </p>
@@ -419,15 +419,15 @@ new #[Layout('layouts.guest')] class extends Component
                     <flux:icon.x-mark class="size-8 text-red-500" />
                 </div>
 
-                <h1 class="font-serif text-2xl font-extrabold uppercase tracking-tight text-zinc-950 mb-3">
+                <h1 class="font-serif text-2xl font-extrabold uppercase tracking-tight text-on-surface mb-3">
                     Payment Failed
                 </h1>
 
-                <p class="text-[13px] text-zinc-500 font-medium mb-2">
+                <p class="text-[13px] text-on-surface-variant font-medium mb-2">
                     Your payment could not be processed.
                 </p>
 
-                <p class="text-[12px] text-zinc-400 font-medium mb-8">
+                <p class="text-[12px] text-on-surface-variant font-medium mb-8">
                     Don't worry — your order is saved. Please try again
                     with a different card or payment method.
                 </p>
@@ -455,22 +455,22 @@ new #[Layout('layouts.guest')] class extends Component
             <div wire:poll.3s="refreshOrderStatus" class="text-center py-16">
                 <flux:icon.loading class="text-sheffield-red mx-auto mb-6" />
 
-                <h1 class="font-serif text-2xl font-extrabold uppercase tracking-tight text-zinc-950 mb-3">
+                <h1 class="font-serif text-2xl font-extrabold uppercase tracking-tight text-on-surface mb-3">
                     Confirming Your Payment...
                 </h1>
 
-                <p class="text-[13px] text-zinc-500 font-medium mb-2">
+                <p class="text-[13px] text-on-surface-variant font-medium mb-2">
                     Please wait while we confirm your payment.
                 </p>
 
-                <p class="text-[12px] text-zinc-400 font-medium mb-6">
+                <p class="text-[12px] text-on-surface-variant font-medium mb-6">
                     This usually takes just a few seconds.
                     Please don't close this page.
                 </p>
 
                 <div class="inline-flex items-center gap-2 bg-zinc-100 px-4 py-1.5">
-                    <flux:icon.clipboard-document-check class="size-4 text-zinc-500" />
-                    <span class="text-[12px] font-mono font-bold text-zinc-700 tracking-wider">
+                    <flux:icon.clipboard-document-check class="size-4 text-on-surface-variant" />
+                    <span class="text-[12px] font-mono font-bold text-on-surface tracking-wider">
                         #{{ $order->reference }}
                     </span>
                 </div>

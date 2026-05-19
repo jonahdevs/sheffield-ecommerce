@@ -94,7 +94,7 @@ new #[Layout('layouts.customer-settings'), Title('Privacy & Data')] class extend
         <x-customer.privacy-row title="Data Retention"
             description="Your data is retained for 7 years after account closure as required by law" :lastItem="true">
             <span
-                class="text-[10px] font-bold px-2 py-0.5 bg-zinc-100 text-zinc-500 border border-zinc-200 tracking-wider uppercase">7
+                class="text-[10px] font-bold px-2 py-0.5 bg-zinc-100 text-on-surface-variant border border-zinc-200 tracking-wider uppercase">7
                 Years</span>
         </x-customer.privacy-row>
     </x-customer.settings-card>
@@ -106,7 +106,7 @@ new #[Layout('layouts.customer-settings'), Title('Privacy & Data')] class extend
         </x-slot:icon>
 
         <div class="px-5 py-5">
-            <p class="text-[13px] text-zinc-700 mb-4">
+            <p class="text-[13px] text-on-surface mb-4">
                 {{ __('Deleting your account signs you out and removes your access. Orders and reviews are retained in line with the data-retention policy above for legal/accounting purposes, then anonymised.') }}
             </p>
 
@@ -116,7 +116,7 @@ new #[Layout('layouts.customer-settings'), Title('Privacy & Data')] class extend
                         class="customer-input max-w-md border-red-300 focus:border-red-500 focus:ring-red-500/8">
                 </x-customer.form-field>
 
-                <label class="flex items-start gap-2 text-[12px] text-zinc-700 cursor-pointer">
+                <label class="flex items-start gap-2 text-[12px] text-on-surface cursor-pointer">
                     <input type="checkbox" wire:model="confirm_delete" class="mt-0.5 accent-red-500">
                     <span>{{ __('I understand this action will sign me out and disable my account.') }}</span>
                 </label>

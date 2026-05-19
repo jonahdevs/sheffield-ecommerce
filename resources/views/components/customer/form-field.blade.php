@@ -13,13 +13,13 @@
 
 <div>
     @if ($label)
-        <label class="block text-[10px] font-bold tracking-widest uppercase text-zinc-500 mb-1.5">{{ $label }}@if ($required) *@endif</label>
+        <label class="block text-[10px] font-bold tracking-widest uppercase text-on-surface-variant mb-1.5">{{ $label }}@if ($required) *@endif</label>
     @endif
 
     @if ($hasPrefix || $hasAppend)
         <div class="flex">
             @if ($hasPrefix)
-                <span class="flex items-center px-3 border-y-[1.5px] border-l-[1.5px] border-zinc-200 bg-zinc-50 text-[13px] font-bold text-zinc-500 shrink-0">{{ $prefix }}</span>
+                <span class="flex items-center px-3 border-y-[1.5px] border-l-[1.5px] border-zinc-200 bg-zinc-50 text-[13px] font-bold text-on-surface-variant shrink-0">{{ $prefix }}</span>
             @endif
             {{ $slot }}
             @if ($hasAppend)
@@ -36,7 +36,7 @@
     @endif
 
     @if ($hint)
-        <div class="text-[11px] text-zinc-500 mt-1">{{ $hint }}</div>
+        <div class="text-[11px] text-on-surface-variant mt-1">{{ $hint }}</div>
     @endif
 
     @if ($name)

@@ -72,7 +72,7 @@ new #[Defer] class extends Component {
                     @endfor
                 </div>
 
-                <span class="text-sm text-zinc-500">
+                <span class="text-sm text-on-surface-variant">
                     {{ $review->created_at->diffForHumans() }}
                 </span>
             </div>
@@ -85,7 +85,7 @@ new #[Defer] class extends Component {
     @endif
 
     {{-- Review Text --}}
-    <p class="text-zinc-600 text-sm mb-3 leading-wide">{{ $review->review_text }}
+    <p class="text-on-surface-variant text-sm mb-3 leading-wide">{{ $review->review_text }}
     </p>
 
     {{-- Review Images --}}
@@ -101,7 +101,7 @@ new #[Defer] class extends Component {
 
     {{-- Helpfulness --}}
     <div class="flex items-center gap-4 pt-3 border-t border-zinc-100">
-        <p class="text-xs text-zinc-500">Was this helpful?</p>
+        <p class="text-xs text-on-surface-variant">Was this helpful?</p>
 
         <div class="flex items-center gap-2">
             <flux:button wire:click="vote(true)" variant="ghost" size="xs" class="cursor-pointer font-normal"
@@ -110,7 +110,7 @@ new #[Defer] class extends Component {
                     @class([
                         'inline-block size-5',
                         'text-green-600!' => $userVote === true,
-                        'text-zinc-600!' => $userVote !== true,
+                        'text-on-surface-variant!' => $userVote !== true,
                     ]) />
                 <span class="ms-2">Yes ({{ $review->helpful_count }})</span>
             </flux:button>
@@ -120,7 +120,7 @@ new #[Defer] class extends Component {
                     @class([
                         'inline-block size-5',
                         'text-red-600!' => $userVote === false,
-                        'text-zinc-600!' => $userVote !== false,
+                        'text-on-surface-variant!' => $userVote !== false,
                     ]) />
                 <span class="ms-2">No ({{ $review->not_helpful_count }})</span>
             </flux:button>

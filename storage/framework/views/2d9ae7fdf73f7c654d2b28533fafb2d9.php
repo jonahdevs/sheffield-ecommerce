@@ -614,8 +614,8 @@ Our Store Location
                 <div class="flex items-center gap-4">
                     <img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg" alt="PayPal"
                         class="h-6 opacity-70 hover:opacity-100 transition-opacity" />
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg" alt="Visa"
-                        class="h-6 opacity-70 hover:opacity-100 transition-opacity" />
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/5/5c/Visa_Inc._logo_%282021%E2%80%93present%29.svg"
+                        alt="Visa" class="h-6 opacity-70 hover:opacity-100 transition-opacity" />
                     <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" alt="Mastercard"
                         class="h-6 opacity-70 hover:opacity-100 transition-opacity" />
                     <img src="https://upload.wikimedia.org/wikipedia/commons/f/fa/American_Express_logo_%282018%29.svg"

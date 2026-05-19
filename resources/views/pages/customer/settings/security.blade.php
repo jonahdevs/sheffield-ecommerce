@@ -189,7 +189,7 @@ new #[Layout('layouts.customer-settings'), Title('Password & Security')] class e
             <x-customer.form-field label="Current Password" name="current_password" :required="true">
                 <x-slot:suffix>
                     <button type="button" @click="$wire.showCurrentPassword = !$wire.showCurrentPassword"
-                        class="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-950 transition-colors cursor-pointer">
+                        class="absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant hover:text-on-surface transition-colors cursor-pointer">
                         <flux:icon.eye class="w-4 h-4" />
                     </button>
                 </x-slot:suffix>
@@ -200,7 +200,7 @@ new #[Layout('layouts.customer-settings'), Title('Password & Security')] class e
             <x-customer.form-field label="New Password" name="password" :required="true">
                 <x-slot:suffix>
                     <button type="button" @click="$wire.showNewPassword = !$wire.showNewPassword"
-                        class="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-950 transition-colors cursor-pointer">
+                        class="absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant hover:text-on-surface transition-colors cursor-pointer">
                         <flux:icon.eye class="w-4 h-4" />
                     </button>
                 </x-slot:suffix>
@@ -224,7 +224,7 @@ new #[Layout('layouts.customer-settings'), Title('Password & Security')] class e
             <x-customer.form-field label="Confirm New Password" :required="true">
                 <x-slot:suffix>
                     <button type="button" @click="$wire.showConfirmPassword = !$wire.showConfirmPassword"
-                        class="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-950 transition-colors cursor-pointer">
+                        class="absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant hover:text-on-surface transition-colors cursor-pointer">
                         <flux:icon.eye class="w-4 h-4" />
                     </button>
                 </x-slot:suffix>
@@ -254,8 +254,8 @@ new #[Layout('layouts.customer-settings'), Title('Password & Security')] class e
             <div class="px-5 py-5">
                 <div class="flex items-start justify-between gap-4 mb-4">
                     <div class="flex-1">
-                        <div class="text-[13px] font-bold text-zinc-950 mb-0.5">Authenticator App</div>
-                        <div class="text-[12px] text-zinc-500">Use Google Authenticator, Authy, or 1Password to generate
+                        <div class="text-[13px] font-bold text-on-surface mb-0.5">Authenticator App</div>
+                        <div class="text-[12px] text-on-surface-variant">Use Google Authenticator, Authy, or 1Password to generate
                             one-time codes when signing in.</div>
                     </div>
                     <div class="shrink-0">
@@ -267,7 +267,7 @@ new #[Layout('layouts.customer-settings'), Title('Password & Security')] class e
                                 class="text-[10px] font-extrabold px-2 py-0.5 bg-amber-100 text-amber-700 border border-amber-200 tracking-wider uppercase">Pending</span>
                         @else
                             <span
-                                class="text-[10px] font-extrabold px-2 py-0.5 bg-zinc-100 text-zinc-500 border border-zinc-200 tracking-wider uppercase">Disabled</span>
+                                class="text-[10px] font-extrabold px-2 py-0.5 bg-zinc-100 text-on-surface-variant border border-zinc-200 tracking-wider uppercase">Disabled</span>
                         @endif
                     </div>
                 </div>
@@ -283,8 +283,8 @@ new #[Layout('layouts.customer-settings'), Title('Password & Security')] class e
                                 <div class="bg-white p-3 inline-block border border-zinc-200">
                                     {!! auth()->user()->twoFactorQrCodeSvg() !!}
                                 </div>
-                                <div class="text-[11px] text-zinc-700 font-mono break-all max-w-xs">
-                                    <div class="font-bold uppercase tracking-wider text-zinc-500 mb-1">Setup Key</div>
+                                <div class="text-[11px] text-on-surface font-mono break-all max-w-xs">
+                                    <div class="font-bold uppercase tracking-wider text-on-surface-variant mb-1">Setup Key</div>
                                     {{ decrypt(auth()->user()->two_factor_secret) }}
                                 </div>
                             </div>
@@ -294,7 +294,7 @@ new #[Layout('layouts.customer-settings'), Title('Password & Security')] class e
                     <div class="mb-4">
                         <details class="group">
                             <summary
-                                class="cursor-pointer text-[12px] font-bold text-zinc-700 hover:text-primary inline-flex items-center gap-1.5">
+                                class="cursor-pointer text-[12px] font-bold text-on-surface hover:text-primary inline-flex items-center gap-1.5">
                                 <flux:icon.chevron-right
                                     class="w-3.5 h-3.5 transition-transform group-open:rotate-90" />
                                 Show recovery codes
@@ -302,10 +302,10 @@ new #[Layout('layouts.customer-settings'), Title('Password & Security')] class e
                             <div
                                 class="mt-3 bg-zinc-50 border border-zinc-200 p-3 grid grid-cols-2 gap-2 font-mono text-[11px]">
                                 @foreach (json_decode(decrypt(auth()->user()->two_factor_recovery_codes), true) as $code)
-                                    <div class="text-zinc-700">{{ $code }}</div>
+                                    <div class="text-on-surface">{{ $code }}</div>
                                 @endforeach
                             </div>
-                            <div class="text-[11px] text-zinc-500 mt-2">
+                            <div class="text-[11px] text-on-surface-variant mt-2">
                                 {{ __('Each code can only be used once. Store them somewhere safe.') }}</div>
                         </details>
                     </div>
@@ -338,12 +338,12 @@ new #[Layout('layouts.customer-settings'), Title('Password & Security')] class e
         {{-- Current session --}}
         <div class="flex items-center gap-3.5 px-5 py-3.5 border-b border-zinc-200">
             <div class="flex items-center justify-center w-[38px] h-[38px] bg-zinc-100 shrink-0">
-                <flux:icon.computer-desktop class="w-[18px] h-[18px] text-zinc-500" />
+                <flux:icon.computer-desktop class="w-[18px] h-[18px] text-on-surface-variant" />
             </div>
             <div class="flex-1 min-w-0">
-                <div class="text-[13px] font-bold text-zinc-950">{{ $this->currentSession['browser'] }} on
+                <div class="text-[13px] font-bold text-on-surface">{{ $this->currentSession['browser'] }} on
                     {{ $this->currentSession['platform'] }}</div>
-                <div class="text-[11px] text-zinc-500 mt-0.5">{{ $this->currentSession['ip'] ?: 'Unknown IP' }} ·
+                <div class="text-[11px] text-on-surface-variant mt-0.5">{{ $this->currentSession['ip'] ?: 'Unknown IP' }} ·
                     Active now</div>
             </div>
             <span
@@ -353,7 +353,7 @@ new #[Layout('layouts.customer-settings'), Title('Password & Security')] class e
 
         {{-- Sign out elsewhere --}}
         <div class="px-5 py-4 bg-zinc-50/60">
-            <div class="text-[12px] text-zinc-600 mb-3">
+            <div class="text-[12px] text-on-surface-variant mb-3">
                 {{ __('Signing in on another device or browser creates a separate session. To revoke them, confirm your password below — you\'ll stay signed in here.') }}
             </div>
             <form wire:submit="logoutOtherDevices">

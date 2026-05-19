@@ -4,230 +4,278 @@
 
 @section('content')
     @php
+        $general = app(\App\Settings\GeneralSettings::class);
+        $tax = app(\App\Settings\TaxSettings::class);
+        $quotationSettings = app(\App\Settings\QuotationSettings::class);
+
         $logoPath = public_path('logo.png');
         $logoBase64 = '';
         if (file_exists($logoPath)) {
-            $logoData = file_get_contents($logoPath);
-            $logoBase64 = 'data:image/png;base64,' . base64_encode($logoData);
+            $logoBase64 = 'data:image/png;base64,' . base64_encode(file_get_contents($logoPath));
+        }
+
+        $companyAddressLines = array_filter([
+            $general->store_address,
+            $general->store_address_line_2,
+            trim(
+                implode(', ', array_filter([$general->store_city, $general->store_state, $general->store_postal_code])),
+            ),
+            $general->store_country,
+        ]);
+
+        $hasTax = $quote->tax_cents > 0;
+        $currency = $quote->currency;
+        $taxRate = null;
+        if ($hasTax && $quote->subtotal_cents > 0) {
+            $taxRate = round(($quote->tax_cents / $quote->subtotal_cents) * 100);
         }
     @endphp
 
     {{-- ================================================================== --}}
-    {{-- HEADER                                                              --}}
+    {{-- HEADER — Company info (left) + QUOTATION + Date/Number (right)     --}}
     {{-- ================================================================== --}}
-    <div class="px-10 py-6 flex justify-between items-start border-b border-gray-200">
-        <div>
-            <h1 class="text-2xl font-bold text-gray-900 uppercase">Quotation</h1>
-            <div class="flex items-center gap-2 mt-2 text-sm">
-                <span class="text-gray-500">Quote No:</span>
-                <span class="text-gray-900 font-semibold">#{{ $quote->reference }}</span>
-            </div>
-            <div class="flex items-center gap-2 mt-1 text-sm">
-                <span class="text-gray-500">Date:</span>
-                <span class="text-gray-900 font-semibold">{{ $quote->created_at->format('d M, Y') }}</span>
-            </div>
-            @if ($quote->expires_at)
-                <div class="flex items-center gap-2 mt-1 text-sm">
-                    <span class="text-gray-500">Valid Until:</span>
-                    <span class="text-gray-900 font-semibold">{{ $quote->expires_at->format('d M, Y') }}</span>
-                </div>
-            @endif
-        </div>
+    <div class="px-10 pt-8 pb-3">
+        <div class="flex justify-between items-start gap-6">
 
-        <div class="text-right">
-            @if ($logoBase64)
-                <img src="{{ $logoBase64 }}" alt="Sheffield Africa" class="h-12 w-auto ml-auto">
-            @else
-                <div class="text-xl font-bold text-brand uppercase">SHEFFIELD</div>
+            {{-- LEFT: Logo stacked over contact details. The logo already carries the brand --}}
+            {{-- name so we don't repeat it; address/phone/email flow directly under it. --}}
+            <div class="flex-1">
+                @if ($logoBase64)
+                    <img src="{{ $logoBase64 }}" alt="{{ $general->store_name }}" class="h-12 w-auto mb-2">
+                @endif
+
+                <div class="text-[10px] leading-snug text-gray-800">
+                    @if ($general->store_tagline)
+                        <div>{{ $general->store_tagline }}</div>
+                    @endif
+                    @foreach ($companyAddressLines as $line)
+                        <div>{{ $line }}</div>
+                    @endforeach
+                    @if ($general->store_phone)
+                        <div>Tel: {{ $general->store_phone }}</div>
+                    @endif
+                    @if ($general->store_email)
+                        <div>Email: <span class="text-brand">{{ $general->store_email }}</span></div>
+                    @endif
+                </div>
+            </div>
+
+            {{-- RIGHT: QUOTATION + Date/Number table --}}
+            {{-- border-collapse: collapse merges adjacent cell borders into a single uniform 1px line --}}
+            {{-- so the vertical divider between DATE and NUMBER is the same thickness as every other edge. --}}
+            <div class="text-right shrink-0">
+                <div class="text-xl font-bold text-gray-900 tracking-wide mb-2">QUOTATION</div>
+                <table class="text-xs ml-auto" style="border-collapse: collapse;">
+                    <thead>
+                        <tr>
+                            <th class="border border-gray-900 px-3 py-1 font-bold text-gray-900 bg-gray-50"
+                                style="text-align: center;">DATE</th>
+                            <th class="border border-gray-900 px-3 py-1 font-bold text-gray-900 bg-gray-50"
+                                style="text-align: center;">NUMBER</th>
+                        </tr>
+                    </thead>
+                    <tbody class="mt-2">
+                        <tr>
+                            <td class="border border-gray-900 px-3 py-1 bg-white" style="text-align: center;">
+                                {{ ($quote->quoted_at ?? $quote->created_at)->format('d/m/Y') }}
+                            </td>
+                            <td class="border border-gray-900 px-3 py-1 bg-white" style="text-align: center;">
+                                {{ $quote->reference }}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    {{-- Thick separator --}}
+    <div class="mx-10 border-t-2 border-gray-900"></div>
+    <div class="mx-10 border-t border-gray-900 mt-0.5"></div>
+
+    {{-- ================================================================== --}}
+    {{-- QUOTATION TO: — compact bordered card on the left, no full-width    --}}
+    {{-- ================================================================== --}}
+    <div class="px-10 mt-5">
+        <div class="text-xs font-bold text-gray-900 mb-1.5">QUOTATION TO:</div>
+        <div class="inline-block border border-gray-900 px-3 py-2 text-[11px] leading-snug min-w-[14rem] max-w-xs"
+            style="box-shadow: 3px 3px 0 rgba(0,0,0,0.85);">
+            <div class="font-bold uppercase text-gray-900">{{ $quote->customerName() }}</div>
+            @if ($quote->customerPhone())
+                <div>TEL: {{ $quote->customerPhone() }}</div>
+            @endif
+            @if ($quote->customerEmail())
+                <div>EMAIL: {{ $quote->customerEmail() }}</div>
+            @endif
+            @if ($quote->preferred_county || $quote->preferred_area)
+                <div class="uppercase">
+                    {{ implode(', ', array_filter([$quote->preferred_area, $quote->preferred_county])) }}
+                </div>
             @endif
         </div>
     </div>
 
     {{-- ================================================================== --}}
-    {{-- CUSTOMER INFO & STATUS                                             --}}
+    {{-- ITEMS TABLE                                                        --}}
     {{-- ================================================================== --}}
-    <div class="px-10 py-6 flex justify-between gap-6">
-        {{-- Left: Customer Info --}}
-        <div class="flex-1">
-            <div class="border border-gray-300">
-                <div class="px-4 py-2 bg-gray-50 border-b border-gray-300">
-                    <div class="text-xs font-bold text-gray-700 uppercase">Customer Information</div>
-                </div>
-                <div class="p-4 space-y-2">
-                    <div class="font-semibold text-sm text-gray-900">{{ $quote->customerName() }}</div>
-                    @if ($quote->customerEmail())
-                        <div class="text-xs text-gray-600">{{ $quote->customerEmail() }}</div>
-                    @endif
-                    @if ($quote->customerPhone())
-                        <div class="text-xs text-gray-600">{{ $quote->customerPhone() }}</div>
-                    @endif
-
-                    @if ($quote->preferred_county || $quote->preferred_area)
-                        <div class="pt-3 mt-3 border-t border-gray-200">
-                            <div class="text-xs font-semibold text-gray-500 uppercase mb-1">Preferred Location</div>
-                            <div class="text-xs text-gray-600">
-                                {{ implode(', ', array_filter([$quote->preferred_area, $quote->preferred_county])) }}
-                            </div>
-                        </div>
-                    @endif
-                </div>
-            </div>
-        </div>
-
-        {{-- Right: Quote Status & Details --}}
-        <div class="flex-1">
-            <div class="border border-gray-300">
-                <div class="px-4 py-2 bg-gray-50 border-b border-gray-300">
-                    <div class="text-xs font-bold text-gray-700 uppercase">Quote Details</div>
-                </div>
-                <div class="p-4 space-y-3">
-                    <div>
-                        <div class="text-xs font-semibold text-gray-500 uppercase">Status</div>
-                        <div class="text-sm font-semibold text-gray-900 mt-0.5">
-                            {{ $quote->status->label() }}
-                        </div>
-                    </div>
-                    @if ($quote->quoted_at)
-                        <div>
-                            <div class="text-xs font-semibold text-gray-500 uppercase">Quoted On</div>
-                            <div class="text-sm font-semibold text-gray-900 mt-0.5">
-                                {{ $quote->quoted_at->format('d M, Y') }}
-                            </div>
-                        </div>
-                    @endif
-                    <div>
-                        <div class="text-xs font-semibold text-gray-500 uppercase">Currency</div>
-                        <div class="text-sm font-semibold text-gray-900 mt-0.5">{{ $quote->currency }}</div>
-                    </div>
-                    @if ($quote->expires_at)
-                        <div>
-                            <div class="text-xs font-semibold text-gray-500 uppercase">Validity</div>
-                            <div class="text-sm font-semibold text-gray-900 mt-0.5">
-                                {{ $quote->expires_at->diffInDays($quote->quoted_at ?? $quote->created_at) }} days
-                            </div>
-                        </div>
-                    @endif
-                </div>
-            </div>
-        </div>
-    </div>
-
-    {{-- ================================================================== --}}
-    {{-- ITEMS TABLE                                                         --}}
-    {{-- ================================================================== --}}
-    <div class="px-10 py-6">
-        <table class="w-full border-collapse">
-            <thead class="bg-slate-50">
-                <tr class="border-b-2 border-gray-300">
-                    <th class="py-3 ps-2 text-xs font-bold text-gray-700 uppercase text-left">#</th>
-                    <th class="py-3 text-xs font-bold text-gray-700 uppercase text-left">Description</th>
-                    <th class="py-3 text-xs font-bold text-gray-700 uppercase text-center">Qty</th>
-                    <th class="py-3 text-xs font-bold text-gray-700 uppercase text-right">Unit Price</th>
-                    @if ($quote->items->some(fn($item) => $item->hasCustomPrice()))
-                        <th class="py-3 text-xs font-bold text-gray-700 uppercase text-right">Quoted Price</th>
-                    @endif
-                    <th class="py-3 pe-2 text-xs font-bold text-gray-700 uppercase text-right">Amount</th>
+    <div class="px-10 mt-5">
+        <table class="w-full border-collapse text-xs">
+            <thead>
+                <tr>
+                    <th class="border border-gray-400 px-2 py-2 bg-white font-bold text-gray-900 w-12 text-left">ITEM
+                    </th>
+                    <th class="border border-gray-400 px-2 py-2 bg-white font-bold text-gray-900 text-center">DETAILS
+                    </th>
+                    <th class="border border-gray-400 px-2 py-2 bg-white font-bold text-gray-900 w-20 text-right">PRICE
+                    </th>
+                    <th class="border border-gray-400 px-2 py-2 bg-white font-bold text-gray-900 w-12 text-center">QTY
+                    </th>
+                    <th class="border border-gray-400 px-2 py-2 bg-white font-bold text-gray-900 w-24 text-right">AMOUNT
+                    </th>
                 </tr>
             </thead>
             <tbody>
                 @foreach ($quote->items as $index => $item)
                     @php
                         $name = $item->product_snapshot['name'] ?? ($item->product?->name ?? '—');
-                        $sku = $item->product_snapshot['sku'] ?? '—';
-                        $showQuotedPrice = $quote->items->some(fn($i) => $i->hasCustomPrice());
+                        $sku = $item->product_snapshot['sku'] ?? null;
+                        $brand = $item->product_snapshot['brand'] ?? null;
+                        $variantAttrs = $item->product_snapshot['variant'] ?? null;
+                        $shortDesc = $item->product?->short_description;
+                        $unitPrice = ($item->quoted_price_cents ?? $item->original_price_cents) / 100;
                     @endphp
-                    <tr class="border-b border-gray-200">
-                        <td class="py-3 text-xs text-gray-500">{{ $index + 1 }}</td>
-                        <td class="py-3">
-                            <div class="text-sm font-semibold text-gray-900">{{ $name }}</div>
-                            <div class="text-xs text-gray-500 mt-0.5">{{ $sku }}</div>
+                    <tr>
+                        <td class="border border-gray-400 px-2 py-2 align-top text-left">{{ $index + 1 }}.</td>
+                        <td class="border border-gray-400 px-2 py-2 align-top">
+                            <div class="font-bold text-gray-900 underline">{{ strtoupper($name) }}</div>
+                            <ul class="mt-1 ml-4 list-disc text-[11px] text-gray-800 space-y-0.5">
+                                @if ($brand)
+                                    <li>Brand: {{ $brand }}</li>
+                                @endif
+                                @if ($sku)
+                                    <li>SKU: {{ $sku }}</li>
+                                @endif
+                                @if (is_array($variantAttrs))
+                                    @foreach ($variantAttrs as $attr => $value)
+                                        <li>{{ $attr }}: {{ $value }}</li>
+                                    @endforeach
+                                @endif
+                                @if ($shortDesc)
+                                    <li>{{ \Illuminate\Support\Str::limit(strip_tags($shortDesc), 140) }}</li>
+                                @endif
+                            </ul>
                         </td>
-                        <td class="py-3 text-sm text-gray-900 text-center">{{ $item->quantity }}</td>
-                        <td class="py-3 text-sm text-gray-900 text-right">
-                            {{ number_format($item->original_price_cents / 100, 2) }}
+                        <td class="border border-gray-400 px-2 py-2 align-top text-right">
+                            {{ number_format($unitPrice, 2) }}
                         </td>
-                        @if ($showQuotedPrice)
-                            <td class="py-3 text-sm font-semibold text-gray-900 text-right">
-                                {{ number_format(($item->quoted_price_cents ?? $item->original_price_cents) / 100, 2) }}
-                            </td>
-                        @endif
-                        <td class="py-3 text-sm font-semibold text-gray-900 text-right">
+                        <td class="border border-gray-400 px-2 py-2 align-top text-center">{{ $item->quantity }}</td>
+                        <td class="border border-gray-400 px-2 py-2 align-top text-right font-semibold">
                             {{ number_format($item->total_cents / 100, 2) }}
                         </td>
                     </tr>
                 @endforeach
+
+                {{-- Subtotal --}}
+                <tr>
+                    <td colspan="4" class="border border-gray-400 px-2 py-2 text-right text-gray-700">Subtotal</td>
+                    <td class="border border-gray-400 px-2 py-2 text-right font-semibold">
+                        {{ number_format($quote->subtotal_cents / 100, 2) }}
+                    </td>
+                </tr>
+
+                {{-- Discount (only if any) --}}
+                @if ($quote->discount_cents > 0)
+                    <tr>
+                        <td colspan="4" class="border border-gray-400 px-2 py-2 text-right text-gray-700">Discount</td>
+                        <td class="border border-gray-400 px-2 py-2 text-right">
+                            -{{ number_format($quote->discount_cents / 100, 2) }}
+                        </td>
+                    </tr>
+                @endif
+
+                {{-- Shipping (only if any) --}}
+                @if ($quote->shipping_cents > 0)
+                    <tr>
+                        <td colspan="4" class="border border-gray-400 px-2 py-2 text-right text-gray-700">Estimated
+                            Shipping</td>
+                        <td class="border border-gray-400 px-2 py-2 text-right">
+                            {{ number_format($quote->shipping_cents / 100, 2) }}
+                        </td>
+                    </tr>
+                @endif
+
+                {{-- Tax / VAT (only if any) --}}
+                @if ($hasTax)
+                    <tr>
+                        <td colspan="4" class="border border-gray-400 px-2 py-2 text-right text-gray-700">
+                            {{ $taxRate ? "{$taxRate}% " : '' }}{{ $tax->tax_name ?? 'VAT' }}
+                        </td>
+                        <td class="border border-gray-400 px-2 py-2 text-right">
+                            {{ number_format($quote->tax_cents / 100, 2) }}
+                        </td>
+                    </tr>
+                @endif
+
+                {{-- Total --}}
+                <tr>
+                    <td colspan="4" class="border border-gray-400 px-2 py-2 text-right font-bold text-base">
+                        TOTAL ({{ $currency }})
+                    </td>
+                    <td class="border border-gray-400 px-2 py-2 text-right font-bold text-base">
+                        {{ number_format($quote->total_cents / 100, 2) }}
+                    </td>
+                </tr>
             </tbody>
         </table>
-    </div>
 
-    {{-- ================================================================== --}}
-    {{-- TOTALS                                                              --}}
-    {{-- ================================================================== --}}
-    <div class="px-10 py-6 flex justify-end">
-        <div class="w-80">
-            <div class="space-y-2">
-                <div class="flex justify-between text-sm text-gray-600">
-                    <span>Subtotal</span>
-                    <span class="font-semibold text-gray-900">{{ $quote->currency }}
-                        {{ number_format($quote->subtotal_cents / 100, 2) }}</span>
-                </div>
-                @if ($quote->discount_cents > 0)
-                    <div class="flex justify-between text-sm text-red-600">
-                        <span>Discount</span>
-                        <span class="font-semibold">-{{ $quote->currency }}
-                            {{ number_format($quote->discount_cents / 100, 2) }}</span>
-                    </div>
-                @endif
-                @if ($quote->shipping_cents > 0)
-                    <div class="flex justify-between text-sm text-gray-600">
-                        <span>Estimated Shipping</span>
-                        <span class="font-semibold text-gray-900">{{ $quote->currency }}
-                            {{ number_format($quote->shipping_cents / 100, 2) }}</span>
-                    </div>
-                @endif
-
-                <div class="pt-3 mt-3 border-t-2 border-gray-300 flex justify-between items-center">
-                    <span class="text-base font-bold text-gray-900 uppercase">Total Quote</span>
-                    <span class="text-xl font-bold text-gray-900">{{ $quote->currency }}
-                        {{ number_format($quote->total_cents / 100, 2) }}</span>
-                </div>
+        {{-- VAT / PIN registration numbers under the table --}}
+        @if ($tax->tax_registration_number ?? null)
+            <div class="mt-1 text-[10px] text-gray-800 leading-snug">
+                {{ strtoupper($tax->tax_name ?? 'VAT') }} REG NO. {{ $tax->tax_registration_number }}
             </div>
-        </div>
+        @endif
     </div>
 
     {{-- ================================================================== --}}
     {{-- CUSTOMER NOTES                                                      --}}
     {{-- ================================================================== --}}
     @if ($quote->customer_notes)
-        <div class="px-10 py-4 border-t border-gray-200">
-            <div class="text-xs font-bold text-gray-500 uppercase mb-1">Customer Notes</div>
-            <div class="text-sm text-gray-600 italic">
-                "{{ $quote->customer_notes }}"
-            </div>
+        <div class="px-10 mt-5">
+            <div class="text-xs font-bold text-gray-700 uppercase mb-1">Customer Notes</div>
+            <div class="text-xs text-gray-700 italic">"{{ $quote->customer_notes }}"</div>
         </div>
     @endif
 
     {{-- ================================================================== --}}
-    {{-- ADMIN NOTES                                                         --}}
+    {{-- TERMS — admin-set or default from QuotationSettings                --}}
     {{-- ================================================================== --}}
-    @if ($quote->admin_notes)
-        <div class="px-10 py-4 border-t border-gray-200">
-            <div class="text-xs font-bold text-gray-500 uppercase mb-1">Terms & Conditions</div>
-            <div class="text-sm text-gray-600">
-                {{ $quote->admin_notes }}
-            </div>
+    @if (!empty($quote->admin_notes ?: $quotationSettings->quote_terms))
+        <div class="px-10 mt-5">
+            <div class="text-xs font-bold text-gray-700 uppercase mb-1">Terms & Conditions</div>
+            <div class="text-[11px] text-gray-700 leading-snug whitespace-pre-line">
+                {{ $quote->admin_notes ?: $quotationSettings->quote_terms }}</div>
         </div>
     @endif
 
     {{-- ================================================================== --}}
-    {{-- VALIDITY NOTICE                                                     --}}
+    {{-- VALIDITY                                                            --}}
     {{-- ================================================================== --}}
     @if ($quote->expires_at && $quote->status->value === 'sent')
-        <div class="px-10 py-4 border-t border-gray-200 bg-gray-50">
-            <div class="text-xs text-gray-600">
-                <strong>Note:</strong> This quotation is valid until {{ $quote->expires_at->format('d M, Y') }}.
-                Prices and availability are subject to change after this date.
-            </div>
+        <div class="px-10 mt-3 text-[11px] text-gray-700">
+            <strong>Note:</strong> This quotation is valid until {{ $quote->expires_at->format('d M, Y') }}. Prices and
+            availability are subject to change after this date.
         </div>
     @endif
+
+    {{-- ================================================================== --}}
+    {{-- FOOTER TAGLINE                                                      --}}
+    {{-- ================================================================== --}}
+    <div class="mt-8 mb-4 text-center">
+        <div class="text-sm font-bold text-brand">
+            {{ $general->store_tagline ?: $general->store_name }}
+        </div>
+        @if ($quotationSettings->quote_footer_note)
+            <div class="mt-1 text-[10px] text-gray-600">{{ $quotationSettings->quote_footer_note }}</div>
+        @endif
+    </div>
 @endsection

@@ -296,7 +296,7 @@
                             <div class="@xl/details:sticky @xl/details:top-24">
                                 <div
                                     class="bg-zinc-100 dark:bg-zinc-800 aspect-square w-full rounded-lg flex items-center justify-center">
-                                    <div class="text-center text-zinc-400 dark:text-zinc-500">
+                                    <div class="text-center text-on-surface-variant">
                                         <?php if (isset($component)) { $__componentOriginal2d7605e1adbee8a1737ebec29a91da61 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginal2d7605e1adbee8a1737ebec29a91da61 = $attributes; } ?>
 <?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::icon.photo','data' => ['class' => 'w-16 h-16 mx-auto mb-2']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
@@ -335,14 +335,14 @@
                         
                         <?php if (isset($component)) { $__componentOriginale0fd5b6a0986beffac17a0a103dfd7b9 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginale0fd5b6a0986beffac17a0a103dfd7b9 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::heading','data' => ['level' => '1','class' => 'text-xl! sm:text-2xl! lg:text-3xl! font-bold! text-zinc-900 dark:text-zinc-100 leading-tight']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::heading','data' => ['level' => '1','class' => 'text-xl! sm:text-2xl! lg:text-3xl! font-bold! text-on-surface leading-tight']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('flux::heading'); ?>
 <?php if ($component->shouldRender()): ?>
 <?php $__env->startComponent($component->resolveView(), $component->data()); ?>
 <?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
 <?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
 <?php endif; ?>
-<?php $component->withAttributes(['level' => '1','class' => 'text-xl! sm:text-2xl! lg:text-3xl! font-bold! text-zinc-900 dark:text-zinc-100 leading-tight']); ?>
+<?php $component->withAttributes(['level' => '1','class' => 'text-xl! sm:text-2xl! lg:text-3xl! font-bold! text-on-surface leading-tight']); ?>
 <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
 
                             <?php echo e($product->name); ?>
@@ -362,7 +362,7 @@
                         <div class="flex items-center justify-between flex-wrap gap-3">
                             <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($product->brand): ?>
                                 <div class="flex items-center gap-2">
-                                    <span class="text-zinc-500 text-xs sm:text-sm">Brand:</span>
+                                    <span class="text-on-surface-variant text-xs sm:text-sm">Brand:</span>
                                     <span
                                         class="text-secondary font-medium text-xs sm:text-sm"><?php echo e($product->brand->name); ?></span>
                                 </div>
@@ -471,7 +471,7 @@
                                     <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endfor; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
                                 </div>
                                 <span
-                                    class="text-xs sm:text-sm text-zinc-500">(<?php echo e(number_format($avgRating, 1)); ?>)</span>
+                                    class="text-xs sm:text-sm text-on-surface-variant">(<?php echo e(number_format($avgRating, 1)); ?>)</span>
                                 <a href="<?php echo e(route('products.reviews', $product)); ?>" wire:navigate
                                     class="text-xs sm:text-sm text-secondary hover:underline">
                                     <?php echo e($this->reviewStats['total']); ?> reviews
@@ -481,7 +481,7 @@
 
                         
                         <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($product->short_description): ?>
-                            <div class="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
+                            <div class="text-xs sm:text-sm text-on-surface-variant leading-relaxed">
                                 <?php echo $product->short_description; ?>
 
                             </div>
@@ -541,14 +541,14 @@
                                         <div class="flex items-baseline gap-2 mb-2">
                                             <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($sameGroupedPrice): ?>
                                                 <span
-                                                    class="text-lg font-bold text-zinc-900 dark:text-zinc-100"><?php echo e(format_currency($groupedPriceRange['min'])); ?></span>
-                                                <span class="text-sm text-zinc-500">each</span>
+                                                    class="text-lg font-bold text-on-surface"><?php echo e(format_currency($groupedPriceRange['min'])); ?></span>
+                                                <span class="text-sm text-on-surface-variant">each</span>
                                             <?php else: ?>
                                                 <span
-                                                    class="text-lg font-bold text-zinc-900 dark:text-zinc-100"><?php echo e(format_currency($groupedPriceRange['min'])); ?></span>
-                                                <span class="text-sm text-zinc-500">—</span>
+                                                    class="text-lg font-bold text-on-surface"><?php echo e(format_currency($groupedPriceRange['min'])); ?></span>
+                                                <span class="text-sm text-on-surface-variant">—</span>
                                                 <span
-                                                    class="text-lg font-bold text-zinc-900 dark:text-zinc-100"><?php echo e(format_currency($groupedPriceRange['max'])); ?></span>
+                                                    class="text-lg font-bold text-on-surface"><?php echo e(format_currency($groupedPriceRange['max'])); ?></span>
                                             <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
                                         </div>
                                     <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
@@ -658,16 +658,16 @@ Save <?php echo e($savings); ?>%
                                     <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($bundlePrice): ?>
                                         <div class="flex items-baseline gap-2 mb-1">
                                             <span
-                                                class="text-xl font-bold text-zinc-900 dark:text-zinc-100"><?php echo e(format_currency($bundlePrice)); ?></span>
+                                                class="text-xl font-bold text-on-surface"><?php echo e(format_currency($bundlePrice)); ?></span>
                                             <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($bundleValue > $bundlePrice): ?>
                                                 <span
-                                                    class="text-sm text-zinc-400 line-through"><?php echo e(format_currency($bundleValue)); ?></span>
+                                                    class="text-sm text-on-surface-variant line-through"><?php echo e(format_currency($bundleValue)); ?></span>
                                             <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
                                         </div>
                                     <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
 
                                     
-                                    <p class="text-xs text-zinc-500 mb-2">
+                                    <p class="text-xs text-on-surface-variant mb-2">
                                         Includes <?php echo e($this->bundleProducts->count()); ?>
 
                                         <?php echo e(Str::plural('item', $this->bundleProducts->count())); ?>
@@ -711,8 +711,8 @@ Save <?php echo e($savings); ?>%
                             
                             <?php $displaySku = $this->selectedVariant?->sku ?? $product->sku; ?>
                             <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($displaySku): ?>
-                                <p class="text-xs text-zinc-500">
-                                    Item no: <span class="text-zinc-700 dark:text-zinc-300"><?php echo e($displaySku); ?></span>
+                                <p class="text-xs text-on-surface-variant">
+                                    Item no: <span class="text-on-surface"><?php echo e($displaySku); ?></span>
                                 </p>
                             <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
 
@@ -743,11 +743,11 @@ Save <?php echo e($savings); ?>%
                                             $sizeStyle = $sizePx ? "width: {$sizePx}px; height: {$sizePx}px;" : '';
                                         ?>
                                         <div class="space-y-1.5">
-                                            <p class="text-xs sm:text-sm font-medium text-zinc-700 dark:text-zinc-300">
+                                            <p class="text-xs sm:text-sm font-medium text-on-surface">
                                                 <?php echo e($attribute['name']); ?>
 
                                                 <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(!empty($selectedAttributeValues[$attribute['name']])): ?>
-                                                    <span class="font-normal text-zinc-500">
+                                                    <span class="font-normal text-on-surface-variant">
                                                         : <?php echo e($selectedAttributeValues[$attribute['name']]); ?>
 
                                                     </span>
@@ -840,14 +840,14 @@ Save <?php echo e($savings); ?>%
                                                                     $isSelected && $state === 'available',
                                                                 'border-amber-500 bg-amber-50 text-amber-700' =>
                                                                     $isSelected && $state === 'backorder',
-                                                                'border-zinc-400 bg-zinc-100 text-zinc-500' =>
+                                                                'border-zinc-400 bg-zinc-100 text-on-surface-variant' =>
                                                                     $isSelected && $state === 'out_of_stock',
                                                                 // Unselected states
-                                                                'border-zinc-300 text-zinc-700 hover:border-primary hover:text-primary dark:border-zinc-600 dark:text-zinc-300' =>
+                                                                'border-zinc-300 text-on-surface hover:border-primary hover:text-primary' =>
                                                                     !$isSelected && $state === 'available',
                                                                 'border-amber-300 text-amber-600 hover:border-amber-500 bg-amber-50/50' =>
                                                                     !$isSelected && $state === 'backorder',
-                                                                'border-zinc-200 text-zinc-400 hover:border-zinc-300 bg-zinc-50' =>
+                                                                'border-zinc-200 text-on-surface-variant hover:border-zinc-300 bg-zinc-50' =>
                                                                     !$isSelected && $state === 'out_of_stock',
                                                             ]); ?>">
                                                             <span
@@ -958,7 +958,7 @@ Save <?php echo e($savings); ?>%
                                                     <?php echo e(format_currency($salePrice)); ?>
 
                                                 </span>
-                                                <span class="text-sm sm:text-base text-zinc-400 line-through">
+                                                <span class="text-sm sm:text-base text-on-surface-variant line-through">
                                                     <?php echo e(format_currency($regularPrice)); ?>
 
                                                 </span>
@@ -993,7 +993,7 @@ Save <?php echo e($savings); ?>%
                                             </span>
                                         <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
                                     <?php elseif($product->type->value === 'variable' && !$selectedVariantId): ?>
-                                        <span class="text-sm sm:text-base text-zinc-400">Select options to see
+                                        <span class="text-sm sm:text-base text-on-surface-variant">Select options to see
                                             price</span>
                                     <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
 
@@ -1008,7 +1008,7 @@ Save <?php echo e($savings); ?>%
                                     ?>
 
                                     <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($state === 'none'): ?>
-                                        <p class="text-xs sm:text-sm text-zinc-400 mt-1">Select options to see
+                                        <p class="text-xs sm:text-sm text-on-surface-variant mt-1">Select options to see
                                             availability
                                         </p>
                                     <?php elseif($state === 'available'): ?>
@@ -1187,13 +1187,13 @@ Save <?php echo e($savings); ?>%
                                             <div class="flex items-baseline gap-2 mb-2">
                                                 <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($samePrice): ?>
                                                     <span
-                                                        class="text-lg font-bold text-zinc-900 dark:text-zinc-100"><?php echo e(format_currency($priceRange['min'])); ?></span>
+                                                        class="text-lg font-bold text-on-surface"><?php echo e(format_currency($priceRange['min'])); ?></span>
                                                 <?php else: ?>
                                                     <span
-                                                        class="text-lg font-bold text-zinc-900 dark:text-zinc-100"><?php echo e(format_currency($priceRange['min'])); ?></span>
-                                                    <span class="text-sm text-zinc-500">—</span>
+                                                        class="text-lg font-bold text-on-surface"><?php echo e(format_currency($priceRange['min'])); ?></span>
+                                                    <span class="text-sm text-on-surface-variant">—</span>
                                                     <span
-                                                        class="text-lg font-bold text-zinc-900 dark:text-zinc-100"><?php echo e(format_currency($priceRange['max'])); ?></span>
+                                                        class="text-lg font-bold text-on-surface"><?php echo e(format_currency($priceRange['max'])); ?></span>
                                                 <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
                                             </div>
                                         <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
@@ -1393,7 +1393,7 @@ Save <?php echo e($savings); ?>%
                         
                         <template x-if="activeTab === 'description'">
                             <div>
-                                <div class="text-xs sm:text-sm text-zinc-500 tracking-wider leading-6">
+                                <div class="text-xs sm:text-sm text-on-surface-variant tracking-wider leading-6">
                                     <?php echo $product->description; ?>
 
                                 </div>
@@ -1404,12 +1404,12 @@ Save <?php echo e($savings); ?>%
                         <template x-if="activeTab === 'specification'">
                             <div>
                                 <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(!empty($product->technical_specification)): ?>
-                                    <div class="text-xs sm:text-sm text-zinc-500 tracking-wider leading-6">
+                                    <div class="text-xs sm:text-sm text-on-surface-variant tracking-wider leading-6">
                                         <?php echo $product->technical_specification; ?>
 
                                     </div>
                                 <?php else: ?>
-                                    <p class="text-xs sm:text-sm text-zinc-500">No specifications available for this
+                                    <p class="text-xs sm:text-sm text-on-surface-variant">No specifications available for this
                                         product.
                                     </p>
                                 <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
@@ -1527,7 +1527,7 @@ Save <?php echo e($savings); ?>%
                                                             <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endfor; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
                                                         </div>
 
-                                                        <div class="text-xs sm:text-sm text-zinc-600 mt-1">
+                                                        <div class="text-xs sm:text-sm text-on-surface-variant mt-1">
                                                             <?php echo e($this->reviewStats['total']); ?>
 
                                                             <?php echo e(Str::plural('review', $this->reviewStats['total'])); ?>
@@ -1639,7 +1639,7 @@ Save <?php echo e($savings); ?>%
                                         
                                         <div class="col-span-1 @2xl/reviews:col-span-3">
                                             <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($this->reviews->isEmpty()): ?>
-                                                <div class="text-center py-8 text-zinc-500">
+                                                <div class="text-center py-8 text-on-surface-variant">
                                                     <p>No reviews yet. Be the first to review this product!</p>
                                                 </div>
                                             <?php else: ?>
@@ -1728,7 +1728,7 @@ unset($__split);
                             x-transition:leave-start="opacity-100 translate-y-0"
                             x-transition:leave-end="opacity-0 -translate-y-1"
                             class="mb-3 pb-3 border-b border-zinc-200 dark:border-zinc-700">
-                            <p class="text-xs text-zinc-400 uppercase tracking-wide mb-0.5">Price</p>
+                            <p class="text-xs text-on-surface-variant uppercase tracking-wide mb-0.5">Price</p>
                             <span class="text-sm font-medium text-amber-600">Request a quote</span>
                         </div>
                     <?php elseif($product->display_price): ?>
@@ -1739,15 +1739,15 @@ unset($__split);
                             x-transition:leave-start="opacity-100 translate-y-0"
                             x-transition:leave-end="opacity-0 -translate-y-1"
                             class="mb-3 pb-3 border-b border-zinc-200 dark:border-zinc-700">
-                            <p class="text-xs text-zinc-400 uppercase tracking-wide mb-0.5">Price</p>
+                            <p class="text-xs text-on-surface-variant uppercase tracking-wide mb-0.5">Price</p>
                             <div class="flex items-baseline gap-1.5 flex-wrap">
                                 <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($product->has_price_prefix): ?>
-                                    <span class="text-xs text-zinc-400"><?php echo e($product->display_price_prefix); ?></span>
+                                    <span class="text-xs text-on-surface-variant"><?php echo e($product->display_price_prefix); ?></span>
                                 <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
                                 <span class="text-lg font-bold text-primary"><?php echo e($product->display_price); ?></span>
                                 <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($product->type === \App\Enums\ProductType::SIMPLE && $product->hasDiscount()): ?>
                                     <span
-                                        class="text-xs text-zinc-400 line-through"><?php echo e($product->formatted_price); ?></span>
+                                        class="text-xs text-on-surface-variant line-through"><?php echo e($product->formatted_price); ?></span>
                                     <span
                                         class="text-xs font-medium text-green-600">-<?php echo e($product->discountPercentage()); ?></span>
                                 <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
@@ -1782,19 +1782,19 @@ unset($__split);
 <?php $component = $__componentOriginal11b79e24357a5468b04fa815ae4b1891; ?>
 <?php unset($__componentOriginal11b79e24357a5468b04fa815ae4b1891); ?>
 <?php endif; ?>
-                            <span class="text-sm text-zinc-800 dark:text-zinc-100">Return & refund
+                            <span class="text-sm text-on-surface">Return & refund
                                 policy</span>
                         </div>
                         <?php if (isset($component)) { $__componentOriginal31cb76c8d087d4f00797aeea7232b4c3 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginal31cb76c8d087d4f00797aeea7232b4c3 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::icon.chevron-right','data' => ['class' => 'size-4 text-zinc-400']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::icon.chevron-right','data' => ['class' => 'size-4 text-on-surface-variant']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('flux::icon.chevron-right'); ?>
 <?php if ($component->shouldRender()): ?>
 <?php $__env->startComponent($component->resolveView(), $component->data()); ?>
 <?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
 <?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
 <?php endif; ?>
-<?php $component->withAttributes(['class' => 'size-4 text-zinc-400']); ?>
+<?php $component->withAttributes(['class' => 'size-4 text-on-surface-variant']); ?>
 <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
 
 <?php echo $__env->renderComponent(); ?>
@@ -1833,19 +1833,19 @@ unset($__split);
 <?php $component = $__componentOriginalf870514c33bb1b53395ba02235f60146; ?>
 <?php unset($__componentOriginalf870514c33bb1b53395ba02235f60146); ?>
 <?php endif; ?>
-                            <span class="text-sm text-zinc-800 dark:text-zinc-100">Warranty
+                            <span class="text-sm text-on-surface">Warranty
                                 policy</span>
                         </div>
                         <?php if (isset($component)) { $__componentOriginal31cb76c8d087d4f00797aeea7232b4c3 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginal31cb76c8d087d4f00797aeea7232b4c3 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::icon.chevron-right','data' => ['class' => 'size-4 text-zinc-400']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::icon.chevron-right','data' => ['class' => 'size-4 text-on-surface-variant']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('flux::icon.chevron-right'); ?>
 <?php if ($component->shouldRender()): ?>
 <?php $__env->startComponent($component->resolveView(), $component->data()); ?>
 <?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
 <?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
 <?php endif; ?>
-<?php $component->withAttributes(['class' => 'size-4 text-zinc-400']); ?>
+<?php $component->withAttributes(['class' => 'size-4 text-on-surface-variant']); ?>
 <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
 
 <?php echo $__env->renderComponent(); ?>
@@ -1868,19 +1868,19 @@ unset($__split);
                                 <path fill-rule="evenodd"
                                     d="M8 14.933a1 1 0 0 0 .1-.025q.114-.034.294-.118c.24-.113.547-.29.893-.533a10.7 10.7 0 0 0 2.287-2.233c1.527-1.997 2.807-5.031 2.253-9.188a.48.48 0 0 0-.328-.39c-.651-.213-1.75-.56-2.837-.855C9.552 1.29 8.531 1.067 8 1.067zM5.072.56C6.157.265 7.31 0 8 0s1.843.265 2.928.56c1.11.3 2.229.655 2.887.87a1.54 1.54 0 0 1 1.044 1.262c.596 4.477-.787 7.795-2.465 9.99a11.8 11.8 0 0 1-2.517 2.453 7 7 0 0 1-1.048.625c-.28.132-.581.24-.829.24s-.548-.108-.829-.24a7 7 0 0 1-1.048-.625 11.8 11.8 0 0 1-2.517-2.453C1.928 10.487.545 7.169 1.141 2.692A1.54 1.54 0 0 1 2.185 1.43 63 63 0 0 1 5.072.56" />
                             </svg>
-                            <span class="text-sm text-zinc-800 dark:text-zinc-100">Secure
+                            <span class="text-sm text-on-surface">Secure
                                 privacy</span>
                         </div>
                         <?php if (isset($component)) { $__componentOriginal31cb76c8d087d4f00797aeea7232b4c3 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginal31cb76c8d087d4f00797aeea7232b4c3 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::icon.chevron-right','data' => ['class' => 'size-4 text-zinc-400']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::icon.chevron-right','data' => ['class' => 'size-4 text-on-surface-variant']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('flux::icon.chevron-right'); ?>
 <?php if ($component->shouldRender()): ?>
 <?php $__env->startComponent($component->resolveView(), $component->data()); ?>
 <?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
 <?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
 <?php endif; ?>
-<?php $component->withAttributes(['class' => 'size-4 text-zinc-400']); ?>
+<?php $component->withAttributes(['class' => 'size-4 text-on-surface-variant']); ?>
 <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
 
 <?php echo $__env->renderComponent(); ?>
@@ -2055,10 +2055,10 @@ unset($__split);
                             
                             <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($state !== 'none'): ?>
                                 <div class="mb-1">
-                                    <p class="text-sm font-medium text-zinc-800 dark:text-zinc-100 mb-2">Quantity</p>
+                                    <p class="text-sm font-medium text-on-surface mb-2">Quantity</p>
                                     <div class="flex items-center gap-1">
                                         <button type="button" wire:click="decreaseCartQuantity"
-                                            class="w-9 h-9 flex items-center justify-center rounded border border-zinc-300 dark:border-zinc-600 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+                                            class="w-9 h-9 flex items-center justify-center rounded border border-zinc-300 dark:border-zinc-600 text-on-surface-variant hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
                                             aria-label="Decrease quantity"
                                             <?php if($state === 'out_of_stock'): ?> disabled <?php endif; ?>>
                                             <?php if (isset($component)) { $__componentOriginal01ef35ccfb2d03cc6412dbe2dc9e1a50 = $component; } ?>
@@ -2085,12 +2085,12 @@ unset($__split);
 <?php endif; ?>
                                         </button>
                                         <span
-                                            class="w-10 text-center text-sm font-semibold text-zinc-800 dark:text-zinc-100">
+                                            class="w-10 text-center text-sm font-semibold text-on-surface">
                                             <?php echo e($cartQuantity); ?>
 
                                         </span>
                                         <button type="button" wire:click="increaseCartQuantity"
-                                            class="w-9 h-9 flex items-center justify-center rounded border border-zinc-300 dark:border-zinc-600 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+                                            class="w-9 h-9 flex items-center justify-center rounded border border-zinc-300 dark:border-zinc-600 text-on-surface-variant hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
                                             aria-label="Increase quantity"
                                             <?php if($state === 'out_of_stock'): ?> disabled <?php endif; ?>>
                                             <?php if (isset($component)) { $__componentOriginal37c717510e7a32140849d8d5dd9d632e = $component; } ?>
@@ -2562,11 +2562,11 @@ Available Accessories <?php echo $__env->renderComponent(); ?>
 
                             
                             <div class="flex-1 min-w-0">
-                                <p class="text-sm font-medium text-zinc-900 dark:text-zinc-100 truncate">
+                                <p class="text-sm font-medium text-on-surface truncate">
                                     <?php echo e($accessory->name); ?>
 
                                 </p>
-                                <p class="text-sm text-zinc-500">
+                                <p class="text-sm text-on-surface-variant">
                                     <?php echo e($itemPrice > 0 ? format_currency($itemPrice) : '—'); ?>
 
                                 </p>
@@ -2580,7 +2580,7 @@ Available Accessories <?php echo $__env->renderComponent(); ?>
                             
                             <div class="shrink-0 flex items-center gap-1">
                                 <button type="button" wire:click="decreaseAccessoryQuantity(<?php echo e($accessory->id); ?>)"
-                                    class="w-7 h-7 flex items-center justify-center rounded border border-zinc-300 dark:border-zinc-600 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors cursor-pointer"
+                                    class="w-7 h-7 flex items-center justify-center rounded border border-zinc-300 dark:border-zinc-600 text-on-surface-variant hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors cursor-pointer"
                                     aria-label="Decrease quantity">
                                     <?php if (isset($component)) { $__componentOriginal01ef35ccfb2d03cc6412dbe2dc9e1a50 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginal01ef35ccfb2d03cc6412dbe2dc9e1a50 = $attributes; } ?>
@@ -2606,9 +2606,9 @@ Available Accessories <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
                                 </button>
                                 <span
-                                    class="w-8 text-center text-sm font-medium text-zinc-800 dark:text-zinc-100"><?php echo e($itemQty); ?></span>
+                                    class="w-8 text-center text-sm font-medium text-on-surface"><?php echo e($itemQty); ?></span>
                                 <button type="button" wire:click="increaseAccessoryQuantity(<?php echo e($accessory->id); ?>)"
-                                    class="w-7 h-7 flex items-center justify-center rounded border border-zinc-300 dark:border-zinc-600 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors cursor-pointer"
+                                    class="w-7 h-7 flex items-center justify-center rounded border border-zinc-300 dark:border-zinc-600 text-on-surface-variant hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors cursor-pointer"
                                     aria-label="Increase quantity">
                                     <?php if (isset($component)) { $__componentOriginal37c717510e7a32140849d8d5dd9d632e = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginal37c717510e7a32140849d8d5dd9d632e = $attributes; } ?>
@@ -2810,11 +2810,11 @@ Select Items <?php echo $__env->renderComponent(); ?>
 
                             
                             <div class="flex-1 min-w-0">
-                                <p class="text-sm font-medium text-zinc-900 dark:text-zinc-100 truncate">
+                                <p class="text-sm font-medium text-on-surface truncate">
                                     <?php echo e($item->name); ?>
 
                                 </p>
-                                <p class="text-sm text-zinc-500">
+                                <p class="text-sm text-on-surface-variant">
                                     <?php echo e($itemPrice > 0 ? format_currency($itemPrice) : '—'); ?>
 
                                 </p>
@@ -2836,7 +2836,7 @@ Select Items <?php echo $__env->renderComponent(); ?>
                             
                             <div class="shrink-0 flex items-center gap-1">
                                 <button type="button" wire:click="decreaseGroupedQuantity(<?php echo e($item->id); ?>)"
-                                    class="w-7 h-7 flex items-center justify-center rounded border border-zinc-300 dark:border-zinc-600 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors cursor-pointer"
+                                    class="w-7 h-7 flex items-center justify-center rounded border border-zinc-300 dark:border-zinc-600 text-on-surface-variant hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors cursor-pointer"
                                     aria-label="Decrease quantity">
                                     <?php if (isset($component)) { $__componentOriginal01ef35ccfb2d03cc6412dbe2dc9e1a50 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginal01ef35ccfb2d03cc6412dbe2dc9e1a50 = $attributes; } ?>
@@ -2861,12 +2861,12 @@ Select Items <?php echo $__env->renderComponent(); ?>
 <?php unset($__componentOriginal01ef35ccfb2d03cc6412dbe2dc9e1a50); ?>
 <?php endif; ?>
                                 </button>
-                                <span class="w-8 text-center text-sm font-medium text-zinc-800 dark:text-zinc-100">
+                                <span class="w-8 text-center text-sm font-medium text-on-surface">
                                     <?php echo e($itemQty); ?>
 
                                 </span>
                                 <button type="button" wire:click="increaseGroupedQuantity(<?php echo e($item->id); ?>)"
-                                    class="w-7 h-7 flex items-center justify-center rounded border border-zinc-300 dark:border-zinc-600 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors cursor-pointer"
+                                    class="w-7 h-7 flex items-center justify-center rounded border border-zinc-300 dark:border-zinc-600 text-on-surface-variant hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors cursor-pointer"
                                     aria-label="Increase quantity">
                                     <?php if (isset($component)) { $__componentOriginal37c717510e7a32140849d8d5dd9d632e = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginal37c717510e7a32140849d8d5dd9d632e = $attributes; } ?>
@@ -3099,11 +3099,11 @@ You save <?php echo e($savings); ?>% vs buying separately
 
                             
                             <div class="flex-1 min-w-0">
-                                <p class="text-sm font-medium text-zinc-900 dark:text-zinc-100 truncate">
+                                <p class="text-sm font-medium text-on-surface truncate">
                                     <?php echo e($item->name); ?>
 
                                 </p>
-                                <p class="text-sm text-zinc-500">
+                                <p class="text-sm text-on-surface-variant">
                                     <?php echo e($itemPrice > 0 ? format_currency($itemPrice) : '—'); ?>
 
                                 </p>
@@ -3124,9 +3124,9 @@ You save <?php echo e($savings); ?>% vs buying separately
 
                             
                             <div class="shrink-0 text-right">
-                                <span class="text-sm text-zinc-500">Qty:</span>
+                                <span class="text-sm text-on-surface-variant">Qty:</span>
                                 <span
-                                    class="text-sm font-medium text-zinc-800 dark:text-zinc-100 ml-1"><?php echo e($itemQty); ?></span>
+                                    class="text-sm font-medium text-on-surface ml-1"><?php echo e($itemQty); ?></span>
                             </div>
                         </div>
                     <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
@@ -3135,7 +3135,7 @@ You save <?php echo e($savings); ?>% vs buying separately
                 
                 <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($bundlePrice): ?>
                     <div class="flex items-center justify-between pt-3 border-t border-zinc-200 dark:border-zinc-700">
-                        <span class="text-sm text-zinc-500">Bundle Price</span>
+                        <span class="text-sm text-on-surface-variant">Bundle Price</span>
                         <span class="text-lg font-bold text-secondary"><?php echo e(format_currency($bundlePrice)); ?></span>
                     </div>
                 <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>

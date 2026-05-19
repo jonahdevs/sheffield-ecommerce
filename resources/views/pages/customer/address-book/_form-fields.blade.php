@@ -2,7 +2,7 @@
     $cancelHref = $cancelHref ?? null;
     $submitLabel = $submitLabel ?? 'Save Address';
 
-    $inputClass = 'customer-input font-barlow text-zinc-950 bg-white placeholder:text-zinc-300';
+    $inputClass = 'customer-input font-barlow text-on-surface bg-white placeholder:text-zinc-300';
     $selectArrow =
         "appearance-none bg-[url('data:image/svg+xml,%3Csvg_xmlns=%22http://www.w3.org/2000/svg%22_width=%2210%22_height=%226%22%3E%3Cpath_d=%22M0_0l5_6_5-6z%22_fill=%22%23888%22/%3E%3C/svg%3E')] bg-no-repeat bg-[right_12px_center]";
 
@@ -55,9 +55,9 @@ countyName = {{ $countyNameInit }};"
 
             {{-- Map --}}
             <div>
-                <label class="block text-[10px] font-bold tracking-widest uppercase text-zinc-500 mb-1.5">📍 Pin your
+                <label class="block text-[10px] font-bold tracking-widest uppercase text-on-surface-variant mb-1.5">📍 Pin your
                     exact delivery location</label>
-                <p class="text-[12px] text-zinc-500 mb-3 leading-relaxed">
+                <p class="text-[12px] text-on-surface-variant mb-3 leading-relaxed">
                     Search or click anywhere on the map. Your county is detected automatically from the pin.
                 </p>
 
@@ -65,7 +65,7 @@ countyName = {{ $countyNameInit }};"
                     style="height:320px;"></div>
 
                 <div
-                    class="bg-zinc-50 border-x-[1.5px] border-b-[1.5px] border-zinc-200 p-2.5 flex items-center gap-2 text-[11px] text-zinc-500">
+                    class="bg-zinc-50 border-x-[1.5px] border-b-[1.5px] border-zinc-200 p-2.5 flex items-center gap-2 text-[11px] text-on-surface-variant">
                     <flux:icon.information-circle class="size-3 shrink-0" />
                     Click anywhere on the map to drop a delivery pin. Drag the pin to adjust.
                 </div>
@@ -74,8 +74,8 @@ countyName = {{ $countyNameInit }};"
             {{-- Detecting in-flight --}}
             <div x-show="countyResolving" x-cloak
                 class="flex items-center gap-2.5 px-4 py-3 bg-zinc-50 border-l-[3px] border-zinc-300">
-                <flux:icon.arrow-path class="w-4 h-4 text-zinc-400 shrink-0 animate-spin" />
-                <span class="text-[12px] font-medium text-zinc-500">Detecting location…</span>
+                <flux:icon.arrow-path class="w-4 h-4 text-on-surface-variant shrink-0 animate-spin" />
+                <span class="text-[12px] font-medium text-on-surface-variant">Detecting location…</span>
             </div>
 
             {{-- County resolved — success bar --}}
@@ -83,7 +83,7 @@ countyName = {{ $countyNameInit }};"
                 class="bg-green-50 border-l-[3px] border-green-500 px-4 py-3 flex items-start gap-2.5">
                 <flux:icon.check class="w-4 h-4 text-green-500 mt-0.5 shrink-0" />
                 <div class="min-w-0">
-                    <p x-text="pinnedText" class="text-[12px] font-semibold text-zinc-700 truncate"></p>
+                    <p x-text="pinnedText" class="text-[12px] font-semibold text-on-surface truncate"></p>
                     <p class="text-[11px] text-green-700 font-bold mt-0.5">
                         County detected: <span x-text="countyName"></span>
                     </p>
@@ -95,7 +95,7 @@ countyName = {{ $countyNameInit }};"
                 <div class="bg-amber-50 border-l-[3px] border-amber-500 px-4 py-3 flex items-start gap-2.5">
                     <flux:icon.exclamation-triangle class="w-4 h-4 text-amber-500 mt-0.5 shrink-0" />
                     <div class="min-w-0">
-                        <p x-text="pinnedText" class="text-[12px] font-semibold text-zinc-700 truncate mb-0.5"></p>
+                        <p x-text="pinnedText" class="text-[12px] font-semibold text-on-surface truncate mb-0.5"></p>
                         <p class="text-[11px] text-amber-700">County not detected — please select it below.</p>
                     </div>
                 </div>
@@ -146,7 +146,7 @@ countyName = {{ $countyNameInit }};"
                 <div class="flex items-start gap-2 min-w-0">
                     <flux:icon.map-pin class="w-3.5 h-3.5 text-primary shrink-0 mt-0.5" />
                     <span x-text="pinnedText || 'Location pinned'"
-                        class="text-[12px] font-semibold text-zinc-700 leading-snug"></span>
+                        class="text-[12px] font-semibold text-on-surface leading-snug"></span>
                 </div>
                 <button type="button"
                     class="text-[11px] font-bold tracking-[0.06em] uppercase text-primary cursor-pointer hover:opacity-70 transition-opacity shrink-0 whitespace-nowrap bg-none border-none p-0 mt-0.5"
@@ -199,7 +199,7 @@ countyName = {{ $countyNameInit }};"
             {{-- Label + default --}}
             <div class="flex flex-wrap items-center justify-between gap-4">
                 <div class="flex items-center gap-2">
-                    <label class="block text-[10px] font-bold tracking-widest uppercase text-zinc-500">Label:</label>
+                    <label class="block text-[10px] font-bold tracking-widest uppercase text-on-surface-variant">Label:</label>
                     <div class="flex gap-2">
                         @foreach (['Home', 'Work', 'Other'] as $addrLabel)
                             <button type="button"
@@ -213,7 +213,7 @@ countyName = {{ $countyNameInit }};"
                     <label class="flex items-center gap-2 cursor-pointer group">
                         <input type="checkbox" wire:model="form.is_default" class="w-4 h-4 accent-brand-primary">
                         <span
-                            class="text-[12px] font-bold uppercase tracking-widest text-zinc-500 group-hover:text-zinc-950">Set
+                            class="text-[12px] font-bold uppercase tracking-widest text-on-surface-variant group-hover:text-on-surface">Set
                             as default</span>
                     </label>
                 @endif

@@ -295,7 +295,7 @@
                             <div class="@xl/details:sticky @xl/details:top-24">
                                 <div
                                     class="bg-zinc-100 dark:bg-zinc-800 aspect-square w-full rounded-lg flex items-center justify-center">
-                                    <div class="text-center text-zinc-400 dark:text-zinc-500">
+                                    <div class="text-center text-on-surface-variant">
                                         <flux:icon.photo class="w-16 h-16 mx-auto mb-2" />
                                         <p class="text-sm">No image available</p>
                                     </div>
@@ -312,7 +312,7 @@
                         {{-- SHARED HEADER SECTION --}}
                         {{-- Name --}}
                         <flux:heading level="1"
-                            class="text-xl! sm:text-2xl! lg:text-3xl! font-bold! text-zinc-900 dark:text-zinc-100 leading-tight">
+                            class="text-xl! sm:text-2xl! lg:text-3xl! font-bold! text-on-surface leading-tight">
                             {{ $product->name }}
                         </flux:heading>
 
@@ -320,7 +320,7 @@
                         <div class="flex items-center justify-between flex-wrap gap-3">
                             @if ($product->brand)
                                 <div class="flex items-center gap-2">
-                                    <span class="text-zinc-500 text-xs sm:text-sm">Brand:</span>
+                                    <span class="text-on-surface-variant text-xs sm:text-sm">Brand:</span>
                                     <span
                                         class="text-secondary font-medium text-xs sm:text-sm">{{ $product->brand->name }}</span>
                                 </div>
@@ -345,7 +345,7 @@
                                     @endfor
                                 </div>
                                 <span
-                                    class="text-xs sm:text-sm text-zinc-500">({{ number_format($avgRating, 1) }})</span>
+                                    class="text-xs sm:text-sm text-on-surface-variant">({{ number_format($avgRating, 1) }})</span>
                                 <a href="{{ route('products.reviews', $product) }}" wire:navigate
                                     class="text-xs sm:text-sm text-secondary hover:underline">
                                     {{ $this->reviewStats['total'] }} reviews
@@ -355,7 +355,7 @@
 
                         {{-- Short description --}}
                         @if ($product->short_description)
-                            <div class="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
+                            <div class="text-xs sm:text-sm text-on-surface-variant leading-relaxed">
                                 {!! $product->short_description !!}
                             </div>
                         @endif
@@ -391,14 +391,14 @@
                                         <div class="flex items-baseline gap-2 mb-2">
                                             @if ($sameGroupedPrice)
                                                 <span
-                                                    class="text-lg font-bold text-zinc-900 dark:text-zinc-100">{{ format_currency($groupedPriceRange['min']) }}</span>
-                                                <span class="text-sm text-zinc-500">each</span>
+                                                    class="text-lg font-bold text-on-surface">{{ format_currency($groupedPriceRange['min']) }}</span>
+                                                <span class="text-sm text-on-surface-variant">each</span>
                                             @else
                                                 <span
-                                                    class="text-lg font-bold text-zinc-900 dark:text-zinc-100">{{ format_currency($groupedPriceRange['min']) }}</span>
-                                                <span class="text-sm text-zinc-500">—</span>
+                                                    class="text-lg font-bold text-on-surface">{{ format_currency($groupedPriceRange['min']) }}</span>
+                                                <span class="text-sm text-on-surface-variant">—</span>
                                                 <span
-                                                    class="text-lg font-bold text-zinc-900 dark:text-zinc-100">{{ format_currency($groupedPriceRange['max']) }}</span>
+                                                    class="text-lg font-bold text-on-surface">{{ format_currency($groupedPriceRange['max']) }}</span>
                                             @endif
                                         </div>
                                     @endif
@@ -446,16 +446,16 @@
                                     @if ($bundlePrice)
                                         <div class="flex items-baseline gap-2 mb-1">
                                             <span
-                                                class="text-xl font-bold text-zinc-900 dark:text-zinc-100">{{ format_currency($bundlePrice) }}</span>
+                                                class="text-xl font-bold text-on-surface">{{ format_currency($bundlePrice) }}</span>
                                             @if ($bundleValue > $bundlePrice)
                                                 <span
-                                                    class="text-sm text-zinc-400 line-through">{{ format_currency($bundleValue) }}</span>
+                                                    class="text-sm text-on-surface-variant line-through">{{ format_currency($bundleValue) }}</span>
                                             @endif
                                         </div>
                                     @endif
 
                                     {{-- Items count --}}
-                                    <p class="text-xs text-zinc-500 mb-2">
+                                    <p class="text-xs text-on-surface-variant mb-2">
                                         Includes {{ $this->bundleProducts->count() }}
                                         {{ Str::plural('item', $this->bundleProducts->count()) }}
                                     </p>
@@ -476,8 +476,8 @@
                             {{-- SKU --}}
                             @php $displaySku = $this->selectedVariant?->sku ?? $product->sku; @endphp
                             @if ($displaySku)
-                                <p class="text-xs text-zinc-500">
-                                    Item no: <span class="text-zinc-700 dark:text-zinc-300">{{ $displaySku }}</span>
+                                <p class="text-xs text-on-surface-variant">
+                                    Item no: <span class="text-on-surface">{{ $displaySku }}</span>
                                 </p>
                             @endif
 
@@ -508,10 +508,10 @@
                                             $sizeStyle = $sizePx ? "width: {$sizePx}px; height: {$sizePx}px;" : '';
                                         @endphp
                                         <div class="space-y-1.5">
-                                            <p class="text-xs sm:text-sm font-medium text-zinc-700 dark:text-zinc-300">
+                                            <p class="text-xs sm:text-sm font-medium text-on-surface">
                                                 {{ $attribute['name'] }}
                                                 @if (!empty($selectedAttributeValues[$attribute['name']]))
-                                                    <span class="font-normal text-zinc-500">
+                                                    <span class="font-normal text-on-surface-variant">
                                                         : {{ $selectedAttributeValues[$attribute['name']] }}
                                                     </span>
                                                 @endif
@@ -603,14 +603,14 @@
                                                                     $isSelected && $state === 'available',
                                                                 'border-amber-500 bg-amber-50 text-amber-700' =>
                                                                     $isSelected && $state === 'backorder',
-                                                                'border-zinc-400 bg-zinc-100 text-zinc-500' =>
+                                                                'border-zinc-400 bg-zinc-100 text-on-surface-variant' =>
                                                                     $isSelected && $state === 'out_of_stock',
                                                                 // Unselected states
-                                                                'border-zinc-300 text-zinc-700 hover:border-primary hover:text-primary dark:border-zinc-600 dark:text-zinc-300' =>
+                                                                'border-zinc-300 text-on-surface hover:border-primary hover:text-primary' =>
                                                                     !$isSelected && $state === 'available',
                                                                 'border-amber-300 text-amber-600 hover:border-amber-500 bg-amber-50/50' =>
                                                                     !$isSelected && $state === 'backorder',
-                                                                'border-zinc-200 text-zinc-400 hover:border-zinc-300 bg-zinc-50' =>
+                                                                'border-zinc-200 text-on-surface-variant hover:border-zinc-300 bg-zinc-50' =>
                                                                     !$isSelected && $state === 'out_of_stock',
                                                             ])>
                                                             <span
@@ -680,7 +680,7 @@
                                                 <span class="text-xl sm:text-2xl font-bold text-secondary">
                                                     {{ format_currency($salePrice) }}
                                                 </span>
-                                                <span class="text-sm sm:text-base text-zinc-400 line-through">
+                                                <span class="text-sm sm:text-base text-on-surface-variant line-through">
                                                     {{ format_currency($regularPrice) }}
                                                 </span>
                                                 <flux:badge color="amber" size="sm">
@@ -693,7 +693,7 @@
                                             </span>
                                         @endif
                                     @elseif ($product->type->value === 'variable' && !$selectedVariantId)
-                                        <span class="text-sm sm:text-base text-zinc-400">Select options to see
+                                        <span class="text-sm sm:text-base text-on-surface-variant">Select options to see
                                             price</span>
                                     @endif
 
@@ -708,7 +708,7 @@
                                     @endphp
 
                                     @if ($state === 'none')
-                                        <p class="text-xs sm:text-sm text-zinc-400 mt-1">Select options to see
+                                        <p class="text-xs sm:text-sm text-on-surface-variant mt-1">Select options to see
                                             availability
                                         </p>
                                     @elseif ($state === 'available')
@@ -780,13 +780,13 @@
                                             <div class="flex items-baseline gap-2 mb-2">
                                                 @if ($samePrice)
                                                     <span
-                                                        class="text-lg font-bold text-zinc-900 dark:text-zinc-100">{{ format_currency($priceRange['min']) }}</span>
+                                                        class="text-lg font-bold text-on-surface">{{ format_currency($priceRange['min']) }}</span>
                                                 @else
                                                     <span
-                                                        class="text-lg font-bold text-zinc-900 dark:text-zinc-100">{{ format_currency($priceRange['min']) }}</span>
-                                                    <span class="text-sm text-zinc-500">—</span>
+                                                        class="text-lg font-bold text-on-surface">{{ format_currency($priceRange['min']) }}</span>
+                                                    <span class="text-sm text-on-surface-variant">—</span>
                                                     <span
-                                                        class="text-lg font-bold text-zinc-900 dark:text-zinc-100">{{ format_currency($priceRange['max']) }}</span>
+                                                        class="text-lg font-bold text-on-surface">{{ format_currency($priceRange['max']) }}</span>
                                                 @endif
                                             </div>
                                         @endif
@@ -851,7 +851,7 @@
                         {{-- Tab Content: Description --}}
                         <template x-if="activeTab === 'description'">
                             <div>
-                                <div class="text-xs sm:text-sm text-zinc-500 tracking-wider leading-6">
+                                <div class="text-xs sm:text-sm text-on-surface-variant tracking-wider leading-6">
                                     {!! $product->description !!}
                                 </div>
                             </div>
@@ -861,11 +861,11 @@
                         <template x-if="activeTab === 'specification'">
                             <div>
                                 @if (!empty($product->technical_specification))
-                                    <div class="text-xs sm:text-sm text-zinc-500 tracking-wider leading-6">
+                                    <div class="text-xs sm:text-sm text-on-surface-variant tracking-wider leading-6">
                                         {!! $product->technical_specification !!}
                                     </div>
                                 @else
-                                    <p class="text-xs sm:text-sm text-zinc-500">No specifications available for this
+                                    <p class="text-xs sm:text-sm text-on-surface-variant">No specifications available for this
                                         product.
                                     </p>
                                 @endif
@@ -922,7 +922,7 @@
                                                             @endfor
                                                         </div>
 
-                                                        <div class="text-xs sm:text-sm text-zinc-600 mt-1">
+                                                        <div class="text-xs sm:text-sm text-on-surface-variant mt-1">
                                                             {{ $this->reviewStats['total'] }}
                                                             {{ Str::plural('review', $this->reviewStats['total']) }}
                                                         </div>
@@ -972,7 +972,7 @@
                                         {{-- ── Reviews List ── --}}
                                         <div class="col-span-1 @2xl/reviews:col-span-3">
                                             @if ($this->reviews->isEmpty())
-                                                <div class="text-center py-8 text-zinc-500">
+                                                <div class="text-center py-8 text-on-surface-variant">
                                                     <p>No reviews yet. Be the first to review this product!</p>
                                                 </div>
                                             @else
@@ -1019,7 +1019,7 @@
                             x-transition:leave-start="opacity-100 translate-y-0"
                             x-transition:leave-end="opacity-0 -translate-y-1"
                             class="mb-3 pb-3 border-b border-zinc-200 dark:border-zinc-700">
-                            <p class="text-xs text-zinc-400 uppercase tracking-wide mb-0.5">Price</p>
+                            <p class="text-xs text-on-surface-variant uppercase tracking-wide mb-0.5">Price</p>
                             <span class="text-sm font-medium text-amber-600">Request a quote</span>
                         </div>
                     @elseif ($product->display_price)
@@ -1030,15 +1030,15 @@
                             x-transition:leave-start="opacity-100 translate-y-0"
                             x-transition:leave-end="opacity-0 -translate-y-1"
                             class="mb-3 pb-3 border-b border-zinc-200 dark:border-zinc-700">
-                            <p class="text-xs text-zinc-400 uppercase tracking-wide mb-0.5">Price</p>
+                            <p class="text-xs text-on-surface-variant uppercase tracking-wide mb-0.5">Price</p>
                             <div class="flex items-baseline gap-1.5 flex-wrap">
                                 @if ($product->has_price_prefix)
-                                    <span class="text-xs text-zinc-400">{{ $product->display_price_prefix }}</span>
+                                    <span class="text-xs text-on-surface-variant">{{ $product->display_price_prefix }}</span>
                                 @endif
                                 <span class="text-lg font-bold text-primary">{{ $product->display_price }}</span>
                                 @if ($product->type === \App\Enums\ProductType::SIMPLE && $product->hasDiscount())
                                     <span
-                                        class="text-xs text-zinc-400 line-through">{{ $product->formatted_price }}</span>
+                                        class="text-xs text-on-surface-variant line-through">{{ $product->formatted_price }}</span>
                                     <span
                                         class="text-xs font-medium text-green-600">-{{ $product->discountPercentage() }}</span>
                                 @endif
@@ -1052,19 +1052,19 @@
                     <a href="#" class="flex items-center justify-between py-1.5">
                         <div class="flex items-center gap-2">
                             <flux:icon.arrow-uturn-left class="size-4 text-primary" variant="outline" />
-                            <span class="text-sm text-zinc-800 dark:text-zinc-100">Return & refund
+                            <span class="text-sm text-on-surface">Return & refund
                                 policy</span>
                         </div>
-                        <flux:icon.chevron-right class="size-4 text-zinc-400" />
+                        <flux:icon.chevron-right class="size-4 text-on-surface-variant" />
                     </a>
 
                     <a href="#" class="flex items-center justify-between py-1.5">
                         <div class="flex items-center gap-2">
                             <flux:icon.shield-check class="size-4 text-primary" variant="outline" />
-                            <span class="text-sm text-zinc-800 dark:text-zinc-100">Warranty
+                            <span class="text-sm text-on-surface">Warranty
                                 policy</span>
                         </div>
-                        <flux:icon.chevron-right class="size-4 text-zinc-400" />
+                        <flux:icon.chevron-right class="size-4 text-on-surface-variant" />
                     </a>
 
                     <a href="#" class="flex items-center justify-between py-1.5">
@@ -1075,10 +1075,10 @@
                                 <path fill-rule="evenodd"
                                     d="M8 14.933a1 1 0 0 0 .1-.025q.114-.034.294-.118c.24-.113.547-.29.893-.533a10.7 10.7 0 0 0 2.287-2.233c1.527-1.997 2.807-5.031 2.253-9.188a.48.48 0 0 0-.328-.39c-.651-.213-1.75-.56-2.837-.855C9.552 1.29 8.531 1.067 8 1.067zM5.072.56C6.157.265 7.31 0 8 0s1.843.265 2.928.56c1.11.3 2.229.655 2.887.87a1.54 1.54 0 0 1 1.044 1.262c.596 4.477-.787 7.795-2.465 9.99a11.8 11.8 0 0 1-2.517 2.453 7 7 0 0 1-1.048.625c-.28.132-.581.24-.829.24s-.548-.108-.829-.24a7 7 0 0 1-1.048-.625 11.8 11.8 0 0 1-2.517-2.453C1.928 10.487.545 7.169 1.141 2.692A1.54 1.54 0 0 1 2.185 1.43 63 63 0 0 1 5.072.56" />
                             </svg>
-                            <span class="text-sm text-zinc-800 dark:text-zinc-100">Secure
+                            <span class="text-sm text-on-surface">Secure
                                 privacy</span>
                         </div>
-                        <flux:icon.chevron-right class="size-4 text-zinc-400" />
+                        <flux:icon.chevron-right class="size-4 text-on-surface-variant" />
                     </a>
                 </div>
 
@@ -1128,20 +1128,20 @@
                             {{-- Quantity stepper — always visible when state is known --}}
                             @if ($state !== 'none')
                                 <div class="mb-1">
-                                    <p class="text-sm font-medium text-zinc-800 dark:text-zinc-100 mb-2">Quantity</p>
+                                    <p class="text-sm font-medium text-on-surface mb-2">Quantity</p>
                                     <div class="flex items-center gap-1">
                                         <button type="button" wire:click="decreaseCartQuantity"
-                                            class="w-9 h-9 flex items-center justify-center rounded border border-zinc-300 dark:border-zinc-600 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+                                            class="w-9 h-9 flex items-center justify-center rounded border border-zinc-300 dark:border-zinc-600 text-on-surface-variant hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
                                             aria-label="Decrease quantity"
                                             @if ($state === 'out_of_stock') disabled @endif>
                                             <flux:icon.minus class="size-3.5" />
                                         </button>
                                         <span
-                                            class="w-10 text-center text-sm font-semibold text-zinc-800 dark:text-zinc-100">
+                                            class="w-10 text-center text-sm font-semibold text-on-surface">
                                             {{ $cartQuantity }}
                                         </span>
                                         <button type="button" wire:click="increaseCartQuantity"
-                                            class="w-9 h-9 flex items-center justify-center rounded border border-zinc-300 dark:border-zinc-600 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+                                            class="w-9 h-9 flex items-center justify-center rounded border border-zinc-300 dark:border-zinc-600 text-on-surface-variant hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
                                             aria-label="Increase quantity"
                                             @if ($state === 'out_of_stock') disabled @endif>
                                             <flux:icon.plus class="size-3.5" />
@@ -1276,10 +1276,10 @@
 
                             {{-- Name, Price & Stock --}}
                             <div class="flex-1 min-w-0">
-                                <p class="text-sm font-medium text-zinc-900 dark:text-zinc-100 truncate">
+                                <p class="text-sm font-medium text-on-surface truncate">
                                     {{ $accessory->name }}
                                 </p>
-                                <p class="text-sm text-zinc-500">
+                                <p class="text-sm text-on-surface-variant">
                                     {{ $itemPrice > 0 ? format_currency($itemPrice) : '—' }}
                                 </p>
                                 @if ($inStock)
@@ -1292,14 +1292,14 @@
                             {{-- Quantity Stepper --}}
                             <div class="shrink-0 flex items-center gap-1">
                                 <button type="button" wire:click="decreaseAccessoryQuantity({{ $accessory->id }})"
-                                    class="w-7 h-7 flex items-center justify-center rounded border border-zinc-300 dark:border-zinc-600 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors cursor-pointer"
+                                    class="w-7 h-7 flex items-center justify-center rounded border border-zinc-300 dark:border-zinc-600 text-on-surface-variant hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors cursor-pointer"
                                     aria-label="Decrease quantity">
                                     <flux:icon.minus class="size-3" />
                                 </button>
                                 <span
-                                    class="w-8 text-center text-sm font-medium text-zinc-800 dark:text-zinc-100">{{ $itemQty }}</span>
+                                    class="w-8 text-center text-sm font-medium text-on-surface">{{ $itemQty }}</span>
                                 <button type="button" wire:click="increaseAccessoryQuantity({{ $accessory->id }})"
-                                    class="w-7 h-7 flex items-center justify-center rounded border border-zinc-300 dark:border-zinc-600 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors cursor-pointer"
+                                    class="w-7 h-7 flex items-center justify-center rounded border border-zinc-300 dark:border-zinc-600 text-on-surface-variant hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors cursor-pointer"
                                     aria-label="Increase quantity">
                                     <flux:icon.plus class="size-3" />
                                 </button>
@@ -1362,10 +1362,10 @@
 
                             {{-- Name & Price --}}
                             <div class="flex-1 min-w-0">
-                                <p class="text-sm font-medium text-zinc-900 dark:text-zinc-100 truncate">
+                                <p class="text-sm font-medium text-on-surface truncate">
                                     {{ $item->name }}
                                 </p>
-                                <p class="text-sm text-zinc-500">
+                                <p class="text-sm text-on-surface-variant">
                                     {{ $itemPrice > 0 ? format_currency($itemPrice) : '—' }}
                                 </p>
                                 @if ($item->manage_stock)
@@ -1386,15 +1386,15 @@
                             {{-- Quantity Stepper --}}
                             <div class="shrink-0 flex items-center gap-1">
                                 <button type="button" wire:click="decreaseGroupedQuantity({{ $item->id }})"
-                                    class="w-7 h-7 flex items-center justify-center rounded border border-zinc-300 dark:border-zinc-600 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors cursor-pointer"
+                                    class="w-7 h-7 flex items-center justify-center rounded border border-zinc-300 dark:border-zinc-600 text-on-surface-variant hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors cursor-pointer"
                                     aria-label="Decrease quantity">
                                     <flux:icon.minus class="size-3" />
                                 </button>
-                                <span class="w-8 text-center text-sm font-medium text-zinc-800 dark:text-zinc-100">
+                                <span class="w-8 text-center text-sm font-medium text-on-surface">
                                     {{ $itemQty }}
                                 </span>
                                 <button type="button" wire:click="increaseGroupedQuantity({{ $item->id }})"
-                                    class="w-7 h-7 flex items-center justify-center rounded border border-zinc-300 dark:border-zinc-600 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors cursor-pointer"
+                                    class="w-7 h-7 flex items-center justify-center rounded border border-zinc-300 dark:border-zinc-600 text-on-surface-variant hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors cursor-pointer"
                                     aria-label="Increase quantity">
                                     <flux:icon.plus class="size-3" />
                                 </button>
@@ -1469,10 +1469,10 @@
 
                             {{-- Name, Price & Stock --}}
                             <div class="flex-1 min-w-0">
-                                <p class="text-sm font-medium text-zinc-900 dark:text-zinc-100 truncate">
+                                <p class="text-sm font-medium text-on-surface truncate">
                                     {{ $item->name }}
                                 </p>
-                                <p class="text-sm text-zinc-500">
+                                <p class="text-sm text-on-surface-variant">
                                     {{ $itemPrice > 0 ? format_currency($itemPrice) : '—' }}
                                 </p>
                                 @if ($item->manage_stock)
@@ -1492,9 +1492,9 @@
 
                             {{-- Fixed qty (read-only for bundle) --}}
                             <div class="shrink-0 text-right">
-                                <span class="text-sm text-zinc-500">Qty:</span>
+                                <span class="text-sm text-on-surface-variant">Qty:</span>
                                 <span
-                                    class="text-sm font-medium text-zinc-800 dark:text-zinc-100 ml-1">{{ $itemQty }}</span>
+                                    class="text-sm font-medium text-on-surface ml-1">{{ $itemQty }}</span>
                             </div>
                         </div>
                     @endforeach
@@ -1503,7 +1503,7 @@
                 {{-- Bundle Price --}}
                 @if ($bundlePrice)
                     <div class="flex items-center justify-between pt-3 border-t border-zinc-200 dark:border-zinc-700">
-                        <span class="text-sm text-zinc-500">Bundle Price</span>
+                        <span class="text-sm text-on-surface-variant">Bundle Price</span>
                         <span class="text-lg font-bold text-secondary">{{ format_currency($bundlePrice) }}</span>
                     </div>
                 @endif

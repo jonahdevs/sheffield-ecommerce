@@ -11,7 +11,8 @@
             theme: {
                 extend: {
                     colors: {
-                        brand: '#185FA5',
+                        // Sheffield primary — kept in sync with --primary in resources/css/themes/sheffield.css
+                        brand: '#C12435',
                     }
                 }
             }

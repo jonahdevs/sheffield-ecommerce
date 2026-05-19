@@ -54,17 +54,17 @@ new #[Title('Order Tracking')] #[Layout('layouts.customer')] class extends Compo
         </x-slot:icon>
         <x-slot:action>
             <a href="{{ route('customer.orders.show', $order) }}" wire:navigate
-                class="flex items-center gap-1.5 text-xs font-bold tracking-wider uppercase text-zinc-500 hover:text-primary transition-colors">
+                class="flex items-center gap-1.5 text-xs font-bold tracking-wider uppercase text-on-surface-variant hover:text-primary transition-colors">
                 <flux:icon.chevron-left class="w-3.5 h-3.5 stroke-2" />
                 Back to Details
             </a>
         </x-slot:action>
 
         <div class="py-3">
-            <div class="text-[10px] font-bold uppercase tracking-[0.15em] text-zinc-400 mb-1">Order Reference</div>
-            <h2 class="font-barlow-condensed text-[24px] font-black text-zinc-950 leading-tight">#{{ $order->reference }}
+            <div class="text-[10px] font-bold uppercase tracking-[0.15em] text-on-surface-variant mb-1">Order Reference</div>
+            <h2 class="font-barlow-condensed text-[24px] font-black text-on-surface leading-tight">#{{ $order->reference }}
             </h2>
-            <div class="text-[13px] text-zinc-500 mt-1">
+            <div class="text-[13px] text-on-surface-variant mt-1">
                 Placed on {{ $order->created_at->format('d M Y') }} at {{ $order->created_at->format('g:i A') }}
             </div>
 
@@ -182,7 +182,7 @@ new #[Title('Order Tracking')] #[Layout('layouts.customer')] class extends Compo
                                 <div class="min-w-0">
                                     <div
                                         class="text-[14px] font-bold
-                                        {{ $reached ? 'text-zinc-950' : 'text-zinc-400' }}">
+                                        {{ $reached ? 'text-on-surface' : 'text-on-surface-variant' }}">
                                         {{ $meta['label'] }}
 
                                         {{-- Current step indicator --}}
@@ -202,7 +202,7 @@ new #[Title('Order Tracking')] #[Layout('layouts.customer')] class extends Compo
 
                                     <div
                                         class="text-[12px] mt-1 leading-relaxed
-                                        {{ $reached ? 'text-zinc-500 font-medium' : 'text-zinc-300' }}">
+                                        {{ $reached ? 'text-on-surface-variant font-medium' : 'text-zinc-300' }}">
                                         {{ $history ? $meta['desc'] : ($reached ? $meta['desc'] : 'Pending...') }}
                                     </div>
                                 </div>
@@ -210,10 +210,10 @@ new #[Title('Order Tracking')] #[Layout('layouts.customer')] class extends Compo
                                 {{-- Date / time --}}
                                 @if ($history)
                                     <div class="sm:text-right shrink-0">
-                                        <div class="text-[12px] font-bold text-zinc-950">
+                                        <div class="text-[12px] font-bold text-on-surface">
                                             {{ $history->created_at->format('M j, Y') }}
                                         </div>
-                                        <div class="text-[11px] text-zinc-500 font-medium mt-0.5">
+                                        <div class="text-[11px] text-on-surface-variant font-medium mt-0.5">
                                             {{ $history->created_at->format('g:i A') }}
                                         </div>
                                     </div>
@@ -248,17 +248,17 @@ new #[Title('Order Tracking')] #[Layout('layouts.customer')] class extends Compo
                                                 Current
                                             </span>
                                         </div>
-                                        <div class="text-[12px] text-zinc-500 mt-1 font-medium">
+                                        <div class="text-[12px] text-on-surface-variant mt-1 font-medium">
                                             {{ $currentStatus === OrderStatus::CANCELLED ? 'This order has been cancelled and will not be processed further.' : 'This order was returned by the customer.' }}
                                         </div>
                                     </div>
                                     @php $terminalHistory = $histories->get($currentStatus->value); @endphp
                                     @if ($terminalHistory)
                                         <div class="sm:text-right shrink-0">
-                                            <div class="text-[12px] font-bold text-zinc-950">
+                                            <div class="text-[12px] font-bold text-on-surface">
                                                 {{ $terminalHistory->created_at->format('M j, Y') }}
                                             </div>
-                                            <div class="text-[11px] text-zinc-500 font-medium mt-0.5">
+                                            <div class="text-[11px] text-on-surface-variant font-medium mt-0.5">
                                                 {{ $terminalHistory->created_at->format('g:i A') }}
                                             </div>
                                         </div>
@@ -274,9 +274,9 @@ new #[Title('Order Tracking')] #[Layout('layouts.customer')] class extends Compo
 
         {{-- Footer Help --}}
         <div class="mt-12 pt-8 border-t border-zinc-200 text-center">
-            <div class="text-[13px] text-zinc-500">
+            <div class="text-[13px] text-on-surface-variant">
                 Have questions about your order status?
-                <flux:link href="#" class="font-bold text-zinc-950 hover:text-primary ml-1">Contact Support
+                <flux:link href="#" class="font-bold text-on-surface hover:text-primary ml-1">Contact Support
                 </flux:link>
             </div>
         </div>

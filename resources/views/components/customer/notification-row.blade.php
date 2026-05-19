@@ -5,8 +5,8 @@
     'border-b-0' => $lastItem,
 ])>
     <div class="flex-1">
-        <div class="text-[13px] font-semibold text-zinc-950 mb-0.5">{{ $title }}</div>
-        <div class="text-[11px] text-zinc-500 leading-relaxed">{{ $description }}</div>
+        <div class="text-[13px] font-semibold text-on-surface mb-0.5">{{ $title }}</div>
+        <div class="text-[11px] text-on-surface-variant leading-relaxed">{{ $description }}</div>
     </div>
     <div class="flex items-center gap-5 shrink-0">
         @foreach ($channels as $channel)

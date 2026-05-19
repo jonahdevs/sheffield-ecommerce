@@ -76,7 +76,7 @@ new class extends Component {
 
             {{-- Name --}}
             <a wire:navigate href="{{ route('products.show', $product) }}"
-                class="text-sm font-medium text-zinc-800 leading-snug line-clamp-2 hover:text-secondary transition-colors mn-1.5">
+                class="text-sm font-medium text-on-surface leading-snug line-clamp-2 hover:text-secondary transition-colors mn-1.5">
                 {{ $product->name }}
             </a>
 
@@ -86,7 +86,7 @@ new class extends Component {
                     {{ $product->formatted_final_price }}
                 </span>
                 @if ($product->hasDiscount())
-                    <span class="text-xs text-zinc-400 line-through">
+                    <span class="text-xs text-on-surface-variant line-through">
                         {{ $product->formatted_price }}
                     </span>
                 @endif
@@ -121,7 +121,7 @@ new class extends Component {
             @endif
 
             {{-- Recommended qty --}}
-            <span wire:cloak wire:show="recommendedQuantity > 0" class="text-[11px] text-zinc-400">
+            <span wire:cloak wire:show="recommendedQuantity > 0" class="text-[11px] text-on-surface-variant">
                 Recommended qty: {{ $recommendedQuantity }}
             </span>
 
@@ -134,15 +134,15 @@ new class extends Component {
         {{-- Qty stepper --}}
         <div class="flex items-center border border-zinc-300 rounded-md overflow-hidden">
             <button wire:click="decreaseQuantity"
-                class="w-7 h-7 flex items-center justify-center text-zinc-500 hover:bg-zinc-100 transition-colors cursor-pointer border-r border-zinc-200"
+                class="w-7 h-7 flex items-center justify-center text-on-surface-variant hover:bg-zinc-100 transition-colors cursor-pointer border-r border-zinc-200"
                 aria-label="Decrease quantity">−</button>
 
-            <span class="w-7 text-center text-sm font-medium text-zinc-800 bg-white">
+            <span class="w-7 text-center text-sm font-medium text-on-surface bg-white">
                 {{ $cartQuantity }}
             </span>
 
             <button wire:click="increaseQuantity"
-                class="w-7 h-7 flex items-center justify-center text-zinc-500 hover:bg-zinc-100 transition-colors cursor-pointer border-l border-zinc-200"
+                class="w-7 h-7 flex items-center justify-center text-on-surface-variant hover:bg-zinc-100 transition-colors cursor-pointer border-l border-zinc-200"
                 aria-label="Increase quantity">+</button>
         </div>
 

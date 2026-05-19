@@ -272,7 +272,7 @@ new #[Defer] #[Layout('layouts.checkout')] class extends Component {
                     <flux:text>
                         {{ implode(', ', array_filter([$this->address->area?->name, $this->address->county?->name])) }}
                     </flux:text>
-                    <flux:text class="text-zinc-400 text-xs">
+                    <flux:text class="text-on-surface-variant text-xs">
                         Zone: {{ $this->address->shippingZone?->name ?? '—' }}
                     </flux:text>
                 </div>
@@ -289,9 +289,9 @@ new #[Defer] #[Layout('layouts.checkout')] class extends Component {
         <div class="p-4">
             @if ($this->shippingOptions->isEmpty())
                 <div class="py-10 text-center">
-                    <flux:icon.exclamation-triangle class="size-10 mx-auto text-zinc-400 mb-3" />
+                    <flux:icon.exclamation-triangle class="size-10 mx-auto text-on-surface-variant mb-3" />
                     <flux:heading level="3" class="mb-1">No shipping options available</flux:heading>
-                    <flux:text class="text-zinc-500 text-sm">
+                    <flux:text class="text-on-surface-variant text-sm">
                         We couldn't find shipping options for your location. Please
                         <flux:link :href="route('customer.address-book.index')" wire:navigate>
                             update your address
@@ -318,13 +318,13 @@ new #[Defer] #[Layout('layouts.checkout')] class extends Component {
                                     <span @class([
                                         'text-sm font-semibold shrink-0',
                                         'text-green-600' => $option->isFree(),
-                                        'text-zinc-800 dark:text-zinc-100' => !$option->isFree(),
+                                        'text-on-surface' => !$option->isFree(),
                                     ])>
                                         {{ $option->formattedCost() }}
                                     </span>
                                 </div>
 
-                                <p class="text-xs text-zinc-500 mt-0.5">
+                                <p class="text-xs text-on-surface-variant mt-0.5">
                                     {{ $option->deliveryWindow() }}
                                     @if ($option->isPus())
                                         · Collect from a pickup station
@@ -348,7 +348,7 @@ new #[Defer] #[Layout('layouts.checkout')] class extends Component {
 
                                         @if ($this->selectedStationId && $this->currentPusOption)
                                             <div class="mt-2 flex items-center justify-between text-xs">
-                                                <span class="text-zinc-500">Updated cost with station surcharge</span>
+                                                <span class="text-on-surface-variant">Updated cost with station surcharge</span>
                                                 <span class="font-semibold">
                                                     {{ $this->currentPusOption->formattedCost() }}
                                                 </span>
@@ -374,7 +374,7 @@ new #[Defer] #[Layout('layouts.checkout')] class extends Component {
     @if (app(\App\Services\Payment\PaymentService::class)->isCustom())
         <flux:card class="opacity-70 p-0 mb-4">
             <div class="px-3 py-2 flex items-center gap-1">
-                <flux:icon.check-circle variant="solid" class="size-5 text-zinc-600" />
+                <flux:icon.check-circle variant="solid" class="size-5 text-on-surface-variant" />
                 <flux:heading level="3">Payment Methods</flux:heading>
             </div>
         </flux:card>
