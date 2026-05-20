@@ -1,6 +1,7 @@
 @php
     $cancelHref = $cancelHref ?? null;
     $submitLabel = $submitLabel ?? 'Save Address';
+    $mapsKey = config('services.google.maps_key', '');
 
     $inputClass = 'customer-input font-barlow text-on-surface bg-white placeholder:text-zinc-300';
     $selectArrow =
@@ -23,13 +24,11 @@
     countyResolved: false,
     countyResolving: false,
     countyName: '',
-    searchNotFound: false,
 }" x-init="hasPinned = {{ $hasPinnedInit }};
 countyResolved = {{ $countyResolvedInit }};
 countyName = {{ $countyNameInit }};"
-    @map-pin-placed.window="hasPinned = true; pinnedText = $event.detail.text; searchNotFound = false; countyResolving = true"
-    @county-resolved.window="countyResolved = $event.detail.resolved; countyName = $event.detail.name; countyResolving = false"
-    @map-search-not-found.window="searchNotFound = true">
+    @map-pin-placed.window="hasPinned = true; pinnedText = $event.detail.text; countyResolving = true"
+    @county-resolved.window="countyResolved = $event.detail.resolved; countyName = $event.detail.name; countyResolving = false">
 
     {{-- ══════════════════════════════════════════════════════
          STEP 1 — PIN YOUR LOCATION
@@ -37,31 +36,18 @@ countyName = {{ $countyNameInit }};"
     <div x-show="step === 'map'">
         <div class="p-6 space-y-5">
 
-            {{-- Search input --}}
+            {{-- Search input (Google Places Autocomplete) --}}
             <x-customer.form-field label="Search location">
-                <x-slot:append>
-                    <button type="button"
-                        class="px-4 bg-secondary text-white hover:bg-primary transition-colors shrink-0 border-[1.5px] border-l-0 border-secondary"
-                        @click="$dispatch('do-map-search')" title="Search">
-                        <flux:icon.magnifying-glass class="size-4" />
-                    </button>
-                </x-slot:append>
                 <input type="text" id="map-search-input" placeholder="e.g. Westlands, Nairobi…"
-                    class="{{ $inputClass }} flex-1" @keydown.enter.prevent="$dispatch('do-map-search')">
+                    class="{{ $inputClass }} flex-1" autocomplete="off">
             </x-customer.form-field>
-            <p x-show="searchNotFound" x-cloak class="text-red-500 text-[11px] font-medium -mt-4">
-                Location not found. Try a different search.
-            </p>
 
             {{-- Map --}}
             <div>
                 <label class="block text-[10px] font-bold tracking-widest uppercase text-on-surface-variant mb-1.5">📍 Pin your
                     exact delivery location</label>
-                <p class="text-[12px] text-on-surface-variant mb-3 leading-relaxed">
-                    Search or click anywhere on the map. Your county is detected automatically from the pin.
-                </p>
 
-                <div id="address-map" wire:ignore class="w-full border-[1.5px] border-zinc-200 z-0 bg-zinc-100"
+                <div id="address-map" wire:ignore class="w-full border-[1.5px] border-zinc-200 z-0"
                     style="height:320px;"></div>
 
                 <div
@@ -71,26 +57,8 @@ countyName = {{ $countyNameInit }};"
                 </div>
             </div>
 
-            {{-- Detecting in-flight --}}
-            <div x-show="countyResolving" x-cloak
-                class="flex items-center gap-2.5 px-4 py-3 bg-zinc-50 border-l-[3px] border-zinc-300">
-                <flux:icon.arrow-path class="w-4 h-4 text-on-surface-variant shrink-0 animate-spin" />
-                <span class="text-[12px] font-medium text-on-surface-variant">Detecting location…</span>
-            </div>
 
-            {{-- County resolved — success bar --}}
-            <div x-show="hasPinned && countyResolved && !countyResolving" x-cloak
-                class="bg-green-50 border-l-[3px] border-green-500 px-4 py-3 flex items-start gap-2.5">
-                <flux:icon.check class="w-4 h-4 text-green-500 mt-0.5 shrink-0" />
-                <div class="min-w-0">
-                    <p x-text="pinnedText" class="text-[12px] font-semibold text-on-surface truncate"></p>
-                    <p class="text-[11px] text-green-700 font-bold mt-0.5">
-                        County detected: <span x-text="countyName"></span>
-                    </p>
-                </div>
-            </div>
-
-            {{-- County NOT resolved — amber warning + fallback select --}}
+{{-- County NOT resolved — amber warning + fallback select --}}
             <div x-show="hasPinned && !countyResolved && !countyResolving" x-cloak class="space-y-3">
                 <div class="bg-amber-50 border-l-[3px] border-amber-500 px-4 py-3 flex items-start gap-2.5">
                     <flux:icon.exclamation-triangle class="w-4 h-4 text-amber-500 mt-0.5 shrink-0" />
@@ -150,7 +118,7 @@ countyName = {{ $countyNameInit }};"
                 </div>
                 <button type="button"
                     class="text-[11px] font-bold tracking-[0.06em] uppercase text-primary cursor-pointer hover:opacity-70 transition-opacity shrink-0 whitespace-nowrap bg-none border-none p-0 mt-0.5"
-                    @click="step = 'map'; $nextTick(() => { setTimeout(() => window.deliveryMap?.invalidateSize(), 80); })">
+                    @click="step = 'map'; $nextTick(() => { setTimeout(() => window.resizeDeliveryMap?.(), 80); })">
                     Change Pin
                 </button>
             </div>
@@ -229,7 +197,7 @@ countyName = {{ $countyNameInit }};"
         <div class="flex justify-end gap-3 px-6 py-4 border-t border-zinc-100">
             <flux:button type="button" variant="customer-outline" size="customer"
                 class="inline-flex items-center gap-2"
-                @click="step = 'map'; $nextTick(() => { setTimeout(() => window.deliveryMap?.invalidateSize(), 80); })">
+                @click="step = 'map'; $nextTick(() => { setTimeout(() => window.resizeDeliveryMap?.(), 80); })">
                 <flux:icon.move-left class="size-4" />
                 Back to Map
             </flux:button>
@@ -244,240 +212,249 @@ countyName = {{ $countyNameInit }};"
 
 @script
     <script>
-        if (!document.getElementById('leaflet-css')) {
-            const link = document.createElement('link');
-            link.id = 'leaflet-css';
-            link.rel = 'stylesheet';
-            link.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
-            document.head.appendChild(link);
-        }
+        // ── Shared state ──────────────────────────────────────────────────────────
+        let map = null, pin = null, infoWindow = null, geocoder = null;
+        const KENYA_CENTER = { lat: -1.2921, lng: 36.8219 };
+        const MAPS_KEY = @js($mapsKey);
+        const PIN_SVG = `<svg viewBox="0 0 32 40" xmlns="http://www.w3.org/2000/svg"><path d="M16 0C7.163 0 0 7.163 0 16c0 10 16 24 16 24S32 26 32 16C32 7.163 24.837 0 16 0z" fill="#FF4500"/><circle cx="16" cy="16" r="7" fill="white"/><circle cx="16" cy="16" r="4" fill="#FF4500"/></svg>`;
 
-        // Brand-matched popup styles
-        if (!document.getElementById('address-map-popup-css')) {
+        // ── CSS injections ────────────────────────────────────────────────────────
+
+        if (!document.getElementById('address-map-pac-css')) {
             const style = document.createElement('style');
-            style.id = 'address-map-popup-css';
+            style.id = 'address-map-pac-css';
             style.textContent = `
-                .leaflet-popup-content-wrapper {
+                .pac-container {
+                    z-index: 9999 !important;
                     border-radius: 0 !important;
-                    border: 2px solid var(--color-primary) !important;
-                    box-shadow: 4px 4px 0 rgba(0,0,0,.12) !important;
+                    border: 1.5px solid #e4e4e7 !important;
+                    border-top: none !important;
+                    box-shadow: 4px 4px 0 rgba(0,0,0,.08) !important;
+                    font-family: var(--font-barlow, sans-serif) !important;
                 }
-                .leaflet-popup-tip { background: var(--color-primary) !important; }
-                .leaflet-popup-content { font-size: 12px !important; font-weight: 600 !important; margin: 8px 12px !important; line-height: 1.5 !important; }
+                .pac-item {
+                    font-size: 12px !important;
+                    padding: 8px 12px !important;
+                    cursor: pointer !important;
+                    border-top: 1px solid #f4f4f5 !important;
+                }
+                .pac-item:hover, .pac-item-selected { background: #f4f4f5 !important; }
+                .pac-item-query { font-weight: 600 !important; color: #18181b !important; }
+                .pac-matched { font-weight: 700 !important; }
+                .pac-icon { display: none !important; }
+                .gm-style-iw-c { border-radius: 0 !important; padding: 0 !important; }
+                .gm-style-iw-d { padding: 8px 12px !important; font-size: 12px !important; font-weight: 600 !important; line-height: 1.5 !important; overflow: auto !important; }
+                .gm-style-iw-chr { display: none !important; }
             `;
             document.head.appendChild(style);
         }
 
-        function loadLeaflet(callback) {
-            if (window.L) {
-                return callback();
-            }
-            const script = document.createElement('script');
-            script.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
-            script.onload = callback;
-            document.head.appendChild(script);
+        // ── Loader ────────────────────────────────────────────────────────────────
+
+        function loadGoogleMaps(key, cb) {
+            if (window.google?.maps?.places) { return cb(); }
+            const s = document.createElement('script');
+            s.src = `https://maps.googleapis.com/maps/api/js?key=${key}&libraries=places`;
+            s.onload = cb;
+            document.head.appendChild(s);
         }
 
-        loadLeaflet(() => {
-            const KENYA_CENTER = [-1.2921, 36.8219];
-            let map = null,
+        // ── Helpers ───────────────────────────────────────────────────────────────
+
+        window.resizeDeliveryMap = () => {
+            if (window.deliveryMap && window.google?.maps) {
+                google.maps.event.trigger(window.deliveryMap, 'resize');
+            }
+        };
+
+        function placePin(lat, lng) {
+            if (!window.google?.maps || !map) { return; }
+
+            if (pin) {
+                pin.setPosition({ lat, lng });
+            } else {
+                pin = new google.maps.Marker({
+                    position: { lat, lng },
+                    map,
+                    draggable: true,
+                    icon: {
+                        url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(PIN_SVG),
+                        scaledSize: new google.maps.Size(32, 40),
+                        anchor: new google.maps.Point(16, 40),
+                    },
+                });
+                pin.addListener('dragend', (e) => {
+                    const lat = e.latLng.lat();
+                    const lng = e.latLng.lng();
+                    $wire.set('form.latitude', lat);
+                    $wire.set('form.longitude', lng);
+                    reverseGeocode(lat, lng);
+                });
+            }
+
+            if (!infoWindow) { infoWindow = new google.maps.InfoWindow(); }
+        }
+
+        function showInfoWindow(text) {
+            if (!infoWindow || !pin || !map) { return; }
+            infoWindow.setContent(`<div>📍 <b>Delivery here</b><br>${text}</div>`);
+            infoWindow.open({ map, anchor: pin });
+        }
+
+        function dispatchCounty(countyRaw, areaRaw) {
+            if (!countyRaw) {
+                window.dispatchEvent(new CustomEvent('county-resolved', { detail: { resolved: false, name: '' } }));
+                return;
+            }
+            $wire.call('resolveCountyFromName', countyRaw).then(result => {
+                window.dispatchEvent(new CustomEvent('county-resolved', {
+                    detail: { resolved: !!result, name: result?.name || '' }
+                }));
+                if (result && areaRaw) {
+                    $wire.call('resolveAreaFromName', areaRaw);
+                }
+            });
+        }
+
+        // ── Reverse geocoding (Google Geocoder) ───────────────────────────────────
+
+        function reverseGeocode(lat, lng) {
+            if (!geocoder) { geocoder = new google.maps.Geocoder(); }
+
+            geocoder.geocode({ location: { lat, lng } }, (results, status) => {
+                if (status !== 'OK' || !results?.length) {
+                    const fallback = `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+                    window.dispatchEvent(new CustomEvent('map-pin-placed', { detail: { text: fallback } }));
+                    window.dispatchEvent(new CustomEvent('county-resolved', { detail: { resolved: false, name: '' } }));
+                    return;
+                }
+
+                const comps = results[0].address_components;
+                const get = (type) => comps.find(c => c.types.includes(type))?.long_name || '';
+
+                const countyRaw = get('administrative_area_level_1');
+                const areaRaw = get('sublocality_level_1') || get('locality') || get('administrative_area_level_2');
+
+                const road = get('route') || get('establishment') || get('point_of_interest');
+                const suburb = get('sublocality_level_1') || get('neighborhood');
+                const city = get('locality');
+                const parts = [road, suburb, city].filter(Boolean);
+                const shortDisp = parts.length
+                    ? parts.join(', ')
+                    : (results[0].formatted_address || `${lat.toFixed(5)}, ${lng.toFixed(5)}`);
+
+                showInfoWindow(shortDisp);
+                window.dispatchEvent(new CustomEvent('map-pin-placed', { detail: { text: shortDisp } }));
+                dispatchCounty(countyRaw, areaRaw);
+            });
+        }
+
+        // ── Map setup ─────────────────────────────────────────────────────────────
+
+        function setupMap() {
+            const container = document.getElementById('address-map');
+            if (!container) { return; }
+
+            if (map && (!document.body.contains(map.getDiv()) || map.getDiv() !== container)) {
+                map = null;
                 pin = null;
+                infoWindow = null;
+            }
 
-            const pinIcon = L.divIcon({
-                className: '',
-                html: `<div style="width:32px;height:40px;filter:drop-shadow(0 3px 6px rgba(0,0,0,.35));"><svg viewBox="0 0 32 40" xmlns="http://www.w3.org/2000/svg"><path d="M16 0C7.163 0 0 7.163 0 16c0 10 16 24 16 24S32 26 32 16C32 7.163 24.837 0 16 0z" fill="#FF4500" /><circle cx="16" cy="16" r="7" fill="white" /><circle cx="16" cy="16" r="4" fill="#FF4500" /></svg></div>`,
-                iconSize: [32, 40],
-                iconAnchor: [16, 40],
-                popupAnchor: [0, -44],
+            if (!map) {
+                map = new google.maps.Map(container, {
+                    center: KENYA_CENTER,
+                    zoom: 13,
+                    mapTypeId: 'roadmap',
+                    zoomControl: true,
+                    streetViewControl: false,
+                    mapTypeControl: false,
+                    fullscreenControl: false,
+                    clickableIcons: false,
+                });
+                window.deliveryMap = map;
+
+                map.addListener('click', (e) => {
+                    const lat = e.latLng.lat();
+                    const lng = e.latLng.lng();
+                    placePin(lat, lng);
+                    $wire.set('form.latitude', lat);
+                    $wire.set('form.longitude', lng);
+                    reverseGeocode(lat, lng);
+                });
+            }
+
+            setTimeout(() => {
+                google.maps.event.trigger(map, 'resize');
+                $wire.call('getMapState').then(state => {
+                    if (state?.pin?.lat) {
+                        map.setCenter({ lat: state.pin.lat, lng: state.pin.lng });
+                        map.setZoom(15);
+                        placePin(state.pin.lat, state.pin.lng);
+                        reverseGeocode(state.pin.lat, state.pin.lng);
+                    } else {
+                        if (pin) { pin.setMap(null); pin = null; }
+                        map.setCenter(KENYA_CENTER);
+                        map.setZoom(13);
+                    }
+                });
+            }, 150);
+        }
+
+        // ── Autocomplete setup ────────────────────────────────────────────────────
+
+        function setupAutocomplete() {
+            const input = document.getElementById('map-search-input');
+            if (!input || input._googleAutocomplete) { return; }
+            input._googleAutocomplete = true;
+
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') { e.preventDefault(); }
             });
 
-            function placePin(lat, lng) {
-                if (pin) {
-                    pin.setLatLng([lat, lng]);
-                } else {
-                    pin = L.marker([lat, lng], {
-                        icon: pinIcon,
-                        draggable: true
-                    }).addTo(map);
-                    pin.on('dragend', (e) => {
-                        const pos = e.target.getLatLng();
-                        $wire.set('form.latitude', pos.lat);
-                        $wire.set('form.longitude', pos.lng);
-                        reverseGeocode(pos.lat, pos.lng);
-                    });
-                }
-            }
+            const ac = new google.maps.places.Autocomplete(input, {
+                componentRestrictions: { country: 'ke' },
+                fields: ['geometry', 'address_components', 'formatted_address', 'name'],
+            });
 
-            // Build (or rebuild) the map. Safe to call on every modal open — handles
-            // the case where the modal was conditionally re-rendered, leaving `map`
-            // bound to a detached DOM node from the previous open.
-            function setupMap() {
-                const container = document.getElementById('address-map');
-                if (!container) {
-                    return;
-                }
+            ac.addListener('place_changed', () => {
+                const place = ac.getPlace();
+                if (!place.geometry?.location) { return; }
 
-                // If the existing map is bound to a node no longer in the document,
-                // (or to a different node than the one we just found), tear it down.
-                if (map && (!document.body.contains(map.getContainer()) || map.getContainer() !== container)) {
-                    map.remove();
-                    map = null;
-                    pin = null;
-                }
+                const lat = place.geometry.location.lat();
+                const lng = place.geometry.location.lng();
 
-                if (!map) {
-                    map = L.map(container, {
-                        zoomControl: true
-                    });
-                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                        attribution: '© OpenStreetMap',
-                        maxZoom: 19,
-                    }).addTo(map);
-                    map.setView(KENYA_CENTER, 13);
-                    window.deliveryMap = map;
+                const comps = place.address_components || [];
+                const get = (type) => comps.find(c => c.types.includes(type))?.long_name || '';
 
-                    map.on('click', (e) => {
-                        placePin(e.latlng.lat, e.latlng.lng);
-                        $wire.set('form.latitude', e.latlng.lat);
-                        $wire.set('form.longitude', e.latlng.lng);
-                        reverseGeocode(e.latlng.lat, e.latlng.lng);
-                    });
-                }
+                const countyRaw = get('administrative_area_level_1');
+                const areaRaw = get('sublocality_level_1') || get('locality') || get('administrative_area_level_2');
+                const city = get('locality') || get('administrative_area_level_2') || '';
+                const displayText = place.name
+                    ? [place.name, city].filter(Boolean).join(', ')
+                    : (place.formatted_address || `${lat.toFixed(5)}, ${lng.toFixed(5)}`);
 
-                setTimeout(() => {
-                    map.invalidateSize();
-                    $wire.call('getMapState').then(state => {
-                        if (state?.pin?.lat) {
-                            placePin(state.pin.lat, state.pin.lng);
-                            map.setView([state.pin.lat, state.pin.lng], 15);
-                            reverseGeocode(state.pin.lat, state.pin.lng);
-                        } else {
-                            if (pin) {
-                                map.removeLayer(pin);
-                                pin = null;
-                            }
-                            map.setView(KENYA_CENTER, 13);
-                        }
-                    });
-                }, 150);
-            }
+                if (map) { map.setCenter({ lat, lng }); map.setZoom(16); }
+                placePin(lat, lng);
+                $wire.set('form.latitude', lat);
+                $wire.set('form.longitude', lng);
+                showInfoWindow(displayText);
 
-            $wire.on('address-modal-opened', setupMap);
+                window.dispatchEvent(new CustomEvent('map-pin-placed', { detail: { text: displayText } }));
+                dispatchCounty(countyRaw, areaRaw);
+            });
+        }
 
-            // If the map div is already in the DOM at script init (modal already open
-            // on initial render), set it up immediately.
-            if (document.getElementById('address-map')) {
+        // ── Bootstrap ─────────────────────────────────────────────────────────────
+
+        loadGoogleMaps(MAPS_KEY, () => {
+            $wire.on('address-modal-opened', () => {
                 setupMap();
-            }
-
-            function reverseGeocode(lat, lng) {
-                fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`, {
-                        headers: {
-                            'Accept-Language': 'en'
-                        }
-                    })
-                    .then(r => r.json())
-                    .then(data => {
-                        const a = data.address || {};
-                        const road = a.road || a.pedestrian || a.footway || '';
-                        const suburb = a.suburb || a.neighbourhood || a.quarter || '';
-                        const district = a.city_district || a.district || '';
-                        const locality = suburb || district;
-                        const city = a.city || a.town || a.village || '';
-
-                        // In Kenya, `state` reliably holds the county name.
-                        // `county` frequently returns ward/sub-county names — prefer it last.
-                        const wardPattern = /\b(ward|sub.?county|division|location)\b/i;
-                        const countyCandidates = [a.state, a.state_district, a.county].filter(Boolean);
-                        const countyRaw = countyCandidates.find(c => !wardPattern.test(c)) ?? countyCandidates[
-                            0] ?? '';
-                        const areaRaw = suburb || district || city || '';
-
-                        const parts = [road, locality, city].filter(Boolean);
-                        const shortDisp = parts.length ? parts.join(', ') :
-                            `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
-
-                        if (pin) {
-                            pin.bindPopup(
-                                `<b>📍 Delivery here</b><br>${shortDisp}`, {
-                                    maxWidth: 240
-                                }
-                            ).openPopup();
-                        }
-
-                        window.dispatchEvent(new CustomEvent('map-pin-placed', {
-                            detail: {
-                                text: shortDisp
-                            }
-                        }));
-
-                        if (countyRaw) {
-                            $wire.call('resolveCountyFromName', countyRaw).then(result => {
-                                window.dispatchEvent(new CustomEvent('county-resolved', {
-                                    detail: {
-                                        resolved: !!result,
-                                        name: result?.name || ''
-                                    }
-                                }));
-                                if (result && areaRaw) {
-                                    $wire.call('resolveAreaFromName', areaRaw);
-                                }
-                            });
-                        } else {
-                            window.dispatchEvent(new CustomEvent('county-resolved', {
-                                detail: {
-                                    resolved: false,
-                                    name: ''
-                                }
-                            }));
-                        }
-                    })
-                    .catch(() => {
-                        const fallback = `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
-                        window.dispatchEvent(new CustomEvent('map-pin-placed', {
-                            detail: {
-                                text: fallback
-                            }
-                        }));
-                        window.dispatchEvent(new CustomEvent('county-resolved', {
-                            detail: {
-                                resolved: false,
-                                name: ''
-                            }
-                        }));
-                    });
-            }
-
-            // Map search
-            window.addEventListener('do-map-search', () => {
-                const input = document.getElementById('map-search-input');
-                const q = input?.value?.trim();
-                if (!q) {
-                    return;
-                }
-
-                fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(q)}&countrycodes=ke&format=json&limit=1`, {
-                        headers: {
-                            'Accept-Language': 'en'
-                        }
-                    })
-                    .then(r => r.json())
-                    .then(results => {
-                        if (!results.length) {
-                            window.dispatchEvent(new CustomEvent('map-search-not-found'));
-                            return;
-                        }
-                        const r = results[0];
-                        const lat = parseFloat(r.lat);
-                        const lng = parseFloat(r.lon);
-                        map.setView([lat, lng], 16);
-                        placePin(lat, lng);
-                        $wire.set('form.latitude', lat);
-                        $wire.set('form.longitude', lng);
-                        reverseGeocode(lat, lng);
-                    })
-                    .catch(() => window.dispatchEvent(new CustomEvent('map-search-not-found')));
+                setupAutocomplete();
             });
+
+            if (document.getElementById('address-map')) { setupMap(); }
+            setupAutocomplete();
         });
     </script>
 @endscript
