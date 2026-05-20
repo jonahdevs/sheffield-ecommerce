@@ -9,7 +9,7 @@ use App\Enums\QuoteStatus;
 use Carbon\Carbon;
 use Livewire\Component;
 use Livewire\WithPagination;
-use Livewire\Attributes\{Title, Computed, On};
+use Livewire\Attributes\{Title, Computed, On, Url};
 use Illuminate\Support\Facades\Response;
 
 new #[Title('Orders')] class extends Component {
@@ -19,14 +19,31 @@ new #[Title('Orders')] class extends Component {
     //  STATE
     // =========================================================================
 
+    #[Url(as: 'q')]
     public string $search = '';
+
+    #[Url(as: 'status')]
     public string $statusFilter = 'all';
+
+    #[Url(as: 'payment')]
     public string $paymentFilter = 'all';
+
+    #[Url(as: 'tag')]
     public string $tagFilter = 'all';
+
+    #[Url(as: 'from')]
     public string $dateFrom = '';
+
+    #[Url(as: 'to')]
     public string $dateTo = '';
+
+    #[Url(as: 'sort')]
     public string $sortBy = 'created_at';
+
+    #[Url(as: 'dir')]
     public string $sortDirection = 'desc';
+
+    #[Url(as: 'per_page')]
     public int $perPage = 10;
 
     // =========================================================================
@@ -125,24 +142,26 @@ new #[Title('Orders')] class extends Component {
     #[Computed]
     public function stats(): array
     {
-        $today = now()->toDateString();
-
-        // Total and revenue are date-range aware
-        $base = Order::query()->when($this->dateFrom, fn($q) => $q->whereDate('created_at', '>=', $this->dateFrom))->when($this->dateTo, fn($q) => $q->whereDate('created_at', '<=', $this->dateTo));
+        // All stats are current-state — not date-filtered
+        // These are actionable metrics for order management
 
         return [
-            'total' => (clone $base)->count(),
-            'revenue' => (clone $base)->where('payment_status', PaymentStatus::PAID->value)->sum('total_cents') / 100,
-            // Today and pending are always current-state — not date-filtered
-            'today' => Order::query()
-                ->whereBetween('created_at', [Carbon::parse($today)->startOfDay(), Carbon::parse($today)->endOfDay()])
-                ->count(),
-            'pending' => Order::query()
-                ->whereIn('status', [OrderStatus::PENDING->value, OrderStatus::PROCESSING->value])
+            'total' => Order::count(),
+            'processing' => Order::query()
+                ->whereIn('status', [OrderStatus::PENDING->value, OrderStatus::PROCESSING->value, OrderStatus::CONFIRMED->value])
                 ->count(),
             'unpaid' => Order::query()
                 ->whereIn('payment_status', [PaymentStatus::PENDING->value, PaymentStatus::FAILED->value])
                 ->whereNotIn('status', [OrderStatus::CANCELLED->value])
+                ->count(),
+            'shipped' => Order::query()->where('status', OrderStatus::SHIPPED->value)->count(),
+            'requires_attention' => Order::query()
+                ->where(function ($q) {
+                    $q->where('payment_status', PaymentStatus::FAILED->value)->orWhere(function ($q2) {
+                        $q2->where('status', OrderStatus::PENDING->value)->where('created_at', '<', now()->subHours(24));
+                    });
+                })
+                ->whereNotIn('status', [OrderStatus::CANCELLED->value, OrderStatus::DELIVERED->value])
                 ->count(),
         ];
     }
@@ -379,11 +398,7 @@ new #[Title('Orders')] class extends Component {
             'payment' => "Payment updated for {$data['reference']}",
         ];
 
-        $this->dispatch('notify',
-            title: $data['update_type'] === 'created' ? 'New Order!' : 'Order Updated',
-            variant: $data['update_type'] === 'created' ? 'success' : 'info',
-            message: $messages[$data['update_type']] ?? "Order {$data['reference']} was updated",
-        );
+        $this->dispatch('notify', title: $data['update_type'] === 'created' ? 'New Order!' : 'Order Updated', variant: $data['update_type'] === 'created' ? 'success' : 'info', message: $messages[$data['update_type']] ?? "Order {$data['reference']} was updated");
 
         unset($this->orders, $this->stats, $this->statusCounts, $this->pendingQuotesCount);
     }
@@ -448,27 +463,7 @@ new #[Title('Orders')] class extends Component {
     {{-- Page header --}}
     <div class="flex items-start justify-between mb-6">
         <div>
-            <div class="flex items-center gap-2">
-                <flux:heading size="xl">Orders</flux:heading>
-                {{-- Real-time connection indicator --}}
-                <div x-data="{ connected: false }" x-init="if (window.Echo) {
-                    window.Echo.connector.pusher.connection.bind('connected', () => { connected = true; });
-                    window.Echo.connector.pusher.connection.bind('disconnected', () => { connected = false; });
-                    connected = window.Echo.connector.pusher.connection.state === 'connected';
-                }"
-                    class="flex items-center gap-1.5 px-2 py-1 rounded-full text-xs"
-                    :class="connected ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400' :
-                        'bg-zinc-100 dark:bg-zinc-800 text-zinc-500'"
-                    :title="connected ? 'Real-time updates active' : 'Connecting...'">
-                    <span class="relative flex h-2 w-2">
-                        <span x-show="connected"
-                            class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                        <span class="relative inline-flex rounded-full h-2 w-2"
-                            :class="connected ? 'bg-green-500' : 'bg-zinc-400'"></span>
-                    </span>
-                    <span x-text="connected ? 'Live' : 'Offline'"></span>
-                </div>
-            </div>
+            <flux:heading size="xl">Orders</flux:heading>
             <flux:subheading>
                 {{ $this->periodLabel }} · Manage sales orders and delivery tracking.
             </flux:subheading>
@@ -495,10 +490,10 @@ new #[Title('Orders')] class extends Component {
         <flux:card class="p-4 border-l-4 border-l-blue-500 dark:border-l-blue-500 rounded-l-none!">
             <div class="flex items-center justify-between">
                 <div>
-                    <flux:subheading class="text-xs! uppercase tracking-wide mb-1">Orders</flux:subheading>
+                    <flux:subheading class="text-xs! uppercase tracking-wide mb-1">Total Orders</flux:subheading>
                     <flux:heading size="xl" class="text-2xl! font-bold!" x-data="countUp({ to: {{ $this->stats['total'] }} })" x-text="display">
                     </flux:heading>
-                    <flux:subheading class="text-xs! mt-1">{{ $this->periodLabel }}</flux:subheading>
+                    <flux:subheading class="text-xs! mt-1">All time</flux:subheading>
                 </div>
                 <div
                     class="w-10 h-10 rounded-full bg-blue-50 dark:bg-blue-500/15 flex items-center justify-center shrink-0">
@@ -507,43 +502,15 @@ new #[Title('Orders')] class extends Component {
             </div>
         </flux:card>
 
-        <flux:card class="p-4 border-l-4 border-l-emerald-500 dark:border-l-emerald-500 rounded-l-none!">
-            <div class="flex items-center justify-between">
-                <div>
-                    <flux:subheading class="text-xs! uppercase tracking-wide mb-1">Revenue</flux:subheading>
-                    <flux:heading size="xl" class="text-2xl! font-bold!" x-data="countUp({ to: {{ $this->stats['revenue'] }}, decimals: 2, prefix: 'KES ' })" x-text="display">
-                    </flux:heading>
-                    <flux:subheading class="text-xs! mt-1">{{ $this->periodLabel }} · paid</flux:subheading>
-                </div>
-                <div
-                    class="w-10 h-10 rounded-full bg-emerald-50 dark:bg-emerald-500/15 flex items-center justify-center shrink-0">
-                    <flux:icon.banknotes class="size-5 text-emerald-500" />
-                </div>
-            </div>
-        </flux:card>
-
-        <flux:card class="p-4 border-l-4 border-l-violet-500 dark:border-l-violet-500 rounded-l-none!">
-            <div class="flex items-center justify-between">
-                <div>
-                    <flux:subheading class="text-xs! uppercase tracking-wide mb-1">Today</flux:subheading>
-                    <flux:heading size="xl" class="text-2xl! font-bold!" x-data="countUp({ to: {{ $this->stats['today'] }} })" x-text="display">
-                    </flux:heading>
-                    <flux:subheading class="text-xs! mt-1">{{ now()->format('M j, Y') }}</flux:subheading>
-                </div>
-                <div
-                    class="w-10 h-10 rounded-full bg-violet-50 dark:bg-violet-500/15 flex items-center justify-center shrink-0">
-                    <flux:icon.calendar-days class="size-5 text-violet-500" />
-                </div>
-            </div>
-        </flux:card>
-
-        <flux:card class="p-4 border-l-4 border-l-amber-500 dark:border-l-amber-500 rounded-l-none!">
+        <flux:card
+            class="p-4 border-l-4 border-l-amber-500 dark:border-l-amber-500 rounded-l-none! cursor-pointer hover:shadow-md transition-shadow"
+            wire:click="$set('statusFilter', '{{ OrderStatus::PROCESSING->value }}')">
             <div class="flex items-center justify-between">
                 <div>
                     <flux:subheading class="text-xs! uppercase tracking-wide mb-1">Processing</flux:subheading>
-                    <flux:heading size="xl" class="text-2xl! font-bold!" x-data="countUp({ to: {{ $this->stats['pending'] }} })" x-text="display">
+                    <flux:heading size="xl" class="text-2xl! font-bold!" x-data="countUp({ to: {{ $this->stats['processing'] }} })" x-text="display">
                     </flux:heading>
-                    <flux:subheading class="text-xs! mt-1">Pending / In Progress</flux:subheading>
+                    <flux:subheading class="text-xs! mt-1">Pending / Confirmed / Processing</flux:subheading>
                 </div>
                 <div
                     class="w-10 h-10 rounded-full bg-amber-50 dark:bg-amber-500/15 flex items-center justify-center shrink-0">
@@ -565,6 +532,40 @@ new #[Title('Orders')] class extends Component {
                 <div
                     class="w-10 h-10 rounded-full bg-rose-50 dark:bg-rose-500/15 flex items-center justify-center shrink-0">
                     <flux:icon.credit-card class="size-5 text-rose-500" />
+                </div>
+            </div>
+        </flux:card>
+
+        <flux:card
+            class="p-4 border-l-4 border-l-violet-500 dark:border-l-violet-500 rounded-l-none! cursor-pointer hover:shadow-md transition-shadow"
+            wire:click="$set('statusFilter', '{{ OrderStatus::SHIPPED->value }}')">
+            <div class="flex items-center justify-between">
+                <div>
+                    <flux:subheading class="text-xs! uppercase tracking-wide mb-1">Shipped</flux:subheading>
+                    <flux:heading size="xl" class="text-2xl! font-bold!" x-data="countUp({ to: {{ $this->stats['shipped'] }} })" x-text="display">
+                    </flux:heading>
+                    <flux:subheading class="text-xs! mt-1">In Transit</flux:subheading>
+                </div>
+                <div
+                    class="w-10 h-10 rounded-full bg-violet-50 dark:bg-violet-500/15 flex items-center justify-center shrink-0">
+                    <flux:icon.truck class="size-5 text-violet-500" />
+                </div>
+            </div>
+        </flux:card>
+
+        <flux:card
+            class="p-4 border-l-4 border-l-orange-500 dark:border-l-orange-500 rounded-l-none! cursor-pointer hover:shadow-md transition-shadow"
+            wire:click="$set('paymentFilter', 'failed')">
+            <div class="flex items-center justify-between">
+                <div>
+                    <flux:subheading class="text-xs! uppercase tracking-wide mb-1">Needs Attention</flux:subheading>
+                    <flux:heading size="xl" class="text-2xl! font-bold!" x-data="countUp({ to: {{ $this->stats['requires_attention'] }} })" x-text="display">
+                    </flux:heading>
+                    <flux:subheading class="text-xs! mt-1">Failed / Stale Orders</flux:subheading>
+                </div>
+                <div
+                    class="w-10 h-10 rounded-full bg-orange-50 dark:bg-orange-500/15 flex items-center justify-center shrink-0">
+                    <flux:icon.exclamation-triangle class="size-5 text-orange-500" />
                 </div>
             </div>
         </flux:card>
@@ -1090,6 +1091,5 @@ new #[Title('Orders')] class extends Component {
                 return;
             }
         });
-
     </script>
 @endscript

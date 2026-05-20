@@ -3,7 +3,7 @@
 namespace App\Services\Sap;
 
 use App\Models\Order;
-use App\Notifications\OrderConfirmedNotification;
+use App\Notifications\KraTaxInvoiceNotification;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Storage;
@@ -124,9 +124,9 @@ class KraReceiptService
         }
 
         $order->user
-            ? $order->user->notify(new OrderConfirmedNotification($order))
+            ? $order->user->notify(new KraTaxInvoiceNotification($order))
             : Notification::route('mail', $email)
-                ->notify(new OrderConfirmedNotification($order));
+                ->notify(new KraTaxInvoiceNotification($order));
 
         Log::info('Invoice emailed to customer', [
             'order_id' => $order->id,

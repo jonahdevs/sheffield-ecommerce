@@ -43,7 +43,12 @@ new #[Layout('layouts.customer')] class extends Component {
             ->user()
             ->orders()
             ->whereIn('status', [OrderStatus::PENDING, OrderStatus::CONFIRMED, OrderStatus::PROCESSING, OrderStatus::SHIPPED, OrderStatus::DELIVERED])
-            ->with(['items' => fn($q) => $q->select(['id', 'order_id', 'product_id', 'product_snapshot'])->with(['product' => fn($q) => $q->select(['id', 'image_path'])])->limit(1)])
+            ->with([
+                'items' => fn($q) => $q
+                    ->select(['id', 'order_id', 'product_id', 'product_snapshot'])
+                    ->with(['product' => fn($q) => $q->select(['id', 'image_path'])])
+                    ->limit(1),
+            ])
             ->withCount('items')
             ->latest()
             ->paginate(5);
@@ -60,7 +65,12 @@ new #[Layout('layouts.customer')] class extends Component {
             ->user()
             ->orders()
             ->whereIn('status', [OrderStatus::CANCELLED, OrderStatus::RETURNED])
-            ->with(['items' => fn($q) => $q->select(['id', 'order_id', 'product_id', 'product_snapshot'])->with(['product' => fn($q) => $q->select(['id', 'image_path'])])->limit(1)])
+            ->with([
+                'items' => fn($q) => $q
+                    ->select(['id', 'order_id', 'product_id', 'product_snapshot'])
+                    ->with(['product' => fn($q) => $q->select(['id', 'image_path'])])
+                    ->limit(1),
+            ])
             ->withCount('items')
             ->latest()
             ->paginate(5);
@@ -138,12 +148,12 @@ new #[Layout('layouts.customer')] class extends Component {
     </div>
 
     {{-- Orders list --}}
-    <div class="flex flex-col bg-white border border-zinc-200">
+    <div class="flex flex-col bg-white border border-zinc-200 rounded-sm overflow-hidden">
         @php $orders = $selectedTab === 'ongoing' ? $this->ongoingOrders : $this->cancelledOrders; @endphp
 
         @forelse ($orders as $order)
             <a href="{{ route('customer.orders.show', $order) }}" wire:navigate
-                class="p-4.5 border-b border-zinc-200 last:border-b-0 flex items-center gap-4 transition-colors hover:bg-zinc-50 cursor-pointer rounded-sm">
+                class="p-4.5 border-b border-zinc-200 last:border-b-0 flex items-center gap-4 transition-colors hover:bg-zinc-50 cursor-pointer">
                 <div class="hidden md:flex -space-x-2">
                     @foreach ($order->items->take(3) as $item)
                         <div
@@ -194,4 +204,3 @@ new #[Layout('layouts.customer')] class extends Component {
         </div>
     @endif
 </div>
-

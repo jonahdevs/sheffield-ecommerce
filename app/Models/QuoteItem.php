@@ -94,4 +94,16 @@ class QuoteItem extends Model
     {
         return $this->product_snapshot['image_url'] ?? $this->product?->image_url;
     }
+
+    public function productSlug(): ?string
+    {
+        return $this->product_snapshot['slug'] ?? $this->product?->slug;
+    }
+
+    public function productUrl(): ?string
+    {
+        $slug = $this->productSlug();
+
+        return $slug ? route('products.show', $slug) : null;
+    }
 }

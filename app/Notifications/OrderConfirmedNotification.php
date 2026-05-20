@@ -3,6 +3,7 @@
 namespace App\Notifications;
 
 use App\Models\Order;
+use App\Services\TaxService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
@@ -31,6 +32,8 @@ class OrderConfirmedNotification extends Notification
             'user',
         ]);
 
+        $taxService = app(TaxService::class);
+
         $mail = (new MailMessage)
             ->subject("Order Confirmed — {$order->reference}")
             ->view('mails.orders.confirmation', [
@@ -39,6 +42,9 @@ class OrderConfirmedNotification extends Notification
                 'orderUrl' => route('customer.orders.show', $order),
                 'deliveryWindow' => $this->resolveDeliveryWindow(),
                 'paymentLabel' => $this->resolvePaymentLabel(),
+                'taxEnabled' => $taxService->isEnabled(),
+                'taxInclusive' => $taxService->isInclusive(),
+                'taxLabel' => $taxService->name().' ('.$taxService->rateLabel().')',
             ]);
 
         // Attach the invoice PDF if it exists on disk
@@ -86,4 +92,3 @@ class OrderConfirmedNotification extends Notification
         };
     }
 }
-

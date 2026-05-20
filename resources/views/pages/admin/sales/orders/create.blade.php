@@ -466,7 +466,7 @@ new #[Title('Create Order')] class extends Component {
         <flux:subheading class="mt-1">Place an order on behalf of a customer.</flux:subheading>
     </div>
 
-    <flux:callout color="indigo" variant="info" icon="information-circle" class="mb-6">
+    <flux:callout color="indigo" icon="information-circle" class="mb-6">
         <flux:callout.heading>ERP sync is automatic</flux:callout.heading>
         <flux:callout.text>Orders set to <strong>Confirmed</strong> with payment <strong>Mark as Paid</strong> will be
             synced to SAP and a KRA receipt generated automatically.</flux:callout.text>

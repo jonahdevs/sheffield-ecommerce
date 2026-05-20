@@ -21,16 +21,17 @@ class QuoteUpdated implements ShouldBroadcast
     public function __construct(
         public readonly Quote $quote,
         public readonly string $updateType = 'general', // status, pricing, created
-    ) {
-    }
+    ) {}
 
     public function broadcastOn(): array
     {
         return [
             // Customer channel — for quote owner to receive updates
-            new PrivateChannel('quote.' . $this->quote->id),
+            new PrivateChannel('quote.'.$this->quote->id),
             // User channel — for general notifications
-            new PrivateChannel('App.Models.User.' . $this->quote->user_id),
+            new PrivateChannel('App.Models.User.'.$this->quote->user_id),
+            // Admin channel — for real-time updates on the admin quotations index
+            new PrivateChannel('admin.quotes'),
         ];
     }
 

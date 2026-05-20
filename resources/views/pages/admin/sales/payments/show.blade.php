@@ -373,8 +373,8 @@ new class extends Component {
                 <flux:error name="refundReason" />
             </flux:field>
 
-            <flux:callout variant="warning">
-                This action will refund the payment and cancel the associated order. This cannot be undone.
+            <flux:callout variant="warning" icon="exclamation-triangle">
+                <flux:callout.text>This action will refund the payment and cancel the associated order. This cannot be undone.</flux:callout.text>
             </flux:callout>
 
             <div class="flex gap-2 justify-end">

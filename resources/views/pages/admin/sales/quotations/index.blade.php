@@ -4,7 +4,7 @@ use App\Models\Quote;
 use App\Enums\QuoteStatus;
 use Livewire\Component;
 use Livewire\WithPagination;
-use Livewire\Attributes\{Title, Computed};
+use Livewire\Attributes\{Title, Computed, On};
 use Illuminate\Support\Facades\Response;
 
 new #[Title('Quotations')] class extends Component {
@@ -131,6 +131,16 @@ new #[Title('Quotations')] class extends Component {
         $counts = Quote::query()->selectRaw('status, count(*) as count')->groupBy('status')->pluck('count', 'status')->toArray();
 
         return array_merge(['all' => array_sum($counts)], $counts);
+    }
+
+    // =========================================================================
+    //  REAL-TIME
+    // =========================================================================
+
+    #[On('echo-private:admin.quotes,.quote.updated')]
+    public function handleQuoteUpdate(array $data): void
+    {
+        unset($this->quotations, $this->stats, $this->statusCounts);
     }
 
     // =========================================================================
@@ -393,21 +403,23 @@ new #[Title('Quotations')] class extends Component {
 
                         {{-- Reference --}}
                         <flux:table.cell class="ps-5!">
-                            <a href="{{ route('admin.quotations.show', $quote) }}" wire:navigate
-                                class="font-semibold text-zinc-800 dark:text-white hover:text-primary transition-colors">
-                                {{ $quote->reference }}
-                            </a>
-                            @if ($quote->expires_at && $quote->isSent())
-                                <div class="mt-0.5">
+                            <div class="flex items-center gap-1.5">
+                                <a href="{{ route('admin.quotations.show', $quote) }}" wire:navigate
+                                    class="font-semibold text-zinc-800 dark:text-white hover:text-primary transition-colors">
+                                    {{ $quote->reference }}
+                                </a>
+                                @if ($quote->expires_at && $quote->isSent())
                                     @if ($quote->expires_at->isPast())
-                                        <flux:badge size="sm" color="red" variant="flat">Expired</flux:badge>
+                                        <flux:tooltip content="Expired {{ $quote->expires_at->diffForHumans() }}">
+                                            <flux:icon.exclamation-triangle class="size-3.5 text-rose-500 shrink-0" />
+                                        </flux:tooltip>
                                     @elseif ($quote->expires_at->diffInHours() <= 48)
-                                        <flux:badge size="sm" color="amber" variant="flat">
-                                            Expires {{ $quote->expires_at->diffForHumans() }}
-                                        </flux:badge>
+                                        <flux:tooltip content="Expires {{ $quote->expires_at->diffForHumans() }}">
+                                            <flux:icon.clock class="size-3.5 text-amber-500 shrink-0" />
+                                        </flux:tooltip>
                                     @endif
-                                </div>
-                            @endif
+                                @endif
+                            </div>
                         </flux:table.cell>
 
                         {{-- Customer --}}
@@ -428,11 +440,12 @@ new #[Title('Quotations')] class extends Component {
 
                         {{-- Total --}}
                         <flux:table.cell>
-                            <flux:heading size="sm" class="font-semibold!">
-                                {{ format_currency($quote->total) }}
-                            </flux:heading>
-                            @if ($quote->shipping_cents === 0 && !$quote->status->isTerminal())
-                                <flux:subheading class="text-xs! text-amber-500">+ shipping TBD</flux:subheading>
+                            @if ($quote->total_cents > 0)
+                                <flux:heading size="sm" class="font-semibold!">
+                                    {{ format_currency($quote->total) }}
+                                </flux:heading>
+                            @else
+                                <flux:text class="text-sm text-zinc-400">—</flux:text>
                             @endif
                         </flux:table.cell>
 
@@ -446,9 +459,7 @@ new #[Title('Quotations')] class extends Component {
 
                         {{-- Date --}}
                         <flux:table.cell>
-                            <flux:text class="text-sm">{{ $quote->created_at->format('M d, Y') }}</flux:text>
-                            <flux:subheading class="text-xs!">{{ $quote->created_at->format('h:i A') }}
-                            </flux:subheading>
+                            <flux:text class="text-sm whitespace-nowrap">{{ $quote->created_at->format('M d, Y, h:i A') }}</flux:text>
                         </flux:table.cell>
 
                         {{-- Actions --}}

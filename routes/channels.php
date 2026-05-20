@@ -1,12 +1,12 @@
 <?php
 
 use App\Models\Order;
+use App\Models\Quote;
 use Illuminate\Support\Facades\Broadcast;
 
 Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
     return (int) $user->id === (int) $id;
 });
-
 
 Broadcast::channel('order.{orderId}', function ($user, $orderId) {
     // Only the order owner can listen to this channel
@@ -17,11 +17,10 @@ Broadcast::channel('order.{orderId}', function ($user, $orderId) {
 
 // Quote channel — only the quote owner can listen
 Broadcast::channel('quote.{quoteId}', function ($user, $quoteId) {
-    return \App\Models\Quote::where('id', $quoteId)
+    return Quote::where('id', $quoteId)
         ->where('user_id', $user->id)
         ->exists();
 });
-
 
 Broadcast::channel('test.{userId}', function ($user, $userId) {
     return (int) $user->id === (int) $userId;
@@ -29,5 +28,10 @@ Broadcast::channel('test.{userId}', function ($user, $userId) {
 
 // Admin orders channel - only staff can listen
 Broadcast::channel('admin.orders', function ($user) {
+    return $user->hasRole(['admin', 'staff', 'super-admin']);
+});
+
+// Admin quotes channel - only staff can listen
+Broadcast::channel('admin.quotes', function ($user) {
     return $user->hasRole(['admin', 'staff', 'super-admin']);
 });

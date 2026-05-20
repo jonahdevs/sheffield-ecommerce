@@ -177,6 +177,7 @@ class QuotationService
                     'product_snapshot' => [
                         'name' => $product->name,
                         'sku' => $variant?->sku ?? $product->sku,
+                        'slug' => $product->slug,
                         'image_url' => $product->image_url,
                         'brand' => $product->brand?->name,
                         'variant' => $variant
@@ -252,6 +253,7 @@ class QuotationService
 
                     $item->update([
                         'quoted_price_cents' => $newUnitPriceCents,
+                        'total_cents' => $newUnitPriceCents * $item->quantity,
                     ]);
 
                     $subtotalCents += $newUnitPriceCents * $item->quantity;
@@ -311,6 +313,21 @@ class QuotationService
         $note = $pricing['note'] ?? null;
         $itemPrices = $pricing['item_prices'] ?? [];
 
+        $quote->loadMissing('items');
+
+        $unpriced = $quote->items->filter(function ($item) use ($itemPrices) {
+            $providedPrice = isset($itemPrices[$item->id]) ? (float) $itemPrices[$item->id] : 0;
+            $alreadyPriced = $item->quoted_price_cents !== null && $item->quoted_price_cents > 0;
+
+            return $providedPrice <= 0 && ! $alreadyPriced;
+        });
+
+        if ($unpriced->isNotEmpty()) {
+            throw new \InvalidArgumentException(
+                'All items must have a quoted price before sending the quotation to the customer.'
+            );
+        }
+
         DB::transaction(function () use ($quote, $shippingCents, $validityDays, $note, $itemPrices) {
 
             if (! empty($itemPrices)) {
@@ -323,6 +340,7 @@ class QuotationService
 
                     $item->update([
                         'quoted_price_cents' => $newUnitPriceCents,
+                        'total_cents' => $newUnitPriceCents * $item->quantity,
                     ]);
 
                     $subtotalCents += $newUnitPriceCents * $item->quantity;
