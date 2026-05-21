@@ -2,95 +2,171 @@
 
 use App\Enums\DeliveryOrderStatus;
 use App\Models\DeliveryOrder;
-use App\Models\PickupStation;
-use Livewire\Attributes\{Title, Computed};
+use App\Models\LogisticsProvider;
+use App\Models\ShippingMethod;
+use App\Models\ShippingZone;
+use App\Settings\RegionalSettings;
+use Livewire\Attributes\{Computed, Title, Url};
 use Livewire\Component;
+use Livewire\WithPagination;
+use Flux\Flux;
 
-new #[Title('Logistics Overview')] class extends Component {
+new #[Title('Logistics')] class extends Component {
+    use WithPagination;
+
+    // KPI date range
     public string $dateFrom = '';
+
     public string $dateTo = '';
 
-    public function setDateRange(string $from, string $to): void
+    // Table filters
+    #[Url(history: true)]
+    public string $search = '';
+
+    #[Url(history: true)]
+    public string $filterStatus = '';
+
+    #[Url(history: true)]
+    public string $filterMethod = '';
+
+    #[Url(history: true)]
+    public string $filterZone = '';
+
+    #[Url(history: true)]
+    public string $filterProvider = '';
+
+    #[Url(history: true)]
+    public string $filterDateFrom = '';
+
+    #[Url(history: true)]
+    public string $filterDateTo = '';
+
+    public int $perPage = 15;
+
+    // Bulk action bridge
+    public array $pendingBulkIds = [];
+
+    public string $pendingBulkStatus = '';
+
+    // Order detail flyout
+    public ?int $viewingId = null;
+
+    public string $statusNote = '';
+
+    public string $newStatus = '';
+
+    public bool $confirmingStatus = false;
+
+    // ─── Pagination resets ────────────────────────────────────────────────────
+
+    public function updatingSearch(): void { $this->resetPage(); }
+
+    public function updatingFilterStatus(): void { $this->resetPage(); }
+
+    public function updatingFilterMethod(): void { $this->resetPage(); }
+
+    public function updatingFilterZone(): void { $this->resetPage(); }
+
+    public function updatingFilterProvider(): void { $this->resetPage(); }
+
+    public function updatingFilterDateFrom(): void { $this->resetPage(); }
+
+    public function updatingFilterDateTo(): void { $this->resetPage(); }
+
+    public function updatingPerPage(): void { $this->resetPage(); }
+
+    public function setKpiDateRange(string $from, string $to): void
     {
         $this->dateFrom = $from;
         $this->dateTo = $to;
-        unset($this->stats, $this->recentOrders);
+        unset($this->kpiStats, $this->statusBreakdown, $this->zoneBreakdown);
     }
 
-    #[Computed]
-    public function stats(): array
+    public function setDateRange(string $from, string $to): void
     {
-        $activeStatuses = [DeliveryOrderStatus::PENDING->value, DeliveryOrderStatus::PICKED_UP->value, DeliveryOrderStatus::IN_TRANSIT->value, DeliveryOrderStatus::OUT_FOR_DELIVERY->value];
+        $this->filterDateFrom = $from;
+        $this->filterDateTo = $to;
+        $this->resetPage();
+    }
 
-        // Revenue window: use date range if set, otherwise current month
-        $hasDateRange = $this->dateFrom && $this->dateTo;
-        $rangeStart = $hasDateRange ? \Carbon\Carbon::parse($this->dateFrom)->startOfDay() : now()->startOfMonth();
-        $rangeEnd = $hasDateRange ? \Carbon\Carbon::parse($this->dateTo)->endOfDay() : now()->endOfDay();
+    public function clearFilters(): void
+    {
+        $this->search = '';
+        $this->filterStatus = '';
+        $this->filterMethod = '';
+        $this->filterZone = '';
+        $this->filterProvider = '';
+        $this->filterDateFrom = '';
+        $this->filterDateTo = '';
+        $this->resetPage();
+    }
+
+    // ─── KPI stats ────────────────────────────────────────────────────────────
+
+    #[Computed]
+    public function kpiStats(): array
+    {
+        $activeStatuses = [
+            DeliveryOrderStatus::PENDING->value,
+            DeliveryOrderStatus::PICKED_UP->value,
+            DeliveryOrderStatus::IN_TRANSIT->value,
+            DeliveryOrderStatus::OUT_FOR_DELIVERY->value,
+        ];
+
+        $hasRange   = $this->dateFrom && $this->dateTo;
+        $rangeStart = $hasRange ? \Carbon\Carbon::parse($this->dateFrom)->startOfDay() : now()->startOfMonth();
+        $rangeEnd   = $hasRange ? \Carbon\Carbon::parse($this->dateTo)->endOfDay()     : now()->endOfDay();
 
         $lastMonthStart = now()->subMonth()->startOfMonth();
-        $lastMonthEnd = now()->subMonth()->endOfMonth();
+        $lastMonthEnd   = now()->subMonth()->endOfMonth();
 
-        $periodRevenue = DeliveryOrder::whereBetween('created_at', [$rangeStart, $rangeEnd])->sum('shipping_cost');
+        $periodRevenue    = DeliveryOrder::whereBetween('created_at', [$rangeStart, $rangeEnd])->sum('shipping_cost');
         $lastMonthRevenue = DeliveryOrder::whereBetween('created_at', [$lastMonthStart, $lastMonthEnd])->sum('shipping_cost');
-        $revenueChange = $lastMonthRevenue > 0 ? round((($periodRevenue - $lastMonthRevenue) / $lastMonthRevenue) * 100, 1) : null;
+        $revenueChange    = $lastMonthRevenue > 0
+            ? round((($periodRevenue - $lastMonthRevenue) / $lastMonthRevenue) * 100, 1)
+            : null;
 
         return [
-            'active' => DeliveryOrder::whereIn('status', $activeStatuses)->where('is_return', false)->count(),
-            'at_station' => DeliveryOrder::where('status', DeliveryOrderStatus::AT_STATION->value)->count(),
+            'active'          => DeliveryOrder::whereIn('status', $activeStatuses)->where('is_return', false)->count(),
+            'at_station'      => DeliveryOrder::where('status', DeliveryOrderStatus::AT_STATION->value)->count(),
             'needs_attention' => DeliveryOrder::whereIn('status', [DeliveryOrderStatus::FAILED->value, DeliveryOrderStatus::RETURNING->value])->count(),
             'delivered_today' => DeliveryOrder::whereDate('delivered_at', today())
                 ->whereIn('status', [DeliveryOrderStatus::DELIVERED->value, DeliveryOrderStatus::COLLECTED->value])
                 ->count(),
-            'this_month_revenue' => $periodRevenue,
-            'last_month_revenue' => $lastMonthRevenue,
-            'revenue_change' => $hasDateRange ? null : $revenueChange,
-            'period_label' => $hasDateRange
+            'period_revenue'      => $periodRevenue,
+            'last_month_revenue'  => $lastMonthRevenue,
+            'revenue_change'      => $hasRange ? null : $revenueChange,
+            'period_label'        => $hasRange
                 ? $rangeStart->format('M j') . ' – ' . $rangeEnd->format('M j, Y')
                 : now()->format('F Y'),
         ];
     }
+
+    // ─── Charts ───────────────────────────────────────────────────────────────
 
     #[Computed]
     public function statusBreakdown(): array
     {
         return DeliveryOrder::where('is_return', false)
             ->selectRaw('status, count(*) as total')
-            ->whereNotIn('status', [DeliveryOrderStatus::DELIVERED->value, DeliveryOrderStatus::CANCELLED->value, DeliveryOrderStatus::COLLECTED->value])
+            ->whereNotIn('status', [
+                DeliveryOrderStatus::DELIVERED->value,
+                DeliveryOrderStatus::CANCELLED->value,
+                DeliveryOrderStatus::COLLECTED->value,
+            ])
             ->groupBy('status')
             ->pluck('total', 'status')
             ->toArray();
     }
 
     #[Computed]
-    public function recentOrders()
-    {
-        return DeliveryOrder::with(['shippingMethod', 'shippingZone'])
-            ->where('is_return', false)
-            ->when($this->dateFrom, fn($q) => $q->whereDate('created_at', '>=', $this->dateFrom))
-            ->when($this->dateTo, fn($q) => $q->whereDate('created_at', '<=', $this->dateTo))
-            ->latest()
-            ->take(8)
-            ->get();
-    }
-
-    #[Computed]
     public function pusAlerts()
     {
-        return DeliveryOrder::with(['pickupStation'])
+        return DeliveryOrder::with('pickupStation')
             ->where('status', DeliveryOrderStatus::AT_STATION->value)
-            ->where(fn($q) => $q->where('collection_deadline_at', '<', now()->addDays(2)))
+            ->where('collection_deadline_at', '<', now()->addDays(2))
             ->orderBy('collection_deadline_at')
             ->take(6)
-            ->get();
-    }
-
-    #[Computed]
-    public function attentionOrders()
-    {
-        return DeliveryOrder::with(['shippingMethod', 'shippingZone'])
-            ->whereIn('status', [DeliveryOrderStatus::FAILED->value, DeliveryOrderStatus::RETURNING->value])
-            ->latest()
-            ->take(5)
             ->get();
     }
 
@@ -102,51 +178,273 @@ new #[Title('Logistics Overview')] class extends Component {
             ->where('is_return', false)
             ->selectRaw('shipping_zone_id, count(*) as total, sum(shipping_cost) as revenue')
             ->groupBy('shipping_zone_id')
-            ->with('shippingZone')
             ->get()
-            ->map(
-                fn($row) => [
-                    'zone' => $row->shippingZone?->name ?? 'Unknown',
-                    'total' => $row->total,
-                    'revenue' => $row->revenue,
-                ],
-            )
+            ->map(fn($row) => [
+                'zone'    => $row->shippingZone?->name ?? 'Unknown',
+                'total'   => (int) $row->total,
+                'revenue' => (float) $row->revenue,
+            ])
             ->toArray();
     }
-}; ?>
 
-<x-admin.logistics.layout heading="Logistics Overview" subheading="Shipping, delivery, and logistics at a glance.">
+    // ─── Table ────────────────────────────────────────────────────────────────
 
-    {{-- Header --}}
-    <div class="flex items-end justify-between mb-6">
-        <div>
-            <p class="text-sm text-zinc-500">{{ now()->format('l, d F Y') }}</p>
-        </div>
-        <div class="flex items-center gap-2">
-            <flux:icon.loading wire:loading wire:target="setDateRange" class="size-3.5 text-zinc-400" />
+    #[Computed]
+    public function orders()
+    {
+        return DeliveryOrder::with(['shippingMethod', 'shippingZone', 'logisticsProvider', 'pickupStation'])
+            ->where('is_return', false)
+            ->when($this->search, fn($q) => $q->where(
+                fn($q) => $q
+                    ->where('id', 'like', "%{$this->search}%")
+                    ->orWhere('provider_reference', 'like', "%{$this->search}%")
+                    ->orWhere('order_id', 'like', "%{$this->search}%"),
+            ))
+            ->when($this->filterStatus,   fn($q) => $q->where('status', $this->filterStatus))
+            ->when($this->filterMethod,   fn($q) => $q->where('shipping_method_id', $this->filterMethod))
+            ->when($this->filterZone,     fn($q) => $q->where('shipping_zone_id', $this->filterZone))
+            ->when($this->filterProvider, fn($q) => $q->where('logistics_provider_id', $this->filterProvider))
+            ->when($this->filterDateFrom, fn($q) => $q->whereDate('created_at', '>=', $this->filterDateFrom))
+            ->when($this->filterDateTo,   fn($q) => $q->whereDate('created_at', '<=', $this->filterDateTo))
+            ->latest()
+            ->paginate($this->perPage);
+    }
 
+    #[Computed]
+    public function statusCounts(): array
+    {
+        $counts = DeliveryOrder::where('is_return', false)
+            ->selectRaw('status, count(*) as count')
+            ->groupBy('status')
+            ->pluck('count', 'status')
+            ->toArray();
+
+        return array_merge(['all' => array_sum($counts)], $counts);
+    }
+
+    #[Computed]
+    public function statuses(): array
+    {
+        return DeliveryOrderStatus::cases();
+    }
+
+    #[Computed]
+    public function methods()
+    {
+        return ShippingMethod::where('status', 'active')->orderBy('name')->get();
+    }
+
+    #[Computed]
+    public function zones()
+    {
+        return ShippingZone::where('status', 'active')->orderBy('name')->get();
+    }
+
+    #[Computed]
+    public function providers()
+    {
+        return LogisticsProvider::where('status', 'active')->orderBy('name')->get();
+    }
+
+    #[Computed]
+    public function regionalSettings(): RegionalSettings
+    {
+        return app(RegionalSettings::class);
+    }
+
+    // ─── Order detail ─────────────────────────────────────────────────────────
+
+    #[Computed]
+    public function viewingOrder(): ?DeliveryOrder
+    {
+        if (! $this->viewingId) {
+            return null;
+        }
+
+        return DeliveryOrder::with([
+            'shippingMethod', 'shippingZone', 'logisticsProvider',
+            'pickupStation', 'shippingRate.shippingZone', 'vehicleRate',
+        ])->find($this->viewingId);
+    }
+
+    #[Computed]
+    public function allowedTransitions(): array
+    {
+        if (! $this->viewingOrder) {
+            return [];
+        }
+
+        $current = $this->viewingOrder->status instanceof DeliveryOrderStatus
+            ? $this->viewingOrder->status
+            : DeliveryOrderStatus::from($this->viewingOrder->status);
+
+        return match ($current) {
+            DeliveryOrderStatus::PENDING          => [DeliveryOrderStatus::PICKED_UP, DeliveryOrderStatus::CANCELLED],
+            DeliveryOrderStatus::PICKED_UP        => [DeliveryOrderStatus::IN_TRANSIT],
+            DeliveryOrderStatus::IN_TRANSIT       => [DeliveryOrderStatus::OUT_FOR_DELIVERY, DeliveryOrderStatus::AT_STATION],
+            DeliveryOrderStatus::OUT_FOR_DELIVERY => [DeliveryOrderStatus::DELIVERED, DeliveryOrderStatus::FAILED],
+            DeliveryOrderStatus::FAILED           => [DeliveryOrderStatus::RETURNING, DeliveryOrderStatus::OUT_FOR_DELIVERY],
+            DeliveryOrderStatus::AT_STATION       => [DeliveryOrderStatus::COLLECTED, DeliveryOrderStatus::RETURNING],
+            DeliveryOrderStatus::RETURNING        => [DeliveryOrderStatus::RETURNED],
+            default                               => [],
+        };
+    }
+
+    public function viewOrder(int $id): void
+    {
+        $this->viewingId = $id;
+        $this->newStatus = '';
+        $this->statusNote = '';
+        $this->confirmingStatus = false;
+        unset($this->viewingOrder, $this->allowedTransitions);
+        Flux::modal('order-detail')->show();
+    }
+
+    public function prepareStatusUpdate(string $status): void
+    {
+        $this->newStatus = $status;
+        $this->confirmingStatus = true;
+    }
+
+    public function cancelStatusUpdate(): void
+    {
+        $this->newStatus = '';
+        $this->statusNote = '';
+        $this->confirmingStatus = false;
+    }
+
+    public function applyStatusUpdate(): void
+    {
+        if (! $this->viewingId || ! $this->newStatus) {
+            return;
+        }
+
+        try {
+            $order = DeliveryOrder::findOrFail($this->viewingId);
+            $updates = ['status' => $this->newStatus];
+
+            if ($this->newStatus === DeliveryOrderStatus::DELIVERED->value) {
+                $updates['delivered_at'] = now();
+            }
+
+            if ($this->newStatus === DeliveryOrderStatus::COLLECTED->value) {
+                $updates['delivered_at'] = $updates['delivered_at'] ?? now();
+            }
+
+            $order->update($updates);
+
+            $this->confirmingStatus = false;
+            $this->statusNote = '';
+            $this->newStatus = '';
+
+            unset($this->viewingOrder, $this->allowedTransitions, $this->orders, $this->statusCounts, $this->kpiStats);
+            $this->dispatch('notify', title: 'Status Updated', variant: 'success', message: 'Delivery order status updated.');
+        } catch (\Throwable $e) {
+            logger()->error('Failed to update delivery order status.', [
+                'exception' => $e->getMessage(),
+                'order_id'  => $this->viewingId,
+                'user_id'   => auth()->id(),
+            ]);
+            $this->dispatch('notify', title: 'Update Failed', variant: 'danger', message: 'Could not update status. Please try again.');
+        }
+    }
+
+    // ─── Bulk actions ─────────────────────────────────────────────────────────
+
+    public function prepareBulkAction(string $status, array $ids): void
+    {
+        if (empty($ids)) {
+            $this->dispatch('notify', title: 'No Selection', variant: 'warning', message: 'No orders selected.');
+
+            return;
+        }
+
+        $this->pendingBulkIds = $ids;
+        $this->pendingBulkStatus = $status;
+        Flux::modal('bulk-confirm')->show();
+    }
+
+    public function applyBulkStatus(): void
+    {
+        if (empty($this->pendingBulkIds) || ! $this->pendingBulkStatus) {
+            return;
+        }
+
+        try {
+            $count = DeliveryOrder::whereIn('id', $this->pendingBulkIds)
+                ->where('is_return', false)
+                ->update(['status' => $this->pendingBulkStatus]);
+
+            $label = DeliveryOrderStatus::tryFrom($this->pendingBulkStatus)?->label() ?? $this->pendingBulkStatus;
+
+            $this->pendingBulkIds = [];
+            $this->pendingBulkStatus = '';
+
+            unset($this->orders, $this->statusCounts, $this->kpiStats);
+            Flux::modal('bulk-confirm')->close();
+
+            $this->dispatch('notify', title: 'Bulk Update Complete', variant: 'success', message: "{$count} orders marked as {$label}.");
+            $this->dispatch('delivery-bulk-done');
+        } catch (\Throwable $e) {
+            logger()->error('Bulk delivery status update failed.', [
+                'exception' => $e->getMessage(),
+                'ids'       => $this->pendingBulkIds,
+                'user_id'   => auth()->id(),
+            ]);
+            $this->dispatch('notify', title: 'Bulk Update Failed', variant: 'danger', message: 'Bulk update failed. Please try again.');
+        }
+    }
+
+    public function rendered(): void
+    {
+        $this->dispatch('delivery-orders-refreshed', ids: $this->orders->pluck('id')->toArray());
+    }
+};
+?>
+
+<div
+    x-data="{
+        selected: [],
+        allIds: @js($this->orders->pluck('id')->toArray()),
+
+        get allSelected() { return this.allIds.length > 0 && this.allIds.every(id => this.selected.includes(id)); },
+        get someSelected() { return this.selected.length > 0 && !this.allSelected; },
+        toggleAll() { this.selected = this.allSelected ? [] : [...this.allIds]; },
+        toggle(id) { this.selected.includes(id) ? this.selected = this.selected.filter(i => i !== id) : this.selected.push(id); },
+        isSelected(id) { return this.selected.includes(id); },
+        clearSelection() { this.selected = []; },
+        runBulkAction(status) { if (this.selected.length === 0) return; $wire.prepareBulkAction(status, this.selected); },
+
+        columns: JSON.parse(localStorage.getItem('delivery_orders_columns') ?? 'null') ?? { method: true, zone: true, provider: true, estimated: true },
+        toggleColumn(col) { this.columns[col] = !this.columns[col]; localStorage.setItem('delivery_orders_columns', JSON.stringify(this.columns)); },
+    }"
+    @delivery-orders-refreshed.window="allIds = [...$event.detail.ids]; selected = [];"
+    @delivery-bulk-done.window="clearSelection()">
+
+    <x-admin.logistics.layout heading="Logistics" subheading="Overview, pipeline, and delivery orders at a glance.">
+
+        <x-slot:actions>
+            <flux:icon.loading wire:loading wire:target="setKpiDateRange" class="size-3.5 text-zinc-400" />
             <div class="relative" wire:ignore>
                 <input type="text" readonly
-                    class="logistics-date-range w-60 pl-8 pr-3 py-2 text-sm border border-zinc-200 dark:border-zinc-700 rounded-lg bg-white dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 cursor-pointer focus:outline-none focus:ring-2 focus:ring-zinc-300 hover:border-zinc-400 transition-colors"
-                    placeholder="All time" />
+                    class="logistics-kpi-date-range w-56 pl-8 pr-3 py-2 text-sm border border-zinc-200 dark:border-zinc-700 rounded-lg bg-white dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 cursor-pointer focus:outline-none focus:ring-2 focus:ring-zinc-300 hover:border-zinc-400 transition-colors"
+                    placeholder="Revenue: this month" />
                 <flux:icon.calendar-days class="size-4 absolute left-2.5 top-1/2 -translate-y-1/2 text-zinc-400 pointer-events-none" />
             </div>
-
-            <flux:button variant="ghost" size="sm" icon="arrow-path" wire:click="$refresh"
-                class="cursor-pointer text-zinc-400">
+            <flux:button variant="ghost" size="sm" icon="arrow-path" wire:click="$refresh" class="cursor-pointer text-zinc-400">
                 Refresh
             </flux:button>
-        </div>
-    </div>
+        </x-slot:actions>
 
-    <div class="space-y-6">
+        <div class="space-y-6">
 
-        {{--  Top stat cards  --}}
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            {{-- ================================================================ --}}
+            {{-- KPI CARDS                                                        --}}
+            {{-- ================================================================ --}}
+            <div class="grid grid-cols-2 lg:grid-cols-5 gap-4">
 
-            {{-- Active Deliveries --}}
-            <a href="{{ route('admin.logistics.operations.delivery-orders') }}" wire:navigate class="group block">
-                <flux:card class="p-5 hover:border-zinc-400 dark:hover:border-zinc-500 transition-colors">
+                {{-- Active --}}
+                <flux:card class="p-5">
                     <div class="flex items-start justify-between mb-3">
                         <p class="text-xs font-medium text-zinc-400 uppercase tracking-wider">Active</p>
                         <div class="w-7 h-7 rounded-md bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center">
@@ -154,166 +452,250 @@ new #[Title('Logistics Overview')] class extends Component {
                         </div>
                     </div>
                     <p class="text-3xl font-bold text-zinc-900 dark:text-white tabular-nums"
-                        x-data="countUp({ to: {{ $this->stats['active'] }} })" x-text="display"></p>
-                    <p class="text-xs text-zinc-400 mt-1">forward deliveries in progress</p>
+                        x-data="countUp({ to: {{ $this->kpiStats['active'] }} })" x-text="display"></p>
+                    <p class="text-xs text-zinc-400 mt-1">in progress</p>
                 </flux:card>
-            </a>
 
-            {{-- At Pickup Station --}}
-            <a href="{{ route('admin.logistics.operations.pus-tracker') }}" wire:navigate class="group block">
-                <flux:card class="p-5 hover:border-zinc-400 dark:hover:border-zinc-500 transition-colors">
+                {{-- At Station --}}
+                <a href="{{ route('admin.logistics.operations.pus-tracker') }}" wire:navigate class="block">
+                    <flux:card class="p-5 h-full hover:border-zinc-400 dark:hover:border-zinc-500 transition-colors">
+                        <div class="flex items-start justify-between mb-3">
+                            <p class="text-xs font-medium text-zinc-400 uppercase tracking-wider">At Station</p>
+                            <div class="w-7 h-7 rounded-md bg-orange-50 dark:bg-orange-900/30 flex items-center justify-center">
+                                <flux:icon.building-storefront class="w-4 h-4 text-orange-500" />
+                            </div>
+                        </div>
+                        <p class="text-3xl font-bold text-zinc-900 dark:text-white tabular-nums"
+                            x-data="countUp({ to: {{ $this->kpiStats['at_station'] }} })" x-text="display"></p>
+                        <p class="text-xs text-zinc-400 mt-1">awaiting collection</p>
+                    </flux:card>
+                </a>
+
+                {{-- Delivered Today --}}
+                <flux:card class="p-5">
                     <div class="flex items-start justify-between mb-3">
-                        <p class="text-xs font-medium text-zinc-400 uppercase tracking-wider">At Station</p>
-                        <div
-                            class="w-7 h-7 rounded-md bg-orange-50 dark:bg-orange-900/30 flex items-center justify-center">
-                            <flux:icon.building-storefront class="w-4 h-4 text-orange-500" />
+                        <p class="text-xs font-medium text-zinc-400 uppercase tracking-wider">Delivered Today</p>
+                        <div class="w-7 h-7 rounded-md bg-emerald-50 dark:bg-emerald-900/30 flex items-center justify-center">
+                            <flux:icon.check-circle class="w-4 h-4 text-emerald-500" />
                         </div>
                     </div>
-                    <p class="text-3xl font-bold text-zinc-900 dark:text-white tabular-nums"
-                        x-data="countUp({ to: {{ $this->stats['at_station'] }} })" x-text="display"></p>
-                    <p class="text-xs text-zinc-400 mt-1">awaiting customer collection</p>
+                    <p class="text-3xl font-bold text-emerald-600 dark:text-emerald-400 tabular-nums"
+                        x-data="countUp({ to: {{ $this->kpiStats['delivered_today'] }} })" x-text="display"></p>
+                    <p class="text-xs text-zinc-400 mt-1">{{ now()->format('M j, Y') }}</p>
                 </flux:card>
-            </a>
 
-            {{-- Needs Attention --}}
-            <a href="{{ route('admin.logistics.operations.delivery-orders', ['filterStatus' => 'failed']) }}"
-                wire:navigate class="group block">
-                <flux:card
-                    class="p-5 transition-colors
-                {{ $this->stats['needs_attention'] > 0
-                    ? 'border-red-200 dark:border-red-900 hover:border-red-400'
-                    : 'hover:border-zinc-400 dark:hover:border-zinc-500' }}">
+                {{-- Needs Attention --}}
+                <flux:card @class([
+                    'p-5 transition-colors',
+                    'border-red-200 dark:border-red-900' => $this->kpiStats['needs_attention'] > 0,
+                ])>
                     <div class="flex items-start justify-between mb-3">
                         <p class="text-xs font-medium text-zinc-400 uppercase tracking-wider">Attention</p>
-                        <div
-                            class="w-7 h-7 rounded-md
-                        {{ $this->stats['needs_attention'] > 0 ? 'bg-red-50 dark:bg-red-900/30' : 'bg-zinc-50 dark:bg-zinc-800' }}
-                        flex items-center justify-center">
-                            <flux:icon.exclamation-triangle
-                                class="w-4 h-4
-                            {{ $this->stats['needs_attention'] > 0 ? 'text-red-500' : 'text-zinc-400' }}" />
+                        <div @class([
+                            'w-7 h-7 rounded-md flex items-center justify-center',
+                            'bg-red-50 dark:bg-red-900/30' => $this->kpiStats['needs_attention'] > 0,
+                            'bg-zinc-50 dark:bg-zinc-800' => $this->kpiStats['needs_attention'] === 0,
+                        ])>
+                            <flux:icon.exclamation-triangle @class([
+                                'w-4 h-4',
+                                'text-red-500' => $this->kpiStats['needs_attention'] > 0,
+                                'text-zinc-400' => $this->kpiStats['needs_attention'] === 0,
+                            ]) />
                         </div>
                     </div>
-                    <p class="text-3xl font-bold tabular-nums {{ $this->stats['needs_attention'] > 0 ? 'text-red-600 dark:text-red-400' : 'text-zinc-900 dark:text-white' }}"
-                        x-data="countUp({ to: {{ $this->stats['needs_attention'] }} })" x-text="display"></p>
+                    <p @class([
+                        'text-3xl font-bold tabular-nums',
+                        'text-red-600 dark:text-red-400' => $this->kpiStats['needs_attention'] > 0,
+                        'text-zinc-900 dark:text-white' => $this->kpiStats['needs_attention'] === 0,
+                    ]) x-data="countUp({ to: {{ $this->kpiStats['needs_attention'] }} })" x-text="display"></p>
                     <p class="text-xs text-zinc-400 mt-1">failed or returning</p>
                 </flux:card>
-            </a>
 
-            {{-- Revenue --}}
-            <flux:card class="p-5">
-                <div class="flex items-start justify-between mb-3">
-                    <p class="text-xs font-medium text-zinc-400 uppercase tracking-wider">
-                        Revenue @if($dateFrom || $dateTo)(filtered)@else (MTD)@endif
-                    </p>
-                    <div class="w-7 h-7 rounded-md bg-green-50 dark:bg-green-900/30 flex items-center justify-center">
-                        <flux:icon.banknotes class="w-4 h-4 text-green-500" />
-                    </div>
-                </div>
-                <p class="text-3xl font-bold text-zinc-900 dark:text-white tabular-nums"
-                    x-data="countUp({ to: {{ $this->stats['this_month_revenue'] }}, decimals: 2, prefix: 'KES ' })" x-text="display"></p>
-                <div class="flex items-center gap-1.5 mt-1">
-                    @if ($this->stats['revenue_change'] !== null)
-                        @php $up = $this->stats['revenue_change'] >= 0; @endphp
-                        <span @class([
-                            'text-sm font-medium flex items-center gap-0.5',
-                            'text-green-600' => $up,
-                            'text-red-500' => !$up,
-                        ])>
-                            @if ($up)
-                                <flux:icon.arrow-long-up class="size-3.5" />
+                {{-- Revenue --}}
+                <flux:card class="p-5">
+                    <div class="flex items-start justify-between mb-3">
+                        <p class="text-xs font-medium text-zinc-400 uppercase tracking-wider truncate pe-2">
+                            Revenue
+                            @if ($dateFrom || $dateTo)
+                                <span class="text-blue-400 normal-case">(filtered)</span>
                             @else
-                                <flux:icon.arrow-long-down class="size-3.5" />
+                                (MTD)
                             @endif
-                            {{ abs($this->stats['revenue_change']) }}%
-                        </span>
-                        <span class="text-xs text-zinc-400">vs last month</span>
-                    @else
-                        <span class="text-xs text-zinc-400">{{ get_currency_symbol() }} · first month</span>
-                    @endif
-                </div>
-            </flux:card>
-        </div>
-
-        {{--  Middle row  --}}
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
-
-            {{-- Recent Orders (spans 2 cols) --}}
-            <flux:card class="p-0 lg:col-span-2">
-                <div
-                    class="flex items-center justify-between px-5 pt-5 pb-4 border-b border-zinc-100 dark:border-zinc-800">
-                    <div>
-                        <h3 class="text-sm font-semibold text-zinc-800 dark:text-zinc-100">Recent Orders</h3>
-                        <p class="text-xs text-zinc-400 mt-0.5">Last 8 forward deliveries</p>
+                        </p>
+                        <div class="w-7 h-7 rounded-md bg-green-50 dark:bg-green-900/30 flex items-center justify-center shrink-0">
+                            <flux:icon.banknotes class="w-4 h-4 text-green-500" />
+                        </div>
                     </div>
-                    <a href="{{ route('admin.logistics.operations.delivery-orders') }}" wire:navigate
-                        class="text-xs text-zinc-400 hover:text-zinc-600 transition-colors flex items-center gap-2">
-                        View all
-                        <flux:icon.arrow-long-right class="size-5 text-inherit" />
-                    </a>
-                </div>
+                    <p class="text-2xl font-bold text-zinc-900 dark:text-white tabular-nums"
+                        x-data="countUp({ to: {{ $this->kpiStats['period_revenue'] }}, decimals: 2, prefix: 'KES ' })" x-text="display"></p>
+                    <div class="flex items-center gap-1.5 mt-1">
+                        @if ($this->kpiStats['revenue_change'] !== null)
+                            @php $up = $this->kpiStats['revenue_change'] >= 0; @endphp
+                            <span @class(['text-sm font-medium flex items-center gap-0.5', 'text-green-600' => $up, 'text-red-500' => !$up])>
+                                @if ($up)
+                                    <flux:icon.arrow-long-up class="size-3.5" />
+                                @else
+                                    <flux:icon.arrow-long-down class="size-3.5" />
+                                @endif
+                                {{ abs($this->kpiStats['revenue_change']) }}%
+                            </span>
+                            <span class="text-xs text-zinc-400">vs last month</span>
+                        @else
+                            <span class="text-xs text-zinc-400">{{ $this->kpiStats['period_label'] }}</span>
+                        @endif
+                    </div>
+                </flux:card>
 
-                <div class="divide-y divide-zinc-50 dark:divide-zinc-800/60">
-                    @forelse ($this->recentOrders as $order)
+            </div>
+
+            {{-- ================================================================ --}}
+            {{-- CHARTS ROW                                                       --}}
+            {{-- ================================================================ --}}
+            <div class="grid grid-cols-1 lg:grid-cols-4 gap-4">
+
+                {{-- Pipeline (spans 2 cols) --}}
+                <flux:card class="p-5 lg:col-span-2">
+                    <div class="flex items-center justify-between mb-5">
+                        <div>
+                            <h3 class="text-sm font-semibold text-zinc-800 dark:text-zinc-100">Pipeline</h3>
+                            <p class="text-xs text-zinc-400 mt-0.5">Active delivery stages</p>
+                        </div>
                         @php
-                            $status =
-                                $order->status instanceof \App\Enums\DeliveryOrderStatus
-                                    ? $order->status
-                                    : \App\Enums\DeliveryOrderStatus::from($order->status);
+                            $breakdown = $this->statusBreakdown;
+                            $pipelineTotal = array_sum($breakdown);
+                            $stages = [
+                                'pending'          => ['Pending',          '#d1d5db'],
+                                'picked_up'        => ['Picked Up',        '#93c5fd'],
+                                'in_transit'       => ['In Transit',       '#3b82f6'],
+                                'out_for_delivery' => ['Out for Delivery', '#a855f7'],
+                                'at_station'       => ['At Station',       '#fb923c'],
+                                'failed'           => ['Failed',           '#ef4444'],
+                                'returning'        => ['Returning',        '#eab308'],
+                            ];
+
+                            $chartLabels = [];
+                            $chartValues = [];
+                            $chartColors = [];
+                            foreach ($stages as $key => [$label, $hex]) {
+                                $count = $breakdown[$key] ?? 0;
+                                if ($count > 0) {
+                                    $chartLabels[] = $label;
+                                    $chartValues[] = $count;
+                                    $chartColors[] = $hex;
+                                }
+                            }
                         @endphp
-                        <div
-                            class="flex items-center justify-between px-5 py-3 hover:bg-zinc-50 dark:hover:bg-zinc-800/40 transition-colors">
-                            <div class="flex items-center gap-3">
-                                <div>
-                                    <span class="text-sm font-medium text-zinc-800 dark:text-zinc-100">
-                                        #{{ $order->order_id }}
+                        @if ($pipelineTotal > 0)
+                            <flux:badge variant="outline" size="sm">{{ $pipelineTotal }} active</flux:badge>
+                        @endif
+                    </div>
+
+                    {{-- Data bridge --}}
+                    <div id="pipelineChartData"
+                        data-labels="{{ json_encode($chartLabels) }}"
+                        data-values="{{ json_encode($chartValues) }}"
+                        data-colors="{{ json_encode($chartColors) }}"
+                        data-total="{{ $pipelineTotal }}">
+                    </div>
+
+                    @if ($pipelineTotal > 0)
+                        <div class="flex items-center gap-8">
+
+                            {{-- Donut chart --}}
+                            <div class="relative shrink-0 flex items-center justify-center" style="height:160px; width:160px;">
+                                <div wire:ignore style="position:relative; height:160px; width:160px; z-index:20;">
+                                    <canvas id="pipelineChart"></canvas>
+                                </div>
+                                <div class="absolute flex flex-col items-center justify-center pointer-events-none">
+                                    <span class="text-2xl font-bold text-zinc-800 dark:text-zinc-100 tabular-nums leading-none">
+                                        {{ $pipelineTotal }}
                                     </span>
-                                    <span class="text-xs text-zinc-400 ml-2">
-                                        {{ $order->shippingMethod->name }}
-                                    </span>
+                                    <span class="text-[9px] text-zinc-400 uppercase tracking-wide mt-0.5">active</span>
                                 </div>
                             </div>
-                            <div class="flex items-center gap-4">
-                                <span class="text-xs text-zinc-400 hidden sm:block">
-                                    {{ $order->created_at->diffForHumans() }}
-                                </span>
-                                <span
-                                    class="text-xs font-medium text-zinc-600 dark:text-zinc-300 tabular-nums hidden sm:block">
-                                    {{ format_currency($order->shipping_cost) }}
-                                </span>
-                                <flux:badge :color="$status->color()" variant="flat" size="sm">
-                                    {{ $status->label() }}
-                                </flux:badge>
-                            </div>
-                        </div>
-                    @empty
-                        <div class="px-5 py-10 text-center">
-                            <p class="text-sm text-zinc-400">No orders yet.</p>
-                        </div>
-                    @endforelse
-                </div>
-            </flux:card>
 
-            {{-- Right column: PUS Alerts + Status Breakdown --}}
-            <div class="space-y-4">
+                            {{-- Legend --}}
+                            <div class="flex-1 space-y-2.5">
+                                @foreach ($stages as $key => [$label, $hex])
+                                    @php $count = $breakdown[$key] ?? 0; @endphp
+                                    @if ($count > 0)
+                                        <div class="flex items-center gap-2">
+                                            <div class="w-2.5 h-2.5 rounded-full shrink-0" style="background: {{ $hex }}"></div>
+                                            <span class="text-xs text-zinc-500 flex-1">{{ $label }}</span>
+                                            <span class="text-xs text-zinc-400 tabular-nums w-8 text-right">
+                                                {{ round(($count / $pipelineTotal) * 100) }}%
+                                            </span>
+                                            <span class="text-xs font-semibold tabular-nums text-zinc-700 dark:text-zinc-300 w-5 text-right">
+                                                {{ $count }}
+                                            </span>
+                                        </div>
+                                    @endif
+                                @endforeach
+                            </div>
+
+                        </div>
+                    @else
+                        <div class="flex flex-col items-center justify-center py-8 text-zinc-400">
+                            <flux:icon.check-circle class="size-8 mb-2 text-green-400" />
+                            <p class="text-sm">No active orders in pipeline</p>
+                        </div>
+                    @endif
+                </flux:card>
+
+                {{-- Zone Breakdown --}}
+                <flux:card class="p-5">
+                    <div class="mb-4">
+                        <h3 class="text-sm font-semibold text-zinc-800 dark:text-zinc-100">By Zone</h3>
+                        <p class="text-xs text-zinc-400 mt-0.5">This month</p>
+                    </div>
+
+                    @if (!empty($this->zoneBreakdown))
+                        @php $maxZoneTotal = collect($this->zoneBreakdown)->max('total') ?: 1; @endphp
+                        <div class="space-y-3">
+                            @foreach ($this->zoneBreakdown as $row)
+                                <div>
+                                    <div class="flex items-center justify-between mb-1">
+                                        <span class="text-xs font-medium text-zinc-600 dark:text-zinc-300 truncate pe-2">
+                                            {{ $row['zone'] }}
+                                        </span>
+                                        <span class="text-xs font-semibold text-zinc-700 dark:text-zinc-200 tabular-nums shrink-0">
+                                            {{ $row['total'] }}
+                                        </span>
+                                    </div>
+                                    <div class="h-1.5 bg-zinc-100 dark:bg-zinc-800 rounded-full overflow-hidden">
+                                        <div class="h-full bg-zinc-700 dark:bg-zinc-300 rounded-full transition-all"
+                                            style="width: {{ round(($row['total'] / $maxZoneTotal) * 100) }}%">
+                                        </div>
+                                    </div>
+                                    <div class="text-[10px] text-zinc-400 mt-0.5 text-right">
+                                        {{ format_currency($row['revenue']) }}
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    @else
+                        <div class="flex flex-col items-center justify-center py-8 text-zinc-400">
+                            <flux:icon.map class="size-7 mb-2" />
+                            <p class="text-xs">No orders this month yet</p>
+                        </div>
+                    @endif
+                </flux:card>
 
                 {{-- PUS Alerts --}}
                 <flux:card class="p-0">
-                    <div
-                        class="flex items-center justify-between px-5 pt-5 pb-4 border-b border-zinc-100 dark:border-zinc-800">
+                    <div class="flex items-center justify-between px-4 pt-4 pb-3 border-b border-zinc-100 dark:border-zinc-800">
                         <div class="flex items-center gap-2">
                             <h3 class="text-sm font-semibold text-zinc-800 dark:text-zinc-100">PUS Alerts</h3>
                             @if ($this->pusAlerts->count())
-                                <span
-                                    class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-red-500 text-white text-xs font-bold">
+                                <span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-red-500 text-white text-xs font-bold">
                                     {{ $this->pusAlerts->count() }}
                                 </span>
                             @endif
                         </div>
                         <a href="{{ route('admin.logistics.operations.pus-tracker') }}" wire:navigate
-                            class="text-xs text-zinc-400 hover:text-zinc-600 transition-colors flex items-center gap-2">
-                            Tracker
-                            <flux:icon.arrow-long-right class="size-5 text-inherit" />
+                            class="text-xs text-zinc-400 hover:text-zinc-600 transition-colors flex items-center gap-1">
+                            All
+                            <flux:icon.arrow-long-right class="size-4" />
                         </a>
                     </div>
 
@@ -322,243 +704,497 @@ new #[Title('Logistics Overview')] class extends Component {
                             @php
                                 $deadline = $parcel->collection_deadline_at;
                                 $isOverdue = $deadline?->isPast();
-                                $isToday = $deadline?->isToday();
+                                $isToday   = $deadline?->isToday();
                             @endphp
-                            <div class="flex items-center justify-between px-5 py-3">
+                            <div class="flex items-center justify-between px-4 py-2.5">
                                 <div>
-                                    <span class="text-sm font-medium text-zinc-800 dark:text-zinc-100">
-                                        #{{ $parcel->order_id }}
-                                    </span>
-                                    <p class="text-xs text-zinc-400 mt-0.5">
-                                        {{ $parcel->pickupStation?->name ?? '—' }}
-                                    </p>
+                                    <span class="text-sm font-medium text-zinc-800 dark:text-zinc-100">#{{ $parcel->order_id }}</span>
+                                    <p class="text-[10px] text-zinc-400 mt-0.5">{{ $parcel->pickupStation?->name ?? '—' }}</p>
                                 </div>
                                 @if ($deadline)
-                                    <span
-                                        class="text-xs font-medium
-                                    {{ $isOverdue ? 'text-red-500' : ($isToday ? 'text-orange-500' : 'text-yellow-600') }}">
+                                    <span @class([
+                                        'text-xs font-semibold',
+                                        'text-red-500' => $isOverdue,
+                                        'text-orange-500' => !$isOverdue && $isToday,
+                                        'text-yellow-600' => !$isOverdue && !$isToday,
+                                    ])>
                                         {{ $isOverdue ? 'Overdue' : ($isToday ? 'Due today' : $deadline->format('d M')) }}
                                     </span>
                                 @endif
                             </div>
                         @empty
-                            <div class="px-5 py-6 text-center">
-                                <flux:icon.check-circle class="w-6 h-6 text-green-400 mx-auto mb-1" />
+                            <div class="px-4 py-8 text-center">
+                                <flux:icon.check-circle class="w-7 h-7 text-green-400 mx-auto mb-1.5" />
                                 <p class="text-xs text-zinc-400">No urgent collections</p>
                             </div>
                         @endforelse
                     </div>
                 </flux:card>
 
-                {{-- Status Breakdown --}}
-                <flux:card class="p-5">
-                    <h3 class="text-sm font-semibold text-zinc-800 dark:text-zinc-100 mb-4">Pipeline</h3>
-                    @php
-                        $breakdown = $this->statusBreakdown;
-                        $total = array_sum($breakdown);
-                        $stages = [
-                            'pending' => ['Pending', 'bg-zinc-300 dark:bg-zinc-600'],
-                            'picked_up' => ['Picked Up', 'bg-blue-400'],
-                            'in_transit' => ['In Transit', 'bg-blue-500'],
-                            'out_for_delivery' => ['Out for Delivery', 'bg-purple-500'],
-                            'at_station' => ['At Station', 'bg-orange-400'],
-                            'failed' => ['Failed', 'bg-red-500'],
-                            'returning' => ['Returning', 'bg-yellow-500'],
-                        ];
-                    @endphp
+            </div>
 
-                    @if ($total > 0)
-                        {{-- Stacked bar --}}
-                        <div class="flex h-2 rounded-full overflow-hidden mb-4 gap-px">
-                            @foreach ($stages as $key => [$label, $color])
-                                @php $count = $breakdown[$key] ?? 0; @endphp
-                                @if ($count > 0)
-                                    <div class="{{ $color }} transition-all"
-                                        style="width: {{ round(($count / $total) * 100, 1) }}%"
-                                        title="{{ $label }}: {{ $count }}">
-                                    </div>
-                                @endif
-                            @endforeach
+            {{-- ================================================================ --}}
+            {{-- DELIVERY ORDERS TABLE                                            --}}
+            {{-- ================================================================ --}}
+            <div>
+                {{-- Section heading --}}
+                <div class="flex items-center justify-between mb-4">
+                    <div>
+                        <h2 class="text-base font-semibold text-zinc-800 dark:text-zinc-100">Delivery Orders</h2>
+                        <p class="text-xs text-zinc-400 mt-0.5">Track and manage all forward deliveries</p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <flux:icon.loading wire:loading wire:target="setDateRange" class="size-3.5 text-zinc-400" />
+                        <div class="relative" wire:ignore>
+                            <input type="text" readonly
+                                class="delivery-orders-date-range w-52 pl-8 pr-3 py-1.5 text-sm border border-zinc-200 dark:border-zinc-700 rounded-lg bg-white dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 cursor-pointer focus:outline-none focus:ring-2 focus:ring-zinc-300 hover:border-zinc-400 transition-colors"
+                                placeholder="All dates" />
+                            <flux:icon.calendar-days class="size-4 absolute left-2.5 top-1/2 -translate-y-1/2 text-zinc-400 pointer-events-none" />
                         </div>
+                    </div>
+                </div>
 
-                        <div class="space-y-2">
-                            @foreach ($stages as $key => [$label, $color])
-                                @php $count = $breakdown[$key] ?? 0; @endphp
-                                @if ($count > 0)
-                                    <div class="flex items-center justify-between">
-                                        <div class="flex items-center gap-2">
-                                            <div class="w-2 h-2 rounded-full {{ $color }}"></div>
-                                            <span class="text-xs text-zinc-500">{{ $label }}</span>
-                                        </div>
-                                        <span
-                                            class="text-xs font-semibold tabular-nums text-zinc-700 dark:text-zinc-300">
-                                            {{ $count }}
-                                        </span>
+                <flux:card class="p-0">
+
+                    {{-- Toolbar --}}
+                    <div class="flex flex-wrap items-center gap-3 px-5 py-3 border-b border-zinc-200 dark:border-zinc-600">
+
+                        <flux:input wire:model.live.debounce.300ms="search" icon="magnifying-glass"
+                            placeholder="Search by order ID, reference..." class="max-w-xs" clearable />
+
+                        <div class="flex items-center gap-2 ms-auto">
+
+                            <flux:select wire:model.live="perPage" class="w-24">
+                                <flux:select.option value="10">10</flux:select.option>
+                                <flux:select.option value="25">25</flux:select.option>
+                                <flux:select.option value="50">50</flux:select.option>
+                                <flux:select.option value="100">100</flux:select.option>
+                            </flux:select>
+
+                            {{-- Filters dropdown --}}
+                            <flux:dropdown>
+                                <flux:button icon="funnel" icon-variant="outline" variant="ghost" size="sm">
+                                    Filters
+                                    @if ($filterStatus || $filterMethod || $filterZone || $filterProvider)
+                                        <flux:badge size="sm" class="ms-2" color="blue">
+                                            {{ collect([$filterStatus, $filterMethod, $filterZone, $filterProvider])->filter()->count() }}
+                                        </flux:badge>
+                                    @endif
+                                </flux:button>
+                                <flux:menu class="min-w-80">
+                                    <div class="flex items-center justify-between px-4 py-2 border-b dark:border-zinc-600">
+                                        <flux:heading size="sm">Filter Options</flux:heading>
+                                        @if ($filterStatus || $filterMethod || $filterZone || $filterProvider)
+                                            <flux:button variant="ghost" size="xs" wire:click="clearFilters" class="cursor-pointer">
+                                                Reset
+                                            </flux:button>
+                                        @endif
                                     </div>
-                                @endif
-                            @endforeach
+                                    <div class="space-y-3 p-5">
+                                        <flux:field>
+                                            <flux:label>Status</flux:label>
+                                            <flux:select wire:model.live="filterStatus" placeholder="All Statuses">
+                                                @foreach ($this->statuses as $s)
+                                                    <flux:select.option value="{{ $s->value }}">
+                                                        {{ $s->label() }} ({{ $this->statusCounts[$s->value] ?? 0 }})
+                                                    </flux:select.option>
+                                                @endforeach
+                                            </flux:select>
+                                        </flux:field>
+                                        <flux:field>
+                                            <flux:label>Shipping Method</flux:label>
+                                            <flux:select wire:model.live="filterMethod" placeholder="All Methods">
+                                                @foreach ($this->methods as $method)
+                                                    <flux:select.option value="{{ $method->id }}">{{ $method->name }}</flux:select.option>
+                                                @endforeach
+                                            </flux:select>
+                                        </flux:field>
+                                        <flux:field>
+                                            <flux:label>Shipping Zone</flux:label>
+                                            <flux:select wire:model.live="filterZone" placeholder="All Zones">
+                                                @foreach ($this->zones as $zone)
+                                                    <flux:select.option value="{{ $zone->id }}">{{ $zone->name }}</flux:select.option>
+                                                @endforeach
+                                            </flux:select>
+                                        </flux:field>
+                                        <flux:field>
+                                            <flux:label>Provider</flux:label>
+                                            <flux:select wire:model.live="filterProvider" placeholder="All Providers">
+                                                @foreach ($this->providers as $provider)
+                                                    <flux:select.option value="{{ $provider->id }}">{{ $provider->name }}</flux:select.option>
+                                                @endforeach
+                                            </flux:select>
+                                        </flux:field>
+                                    </div>
+                                </flux:menu>
+                            </flux:dropdown>
+
+                            {{-- Column visibility --}}
+                            <flux:dropdown>
+                                <flux:button icon="view-columns" icon-variant="outline" variant="ghost" size="sm">Columns</flux:button>
+                                <flux:menu>
+                                    @foreach (['method' => 'Method', 'zone' => 'Zone', 'provider' => 'Provider', 'estimated' => 'Estimated'] as $col => $colLabel)
+                                        <flux:menu.item @click.prevent="toggleColumn('{{ $col }}')">
+                                            <span class="flex items-center gap-2">
+                                                <span x-text="columns.{{ $col }} ? '✓' : ''" class="w-4 text-green-600 font-bold"></span>
+                                                {{ $colLabel }}
+                                            </span>
+                                        </flux:menu.item>
+                                    @endforeach
+                                </flux:menu>
+                            </flux:dropdown>
+
+                            @if ($search || $filterStatus || $filterMethod || $filterZone || $filterProvider || $filterDateFrom || $filterDateTo)
+                                <flux:button wire:click="clearFilters" variant="ghost" size="sm" icon="x-mark">Clear</flux:button>
+                            @endif
+
                         </div>
-                    @else
-                        <p class="text-xs text-zinc-400 text-center py-4">No active orders in pipeline.</p>
+                    </div>
+
+                    {{-- Active filter chips --}}
+                    @if ($filterStatus || $filterMethod || $filterZone || $filterProvider || $filterDateFrom || $filterDateTo)
+                        <div class="flex flex-wrap gap-2 px-5 py-2 border-b border-zinc-200 dark:border-zinc-600">
+                            <span class="text-xs font-semibold text-zinc-400 uppercase tracking-wider self-center me-1">Active:</span>
+                            @if ($filterStatus)
+                                <flux:badge size="sm" variant="flat" closable wire:click="$set('filterStatus', '')">
+                                    Status: {{ DeliveryOrderStatus::tryFrom($filterStatus)?->label() }}
+                                </flux:badge>
+                            @endif
+                            @if ($filterMethod)
+                                <flux:badge size="sm" variant="flat" closable wire:click="$set('filterMethod', '')">
+                                    Method: {{ $this->methods->find($filterMethod)?->name }}
+                                </flux:badge>
+                            @endif
+                            @if ($filterZone)
+                                <flux:badge size="sm" variant="flat" closable wire:click="$set('filterZone', '')">
+                                    Zone: {{ $this->zones->find($filterZone)?->name }}
+                                </flux:badge>
+                            @endif
+                            @if ($filterProvider)
+                                <flux:badge size="sm" variant="flat" closable wire:click="$set('filterProvider', '')">
+                                    Provider: {{ $this->providers->find($filterProvider)?->name }}
+                                </flux:badge>
+                            @endif
+                            @if ($filterDateFrom || $filterDateTo)
+                                <flux:badge size="sm" variant="flat" closable wire:click="setDateRange('', '')">
+                                    {{ $filterDateFrom ? \Carbon\Carbon::parse($filterDateFrom)->format('M d, Y') : '…' }}
+                                    –
+                                    {{ $filterDateTo ? \Carbon\Carbon::parse($filterDateTo)->format('M d, Y') : '…' }}
+                                </flux:badge>
+                            @endif
+                        </div>
                     @endif
+
+                    {{-- Bulk action bar --}}
+                    <div x-cloak x-show="selected.length > 0"
+                        x-transition:enter="transition ease-out duration-150"
+                        x-transition:enter-start="opacity-0 -translate-y-2"
+                        x-transition:enter-end="opacity-100 translate-y-0"
+                        x-transition:leave="transition ease-in duration-100"
+                        x-transition:leave-start="opacity-100 translate-y-0"
+                        x-transition:leave-end="opacity-0 -translate-y-2"
+                        class="flex flex-wrap items-center gap-2 px-5 py-2.5 bg-zinc-50 dark:bg-zinc-800 border-b border-zinc-200 dark:border-zinc-600">
+                        <span class="text-sm font-semibold text-zinc-700 dark:text-zinc-300 me-1">
+                            <span x-text="selected.length"></span> selected
+                        </span>
+                        <flux:button size="sm" variant="ghost" icon="hand-raised" icon-variant="outline"
+                            @click="runBulkAction('{{ DeliveryOrderStatus::PICKED_UP->value }}')">Mark Picked Up</flux:button>
+                        <flux:button size="sm" variant="ghost" icon="arrow-path" icon-variant="outline"
+                            @click="runBulkAction('{{ DeliveryOrderStatus::IN_TRANSIT->value }}')">In Transit</flux:button>
+                        <flux:button size="sm" variant="ghost" icon="truck" icon-variant="outline"
+                            @click="runBulkAction('{{ DeliveryOrderStatus::OUT_FOR_DELIVERY->value }}')">Out for Delivery</flux:button>
+                        <flux:button size="sm" variant="ghost" icon="check-circle" icon-variant="outline"
+                            @click="runBulkAction('{{ DeliveryOrderStatus::DELIVERED->value }}')">Mark Delivered</flux:button>
+                        <flux:button size="sm" variant="ghost" icon="x-circle" icon-variant="outline"
+                            class="text-red-500! ms-auto"
+                            @click="runBulkAction('{{ DeliveryOrderStatus::CANCELLED->value }}')">Cancel</flux:button>
+                        <flux:button size="sm" variant="ghost" icon="x-mark" icon-variant="outline"
+                            @click="clearSelection()">Clear</flux:button>
+                    </div>
+
+                    {{-- Table --}}
+                    <flux:table :paginate="$this->orders">
+                        <flux:table.columns>
+                            <flux:table.column class="w-10 ps-4!">
+                                <flux:checkbox x-ref="selectAll"
+                                    x-effect="const cb = $refs.selectAll?.querySelector('input'); if (cb) cb.indeterminate = someSelected"
+                                    ::checked="allSelected" @change="toggleAll()" />
+                            </flux:table.column>
+                            <flux:table.column>Order</flux:table.column>
+                            <flux:table.column x-show="columns.method">Method</flux:table.column>
+                            <flux:table.column x-show="columns.zone">Zone</flux:table.column>
+                            <flux:table.column x-show="columns.provider">Provider</flux:table.column>
+                            <flux:table.column>Cost</flux:table.column>
+                            <flux:table.column x-show="columns.estimated">Estimated</flux:table.column>
+                            <flux:table.column>Status</flux:table.column>
+                            <flux:table.column align="end" class="pe-4!">Actions</flux:table.column>
+                        </flux:table.columns>
+
+                        <flux:table.rows>
+                            @forelse ($this->orders as $order)
+                                <flux:table.row :key="$order->id"
+                                    x-bind:class="isSelected({{ $order->id }}) ? 'bg-blue-50 dark:bg-blue-900/20' : ''">
+
+                                    <flux:table.cell class="ps-4! w-10">
+                                        <flux:checkbox ::checked="isSelected({{ $order->id }})" @change="toggle({{ $order->id }})" />
+                                    </flux:table.cell>
+
+                                    <flux:table.cell>
+                                        <span class="font-semibold text-sm text-zinc-800 dark:text-zinc-200">#{{ $order->order_id }}</span>
+                                    </flux:table.cell>
+
+                                    <flux:table.cell x-show="columns.method">
+                                        <span class="text-sm">{{ $order->shippingMethod->name }}</span>
+                                    </flux:table.cell>
+
+                                    <flux:table.cell x-show="columns.zone">
+                                        <span class="text-sm">{{ $order->shippingZone->name }}</span>
+                                    </flux:table.cell>
+
+                                    <flux:table.cell x-show="columns.provider">
+                                        @if ($order->logisticsProvider)
+                                            <flux:badge size="sm" variant="outline" color="zinc">{{ $order->logisticsProvider->name }}</flux:badge>
+                                        @else
+                                            <span class="text-zinc-400">—</span>
+                                        @endif
+                                    </flux:table.cell>
+
+                                    <flux:table.cell>
+                                        <span class="text-sm font-semibold text-zinc-800 dark:text-zinc-200">
+                                            {{ format_currency($order->shipping_cost) }}
+                                        </span>
+                                    </flux:table.cell>
+
+                                    <flux:table.cell x-show="columns.estimated">
+                                        @if ($order->estimated_delivery_at)
+                                            <div class="flex items-center gap-1.5">
+                                                <span class="text-sm">{{ $order->estimated_delivery_at->format('M d, Y') }}</span>
+                                                @if ($order->estimated_delivery_at->isPast() && $order->status->isActive())
+                                                    <flux:tooltip content="Due {{ $order->estimated_delivery_at->diffForHumans() }}">
+                                                        <flux:icon.exclamation-triangle class="size-3.5 text-rose-500 shrink-0" />
+                                                    </flux:tooltip>
+                                                @endif
+                                            </div>
+                                        @else
+                                            <span class="text-zinc-400">—</span>
+                                        @endif
+                                    </flux:table.cell>
+
+                                    <flux:table.cell>
+                                        <flux:badge size="sm" variant="flat" :color="$order->status->color()">
+                                            {{ $order->status->label() }}
+                                        </flux:badge>
+                                        @if ($order->isOverdueCollection())
+                                            <div class="text-xs text-red-500 mt-0.5 font-medium">Collection overdue</div>
+                                        @endif
+                                    </flux:table.cell>
+
+                                    <flux:table.cell align="end" class="pe-4!">
+                                        <flux:dropdown align="end">
+                                            <flux:button variant="ghost" size="sm" icon="ellipsis-horizontal" class="cursor-pointer" />
+                                            <flux:menu>
+                                                <flux:menu.item icon="eye" icon-variant="outline" wire:click="viewOrder({{ $order->id }})">
+                                                    View Details
+                                                </flux:menu.item>
+                                            </flux:menu>
+                                        </flux:dropdown>
+                                    </flux:table.cell>
+
+                                </flux:table.row>
+                            @empty
+                                <flux:table.row>
+                                    <flux:table.cell colspan="9" class="py-16 text-center">
+                                        <div class="flex flex-col items-center gap-3 text-zinc-400">
+                                            <flux:icon.clipboard-document-list class="size-12 stroke-1" />
+                                            <div>
+                                                <flux:text class="font-medium text-zinc-500">No delivery orders found</flux:text>
+                                                <flux:text class="text-xs mt-0.5">
+                                                    @if ($search || $filterStatus || $filterMethod || $filterZone || $filterProvider || $filterDateFrom || $filterDateTo)
+                                                        No orders match your current filters.
+                                                    @else
+                                                        Delivery orders will appear here once customers place orders.
+                                                    @endif
+                                                </flux:text>
+                                            </div>
+                                            @if ($search || $filterStatus || $filterMethod || $filterZone || $filterProvider || $filterDateFrom || $filterDateTo)
+                                                <flux:button variant="ghost" size="sm" wire:click="clearFilters">Clear filters</flux:button>
+                                            @endif
+                                        </div>
+                                    </flux:table.cell>
+                                </flux:table.row>
+                            @endforelse
+                        </flux:table.rows>
+                    </flux:table>
+
                 </flux:card>
             </div>
+
         </div>
 
-        {{--  Bottom row ─ --}}
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        {{-- ================================================================ --}}
+        {{-- ORDER DETAIL FLYOUT                                              --}}
+        {{-- ================================================================ --}}
+        <flux:modal name="order-detail" class="md:w-xl space-y-0" variant="flyout">
+            @if ($this->viewingOrder)
+                @php
+                    $vo     = $this->viewingOrder;
+                    $voStatus = $vo->status instanceof DeliveryOrderStatus ? $vo->status : DeliveryOrderStatus::from($vo->status);
+                    $breakdown = $vo->cost_breakdown ?? [];
+                @endphp
 
-            {{-- Needs Attention --}}
-            <flux:card class="p-0">
-                <div
-                    class="flex items-center justify-between px-5 pt-5 pb-4 border-b border-zinc-100 dark:border-zinc-800">
+                <div class="flex items-start justify-between pb-4 border-b border-zinc-100 dark:border-zinc-800">
                     <div>
-                        <h3 class="text-sm font-semibold text-zinc-800 dark:text-zinc-100">Needs Attention</h3>
-                        <p class="text-xs text-zinc-400 mt-0.5">Failed deliveries & active returns</p>
+                        <flux:heading size="lg">Delivery #{{ $vo->order_id }}</flux:heading>
+                        @if ($vo->provider_reference)
+                            <code class="text-xs text-zinc-400">Ref: {{ $vo->provider_reference }}</code>
+                        @endif
                     </div>
-                    <a href="{{ route('admin.logistics.operations.delivery-orders', ['filterStatus' => 'failed']) }}"
-                        wire:navigate
-                        class="text-xs text-zinc-400 hover:text-zinc-600 transition-colors flex items-center gap-2">
-                        View all
-                        <flux:icon.arrow-long-right class="size-5 text-inherit" />
-                    </a>
+                    <flux:badge :color="$voStatus->color()" variant="flat">{{ $voStatus->label() }}</flux:badge>
                 </div>
 
-                <div class="divide-y divide-zinc-50 dark:divide-zinc-800/60">
-                    @forelse ($this->attentionOrders as $order)
-                        @php
-                            $status =
-                                $order->status instanceof \App\Enums\DeliveryOrderStatus
-                                    ? $order->status
-                                    : \App\Enums\DeliveryOrderStatus::from($order->status);
-                        @endphp
-                        <div class="flex items-center justify-between px-5 py-3">
-                            <div>
-                                <span class="text-sm font-medium text-zinc-800 dark:text-zinc-100">
-                                    #{{ $order->order_id }}
-                                </span>
-                                <span class="text-xs text-zinc-400 ml-2">{{ $order->shippingZone->name }}</span>
-                            </div>
-                            <div class="flex items-center gap-3">
-                                <span class="text-xs text-zinc-400">{{ $order->updated_at->diffForHumans() }}</span>
-                                <flux:badge :color="$status->color()" variant="flat" size="sm">
-                                    {{ $status->label() }}
-                                </flux:badge>
-                            </div>
+                <div class="py-4 space-y-6">
+
+                    <div class="grid grid-cols-3 gap-4 text-sm">
+                        <div>
+                            <p class="text-zinc-400 text-xs mb-0.5">Method</p>
+                            <p class="font-medium">{{ $vo->shippingMethod->name }}</p>
                         </div>
-                    @empty
-                        <div class="px-5 py-8 text-center">
-                            <flux:icon.check-circle class="w-6 h-6 text-green-400 mx-auto mb-1" />
-                            <p class="text-xs text-zinc-400">All clear — nothing needs attention</p>
+                        <div>
+                            <p class="text-zinc-400 text-xs mb-0.5">Zone</p>
+                            <p class="font-medium">{{ $vo->shippingZone->name }}</p>
                         </div>
-                    @endforelse
-                </div>
-            </flux:card>
+                        <div>
+                            <p class="text-zinc-400 text-xs mb-0.5">Provider</p>
+                            <p class="font-medium">{{ $vo->logisticsProvider?->name ?? '—' }}</p>
+                        </div>
+                        <div>
+                            <p class="text-zinc-400 text-xs mb-0.5">Shipping Cost</p>
+                            <p class="font-semibold text-base">{{ format_currency($vo->shipping_cost) }}</p>
+                        </div>
+                        <div>
+                            <p class="text-zinc-400 text-xs mb-0.5">Weight</p>
+                            <p class="font-medium">
+                                {{ $vo->package_weight_kg ? $vo->package_weight_kg . ' ' . $this->regionalSettings->weight_unit : '—' }}
+                            </p>
+                        </div>
+                        <div>
+                            <p class="text-zinc-400 text-xs mb-0.5">Created</p>
+                            <p class="font-medium">{{ $vo->created_at->format('M d, Y H:i') }}</p>
+                        </div>
+                    </div>
 
-            {{-- Zone Breakdown + Quick Nav --}}
-            <div class="space-y-4">
-
-                {{-- Zone Breakdown --}}
-                <flux:card class="p-5">
-                    <h3 class="text-sm font-semibold text-zinc-800 dark:text-zinc-100 mb-4">
-                        This Month by Zone
-                    </h3>
-
-                    @if (!empty($this->zoneBreakdown))
-                        <div class="space-y-3">
-                            @php
-                                $maxZoneTotal = collect($this->zoneBreakdown)->max('total') ?: 1;
-                            @endphp
-                            @foreach ($this->zoneBreakdown as $row)
+                    @if ($vo->estimated_delivery_at || $vo->delivered_at)
+                        <div class="grid grid-cols-2 gap-4 text-sm">
+                            @if ($vo->estimated_delivery_at)
                                 <div>
-                                    <div class="flex items-center justify-between mb-1">
-                                        <span class="text-xs font-medium text-zinc-600 dark:text-zinc-300">
-                                            {{ $row['zone'] }}
-                                        </span>
-                                        <div class="flex items-center gap-3">
-                                            <span class="text-xs text-zinc-400 tabular-nums">
-                                                {{ $row['total'] }} orders
-                                            </span>
-                                            <span
-                                                class="text-xs font-semibold text-zinc-700 dark:text-zinc-200 tabular-nums">
-                                                {{ format_currency($row['revenue']) }}
-                                            </span>
+                                    <p class="text-zinc-400 text-xs mb-0.5">Estimated Delivery</p>
+                                    <p class="font-medium">{{ $vo->estimated_delivery_at->format('M d, Y H:i') }}</p>
+                                </div>
+                            @endif
+                            @if ($vo->delivered_at)
+                                <div>
+                                    <p class="text-zinc-400 text-xs mb-0.5">Delivered At</p>
+                                    <p class="font-medium text-emerald-600">{{ $vo->delivered_at->format('M d, Y H:i') }}</p>
+                                </div>
+                            @endif
+                        </div>
+                    @endif
+
+                    @if ($vo->pickupStation)
+                        <div class="bg-orange-50 dark:bg-orange-900/20 rounded-lg p-3 text-sm space-y-1">
+                            <p class="font-medium text-orange-700 dark:text-orange-300">Pickup Station</p>
+                            <p>{{ $vo->pickupStation->name }}</p>
+                            @if ($vo->collection_deadline_at)
+                                <p class="text-orange-600 dark:text-orange-400 text-xs">
+                                    Collection deadline: {{ $vo->collection_deadline_at->format('M d, Y') }}
+                                    @if ($vo->collection_deadline_at->isPast())
+                                        <span class="font-semibold">(Overdue)</span>
+                                    @elseif ($vo->collection_deadline_at->diffInDays(now()) <= 2)
+                                        <span class="font-semibold">({{ $vo->collection_deadline_at->diffForHumans() }})</span>
+                                    @endif
+                                </p>
+                            @endif
+                        </div>
+                    @endif
+
+                    @if (!empty($breakdown))
+                        <div>
+                            <p class="text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">Cost Breakdown</p>
+                            <div class="bg-zinc-50 dark:bg-zinc-800/60 rounded-lg divide-y divide-zinc-100 dark:divide-zinc-700 text-sm">
+                                @foreach ($breakdown as $key => $value)
+                                    @if (!in_array($key, ['model', 'total']))
+                                        <div class="flex justify-between px-3 py-2">
+                                            <span class="text-zinc-500 capitalize">{{ str_replace('_', ' ', $key) }}</span>
+                                            <span class="font-medium">{{ is_numeric($value) ? format_currency($value) : $value }}</span>
                                         </div>
-                                    </div>
-                                    <div class="h-1.5 bg-zinc-100 dark:bg-zinc-800 rounded-full overflow-hidden">
-                                        <div class="h-full bg-zinc-800 dark:bg-zinc-300 rounded-full transition-all"
-                                            style="width: {{ round(($row['total'] / $maxZoneTotal) * 100) }}%">
-                                        </div>
+                                    @endif
+                                @endforeach
+                                <div class="flex justify-between px-3 py-2 font-semibold">
+                                    <span>Total</span>
+                                    <span>{{ format_currency($breakdown['total'] ?? $vo->shipping_cost) }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
+
+                    @if (!$voStatus->isTerminal() && count($this->allowedTransitions))
+                        <div class="border-t border-zinc-100 dark:border-zinc-800 pt-4">
+                            <p class="text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-3">Update Status</p>
+                            @if (!$confirmingStatus)
+                                <div class="flex flex-wrap gap-2">
+                                    @foreach ($this->allowedTransitions as $transition)
+                                        <flux:button variant="outline" size="sm"
+                                            wire:click="prepareStatusUpdate('{{ $transition->value }}')">
+                                            → {{ $transition->label() }}
+                                        </flux:button>
+                                    @endforeach
+                                </div>
+                            @else
+                                <div class="bg-zinc-50 dark:bg-zinc-800/60 rounded-lg p-4 space-y-3">
+                                    <p class="text-sm">
+                                        Mark as <strong>{{ DeliveryOrderStatus::from($newStatus)->label() }}</strong>?
+                                    </p>
+                                    <flux:textarea wire:model="statusNote" placeholder="Optional note (internal only)..." rows="2" />
+                                    <div class="flex gap-2">
+                                        <flux:button variant="ghost" size="sm" wire:click="cancelStatusUpdate">Cancel</flux:button>
+                                        <flux:button variant="primary" size="sm" wire:click="applyStatusUpdate">Confirm Update</flux:button>
                                     </div>
                                 </div>
-                            @endforeach
+                            @endif
                         </div>
-                    @else
-                        <p class="text-xs text-zinc-400 text-center py-4">No orders this month yet.</p>
+                    @elseif ($voStatus->isTerminal())
+                        <div class="border-t border-zinc-100 dark:border-zinc-800 pt-4">
+                            <p class="text-sm text-zinc-400">This order is in a terminal state and cannot be updated further.</p>
+                        </div>
                     @endif
-                </flux:card>
 
-                {{-- Quick navigation --}}
-                <flux:card class="p-5">
-                    <h3 class="text-sm font-semibold text-zinc-800 dark:text-zinc-100 mb-3">Quick Access</h3>
-                    <div class="grid grid-cols-2 gap-2">
-                        @php
-                            $links = [
-                                [
-                                    'route' => 'admin.logistics.operations.delivery-orders',
-                                    'label' => 'Delivery Orders',
-                                    'icon' => 'clipboard-document-list',
-                                ],
-                                [
-                                    'route' => 'admin.logistics.operations.returns',
-                                    'label' => 'Returns',
-                                    'icon' => 'arrow-uturn-left',
-                                ],
-                                [
-                                    'route' => 'admin.logistics.operations.pus-tracker',
-                                    'label' => 'PUS Tracker',
-                                    'icon' => 'building-storefront',
-                                ],
-                                [
-                                    'route' => 'admin.logistics.configuration.rates.flat',
-                                    'label' => 'Flat Rates',
-                                    'icon' => 'table-cells',
-                                ],
-                                [
-                                    'route' => 'admin.logistics.configuration.pickup-stations',
-                                    'label' => 'Stations',
-                                    'icon' => 'map-pin',
-                                ],
-                                [
-                                    'route' => 'admin.logistics.configuration.providers',
-                                    'label' => 'Providers',
-                                    'icon' => 'building-office-2',
-                                ],
-                            ];
-                        @endphp
-                        @foreach ($links as $link)
-                            <a href="{{ route($link['route']) }}" wire:navigate
-                                class="flex items-center gap-2 px-3 py-2 rounded-lg
-                                text-xs font-medium text-zinc-600 dark:text-zinc-400
-                                hover:bg-zinc-100 dark:hover:bg-zinc-800
-                                hover:text-zinc-900 dark:hover:text-zinc-100
-                                transition-colors group">
-                                {{-- <flux:icon::dynamic :icon="$link['icon']"
-                                class="w-4 h-4 text-zinc-400 group-hover:text-zinc-600 dark:group-hover:text-zinc-300 transition-colors" /> --}}
-                                {{ $link['label'] }}
-                            </a>
-                        @endforeach
-                    </div>
-                </flux:card>
+                </div>
+            @endif
+        </flux:modal>
+
+        {{-- Bulk confirm --}}
+        <flux:modal name="bulk-confirm" class="md:w-96 space-y-6">
+            <flux:heading size="lg">Confirm Bulk Update</flux:heading>
+            <flux:subheading>
+                <span x-text="selected.length"></span> order(s) will be marked as
+                <strong>{{ $pendingBulkStatus ? DeliveryOrderStatus::tryFrom($pendingBulkStatus)?->label() : '' }}</strong>.
+                This cannot be undone.
+            </flux:subheading>
+            <div class="flex gap-3">
+                <flux:modal.close class="flex-1">
+                    <flux:button variant="ghost" class="w-full">Cancel</flux:button>
+                </flux:modal.close>
+                <flux:button wire:click="applyBulkStatus" variant="primary" class="flex-1">Confirm</flux:button>
             </div>
-        </div>
+        </flux:modal>
 
-    </div>
+    </x-admin.logistics.layout>
 
-</x-admin.logistics.layout>
+</div>
 
 @assets
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
@@ -566,55 +1202,148 @@ new #[Title('Logistics Overview')] class extends Component {
 
 @script
 <script>
+    const isDark = () => document.documentElement.classList.contains('dark');
+    const chartInstances = {};
+
     function waitForLibraries(cb) {
-        if (typeof jQuery !== 'undefined' && typeof moment !== 'undefined' && typeof jQuery.fn.daterangepicker !== 'undefined') {
+        if (typeof jQuery !== 'undefined' && typeof moment !== 'undefined' &&
+            typeof jQuery.fn.daterangepicker !== 'undefined' && typeof Chart !== 'undefined') {
             cb();
         } else {
             setTimeout(() => waitForLibraries(cb), 100);
         }
     }
 
-    function initDateRangePicker() {
-        const el = $('.logistics-date-range').first();
-        if (!el.length) return;
+    // ─── Pipeline doughnut ────────────────────────────────────────────────────
 
-        if (el.data('daterangepicker')) {
-            el.data('daterangepicker').remove();
+    function destroyChart(id) {
+        if (chartInstances[id]) {
+            chartInstances[id].destroy();
+            delete chartInstances[id];
         }
+        const el = document.getElementById(id);
+        if (el) { el.removeAttribute('style'); el.removeAttribute('width'); el.removeAttribute('height'); }
+    }
 
-        el.daterangepicker({
-            autoUpdateInput: false,
-            opens: 'left',
-            showDropdowns: true,
-            alwaysShowCalendars: false,
-            ranges: {
-                'Today': [moment(), moment()],
-                'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-                'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-                'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-                'This Month': [moment().startOf('month'), moment().endOf('month')],
-                'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+    function initPipelineChart() {
+        const bridge = document.getElementById('pipelineChartData');
+        const canvas = document.getElementById('pipelineChart');
+        if (!bridge || !canvas) return;
+
+        destroyChart('pipelineChart');
+
+        const labels = JSON.parse(bridge.dataset.labels || '[]');
+        const values = JSON.parse(bridge.dataset.values || '[]');
+        const colors = JSON.parse(bridge.dataset.colors || '[]');
+        const total  = parseInt(bridge.dataset.total  || '0');
+
+        if (total === 0) return;
+
+        chartInstances['pipelineChart'] = new Chart(canvas, {
+            type: 'doughnut',
+            data: {
+                labels,
+                datasets: [{
+                    data: values,
+                    backgroundColor: colors,
+                    borderWidth: 2,
+                    borderColor: isDark() ? '#18181b' : '#ffffff',
+                    hoverOffset: 6,
+                }],
             },
-            locale: {
-                format: 'MMM DD, YYYY',
-                separator: ' – ',
-                cancelLabel: 'Clear',
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '68%',
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: isDark() ? '#18181b' : '#ffffff',
+                        borderColor: isDark() ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.08)',
+                        borderWidth: 1,
+                        titleColor: isDark() ? '#e4e4e7' : '#3f3f46',
+                        bodyColor: isDark() ? '#a1a1aa' : '#71717a',
+                        padding: 10,
+                        boxPadding: 4,
+                        usePointStyle: true,
+                        callbacks: {
+                            label: ctx => {
+                                const pct = Math.round((ctx.parsed / total) * 100);
+                                return `  ${ctx.label}: ${ctx.parsed} (${pct}%)`;
+                            },
+                        },
+                    },
+                },
             },
-        }, function(start, end) {
-            $wire.setDateRange(start.format('YYYY-MM-DD'), end.format('YYYY-MM-DD'));
+        });
+    }
+
+    // ─── Date range pickers ───────────────────────────────────────────────────
+
+    const dateRangeOptions = {
+        autoUpdateInput: false,
+        opens: 'left',
+        showDropdowns: true,
+        alwaysShowCalendars: false,
+        ranges: {
+            'Today':       [moment(), moment()],
+            'Yesterday':   [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+            'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+            'Last 30 Days':[moment().subtract(29, 'days'), moment()],
+            'This Month':  [moment().startOf('month'), moment().endOf('month')],
+            'Last Month':  [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+        },
+        locale: { format: 'MMM DD, YYYY', separator: ' – ', cancelLabel: 'Clear' },
+    };
+
+    function initKpiDatePicker() {
+        const el = $('.logistics-kpi-date-range').first();
+        if (!el.length) return;
+        if (el.data('daterangepicker')) { el.data('daterangepicker').remove(); }
+
+        el.daterangepicker(dateRangeOptions, function(start, end) {
+            $wire.setKpiDateRange(start.format('YYYY-MM-DD'), end.format('YYYY-MM-DD'));
             el.val(start.format('MMM DD, YYYY') + ' – ' + end.format('MMM DD, YYYY'));
         });
-
-        el.on('cancel.daterangepicker', function() {
-            $wire.setDateRange('', '');
-            el.val('');
-        });
-
+        el.on('cancel.daterangepicker', function() { $wire.setKpiDateRange('', ''); el.val(''); });
         if ($wire.dateFrom && $wire.dateTo) {
             el.val(moment($wire.dateFrom).format('MMM DD, YYYY') + ' – ' + moment($wire.dateTo).format('MMM DD, YYYY'));
         }
     }
 
-    waitForLibraries(() => initDateRangePicker());
+    function initTableDatePicker() {
+        const el = $('.delivery-orders-date-range').first();
+        if (!el.length) return;
+        if (el.data('daterangepicker')) { el.data('daterangepicker').remove(); }
+
+        el.daterangepicker(dateRangeOptions, function(start, end) {
+            $wire.setDateRange(start.format('YYYY-MM-DD'), end.format('YYYY-MM-DD'));
+            el.val(start.format('MMM DD, YYYY') + ' – ' + end.format('MMM DD, YYYY'));
+        });
+        el.on('cancel.daterangepicker', function() { $wire.setDateRange('', ''); el.val(''); });
+        if ($wire.filterDateFrom && $wire.filterDateTo) {
+            el.val(moment($wire.filterDateFrom).format('MMM DD, YYYY') + ' – ' + moment($wire.filterDateTo).format('MMM DD, YYYY'));
+        }
+    }
+
+    // ─── Boot ─────────────────────────────────────────────────────────────────
+
+    let rafId = null;
+    function scheduleInit() {
+        if (rafId) cancelAnimationFrame(rafId);
+        rafId = requestAnimationFrame(() => { rafId = null; initPipelineChart(); });
+    }
+
+    waitForLibraries(() => {
+        initPipelineChart();
+        initKpiDatePicker();
+        initTableDatePicker();
+    });
+
+    $wire.interceptMessage(({ onSuccess }) => {
+        onSuccess(({ onMorph }) => {
+            onMorph(() => scheduleInit());
+        });
+    });
 </script>
 @endscript
