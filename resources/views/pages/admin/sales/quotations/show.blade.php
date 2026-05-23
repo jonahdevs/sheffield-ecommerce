@@ -6,6 +6,7 @@ use App\Services\DocumentService;
 use App\Services\QuotationService;
 use App\Settings\QuotationSettings;
 use Livewire\Attributes\Computed;
+use Livewire\Attributes\On;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -44,6 +45,21 @@ new #[Title('Quotation Details')] class extends Component {
         $settings = app(QuotationSettings::class);
         $this->validityDays = $settings->default_validity_days;
         $this->adminNote = $quote->admin_notes ?? $settings->default_customer_note ?? '';
+    }
+
+    // =========================================================================
+    //  REAL-TIME
+    // =========================================================================
+
+    #[On('echo-private:admin.quotes,.quote.updated')]
+    public function handleQuoteUpdate(array $data): void
+    {
+        if (($data['quote_id'] ?? null) !== $this->quote->id) {
+            return;
+        }
+
+        $this->quote->refresh()->load(['user', 'items.product', 'statusHistories.changedBy', 'order']);
+        unset($this->canPrice, $this->canCancel);
     }
 
     // =========================================================================

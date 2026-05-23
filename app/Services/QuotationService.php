@@ -6,6 +6,7 @@ use App\Enums\OrderStatus;
 use App\Enums\PaymentStatus;
 use App\Enums\QuoteStatus;
 use App\Enums\SapSyncStatus;
+use App\Events\QuoteUpdated;
 use App\Models\Order;
 use App\Models\Payment;
 use App\Models\Quote;
@@ -333,7 +334,11 @@ class QuotationService
             $quote->update($updateData);
         });
 
-        return $quote->refresh();
+        $quote->refresh();
+
+        QuoteUpdated::dispatch($quote, 'pricing');
+
+        return $quote;
     }
 
     // =========================================================================

@@ -3,14 +3,19 @@
 use App\Models\Order;
 use App\Models\User;
 use Spatie\Activitylog\Models\Activity;
+use Spatie\Permission\Models\Permission;
 
 beforeEach(function () {
     $this->admin = User::factory()->create(['is_staff' => true, 'email_verified_at' => now()]);
+
+    Permission::firstOrCreate(['name' => 'manage.settings', 'guard_name' => 'web']);
+    $this->admin->givePermissionTo('manage.settings');
+
     $this->actingAs($this->admin);
 });
 
 it('SAP sync completed events use the sap_ prefix', function () {
-    $order = Order::factory()->confirmed()->create();
+    $order = Order::factory()->processing()->create();
 
     activity()
         ->performedOn($order)
@@ -24,7 +29,7 @@ it('SAP sync completed events use the sap_ prefix', function () {
 });
 
 it('SAP sync failed events use the sap_ prefix', function () {
-    $order = Order::factory()->confirmed()->create();
+    $order = Order::factory()->processing()->create();
 
     activity()
         ->performedOn($order)
@@ -38,7 +43,7 @@ it('SAP sync failed events use the sap_ prefix', function () {
 });
 
 it('KRA validated events use the sap_ prefix', function () {
-    $order = Order::factory()->confirmed()->create();
+    $order = Order::factory()->processing()->create();
 
     activity()
         ->performedOn($order)
@@ -52,7 +57,7 @@ it('KRA validated events use the sap_ prefix', function () {
 });
 
 it('activity log page loads with sap filter applied', function () {
-    $order = Order::factory()->confirmed()->create();
+    $order = Order::factory()->processing()->create();
 
     activity()->performedOn($order)->log('sap_sync_completed');
 

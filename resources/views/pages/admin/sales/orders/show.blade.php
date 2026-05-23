@@ -785,6 +785,13 @@ new #[Title('Order Details')] class extends Component
                             </div>
                         </div>
 
+                        {{-- Error message --}}
+                        @if ($order->sap_sync_error)
+                            <div class="mb-4 rounded-md bg-red-50 dark:bg-red-900/20 p-3 text-sm text-red-700 dark:text-red-400">
+                                {{ $order->sap_sync_error }}
+                            </div>
+                        @endif
+
                         {{-- Retry button --}}
                         @if (in_array($order->sap_sync_status, [\App\Enums\SapSyncStatus::FAILED, \App\Enums\SapSyncStatus::PENDING]))
                             <flux:button wire:click="retrySapSync" wire:confirm="Re-queue SAP sync for this order?"

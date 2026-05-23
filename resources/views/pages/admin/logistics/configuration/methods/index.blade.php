@@ -3,7 +3,6 @@
 use App\Enums\ShippingMethodStatus;
 use App\Models\ShippingMethod;
 use App\Models\LogisticsProvider;
-use App\Livewire\Forms\Admin\ShippingMethodForm;
 use Livewire\Attributes\{Title, Computed, Url};
 use Livewire\WithPagination;
 use Livewire\Component;
@@ -12,7 +11,6 @@ use Flux\Flux;
 new #[Title('Shipping Methods')] class extends Component {
     use WithPagination;
 
-    public ShippingMethodForm $form;
     public ?int $deletingId = null;
 
     #[Url(history: true)]
@@ -62,39 +60,6 @@ new #[Title('Shipping Methods')] class extends Component {
         return ShippingMethodStatus::cases();
     }
 
-    public function openCreate(): void
-    {
-        $this->form->reset();
-        Flux::modal('method-modal')->show();
-    }
-
-    public function save(): void
-    {
-        try {
-            $isEditing = (bool) $this->form->method;
-            $isEditing ? $this->form->update() : $this->form->store();
-
-            $this->form->reset();
-            Flux::modal('method-modal')->close();
-            $this->dispatch('notify', title: $isEditing ? 'Method Updated' : 'Method Added', variant: 'success', message: $isEditing ? 'Method updated.' : 'Method added.');
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            throw $e;
-        } catch (\Throwable $e) {
-            logger()->error('Failed to save shipping method.', [
-                'exception' => $e->getMessage(),
-                'method_id' => $this->form->method?->id,
-                'user_id' => auth()->id(),
-            ]);
-            $this->dispatch('notify', title: 'Save Failed', variant: 'danger', message: 'Something went wrong. Please try again.');
-        }
-    }
-
-    public function edit(ShippingMethod $method): void
-    {
-        $this->form->setMethod($method);
-        Flux::modal('method-modal')->show();
-    }
-
     public function confirmDelete(int $id): void
     {
         $this->deletingId = $id;
@@ -135,7 +100,8 @@ new #[Title('Shipping Methods')] class extends Component {
     subheading="The delivery options shown to customers at checkout. Each method is powered by a pricing engine — flat, distance, or pickup station.">
 
     <x-slot:actions>
-        <flux:button variant="primary" icon="plus-circle" wire:click="openCreate" class="cursor-pointer">
+        <flux:button variant="primary" icon="plus-circle" :href="route('admin.logistics.configuration.methods.create')"
+            wire:navigate class="cursor-pointer">
             Add Method
         </flux:button>
     </x-slot:actions>
@@ -255,7 +221,8 @@ new #[Title('Shipping Methods')] class extends Component {
 
                         <flux:table.cell align="end" class="pe-4!">
                             <flux:button variant="ghost" size="sm" icon="pencil-square" icon-variant="outline"
-                                class="cursor-pointer" wire:click="edit({{ $method->id }})" tooltip="Edit method" />
+                                class="cursor-pointer" :href="route('admin.logistics.configuration.methods.edit', $method)"
+                                wire:navigate tooltip="Edit method" />
                             <flux:button variant="ghost" size="sm" icon="trash" icon-variant="outline"
                                 color="red" class="cursor-pointer text-red-500!"
                                 wire:click="confirmDelete({{ $method->id }})" tooltip="Delete method" />
@@ -290,68 +257,6 @@ new #[Title('Shipping Methods')] class extends Component {
             </flux:table.rows>
         </flux:table>
     </flux:card>
-
-    {{-- Create / Edit Modal --}}
-    <flux:modal name="method-modal" class="md:w-lg space-y-6">
-        <flux:heading size="lg">{{ $form->method ? 'Edit Method' : 'Add New Method' }}</flux:heading>
-
-        <form wire:submit="save" class="space-y-4">
-            <div class="grid grid-cols-2 gap-4">
-                <flux:input wire:model="form.name" label="Method Name" placeholder="e.g. Same-Day Delivery"
-                    class="col-span-2" />
-
-                <flux:input wire:model="form.code" label="Code" placeholder="e.g. same_day"
-                    description="Unique. Lowercase, underscores." />
-
-                <flux:input wire:model="form.sort_order" label="Sort Order" type="number" min="0"
-                    description="Lower numbers appear first." />
-            </div>
-
-            <flux:select wire:model="form.logistics_provider_id" label="Logistics Provider"
-                placeholder="Select a provider...">
-                @foreach ($this->providers as $provider)
-                    <flux:select.option value="{{ $provider->id }}">{{ $provider->name }}</flux:select.option>
-                @endforeach
-            </flux:select>
-
-            <div class="grid grid-cols-2 gap-4">
-                <flux:select wire:model="form.type" label="Pricing Engine">
-                    <flux:select.option value="flat">Flat Rate (weight × zone)</flux:select.option>
-                    <flux:select.option value="distance">Distance (vehicle × km)</flux:select.option>
-                    <flux:select.option value="pus">Pickup Station (flat + surcharge)</flux:select.option>
-                </flux:select>
-
-                <flux:select wire:model="form.delivery_time_unit" label="Delivery Time Unit">
-                    <flux:select.option value="hours">Hours (e.g. Same-Day)</flux:select.option>
-                    <flux:select.option value="days">Days (e.g. Standard)</flux:select.option>
-                </flux:select>
-            </div>
-
-            <div class="grid grid-cols-2 gap-4">
-                <flux:select wire:model="form.status" label="Status">
-                    @foreach ($this->statuses as $status)
-                        <flux:select.option value="{{ $status->value }}">{{ $status->label() }}</flux:select.option>
-                    @endforeach
-                </flux:select>
-
-                <flux:input wire:model="form.icon" label="Icon (Optional)" placeholder="e.g. truck"
-                    description="Heroicon name for UI display." />
-            </div>
-
-            <flux:checkbox wire:model="form.supports_returns" label="Supports return shipments" />
-
-            <flux:textarea wire:model="form.description" label="Description (Optional)"
-                placeholder="Describe this delivery option to customers..." rows="2" />
-
-            <div class="flex">
-                <flux:spacer />
-                <flux:modal.close>
-                    <flux:button variant="ghost" class="cursor-pointer">Cancel</flux:button>
-                </flux:modal.close>
-                <flux:button type="submit" variant="primary" class="ml-2 cursor-pointer">Save Method</flux:button>
-            </div>
-        </form>
-    </flux:modal>
 
     {{-- Delete Confirmation --}}
     <flux:modal name="delete-confirmation" class="md:w-88 space-y-6">

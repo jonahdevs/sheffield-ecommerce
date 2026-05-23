@@ -28,7 +28,7 @@ class QuotePolicy
      */
     public function create(User $user): bool
     {
-        return $user->hasPermissionTo('create.quotes');
+        return $user->hasPermissionTo('manage.quotations');
     }
 
     /**
@@ -36,7 +36,7 @@ class QuotePolicy
      */
     public function update(User $user, Quote $quote): bool
     {
-        return $user->hasPermissionTo('edit.quotes');
+        return $user->hasPermissionTo('manage.quotations');
     }
 
     /**

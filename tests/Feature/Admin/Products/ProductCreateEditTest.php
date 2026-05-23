@@ -12,9 +12,10 @@ use Spatie\Permission\PermissionRegistrar;
 beforeEach(function () {
     $this->admin = User::factory()->create(['is_staff' => true, 'email_verified_at' => now()]);
 
+    Permission::firstOrCreate(['name' => 'view.products', 'guard_name' => 'web']);
     Permission::firstOrCreate(['name' => 'create.products', 'guard_name' => 'web']);
     Permission::firstOrCreate(['name' => 'edit.products', 'guard_name' => 'web']);
-    $this->admin->givePermissionTo(['create.products', 'edit.products']);
+    $this->admin->givePermissionTo(['view.products', 'create.products', 'edit.products']);
 
     app()[PermissionRegistrar::class]->forgetCachedPermissions();
 

@@ -155,7 +155,7 @@ Route::middleware(['auth', 'staff', 'verified'])->prefix('admin')->name('admin.'
     // System
     // --------------------------------------------------------------------
 
-    Route::prefix('activity-logs')->name('activity-logs.')->group(function () {
+    Route::prefix('activity-logs')->name('activity-logs.')->middleware('can:manage.settings')->group(function () {
         Route::livewire('/', 'pages::admin.activity-logs.index')->name('index');
     });
 
@@ -169,20 +169,20 @@ Route::middleware(['auth', 'staff', 'verified'])->prefix('admin')->name('admin.'
     // Sales
     // --------------------------------------------------------------------
 
-    Route::prefix('orders')->name('orders.')->group(function () {
+    Route::prefix('orders')->name('orders.')->middleware('can:view.orders')->group(function () {
         Route::livewire('/', 'pages::admin.sales.orders.index')->name('index');
-        Route::livewire('/create', 'pages::admin.sales.orders.create')->name('create');
+        Route::livewire('/create', 'pages::admin.sales.orders.create')->middleware('can:create.orders')->name('create');
         Route::livewire('/{order}', 'pages::admin.sales.orders.show')->name('show');
         Route::get('/{order}/packing-slip', PackingSlipController::class)->name('packing-slip');
     });
 
-    Route::prefix('quotations')->name('quotations.')->group(function () {
+    Route::prefix('quotations')->name('quotations.')->middleware('can:view.quotations')->group(function () {
         Route::livewire('/', 'pages::admin.sales.quotations.index')->name('index');
         Route::livewire('/{quote}', 'pages::admin.sales.quotations.show')->name('show');
         Route::get('/{quote}/pdf', AdminQuotationPdfController::class)->name('pdf');
     });
 
-    Route::prefix('payments')->name('payments.')->group(function () {
+    Route::prefix('payments')->name('payments.')->middleware('can:view.payments')->group(function () {
         Route::livewire('/', 'pages::admin.sales.payments.index')->name('index');
         Route::livewire('/{payment}', 'pages::admin.sales.payments.show')->name('show');
     });
@@ -193,33 +193,33 @@ Route::middleware(['auth', 'staff', 'verified'])->prefix('admin')->name('admin.'
 
     Route::prefix('catalog')->name('catalog.')->group(function () {
 
-        Route::prefix('categories')->name('categories.')->group(function () {
+        Route::prefix('categories')->name('categories.')->middleware('can:view.categories')->group(function () {
             Route::livewire('/', 'pages::admin.catalog.categories.index')->name('index');
-            Route::livewire('/create', 'pages::admin.catalog.categories.create')->name('create');
-            Route::livewire('/{category}/edit', 'pages::admin.catalog.categories.edit')->name('edit');
+            Route::livewire('/create', 'pages::admin.catalog.categories.create')->middleware('can:create.categories')->name('create');
+            Route::livewire('/{category}/edit', 'pages::admin.catalog.categories.edit')->middleware('can:edit.categories')->name('edit');
         });
 
-        Route::prefix('products')->name('products.')->group(function () {
+        Route::prefix('products')->name('products.')->middleware('can:view.products')->group(function () {
             Route::livewire('/', 'pages::admin.catalog.products.index')->name('index');
-            Route::livewire('/create', 'pages::admin.catalog.products.create')->name('create');
-            Route::livewire('/{product}/edit', 'pages::admin.catalog.products.edit')->name('edit');
+            Route::livewire('/create', 'pages::admin.catalog.products.create')->middleware('can:create.products')->name('create');
+            Route::livewire('/{product}/edit', 'pages::admin.catalog.products.edit')->middleware('can:edit.products')->name('edit');
         });
 
-        Route::prefix('brands')->name('brands.')->group(function () {
+        Route::prefix('brands')->name('brands.')->middleware('can:view.brands')->group(function () {
             Route::livewire('/', 'pages::admin.catalog.brands.index')->name('index');
-            Route::livewire('/create', 'pages::admin.catalog.brands.create')->name('create');
-            Route::livewire('/{brand}/edit', 'pages::admin.catalog.brands.edit')->name('edit');
+            Route::livewire('/create', 'pages::admin.catalog.brands.create')->middleware('can:create.brands')->name('create');
+            Route::livewire('/{brand}/edit', 'pages::admin.catalog.brands.edit')->middleware('can:edit.brands')->name('edit');
         });
 
-        Route::prefix('attributes')->name('attributes.')->group(function () {
+        Route::prefix('attributes')->name('attributes.')->middleware('can:view.attributes')->group(function () {
             Route::livewire('/', 'pages::admin.catalog.attributes.index')->name('index');
-            Route::livewire('/{attribute}/values', 'pages::admin.catalog.attributes.values')->name('values');
+            Route::livewire('/{attribute}/values', 'pages::admin.catalog.attributes.values')->middleware('can:edit.attributes')->name('values');
         });
 
-        Route::prefix('tags')->name('tags.')->group(function () {
+        Route::prefix('tags')->name('tags.')->middleware('can:view.tags')->group(function () {
             Route::livewire('/', 'pages::admin.catalog.tags.index')->name('index');
-            Route::livewire('/create', 'pages::admin.catalog.tags.create')->name('create');
-            Route::livewire('/{tag}/edit', 'pages::admin.catalog.tags.edit')->name('edit');
+            Route::livewire('/create', 'pages::admin.catalog.tags.create')->middleware('can:create.tags')->name('create');
+            Route::livewire('/{tag}/edit', 'pages::admin.catalog.tags.edit')->middleware('can:edit.tags')->name('edit');
         });
     });
 
@@ -228,36 +228,38 @@ Route::middleware(['auth', 'staff', 'verified'])->prefix('admin')->name('admin.'
     // --------------------------------------------------------------------
 
     Route::prefix('logistics')->name('logistics.')->group(function () {
-        Route::livewire('/overview', 'pages::admin.logistics.dashboard')->name('overview');
+        Route::livewire('/overview', 'pages::admin.logistics.dashboard')->middleware('can:view.shipping')->name('overview');
 
-        Route::prefix('delivery-orders')->name('delivery-orders.')->group(function () {
+        Route::prefix('delivery-orders')->name('delivery-orders.')->middleware('can:view.orders')->group(function () {
             Route::livewire('/{deliveryOrder}', 'pages::admin.logistics.delivery-orders.show')->name('show');
         });
 
         Route::prefix('configuration')->name('configuration.')->group(function () {
-            Route::prefix('providers')->name('providers.')->group(function () {
+            Route::prefix('providers')->name('providers.')->middleware('can:view.shipping')->group(function () {
                 Route::livewire('/', 'pages::admin.logistics.configuration.providers.index')->name('index');
                 Route::livewire('/{logisticsProvider}', 'pages::admin.logistics.configuration.providers.show')->name('show');
             });
 
-            Route::prefix('methods')->name('methods.')->group(function () {
+            Route::prefix('methods')->name('methods.')->middleware('can:view.shipping')->group(function () {
                 Route::livewire('/', 'pages::admin.logistics.configuration.methods.index')->name('index');
+                Route::livewire('/create', 'pages::admin.logistics.configuration.methods.create')->middleware('can:create.shipping')->name('create');
                 Route::livewire('/{shippingMethod}', 'pages::admin.logistics.configuration.methods.show')->name('show');
+                Route::livewire('/{shippingMethod}/edit', 'pages::admin.logistics.configuration.methods.edit')->middleware('can:edit.shipping')->name('edit');
             });
 
-            Route::prefix('pickup-stations')->name('pickup-stations.')->group(function () {
+            Route::prefix('pickup-stations')->name('pickup-stations.')->middleware('can:view.pickup-stations')->group(function () {
                 Route::livewire('/', 'pages::admin.logistics.configuration.pickup-stations.index')->name('index');
                 Route::livewire('/{pickupStation}', 'pages::admin.logistics.configuration.pickup-stations.show')->name('show');
             });
 
-            Route::prefix('zones')->name('zones.')->group(function () {
+            Route::prefix('zones')->name('zones.')->middleware('can:view.shipping-zones')->group(function () {
                 Route::livewire('/', 'pages::admin.logistics.configuration.zones.index')->name('index');
                 Route::livewire('/{shippingZone}', 'pages::admin.logistics.configuration.zones.show')->name('show');
             });
 
-            Route::livewire('/resolver', 'pages::admin.logistics.configuration.resolver')->name('resolver');
+            Route::livewire('/resolver', 'pages::admin.logistics.configuration.resolver')->middleware('can:view.shipping')->name('resolver');
 
-            Route::prefix('locations')->name('locations.')->group(function () {
+            Route::prefix('locations')->name('locations.')->middleware('can:view.areas')->group(function () {
                 Route::prefix('counties')->name('counties.')->group(function () {
                     Route::livewire('/', 'pages::admin.logistics.configuration.locations.counties.index')->name('index');
                     Route::livewire('/{county}', 'pages::admin.logistics.configuration.locations.counties.show')->name('show');
@@ -276,36 +278,35 @@ Route::middleware(['auth', 'staff', 'verified'])->prefix('admin')->name('admin.'
         });
 
         Route::prefix('pricing')->name('pricing.')->group(function () {
-            Route::livewire('/matrix', 'pages::admin.logistics.pricing.matrix')->name('matrix');
+            Route::livewire('/matrix', 'pages::admin.logistics.pricing.matrix')->middleware('can:view.shipping')->name('matrix');
 
-            Route::prefix('surcharges')->name('surcharges.')->group(function () {
+            Route::prefix('surcharges')->name('surcharges.')->middleware('can:view.shipping-rules')->group(function () {
                 Route::livewire('/', 'pages::admin.logistics.pricing.surcharges.index')->name('index');
                 Route::livewire('/{shippingRateAddon}', 'pages::admin.logistics.pricing.surcharges.show')->name('show');
             });
 
-            Route::prefix('free-shipping')->name('free-shipping.')->group(function () {
+            Route::prefix('free-shipping')->name('free-shipping.')->middleware('can:view.shipping-rules')->group(function () {
                 Route::livewire('/', 'pages::admin.logistics.pricing.free-shipping.index')->name('index');
                 Route::livewire('/{freeShippingRule}', 'pages::admin.logistics.pricing.free-shipping.show')->name('show');
             });
         });
-
     });
 
     // --------------------------------------------------------------------
     // Engagement
     // --------------------------------------------------------------------
 
-    Route::prefix('customers')->name('customers.')->group(function () {
+    Route::prefix('customers')->name('customers.')->middleware('can:view.users')->group(function () {
         Route::livewire('/', 'pages::admin.engagement.customers.index')->name('index');
-        Route::livewire('/create', 'pages::admin.engagement.customers.create')->name('create');
-        Route::livewire('/{customer}/edit', 'pages::admin.engagement.customers.edit')->name('edit');
+        Route::livewire('/create', 'pages::admin.engagement.customers.create')->middleware('can:create.users')->name('create');
+        Route::livewire('/{customer}/edit', 'pages::admin.engagement.customers.edit')->middleware('can:edit.users')->name('edit');
         // Customer show page - coming soon
         Route::get('/{customer}', function () {
             return redirect()->route('admin.coming-soon');
         })->name('show');
     });
 
-    Route::prefix('reviews')->name('reviews.')->group(function () {
+    Route::prefix('reviews')->name('reviews.')->middleware('can:view.reviews')->group(function () {
         Route::livewire('/', 'pages::admin.engagement.reviews.index')->name('index');
         Route::livewire('/{review}', 'pages::admin.engagement.reviews.show')->name('show');
     });
@@ -367,16 +368,16 @@ Route::middleware(['auth', 'staff', 'verified'])->prefix('admin')->name('admin.'
     // --------------------------------------------------------------------
 
     Route::prefix('access-control')->name('access-control.')->group(function () {
-        Route::prefix('roles')->name('roles.')->group(function () {
+        Route::prefix('roles')->name('roles.')->middleware('can:view.roles')->group(function () {
             Route::livewire('/', 'pages::admin.access-control.roles.index')->name('index');
-            Route::livewire('/{role}/edit', 'pages::admin.access-control.roles.edit')->name('edit');
+            Route::livewire('/{role}/edit', 'pages::admin.access-control.roles.edit')->middleware('can:edit.roles')->name('edit');
         });
 
-        Route::livewire('/permissions', 'pages::admin.access-control.permissions.index')->name('permissions');
+        Route::livewire('/permissions', 'pages::admin.access-control.permissions.index')->middleware('can:view.roles')->name('permissions');
 
         Route::prefix('users')->name('users.')->group(function () {
-            Route::livewire('/create', 'pages::admin.access-control.users.create')->name('create');
-            Route::livewire('/{user}/edit', 'pages::admin.access-control.users.edit')->name('edit');
+            Route::livewire('/create', 'pages::admin.access-control.users.create')->middleware('can:create.users')->name('create');
+            Route::livewire('/{user}/edit', 'pages::admin.access-control.users.edit')->middleware('can:edit.users')->name('edit');
         });
     });
 
@@ -384,7 +385,7 @@ Route::middleware(['auth', 'staff', 'verified'])->prefix('admin')->name('admin.'
     // Email Templates
     // --------------------------------------------------------------------
 
-    Route::prefix('email-templates')->name('email-templates.')->group(function () {
+    Route::prefix('email-templates')->name('email-templates.')->middleware('can:manage.settings')->group(function () {
         Route::livewire('/', 'pages::admin.email-templates.index')->name('index');
         Route::livewire('/{type}/edit', 'pages::admin.email-templates.edit')->name('edit');
     });
@@ -428,7 +429,7 @@ if (app()->isLocal()) {
             if ($min && $max) {
                 $deliveryWindow = $min === $max ? "{$min} business days" : "{$min}–{$max} business days";
             } elseif ($delivery->estimated_delivery_at) {
-                $deliveryWindow = 'By '.$delivery->estimated_delivery_at->format('D, M j');
+                $deliveryWindow = 'By ' . $delivery->estimated_delivery_at->format('D, M j');
             }
         }
 
@@ -506,7 +507,7 @@ if (app()->isLocal()) {
             ->latest()
             ->first();
 
-        if (! $quote) {
+        if (!$quote) {
             $quote = Quote::factory()
                 ->sent()
                 ->withItems(3)
@@ -533,13 +534,13 @@ if (app()->isLocal()) {
             ->first();
 
         // If no suitable order exists, create one
-        if (! $order) {
+        if (!$order) {
             $order = Order::factory()
-                ->confirmed()
-                ->withItems(25) // Create 25 items to test multi-page layout
+                ->processing()
+                ->withItems(3) // Create 3 items to test multi-page layout
                 ->withPayment()
                 ->create([
-                    'kra_cu_number' => 'CU-PREVIEW-'.now()->timestamp,
+                    'kra_cu_number' => 'CU-PREVIEW-' . now()->timestamp,
                     'kra_validated_at' => now(),
                 ]);
 
@@ -557,4 +558,4 @@ if (app()->isLocal()) {
 // ADDITIONAL ROUTE FILES
 // ============================================================================
 
-require __DIR__.'/settings.php';
+require __DIR__ . '/settings.php';

@@ -9,8 +9,8 @@ use Spatie\Activitylog\Models\Activity;
 use Spatie\Permission\Models\Permission;
 
 beforeEach(function () {
-    if (! Permission::where('name', 'edit.quotes')->exists()) {
-        Permission::create(['name' => 'edit.quotes', 'guard_name' => 'web']);
+    if (! Permission::where('name', 'view.quotations')->exists()) {
+        Permission::create(['name' => 'view.quotations', 'guard_name' => 'web']);
     }
 
     $this->admin = User::factory()->create([
@@ -18,7 +18,7 @@ beforeEach(function () {
         'is_staff' => true,
     ]);
 
-    $this->admin->givePermissionTo('edit.quotes');
+    $this->admin->givePermissionTo('view.quotations');
 
     $this->actingAs($this->admin);
 });

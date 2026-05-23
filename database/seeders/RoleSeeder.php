@@ -26,8 +26,9 @@ class RoleSeeder extends Seeder
             'brands' => ['view', 'create', 'edit', 'delete'],
             'attributes' => ['view', 'create', 'edit', 'delete'],
             'tags' => ['view', 'create', 'edit', 'delete'],
-            'orders' => ['view', 'edit', 'delete'],
+            'orders' => ['view', 'create', 'edit', 'delete'],
             'order-status' => ['manage'],
+            'quotations' => ['view', 'manage'],
             'payments' => ['view', 'manage'],
             'inventory' => ['view', 'manage'],
             'reviews' => ['view', 'edit', 'delete', 'approve'],
@@ -73,8 +74,10 @@ class RoleSeeder extends Seeder
 
         $logistics->syncPermissions([
             'view.orders',
+            'create.orders',
             'edit.orders',
             'manage.order-status',
+            'view.quotations',
             'view.inventory',
             'manage.inventory',
             'view.shipping',

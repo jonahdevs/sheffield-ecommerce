@@ -10,12 +10,19 @@ use Spatie\Permission\Models\Permission;
 
 beforeEach(function () {
     $permissions = [
+        'view.products',
         'edit.products',
+        'view.orders',
         'edit.orders',
-        'edit.quotes',
+        'view.quotations',
+        'edit.orders',
+        'view.users',
         'edit.users',
+        'view.categories',
         'edit.categories',
+        'view.brands',
         'edit.brands',
+        'view.roles',
     ];
 
     foreach ($permissions as $permission) {
@@ -29,7 +36,7 @@ beforeEach(function () {
         'is_staff' => true,
     ]);
 
-    $this->admin->givePermissionTo($permissions);
+    $this->admin->givePermissionTo(array_unique($permissions));
 
     $this->actingAs($this->admin);
 });
@@ -64,7 +71,7 @@ test('product Change Log menu item uses clock icon with outline variant', functi
 test('order listing page displays Change Log menu item', function () {
     $order = Order::factory()->create();
 
-    $response = $this->get(route('admin.sales.orders.index'));
+    $response = $this->get(route('admin.orders.index'));
 
     $response->assertSee('Change Log');
 });
@@ -72,7 +79,7 @@ test('order listing page displays Change Log menu item', function () {
 test('order Change Log menu item links to correct changelog page', function () {
     $order = Order::factory()->create();
 
-    $response = $this->get(route('admin.sales.orders.index'));
+    $response = $this->get(route('admin.orders.index'));
 
     $response->assertSee(route('admin.changelog', ['modelType' => 'order', 'id' => $order->id]));
 });
@@ -80,7 +87,7 @@ test('order Change Log menu item links to correct changelog page', function () {
 test('order Change Log menu item uses clock icon with outline variant', function () {
     $order = Order::factory()->create();
 
-    $response = $this->get(route('admin.sales.orders.index'));
+    $response = $this->get(route('admin.orders.index'));
 
     $html = $response->getContent();
 

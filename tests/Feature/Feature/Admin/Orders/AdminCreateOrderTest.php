@@ -5,9 +5,16 @@ use App\Models\Order;
 use App\Models\Payment;
 use App\Models\Product;
 use App\Models\User;
+use Spatie\Permission\Models\Permission;
 
 beforeEach(function () {
     $this->admin = User::factory()->create(['is_staff' => true, 'email_verified_at' => now()]);
+
+    Permission::firstOrCreate(['name' => 'view.orders', 'guard_name' => 'web']);
+    Permission::firstOrCreate(['name' => 'create.orders', 'guard_name' => 'web']);
+    Permission::firstOrCreate(['name' => 'edit.orders', 'guard_name' => 'web']);
+    $this->admin->givePermissionTo(['view.orders', 'create.orders', 'edit.orders']);
+
     $this->actingAs($this->admin);
 });
 

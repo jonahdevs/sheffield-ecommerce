@@ -2,7 +2,9 @@
 
 use App\Enums\DeliveryOrderStatus;
 use App\Models\DeliveryOrder;
+use App\Models\LogisticsProvider;
 use App\Settings\RegionalSettings;
+use Illuminate\Support\Collection;
 use Livewire\Attributes\{Computed, Title};
 use Livewire\Component;
 
@@ -10,15 +12,16 @@ new #[Title('Delivery Order')] class extends Component {
     public DeliveryOrder $deliveryOrder;
 
     public string $newStatus = '';
-
     public string $statusNote = '';
-
     public bool $confirmingStatus = false;
+
+    public ?int $selectedProviderId = null;
 
     public function mount(DeliveryOrder $deliveryOrder): void
     {
         $this->deliveryOrder = $deliveryOrder->load([
             'order.user',
+            'order.items',
             'shippingMethod',
             'shippingZone',
             'logisticsProvider',
@@ -26,7 +29,13 @@ new #[Title('Delivery Order')] class extends Component {
             'shippingRate',
             'vehicleRate',
         ]);
+
+        $this->selectedProviderId = $this->deliveryOrder->logistics_provider_id;
     }
+
+    // =========================================================================
+    //  COMPUTED
+    // =========================================================================
 
     #[Computed]
     public function allowedTransitions(): array
@@ -42,6 +51,16 @@ new #[Title('Delivery Order')] class extends Component {
             default                               => [],
         };
     }
+
+    #[Computed]
+    public function activeProviders(): Collection
+    {
+        return LogisticsProvider::active()->orderBy('name')->get(['id', 'name']);
+    }
+
+    // =========================================================================
+    //  STATUS
+    // =========================================================================
 
     public function prepareStatusUpdate(string $status): void
     {
@@ -86,34 +105,55 @@ new #[Title('Delivery Order')] class extends Component {
             logger()->error('Failed to update delivery order status.', [
                 'exception' => $e->getMessage(),
                 'id'        => $this->deliveryOrder->id,
-                'user_id'   => auth()->id(),
             ]);
             $this->dispatch('notify', title: 'Update Failed', variant: 'danger', message: 'Could not update status. Please try again.');
+        }
+    }
+
+    // =========================================================================
+    //  PROVIDER
+    // =========================================================================
+
+    public function assignProvider(): void
+    {
+        $this->validate([
+            'selectedProviderId' => ['nullable', 'exists:logistics_providers,id'],
+        ]);
+
+        try {
+            $this->deliveryOrder->update(['logistics_provider_id' => $this->selectedProviderId]);
+            $this->deliveryOrder->refresh()->load('logisticsProvider');
+
+            $this->dispatch('notify', title: 'Provider Assigned', variant: 'success', message: 'Logistics provider updated.');
+        } catch (\Throwable $e) {
+            $this->dispatch('notify', title: 'Failed', variant: 'danger', message: 'Could not assign provider. Please try again.');
         }
     }
 };
 ?>
 
 <div>
+
     {{-- ================================================================== --}}
     {{-- PAGE HEADER                                                         --}}
     {{-- ================================================================== --}}
-    <div class="flex flex-col md:flex-row md:items-start justify-between gap-4 mb-6">
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
         <div>
             @push('breadcrumbs')
                 <flux:breadcrumbs>
                     <flux:breadcrumbs.item :href="route('admin.logistics.overview')" wire:navigate>
                         Logistics
                     </flux:breadcrumbs.item>
-                    <flux:breadcrumbs.item>Delivery #{{ $deliveryOrder->order_id }}</flux:breadcrumbs.item>
+                    <flux:breadcrumbs.item>{{ $deliveryOrder->order?->reference ?? 'DO-' . $deliveryOrder->id }}</flux:breadcrumbs.item>
                 </flux:breadcrumbs>
             @endpush
 
             <div class="flex items-center gap-3 flex-wrap">
                 <flux:heading size="xl" class="font-bold! tracking-tight">
-                    Delivery #{{ $deliveryOrder->order_id }}
+                    {{ $deliveryOrder->order?->reference ?? 'DO-' . $deliveryOrder->id }}
                 </flux:heading>
-                <flux:badge color="zinc" variant="solid" size="sm" class="uppercase text-[10px] tracking-widest font-bold">
+                <flux:badge :color="$deliveryOrder->status->color()" variant="solid" size="sm"
+                    class="uppercase text-[10px] tracking-widest font-bold">
                     {{ $deliveryOrder->status->label() }}
                 </flux:badge>
                 @if ($deliveryOrder->is_return)
@@ -124,34 +164,75 @@ new #[Title('Delivery Order')] class extends Component {
                 @endif
             </div>
 
-            <flux:subheading class="mt-1">
+            <flux:text class="mt-1 flex items-center gap-2">
+                <flux:icon name="calendar" class="size-4 text-zinc-400" />
                 Created {{ $deliveryOrder->created_at->format('M d, Y') }} at {{ $deliveryOrder->created_at->format('g:i A') }}
-            </flux:subheading>
+                @if ($deliveryOrder->delivered_at)
+                    &nbsp;·&nbsp;
+                    <flux:icon name="check-circle" class="size-4 text-green-500" />
+                    Delivered {{ $deliveryOrder->delivered_at->format('M d, Y') }}
+                @endif
+            </flux:text>
         </div>
 
-        <flux:button variant="ghost" icon="arrow-left" size="sm"
-            :href="route('admin.logistics.overview')" wire:navigate class="shrink-0">
-            Back to Overview
-        </flux:button>
+        {{-- Header actions: status transitions --}}
+        @if (! $deliveryOrder->isTerminal() && count($this->allowedTransitions))
+            <div class="flex items-center gap-2 flex-wrap">
+                @foreach ($this->allowedTransitions as $transition)
+                    <flux:button
+                        variant="{{ in_array($transition, [DeliveryOrderStatus::CANCELLED, DeliveryOrderStatus::FAILED, DeliveryOrderStatus::RETURNING]) ? 'ghost' : 'outline' }}"
+                        size="sm"
+                        class="{{ in_array($transition, [DeliveryOrderStatus::CANCELLED, DeliveryOrderStatus::FAILED, DeliveryOrderStatus::RETURNING]) ? 'text-red-500!' : '' }} cursor-pointer"
+                        wire:click="prepareStatusUpdate('{{ $transition->value }}')">
+                        {{ $transition->label() }}
+                    </flux:button>
+                @endforeach
+            </div>
+        @endif
     </div>
 
     {{-- ================================================================== --}}
-    {{-- MAIN LAYOUT — 4-col grid                                           --}}
+    {{-- CONFIRM STATUS MODAL                                                --}}
     {{-- ================================================================== --}}
-    <div class="grid grid-cols-4 gap-5">
+    @if ($confirmingStatus && $newStatus)
+        @php $targetStatus = DeliveryOrderStatus::from($newStatus); @endphp
+        <flux:callout icon="exclamation-triangle" color="amber" class="mb-5">
+            <flux:callout.heading>
+                Confirm: Mark as {{ $targetStatus->label() }}?
+            </flux:callout.heading>
+            <flux:callout.text>
+                <div class="mt-2 space-y-3">
+                    <flux:textarea wire:model="statusNote" placeholder="Optional internal note..." rows="2" />
+                    <div class="flex gap-2">
+                        <flux:button variant="ghost" size="sm" wire:click="cancelStatusUpdate" class="cursor-pointer">
+                            Cancel
+                        </flux:button>
+                        <flux:button variant="primary" size="sm" wire:click="applyStatusUpdate" class="cursor-pointer">
+                            Confirm
+                        </flux:button>
+                    </div>
+                </div>
+            </flux:callout.text>
+        </flux:callout>
+    @endif
+
+    {{-- ================================================================== --}}
+    {{-- MAIN LAYOUT                                                         --}}
+    {{-- ================================================================== --}}
+    <div class="grid grid-cols-1 lg:grid-cols-4 gap-5">
 
         {{-- ── Left: Main content (3 cols) ── --}}
-        <div class="col-span-3 space-y-5">
+        <div class="lg:col-span-3 space-y-5">
 
             {{-- ============================================================ --}}
             {{-- DELIVERY DETAILS                                              --}}
             {{-- ============================================================ --}}
             <flux:card class="p-0">
-                <div class="px-6 py-4 border-b border-zinc-200 dark:border-zinc-700">
-                    <flux:heading size="lg" class="font-semibold!">Delivery Details</flux:heading>
+                <div class="px-6 py-3 border-b border-zinc-200 dark:border-zinc-600">
+                    <flux:heading level="3" class="font-semibold">Delivery Details</flux:heading>
                 </div>
                 <div class="p-6">
-                    <div class="grid grid-cols-3 gap-x-8 gap-y-6 text-sm">
+                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-x-8 gap-y-5 text-sm">
                         <div>
                             <p class="text-xs font-medium text-zinc-400 uppercase tracking-wider mb-1">Shipping Method</p>
                             <p class="font-medium text-zinc-800 dark:text-zinc-100">
@@ -162,12 +243,6 @@ new #[Title('Delivery Order')] class extends Component {
                             <p class="text-xs font-medium text-zinc-400 uppercase tracking-wider mb-1">Shipping Zone</p>
                             <p class="font-medium text-zinc-800 dark:text-zinc-100">
                                 {{ $deliveryOrder->shippingZone?->name ?? '—' }}
-                            </p>
-                        </div>
-                        <div>
-                            <p class="text-xs font-medium text-zinc-400 uppercase tracking-wider mb-1">Provider</p>
-                            <p class="font-medium text-zinc-800 dark:text-zinc-100">
-                                {{ $deliveryOrder->logisticsProvider?->name ?? '—' }}
                             </p>
                         </div>
                         <div>
@@ -189,9 +264,6 @@ new #[Title('Delivery Order')] class extends Component {
                                 {{ $deliveryOrder->distance_km ? $deliveryOrder->distance_km . ' km' : '—' }}
                             </p>
                         </div>
-                    </div>
-
-                    <div class="mt-6 pt-6 border-t border-zinc-100 dark:border-zinc-800 grid grid-cols-3 gap-x-8 gap-y-6 text-sm">
                         <div>
                             <p class="text-xs font-medium text-zinc-400 uppercase tracking-wider mb-1">Provider Reference</p>
                             <p class="font-mono text-xs font-medium text-zinc-800 dark:text-zinc-100 break-all">
@@ -205,7 +277,9 @@ new #[Title('Delivery Order')] class extends Component {
                                     {{ $deliveryOrder->estimated_delivery_at->format('M d, Y') }}
                                 </p>
                                 @if ($deliveryOrder->estimated_delivery_at->isPast() && $deliveryOrder->status->isActive())
-                                    <p class="text-xs text-red-500 mt-0.5">Overdue by {{ $deliveryOrder->estimated_delivery_at->diffForHumans() }}</p>
+                                    <p class="text-xs text-red-500 mt-0.5">
+                                        Overdue by {{ $deliveryOrder->estimated_delivery_at->diffForHumans() }}
+                                    </p>
                                 @endif
                             @else
                                 <p class="font-medium text-zinc-800 dark:text-zinc-100">—</p>
@@ -214,7 +288,7 @@ new #[Title('Delivery Order')] class extends Component {
                         <div>
                             <p class="text-xs font-medium text-zinc-400 uppercase tracking-wider mb-1">Delivered At</p>
                             @if ($deliveryOrder->delivered_at)
-                                <p class="font-medium text-emerald-600 dark:text-emerald-400">
+                                <p class="font-medium text-green-600 dark:text-green-400">
                                     {{ $deliveryOrder->delivered_at->format('M d, Y H:i') }}
                                 </p>
                             @else
@@ -226,177 +300,21 @@ new #[Title('Delivery Order')] class extends Component {
             </flux:card>
 
             {{-- ============================================================ --}}
-            {{-- PICKUP STATION (conditional)                                  --}}
-            {{-- ============================================================ --}}
-            @if ($deliveryOrder->pickupStation)
-                <flux:card class="p-0">
-                    <div class="px-6 py-4 border-b border-zinc-200 dark:border-zinc-700 flex items-center justify-between">
-                        <flux:heading size="lg" class="font-semibold!">Pickup Station</flux:heading>
-                        @if ($deliveryOrder->isOverdueCollection())
-                            <flux:badge color="red" variant="solid" size="sm">Collection Overdue</flux:badge>
-                        @elseif ($deliveryOrder->status === DeliveryOrderStatus::COLLECTED)
-                            <flux:badge color="green" variant="solid" size="sm">Collected</flux:badge>
-                        @elseif ($deliveryOrder->status === DeliveryOrderStatus::AT_STATION)
-                            <flux:badge color="orange" variant="solid" size="sm">Awaiting Collection</flux:badge>
-                        @endif
-                    </div>
-                    <div class="p-6 grid grid-cols-3 gap-x-8 gap-y-6 text-sm">
-                        <div>
-                            <p class="text-xs font-medium text-zinc-400 uppercase tracking-wider mb-1">Station Name</p>
-                            <p class="font-medium text-zinc-800 dark:text-zinc-100">
-                                {{ $deliveryOrder->pickupStation->name }}
-                            </p>
-                        </div>
-                        @if ($deliveryOrder->pickupStation->location ?? null)
-                            <div>
-                                <p class="text-xs font-medium text-zinc-400 uppercase tracking-wider mb-1">Location</p>
-                                <p class="font-medium text-zinc-800 dark:text-zinc-100">
-                                    {{ $deliveryOrder->pickupStation->location }}
-                                </p>
-                            </div>
-                        @endif
-                        @if ($deliveryOrder->collection_deadline_at)
-                            <div>
-                                <p class="text-xs font-medium text-zinc-400 uppercase tracking-wider mb-1">Collection Deadline</p>
-                                <p class="font-medium {{ $deliveryOrder->collection_deadline_at->isPast() ? 'text-red-500' : 'text-zinc-800 dark:text-zinc-100' }}">
-                                    {{ $deliveryOrder->collection_deadline_at->format('M d, Y') }}
-                                </p>
-                                <p class="text-xs text-zinc-400 mt-0.5">{{ $deliveryOrder->collection_deadline_at->diffForHumans() }}</p>
-                            </div>
-                        @endif
-                    </div>
-                </flux:card>
-            @endif
-
-            {{-- ============================================================ --}}
-            {{-- COST BREAKDOWN (conditional)                                  --}}
-            {{-- ============================================================ --}}
-            @if (!empty($deliveryOrder->cost_breakdown))
-                @php $breakdown = $deliveryOrder->cost_breakdown; @endphp
-                <flux:card class="p-0">
-                    <div class="px-6 py-4 border-b border-zinc-200 dark:border-zinc-700">
-                        <flux:heading size="lg" class="font-semibold!">Cost Breakdown</flux:heading>
-                    </div>
-                    <div class="divide-y divide-zinc-100 dark:divide-zinc-800">
-                        @foreach ($breakdown as $key => $value)
-                            @if (! in_array($key, ['model', 'total']))
-                                <div class="flex justify-between px-6 py-3 text-sm">
-                                    <span class="text-zinc-500 capitalize">{{ str_replace('_', ' ', $key) }}</span>
-                                    <span class="font-medium text-zinc-800 dark:text-zinc-100">
-                                        {{ is_numeric($value) ? format_currency($value) : $value }}
-                                    </span>
-                                </div>
-                            @endif
-                        @endforeach
-                        <div class="flex justify-between px-6 py-3 text-sm font-semibold bg-zinc-50 dark:bg-zinc-800/30">
-                            <span>Total</span>
-                            <span>{{ format_currency($breakdown['total'] ?? $deliveryOrder->shipping_cost) }}</span>
-                        </div>
-                    </div>
-                </flux:card>
-            @endif
-
-            {{-- ============================================================ --}}
-            {{-- LINKED ORDER                                                   --}}
-            {{-- ============================================================ --}}
-            @if ($deliveryOrder->order)
-                <flux:card class="p-0">
-                    <div class="px-6 py-4 border-b border-zinc-200 dark:border-zinc-700">
-                        <flux:heading size="lg" class="font-semibold!">Linked Order</flux:heading>
-                    </div>
-                    <div class="p-6 flex items-center justify-between">
-                        <div class="flex items-center gap-4">
-                            <div class="w-10 h-10 rounded-lg bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center shrink-0">
-                                <flux:icon.shopping-bag class="size-5 text-zinc-400" />
-                            </div>
-                            <div>
-                                <p class="font-semibold text-zinc-800 dark:text-zinc-100 text-sm">
-                                    {{ $deliveryOrder->order->reference }}
-                                </p>
-                                <p class="text-xs text-zinc-400 mt-0.5">
-                                    {{ $deliveryOrder->order->user?->name ?? 'Guest' }}
-                                    &nbsp;·&nbsp;
-                                    {{ $deliveryOrder->order->status->label() }}
-                                </p>
-                            </div>
-                        </div>
-                        <flux:button variant="ghost" size="sm" icon="arrow-top-right-on-square"
-                            :href="route('admin.orders.show', $deliveryOrder->order)" wire:navigate>
-                            View Order
-                        </flux:button>
-                    </div>
-                </flux:card>
-            @endif
-
-        </div>
-
-        {{-- ── Right: Sidebar (1 col) ── --}}
-        <div class="col-span-1 space-y-4">
-
-            {{-- ============================================================ --}}
-            {{-- STATUS & ACTIONS                                               --}}
+            {{-- PIPELINE / TIMELINE                                           --}}
             {{-- ============================================================ --}}
             <flux:card class="p-0">
-                <div class="px-5 py-4 border-b border-zinc-200 dark:border-zinc-700">
-                    <flux:heading size="sm" class="font-semibold!">Status</flux:heading>
+                <div class="px-6 py-3 border-b border-zinc-200 dark:border-zinc-600 flex items-center justify-between">
+                    <flux:heading level="3" class="font-semibold">Delivery Pipeline</flux:heading>
+                    <flux:badge :color="$deliveryOrder->status->color()" variant="solid" size="sm">
+                        {{ $deliveryOrder->status->label() }}
+                    </flux:badge>
                 </div>
-                <div class="p-5 space-y-4">
-                    <div class="flex items-center justify-between">
-                        <span class="text-xs text-zinc-400 uppercase tracking-wider">Current</span>
-                        <flux:badge color="zinc" variant="flat">
-                            {{ $deliveryOrder->status->label() }}
-                        </flux:badge>
-                    </div>
 
-                    @if (! $deliveryOrder->isTerminal() && count($this->allowedTransitions))
-                        <div class="pt-3 border-t border-zinc-100 dark:border-zinc-800">
-                            @if (! $confirmingStatus)
-                                <p class="text-xs text-zinc-400 mb-2">Advance to</p>
-                                <div class="flex flex-col gap-2">
-                                    @foreach ($this->allowedTransitions as $transition)
-                                        <flux:button variant="outline" size="sm"
-                                            class="w-full cursor-pointer justify-start"
-                                            wire:click="prepareStatusUpdate('{{ $transition->value }}')">
-                                            → {{ $transition->label() }}
-                                        </flux:button>
-                                    @endforeach
-                                </div>
-                            @else
-                                <div class="space-y-3">
-                                    <p class="text-sm text-zinc-700 dark:text-zinc-300">
-                                        Mark as <strong>{{ DeliveryOrderStatus::from($newStatus)->label() }}</strong>?
-                                    </p>
-                                    <flux:textarea wire:model="statusNote"
-                                        placeholder="Optional note (internal only)..." rows="2" />
-                                    <div class="flex gap-2">
-                                        <flux:button variant="ghost" size="sm" wire:click="cancelStatusUpdate"
-                                            class="flex-1 cursor-pointer">Cancel</flux:button>
-                                        <flux:button variant="primary" size="sm" wire:click="applyStatusUpdate"
-                                            class="flex-1 cursor-pointer">Confirm</flux:button>
-                                    </div>
-                                </div>
-                            @endif
-                        </div>
-                    @elseif ($deliveryOrder->isTerminal())
-                        <p class="text-xs text-zinc-400 border-t border-zinc-100 dark:border-zinc-800 pt-3">
-                            This delivery is in a terminal state and cannot be updated further.
-                        </p>
-                    @endif
-                </div>
-            </flux:card>
-
-            {{-- ============================================================ --}}
-            {{-- TIMELINE                                                       --}}
-            {{-- ============================================================ --}}
-            <flux:card class="p-0">
-                <div class="px-5 py-4 border-b border-zinc-200 dark:border-zinc-700">
-                    <flux:heading size="sm" class="font-semibold!">Pipeline</flux:heading>
-                </div>
                 <div class="p-5">
                     @php
-                        $isPus = $deliveryOrder->pickupStation !== null;
+                        $isPus    = $deliveryOrder->pickupStation !== null;
                         $isReturn = $deliveryOrder->is_return;
-                        $current = $deliveryOrder->status;
+                        $current  = $deliveryOrder->status;
 
                         if ($isReturn) {
                             $stages = [
@@ -424,63 +342,305 @@ new #[Title('Delivery Order')] class extends Component {
                             ];
                         }
 
+                        $stageIcons = [
+                            DeliveryOrderStatus::PENDING->value          => 'clock',
+                            DeliveryOrderStatus::PICKED_UP->value        => 'arrow-up-tray',
+                            DeliveryOrderStatus::IN_TRANSIT->value       => 'truck',
+                            DeliveryOrderStatus::OUT_FOR_DELIVERY->value => 'map-pin',
+                            DeliveryOrderStatus::DELIVERED->value        => 'check-badge',
+                            DeliveryOrderStatus::AT_STATION->value       => 'building-storefront',
+                            DeliveryOrderStatus::COLLECTED->value        => 'check-badge',
+                            DeliveryOrderStatus::RETURNING->value        => 'arrow-uturn-left',
+                            DeliveryOrderStatus::RETURNED->value         => 'archive-box',
+                        ];
+
                         $currentIdx = array_search($current, $stages);
-                        $isFailed = in_array($current, [DeliveryOrderStatus::FAILED, DeliveryOrderStatus::CANCELLED]);
+                        $isFailed    = $current === DeliveryOrderStatus::FAILED;
+                        $isCancelled = $current === DeliveryOrderStatus::CANCELLED;
+                        $isTerminal  = $current->isTerminal();
                     @endphp
 
-                    @if ($isFailed)
-                        <div class="flex items-center gap-2 text-sm text-red-500 font-medium mb-4">
-                            <flux:icon.x-circle class="size-4 shrink-0" />
-                            {{ $current->label() }}
+                    <div class="relative">
+                        @foreach ($stages as $index => $stage)
+                            @php
+                                $reached  = $currentIdx !== false && $index <= $currentIdx;
+                                $isActive = $current === $stage;
+                                $isLast   = $index === count($stages) - 1;
+                                $nextReached = isset($stages[$index + 1]) && $currentIdx !== false && ($index + 1) <= $currentIdx;
+                            @endphp
+
+                            <div class="relative flex gap-4 {{ $isLast ? 'pb-0' : 'pb-6' }}">
+                                @if (! $isLast)
+                                    <div @class([
+                                        'absolute left-4 top-8 bottom-0 w-px z-0',
+                                        'bg-green-500' => $nextReached,
+                                        'bg-zinc-200 dark:bg-zinc-600' => ! $nextReached,
+                                    ])></div>
+                                @endif
+
+                                <div @class([
+                                    'relative z-10 shrink-0 w-8 h-8 rounded-full flex items-center justify-center transition-colors',
+                                    'bg-green-500 text-white ring-4 ring-green-100 dark:ring-green-900' => $isActive && ! $isFailed && ! $isCancelled,
+                                    'bg-green-500 text-white' => $reached && ! $isActive,
+                                    'bg-zinc-100 dark:bg-zinc-800 text-zinc-400' => ! $reached,
+                                ])>
+                                    <flux:icon name="{{ $stageIcons[$stage->value] ?? 'circle-stack' }}" class="size-4" />
+                                </div>
+
+                                <div class="flex-1 flex items-start justify-between gap-4 pt-1 min-w-0">
+                                    <div>
+                                        <flux:text @class([
+                                            'text-sm',
+                                            'font-semibold text-green-600 dark:text-green-400' => $isActive,
+                                            'font-medium text-zinc-900 dark:text-white' => $reached && ! $isActive,
+                                            'text-zinc-400' => ! $reached,
+                                        ])>
+                                            {{ $stage->label() }}
+                                        </flux:text>
+
+                                        @if ($stage === DeliveryOrderStatus::PENDING && $isActive)
+                                            <flux:text class="text-xs text-zinc-400 mt-0.5">
+                                                Awaiting provider assignment and pickup
+                                            </flux:text>
+                                        @endif
+
+                                        @if ($stage === DeliveryOrderStatus::PENDING && $reached && ! $isActive)
+                                            <flux:text class="text-xs text-zinc-400 mt-0.5">
+                                                {{ $deliveryOrder->created_at->format('M d, Y · g:i A') }}
+                                            </flux:text>
+                                        @endif
+
+                                        @if ($stage === DeliveryOrderStatus::OUT_FOR_DELIVERY && $deliveryOrder->estimated_delivery_at && $reached)
+                                            <flux:text class="{{ $deliveryOrder->estimated_delivery_at->isPast() && ! $isTerminal ? 'text-xs text-red-500' : 'text-xs text-zinc-400' }} mt-0.5">
+                                                Est. {{ $deliveryOrder->estimated_delivery_at->format('M d, Y') }}
+                                                @if ($deliveryOrder->estimated_delivery_at->isPast() && ! $isTerminal)
+                                                    · Overdue
+                                                @endif
+                                            </flux:text>
+                                        @endif
+
+                                        @if ($stage === DeliveryOrderStatus::DELIVERED && $deliveryOrder->delivered_at)
+                                            <flux:text class="text-xs text-zinc-400 mt-0.5">
+                                                {{ $deliveryOrder->delivered_at->format('M d, Y · g:i A') }}
+                                            </flux:text>
+                                        @endif
+
+                                        @if ($stage === DeliveryOrderStatus::COLLECTED && $deliveryOrder->delivered_at)
+                                            <flux:text class="text-xs text-zinc-400 mt-0.5">
+                                                {{ $deliveryOrder->delivered_at->format('M d, Y · g:i A') }}
+                                            </flux:text>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
+
+                        {{-- Failed branch --}}
+                        @if ($isFailed || $isCancelled)
+                            <div class="relative flex gap-4 pt-6">
+                                <div class="absolute left-4 top-0 h-6 w-px bg-zinc-300 z-0"></div>
+                                <div class="relative z-10 shrink-0 w-8 h-8 rounded-full flex items-center justify-center bg-red-500 text-white">
+                                    <flux:icon name="x-circle" class="size-4" />
+                                </div>
+                                <div class="flex-1 pt-1">
+                                    <flux:text class="text-sm font-semibold text-red-600">
+                                        {{ $current->label() }}
+                                    </flux:text>
+                                </div>
+                            </div>
+                        @endif
+                    </div>
+                </div>
+            </flux:card>
+
+            {{-- ============================================================ --}}
+            {{-- PICKUP STATION (conditional)                                  --}}
+            {{-- ============================================================ --}}
+            @if ($deliveryOrder->pickupStation)
+                <flux:card class="p-0">
+                    <div class="px-6 py-3 border-b border-zinc-200 dark:border-zinc-600 flex items-center justify-between">
+                        <flux:heading level="3" class="font-semibold">Pickup Station</flux:heading>
+                        @if ($deliveryOrder->isOverdueCollection())
+                            <flux:badge color="red" variant="solid" size="sm">Collection Overdue</flux:badge>
+                        @elseif ($deliveryOrder->status === DeliveryOrderStatus::COLLECTED)
+                            <flux:badge color="green" variant="solid" size="sm">Collected</flux:badge>
+                        @elseif ($deliveryOrder->status === DeliveryOrderStatus::AT_STATION)
+                            <flux:badge color="orange" variant="solid" size="sm">Awaiting Collection</flux:badge>
+                        @endif
+                    </div>
+                    <div class="p-6 grid grid-cols-2 sm:grid-cols-3 gap-x-8 gap-y-5 text-sm">
+                        <div>
+                            <p class="text-xs font-medium text-zinc-400 uppercase tracking-wider mb-1">Station Name</p>
+                            <p class="font-medium text-zinc-800 dark:text-zinc-100">
+                                {{ $deliveryOrder->pickupStation->name }}
+                            </p>
+                        </div>
+                        @if ($deliveryOrder->pickupStation->location ?? null)
+                            <div>
+                                <p class="text-xs font-medium text-zinc-400 uppercase tracking-wider mb-1">Location</p>
+                                <p class="font-medium text-zinc-800 dark:text-zinc-100">
+                                    {{ $deliveryOrder->pickupStation->location }}
+                                </p>
+                            </div>
+                        @endif
+                        @if ($deliveryOrder->collection_deadline_at)
+                            <div>
+                                <p class="text-xs font-medium text-zinc-400 uppercase tracking-wider mb-1">Collection Deadline</p>
+                                <p class="font-medium {{ $deliveryOrder->collection_deadline_at->isPast() ? 'text-red-500' : 'text-zinc-800 dark:text-zinc-100' }}">
+                                    {{ $deliveryOrder->collection_deadline_at->format('M d, Y') }}
+                                </p>
+                                <p class="text-xs text-zinc-400 mt-0.5">
+                                    {{ $deliveryOrder->collection_deadline_at->diffForHumans() }}
+                                </p>
+                            </div>
+                        @endif
+                    </div>
+                </flux:card>
+            @endif
+
+            {{-- ============================================================ --}}
+            {{-- COST BREAKDOWN (conditional)                                  --}}
+            {{-- ============================================================ --}}
+            @if (! empty($deliveryOrder->cost_breakdown))
+                @php $breakdown = $deliveryOrder->cost_breakdown; @endphp
+                <flux:card class="p-0">
+                    <div class="px-6 py-3 border-b border-zinc-200 dark:border-zinc-600">
+                        <flux:heading level="3" class="font-semibold">Cost Breakdown</flux:heading>
+                    </div>
+                    <div class="divide-y divide-zinc-100 dark:divide-zinc-800">
+                        @foreach ($breakdown as $key => $value)
+                            @if (! in_array($key, ['model', 'total']))
+                                <div class="flex justify-between px-6 py-3 text-sm">
+                                    <flux:text class="text-zinc-500 capitalize">{{ str_replace('_', ' ', $key) }}</flux:text>
+                                    <flux:text class="font-medium">
+                                        {{ is_numeric($value) ? format_currency($value) : $value }}
+                                    </flux:text>
+                                </div>
+                            @endif
+                        @endforeach
+                        <div class="flex justify-between px-6 py-3 text-sm font-semibold bg-zinc-50 dark:bg-zinc-800/30">
+                            <span>Total</span>
+                            <span>{{ format_currency($breakdown['total'] ?? $deliveryOrder->shipping_cost) }}</span>
+                        </div>
+                    </div>
+                </flux:card>
+            @endif
+
+        </div>
+
+        {{-- ── Right: Sidebar ── --}}
+        <div class="space-y-5">
+
+            {{-- ============================================================ --}}
+            {{-- LINKED ORDER                                                   --}}
+            {{-- ============================================================ --}}
+            @if ($deliveryOrder->order)
+                <flux:card class="p-0">
+                    <div class="px-5 py-3 border-b border-zinc-200 dark:border-zinc-600">
+                        <flux:heading>Linked Order</flux:heading>
+                    </div>
+                    <div class="p-5 space-y-3">
+                        <div class="flex items-center gap-3">
+                            <div class="shrink-0 w-10 h-10 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center">
+                                <flux:icon.shopping-bag class="size-5 text-zinc-400" />
+                            </div>
+                            <div>
+                                <flux:text class="font-semibold text-sm">{{ $deliveryOrder->order->reference }}</flux:text>
+                                <flux:text class="text-xs text-zinc-400">
+                                    {{ $deliveryOrder->order->user?->name ?? 'Guest' }}
+                                </flux:text>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between text-sm">
+                            <flux:text class="text-zinc-400">Order status</flux:text>
+                            <flux:badge size="sm" color="zinc" variant="flat">
+                                {{ $deliveryOrder->order->status->label() }}
+                            </flux:badge>
+                        </div>
+                        <flux:button variant="ghost" size="sm" icon="arrow-top-right-on-square"
+                            :href="route('admin.orders.show', $deliveryOrder->order)" wire:navigate class="w-full">
+                            View Order
+                        </flux:button>
+                    </div>
+                </flux:card>
+            @endif
+
+            {{-- ============================================================ --}}
+            {{-- ASSIGN LOGISTICS PROVIDER                                      --}}
+            {{-- ============================================================ --}}
+            <flux:card class="p-0">
+                <div class="px-5 py-3 border-b border-zinc-200 dark:border-zinc-600 flex items-center justify-between">
+                    <flux:heading>Logistics Provider</flux:heading>
+                    @if ($deliveryOrder->logisticsProvider)
+                        <flux:badge size="sm" color="green" variant="flat">Assigned</flux:badge>
+                    @else
+                        <flux:badge size="sm" color="zinc" variant="flat">Unassigned</flux:badge>
+                    @endif
+                </div>
+                <div class="p-5 space-y-4">
+                    @if ($deliveryOrder->logisticsProvider && ! $deliveryOrder->isTerminal())
+                        <div class="flex items-center gap-2 text-sm">
+                            <flux:icon.truck class="size-4 text-zinc-400 shrink-0" />
+                            <flux:text class="font-medium">{{ $deliveryOrder->logisticsProvider->name }}</flux:text>
+                        </div>
+                        <flux:separator />
+                    @elseif ($deliveryOrder->logisticsProvider && $deliveryOrder->isTerminal())
+                        <div class="flex items-center gap-2 text-sm">
+                            <flux:icon.truck class="size-4 text-zinc-400 shrink-0" />
+                            <flux:text class="font-medium">{{ $deliveryOrder->logisticsProvider->name }}</flux:text>
                         </div>
                     @endif
 
-                    <ol class="space-y-0">
-                        @foreach ($stages as $i => $stage)
-                            @php
-                                $done = $currentIdx !== false && $i < $currentIdx;
-                                $active = $current === $stage;
-                                $upcoming = $currentIdx === false || $i > $currentIdx;
-                                $isLast = $i === count($stages) - 1;
-                            @endphp
-                            <li class="flex gap-3 {{ $isLast ? '' : 'pb-4' }}">
-                                {{-- Spine --}}
-                                <div class="flex flex-col items-center shrink-0">
-                                    <div @class([
-                                        'w-5 h-5 rounded-full flex items-center justify-center shrink-0 z-10',
-                                        'bg-zinc-800 dark:bg-zinc-100' => $done,
-                                        'bg-zinc-800 dark:bg-zinc-100 ring-4 ring-zinc-200 dark:ring-zinc-700' => $active,
-                                        'bg-zinc-200 dark:bg-zinc-700' => $upcoming && !$isFailed,
-                                        'bg-zinc-200 dark:bg-zinc-700' => $isFailed,
-                                    ])>
-                                        @if ($done)
-                                            <flux:icon.check class="size-2.5 text-white dark:text-zinc-900" />
-                                        @endif
-                                    </div>
-                                    @if (! $isLast)
-                                        <div @class([
-                                            'w-px flex-1 mt-1',
-                                            'bg-zinc-800 dark:bg-zinc-100' => $done,
-                                            'bg-zinc-200 dark:bg-zinc-700' => ! $done,
-                                        ])></div>
-                                    @endif
-                                </div>
-                                {{-- Label --}}
-                                <div class="pb-1">
-                                    <p @class([
-                                        'text-sm',
-                                        'font-semibold text-zinc-800 dark:text-zinc-100' => $active,
-                                        'text-zinc-500 dark:text-zinc-400' => $done,
-                                        'text-zinc-300 dark:text-zinc-600' => $upcoming && ! $isFailed,
-                                    ])>
-                                        {{ $stage->label() }}
-                                    </p>
-                                </div>
-                            </li>
-                        @endforeach
-                    </ol>
+                    @if (! $deliveryOrder->isTerminal())
+                        <flux:field>
+                            <flux:label>{{ $deliveryOrder->logisticsProvider ? 'Change Provider' : 'Select Provider' }}</flux:label>
+                            <flux:select wire:model="selectedProviderId" class="w-full">
+                                <flux:select.option :value="null">— None —</flux:select.option>
+                                @foreach ($this->activeProviders as $provider)
+                                    <flux:select.option :value="$provider->id">{{ $provider->name }}</flux:select.option>
+                                @endforeach
+                            </flux:select>
+                        </flux:field>
+                        <flux:button variant="primary" size="sm" wire:click="assignProvider" class="w-full cursor-pointer">
+                            {{ $deliveryOrder->logisticsProvider ? 'Update Provider' : 'Assign Provider' }}
+                        </flux:button>
+                    @endif
                 </div>
             </flux:card>
+
+            {{-- ============================================================ --}}
+            {{-- CUSTOMER INFO                                                  --}}
+            {{-- ============================================================ --}}
+            @if ($deliveryOrder->order?->user)
+                <flux:card class="p-0">
+                    <div class="px-5 py-3 border-b border-zinc-200 dark:border-zinc-600">
+                        <flux:heading>Customer</flux:heading>
+                    </div>
+                    <div class="p-5 space-y-3 text-sm">
+                        <div class="flex items-center gap-3">
+                            <div class="shrink-0 w-9 h-9 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center">
+                                <flux:icon.user class="size-4 text-zinc-400" />
+                            </div>
+                            <div>
+                                <flux:text class="font-medium">{{ $deliveryOrder->order->user->name }}</flux:text>
+                                <flux:text class="text-xs text-zinc-400">{{ $deliveryOrder->order->user->email }}</flux:text>
+                            </div>
+                        </div>
+                        @if ($deliveryOrder->order->shipping_address)
+                            <div class="flex items-start gap-2 text-xs text-zinc-500 pt-1">
+                                <flux:icon.map-pin class="size-3.5 shrink-0 mt-0.5 text-zinc-400" />
+                                <span>
+                                    {{ $deliveryOrder->order->shipping_address['address'] ?? '' }},
+                                    {{ implode(', ', array_filter([
+                                        $deliveryOrder->order->shipping_address['area'] ?? null,
+                                        $deliveryOrder->order->shipping_address['county'] ?? null,
+                                    ])) }}
+                                </span>
+                            </div>
+                        @endif
+                    </div>
+                </flux:card>
+            @endif
 
         </div>
 

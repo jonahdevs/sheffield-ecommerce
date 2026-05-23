@@ -7,18 +7,27 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Livewire\Livewire;
 use Spatie\Activitylog\Models\Activity;
+use Spatie\Permission\Models\Permission;
 
 beforeEach(function () {
+    if (! Permission::where('name', 'view.orders')->exists()) {
+        Permission::create(['name' => 'view.orders', 'guard_name' => 'web']);
+    }
+
     $this->admin = User::factory()->create([
         'email' => 'admin@test.com',
         'is_staff' => true,
     ]);
+
+    $this->admin->givePermissionTo('view.orders');
 
     $this->actingAs($this->admin);
 });
 
 test('order changelog page displays order changes', function () {
     $order = Order::factory()->create(['reference' => 'TEST-001']);
+
+    Activity::where('subject_type', Order::class)->where('subject_id', $order->id)->delete();
 
     $order->update(['status' => OrderStatus::PROCESSING]);
 
@@ -32,7 +41,9 @@ test('order changelog page displays order changes', function () {
 });
 
 test('order changelog page displays multiple changes', function () {
-    $order = Order::factory()->create(['reference' => 'TEST-002']);
+    $order = Order::factory()->create(['reference' => 'TEST-002', 'status' => OrderStatus::PENDING->value]);
+
+    Activity::where('subject_type', Order::class)->where('subject_id', $order->id)->delete();
 
     $order->update(['status' => OrderStatus::PROCESSING]);
     $order->update(['payment_status' => PaymentStatus::PAID]);
@@ -129,6 +140,8 @@ test('order changelog page formats enum values correctly', function () {
 
 test('order changelog page paginates results', function () {
     $order = Order::factory()->create(['reference' => 'TEST-008']);
+
+    Activity::where('subject_type', Order::class)->where('subject_id', $order->id)->delete();
 
     for ($i = 0; $i < 25; $i++) {
         $order->update(['customer_notes' => "Note {$i}"]);
