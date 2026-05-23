@@ -17,6 +17,7 @@ use App\Notifications\QuoteRejectedNotification;
 use App\Notifications\QuoteRequestedNotification;
 use App\Notifications\QuoteSentNotification;
 use App\Services\Payment\PaymentService;
+use App\Services\Shipping\ShippingCalculator;
 use App\Settings\CustomerNotificationSettings;
 use App\Settings\LocalizationSettings;
 use App\Settings\NotificationSettings;
@@ -35,6 +36,7 @@ class QuotationService
         private readonly CustomerNotificationSettings $customerNotificationSettings,
         private readonly PaymentService $paymentService,
         private readonly TaxService $taxService,
+        private readonly ShippingCalculator $shippingCalculator,
     ) {}
 
     // =========================================================================
@@ -518,19 +520,32 @@ class QuotationService
             'county' => $quote->preferred_county,
         ];
 
-        // Shipping snapshot — quote has shipping cost but no method details
+        // Shipping snapshot — try to resolve a real method from the user's address so
+        // the packing slip shows a meaningful method name. The quoted cost always wins.
+        $resolvedMethod = null;
+        if ($address?->county_id) {
+            $weightKg = $quote->items->sum(fn ($item) => ($item->product?->weight_kg ?? 0) * $item->quantity);
+            $options = $this->shippingCalculator->calculate(
+                countyId: $address->county_id,
+                subCountyId: $address->sub_county_id,
+                weightKg: $weightKg,
+                orderAmount: $quote->subtotal_cents / 100,
+            );
+            $resolvedMethod = $options->first(fn ($o) => ! $o->isPus()) ?? $options->first();
+        }
+
         $shippingSnapshot = [
-            'method_id' => null,
-            'method_name' => 'As per quotation',
-            'method_code' => 'quote',
-            'method_type' => 'quote',
-            'zone_id' => null,
-            'rate_id' => null,
+            'method_id' => $resolvedMethod?->methodId,
+            'method_name' => $resolvedMethod?->methodName ?? 'Delivery',
+            'method_code' => $resolvedMethod?->methodCode ?? 'quote',
+            'method_type' => $resolvedMethod?->methodType ?? 'quote',
+            'zone_id' => $resolvedMethod?->shippingZoneId,
+            'rate_id' => $resolvedMethod?->shippingRateId,
             'station_id' => null,
             'station_name' => null,
             'cost' => $quote->shipping,
             'cost_breakdown' => null,
-            'delivery_window' => null,
+            'delivery_window' => $resolvedMethod?->deliveryWindow(),
             'weight_kg' => null,
         ];
 

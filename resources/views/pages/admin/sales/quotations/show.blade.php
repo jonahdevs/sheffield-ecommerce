@@ -43,6 +43,7 @@ new #[Title('Quotation Details')] class extends Component {
 
         $settings = app(QuotationSettings::class);
         $this->validityDays = $settings->default_validity_days;
+        $this->adminNote = $quote->admin_notes ?? $settings->default_customer_note ?? '';
     }
 
     // =========================================================================

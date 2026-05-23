@@ -47,8 +47,11 @@ class DocumentService
 
             // Add footer for Chromium-based drivers
             if (in_array($driver, ['browsershot', 'cloudflare', 'gotenberg'])) {
-                $pdf->footerView('pdf.browsershot.footer', ['order' => null])
-                    ->margins(0, 0, 40, 0);
+                $pdf->footerView('pdf.browsershot.footer', [
+                    'order' => null,
+                    'preparedByName' => auth()->user()?->name,
+                    'preparedAt' => ($quote->quoted_at ?? now())->format('d/m/Y H:i'),
+                ])->margins(0, 0, 40, 0);
             }
 
             $filename = "{$quote->reference}.pdf";

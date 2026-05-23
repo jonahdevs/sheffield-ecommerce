@@ -144,7 +144,7 @@ new #[Layout('layouts.customer')] class extends Component {
                     @endif
 
                     <span
-                        class="inline-block text-[9px] font-extrabold tracking-widest uppercase px-2 py-0.5 mb-2 {{ $address->is_default ? 'bg-primary text-white' : 'bg-zinc-950 text-white' }}">
+                        class="inline-block text-[9px] font-extrabold tracking-widest uppercase px-2 py-0.5 mb-2 {{ $address->is_default ? 'bg-primary text-white' : 'bg-secondary text-white' }}">
                         {{ $address->label ?? 'Home' }}
                     </span>
 

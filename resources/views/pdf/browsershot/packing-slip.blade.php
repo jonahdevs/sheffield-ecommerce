@@ -15,19 +15,17 @@
         $companyAddressLines = array_filter([
             $general->store_address,
             $general->store_address_line_2,
-            trim(implode(', ', array_filter([
-                $general->store_city,
-                $general->store_state,
-                $general->store_postal_code,
-            ]))),
+            trim(
+                implode(', ', array_filter([$general->store_city, $general->store_state, $general->store_postal_code])),
+            ),
             $general->store_country,
         ]);
 
         // Prefer live delivery order data (post-SHIPPED); fall back to shipping_snapshot (PROCESSING)
-        $delivery      = $order->deliveryOrder ?? null;
+        $delivery = $order->deliveryOrder ?? null;
         $shippingMethod = $delivery?->shippingMethod;
-        $pickupStation  = $delivery?->pickupStation;
-        $snapshot       = $order->shipping_snapshot ?? [];
+        $pickupStation = $delivery?->pickupStation;
+        $snapshot = $order->shipping_snapshot ?? [];
 
     @endphp
 
@@ -71,8 +69,7 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td class="border border-gray-900 px-3 py-1 bg-white font-semibold"
-                                style="text-align: center;">
+                            <td class="border border-gray-900 px-3 py-1 bg-white font-semibold" style="text-align: center;">
                                 {{ $order->reference }}
                             </td>
                             <td class="border border-gray-900 px-3 py-1 bg-white" style="text-align: center;">
@@ -97,7 +94,7 @@
         {{-- Ship To --}}
         <div class="flex flex-col">
             <div class="text-xs font-bold text-gray-900 mb-1.5">SHIP TO:</div>
-            <div class="flex-1 border border-gray-900 px-3 py-2 text-[11px] leading-snug min-w-[14rem] max-w-xs"
+            <div class="flex-1 border border-gray-900 px-3 py-2 text-[11px] leading-snug min-w-56 max-w-xs"
                 style="box-shadow: 3px 3px 0 rgba(0,0,0,0.85);">
                 <div class="font-bold uppercase text-gray-900">{{ $order->customerName() }}</div>
                 @if ($order->customerPhone())
@@ -106,10 +103,10 @@
                 @if ($order->shipping_address)
                     <div class="mt-1">
                         {{ $order->shipping_address['address'] ?? '' }}<br>
-                        {{ implode(', ', array_filter([
-                            $order->shipping_address['area'] ?? null,
-                            $order->shipping_address['county'] ?? null,
-                        ])) }}
+                        {{ implode(
+                            ', ',
+                            array_filter([$order->shipping_address['area'] ?? null, $order->shipping_address['county'] ?? null]),
+                        ) }}
                     </div>
                 @endif
             </div>
@@ -118,18 +115,30 @@
         {{-- Shipping Method --}}
         <div class="flex flex-col">
             <div class="text-xs font-bold text-gray-900 mb-1.5">SHIPPING METHOD:</div>
-            <div class="flex-1 border border-gray-900 px-3 py-2 text-[11px] leading-snug min-w-[14rem] max-w-xs"
+            <div class="flex-1 border border-gray-900 px-3 py-2 text-[11px] leading-snug min-w-56 max-w-xs"
                 style="box-shadow: 3px 3px 0 rgba(0,0,0,0.85);">
                 @if ($shippingMethod)
                     <div class="font-bold uppercase text-gray-900">{{ $shippingMethod->name }}</div>
+                @elseif (($snapshot['method_type'] ?? null) === 'quote')
+                    {{-- Legacy quote orders: show destination since no real method was stored --}}
+                    @php
+                        $dest = implode(
+                            ', ',
+                            array_filter([
+                                $order->shipping_address['area'] ?? null,
+                                $order->shipping_address['county'] ?? null,
+                            ]),
+                        );
+                    @endphp
+                    <div class="font-bold uppercase text-gray-900">Delivery</div>
+                    @if ($dest)
+                        <div class="text-gray-600 mt-0.5">To: {{ $dest }}</div>
+                    @endif
                 @elseif ($snapshot['method_name'] ?? null)
                     <div class="font-bold uppercase text-gray-900">{{ $snapshot['method_name'] }}</div>
                     @if ($snapshot['delivery_window'] ?? null)
                         <div class="text-gray-600 mt-0.5">Est. {{ $snapshot['delivery_window'] }}</div>
                     @endif
-                @elseif ($order->wasConvertedFromQuote())
-                    <div class="font-bold uppercase text-gray-900">Quote Delivery</div>
-                    <div class="text-gray-600 mt-0.5">Arranged separately</div>
                 @else
                     <div class="text-gray-500 italic">Not specified</div>
                 @endif
@@ -161,23 +170,25 @@
         <table class="w-full border-collapse text-xs">
             <thead>
                 <tr>
-                    <th class="border border-gray-400 px-2 py-2 bg-white font-bold text-gray-900 w-8 text-center">#</th>
-                    <th class="border border-gray-400 px-2 py-2 bg-white font-bold text-gray-900 text-left">DETAILS</th>
-                    <th class="border border-gray-400 px-2 py-2 bg-white font-bold text-gray-900 w-12 text-center">QTY</th>
-                    <th class="border border-gray-400 px-2 py-2 bg-white font-bold text-gray-900 w-12 text-center">✓</th>
+                    <th class="border border-gray-400 px-2 py-2 bg-gray-100 font-bold text-gray-900 w-8 text-center">#</th>
+                    <th class="border border-gray-400 px-2 py-2 bg-gray-100 font-bold text-gray-900 text-left">DETAILS</th>
+                    <th class="border border-gray-400 px-2 py-2 bg-gray-100 font-bold text-gray-900 w-12 text-center">QTY
+                    </th>
+                    <th class="border border-gray-400 px-2 py-2 bg-gray-100 font-bold text-gray-900 w-12 text-center">✓</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach ($order->items as $index => $item)
                     @php
-                        $name         = $item->product_snapshot['name'] ?? ($item->product?->name ?? '—');
-                        $sku          = $item->product_snapshot['sku']  ?? ($item->product?->sku  ?? '—');
-                        $brand        = $item->product_snapshot['brand'] ?? null;
-                        $modelNumber  = $item->product_snapshot['model_number'] ?? ($item->product?->model_number ?? null);
-                        $dimensions   = $item->product_snapshot['dimensions'] ?? ($item->product?->dimensions ?? null);
-                        $weight       = $item->product_snapshot['weight_kg'] ?? ($item->product?->weight_kg ?? null);
+                        $name = $item->product_snapshot['name'] ?? ($item->product?->name ?? '—');
+                        $sku = $item->product_snapshot['sku'] ?? ($item->product?->sku ?? '—');
+                        $brand = $item->product_snapshot['brand'] ?? null;
+                        $modelNumber =
+                            $item->product_snapshot['model_number'] ?? ($item->product?->model_number ?? null);
+                        $dimensions = $item->product_snapshot['dimensions'] ?? ($item->product?->dimensions ?? null);
+                        $weight = $item->product_snapshot['weight_kg'] ?? ($item->product?->weight_kg ?? null);
                         $variantAttrs = $item->product_snapshot['variant']['attributes'] ?? [];
-                        $isBundle     = ($item->product_snapshot['type'] ?? null) === 'bundle';
+                        $isBundle = ($item->product_snapshot['type'] ?? null) === 'bundle';
                         $bundleContents = $item->product_snapshot['bundle_contents'] ?? [];
                     @endphp
                     <tr>
@@ -195,7 +206,9 @@
                                     <li>Model No: {{ $modelNumber }}</li>
                                 @endif
                                 @if ($dimensions)
-                                    <li>Dimensions: {{ is_array($dimensions) ? implode(' × ', array_filter($dimensions)) : $dimensions }}</li>
+                                    <li>Dimensions:
+                                        {{ is_array($dimensions) ? implode(' × ', array_filter($dimensions)) : $dimensions }}
+                                    </li>
                                 @endif
                                 @if ($weight)
                                     <li>Weight: {{ number_format($weight, 2) }} kg / unit</li>
@@ -216,7 +229,8 @@
                                 @endif
                             </ul>
                         </td>
-                        <td class="border border-gray-400 px-2 py-2 align-top text-center font-bold text-base text-gray-900">
+                        <td
+                            class="border border-gray-400 px-2 py-2 align-top text-center font-bold text-base text-gray-900">
                             {{ $item->quantity }}
                         </td>
                         <td class="border border-gray-400 px-2 py-2 align-top text-center">
@@ -261,19 +275,21 @@
     {{-- ================================================================== --}}
     <div class="px-10 mt-6">
         <div class="border-t-2 border-gray-900 mb-5"></div>
-        <div class="flex flex-col gap-5 text-[11px] max-w-xs">
-            <div>
-                <div class="font-bold text-gray-700 uppercase mb-2">Received By</div>
-                <div class="border-b border-gray-500 h-7"></div>
-            </div>
-            <div>
-                <div class="font-bold text-gray-700 uppercase mb-2">Sign</div>
-                <div class="border-b border-gray-500 h-7"></div>
-            </div>
-            <div>
-                <div class="font-bold text-gray-700 uppercase mb-2">Date</div>
-                <div class="border-b border-gray-500 h-7"></div>
-                <div class="text-[10px] text-gray-400 mt-1">DD/MM/YYYY</div>
+        <div class="flex gap-10 text-[11px]">
+            <div class="flex flex-col gap-5 min-w-[10rem]">
+                <div>
+                    <div class="font-bold text-gray-700 uppercase mb-2">Received By</div>
+                    <div class="border-b border-gray-500 h-7"></div>
+                </div>
+                <div>
+                    <div class="font-bold text-gray-700 uppercase mb-2">Sign</div>
+                    <div class="border-b border-gray-500 h-7"></div>
+                </div>
+                <div>
+                    <div class="font-bold text-gray-700 uppercase mb-2">Date</div>
+                    <div class="border-b border-gray-500 h-7"></div>
+                    <div class="text-[10px] text-gray-400 mt-1">DD/MM/YYYY</div>
+                </div>
             </div>
         </div>
     </div>

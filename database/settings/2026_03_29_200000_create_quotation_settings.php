@@ -16,8 +16,6 @@ return new class extends SettingsMigration
         $this->migrator->add('quotations.require_phone', true);
         $this->migrator->add('quotations.auto_expire_enabled', true);
         $this->migrator->add('quotations.admin_notification_email', null);
-        $this->migrator->add('quotations.quote_terms', null);
-        $this->migrator->add('quotations.quote_footer_note', null);
-
+        $this->migrator->add('quotations.default_customer_note', 'Thank you for your interest in Sheffield Africa. Please review this quotation and let us know if you have any questions. Once you are happy, go ahead and accept it through your portal and we will get things moving right away.');
     }
 };

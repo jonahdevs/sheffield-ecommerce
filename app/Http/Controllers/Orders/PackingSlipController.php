@@ -29,13 +29,16 @@ class PackingSlipController extends Controller
         $driver = config('laravel-pdf.driver', 'browsershot');
         $isChromium = in_array($driver, ['browsershot', 'cloudflare', 'gotenberg']);
 
-        $pdf = Pdf::view('pdf.packing-slip', ['order' => $order])
+        $pdf = Pdf::view('pdf.browsershot.packing-slip', ['order' => $order])
             ->format('a4')
             ->name("PackingSlip-{$order->reference}.pdf");
 
         if ($isChromium) {
-            $pdf->footerView('pdf.packing-slip-footer')
-                ->margins(10, 10, 25, 10);
+            $pdf->footerView('pdf.browsershot.footer', [
+                'isInternal' => true,
+                'preparedByName' => auth()->user()?->name,
+                'preparedAt' => now()->format('d/m/Y H:i'),
+            ])->margins(10, 10, 40, 10);
         }
 
         return $pdf;

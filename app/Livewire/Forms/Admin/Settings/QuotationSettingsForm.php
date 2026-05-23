@@ -25,9 +25,7 @@ class QuotationSettingsForm extends Form
 
     public ?string $admin_notification_email = null;
 
-    public ?string $quote_terms = null;
-
-    public ?string $quote_footer_note = null;
+    public ?string $default_customer_note = null;
 
     public function rules(): array
     {
@@ -41,8 +39,7 @@ class QuotationSettingsForm extends Form
             'require_phone' => ['boolean'],
             'auto_expire_enabled' => ['boolean'],
             'admin_notification_email' => ['nullable', 'email', 'max:255'],
-            'quote_terms' => ['nullable', 'string', 'max:5000'],
-            'quote_footer_note' => ['nullable', 'string', 'max:500'],
+            'default_customer_note' => ['nullable', 'string', 'max:2000'],
         ];
     }
 
@@ -57,8 +54,7 @@ class QuotationSettingsForm extends Form
         $this->require_phone = $settings->require_phone;
         $this->auto_expire_enabled = $settings->auto_expire_enabled;
         $this->admin_notification_email = $settings->admin_notification_email;
-        $this->quote_terms = $settings->quote_terms;
-        $this->quote_footer_note = $settings->quote_footer_note;
+        $this->default_customer_note = $settings->default_customer_note;
     }
 
     public function save(QuotationSettings $settings): void
@@ -74,8 +70,7 @@ class QuotationSettingsForm extends Form
         $settings->require_phone = $this->require_phone;
         $settings->auto_expire_enabled = $this->auto_expire_enabled;
         $settings->admin_notification_email = $this->admin_notification_email ?: null;
-        $settings->quote_terms = $this->quote_terms ?: null;
-        $settings->quote_footer_note = $this->quote_footer_note ?: null;
+        $settings->default_customer_note = $this->default_customer_note ?: null;
 
         $settings->save();
     }

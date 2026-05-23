@@ -6,7 +6,6 @@
     @php
         $general = app(\App\Settings\GeneralSettings::class);
         $tax = app(\App\Settings\TaxSettings::class);
-        $quotationSettings = app(\App\Settings\QuotationSettings::class);
 
         $logoPath = public_path('logo.png');
         $logoBase64 = '';
@@ -29,6 +28,7 @@
         if ($hasTax && $quote->subtotal_cents > 0) {
             $taxRate = round(($quote->tax_cents / $quote->subtotal_cents) * 100);
         }
+
     @endphp
 
     {{-- ================================================================== --}}
@@ -122,15 +122,15 @@
         <table class="w-full border-collapse text-xs">
             <thead>
                 <tr>
-                    <th class="border border-gray-400 px-2 py-2 bg-white font-bold text-gray-900 w-12 text-left">ITEM
+                    <th class="border border-gray-400 px-2 py-2 bg-gray-100 font-bold text-gray-900 w-12 text-left">ITEM
                     </th>
-                    <th class="border border-gray-400 px-2 py-2 bg-white font-bold text-gray-900 text-center">DETAILS
+                    <th class="border border-gray-400 px-2 py-2 bg-gray-100 font-bold text-gray-900 text-center">DETAILS
                     </th>
-                    <th class="border border-gray-400 px-2 py-2 bg-white font-bold text-gray-900 w-20 text-right">PRICE
+                    <th class="border border-gray-400 px-2 py-2 bg-gray-100 font-bold text-gray-900 w-20 text-right">PRICE
                     </th>
-                    <th class="border border-gray-400 px-2 py-2 bg-white font-bold text-gray-900 w-12 text-center">QTY
+                    <th class="border border-gray-400 px-2 py-2 bg-gray-100 font-bold text-gray-900 w-12 text-center">QTY
                     </th>
-                    <th class="border border-gray-400 px-2 py-2 bg-white font-bold text-gray-900 w-24 text-right">AMOUNT
+                    <th class="border border-gray-400 px-2 py-2 bg-gray-100 font-bold text-gray-900 w-24 text-right">AMOUNT
                     </th>
                 </tr>
             </thead>
@@ -239,42 +239,31 @@
     </div>
 
     {{-- ================================================================== --}}
-    {{-- CUSTOMER NOTES                                                      --}}
+    {{-- NOTE — dynamic per-quote note to customer                          --}}
     {{-- ================================================================== --}}
-    @if ($quote->customer_notes)
-        <div class="px-10 mt-5">
-            <div class="text-xs font-bold text-gray-700 uppercase mb-1">Customer Notes</div>
-            <div class="text-xs text-gray-700 italic">"{{ $quote->customer_notes }}"</div>
-        </div>
-    @endif
-
-    {{-- ================================================================== --}}
-    {{-- TERMS — admin-set or default from QuotationSettings                --}}
-    {{-- ================================================================== --}}
-    @if (!empty($quote->admin_notes ?: $quotationSettings->quote_terms))
-        <div class="px-10 mt-5">
-            <div class="text-xs font-bold text-gray-700 uppercase mb-1">Terms & Conditions</div>
-            <div class="text-[11px] text-gray-700 leading-snug whitespace-pre-line">
-                {{ $quote->admin_notes ?: $quotationSettings->quote_terms }}</div>
+    @if ($quote->admin_notes)
+        <div class="px-10 mt-6">
+            <div class="text-[11px] text-gray-700 leading-snug whitespace-pre-line">{{ $quote->admin_notes }}</div>
         </div>
     @endif
 
     {{-- ================================================================== --}}
     {{-- VALIDITY                                                            --}}
     {{-- ================================================================== --}}
-    @if ($quote->expires_at && $quote->status->value === 'sent')
-        <div class="px-10 mt-3 text-[11px] text-gray-700">
-            <strong>Note:</strong> This quotation is valid until {{ $quote->expires_at->format('d M, Y') }}. Prices and
-            availability are subject to change after this date.
-        </div>
-    @endif
+    <div class="px-10 mt-3 text-[11px] text-gray-700">
+        <strong>Note:</strong>
+        @if ($quote->expires_at)
+            This quotation is valid until {{ $quote->expires_at->format('d M, Y') }}.
+        @endif
+        Prices and availability are subject to change after this date.
+    </div>
 
     {{-- ================================================================== --}}
-    {{-- FOOTER NOTE — optional admin-set footer text, no brand name        --}}
+    {{-- SIGN-OFF                                                            --}}
     {{-- ================================================================== --}}
-    @if ($quotationSettings->quote_footer_note)
-        <div class="mt-8 mb-4 text-center">
-            <div class="text-[10px] text-gray-600">{{ $quotationSettings->quote_footer_note }}</div>
-        </div>
-    @endif
+    <div class="px-10 mt-8 text-[11px] text-gray-700">
+        <div>Best regards,</div>
+        <div class="font-bold mt-0.5">Sheffield Africa</div>
+    </div>
+
 @endsection

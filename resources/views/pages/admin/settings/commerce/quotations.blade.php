@@ -109,13 +109,10 @@ new #[Title('Quotations')] class extends Component {
                     </div>
 
                     <div class="p-5 space-y-5">
-                        <flux:textarea label="{{ __('Terms & conditions') }}" wire:model="form.quote_terms"
-                            rows="4" placeholder="{{ __('Enter terms and conditions to display on quote PDF...') }}"
-                            description="{{ __('Shown on the quotation PDF document') }}" />
+                        <flux:textarea label="{{ __('Default note to customer') }}" wire:model="form.default_customer_note"
+                            rows="3" placeholder="{{ __('e.g. Thank you for your interest. Kindly review the quotation and revert at your earliest convenience.') }}"
+                            description="{{ __('Auto-populated on every new quotation. Admin can override it per quote.') }}" />
 
-                        <flux:input label="{{ __('Footer note') }}" wire:model="form.quote_footer_note"
-                            placeholder="{{ __('e.g. Prices valid for 7 days from date of issue') }}"
-                            description="{{ __('Short note displayed at the bottom of the quote PDF') }}" />
                     </div>
                 </flux:card>
             @endif
