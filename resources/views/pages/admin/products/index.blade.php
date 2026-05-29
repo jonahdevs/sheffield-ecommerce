@@ -30,23 +30,45 @@ new #[Layout('layouts::app')] #[Title('Products — Admin')] class extends Compo
     public string $sortDirection = 'desc';
 
     #[Url]
-    public int $perPage = 15;
+    public int $perPage = 10;
+
+    /** @var array<int, string> */
+    public array $selected = [];
+
+    public bool $selectAll = false;
 
     public function updatedSearch(): void
     {
         $this->resetPage();
+        $this->clearSelection();
     }
     public function updatedFilterVisibility(): void
     {
         $this->resetPage();
+        $this->clearSelection();
     }
     public function updatedFilterStock(): void
     {
         $this->resetPage();
+        $this->clearSelection();
     }
     public function updatedPerPage(): void
     {
         $this->resetPage();
+        $this->clearSelection();
+    }
+
+    public function updatedSelectAll(bool $value): void
+    {
+        $this->selected = $value
+            ? $this->products->pluck('id')->map(fn ($id) => (string) $id)->all()
+            : [];
+    }
+
+    public function clearSelection(): void
+    {
+        $this->selected = [];
+        $this->selectAll = false;
     }
 
     public function sort(string $column): void
@@ -59,6 +81,22 @@ new #[Layout('layouts::app')] #[Title('Products — Admin')] class extends Compo
         }
 
         $this->resetPage();
+        $this->clearSelection();
+    }
+
+    /** @return array<string, int> */
+    #[Computed]
+    public function stats(): array
+    {
+        return [
+            'total' => Product::count(),
+            'visible' => Product::where('visibility', ProductVisibility::VISIBLE)->count(),
+            'out' => Product::where('stock_status', StockStatus::OUT_OF_STOCK)->count(),
+            'low' => Product::whereNotNull('low_stock_threshold')
+                ->whereNotNull('stock_quantity')
+                ->whereColumn('stock_quantity', '<=', 'low_stock_threshold')
+                ->count(),
+        ];
     }
 
     #[Computed]
@@ -82,24 +120,101 @@ new #[Layout('layouts::app')] #[Title('Products — Admin')] class extends Compo
     {
         $product = Product::findOrFail($id);
         $product->delete();
-        unset($this->products);
+        unset($this->products, $this->stats);
 
         Flux::toast(heading: 'Product deleted', text: $product->name . ' has been removed.', variant: 'success');
+    }
+
+    public function bulkSetVisibility(string $visibility): void
+    {
+        if ($this->selected === [] || ! in_array($visibility, array_column(ProductVisibility::cases(), 'value'), true)) {
+            return;
+        }
+
+        $count = Product::whereIn('id', $this->selected)->update(['visibility' => $visibility]);
+        $this->afterBulk();
+
+        Flux::toast(heading: 'Visibility updated', text: $count . ' product(s) set to ' . ProductVisibility::from($visibility)->label() . '.', variant: 'success');
+    }
+
+    public function bulkSetStock(string $status): void
+    {
+        if ($this->selected === [] || ! in_array($status, array_column(StockStatus::cases(), 'value'), true)) {
+            return;
+        }
+
+        $count = Product::whereIn('id', $this->selected)->update(['stock_status' => $status]);
+        $this->afterBulk();
+
+        Flux::toast(heading: 'Stock updated', text: $count . ' product(s) marked ' . StockStatus::from($status)->label() . '.', variant: 'success');
+    }
+
+    public function bulkDelete(): void
+    {
+        if ($this->selected === []) {
+            return;
+        }
+
+        $count = Product::whereIn('id', $this->selected)->delete();
+        $this->afterBulk();
+
+        Flux::toast(heading: 'Products deleted', text: $count . ' product(s) have been removed.', variant: 'success');
+    }
+
+    private function afterBulk(): void
+    {
+        $this->clearSelection();
+        unset($this->products, $this->stats);
     }
 }; ?>
 
 <div>
     <div class="flex items-center justify-between">
         <div>
-            <flux:breadcrumbs>
+            @push('breadcrumbs')
+<flux:breadcrumbs>
                 <flux:breadcrumbs.item :href="route('dashboard')" wire:navigate>Dashboard</flux:breadcrumbs.item>
                 <flux:breadcrumbs.item>Products</flux:breadcrumbs.item>
             </flux:breadcrumbs>
-            <flux:heading size="xl" class="mt-2">Products</flux:heading>
+@endpush
+            <flux:heading size="xl">Products</flux:heading>
+            <flux:subheading>Manage your catalog — pricing, stock and visibility.</flux:subheading>
         </div>
         <flux:button variant="primary" icon="plus" :href="route('admin.products.create')" wire:navigate>
             Add product
         </flux:button>
+    </div>
+
+    {{-- KPIs --}}
+    <div class="mt-6 grid grid-cols-2 gap-4 lg:grid-cols-4">
+        <flux:card class="flex items-center gap-4">
+            <flux:icon.cube class="size-9 text-zinc-400" />
+            <div>
+                <div class="text-2xl font-semibold tabular-nums dark:text-white">{{ number_format($this->stats['total']) }}</div>
+                <flux:text size="sm">Total products</flux:text>
+            </div>
+        </flux:card>
+        <flux:card class="flex items-center gap-4">
+            <flux:icon.eye class="size-9 text-emerald-400" />
+            <div>
+                <div class="text-2xl font-semibold tabular-nums dark:text-white">{{ number_format($this->stats['visible']) }}</div>
+                <flux:text size="sm">Live</flux:text>
+            </div>
+        </flux:card>
+        <flux:card class="flex items-center gap-4">
+            <flux:icon.exclamation-triangle class="size-9 text-amber-400" />
+            <div>
+                <div class="text-2xl font-semibold tabular-nums dark:text-white">{{ number_format($this->stats['low']) }}</div>
+                <flux:text size="sm">Low stock</flux:text>
+            </div>
+        </flux:card>
+        <flux:card class="flex items-center gap-4">
+            <flux:icon.x-circle class="size-9 text-red-400" />
+            <div>
+                <div class="text-2xl font-semibold tabular-nums dark:text-white">{{ number_format($this->stats['out']) }}</div>
+                <flux:text size="sm">Out of stock</flux:text>
+            </div>
+        </flux:card>
     </div>
 
     {{-- Card: toolbar + table --}}
@@ -126,17 +241,55 @@ new #[Layout('layouts::app')] #[Title('Products — Admin')] class extends Compo
                 </flux:select>
 
                 <flux:select wire:model.live="perPage" class="w-28">
-                    <flux:select.option value="15">15 / page</flux:select.option>
+                    <flux:select.option value="10">10 / page</flux:select.option>
                     <flux:select.option value="25">25 / page</flux:select.option>
                     <flux:select.option value="50">50 / page</flux:select.option>
                     <flux:select.option value="100">100 / page</flux:select.option>
+                    <flux:select.option value="250">250 / page</flux:select.option>
                 </flux:select>
             </div>
         </div>
 
+        {{-- Bulk action bar --}}
+        @if (count($selected) > 0)
+            <div class="flex flex-wrap items-center gap-3 border-b border-zinc-200 bg-brand-50 px-6 py-2.5 dark:border-zinc-700 dark:bg-brand-500/10">
+                <flux:text class="font-medium">{{ count($selected) }} selected</flux:text>
+
+                <flux:dropdown>
+                    <flux:button size="sm" variant="ghost" icon-trailing="chevron-down">Set visibility</flux:button>
+                    <flux:menu>
+                        @foreach (ProductVisibility::cases() as $v)
+                            <flux:menu.item wire:click="bulkSetVisibility('{{ $v->value }}')">{{ $v->label() }}</flux:menu.item>
+                        @endforeach
+                    </flux:menu>
+                </flux:dropdown>
+
+                <flux:dropdown>
+                    <flux:button size="sm" variant="ghost" icon-trailing="chevron-down">Set stock</flux:button>
+                    <flux:menu>
+                        @foreach (StockStatus::cases() as $s)
+                            <flux:menu.item wire:click="bulkSetStock('{{ $s->value }}')">{{ $s->label() }}</flux:menu.item>
+                        @endforeach
+                    </flux:menu>
+                </flux:dropdown>
+
+                <flux:button size="sm" variant="ghost" icon="trash"
+                    wire:click="bulkDelete"
+                    wire:confirm="Delete {{ count($selected) }} selected product(s)? This cannot be undone."
+                    class="text-red-500! hover:text-red-600!">Delete</flux:button>
+
+                <flux:spacer />
+
+                <flux:button size="sm" variant="ghost" wire:click="clearSelection">Clear</flux:button>
+            </div>
+        @endif
+
         <flux:table
             container:class="[&_th:first-child]:pl-6 [&_th:last-child]:pr-6 [&_td:first-child]:pl-6 [&_td:last-child]:pr-6">
             <flux:table.columns class="bg-zinc-50 dark:bg-zinc-800/60">
+                <flux:table.column class="w-10">
+                    <flux:checkbox wire:model.live="selectAll" />
+                </flux:table.column>
                 <flux:table.column class="w-14"></flux:table.column>
                 <flux:table.column sortable :sorted="$sortBy === 'name'" :direction="$sortDirection"
                     wire:click="sort('name')">Product</flux:table.column>
@@ -151,6 +304,9 @@ new #[Layout('layouts::app')] #[Title('Products — Admin')] class extends Compo
             <flux:table.rows>
                 @forelse ($this->products as $product)
                     <flux:table.row :key="$product->id">
+                        <flux:table.cell>
+                            <flux:checkbox wire:model.live="selected" value="{{ $product->id }}" />
+                        </flux:table.cell>
                         <flux:table.cell>
                             <div
                                 class="size-10 overflow-hidden rounded border border-zinc-200 bg-zinc-50 p-0.5 dark:border-zinc-700 dark:bg-zinc-800">
@@ -232,7 +388,7 @@ new #[Layout('layouts::app')] #[Title('Products — Admin')] class extends Compo
                     </flux:table.row>
                 @empty
                     <flux:table.row>
-                        <flux:table.cell colspan="7" class="py-16 text-center text-zinc-400">
+                        <flux:table.cell colspan="8" class="py-16 text-center text-zinc-400">
                             @if ($search || $filterVisibility || $filterStock)
                                 No products match your filters.
                             @else

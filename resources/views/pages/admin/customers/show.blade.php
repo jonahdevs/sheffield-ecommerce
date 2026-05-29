@@ -34,11 +34,13 @@ new #[Layout('layouts::app')] #[Title('Customer — Admin')] class extends Compo
 @endphp
 
 <div>
-    <flux:breadcrumbs>
+    @push('breadcrumbs')
+<flux:breadcrumbs>
         <flux:breadcrumbs.item :href="route('dashboard')" wire:navigate>Dashboard</flux:breadcrumbs.item>
         <flux:breadcrumbs.item :href="route('admin.customers.index')" wire:navigate>Customers</flux:breadcrumbs.item>
         <flux:breadcrumbs.item>{{ $customer->name }}</flux:breadcrumbs.item>
     </flux:breadcrumbs>
+@endpush
 
     <div class="mt-2 flex items-center gap-4">
         <flux:avatar :name="$customer->name" :initials="$customer->initials()" size="lg" />

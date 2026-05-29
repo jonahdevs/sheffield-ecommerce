@@ -20,7 +20,7 @@ new #[Layout('layouts::app')] #[Title('Quotes — Admin')] class extends Compone
     public string $filterStatus = '';
 
     #[Url]
-    public int $perPage = 15;
+    public int $perPage = 10;
 
     public function updatedSearch(): void
     {
@@ -105,11 +105,13 @@ new #[Layout('layouts::app')] #[Title('Quotes — Admin')] class extends Compone
 <div>
     <div class="flex items-center justify-between">
         <div>
-            <flux:breadcrumbs>
+            @push('breadcrumbs')
+<flux:breadcrumbs>
                 <flux:breadcrumbs.item :href="route('dashboard')" wire:navigate>Dashboard</flux:breadcrumbs.item>
                 <flux:breadcrumbs.item>Quotes</flux:breadcrumbs.item>
             </flux:breadcrumbs>
-            <flux:heading size="xl" class="mt-2">Quotes & RFQs</flux:heading>
+@endpush
+            <flux:heading size="xl">Quotes & RFQs</flux:heading>
             <flux:subheading>Price and respond to quotation requests.</flux:subheading>
         </div>
         <flux:button variant="primary" icon="plus" wire:click="createDraft">New quote</flux:button>
@@ -160,9 +162,11 @@ new #[Layout('layouts::app')] #[Title('Quotes — Admin')] class extends Compone
                 </flux:select>
 
                 <flux:select wire:model.live="perPage" class="w-28">
-                    <flux:select.option value="15">15 / page</flux:select.option>
+                    <flux:select.option value="10">10 / page</flux:select.option>
                     <flux:select.option value="25">25 / page</flux:select.option>
                     <flux:select.option value="50">50 / page</flux:select.option>
+                    <flux:select.option value="100">100 / page</flux:select.option>
+                    <flux:select.option value="250">250 / page</flux:select.option>
                 </flux:select>
             </div>
         </div>

@@ -167,11 +167,13 @@ new #[Layout('layouts::app')] #[Title('Quote — Admin')] class extends Componen
 @endphp
 
 <div>
-    <flux:breadcrumbs>
+    @push('breadcrumbs')
+<flux:breadcrumbs>
         <flux:breadcrumbs.item :href="route('dashboard')" wire:navigate>Dashboard</flux:breadcrumbs.item>
         <flux:breadcrumbs.item :href="route('admin.quotes.index')" wire:navigate>Quotes</flux:breadcrumbs.item>
         <flux:breadcrumbs.item>{{ $quote->quote_number }}</flux:breadcrumbs.item>
     </flux:breadcrumbs>
+@endpush
 
     <form wire:submit="save">
         <div class="mt-2 flex flex-wrap items-start justify-between gap-4">

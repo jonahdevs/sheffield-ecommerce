@@ -71,13 +71,13 @@
             </flux:sidebar.group>
 
             <flux:sidebar.group :heading="__('Access')" class="grid">
-                <flux:sidebar.item icon="user-group" :href="route('admin.staff.index')" :current="request()->routeIs('admin.staff.*')"
-                    wire:navigate>
-                    {{ __('Staff') }}
-                </flux:sidebar.item>
                 <flux:sidebar.item icon="shield-check" :href="route('admin.roles.index')" :current="request()->routeIs('admin.roles.*')"
                     wire:navigate>
-                    {{ __('Roles & permissions') }}
+                    {{ __('Roles') }}
+                </flux:sidebar.item>
+                <flux:sidebar.item icon="key" :href="route('admin.permissions.index')" :current="request()->routeIs('admin.permissions.*')"
+                    wire:navigate>
+                    {{ __('Permissions') }}
                 </flux:sidebar.item>
             </flux:sidebar.group>
 
@@ -98,6 +98,11 @@
     {{-- Top navbar — always visible, contains toolbar actions --}}
     <flux:header class="border-b border-zinc-200 bg-white dark:border-zinc-700 dark:bg-zinc-900">
         <flux:sidebar.toggle class="lg:hidden" icon="bars-2" inset="left" />
+
+        {{-- Page breadcrumbs (pushed by each page) --}}
+        <div class="hidden min-w-0 lg:block">
+            @stack('breadcrumbs')
+        </div>
 
         <flux:spacer />
 

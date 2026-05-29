@@ -92,11 +92,13 @@ new #[Layout('layouts::app')] #[Title('Settings — Admin')] class extends Compo
 
 <div>
     <div>
-        <flux:breadcrumbs>
+        @push('breadcrumbs')
+<flux:breadcrumbs>
             <flux:breadcrumbs.item :href="route('dashboard')" wire:navigate>Dashboard</flux:breadcrumbs.item>
             <flux:breadcrumbs.item>Settings</flux:breadcrumbs.item>
         </flux:breadcrumbs>
-        <flux:heading size="xl" class="mt-2">Settings</flux:heading>
+@endpush
+        <flux:heading size="xl">Settings</flux:heading>
         <flux:subheading>Manage your store configuration.</flux:subheading>
     </div>
 

@@ -20,7 +20,7 @@ new #[Layout('layouts::app')] #[Title('Tags — Admin')] class extends Component
     public string $filterType = '';
 
     #[Url]
-    public int $perPage = 15;
+    public int $perPage = 10;
 
     public bool $showModal = false;
     public ?int $editingId = null;
@@ -129,11 +129,13 @@ new #[Layout('layouts::app')] #[Title('Tags — Admin')] class extends Component
 <div>
     <div class="flex items-center justify-between">
         <div>
-            <flux:breadcrumbs>
+            @push('breadcrumbs')
+<flux:breadcrumbs>
                 <flux:breadcrumbs.item :href="route('dashboard')" wire:navigate>Dashboard</flux:breadcrumbs.item>
                 <flux:breadcrumbs.item>Tags</flux:breadcrumbs.item>
             </flux:breadcrumbs>
-            <flux:heading size="xl" class="mt-2">Tags</flux:heading>
+@endpush
+            <flux:heading size="xl">Tags</flux:heading>
             <flux:subheading>Reusable labels for organising products and content.</flux:subheading>
         </div>
         <flux:button variant="primary" icon="plus" wire:click="openCreate">Add tag</flux:button>
@@ -155,9 +157,11 @@ new #[Layout('layouts::app')] #[Title('Tags — Admin')] class extends Component
                 </flux:select>
 
                 <flux:select wire:model.live="perPage" class="w-28">
-                    <flux:select.option value="15">15 / page</flux:select.option>
+                    <flux:select.option value="10">10 / page</flux:select.option>
                     <flux:select.option value="25">25 / page</flux:select.option>
                     <flux:select.option value="50">50 / page</flux:select.option>
+                    <flux:select.option value="100">100 / page</flux:select.option>
+                    <flux:select.option value="250">250 / page</flux:select.option>
                 </flux:select>
             </div>
         </div>

@@ -40,11 +40,13 @@ new #[Layout('layouts::app')] #[Title('Payment — Admin')] class extends Compon
 @endphp
 
 <div>
-    <flux:breadcrumbs>
+    @push('breadcrumbs')
+<flux:breadcrumbs>
         <flux:breadcrumbs.item :href="route('dashboard')" wire:navigate>Dashboard</flux:breadcrumbs.item>
         <flux:breadcrumbs.item :href="route('admin.payments.index')" wire:navigate>Payments</flux:breadcrumbs.item>
         <flux:breadcrumbs.item>#{{ $payment->id }}</flux:breadcrumbs.item>
     </flux:breadcrumbs>
+@endpush
 
     <div class="mt-2 flex flex-wrap items-start justify-between gap-4">
         <div>

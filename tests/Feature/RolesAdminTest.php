@@ -14,14 +14,20 @@ it('loads the roles admin index', function () {
     $this->get(route('admin.roles.index'))->assertOk();
 });
 
+it('loads the role create and edit pages', function () {
+    $role = Role::firstWhere('name', 'staff');
+
+    $this->get(route('admin.roles.create'))->assertOk();
+    $this->get(route('admin.roles.edit', $role))->assertOk();
+});
+
 it('creates a role with selected permissions', function () {
-    Livewire::test('pages::admin.roles.index')
-        ->call('openCreate')
+    Livewire::test('pages::admin.roles.form')
         ->set('name', 'fulfilment')
         ->set('selectedPermissions', ['orders.view', 'orders.manage'])
         ->call('save')
         ->assertHasNoErrors()
-        ->assertSet('showModal', false);
+        ->assertRedirect(route('admin.roles.index'));
 
     $role = Role::firstWhere('name', 'fulfilment');
 
@@ -33,8 +39,7 @@ it('updates the permissions on an existing role', function () {
     $role = Role::create(['name' => 'support', 'guard_name' => 'web']);
     $role->givePermissionTo('orders.view');
 
-    Livewire::test('pages::admin.roles.index')
-        ->call('openEdit', $role->id)
+    Livewire::test('pages::admin.roles.form', ['role' => $role])
         ->assertSet('selectedPermissions', ['orders.view'])
         ->set('selectedPermissions', ['customers.view'])
         ->call('save')
@@ -44,8 +49,7 @@ it('updates the permissions on an existing role', function () {
 });
 
 it('rejects a duplicate role name', function () {
-    Livewire::test('pages::admin.roles.index')
-        ->call('openCreate')
+    Livewire::test('pages::admin.roles.form')
         ->set('name', 'admin')
         ->call('save')
         ->assertHasErrors('name');
@@ -77,4 +81,53 @@ it('deletes an unused custom role', function () {
         ->call('delete', $role->id);
 
     expect(Role::find($role->id))->toBeNull();
+});
+
+it('adds a user and assigns a role from the roles page', function () {
+    Livewire::test('pages::admin.roles.index')
+        ->call('openCreateUser')
+        ->set('userName', 'Grace Mwangi')
+        ->set('userEmail', 'grace@sheffield.test')
+        ->set('userPassword', 'secret-password')
+        ->set('userRole', 'staff')
+        ->call('saveUser')
+        ->assertHasNoErrors()
+        ->assertSet('showUserModal', false);
+
+    $user = User::firstWhere('email', 'grace@sheffield.test');
+
+    expect($user)->not->toBeNull()
+        ->and($user->hasRole('staff'))->toBeTrue();
+});
+
+it('only lists users that hold a role', function () {
+    User::factory()->create(['name' => 'Plain Customer']);
+    $member = User::factory()->create(['name' => 'Admin Member']);
+    $member->assignRole('admin');
+
+    Livewire::test('pages::admin.roles.index')
+        ->assertSee('Admin Member')
+        ->assertDontSee('Plain Customer');
+});
+
+it('filters users by role', function () {
+    $admin = User::factory()->create(['name' => 'Adam Admin']);
+    $admin->assignRole('admin');
+    $staff = User::factory()->create(['name' => 'Sam Staff']);
+    $staff->assignRole('staff');
+
+    Livewire::test('pages::admin.roles.index')
+        ->set('filterRole', 'admin')
+        ->assertSee('Adam Admin')
+        ->assertDontSee('Sam Staff');
+});
+
+it('revokes a user role', function () {
+    $member = User::factory()->create();
+    $member->assignRole('staff');
+
+    Livewire::test('pages::admin.roles.index')
+        ->call('removeUser', $member->id);
+
+    expect($member->fresh()->hasRole('staff'))->toBeFalse();
 });

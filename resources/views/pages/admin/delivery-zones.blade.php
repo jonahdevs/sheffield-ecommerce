@@ -280,10 +280,12 @@ new #[Layout('layouts::app')] #[Title('Delivery zones — Admin')] class extends
      x-effect="$wire.showZoneModal ? open() : close()">
 
     {{-- Page breadcrumbs --}}
-    <flux:breadcrumbs>
+    @push('breadcrumbs')
+<flux:breadcrumbs>
         <flux:breadcrumbs.item :href="route('dashboard')" wire:navigate>Dashboard</flux:breadcrumbs.item>
         <flux:breadcrumbs.item>Delivery zones</flux:breadcrumbs.item>
     </flux:breadcrumbs>
+@endpush
 
     {{-- ── Zones ── --}}
     <section>

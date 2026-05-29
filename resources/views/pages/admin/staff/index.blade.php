@@ -131,11 +131,13 @@ new #[Layout('layouts::app')] #[Title('Staff — Admin')] class extends Componen
 <div>
     <div class="flex items-center justify-between">
         <div>
-            <flux:breadcrumbs>
+            @push('breadcrumbs')
+<flux:breadcrumbs>
                 <flux:breadcrumbs.item :href="route('dashboard')" wire:navigate>Dashboard</flux:breadcrumbs.item>
                 <flux:breadcrumbs.item>Staff</flux:breadcrumbs.item>
             </flux:breadcrumbs>
-            <flux:heading size="xl" class="mt-2">Staff & Roles</flux:heading>
+@endpush
+            <flux:heading size="xl">Staff & Roles</flux:heading>
             <flux:subheading>Manage who has access to the admin panel.</flux:subheading>
         </div>
         <flux:button variant="primary" icon="user-plus" wire:click="openCreate">Invite staff</flux:button>

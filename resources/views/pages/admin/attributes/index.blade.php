@@ -20,7 +20,7 @@ new #[Layout('layouts::app')] #[Title('Attributes — Admin')] class extends Com
     public string $search = '';
 
     #[Url]
-    public int $perPage = 15;
+    public int $perPage = 10;
 
     public function updatedSearch(): void
     {
@@ -193,12 +193,14 @@ new #[Layout('layouts::app')] #[Title('Attributes — Admin')] class extends Com
 <div>
     <div class="flex items-center justify-between">
         <div>
-            <flux:breadcrumbs>
+            @push('breadcrumbs')
+<flux:breadcrumbs>
                 <flux:breadcrumbs.item :href="route('dashboard')" wire:navigate>Dashboard</flux:breadcrumbs.item>
                 <flux:breadcrumbs.item>Attributes</flux:breadcrumbs.item>
             </flux:breadcrumbs>
-            <flux:heading size="xl" class="mt-2">Attributes</flux:heading>
-            <flux:text class="mt-1">Product variation attributes such as colour, material or size.</flux:text>
+@endpush
+            <flux:heading size="xl">Attributes</flux:heading>
+            <flux:subheading>Product variation attributes such as colour, material or size.</flux:subheading>
         </div>
         <flux:button variant="primary" icon="plus" wire:click="openCreate">Add attribute</flux:button>
     </div>
@@ -211,10 +213,12 @@ new #[Layout('layouts::app')] #[Title('Attributes — Admin')] class extends Com
                 clearable class="max-w-xs" />
 
             <flux:select wire:model.live="perPage" class="w-28">
-                <flux:select.option value="15">15 / page</flux:select.option>
-                <flux:select.option value="25">25 / page</flux:select.option>
-                <flux:select.option value="50">50 / page</flux:select.option>
-            </flux:select>
+                    <flux:select.option value="10">10 / page</flux:select.option>
+                    <flux:select.option value="25">25 / page</flux:select.option>
+                    <flux:select.option value="50">50 / page</flux:select.option>
+                    <flux:select.option value="100">100 / page</flux:select.option>
+                    <flux:select.option value="250">250 / page</flux:select.option>
+                </flux:select>
         </div>
 
         <flux:table

@@ -45,11 +45,13 @@ new #[Layout('layouts::app')] #[Title('Order — Admin')] class extends Componen
 @endphp
 
 <div>
-    <flux:breadcrumbs>
+    @push('breadcrumbs')
+<flux:breadcrumbs>
         <flux:breadcrumbs.item :href="route('dashboard')" wire:navigate>Dashboard</flux:breadcrumbs.item>
         <flux:breadcrumbs.item :href="route('admin.orders.index')" wire:navigate>Orders</flux:breadcrumbs.item>
         <flux:breadcrumbs.item>{{ $order->order_number }}</flux:breadcrumbs.item>
     </flux:breadcrumbs>
+@endpush
 
     <div class="mt-2 flex flex-wrap items-start justify-between gap-4">
         <div>

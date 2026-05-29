@@ -32,4 +32,7 @@ Route::middleware(['auth', 'verified'])
         Route::livewire('/settings', 'pages::admin.settings.index')->name('settings.index');
         Route::livewire('/staff', 'pages::admin.staff.index')->name('staff.index');
         Route::livewire('/roles', 'pages::admin.roles.index')->name('roles.index');
+        Route::livewire('/roles/create', 'pages::admin.roles.form')->name('roles.create');
+        Route::livewire('/roles/{role}/edit', 'pages::admin.roles.form')->name('roles.edit');
+        Route::livewire('/permissions', 'pages::admin.permissions.index')->name('permissions.index');
     });

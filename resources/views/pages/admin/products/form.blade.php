@@ -187,14 +187,17 @@ new #[Layout('layouts::app')] class extends Component
     {{-- Page header --}}
     <div class="flex items-center justify-between gap-4">
         <div>
-            <flux:breadcrumbs>
+            @push('breadcrumbs')
+<flux:breadcrumbs>
                 <flux:breadcrumbs.item :href="route('dashboard')" wire:navigate>Dashboard</flux:breadcrumbs.item>
                 <flux:breadcrumbs.item :href="route('admin.products.index')" wire:navigate>Products</flux:breadcrumbs.item>
                 <flux:breadcrumbs.item>{{ $productId ? $name : 'New product' }}</flux:breadcrumbs.item>
             </flux:breadcrumbs>
-            <flux:heading size="xl" class="mt-2">
+@endpush
+            <flux:heading size="xl">
                 {{ $productId ? 'Edit product' : 'New product' }}
             </flux:heading>
+            <flux:subheading>{{ $productId ? 'Update this product\'s details.' : 'Add a new product to your catalog.' }}</flux:subheading>
         </div>
         <div class="flex items-center gap-3">
             <flux:button variant="ghost" :href="route('admin.products.index')" wire:navigate>Cancel</flux:button>
