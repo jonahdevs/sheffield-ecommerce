@@ -32,7 +32,7 @@
                     <flux:icon.user variant="micro" class="size-4 text-ink-3" />
                     Account dashboard
                 </a>
-                <a href="#" wire:navigate
+                <a href="{{ route('account.orders.index') }}" wire:navigate
                     class="flex items-center gap-3 px-4 py-2 text-[13.5px] text-ink hover:bg-surface-sunken">
                     <flux:icon.document-text variant="micro" class="size-4 text-ink-3" />
                     Orders &amp; invoices
@@ -42,12 +42,12 @@
                     <flux:icon.heart variant="micro" class="size-4 text-ink-3" />
                     Wishlist
                 </a>
-                <a href="#" wire:navigate
+                <a href="{{ route('account.quotes.index') }}" wire:navigate
                     class="flex items-center gap-3 px-4 py-2 text-[13.5px] text-ink hover:bg-surface-sunken">
                     <flux:icon.scale variant="micro" class="size-4 text-ink-3" />
                     My quotes
                 </a>
-                <a href="#" wire:navigate
+                <a href="#"
                     class="flex items-center gap-3 px-4 py-2 text-[13.5px] text-ink hover:bg-surface-sunken">
                     <flux:icon.shield-check variant="micro" class="size-4 text-ink-3" />
                     Service contracts
@@ -60,7 +60,7 @@
                     <flux:icon.cog-6-tooth variant="micro" class="size-4 text-ink-3" />
                     Account settings
                 </a>
-                <a href="#"
+                <a href="{{ route('contact') }}" wire:navigate
                     class="flex items-center gap-3 px-4 py-2 text-[13.5px] text-ink hover:bg-surface-sunken">
                     <flux:icon.chat-bubble-left-right variant="micro" class="size-4 text-ink-3" />
                     Contact specialist

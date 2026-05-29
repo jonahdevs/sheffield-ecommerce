@@ -4,9 +4,7 @@
 
 @if ($isAdmin)
     <x-layouts::app :title="$title ?? null">
-        <flux:main>
-            {{ $slot }}
-        </flux:main>
+        {{ $slot }}
     </x-layouts::app>
 @else
     <x-layouts::account-settings :title="$title ?? null">

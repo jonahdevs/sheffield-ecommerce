@@ -174,13 +174,11 @@ new #[Layout('layouts::storefront')] class extends Component {
 
     <div class="shell pt-4 pb-20">
         {{-- Breadcrumb --}}
-        <nav class="mb-4 flex items-center gap-1.5 text-[12.5px] text-ink-3" aria-label="Breadcrumb">
-            <a href="{{ route('home') }}" class="hover:text-ink" wire:navigate>Home</a>
-            <flux:icon.chevron-right variant="micro" class="size-3" />
-            <a href="{{ route('catalog') }}" class="hover:text-ink" wire:navigate>Shop</a>
-            <flux:icon.chevron-right variant="micro" class="size-3" />
-            <span class="text-ink">{{ $category->name }}</span>
-        </nav>
+        <flux:breadcrumbs class="mb-4">
+            <flux:breadcrumbs.item :href="route('home')" wire:navigate>Home</flux:breadcrumbs.item>
+            <flux:breadcrumbs.item :href="route('catalog')" wire:navigate>Shop</flux:breadcrumbs.item>
+            <flux:breadcrumbs.item>{{ $category->name }}</flux:breadcrumbs.item>
+        </flux:breadcrumbs>
 
         <div class="mt-4 grid grid-cols-1 gap-8 lg:grid-cols-[260px_1fr]">
             {{-- Filters sidebar (no category filter — already scoped) --}}

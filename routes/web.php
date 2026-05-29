@@ -1,12 +1,14 @@
 <?php
 
 use App\Http\Controllers\Payments\MpesaCallbackController;
+use App\Http\Controllers\Payments\StripeWebhookController;
 use Illuminate\Support\Facades\Route;
 
 // ---------------------------------------------------------------------------
 // Payment provider callbacks (server-to-server, no auth, CSRF-exempt)
 // ---------------------------------------------------------------------------
 Route::post('/payments/mpesa/callback', MpesaCallbackController::class)->name('payments.mpesa.callback');
+Route::post('/payments/stripe/webhook', StripeWebhookController::class)->name('payments.stripe.webhook');
 
 // ---------------------------------------------------------------------------
 // Storefront (guests + logged-in browsing)
@@ -20,6 +22,7 @@ Route::livewire('/compare', 'pages::storefront.compare')->name('compare');
 Route::livewire('/contact', 'pages::storefront.contact')->name('contact');
 Route::livewire('/request-quote', 'pages::storefront.request-quote')->name('quote.request');
 Route::livewire('/checkout', 'pages::storefront.checkout')->name('checkout')->middleware('auth');
+Route::livewire('/pay/{order}', 'pages::storefront.payment')->name('payment.page')->middleware('auth');
 Route::livewire('/product/{product:slug}', 'pages::storefront.product')->name('product.show');
 
 // ---------------------------------------------------------------------------

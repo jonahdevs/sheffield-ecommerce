@@ -110,7 +110,7 @@
             <div class="md:col-span-2">
                 <h3 class="mb-4 text-xs font-bold tracking-[0.1em] text-[#d8c79d] uppercase">Business</h3>
                 <ul class="space-y-2.5 text-[13.5px] text-[#c9bea4]">
-                    <li><a href="#" class="hover:text-white">Request a quote</a></li>
+                    <li><a href="{{ route('quote.request') }}" class="hover:text-white" wire:navigate>Request a quote</a></li>
                     <li><a href="#" class="hover:text-white">Trade accounts</a></li>
                     <li><a href="#" class="hover:text-white">Installation</a></li>
                     <li><a href="#" class="hover:text-white">Service contracts</a></li>
@@ -122,7 +122,7 @@
                 <h3 class="mb-4 text-xs font-bold tracking-[0.1em] text-[#d8c79d] uppercase">Shop</h3>
                 <ul class="space-y-2.5 text-[13.5px] text-[#c9bea4]">
                     @foreach ($footerCategories as $category)
-                        <li><a href="#" class="hover:text-white" wire:navigate>{{ $category->name }}</a></li>
+                        <li><a href="{{ route('category.show', $category) }}" class="hover:text-white" wire:navigate>{{ $category->name }}</a></li>
                     @endforeach
                 </ul>
             </div>

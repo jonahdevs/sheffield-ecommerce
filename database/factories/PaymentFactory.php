@@ -26,6 +26,17 @@ class PaymentFactory extends Factory
         ];
     }
 
+    public function stripe(): static
+    {
+        return $this->state([
+            'provider' => 'stripe',
+            'phone' => null,
+            'merchant_request_id' => null,
+            'checkout_request_id' => null,
+            'stripe_session_id' => 'cs_test_'.fake()->bothify('??????????'),
+        ]);
+    }
+
     public function successful(): static
     {
         return $this->state([

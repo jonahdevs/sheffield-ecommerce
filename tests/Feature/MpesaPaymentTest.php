@@ -1,19 +1,11 @@
 <?php
 
-use App\Enums\CategoryStatus;
 use App\Enums\OrderStatus;
 use App\Enums\PaymentStatus;
-use App\Enums\ProductVisibility;
-use App\Enums\StockStatus;
-use App\Models\Address;
-use App\Models\Brand;
-use App\Models\Category;
-use App\Models\DeliveryZone;
 use App\Models\Order;
 use App\Models\Payment;
-use App\Models\Product;
-use App\Models\User;
 use App\Services\Mpesa\MpesaPaymentService;
+use App\Services\Stripe\StripePaymentService;
 use App\Support\StorefrontSession;
 use Illuminate\Support\Facades\Http;
 use Livewire\Livewire;
@@ -124,22 +116,8 @@ it('confirms payment through the Safaricom callback endpoint', function () {
         ->and($order->fresh()->status)->toBe(OrderStatus::PROCESSING);
 });
 
-it('drives the M-Pesa checkout flow from STK push to confirmation', function () {
-    $brand = Brand::create(['name' => 'B', 'slug' => 'b', 'is_active' => true, 'sort_order' => 1]);
-    $cat = Category::create(['name' => 'C', 'slug' => 'c', 'status' => CategoryStatus::ACTIVE, 'sort_order' => 1]);
-    Product::create([
-        'name' => 'Wok Range', 'slug' => 'wok-range', 'sku' => 'WK-1',
-        'brand_id' => $brand->id, 'primary_category_id' => $cat->id,
-        'type' => 'simple', 'price' => 150000, 'stock_status' => StockStatus::IN_STOCK->value,
-        'visibility' => ProductVisibility::VISIBLE->value,
-    ]);
-    DeliveryZone::factory()->centeredAt(-1.29, 36.81, 12000)->create(['name' => 'Metro', 'base_fee_cents' => 0]);
-
-    $user = User::factory()->create();
-    $address = Address::factory()->create(['user_id' => $user->id, 'is_default' => true, 'latitude' => -1.2921, 'longitude' => 36.8219]);
-    $this->actingAs($user);
-
-    StorefrontSession::addToCart('wok-range', 1);
+it('drives the M-Pesa payment flow from STK push to confirmation on the payment page', function () {
+    $order = Order::factory()->create(['status' => OrderStatus::PENDING, 'total_cents' => 174000]);
 
     Http::fake([
         '*/oauth/v1/generate*' => Http::response(['access_token' => 'tok']),
@@ -147,15 +125,24 @@ it('drives the M-Pesa checkout flow from STK push to confirmation', function () 
         '*/stkpushquery/*' => Http::response(['ResponseCode' => '0', 'ResultCode' => '0', 'ResultDesc' => 'ok']),
     ]);
 
-    $component = Livewire::test('pages::storefront.checkout')
-        ->set('selectedAddressId', $address->id)
-        ->set('paymentMethod', 'mpesa')
+    $stripePayment = Payment::factory()->stripe()->create([
+        'order_id' => $order->id, 'status' => PaymentStatus::PENDING, 'stripe_client_secret' => 'pi_secret',
+    ]);
+
+    $this->mock(StripePaymentService::class)
+        ->shouldReceive('createPaymentIntent')->andReturn($stripePayment);
+
+    StorefrontSession::addToCart('wok-range', 1);
+
+    $component = Livewire::actingAs($order->user)
+        ->test('pages::storefront.payment', ['order' => $order])
+        ->set('selectedMethod', 'mpesa')
         ->set('mpesaPhone', '0712345678')
-        ->call('placeOrder')
+        ->call('payWithMpesa')
         ->assertHasNoErrors()
         ->assertSet('awaitingPayment', true);
 
-    $payment = Payment::first();
+    $payment = Payment::where('provider', 'mpesa')->first();
     expect($payment->checkout_request_id)->toBe('ws_CO_77')
         ->and($payment->status)->toBe(PaymentStatus::PENDING);
 
@@ -169,29 +156,22 @@ it('drives the M-Pesa checkout flow from STK push to confirmation', function () 
         ->and(StorefrontSession::cart())->toBeEmpty();
 });
 
-it('rejects an invalid M-Pesa number before creating an order', function () {
-    $brand = Brand::create(['name' => 'B', 'slug' => 'b', 'is_active' => true, 'sort_order' => 1]);
-    $cat = Category::create(['name' => 'C', 'slug' => 'c', 'status' => CategoryStatus::ACTIVE, 'sort_order' => 1]);
-    Product::create([
-        'name' => 'Wok Range', 'slug' => 'wok-range', 'sku' => 'WK-1',
-        'brand_id' => $brand->id, 'primary_category_id' => $cat->id,
-        'type' => 'simple', 'price' => 150000, 'stock_status' => StockStatus::IN_STOCK->value,
-        'visibility' => ProductVisibility::VISIBLE->value,
+it('rejects an invalid M-Pesa number on the payment page', function () {
+    $order = Order::factory()->create(['status' => OrderStatus::PENDING]);
+    $stripePayment = Payment::factory()->stripe()->create([
+        'order_id' => $order->id, 'status' => PaymentStatus::PENDING, 'stripe_client_secret' => 'pi_secret',
     ]);
-    DeliveryZone::factory()->centeredAt(-1.29, 36.81, 12000)->create(['base_fee_cents' => 0]);
 
-    $user = User::factory()->create();
-    $address = Address::factory()->create(['user_id' => $user->id, 'is_default' => true, 'latitude' => -1.2921, 'longitude' => 36.8219]);
-    $this->actingAs($user);
+    $this->mock(StripePaymentService::class)
+        ->shouldReceive('createPaymentIntent')->andReturn($stripePayment);
 
-    StorefrontSession::addToCart('wok-range', 1);
-
-    Livewire::test('pages::storefront.checkout')
-        ->set('selectedAddressId', $address->id)
-        ->set('paymentMethod', 'mpesa')
+    Livewire::actingAs($order->user)
+        ->test('pages::storefront.payment', ['order' => $order])
+        ->set('selectedMethod', 'mpesa')
         ->set('mpesaPhone', '123')
-        ->call('placeOrder')
+        ->call('payWithMpesa')
         ->assertHasErrors('mpesaPhone');
 
-    expect(Order::count())->toBe(0);
+    // No new M-Pesa payment created.
+    expect(Payment::where('provider', 'mpesa')->count())->toBe(0);
 });

@@ -35,6 +35,12 @@ return [
         ],
     ],
 
+    'stripe' => [
+        'key' => env('STRIPE_KEY'),
+        'secret' => env('STRIPE_SECRET'),
+        'webhook_secret' => env('STRIPE_WEBHOOK_SECRET'),
+    ],
+
     'mpesa' => [
         'env' => env('MPESA_ENV', 'sandbox'),
         'consumer_key' => env('MPESA_CONSUMER_KEY'),

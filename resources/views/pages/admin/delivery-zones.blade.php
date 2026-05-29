@@ -279,6 +279,12 @@ new #[Layout('layouts::app')] #[Title('Delivery zones — Admin')] class extends
 <div class="space-y-10" x-data="zoneMap()"
      x-effect="$wire.showZoneModal ? open() : close()">
 
+    {{-- Page breadcrumbs --}}
+    <flux:breadcrumbs>
+        <flux:breadcrumbs.item :href="route('dashboard')" wire:navigate>Dashboard</flux:breadcrumbs.item>
+        <flux:breadcrumbs.item>Delivery zones</flux:breadcrumbs.item>
+    </flux:breadcrumbs>
+
     {{-- ── Zones ── --}}
     <section>
         <div class="flex items-center justify-between">

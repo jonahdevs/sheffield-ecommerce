@@ -1,14 +1,11 @@
 <?php
 
 use App\Enums\OrderStatus;
-use App\Enums\PaymentStatus;
 use App\Models\Address;
 use App\Models\Order;
 use App\Models\OrderItem;
-use App\Models\Payment;
 use App\Services\DeliveryQuoteResult;
 use App\Services\DeliveryResolver;
-use App\Services\Mpesa\MpesaPaymentService;
 use App\Support\StorefrontSession;
 use Artesaos\SEOTools\Facades\SEOMeta;
 use Flux\Flux;
@@ -25,16 +22,12 @@ new #[Layout('layouts::storefront')] #[Title('Checkout — Sheffield')] class ex
 
     public string $deliveryMethod = 'delivery';
 
-    public string $paymentMethod = 'mpesa';
-
-    // ─── Modals ──────────────────────────────────────────────────────────────
+    // ─── Address form modals ──────────────────────────────────────────────────
     public bool $showAddressModal = false;
 
     public string $addressModalMode = 'select';
 
     public bool $showDeliveryModal = false;
-
-    public bool $showPaymentModal = false;
 
     public string $label = 'Home';
 
@@ -60,18 +53,6 @@ new #[Layout('layouts::storefront')] #[Title('Checkout — Sheffield')] class ex
 
     public ?float $longitude = null;
 
-    /** @var array<int, string> */
-    public array $paymentMethods = ['mpesa', 'card', 'bank_transfer', 'net_30'];
-
-    // ─── M-Pesa ────────────────────────────────────────────────────────────
-    public string $mpesaPhone = '';
-
-    public bool $awaitingPayment = false;
-
-    public ?int $pendingPaymentId = null;
-
-    public int $pollAttempts = 0;
-
     public function mount(): void
     {
         SEOMeta::setRobots('noindex,nofollow');
@@ -84,7 +65,6 @@ new #[Layout('layouts::storefront')] #[Title('Checkout — Sheffield')] class ex
 
         $default = auth()->user()->addresses()->orderByDesc('is_default')->first();
         $this->selectedAddressId = $default?->id;
-        $this->mpesaPhone = (string) ($default?->phone ?? '');
     }
 
     #[Computed]
@@ -240,20 +220,6 @@ new #[Layout('layouts::storefront')] #[Title('Checkout — Sheffield')] class ex
         $this->showDeliveryModal = false;
     }
 
-    public function openPaymentModal(): void
-    {
-        $this->showPaymentModal = true;
-    }
-
-    public function selectPayment(string $method): void
-    {
-        if (in_array($method, $this->paymentMethods, true)) {
-            $this->paymentMethod = $method;
-        }
-
-        $this->showPaymentModal = false;
-    }
-
     public function placeOrder(): void
     {
         $lines = $this->lines;
@@ -264,16 +230,7 @@ new #[Layout('layouts::storefront')] #[Title('Checkout — Sheffield')] class ex
             return;
         }
 
-        $this->validate([
-            'paymentMethod' => ['required', 'in:'.implode(',', $this->paymentMethods)],
-            'deliveryMethod' => ['required', 'in:delivery,pickup'],
-        ]);
-
-        if ($this->paymentMethod === 'mpesa' && ! MpesaPaymentService::isValidKenyanMobile($this->mpesaPhone)) {
-            $this->addError('mpesaPhone', 'Enter a valid M-Pesa number, e.g. 0712 345 678.');
-
-            return;
-        }
+        $this->validate(['deliveryMethod' => ['required', 'in:delivery,pickup']]);
 
         $address = null;
         $subtotalCents = (int) $lines->sum('line_total_cents');
@@ -318,7 +275,7 @@ new #[Layout('layouts::storefront')] #[Title('Checkout — Sheffield')] class ex
                 'delivery_cents' => $deliveryCents,
                 'installation_cents' => 0,
                 'total_cents' => $totalCents,
-                'payment_method' => $this->paymentMethod,
+                'payment_method' => null,
                 'notes' => null,
             ]);
 
@@ -338,83 +295,7 @@ new #[Layout('layouts::storefront')] #[Title('Checkout — Sheffield')] class ex
             return $order;
         });
 
-        // M-Pesa: fire the STK Push prompt and wait for confirmation before
-        // clearing the cart. The cart stays intact so a failed attempt is retryable.
-        if ($this->paymentMethod === 'mpesa') {
-            $payment = app(MpesaPaymentService::class)->initiate($order, $this->mpesaPhone);
-
-            if ($payment->status === PaymentStatus::FAILED) {
-                $this->addError('mpesaPhone', $payment->result_desc ?: 'Could not start the M-Pesa prompt. Please try again.');
-
-                return;
-            }
-
-            $this->pendingPaymentId = $payment->id;
-            $this->awaitingPayment = true;
-            $this->pollAttempts = 0;
-
-            return;
-        }
-
-        StorefrontSession::clearCart();
-        $this->dispatch('cart-updated');
-
-        Flux::toast(heading: 'Order placed', text: 'Order '.$order->order_number.' has been received.', variant: 'success');
-
-        $this->redirectRoute('account.orders.show', $order, navigate: true);
-    }
-
-    /**
-     * Polled while awaiting M-Pesa: reconcile the payment via STK Query and
-     * advance the customer once Daraja reports a final result.
-     */
-    public function pollPayment(): void
-    {
-        if (! $this->awaitingPayment || ! $this->pendingPaymentId) {
-            return;
-        }
-
-        $payment = Payment::find($this->pendingPaymentId);
-
-        if (! $payment) {
-            $this->awaitingPayment = false;
-
-            return;
-        }
-
-        $status = app(MpesaPaymentService::class)->syncFromQuery($payment);
-        $this->pollAttempts++;
-
-        if ($status === PaymentStatus::SUCCESS) {
-            $this->awaitingPayment = false;
-            StorefrontSession::clearCart();
-            $this->dispatch('cart-updated');
-            Flux::toast(heading: 'Payment received', text: 'Order '.$payment->account_reference.' is confirmed.', variant: 'success');
-            $this->redirectRoute('account.orders.show', $payment->order_id, navigate: true);
-
-            return;
-        }
-
-        if (in_array($status, [PaymentStatus::FAILED, PaymentStatus::CANCELLED], true)) {
-            $this->awaitingPayment = false;
-            $this->addError('mpesaPhone', $status === PaymentStatus::CANCELLED
-                ? 'Payment was cancelled on your phone. You can try again.'
-                : ($payment->result_desc ?: 'Payment failed. Please try again.'));
-
-            return;
-        }
-
-        // Still pending — give the customer ~80s to enter their PIN, then stop.
-        if ($this->pollAttempts >= 20) {
-            $this->awaitingPayment = false;
-            $this->addError('mpesaPhone', 'No response from M-Pesa yet. If you were charged your order will update shortly — otherwise try again.');
-        }
-    }
-
-    public function cancelPayment(): void
-    {
-        $this->awaitingPayment = false;
-        $this->pendingPaymentId = null;
+        $this->redirectRoute('payment.page', $order, navigate: true);
     }
 
     private function generateOrderNumber(): string
@@ -434,13 +315,6 @@ new #[Layout('layouts::storefront')] #[Title('Checkout — Sheffield')] class ex
     $deliveryCents = $quote->feeCents;
     $totalCents    = $subtotalCents + $vatCents + $deliveryCents;
     $unserviceable = $this->deliveryMethod === 'delivery' && $this->selectedAddress && ! $quote->serviceable;
-
-    $paymentLabels = [
-        'mpesa'         => 'M-Pesa',
-        'card'          => 'Card',
-        'bank_transfer' => 'Bank transfer',
-        'net_30'        => 'Net 30 (invoice)',
-    ];
 
     $deliveryLabels = [
         'delivery' => 'Deliver to address',
@@ -551,38 +425,6 @@ new #[Layout('layouts::storefront')] #[Title('Checkout — Sheffield')] class ex
                         </div>
                     </div>
                 </section>
-
-                {{-- Payment method --}}
-                <section class="rounded-md border border-zinc-200 bg-white">
-                    <div class="flex items-center justify-between border-b border-zinc-200 px-6 py-4">
-                        <h2 class="flex items-center gap-2 text-[11px] font-bold tracking-[0.14em] text-ink uppercase">
-                            <flux:icon.credit-card variant="micro" class="size-4 text-brand-500" />
-                            Payment method
-                        </h2>
-                        <flux:button type="button" variant="customer-outline" size="customer" icon="pencil-square" wire:click="openPaymentModal">Change</flux:button>
-                    </div>
-
-                    <div class="p-6">
-                        <div class="flex items-center gap-3">
-                            <flux:icon.credit-card variant="micro" class="size-4 text-brand-500" />
-                            <span class="text-[13.5px] font-semibold text-ink">{{ $paymentLabels[$this->paymentMethod] }}</span>
-                        </div>
-                        @error('paymentMethod')
-                            <p class="mt-2 text-[12.5px] text-red-500">{{ $message }}</p>
-                        @enderror
-
-                        @if ($this->paymentMethod === 'mpesa')
-                            <div class="mt-4">
-                                <flux:field>
-                                    <flux:label>M-Pesa phone number</flux:label>
-                                    <flux:input wire:model="mpesaPhone" type="tel" inputmode="tel" placeholder="0712 345 678" />
-                                    <flux:description>You'll get an STK push to enter your PIN and confirm payment.</flux:description>
-                                    <flux:error name="mpesaPhone" />
-                                </flux:field>
-                            </div>
-                        @endif
-                    </div>
-                </section>
             </div>
 
             {{-- ── Right: order summary ── --}}
@@ -642,7 +484,7 @@ new #[Layout('layouts::storefront')] #[Title('Checkout — Sheffield')] class ex
                     </div>
 
                     <flux:button variant="customer-primary" size="customer-lg" wire:click="placeOrder" icon:trailing="arrow-right" class="mt-5! w-full!" wire:loading.attr="disabled" wire:target="placeOrder">
-                        {{ $this->paymentMethod === 'mpesa' ? 'Pay with M-Pesa' : 'Place order' }}
+                        Continue to payment
                     </flux:button>
 
                     <div class="mt-3 flex items-center justify-center gap-1.5 text-[11px] text-ink-4">
@@ -742,49 +584,6 @@ new #[Layout('layouts::storefront')] #[Title('Checkout — Sheffield')] class ex
                     </div>
                 </button>
             @endforeach
-        </div>
-    </flux:modal>
-
-    {{-- Payment method modal --}}
-    <flux:modal wire:model.self="showPaymentModal" class="md:w-[520px]">
-        <flux:heading>Payment method</flux:heading>
-        <flux:subheading>Choose how you'd like to pay.</flux:subheading>
-
-        <div class="mt-5 grid gap-3">
-            @foreach ($paymentLabels as $value => $title)
-                <button type="button" wire:click="selectPayment('{{ $value }}')"
-                        class="flex items-center gap-3 rounded-md border p-4 text-left transition {{ $this->paymentMethod === $value ? 'border-brand-500 ring-1 ring-brand-500' : 'border-zinc-200 hover:border-zinc-300' }}">
-                    <span class="flex size-4 items-center justify-center rounded-full border {{ $this->paymentMethod === $value ? 'border-brand-500' : 'border-zinc-300' }}">
-                        @if ($this->paymentMethod === $value)
-                            <span class="size-2 rounded-full bg-brand-500"></span>
-                        @endif
-                    </span>
-                    <span class="text-[13.5px] font-semibold text-ink">{{ $title }}</span>
-                </button>
-            @endforeach
-        </div>
-    </flux:modal>
-
-    {{-- M-Pesa STK Push — awaiting confirmation --}}
-    <flux:modal wire:model.self="awaitingPayment" class="md:w-[440px]" :dismissible="false" :closable="false">
-        <div wire:poll.4s="pollPayment" class="text-center">
-            <div class="mx-auto flex size-14 items-center justify-center rounded-full bg-emerald-50">
-                <flux:icon.device-phone-mobile variant="outline" class="size-7 text-emerald-600" />
-            </div>
-            <flux:heading class="mt-4">Check your phone</flux:heading>
-            <flux:subheading class="mt-1">
-                We sent an M-Pesa request to <span class="font-semibold text-ink">{{ $this->mpesaPhone }}</span>.
-                Enter your PIN to confirm payment.
-            </flux:subheading>
-
-            <div class="mt-5 flex items-center justify-center gap-2 text-[12.5px] text-ink-3">
-                <flux:icon.arrow-path variant="micro" class="size-4 animate-spin text-brand-500" />
-                Waiting for confirmation…
-            </div>
-
-            <flux:button type="button" variant="ghost" size="sm" wire:click="cancelPayment" class="mt-5">
-                Cancel
-            </flux:button>
         </div>
     </flux:modal>
 </div>

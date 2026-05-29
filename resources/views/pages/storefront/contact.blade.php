@@ -74,11 +74,10 @@ new #[Layout('layouts::storefront')] #[Title('Contact & Showrooms — Sheffield'
 <div class="page-fade">
     <div class="shell pt-4 pb-20">
         {{-- Breadcrumb --}}
-        <nav class="mb-4 flex items-center gap-1.5 text-[12.5px] text-ink-3" aria-label="Breadcrumb">
-            <a href="{{ route('home') }}" class="hover:text-ink" wire:navigate>Home</a>
-            <flux:icon.chevron-right variant="micro" class="size-3" />
-            <span class="text-ink">Contact & Showrooms</span>
-        </nav>
+        <flux:breadcrumbs class="mb-4">
+            <flux:breadcrumbs.item :href="route('home')" wire:navigate>Home</flux:breadcrumbs.item>
+            <flux:breadcrumbs.item>Contact & Showrooms</flux:breadcrumbs.item>
+        </flux:breadcrumbs>
 
         <h1 class="text-3xl font-semibold tracking-tight">Contact & Showrooms</h1>
         <p class="mt-2 text-[14.5px] text-ink-3">

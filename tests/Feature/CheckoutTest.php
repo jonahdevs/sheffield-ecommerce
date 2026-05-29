@@ -49,7 +49,7 @@ it('redirects to the cart when the cart is empty', function () {
     $this->get(route('checkout'))->assertRedirect(route('cart'));
 });
 
-it('places an order, snapshots totals, and clears the cart', function () {
+it('places an order, snapshots totals, and redirects to the payment page', function () {
     $user = User::factory()->create();
     $address = Address::factory()->create(['user_id' => $user->id, 'is_default' => true]);
     $this->actingAs($user);
@@ -59,7 +59,6 @@ it('places an order, snapshots totals, and clears the cart', function () {
 
     Livewire::test('pages::storefront.checkout')
         ->set('selectedAddressId', $address->id)
-        ->set('paymentMethod', 'bank_transfer')
         ->call('placeOrder')
         ->assertHasNoErrors();
 
@@ -69,10 +68,11 @@ it('places an order, snapshots totals, and clears the cart', function () {
         ->and($order->status)->toBe(OrderStatus::PENDING)
         ->and($order->subtotal_cents)->toBe(395000)
         ->and($order->vat_cents)->toBe(63200)
-        ->and($order->payment_method)->toBe('bank_transfer')
+        ->and($order->payment_method)->toBeNull()
         ->and($order->items)->toHaveCount(2);
 
-    expect(StorefrontSession::cart())->toBeEmpty();
+    // Cart stays intact until payment is confirmed on the payment page.
+    expect(StorefrontSession::cart())->not->toBeEmpty();
 });
 
 it('requires a delivery address when delivering', function () {
@@ -84,7 +84,7 @@ it('requires a delivery address when delivering', function () {
     Livewire::test('pages::storefront.checkout')
         ->set('selectedAddressId', null)
         ->set('deliveryMethod', 'delivery')
-        ->set('paymentMethod', 'bank_transfer')
+
         ->call('placeOrder')
         ->assertHasErrors('selectedAddressId');
 
@@ -106,7 +106,7 @@ it('prices delivery from the resolved zone and snapshots it on the order', funct
     Livewire::test('pages::storefront.checkout')
         ->set('selectedAddressId', $address->id)
         ->set('deliveryMethod', 'delivery')
-        ->set('paymentMethod', 'bank_transfer')
+
         ->call('placeOrder')
         ->assertHasNoErrors();
 
@@ -132,7 +132,7 @@ it('delivers free while a launch promotion is live', function () {
 
     Livewire::test('pages::storefront.checkout')
         ->set('selectedAddressId', $address->id)
-        ->set('paymentMethod', 'bank_transfer')
+
         ->call('placeOrder')
         ->assertHasNoErrors();
 
@@ -154,7 +154,7 @@ it('blocks delivery to an unserviceable location', function () {
     Livewire::test('pages::storefront.checkout')
         ->set('selectedAddressId', $address->id)
         ->set('deliveryMethod', 'delivery')
-        ->set('paymentMethod', 'bank_transfer')
+
         ->call('placeOrder')
         ->assertHasErrors('selectedAddressId');
 
@@ -169,7 +169,6 @@ it('allows pickup without an address', function () {
 
     Livewire::test('pages::storefront.checkout')
         ->set('deliveryMethod', 'pickup')
-        ->set('paymentMethod', 'card')
         ->call('placeOrder')
         ->assertHasNoErrors();
 
@@ -209,7 +208,7 @@ it('selects a different address through the picker modal', function () {
         ->assertSet('showAddressModal', false);
 });
 
-it('changes delivery and payment methods through their modals', function () {
+it('changes delivery method through the modal', function () {
     $user = User::factory()->create();
     $this->actingAs($user);
 
@@ -218,10 +217,7 @@ it('changes delivery and payment methods through their modals', function () {
     Livewire::test('pages::storefront.checkout')
         ->call('selectDelivery', 'pickup')
         ->assertSet('deliveryMethod', 'pickup')
-        ->assertSet('showDeliveryModal', false)
-        ->call('selectPayment', 'bank_transfer')
-        ->assertSet('paymentMethod', 'bank_transfer')
-        ->assertSet('showPaymentModal', false);
+        ->assertSet('showDeliveryModal', false);
 });
 
 it('adds a new address from checkout and selects it as default', function () {

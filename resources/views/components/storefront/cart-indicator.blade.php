@@ -70,7 +70,7 @@ new class extends Component
                 </div>
                 <div class="mt-3 flex gap-2">
                     <flux:button variant="customer-outline" size="customer" :href="route('cart')" wire:navigate class="flex-1!">View cart</flux:button>
-                    <flux:button variant="customer-primary" size="customer" href="#" class="flex-1!">Checkout</flux:button>
+                    <flux:button variant="customer-primary" size="customer" :href="route('checkout')" wire:navigate class="flex-1!">Checkout</flux:button>
                 </div>
             </div>
         @endif

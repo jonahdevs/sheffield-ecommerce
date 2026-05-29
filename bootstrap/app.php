@@ -7,13 +7,16 @@ use Illuminate\Foundation\Configuration\Middleware;
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
         web: __DIR__.'/../routes/web.php',
+        api: __DIR__.'/../routes/api.php',
         commands: __DIR__.'/../routes/console.php',
+        channels: __DIR__.'/../routes/channels.php',
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        // Safaricom posts the STK result server-to-server, so it carries no CSRF token.
+        // Payment provider webhooks are server-to-server and carry no CSRF token.
         $middleware->validateCsrfTokens(except: [
             'payments/mpesa/callback',
+            'payments/stripe/webhook',
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
