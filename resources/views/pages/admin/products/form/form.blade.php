@@ -853,12 +853,25 @@
                     </button>
                     <div x-show="open" x-collapse x-cloak>
                         <div class="space-y-4 p-6">
-                            <flux:textarea wire:model="short_description" label="Short description"
-                                rows="3" placeholder="One or two sentences summarising the product…" />
-                            <flux:textarea wire:model="description" label="Full description" rows="8"
-                                placeholder="Detailed product description…" />
-                            <flux:textarea wire:model="technical_specification" label="Technical specification" rows="5"
-                                placeholder="Specifications, dimensions, certifications…" />
+                            <x-admin.rich-editor
+                                wire:model="short_description"
+                                label="Short description"
+                                placeholder="One or two sentences summarising the product…"
+                                rows="sm"
+                            />
+                            <x-admin.rich-editor
+                                wire:model="description"
+                                label="Full description"
+                                placeholder="Detailed product description…"
+                                rows="lg"
+                            />
+                            <x-admin.rich-editor
+                                wire:model="technical_specification"
+                                label="Technical specification"
+                                placeholder="Add a table with specs — dimensions, voltage, capacity, certifications…"
+                                rows="md"
+                                :with-table="true"
+                            />
                         </div>
                     </div>
                 </div>

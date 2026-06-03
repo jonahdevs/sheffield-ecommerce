@@ -1,7 +1,7 @@
 @php
     $integrations    = app(\App\Settings\IntegrationSettings::class);
     $mapProvider     = $integrations->map_provider ?: 'leaflet';
-    $googleMapsKey   = $integrations->google_maps_api_key;
+    $googleMapsKey   = $integrations->google_maps_api_key ?: config('services.google.maps_api_key');
     // Fall back to leaflet if Google selected but no key configured.
     if ($mapProvider === 'google' && ! $googleMapsKey) {
         $mapProvider = 'leaflet';

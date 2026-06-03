@@ -12,6 +12,7 @@ export default defineConfig({
                 'resources/css/app.css',
                 'resources/js/app.js',
                 'resources/js/passkeys.js',
+                'resources/js/rich-text.js',
             ],
             refresh: true,
             fonts: [
@@ -22,6 +23,17 @@ export default defineConfig({
         }),
         tailwindcss(),
     ],
+    optimizeDeps: {
+        include: [
+            '@tiptap/core',
+            '@tiptap/starter-kit',
+            '@tiptap/extension-table',
+            '@tiptap/extension-link',
+            '@tiptap/extension-placeholder',
+            '@tiptap/extension-underline',
+            '@tiptap/extension-text-align',
+        ],
+    },
     server: {
         cors: true,
         watch: {
