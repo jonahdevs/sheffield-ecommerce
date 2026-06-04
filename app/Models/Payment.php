@@ -17,6 +17,28 @@ class Payment extends Model
     /** @use HasFactory<PaymentFactory> */
     use HasFactory, LogsActivity;
 
+    /**
+     * Short-lived Stripe client secret. Per the payments migration this is a
+     * credential that must live in session/memory only and is never persisted,
+     * so it's held on the in-memory model for the current request only.
+     */
+    protected ?string $transientClientSecret = null;
+
+    /**
+     * Attach the (non-persisted) Stripe client secret for this request.
+     */
+    public function withStripeClientSecret(?string $secret): static
+    {
+        $this->transientClientSecret = $secret;
+
+        return $this;
+    }
+
+    public function getStripeClientSecretAttribute(): ?string
+    {
+        return $this->transientClientSecret;
+    }
+
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()

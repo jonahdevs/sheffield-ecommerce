@@ -9,8 +9,7 @@ use Livewire\Attributes\Title;
 use Livewire\Component;
 use Livewire\WithPagination;
 
-new #[Layout('layouts::account')] #[Title('Quotes')] class extends Component
-{
+new #[Layout('layouts::account')] #[Title('Quotes')] class extends Component {
     use WithPagination;
 
     public function mount(): void
@@ -21,15 +20,16 @@ new #[Layout('layouts::account')] #[Title('Quotes')] class extends Component
     #[Computed]
     public function quotes()
     {
-        return auth()->user()->quotes()
-            ->latest()
-            ->paginate(10);
+        return auth()->user()->quotes()->latest()->paginate(10);
     }
 
     public function approve(int $id): void
     {
         $quote = auth()->user()->quotes()->findOrFail($id);
         $quote->update(['status' => QuoteStatus::APPROVED]);
+
+        \Illuminate\Support\Facades\Notification::send(\App\Support\StaffRecipients::for('quotes.manage'), new \App\Notifications\Quotes\QuoteDecisionReceived($quote));
+
         unset($this->quotes);
         Flux::toast(heading: 'Quote approved', text: 'Your quote has been approved and our team will be in touch.', variant: 'success');
     }
@@ -47,7 +47,8 @@ new #[Layout('layouts::account')] #[Title('Quotes')] class extends Component
     {{-- Header --}}
     <div>
         <flux:heading size="xl">Quotes</flux:heading>
-        <flux:text class="mt-1">Pending and historical quotations. Approve a quote to convert it to an order.</flux:text>
+        <flux:text class="mt-1">Pending and historical quotations. Approve a quote to convert it to an order.
+        </flux:text>
     </div>
 
     @if ($this->quotes->isEmpty())
@@ -55,13 +56,15 @@ new #[Layout('layouts::account')] #[Title('Quotes')] class extends Component
             <flux:icon.document-text variant="outline" class="mx-auto size-9 text-ink-4" />
             <flux:heading size="sm" class="mt-4">No quotes yet</flux:heading>
             <flux:text class="mt-1">Request a formal quote for your next project.</flux:text>
-            <flux:button variant="customer-primary" size="customer" :href="route('quote.request')" wire:navigate class="mt-5">
+            <flux:button variant="customer-primary" size="customer" :href="route('quote.request')" wire:navigate
+                class="mt-5">
                 Request a quote
             </flux:button>
         </flux:card>
     @else
         <flux:card class="p-0 overflow-hidden">
-            <flux:table container:class="[&_th:first-child]:pl-6 [&_th:last-child]:pr-6 [&_td:first-child]:pl-6 [&_td:last-child]:pr-6">
+            <flux:table
+                container:class="[&_th:first-child]:pl-6 [&_th:last-child]:pr-6 [&_td:first-child]:pl-6 [&_td:last-child]:pr-6">
                 <flux:table.columns>
                     <flux:table.column>Quote</flux:table.column>
                     <flux:table.column class="hidden sm:table-cell">Date</flux:table.column>
@@ -75,14 +78,16 @@ new #[Layout('layouts::account')] #[Title('Quotes')] class extends Component
                         <flux:table.row wire:key="quote-{{ $quote->id }}">
                             <flux:table.cell>
                                 <flux:text class="font-semibold text-ink">{{ $quote->quote_number }}</flux:text>
-                                <flux:text size="sm" class="mt-0.5 text-ink-4 line-clamp-1">{{ $quote->title }}</flux:text>
+                                <flux:text size="sm" class="mt-0.5 text-ink-4 line-clamp-1">{{ $quote->title }}
+                                </flux:text>
                             </flux:table.cell>
                             <flux:table.cell class="hidden sm:table-cell">
                                 <flux:text size="sm">{{ $quote->created_at->format('d M Y') }}</flux:text>
                             </flux:table.cell>
                             <flux:table.cell class="hidden md:table-cell">
                                 @if ($quote->expires_at)
-                                    <flux:text size="sm" class="{{ $quote->expires_at->isPast() ? 'text-red-500' : 'text-ink-3' }}">
+                                    <flux:text size="sm"
+                                        class="{{ $quote->expires_at->isPast() ? 'text-red-500' : 'text-ink-3' }}">
                                         {{ $quote->expires_at->isPast() ? 'Expired' : $quote->expires_at->diffForHumans() }}
                                     </flux:text>
                                 @else
@@ -103,8 +108,8 @@ new #[Layout('layouts::account')] #[Title('Quotes')] class extends Component
                                 <div class="flex items-center justify-end gap-2">
                                     @if ($quote->status === QuoteStatus::AWAITING_APPROVAL)
                                         <flux:button size="sm" variant="primary"
-                                                     wire:click="approve({{ $quote->id }})"
-                                                     wire:confirm="Approve this quote?">
+                                            wire:click="approve({{ $quote->id }})"
+                                            wire:confirm="Approve this quote?">
                                             Approve
                                         </flux:button>
                                     @endif

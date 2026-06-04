@@ -24,8 +24,7 @@ use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
-new #[Layout('layouts::storefront')] #[Title('Request a quote')] class extends Component
-{
+new #[Layout('layouts::storefront')] #[Title('Request a quote')] class extends Component {
     /** @var array<string, int> */
     public array $items = [];
 
@@ -85,7 +84,7 @@ new #[Layout('layouts::storefront')] #[Title('Request a quote')] class extends C
         // Allow deep-linking a single product into the request, e.g. from the product page.
         if ($slug = (string) request()->query('product')) {
             $exists = Product::where('slug', $slug)->where('visibility', 'visible')->exists();
-            if ($exists && ! isset($this->items[$slug])) {
+            if ($exists && !isset($this->items[$slug])) {
                 $this->items[$slug] = 1;
             }
         }
@@ -109,10 +108,10 @@ new #[Layout('layouts::storefront')] #[Title('Request a quote')] class extends C
             return collect();
         }
 
-        $keys = collect($this->items)->keys()->map(fn ($key) => StorefrontSession::splitKey($key));
+        $keys = collect($this->items)->keys()->map(fn($key) => StorefrontSession::splitKey($key));
 
         $products = Product::query()
-            ->with(['brand', 'images' => fn ($q) => $q->where('is_cover', true)->limit(1)])
+            ->with(['brand', 'images' => fn($q) => $q->where('is_cover', true)->limit(1)])
             ->whereIn('slug', $keys->pluck('slug')->unique()->all())
             ->where('visibility', 'visible')
             ->get()
@@ -129,18 +128,16 @@ new #[Layout('layouts::storefront')] #[Title('Request a quote')] class extends C
                 ['slug' => $slug, 'variantId' => $variantId] = StorefrontSession::splitKey($key);
 
                 $product = $products->get($slug);
-                if (! $product) {
+                if (!$product) {
                     return null;
                 }
 
                 $variant = $variantId ? $variants->get($variantId) : null;
-                if ($variantId && ! $variant) {
+                if ($variantId && !$variant) {
                     return null;
                 }
 
-                $unit = $variant ? (int) ($variant->compare_at_price ?? ($variant->price ?? 0)) : (int) ($product->sale_price ?? ($product->price ?? 0));
-
-                $label = $variant ? $variant->attributeValues->map(fn ($v) => $v->label ?: $v->value)->filter()->implode(' / ') : null;
+                $label = $variant ? $variant->attributeValues->map(fn($v) => $v->label ?: $v->value)->filter()->implode(' / ') : null;
 
                 return [
                     'key' => $key,
@@ -149,8 +146,6 @@ new #[Layout('layouts::storefront')] #[Title('Request a quote')] class extends C
                     'product' => $product,
                     'variant' => $variant,
                     'label' => $label ?: null,
-                    'unit_price_cents' => $unit,
-                    'line_total_cents' => $unit * (int) $qty,
                 ];
             })
             ->filter()
@@ -164,7 +159,7 @@ new #[Layout('layouts::storefront')] #[Title('Request a quote')] class extends C
     public function searchResults(): LengthAwarePaginator
     {
         $query = Product::query()
-            ->with(['brand', 'images' => fn ($q) => $q->where('is_cover', true)->limit(1)])
+            ->with(['brand', 'images' => fn($q) => $q->where('is_cover', true)->limit(1)])
             ->where('visibility', 'visible')
             ->whereNotIn('slug', array_keys($this->items));
 
@@ -173,7 +168,7 @@ new #[Layout('layouts::storefront')] #[Title('Request a quote')] class extends C
                 $q->where('name', 'like', "%{$this->itemSearch}%")
                     ->orWhere('sku', 'like', "%{$this->itemSearch}%")
                     ->orWhere('model_number', 'like', "%{$this->itemSearch}%")
-                    ->orWhereHas('brand', fn ($q2) => $q2->where('name', 'like', "%{$this->itemSearch}%"));
+                    ->orWhereHas('brand', fn($q2) => $q2->where('name', 'like', "%{$this->itemSearch}%"));
             });
         }
 
@@ -207,7 +202,7 @@ new #[Layout('layouts::storefront')] #[Title('Request a quote')] class extends C
     {
         $exists = Product::where('slug', $slug)->where('visibility', 'visible')->exists();
 
-        if (! $exists) {
+        if (!$exists) {
             return;
         }
 
@@ -250,7 +245,7 @@ new #[Layout('layouts::storefront')] #[Title('Request a quote')] class extends C
     #[Computed]
     public function selectedAddress(): ?Address
     {
-        if (! $this->selectedAddressId) {
+        if (!$this->selectedAddressId) {
             return null;
         }
 
@@ -320,15 +315,17 @@ new #[Layout('layouts::storefront')] #[Title('Request a quote')] class extends C
         $data = $this->validate($this->addressRules());
 
         if ($data['is_default']) {
-            auth()->user()->addresses()->update(['is_default' => false]);
+            auth()
+                ->user()
+                ->addresses()
+                ->update(['is_default' => false]);
         }
 
         if (auth()->user()->addresses()->count() === 0) {
             $data['is_default'] = true;
         }
 
-        $data['delivery_zone_id'] = app(DeliveryResolver::class)
-            ->resolveZone($data['latitude'] ?? null, $data['longitude'] ?? null)?->id;
+        $data['delivery_zone_id'] = app(DeliveryResolver::class)->resolveZone($data['latitude'] ?? null, $data['longitude'] ?? null)?->id;
 
         $address = auth()->user()->addresses()->create($data);
 
@@ -357,7 +354,7 @@ new #[Layout('layouts::storefront')] #[Title('Request a quote')] class extends C
             return;
         }
 
-        if ($this->needs_delivery && auth()->check() && ! $this->selectedAddress) {
+        if ($this->needs_delivery && auth()->check() && !$this->selectedAddress) {
             $this->addError('selectedAddressId', 'Please select a delivery address.');
 
             return;
@@ -366,7 +363,7 @@ new #[Layout('layouts::storefront')] #[Title('Request a quote')] class extends C
         $lines = $this->lines;
         $title = $this->generateTitle();
 
-        $quote = DB::transaction(function () use ($lines, $title) {
+        DB::transaction(function () use ($lines, $title) {
             $quote = Quote::create([
                 'user_id' => auth()->id(),
                 'contact_name' => $this->contact_name,
@@ -375,15 +372,11 @@ new #[Layout('layouts::storefront')] #[Title('Request a quote')] class extends C
                 'contact_company' => $this->contact_company ?: null,
                 'quote_number' => Quote::generateNumber(),
                 'title' => $title,
-                'status' => QuoteStatus::SENT,
-                'total_cents' => (int) $lines->sum('line_total_cents'),
+                'status' => QuoteStatus::DRAFT,
+                'total_cents' => 0,
                 'notes' => $this->notes ?: null,
                 'delivery_required' => $this->needs_delivery,
-                'delivery_address' => $this->needs_delivery
-                    ? (auth()->check() && $this->selectedAddress
-                        ? $this->selectedAddress->oneLiner()
-                        : ($this->delivery_address ?: null))
-                    : null,
+                'delivery_address' => $this->needs_delivery ? (auth()->check() && $this->selectedAddress ? $this->selectedAddress->oneLiner() : ($this->delivery_address ?: null)) : null,
                 'expires_at' => now()->addDays(app(QuotationSettings::class)->default_validity_days),
             ]);
 
@@ -391,37 +384,14 @@ new #[Layout('layouts::storefront')] #[Title('Request a quote')] class extends C
                 QuoteItem::create([
                     'quote_id' => $quote->id,
                     'product_id' => $line['product']->id,
-                    'product_name' => $line['product']->name.($line['label'] ? ' — '.$line['label'] : ''),
+                    'product_name' => $line['product']->name . ($line['label'] ? ' — ' . $line['label'] : ''),
                     'product_sku' => $line['variant']?->sku ?? $line['product']->sku,
-                    'unit_price_cents' => $line['unit_price_cents'],
+                    'unit_price_cents' => 0,
                     'quantity' => $line['qty'],
                     'line_total_cents' => $line['line_total_cents'],
                 ]);
             }
-
-            return $quote;
         });
-
-        // Notify the customer
-        Notification::route('mail', $quote->contact_email)
-            ->notify(new QuoteRequestReceived($quote));
-
-        // Broadcast real-time event to admin panel
-        \App\Events\QuoteRequestSubmitted::dispatch($quote);
-
-        // Notify all admin/staff users (in-app + email)
-        $admins = \App\Models\User::role(['admin', 'staff'])->get();
-        \Illuminate\Support\Facades\Notification::send($admins, new NewQuoteRequest($quote));
-
-        // Also email the business contact address if configured
-        $adminEmail = app(BusinessSettings::class)->contact_email;
-        if (filled($adminEmail)) {
-            Notification::route('mail', $adminEmail)
-                ->notify(new NewQuoteRequest($quote));
-        }
-
-        $this->reset(['items', 'notes', 'needs_delivery', 'delivery_address', 'selectedAddressId']);
-        unset($this->lines);
 
         Flux::toast(heading: 'Quote request sent', text: 'Our team will review your request and respond shortly.', variant: 'success');
     }
@@ -434,10 +404,9 @@ new #[Layout('layouts::storefront')] #[Title('Request a quote')] class extends C
     }
 }; ?>
 
-@auth
-    @include('partials.storefront.address-map-scripts')
-@endauth
-
+@php
+    $totalCents = $this->lines->sum('line_total_cents');
+@endphp
 
 <div class="page-fade">
     <div class="shell pt-4 pb-20">
@@ -479,14 +448,16 @@ new #[Layout('layouts::storefront')] #[Title('Request a quote')] class extends C
                             </flux:field>
                             <flux:field>
                                 <flux:label>Email <span class="ms-0.5 text-red-500">*</span></flux:label>
-                                <flux:input wire:model.blur="contact_email" type="email" placeholder="you@company.co.ke" />
+                                <flux:input wire:model.blur="contact_email" type="email"
+                                    placeholder="you@company.co.ke" />
                                 <flux:error name="contact_email" />
                             </flux:field>
                         </div>
                         <div class="grid gap-4 sm:grid-cols-2">
                             <flux:field>
                                 <flux:label>Phone</flux:label>
-                                <flux:input wire:model.blur="contact_phone" type="tel" placeholder="+254 712 345 678" />
+                                <flux:input wire:model.blur="contact_phone" type="tel"
+                                    placeholder="+254 712 345 678" />
                                 <flux:error name="contact_phone" />
                             </flux:field>
                             <flux:field>
@@ -500,24 +471,32 @@ new #[Layout('layouts::storefront')] #[Title('Request a quote')] class extends C
                             <div class="text-[11px] font-bold tracking-[0.1em] text-ink-3 uppercase">Delivery</div>
                             <div class="grid gap-2 sm:grid-cols-2">
                                 <button type="button" wire:click="$set('needs_delivery', false)"
-                                        class="flex items-start gap-3 rounded-md border p-4 text-left transition {{ ! $needs_delivery ? 'border-brand-500 ring-1 ring-brand-500' : 'border-zinc-200 hover:border-zinc-300' }}">
-                                    <span class="mt-0.5 flex size-4 shrink-0 items-center justify-center rounded-full border-2 {{ ! $needs_delivery ? 'border-brand-500' : 'border-zinc-300' }}">
-                                        @if (! $needs_delivery)<span class="size-2 rounded-full bg-brand-500"></span>@endif
+                                    class="flex items-start gap-3 rounded-md border p-4 text-left transition {{ !$needs_delivery ? 'border-brand-500 ring-1 ring-brand-500' : 'border-zinc-200 hover:border-zinc-300' }}">
+                                    <span
+                                        class="mt-0.5 flex size-4 shrink-0 items-center justify-center rounded-full border-2 {{ !$needs_delivery ? 'border-brand-500' : 'border-zinc-300' }}">
+                                        @if (!$needs_delivery)
+                                            <span class="size-2 rounded-full bg-brand-500"></span>
+                                        @endif
                                     </span>
                                     <div>
                                         <div class="text-[13.5px] font-semibold text-ink">Collect from Sheffield</div>
-                                        <div class="mt-0.5 text-[12px] text-ink-3">Pick up from our Nairobi showroom — free.</div>
+                                        <div class="mt-0.5 text-[12px] text-ink-3">Pick up from our Nairobi showroom —
+                                            free.</div>
                                     </div>
                                 </button>
 
                                 <button type="button" wire:click="$set('needs_delivery', true)"
-                                        class="flex items-start gap-3 rounded-md border p-4 text-left transition {{ $needs_delivery ? 'border-brand-500 ring-1 ring-brand-500' : 'border-zinc-200 hover:border-zinc-300' }}">
-                                    <span class="mt-0.5 flex size-4 shrink-0 items-center justify-center rounded-full border-2 {{ $needs_delivery ? 'border-brand-500' : 'border-zinc-300' }}">
-                                        @if ($needs_delivery)<span class="size-2 rounded-full bg-brand-500"></span>@endif
+                                    class="flex items-start gap-3 rounded-md border p-4 text-left transition {{ $needs_delivery ? 'border-brand-500 ring-1 ring-brand-500' : 'border-zinc-200 hover:border-zinc-300' }}">
+                                    <span
+                                        class="mt-0.5 flex size-4 shrink-0 items-center justify-center rounded-full border-2 {{ $needs_delivery ? 'border-brand-500' : 'border-zinc-300' }}">
+                                        @if ($needs_delivery)
+                                            <span class="size-2 rounded-full bg-brand-500"></span>
+                                        @endif
                                     </span>
                                     <div>
                                         <div class="text-[13.5px] font-semibold text-ink">Deliver to my location</div>
-                                        <div class="mt-0.5 text-[12px] text-ink-3">We'll include delivery in your quote.</div>
+                                        <div class="mt-0.5 text-[12px] text-ink-3">We'll include delivery in your quote.
+                                        </div>
                                     </div>
                                 </button>
                             </div>
@@ -525,12 +504,17 @@ new #[Layout('layouts::storefront')] #[Title('Request a quote')] class extends C
                             @if ($needs_delivery)
                                 <div class="rounded-md border border-zinc-200 bg-white">
                                     <div class="flex items-center justify-between border-b border-zinc-200 px-5 py-3.5">
-                                        <span class="text-[11px] font-bold tracking-[0.1em] text-ink-3 uppercase">Delivery address</span>
+                                        <span
+                                            class="text-[11px] font-bold tracking-[0.1em] text-ink-3 uppercase">Delivery
+                                            address</span>
                                         @auth
                                             @if ($this->addresses->isNotEmpty())
-                                                <flux:button type="button" variant="customer-outline" size="customer" icon="pencil-square" wire:click="openAddressModal('select')">Select</flux:button>
+                                                <flux:button type="button" variant="customer-outline" size="customer"
+                                                    icon="pencil-square" wire:click="openAddressModal('select')">Select
+                                                </flux:button>
                                             @else
-                                                <flux:button type="button" variant="customer-outline" size="customer" icon="plus" wire:click="openAddressModal('create')">Add</flux:button>
+                                                <flux:button type="button" variant="customer-outline" size="customer"
+                                                    icon="plus" wire:click="openAddressModal('create')">Add</flux:button>
                                             @endif
                                         @endauth
                                     </div>
@@ -539,20 +523,27 @@ new #[Layout('layouts::storefront')] #[Title('Request a quote')] class extends C
                                             @if ($this->selectedAddress)
                                                 @php $addr = $this->selectedAddress; @endphp
                                                 <div class="flex items-center gap-2">
-                                                    <span class="text-[10.5px] font-bold tracking-[0.1em] text-ink-3 uppercase">{{ $addr->label }}</span>
+                                                    <span
+                                                        class="text-[10.5px] font-bold tracking-[0.1em] text-ink-3 uppercase">{{ $addr->label }}</span>
                                                     @if ($addr->is_default)
-                                                        <span class="rounded-full bg-brand-500/10 px-2 py-0.5 text-[9.5px] font-bold tracking-wide text-brand-500 uppercase">Default</span>
+                                                        <span
+                                                            class="rounded-full bg-brand-500/10 px-2 py-0.5 text-[9.5px] font-bold tracking-wide text-brand-500 uppercase">Default</span>
                                                     @endif
                                                 </div>
-                                                <div class="mt-1 text-[14px] font-semibold text-ink">{{ $addr->fullName() }}</div>
+                                                <div class="mt-1 text-[14px] font-semibold text-ink">{{ $addr->fullName() }}
+                                                </div>
                                                 <div class="mt-1 text-[13px] text-ink-2">{{ $addr->oneLiner() }}</div>
                                             @elseif ($this->addresses->isNotEmpty())
                                                 <p class="text-[13px] text-ink-3">Select a delivery address to continue.</p>
                                             @else
-                                                <div class="rounded-md border border-dashed border-zinc-300 p-5 text-center">
-                                                    <flux:icon.map-pin variant="outline" class="mx-auto size-6 text-ink-4" />
+                                                <div
+                                                    class="rounded-md border border-dashed border-zinc-300 p-5 text-center">
+                                                    <flux:icon.map-pin variant="outline"
+                                                        class="mx-auto size-6 text-ink-4" />
                                                     <p class="mt-2 text-[12.5px] text-ink-3">No saved addresses yet.</p>
-                                                    <flux:button type="button" variant="customer-primary" size="customer" icon="plus" wire:click="openAddressModal('create')" class="mt-3">Add an address</flux:button>
+                                                    <flux:button type="button" variant="customer-primary" size="customer"
+                                                        icon="plus" wire:click="openAddressModal('create')"
+                                                        class="mt-3">Add an address</flux:button>
                                                 </div>
                                             @endif
                                             @error('selectedAddressId')
@@ -561,7 +552,8 @@ new #[Layout('layouts::storefront')] #[Title('Request a quote')] class extends C
                                         @endauth
                                         @guest
                                             <flux:field>
-                                                <flux:label>Address / location <span class="ms-0.5 text-red-500">*</span></flux:label>
+                                                <flux:label>Address / location <span class="ms-0.5 text-red-500">*</span>
+                                                </flux:label>
                                                 <flux:textarea wire:model="delivery_address" rows="2"
                                                     placeholder="e.g. Westlands, Nairobi — or a full street address" />
                                                 <flux:error name="delivery_address" />
@@ -602,8 +594,8 @@ new #[Layout('layouts::storefront')] #[Title('Request a quote')] class extends C
                                 <flux:icon.document-text variant="outline" class="mx-auto size-7 text-ink-4" />
                                 <p class="mt-2 text-[12.5px] text-ink-3">No items yet. Add products, or just describe
                                     what you need in the notes.</p>
-                                <flux:button type="button" variant="customer-outline" size="customer" icon="plus"
-                                    wire:click="openItemModal" class="mt-3">
+                                <flux:button type="button" variant="customer-outline" size="customer"
+                                    icon="plus" wire:click="openItemModal" class="mt-3">
                                     Add item
                                 </flux:button>
                             </div>
@@ -622,7 +614,8 @@ new #[Layout('layouts::storefront')] #[Title('Request a quote')] class extends C
                                             <div class="truncate text-[12.5px] font-semibold leading-snug text-ink">
                                                 {{ $line['product']->name }}</div>
                                             @if ($line['label'])
-                                                <div class="truncate text-[11px] text-ink-3">{{ $line['label'] }}</div>
+                                                <div class="truncate text-[11px] text-ink-3">{{ $line['label'] }}
+                                                </div>
                                             @endif
                                             <div class="mt-1 flex items-center justify-between gap-2">
                                                 <div class="inline-flex items-center rounded border border-zinc-200">
@@ -639,10 +632,6 @@ new #[Layout('layouts::storefront')] #[Title('Request a quote')] class extends C
                                                         <span class="text-sm leading-none">+</span>
                                                     </button>
                                                 </div>
-                                                <span
-                                                    class="text-[12.5px] font-semibold text-ink tabular-nums whitespace-nowrap">
-                                                    {!! $line['unit_price_cents'] > 0 ? money($line['line_total_cents']) : 'POA' !!}
-                                                </span>
                                             </div>
                                         </div>
                                         <button type="button" wire:click="removeItem('{{ $line['key'] }}')"
@@ -656,6 +645,16 @@ new #[Layout('layouts::storefront')] #[Title('Request a quote')] class extends C
                         @endif
 
                         <div class="my-4 h-px bg-zinc-100"></div>
+
+                        <div class="flex items-center justify-between">
+                            <span class="text-[13px] font-bold tracking-wide uppercase">Indicative total</span>
+                            <span class="text-xl font-bold text-brand-500 tabular-nums">{!! $totalCents > 0 ? money($totalCents) : '—' !!}</span>
+                        </div>
+
+                        <p class="mt-3 text-[11.5px] leading-relaxed text-ink-4">
+                            Prices are indicative and exclude VAT, delivery and installation. Your formal quotation will
+                            confirm final pricing and lead times.
+                        </p>
 
                         <flux:button type="submit" variant="customer-primary" size="customer-lg"
                             icon:trailing="arrow-right" class="mt-5! w-full!" :disabled="$this->lines->isEmpty()">
@@ -684,9 +683,8 @@ new #[Layout('layouts::storefront')] #[Title('Request a quote')] class extends C
         <flux:subheading>Search the catalog and add as many products as you need.</flux:subheading>
 
         <div class="mt-5">
-            <flux:input wire:model.live.debounce.250ms="itemSearch"
-                type="search" autocomplete="off" spellcheck="false" autofocus
-                icon="magnifying-glass" clearable
+            <flux:input wire:model.live.debounce.250ms="itemSearch" type="search" autocomplete="off"
+                spellcheck="false" autofocus icon="magnifying-glass" clearable
                 placeholder="Search products by name, brand or SKU…" />
 
             <div class="mt-4 mb-1 text-[10.5px] font-bold tracking-widest text-ink-4 uppercase">
@@ -708,7 +706,6 @@ new #[Layout('layouts::storefront')] #[Title('Request a quote')] class extends C
                 @else
                     <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
                         @foreach ($this->searchResults as $product)
-                            @php $price = $product->sale_price ?? $product->price; @endphp
                             <div wire:key="res-{{ $product->slug }}"
                                 class="group flex flex-col overflow-hidden rounded-md border border-zinc-200 bg-white transition hover:shadow-md">
                                 <div class="relative aspect-square overflow-hidden bg-surface-sunken p-2">
@@ -737,10 +734,10 @@ new #[Layout('layouts::storefront')] #[Title('Request a quote')] class extends C
                                     <div
                                         class="mt-0.5 line-clamp-2 min-h-8 text-[12px] font-medium leading-snug text-ink">
                                         {{ $product->name }}</div>
-                                    <div
-                                        class="mt-1.5 text-[12.5px] font-bold text-ink tabular-nums whitespace-nowrap">
-                                        {!! $price ? money($price) : 'POA' !!}
-                                    </div>
+                                    @if ($product->sku)
+                                        <div class="mt-1.5 font-mono text-[10.5px] text-ink-4">{{ $product->sku }}
+                                        </div>
+                                    @endif
                                 </div>
                             </div>
                         @endforeach
@@ -765,63 +762,74 @@ new #[Layout('layouts::storefront')] #[Title('Request a quote')] class extends C
 
     {{-- Address modal (authenticated users) --}}
     @auth
-    <div x-data="addressMap()" x-effect="($wire.showAddressModal && $wire.addressModalMode === 'create') ? open() : close()">
-    <flux:modal wire:model.self="showAddressModal" class="md:w-[560px]" :dismissible="false">
-        @if ($addressModalMode === 'select')
-            <flux:heading>Choose a delivery address</flux:heading>
-            <flux:subheading>Select where you'd like this order delivered.</flux:subheading>
+        <div x-data="addressMap()"
+            x-effect="($wire.showAddressModal && $wire.addressModalMode === 'create') ? open() : close()">
+            <flux:modal wire:model.self="showAddressModal" class="md:w-[560px]" :dismissible="false">
+                @if ($addressModalMode === 'select')
+                    <flux:heading>Choose a delivery address</flux:heading>
+                    <flux:subheading>Select where you'd like this order delivered.</flux:subheading>
 
-            <div class="mt-5 space-y-3">
-                @foreach ($this->addresses as $address)
-                    <button type="button" wire:key="modal-addr-{{ $address->id }}"
-                            wire:click="selectAddress({{ $address->id }})"
-                            class="block w-full rounded-md border p-4 text-left transition {{ $this->selectedAddressId === $address->id ? 'border-brand-500 ring-1 ring-brand-500' : 'border-zinc-200 hover:border-zinc-300' }}">
-                        <div class="flex items-center justify-between">
-                            <span class="text-[10.5px] font-bold tracking-[0.1em] text-ink-3 uppercase">{{ $address->label }}</span>
-                            @if ($address->is_default)
-                                <span class="rounded-full bg-brand-500/10 px-2 py-0.5 text-[9.5px] font-bold tracking-wide text-brand-500 uppercase">Default</span>
-                            @endif
+                    <div class="mt-5 space-y-3">
+                        @foreach ($this->addresses as $address)
+                            <button type="button" wire:key="modal-addr-{{ $address->id }}"
+                                wire:click="selectAddress({{ $address->id }})"
+                                class="block w-full rounded-md border p-4 text-left transition {{ $this->selectedAddressId === $address->id ? 'border-brand-500 ring-1 ring-brand-500' : 'border-zinc-200 hover:border-zinc-300' }}">
+                                <div class="flex items-center justify-between">
+                                    <span
+                                        class="text-[10.5px] font-bold tracking-[0.1em] text-ink-3 uppercase">{{ $address->label }}</span>
+                                    @if ($address->is_default)
+                                        <span
+                                            class="rounded-full bg-brand-500/10 px-2 py-0.5 text-[9.5px] font-bold tracking-wide text-brand-500 uppercase">Default</span>
+                                    @endif
+                                </div>
+                                <div class="mt-1 text-[13.5px] font-semibold text-ink">{{ $address->fullName() }}</div>
+                                <div class="mt-1 text-[12.5px] leading-relaxed text-ink-2">{{ $address->oneLiner() }}
+                                </div>
+                            </button>
+                        @endforeach
+                    </div>
+
+                    <div class="mt-5 flex items-center justify-between gap-3">
+                        <flux:button type="button" variant="ghost" x-on:click="$flux.modals().close()">Cancel
+                        </flux:button>
+                        <flux:button type="button" variant="customer-outline" size="customer" icon="plus"
+                            wire:click="startAddressCreate">Add new address</flux:button>
+                    </div>
+                @else
+                    <flux:heading>New address</flux:heading>
+                    <flux:subheading>
+                        <span x-show="step === 1">Pin where you'd like this order delivered.</span>
+                        <span x-show="step === 2" x-cloak>Now fill in the delivery address details.</span>
+                    </flux:subheading>
+
+                    <form wire:submit="saveAddress" class="mt-6">
+                        <div x-show="step === 1" class="space-y-3">
+                            @include('partials.storefront.address-map-pin')
+                            <div class="flex justify-end gap-3 pt-2">
+                                @if ($this->addresses->isNotEmpty())
+                                    <flux:button type="button" variant="ghost" icon="arrow-left"
+                                        wire:click="$set('addressModalMode', 'select')">Back</flux:button>
+                                @else
+                                    <flux:button type="button" variant="ghost" x-on:click="$flux.modals().close()">
+                                        Cancel</flux:button>
+                                @endif
+                                <flux:button type="button" variant="customer-primary" size="customer"
+                                    icon:trailing="arrow-right" x-on:click="showDetails()">Next</flux:button>
+                            </div>
                         </div>
-                        <div class="mt-1 text-[13.5px] font-semibold text-ink">{{ $address->fullName() }}</div>
-                        <div class="mt-1 text-[12.5px] leading-relaxed text-ink-2">{{ $address->oneLiner() }}</div>
-                    </button>
-                @endforeach
-            </div>
 
-            <div class="mt-5 flex items-center justify-between gap-3">
-                <flux:button type="button" variant="ghost" x-on:click="$flux.modals().close()">Cancel</flux:button>
-                <flux:button type="button" variant="customer-outline" size="customer" icon="plus" wire:click="startAddressCreate">Add new address</flux:button>
-            </div>
-        @else
-            <flux:heading>New address</flux:heading>
-            <flux:subheading>
-                <span x-show="step === 1">Pin where you'd like this order delivered.</span>
-                <span x-show="step === 2" x-cloak>Now fill in the delivery address details.</span>
-            </flux:subheading>
-
-            <form wire:submit="saveAddress" class="mt-6">
-                <div x-show="step === 1" class="space-y-3">
-                    @include('partials.storefront.address-map-pin')
-                    <div class="flex justify-end gap-3 pt-2">
-                        @if ($this->addresses->isNotEmpty())
-                            <flux:button type="button" variant="ghost" icon="arrow-left" wire:click="$set('addressModalMode', 'select')">Back</flux:button>
-                        @else
-                            <flux:button type="button" variant="ghost" x-on:click="$flux.modals().close()">Cancel</flux:button>
-                        @endif
-                        <flux:button type="button" variant="customer-primary" size="customer" icon:trailing="arrow-right" x-on:click="showDetails()">Next</flux:button>
-                    </div>
-                </div>
-
-                <div x-show="step === 2" x-cloak class="space-y-4">
-                    @include('partials.storefront.address-fields')
-                    <div class="flex justify-between gap-3 pt-2">
-                        <flux:button type="button" variant="ghost" icon="arrow-left" x-on:click="showLocation()">Back</flux:button>
-                        <flux:button type="submit" variant="customer-primary" size="customer">Add address</flux:button>
-                    </div>
-                </div>
-            </form>
-        @endif
-    </flux:modal>
-    </div>
+                        <div x-show="step === 2" x-cloak class="space-y-4">
+                            @include('partials.storefront.address-fields')
+                            <div class="flex justify-between gap-3 pt-2">
+                                <flux:button type="button" variant="ghost" icon="arrow-left"
+                                    x-on:click="showLocation()">Back</flux:button>
+                                <flux:button type="submit" variant="customer-primary" size="customer">Add address
+                                </flux:button>
+                            </div>
+                        </div>
+                    </form>
+                @endif
+            </flux:modal>
+        </div>
     @endauth
 </div>

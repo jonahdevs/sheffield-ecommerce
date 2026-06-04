@@ -75,9 +75,7 @@ new #[Layout('layouts::app')] #[Title('Products — Admin')] class extends Compo
 
     public function updatedSelectAll(bool $value): void
     {
-        $this->selected = $value
-            ? $this->products->pluck('id')->map(fn ($id) => (string) $id)->all()
-            : [];
+        $this->selected = $value ? $this->products->pluck('id')->map(fn($id) => (string) $id)->all() : [];
     }
 
     public function clearSelection(): void
@@ -107,10 +105,7 @@ new #[Layout('layouts::app')] #[Title('Products — Admin')] class extends Compo
             'published' => Product::where('status', ProductStatus::PUBLISHED)->count(),
             'draft' => Product::where('status', ProductStatus::DRAFT)->count(),
             'out' => Product::where('stock_status', StockStatus::OUT_OF_STOCK)->count(),
-            'low' => Product::whereNotNull('low_stock_threshold')
-                ->whereNotNull('stock_quantity')
-                ->whereColumn('stock_quantity', '<=', 'low_stock_threshold')
-                ->count(),
+            'low' => Product::whereNotNull('low_stock_threshold')->whereNotNull('stock_quantity')->whereColumn('stock_quantity', '<=', 'low_stock_threshold')->count(),
         ];
     }
 
@@ -125,7 +120,7 @@ new #[Layout('layouts::app')] #[Title('Products — Admin')] class extends Compo
                     $q->where('name', 'like', '%' . $this->search . '%')->orWhere('sku', 'like', '%' . $this->search . '%');
                 }),
             )
-            ->when($this->filterStatus, fn ($q) => $q->where('status', $this->filterStatus))
+            ->when($this->filterStatus, fn($q) => $q->where('status', $this->filterStatus))
             ->when($this->filterVisibility, fn($q) => $q->where('visibility', $this->filterVisibility))
             ->when($this->filterStock, fn($q) => $q->where('stock_status', $this->filterStock))
             ->orderBy($this->sortBy, $this->sortDirection)
@@ -143,7 +138,7 @@ new #[Layout('layouts::app')] #[Title('Products — Admin')] class extends Compo
 
     public function bulkSetVisibility(string $visibility): void
     {
-        if ($this->selected === [] || ! in_array($visibility, array_column(ProductVisibility::cases(), 'value'), true)) {
+        if ($this->selected === [] || !in_array($visibility, array_column(ProductVisibility::cases(), 'value'), true)) {
             return;
         }
 
@@ -155,7 +150,7 @@ new #[Layout('layouts::app')] #[Title('Products — Admin')] class extends Compo
 
     public function bulkSetStock(string $status): void
     {
-        if ($this->selected === [] || ! in_array($status, array_column(StockStatus::cases(), 'value'), true)) {
+        if ($this->selected === [] || !in_array($status, array_column(StockStatus::cases(), 'value'), true)) {
             return;
         }
 
@@ -188,7 +183,7 @@ new #[Layout('layouts::app')] #[Title('Products — Admin')] class extends Compo
     {
         $this->validate(['importFile' => ['required', 'file', 'mimes:csv,xlsx,xls', 'max:10240']]);
 
-        $import = new ProductsImport;
+        $import = new ProductsImport();
         Excel::import($import, $this->importFile->getRealPath());
 
         $this->importResults = [
@@ -220,11 +215,11 @@ new #[Layout('layouts::app')] #[Title('Products — Admin')] class extends Compo
     <div class="flex items-center justify-between">
         <div>
             @push('breadcrumbs')
-<flux:breadcrumbs>
-                <flux:breadcrumbs.item :href="route('dashboard')" wire:navigate>Dashboard</flux:breadcrumbs.item>
-                <flux:breadcrumbs.item>Products</flux:breadcrumbs.item>
-            </flux:breadcrumbs>
-@endpush
+                <flux:breadcrumbs>
+                    <flux:breadcrumbs.item :href="route('dashboard')" wire:navigate>Dashboard</flux:breadcrumbs.item>
+                    <flux:breadcrumbs.item>Products</flux:breadcrumbs.item>
+                </flux:breadcrumbs>
+            @endpush
             <flux:heading size="xl">Products</flux:heading>
             <flux:subheading>Manage your catalog — pricing, stock and visibility.</flux:subheading>
         </div>
@@ -260,28 +255,32 @@ new #[Layout('layouts::app')] #[Title('Products — Admin')] class extends Compo
         <flux:card class="flex items-center gap-4">
             <flux:icon.check-circle class="size-9 text-emerald-400" />
             <div>
-                <div class="text-2xl font-semibold tabular-nums dark:text-white">{{ number_format($this->stats['published']) }}</div>
+                <div class="text-2xl font-semibold tabular-nums dark:text-white">
+                    {{ number_format($this->stats['published']) }}</div>
                 <flux:text size="sm">Published</flux:text>
             </div>
         </flux:card>
         <flux:card class="flex items-center gap-4">
             <flux:icon.pencil-square class="size-9 text-zinc-400" />
             <div>
-                <div class="text-2xl font-semibold tabular-nums dark:text-white">{{ number_format($this->stats['draft']) }}</div>
+                <div class="text-2xl font-semibold tabular-nums dark:text-white">
+                    {{ number_format($this->stats['draft']) }}</div>
                 <flux:text size="sm">Drafts</flux:text>
             </div>
         </flux:card>
         <flux:card class="flex items-center gap-4">
             <flux:icon.exclamation-triangle class="size-9 text-amber-400" />
             <div>
-                <div class="text-2xl font-semibold tabular-nums dark:text-white">{{ number_format($this->stats['low']) }}</div>
+                <div class="text-2xl font-semibold tabular-nums dark:text-white">
+                    {{ number_format($this->stats['low']) }}</div>
                 <flux:text size="sm">Low stock</flux:text>
             </div>
         </flux:card>
         <flux:card class="flex items-center gap-4">
             <flux:icon.x-circle class="size-9 text-red-400" />
             <div>
-                <div class="text-2xl font-semibold tabular-nums dark:text-white">{{ number_format($this->stats['out']) }}</div>
+                <div class="text-2xl font-semibold tabular-nums dark:text-white">
+                    {{ number_format($this->stats['out']) }}</div>
                 <flux:text size="sm">Out of stock</flux:text>
             </div>
         </flux:card>
@@ -292,8 +291,8 @@ new #[Layout('layouts::app')] #[Title('Products — Admin')] class extends Compo
 
         {{-- Toolbar --}}
         <div class="flex items-center justify-between gap-4 border-b border-zinc-200 px-6 py-3 dark:border-zinc-700">
-            <flux:input wire:model.live.debounce.300ms="search" placeholder="Search name or SKU…" icon="magnifying-glass"
-                clearable class="max-w-xs" />
+            <flux:input wire:model.live.debounce.300ms="search" placeholder="Search name or SKU…"
+                icon="magnifying-glass" clearable class="max-w-xs" />
 
             <div class="flex items-center gap-2">
                 <flux:select wire:model.live="filterStatus" class="w-36">
@@ -329,14 +328,17 @@ new #[Layout('layouts::app')] #[Title('Products — Admin')] class extends Compo
 
         {{-- Bulk action bar --}}
         @if (count($selected) > 0)
-            <div class="flex flex-wrap items-center gap-3 border-b border-zinc-200 bg-brand-50 px-6 py-2.5 dark:border-zinc-700 dark:bg-brand-500/10">
+            <div
+                class="flex flex-wrap items-center gap-3 border-b border-zinc-200 bg-brand-50 px-6 py-2.5 dark:border-zinc-700 dark:bg-brand-500/10">
                 <flux:text class="font-medium">{{ count($selected) }} selected</flux:text>
 
                 <flux:dropdown>
-                    <flux:button size="sm" variant="ghost" icon-trailing="chevron-down">Set visibility</flux:button>
+                    <flux:button size="sm" variant="ghost" icon-trailing="chevron-down">Set visibility
+                    </flux:button>
                     <flux:menu>
                         @foreach (ProductVisibility::cases() as $v)
-                            <flux:menu.item wire:click="bulkSetVisibility('{{ $v->value }}')">{{ $v->label() }}</flux:menu.item>
+                            <flux:menu.item wire:click="bulkSetVisibility('{{ $v->value }}')">{{ $v->label() }}
+                            </flux:menu.item>
                         @endforeach
                     </flux:menu>
                 </flux:dropdown>
@@ -345,13 +347,13 @@ new #[Layout('layouts::app')] #[Title('Products — Admin')] class extends Compo
                     <flux:button size="sm" variant="ghost" icon-trailing="chevron-down">Set stock</flux:button>
                     <flux:menu>
                         @foreach (StockStatus::cases() as $s)
-                            <flux:menu.item wire:click="bulkSetStock('{{ $s->value }}')">{{ $s->label() }}</flux:menu.item>
+                            <flux:menu.item wire:click="bulkSetStock('{{ $s->value }}')">{{ $s->label() }}
+                            </flux:menu.item>
                         @endforeach
                     </flux:menu>
                 </flux:dropdown>
 
-                <flux:button size="sm" variant="ghost" icon="trash"
-                    wire:click="bulkDelete"
+                <flux:button size="sm" variant="ghost" icon="trash" wire:click="bulkDelete"
                     wire:confirm="Delete {{ count($selected) }} selected product(s)? This cannot be undone."
                     class="text-red-500! hover:text-red-600!">Delete</flux:button>
 
@@ -454,6 +456,11 @@ new #[Layout('layouts::app')] #[Title('Products — Admin')] class extends Compo
 
                         <flux:table.cell align="end">
                             <div class="flex items-center justify-end gap-1">
+                                <flux:tooltip content="Activity log">
+                                    <flux:button size="xs" variant="ghost" icon="clock"
+                                        :href="route('admin.activity.item', ['product', $product->id])"
+                                        wire:navigate />
+                                </flux:tooltip>
                                 <flux:button size="xs" variant="ghost" icon="pencil-square"
                                     :href="route('admin.products.edit', $product)" wire:navigate />
                                 <flux:button size="xs" variant="ghost" icon="trash"
@@ -498,7 +505,8 @@ new #[Layout('layouts::app')] #[Title('Products — Admin')] class extends Compo
                 </div>
 
                 <div class="grid grid-cols-2 gap-4">
-                    <div class="rounded-xl border border-emerald-200 bg-emerald-50 p-5 text-center dark:border-emerald-800 dark:bg-emerald-900/20">
+                    <div
+                        class="rounded-xl border border-emerald-200 bg-emerald-50 p-5 text-center dark:border-emerald-800 dark:bg-emerald-900/20">
                         <div class="text-3xl font-bold tabular-nums text-emerald-700 dark:text-emerald-400">
                             {{ $importResults['created'] }}
                         </div>
@@ -506,7 +514,8 @@ new #[Layout('layouts::app')] #[Title('Products — Admin')] class extends Compo
                             Products created
                         </flux:text>
                     </div>
-                    <div class="rounded-xl border border-blue-200 bg-blue-50 p-5 text-center dark:border-blue-800 dark:bg-blue-900/20">
+                    <div
+                        class="rounded-xl border border-blue-200 bg-blue-50 p-5 text-center dark:border-blue-800 dark:bg-blue-900/20">
                         <div class="text-3xl font-bold tabular-nums text-blue-700 dark:text-blue-400">
                             {{ $importResults['updated'] }}
                         </div>
@@ -526,23 +535,25 @@ new #[Layout('layouts::app')] #[Title('Products — Admin')] class extends Compo
                     <flux:button variant="ghost" wire:click="$set('importResults', null)">Import another</flux:button>
                     <flux:button variant="primary" wire:click="closeImportModal">Done</flux:button>
                 </div>
-
             @else
                 {{-- ── Upload state ── --}}
                 <div>
                     <flux:heading>Import Products</flux:heading>
-                    <flux:subheading>Upload a spreadsheet to bulk-create or update products. Products are matched by SKU — existing SKUs are updated, new ones are created.</flux:subheading>
+                    <flux:subheading>Upload a spreadsheet to bulk-create or update products. Products are matched by SKU
+                        — existing SKUs are updated, new ones are created.</flux:subheading>
                 </div>
 
                 {{-- Drop zone --}}
                 <div wire:loading.class="opacity-50 pointer-events-none" wire:target="importProducts"
                     class="rounded-xl border-2 border-dashed border-zinc-200 p-8 text-center transition-colors hover:border-zinc-300 dark:border-zinc-700 dark:hover:border-zinc-600">
-                    <div class="mx-auto mb-3 flex size-12 items-center justify-center rounded-full bg-zinc-100 dark:bg-zinc-800">
+                    <div
+                        class="mx-auto mb-3 flex size-12 items-center justify-center rounded-full bg-zinc-100 dark:bg-zinc-800">
                         <flux:icon.arrow-up-tray class="size-5 text-zinc-500 dark:text-zinc-400" />
                     </div>
                     <flux:heading size="sm">Choose a file to upload</flux:heading>
                     <flux:text size="sm" class="mb-4 mt-1 text-zinc-500">CSV, XLSX or XLS · max 10 MB</flux:text>
-                    <flux:input type="file" wire:model="importFile" accept=".csv,.xlsx,.xls" class="mx-auto max-w-xs" />
+                    <flux:input type="file" wire:model="importFile" accept=".csv,.xlsx,.xls"
+                        class="mx-auto max-w-xs" />
                     @error('importFile')
                         <p class="mt-2 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                     @enderror
@@ -552,12 +563,14 @@ new #[Layout('layouts::app')] #[Title('Products — Admin')] class extends Compo
                 <flux:callout icon="information-circle" variant="secondary">
                     <flux:callout.heading>Expected columns</flux:callout.heading>
                     <flux:callout.text>
-                        <span class="font-medium">name</span> (required) · sku · brand · primary_category · type · status ·
+                        <span class="font-medium">name</span> (required) · sku · brand · primary_category · type ·
+                        status ·
                         price_kes · sale_price_kes · cost_price_kes · stock_status · stock_quantity · visibility ·
                         weight · is_taxable · requires_shipping
                     </flux:callout.text>
                     <x-slot name="actions">
-                        <flux:button size="sm" icon="arrow-down-tray" href="{{ route('admin.products.import-template') }}">
+                        <flux:button size="sm" icon="arrow-down-tray"
+                            href="{{ route('admin.products.import-template') }}">
                             Download template
                         </flux:button>
                     </x-slot>
@@ -565,8 +578,8 @@ new #[Layout('layouts::app')] #[Title('Products — Admin')] class extends Compo
 
                 <div class="flex justify-end gap-3 pt-2">
                     <flux:button variant="ghost" wire:click="closeImportModal">Cancel</flux:button>
-                    <flux:button variant="primary" icon="arrow-up-tray"
-                        wire:click="importProducts" wire:loading.attr="disabled" wire:target="importProducts">
+                    <flux:button variant="primary" icon="arrow-up-tray" wire:click="importProducts"
+                        wire:loading.attr="disabled" wire:target="importProducts">
                         <span wire:loading.remove wire:target="importProducts">Import</span>
                         <span wire:loading wire:target="importProducts">Importing…</span>
                     </flux:button>
