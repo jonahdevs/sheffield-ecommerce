@@ -32,21 +32,15 @@ new #[Layout('layouts::storefront')] #[Title('Checkout')] class extends Componen
 
     public string $label = 'Home';
 
-    public string $first_name = '';
-
-    public string $last_name = '';
+    public string $name = '';
 
     public string $phone = '';
 
+    public string $alternative_phone = '';
+
     public string $line1 = '';
 
-    public string $line2 = '';
-
-    public string $city = 'Nairobi';
-
-    public string $postal_code = '';
-
-    public string $country = 'KE';
+    public string $delivery_instructions = '';
 
     public bool $is_default = false;
 
@@ -129,14 +123,11 @@ new #[Layout('layouts::storefront')] #[Title('Checkout')] class extends Componen
     {
         return [
             'label' => ['required', 'string', 'max:50'],
-            'first_name' => ['required', 'string', 'max:100'],
-            'last_name' => ['required', 'string', 'max:100'],
+            'name' => ['required', 'string', 'max:150'],
             'phone' => ['nullable', 'string', 'max:30'],
+            'alternative_phone' => ['nullable', 'string', 'max:30'],
             'line1' => ['required', 'string', 'max:255'],
-            'line2' => ['nullable', 'string', 'max:255'],
-            'city' => ['required', 'string', 'max:100'],
-            'postal_code' => ['nullable', 'string', 'max:20'],
-            'country' => ['required', 'string', 'size:2'],
+            'delivery_instructions' => ['nullable', 'string', 'max:500'],
             'is_default' => ['boolean'],
             'latitude' => ['nullable', 'numeric', 'between:-90,90'],
             'longitude' => ['nullable', 'numeric', 'between:-180,180'],
@@ -166,10 +157,8 @@ new #[Layout('layouts::storefront')] #[Title('Checkout')] class extends Componen
 
     private function prepareAddressForm(): void
     {
-        $this->reset(['label', 'first_name', 'last_name', 'phone', 'line1', 'line2', 'city', 'postal_code', 'country', 'is_default', 'latitude', 'longitude']);
+        $this->reset(['label', 'name', 'phone', 'alternative_phone', 'line1', 'delivery_instructions', 'is_default', 'latitude', 'longitude']);
         $this->label = 'Home';
-        $this->city = 'Nairobi';
-        $this->country = 'KE';
     }
 
     public function selectAddress(int $id): void
@@ -330,6 +319,9 @@ new #[Layout('layouts::storefront')] #[Title('Checkout')] class extends Componen
         : $subtotalCents + $vatCents + $deliveryCents;
     $unserviceable = $this->deliveryMethod === 'delivery' && $this->selectedAddress && ! $quote->serviceable;
 
+    $addressFilled = $this->selectedAddress !== null;
+    $deliveryFilled = true;
+
     $deliveryLabels = [
         'delivery' => 'Deliver to address',
         'pickup'   => 'Pickup in store',
@@ -349,12 +341,7 @@ new #[Layout('layouts::storefront')] #[Title('Checkout')] class extends Componen
         </flux:breadcrumbs>
 
         {{-- Page header --}}
-        <div class="flex items-center justify-between">
-            <h1 class="text-3xl font-semibold tracking-tight">Checkout</h1>
-            <flux:button variant="ghost" size="customer" icon="arrow-left" :href="route('cart')" wire:navigate>
-                Back to cart
-            </flux:button>
-        </div>
+        <h1 class="text-3xl font-semibold tracking-tight">Checkout</h1>
 
         <div class="mt-6 flex flex-col gap-8 lg:flex-row lg:items-start">
 
@@ -365,7 +352,7 @@ new #[Layout('layouts::storefront')] #[Title('Checkout')] class extends Componen
                 <section class="rounded-md border border-zinc-200 bg-white">
                     <div class="flex items-center justify-between border-b border-zinc-200 px-6 py-4">
                         <h2 class="flex items-center gap-2 text-[11px] font-bold tracking-[0.14em] text-ink uppercase">
-                            <flux:icon.map-pin variant="micro" class="size-4 text-brand-500" />
+                            <flux:icon.check-circle variant="micro" class="size-4 {{ $addressFilled ? 'text-emerald-500' : 'text-zinc-300' }}" />
                             Delivery address
                         </h2>
                         @if ($this->addresses->isNotEmpty())
@@ -410,7 +397,7 @@ new #[Layout('layouts::storefront')] #[Title('Checkout')] class extends Componen
                 <section class="rounded-md border border-zinc-200 bg-white">
                     <div class="flex items-center justify-between border-b border-zinc-200 px-6 py-4">
                         <h2 class="flex items-center gap-2 text-[11px] font-bold tracking-[0.14em] text-ink uppercase">
-                            <flux:icon.truck variant="micro" class="size-4 text-brand-500" />
+                            <flux:icon.check-circle variant="micro" class="size-4 {{ $deliveryFilled ? 'text-emerald-500' : 'text-zinc-300' }}" />
                             Delivery method
                         </h2>
                         <flux:button type="button" variant="customer-outline" size="customer" icon="pencil-square" wire:click="openDeliveryModal">Change</flux:button>

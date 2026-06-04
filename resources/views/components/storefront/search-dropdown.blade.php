@@ -88,41 +88,22 @@ new class extends Component
      x-on:mousedown.outside="show = false">
 
     {{-- Input --}}
-    <div class="relative">
-        <span class="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 transition-colors duration-100"
-              :class="show ? 'text-brand-500' : 'text-ink-4'">
-            <flux:icon.magnifying-glass variant="micro" class="size-4" />
-        </span>
-
-        <input
-            wire:model.live.debounce.200ms="query"
-            @focus="show = true"
-            @keydown.enter.prevent="
-                if ($wire.query.trim()) {
-                    saveRecent($wire.query.trim());
-                    window.location = '{{ route('catalog') }}?q=' + encodeURIComponent($wire.query.trim());
-                }
-            "
-            type="search"
-            autocomplete="off"
-            spellcheck="false"
-            placeholder="Search ovens, refrigeration, brands, SKU..."
-            class="h-11 w-full rounded-md border border-zinc-200 bg-white pl-10 pr-20 text-[13.5px] text-ink placeholder:text-ink-4 transition-[border-color,box-shadow] duration-100 focus:border-brand-500 focus:ring-0 focus:outline-none focus:shadow-[0_0_0_3px_hsl(354_68%_45%/0.12)]" />
-
-        {{-- Clear button --}}
-        <button x-show="$wire.query.length > 0" x-cloak
-                type="button"
-                @click="$wire.set('query', ''); $el.closest('div').querySelector('input').focus()"
-                class="absolute right-12 top-1/2 -translate-y-1/2 cursor-pointer p-1.5 text-ink-4 hover:text-ink">
-            <flux:icon.x-mark variant="micro" class="size-3.5" />
-        </button>
-
-        {{-- ⌘K hint --}}
-        <span class="absolute right-3 top-1/2 -translate-y-1/2 hidden items-center gap-0.5 lg:flex">
-            <kbd class="inline-flex h-5 items-center rounded border border-zinc-200 bg-zinc-50 px-1 text-[10px] text-ink-4">⌘</kbd>
-            <kbd class="inline-flex h-5 items-center rounded border border-zinc-200 bg-zinc-50 px-1 text-[10px] text-ink-4">K</kbd>
-        </span>
-    </div>
+    <flux:input
+        wire:model.live.debounce.200ms="query"
+        @focus="show = true"
+        @keydown.enter.prevent="
+            if ($wire.query.trim()) {
+                saveRecent($wire.query.trim());
+                window.location = '{{ route('catalog') }}?q=' + encodeURIComponent($wire.query.trim());
+            }
+        "
+        type="search"
+        autocomplete="off"
+        spellcheck="false"
+        icon="magnifying-glass"
+        clearable
+        kbd="⌘K"
+        placeholder="Search ovens, refrigeration, brands, SKU..." />
 
     {{-- Dropdown panel --}}
     <div x-show="show"

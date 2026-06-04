@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\ProductExportController;
 use App\Http\Middleware\EnsureTwoFactorWhenRequired;
 use Illuminate\Support\Facades\Route;
 
@@ -30,6 +31,9 @@ Route::middleware(['auth', 'verified', EnsureTwoFactorWhenRequired::class])
         Route::livewire('/products', 'pages::admin.products.index')->name('products.index');
         Route::livewire('/products/create', 'pages::admin.products.form')->name('products.create');
         Route::livewire('/products/{product}/edit', 'pages::admin.products.form')->name('products.edit');
+        Route::get('/products/export', [ProductExportController::class, 'download'])->name('products.export');
+        Route::get('/products/pdf', [ProductExportController::class, 'pdf'])->name('products.pdf');
+        Route::get('/products/import-template', [ProductExportController::class, 'template'])->name('products.import-template');
         Route::livewire('/categories', 'pages::admin.categories.index')->name('categories.index');
         Route::livewire('/brands', 'pages::admin.brands.index')->name('brands.index');
         Route::livewire('/attributes', 'pages::admin.attributes.index')->name('attributes.index');

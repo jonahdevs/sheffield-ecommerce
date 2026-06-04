@@ -13,11 +13,11 @@
         </button>
     @endauth
 
-    <div popover="manual"
-        class="w-75 rounded-md border border-zinc-200 bg-white shadow-lg focus:outline-hidden">
+    <div popover="manual" class="w-75 rounded-md border border-zinc-200 bg-white shadow-lg focus:outline-hidden">
         @auth
             <div class="flex items-center gap-3 border-b border-zinc-200 px-4 py-4">
-                <span class="flex size-10 shrink-0 items-center justify-center rounded-full bg-brand-500 text-sm font-bold text-white">
+                <span
+                    class="flex size-10 shrink-0 items-center justify-center rounded-full bg-brand-500 text-sm font-bold text-white">
                     {{ auth()->user()->initials() }}
                 </span>
                 <div class="min-w-0">
@@ -35,7 +35,7 @@
                 <a href="{{ route('account.orders.index') }}" wire:navigate
                     class="flex items-center gap-3 px-4 py-2 text-[13.5px] text-ink hover:bg-surface-sunken">
                     <flux:icon.document-text variant="micro" class="size-4 text-ink-3" />
-                    Orders &amp; invoices
+                    Orders
                 </a>
                 <a href="{{ route('wishlist') }}" wire:navigate
                     class="flex items-center gap-3 px-4 py-2 text-[13.5px] text-ink hover:bg-surface-sunken">
@@ -47,8 +47,7 @@
                     <flux:icon.scale variant="micro" class="size-4 text-ink-3" />
                     My quotes
                 </a>
-                <a href="#"
-                    class="flex items-center gap-3 px-4 py-2 text-[13.5px] text-ink hover:bg-surface-sunken">
+                <a href="#" class="flex items-center gap-3 px-4 py-2 text-[13.5px] text-ink hover:bg-surface-sunken">
                     <flux:icon.shield-check variant="micro" class="size-4 text-ink-3" />
                     Service contracts
                 </a>
@@ -81,8 +80,10 @@
                     Sign in to track orders, save quotes and manage your service contracts.
                 </p>
                 <div class="mt-4 flex flex-col gap-2">
-                    <flux:button variant="customer-primary" size="customer" :href="route('login')" wire:navigate class="w-full!">Sign in</flux:button>
-                    <flux:button variant="customer-outline" size="customer" :href="route('register')" wire:navigate class="w-full!">Create an account</flux:button>
+                    <flux:button variant="customer-primary" size="customer" :href="route('login')" wire:navigate
+                        class="w-full!">Sign in</flux:button>
+                    <flux:button variant="customer-outline" size="customer" :href="route('register')" wire:navigate
+                        class="w-full!">Create an account</flux:button>
                 </div>
             </div>
             <div class="border-t border-zinc-200 px-4 py-3.5">

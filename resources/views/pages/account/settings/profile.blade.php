@@ -83,6 +83,14 @@ new #[Layout('layouts::settings')] #[Title('Profile')] class extends Component {
     /* @end-chisel-email-verification */
 }; ?>
 
+@push('breadcrumbs')
+    <flux:breadcrumbs>
+        <flux:breadcrumbs.item :href="route('home')" wire:navigate>Home</flux:breadcrumbs.item>
+        <flux:breadcrumbs.item>Settings</flux:breadcrumbs.item>
+        <flux:breadcrumbs.item>Profile</flux:breadcrumbs.item>
+    </flux:breadcrumbs>
+@endpush
+
 <section class="w-full">
     @include('partials.settings-heading', ['embedded' => $embedded])
 

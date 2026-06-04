@@ -21,14 +21,11 @@ class AddressFactory extends Factory
         return [
             'user_id' => User::factory(),
             'label' => fake()->randomElement(['Home', 'Office', 'Warehouse', 'Site']),
-            'first_name' => fake()->firstName(),
-            'last_name' => fake()->lastName(),
+            'name' => fake()->name(),
             'phone' => '+254'.fake()->numerify('7########'),
-            'line1' => fake()->buildingNumber().' '.fake()->streetName(),
-            'line2' => fake()->optional()->secondaryAddress(),
-            'city' => fake()->randomElement(self::$nairobiAreas).', Nairobi',
-            'postal_code' => fake()->numerify('#####'),
-            'country' => 'KE',
+            'alternative_phone' => fake()->optional()->phoneNumber(),
+            'line1' => fake()->randomElement(self::$nairobiAreas).', '.fake()->buildingNumber().' '.fake()->streetName(),
+            'delivery_instructions' => fake()->optional()->sentence(),
             'is_default' => false,
             // Jittered around central Nairobi so addresses fall within seeded zones.
             'latitude' => fake()->randomFloat(7, -1.33, -1.25),

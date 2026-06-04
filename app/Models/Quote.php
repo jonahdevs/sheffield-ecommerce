@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\Activitylog\Models\Concerns\LogsActivity;
 use Spatie\Activitylog\Support\LogOptions;
 
-#[Fillable(['user_id', 'contact_name', 'contact_email', 'contact_phone', 'contact_company', 'quote_number', 'title', 'status', 'total_cents', 'notes', 'expires_at'])]
+#[Fillable(['user_id', 'contact_name', 'contact_email', 'contact_phone', 'contact_company', 'quote_number', 'title', 'status', 'total_cents', 'notes', 'delivery_required', 'delivery_address', 'expires_at'])]
 class Quote extends Model
 {
     /** @use HasFactory<QuoteFactory> */

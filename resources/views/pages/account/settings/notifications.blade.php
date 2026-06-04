@@ -53,6 +53,14 @@ new #[Layout('layouts::settings')] #[Title('Notifications')] class extends Compo
     }
 }; ?>
 
+@push('breadcrumbs')
+    <flux:breadcrumbs>
+        <flux:breadcrumbs.item :href="route('home')" wire:navigate>Home</flux:breadcrumbs.item>
+        <flux:breadcrumbs.item>Settings</flux:breadcrumbs.item>
+        <flux:breadcrumbs.item>Notifications</flux:breadcrumbs.item>
+    </flux:breadcrumbs>
+@endpush
+
 <section class="w-full">
     @include('partials.settings-heading')
 

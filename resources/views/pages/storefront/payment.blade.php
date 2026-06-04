@@ -273,15 +273,13 @@ new #[Layout('layouts::storefront')] #[Title('Payment')] class extends Component
                             <p x-show="error" x-text="error" class="text-[12.5px] text-red-500"></p>
 
                             {{-- Pay button --}}
-                            <button type="button"
-                                    @click="pay()"
-                                    :disabled="processing || !isComplete"
-                                    class="mt-1 flex w-full items-center justify-center gap-2 rounded-md bg-brand-500 px-4 py-3.5 text-[13.5px] font-bold tracking-wide text-white uppercase transition hover:bg-brand-600 disabled:cursor-not-allowed disabled:opacity-50">
-                                <template x-if="processing">
-                                    <flux:icon.arrow-path variant="micro" class="size-4 animate-spin" />
-                                </template>
+                            <flux:button type="button" variant="customer-primary" size="customer-lg"
+                                         @click="pay()"
+                                         :disabled="processing || !isComplete"
+                                         class="mt-1! w-full!">
+                                <flux:icon.arrow-path x-show="processing" x-cloak variant="micro" class="size-4 animate-spin" />
                                 <span x-text="processing ? 'Processing…' : 'Pay {{ money($order->total_cents) }}'"></span>
-                            </button>
+                            </flux:button>
 
                             <p class="flex items-center justify-center gap-1.5 text-[11px] text-ink-4">
                                 <flux:icon.lock-closed variant="micro" class="size-3" />

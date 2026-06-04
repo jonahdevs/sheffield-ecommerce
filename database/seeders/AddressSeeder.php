@@ -15,12 +15,9 @@ class AddressSeeder extends Seeder
         Address::factory()->default()->create([
             'user_id' => $user->id,
             'label' => 'Office',
-            'first_name' => 'Anita',
-            'last_name' => 'Wanjiru',
+            'name' => 'Anita Wanjiru',
             'phone' => '+254 712 345 678',
-            'line1' => '14 Muthangari Drive',
-            'city' => 'Westlands, Nairobi',
-            'postal_code' => '00100',
+            'line1' => 'Westlands, 14 Muthangari Drive',
         ]);
 
         Address::factory(2)->create(['user_id' => $user->id]);

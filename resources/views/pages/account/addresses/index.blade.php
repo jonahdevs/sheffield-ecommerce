@@ -17,21 +17,15 @@ new #[Layout('layouts::account')] #[Title('Addresses')] class extends Component
 
     public string $label = 'Home';
 
-    public string $first_name = '';
-
-    public string $last_name = '';
+    public string $name = '';
 
     public string $phone = '';
 
+    public string $alternative_phone = '';
+
     public string $line1 = '';
 
-    public string $line2 = '';
-
-    public string $city = 'Nairobi';
-
-    public string $postal_code = '';
-
-    public string $country = 'KE';
+    public string $delivery_instructions = '';
 
     public bool $is_default = false;
 
@@ -54,14 +48,11 @@ new #[Layout('layouts::account')] #[Title('Addresses')] class extends Component
     {
         return [
             'label' => ['required', 'string', 'max:50'],
-            'first_name' => ['required', 'string', 'max:100'],
-            'last_name' => ['required', 'string', 'max:100'],
+            'name' => ['required', 'string', 'max:150'],
             'phone' => ['nullable', 'string', 'max:30'],
+            'alternative_phone' => ['nullable', 'string', 'max:30'],
             'line1' => ['required', 'string', 'max:255'],
-            'line2' => ['nullable', 'string', 'max:255'],
-            'city' => ['required', 'string', 'max:100'],
-            'postal_code' => ['nullable', 'string', 'max:20'],
-            'country' => ['required', 'string', 'size:2'],
+            'delivery_instructions' => ['nullable', 'string', 'max:500'],
             'is_default' => ['boolean'],
             'latitude' => ['nullable', 'numeric', 'between:-90,90'],
             'longitude' => ['nullable', 'numeric', 'between:-180,180'],
@@ -80,14 +71,11 @@ new #[Layout('layouts::account')] #[Title('Addresses')] class extends Component
         $address = auth()->user()->addresses()->findOrFail($id);
         $this->editingId = $id;
         $this->label = $address->label;
-        $this->first_name = $address->first_name;
-        $this->last_name = $address->last_name;
+        $this->name = $address->name;
         $this->phone = $address->phone ?? '';
+        $this->alternative_phone = $address->alternative_phone ?? '';
         $this->line1 = $address->line1;
-        $this->line2 = $address->line2 ?? '';
-        $this->city = $address->city;
-        $this->postal_code = $address->postal_code ?? '';
-        $this->country = $address->country;
+        $this->delivery_instructions = $address->delivery_instructions ?? '';
         $this->is_default = $address->is_default;
         $this->latitude = $address->latitude;
         $this->longitude = $address->longitude;
@@ -143,14 +131,11 @@ new #[Layout('layouts::account')] #[Title('Addresses')] class extends Component
     private function resetForm(): void
     {
         $this->label = 'Home';
-        $this->first_name = '';
-        $this->last_name = '';
+        $this->name = '';
         $this->phone = '';
+        $this->alternative_phone = '';
         $this->line1 = '';
-        $this->line2 = '';
-        $this->city = 'Nairobi';
-        $this->postal_code = '';
-        $this->country = 'KE';
+        $this->delivery_instructions = '';
         $this->is_default = false;
         $this->latitude = null;
         $this->longitude = null;
@@ -161,6 +146,13 @@ new #[Layout('layouts::account')] #[Title('Addresses')] class extends Component
 @include('partials.storefront.address-map-scripts')
 
 <div class="page-fade" x-data="addressMap()" x-effect="$wire.showModal ? open() : close()">
+
+    @push('breadcrumbs')
+        <flux:breadcrumbs>
+            <flux:breadcrumbs.item :href="route('home')" wire:navigate>Home</flux:breadcrumbs.item>
+            <flux:breadcrumbs.item>Addresses</flux:breadcrumbs.item>
+        </flux:breadcrumbs>
+    @endpush
 
     {{-- Header --}}
     <div class="flex items-center justify-between">
@@ -203,10 +195,6 @@ new #[Layout('layouts::account')] #[Title('Addresses')] class extends Component
                             <div class="font-semibold text-ink">{{ $address->fullName() }}</div>
                             <div class="mt-2 space-y-0.5 text-[13px] leading-relaxed text-ink-2">
                                 <div>{{ $address->line1 }}</div>
-                                @if ($address->line2)
-                                    <div>{{ $address->line2 }}</div>
-                                @endif
-                                <div>{{ $address->city }}{{ $address->postal_code ? ', ' . $address->postal_code : '' }}</div>
                             </div>
                             @if ($address->phone)
                                 <div class="mt-2 text-[12.5px] text-ink-3">{{ $address->phone }}</div>

@@ -7,13 +7,13 @@
 
 <body class="min-h-screen bg-white dark:bg-zinc-800">
     <flux:sidebar sticky collapsible="mobile"
-        class="border-e border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
+        class="scrollbar-thin border-e border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
         <flux:sidebar.header>
             <x-app-logo :sidebar="true" href="{{ route('dashboard') }}" wire:navigate />
             <flux:sidebar.collapse class="lg:hidden" />
         </flux:sidebar.header>
 
-        <flux:sidebar.nav>
+        <flux:sidebar.nav class="scrollbar-thin">
             <flux:sidebar.group :heading="__('Overview')" class="grid">
                 <flux:sidebar.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')"
                     wire:navigate>
@@ -141,26 +141,16 @@
         <flux:spacer />
 
         {{-- Notification bell --}}
-        <flux:tooltip content="Notifications" position="bottom">
-            <flux:button variant="ghost" square icon="bell" aria-label="Notifications" />
-        </flux:tooltip>
+        <livewire:admin.notification-bell />
 
         {{-- Appearance toggle --}}
-        <flux:dropdown x-data align="end">
-            <flux:tooltip content="Appearance" position="bottom">
-                <flux:button variant="ghost" square aria-label="Color scheme">
-                    <flux:icon.sun x-show="$flux.appearance === 'light'" variant="mini" />
-                    <flux:icon.moon x-show="$flux.appearance === 'dark'" variant="mini" />
-                    <flux:icon.moon x-show="$flux.appearance === 'system' && $flux.dark" variant="mini" />
-                    <flux:icon.sun x-show="$flux.appearance === 'system' && ! $flux.dark" variant="mini" />
-                </flux:button>
-            </flux:tooltip>
-            <flux:menu>
-                <flux:menu.item icon="sun" x-on:click="$flux.appearance = 'light'">Light</flux:menu.item>
-                <flux:menu.item icon="moon" x-on:click="$flux.appearance = 'dark'">Dark</flux:menu.item>
-                <flux:menu.item icon="computer-desktop" x-on:click="$flux.appearance = 'system'">System</flux:menu.item>
-            </flux:menu>
-        </flux:dropdown>
+        <flux:tooltip content="Toggle appearance" position="bottom">
+            <flux:button variant="ghost" square x-data aria-label="Toggle color scheme"
+                x-on:click="$flux.appearance = $flux.dark ? 'light' : 'dark'">
+                <flux:icon.sun x-show="$flux.dark" variant="mini" />
+                <flux:icon.moon x-show="! $flux.dark" variant="mini" />
+            </flux:button>
+        </flux:tooltip>
 
         {{-- Account dropdown --}}
         <flux:dropdown position="bottom" align="end">

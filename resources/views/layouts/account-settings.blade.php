@@ -1,6 +1,7 @@
 <x-layouts::storefront :title="$title ?? null">
-    <div class="shell py-10">
-        <div class="flex flex-col gap-8 lg:flex-row lg:items-start">
+    <div class="shell pt-4 pb-10">
+        @stack('breadcrumbs')
+        <div class="mt-6 flex flex-col gap-8 lg:flex-row lg:items-start">
 
             {{-- Settings sidebar --}}
             <aside class="w-full shrink-0 lg:w-64">

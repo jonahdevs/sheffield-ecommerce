@@ -32,16 +32,19 @@ class StripePaymentService
         $existing = $order->payments()
             ->where('provider', 'stripe')
             ->where('status', PaymentStatus::PENDING->value)
-            ->whereNotNull('stripe_client_secret')
+            ->whereNotNull('stripe_payment_intent_id')
             ->latest()
             ->first();
 
         if ($existing) {
+            $intent = PaymentIntent::retrieve($existing->stripe_payment_intent_id);
+            $existing->stripe_client_secret = $intent->client_secret;
+
             return $existing;
         }
 
         $intent = PaymentIntent::create([
-            'amount' => intdiv($order->total_cents, 100),
+            'amount' => $order->total_cents,
             'currency' => 'kes',
             'payment_method_types' => ['card'],
             'metadata' => [
@@ -50,14 +53,17 @@ class StripePaymentService
             ],
         ]);
 
-        return $order->payments()->create([
+        $payment = $order->payments()->create([
             'provider' => 'stripe',
             'status' => PaymentStatus::PENDING,
             'amount_cents' => $order->total_cents,
             'account_reference' => $order->order_number,
             'stripe_payment_intent_id' => $intent->id,
-            'stripe_client_secret' => $intent->client_secret,
         ]);
+
+        $payment->stripe_client_secret = $intent->client_secret;
+
+        return $payment;
     }
 
     /**

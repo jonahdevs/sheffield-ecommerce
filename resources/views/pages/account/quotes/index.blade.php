@@ -37,6 +37,13 @@ new #[Layout('layouts::account')] #[Title('Quotes')] class extends Component
 
 <div class="page-fade space-y-6">
 
+    @push('breadcrumbs')
+        <flux:breadcrumbs>
+            <flux:breadcrumbs.item :href="route('home')" wire:navigate>Home</flux:breadcrumbs.item>
+            <flux:breadcrumbs.item>Quotes</flux:breadcrumbs.item>
+        </flux:breadcrumbs>
+    @endpush
+
     {{-- Header --}}
     <div>
         <flux:heading size="xl">Quotes</flux:heading>
@@ -53,48 +60,68 @@ new #[Layout('layouts::account')] #[Title('Quotes')] class extends Component
             </flux:button>
         </flux:card>
     @else
-        <div class="space-y-3">
-            @foreach ($this->quotes as $quote)
-                <flux:card wire:key="quote-{{ $quote->id }}">
-                    <div class="flex flex-wrap items-start justify-between gap-4">
-                        <div class="min-w-0">
-                            <flux:text size="sm" class="font-bold uppercase tracking-[0.08em] text-ink-3">
-                                {{ $quote->quote_number }}
-                            </flux:text>
-                            <flux:heading size="sm" class="mt-1 leading-snug">{{ $quote->title }}</flux:heading>
-                            <div class="mt-2 flex flex-wrap items-center gap-3">
-                                <flux:text size="sm" class="text-ink-3">{{ $quote->created_at->format('d M Y') }}</flux:text>
+        <flux:card class="p-0 overflow-hidden">
+            <flux:table container:class="[&_th:first-child]:pl-6 [&_th:last-child]:pr-6 [&_td:first-child]:pl-6 [&_td:last-child]:pr-6">
+                <flux:table.columns>
+                    <flux:table.column>Quote</flux:table.column>
+                    <flux:table.column class="hidden sm:table-cell">Date</flux:table.column>
+                    <flux:table.column class="hidden md:table-cell">Expires</flux:table.column>
+                    <flux:table.column>Status</flux:table.column>
+                    <flux:table.column class="hidden md:table-cell" align="end">Total</flux:table.column>
+                    <flux:table.column></flux:table.column>
+                </flux:table.columns>
+                <flux:table.rows>
+                    @foreach ($this->quotes as $quote)
+                        <flux:table.row wire:key="quote-{{ $quote->id }}">
+                            <flux:table.cell>
+                                <flux:text class="font-semibold text-ink">{{ $quote->quote_number }}</flux:text>
+                                <flux:text size="sm" class="mt-0.5 text-ink-4 line-clamp-1">{{ $quote->title }}</flux:text>
+                            </flux:table.cell>
+                            <flux:table.cell class="hidden sm:table-cell">
+                                <flux:text size="sm">{{ $quote->created_at->format('d M Y') }}</flux:text>
+                            </flux:table.cell>
+                            <flux:table.cell class="hidden md:table-cell">
+                                @if ($quote->expires_at)
+                                    <flux:text size="sm" class="{{ $quote->expires_at->isPast() ? 'text-red-500' : 'text-ink-3' }}">
+                                        {{ $quote->expires_at->isPast() ? 'Expired' : $quote->expires_at->diffForHumans() }}
+                                    </flux:text>
+                                @else
+                                    <flux:text size="sm" class="text-ink-4">—</flux:text>
+                                @endif
+                            </flux:table.cell>
+                            <flux:table.cell>
                                 <flux:badge :color="$quote->status->badgeColor()" size="sm" inset="top bottom">
                                     {{ $quote->status->label() }}
                                 </flux:badge>
-                                @if ($quote->expires_at)
-                                    <flux:text size="sm"
-                                               class="{{ $quote->expires_at->isPast() ? 'text-red-500' : 'text-ink-3' }}">
-                                        {{ $quote->expires_at->isPast() ? 'Expired' : 'Expires ' . $quote->expires_at->diffForHumans() }}
-                                    </flux:text>
-                                @endif
-                            </div>
-                        </div>
+                            </flux:table.cell>
+                            <flux:table.cell class="hidden md:table-cell" align="end">
+                                <flux:text size="sm" class="font-semibold tabular-nums">
+                                    {!! money($quote->total_cents) !!}
+                                </flux:text>
+                            </flux:table.cell>
+                            <flux:table.cell align="end">
+                                <div class="flex items-center justify-end gap-2">
+                                    @if ($quote->status === QuoteStatus::AWAITING_APPROVAL)
+                                        <flux:button size="sm" variant="primary"
+                                                     wire:click="approve({{ $quote->id }})"
+                                                     wire:confirm="Approve this quote?">
+                                            Approve
+                                        </flux:button>
+                                    @endif
+                                    <flux:button size="sm" variant="ghost">View</flux:button>
+                                </div>
+                            </flux:table.cell>
+                        </flux:table.row>
+                    @endforeach
+                </flux:table.rows>
+            </flux:table>
 
-                        <div class="flex shrink-0 items-center gap-4">
-                            <span class="font-serif text-xl tabular-nums text-ink">{!! money($quote->total_cents) !!}</span>
-                            <div class="flex gap-2">
-                                @if ($quote->status === QuoteStatus::AWAITING_APPROVAL)
-                                    <flux:button variant="customer-primary" size="customer"
-                                                 wire:click="approve({{ $quote->id }})"
-                                                 wire:confirm="Approve this quote?">
-                                        Approve
-                                    </flux:button>
-                                @endif
-                                <flux:button variant="customer-outline" size="customer">View</flux:button>
-                            </div>
-                        </div>
-                    </div>
-                </flux:card>
-            @endforeach
-        </div>
-
-        <div>{{ $this->quotes->links() }}</div>
+            @if ($this->quotes->hasPages())
+                <div class="border-t border-zinc-200 px-6 pb-3">
+                    <flux:pagination :paginator="$this->quotes" />
+                </div>
+            @endif
+        </flux:card>
     @endif
 
 </div>

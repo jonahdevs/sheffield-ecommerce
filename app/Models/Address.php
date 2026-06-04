@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-#[Fillable(['user_id', 'delivery_zone_id', 'label', 'first_name', 'last_name', 'phone', 'line1', 'line2', 'city', 'postal_code', 'country', 'is_default', 'latitude', 'longitude'])]
+#[Fillable(['user_id', 'delivery_zone_id', 'label', 'name', 'phone', 'alternative_phone', 'line1', 'delivery_instructions', 'is_default', 'latitude', 'longitude'])]
 class Address extends Model
 {
     /** @use HasFactory<AddressFactory> */
@@ -46,13 +46,11 @@ class Address extends Model
 
     public function fullName(): string
     {
-        return "{$this->first_name} {$this->last_name}";
+        return $this->name;
     }
 
     public function oneLiner(): string
     {
-        return collect([$this->line1, $this->line2, $this->city, $this->postal_code])
-            ->filter()
-            ->implode(', ');
+        return $this->line1;
     }
 }

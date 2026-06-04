@@ -187,6 +187,14 @@ new #[Layout('layouts::settings')] #[Title('Security')] class extends Component 
     /* @end-chisel-2fa */
 }; ?>
 
+@push('breadcrumbs')
+    <flux:breadcrumbs>
+        <flux:breadcrumbs.item :href="route('home')" wire:navigate>Home</flux:breadcrumbs.item>
+        <flux:breadcrumbs.item>Settings</flux:breadcrumbs.item>
+        <flux:breadcrumbs.item>Password &amp; Security</flux:breadcrumbs.item>
+    </flux:breadcrumbs>
+@endpush
+
 <section class="w-full">
     @include('partials.settings-heading', ['embedded' => $embedded])
 

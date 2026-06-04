@@ -48,6 +48,13 @@ new #[Layout('layouts::account')] #[Title('My Account')] class extends Component
 
 <div class="page-fade space-y-8">
 
+    @push('breadcrumbs')
+        <flux:breadcrumbs>
+            <flux:breadcrumbs.item :href="route('home')" wire:navigate>Home</flux:breadcrumbs.item>
+            <flux:breadcrumbs.item>Dashboard</flux:breadcrumbs.item>
+        </flux:breadcrumbs>
+    @endpush
+
     {{-- Header --}}
     <div>
         <flux:heading size="xl">Welcome back, {{ $firstName }}.</flux:heading>

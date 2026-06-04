@@ -22,12 +22,13 @@ new #[Layout('layouts::account')] #[Title('Order')] class extends Component
 
 <div class="page-fade space-y-6">
 
-    {{-- Back --}}
-    <flux:button variant="ghost" size="sm" icon="arrow-left" :href="route('account.orders.index')" wire:navigate inset="left">
-        Back to orders
-    </flux:button>
-
-    {{-- Header --}}
+    @push('breadcrumbs')
+        <flux:breadcrumbs>
+            <flux:breadcrumbs.item :href="route('home')" wire:navigate>Home</flux:breadcrumbs.item>
+            <flux:breadcrumbs.item :href="route('account.orders.index')" wire:navigate>Orders</flux:breadcrumbs.item>
+            <flux:breadcrumbs.item>{{ $order->order_number }}</flux:breadcrumbs.item>
+        </flux:breadcrumbs>
+    @endpush
     <div class="flex flex-wrap items-start justify-between gap-4">
         <div>
             <flux:heading size="xl">{{ $order->order_number }}</flux:heading>

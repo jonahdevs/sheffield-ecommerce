@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Spatie\Activitylog\Models\Concerns\LogsActivity;
 use Spatie\Activitylog\Support\LogOptions;
 
-#[Fillable(['order_id', 'provider', 'status', 'amount_cents', 'phone', 'account_reference', 'merchant_request_id', 'checkout_request_id', 'stripe_session_id', 'stripe_payment_intent_id', 'stripe_client_secret', 'mpesa_receipt', 'result_code', 'result_desc', 'payload', 'paid_at'])]
+#[Fillable(['order_id', 'provider', 'status', 'amount_cents', 'phone', 'account_reference', 'merchant_request_id', 'checkout_request_id', 'stripe_session_id', 'stripe_payment_intent_id', 'mpesa_receipt', 'result_code', 'result_desc', 'payload', 'paid_at'])]
 class Payment extends Model
 {
     /** @use HasFactory<PaymentFactory> */

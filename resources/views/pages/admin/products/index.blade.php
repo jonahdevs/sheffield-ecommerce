@@ -3,6 +3,7 @@
 use App\Enums\ProductStatus;
 use App\Enums\ProductVisibility;
 use App\Enums\StockStatus;
+use App\Imports\ProductsImport;
 use App\Models\Product;
 use Flux\Flux;
 use Livewire\Attributes\Computed;
@@ -10,10 +11,20 @@ use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Attributes\Url;
 use Livewire\Component;
+use Livewire\WithFileUploads;
 use Livewire\WithPagination;
+use Maatwebsite\Excel\Facades\Excel;
 
 new #[Layout('layouts::app')] #[Title('Products — Admin')] class extends Component {
-    use WithPagination;
+    use WithFileUploads, WithPagination;
+
+    // ── Import ────────────────────────────────────────────────────────────────
+    public bool $showImportModal = false;
+
+    public mixed $importFile = null;
+
+    /** @var array{created: int, updated: int, failures: int, errors: int}|null */
+    public ?array $importResults = null;
 
     #[Url(as: 'q')]
     public string $search = '';
@@ -166,6 +177,38 @@ new #[Layout('layouts::app')] #[Title('Products — Admin')] class extends Compo
         Flux::toast(heading: 'Products deleted', text: $count . ' product(s) have been removed.', variant: 'success');
     }
 
+    public function openImportModal(): void
+    {
+        $this->importFile = null;
+        $this->importResults = null;
+        $this->showImportModal = true;
+    }
+
+    public function importProducts(): void
+    {
+        $this->validate(['importFile' => ['required', 'file', 'mimes:csv,xlsx,xls', 'max:10240']]);
+
+        $import = new ProductsImport;
+        Excel::import($import, $this->importFile->getRealPath());
+
+        $this->importResults = [
+            'created' => $import->importedCount,
+            'updated' => $import->updatedCount,
+            'failures' => count($import->failures()),
+            'errors' => count($import->errors()),
+        ];
+
+        $this->importFile = null;
+        unset($this->products, $this->stats);
+    }
+
+    public function closeImportModal(): void
+    {
+        $this->showImportModal = false;
+        $this->importFile = null;
+        $this->importResults = null;
+    }
+
     private function afterBulk(): void
     {
         $this->clearSelection();
@@ -185,9 +228,31 @@ new #[Layout('layouts::app')] #[Title('Products — Admin')] class extends Compo
             <flux:heading size="xl">Products</flux:heading>
             <flux:subheading>Manage your catalog — pricing, stock and visibility.</flux:subheading>
         </div>
-        <flux:button variant="primary" icon="plus" :href="route('admin.products.create')" wire:navigate>
-            Add product
-        </flux:button>
+        <div class="flex items-center gap-2">
+            <flux:button icon="arrow-up-tray" wire:click="openImportModal">Import</flux:button>
+
+            <flux:dropdown>
+                <flux:button icon="arrow-down-tray" icon-trailing="chevron-down">Export</flux:button>
+                <flux:menu>
+                    <flux:menu.item icon="table-cells"
+                        href="{{ route('admin.products.export', array_filter(['format' => 'xlsx', 'q' => $search, 'status' => $filterStatus, 'visibility' => $filterVisibility, 'stock' => $filterStock])) }}">
+                        Excel (.xlsx)
+                    </flux:menu.item>
+                    <flux:menu.item icon="document-text"
+                        href="{{ route('admin.products.export', array_filter(['format' => 'csv', 'q' => $search, 'status' => $filterStatus, 'visibility' => $filterVisibility, 'stock' => $filterStock])) }}">
+                        CSV (.csv)
+                    </flux:menu.item>
+                    <flux:menu.item icon="document-chart-bar"
+                        href="{{ route('admin.products.pdf', array_filter(['q' => $search, 'status' => $filterStatus, 'visibility' => $filterVisibility, 'stock' => $filterStock])) }}">
+                        PDF catalog
+                    </flux:menu.item>
+                </flux:menu>
+            </flux:dropdown>
+
+            <flux:button variant="primary" icon="plus" :href="route('admin.products.create')" wire:navigate>
+                Add product
+            </flux:button>
+        </div>
     </div>
 
     {{-- KPIs --}}
@@ -420,4 +485,93 @@ new #[Layout('layouts::app')] #[Title('Products — Admin')] class extends Compo
             </div>
         @endif
     </flux:card>
+
+    {{-- ── Import modal ── --}}
+    <flux:modal wire:model.self="showImportModal" class="md:w-[560px]" :dismissible="false">
+        <div class="space-y-6">
+
+            @if ($importResults !== null)
+                {{-- ── Results state ── --}}
+                <div>
+                    <flux:heading>Import complete</flux:heading>
+                    <flux:subheading>Here's a summary of what was processed.</flux:subheading>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="rounded-xl border border-emerald-200 bg-emerald-50 p-5 text-center dark:border-emerald-800 dark:bg-emerald-900/20">
+                        <div class="text-3xl font-bold tabular-nums text-emerald-700 dark:text-emerald-400">
+                            {{ $importResults['created'] }}
+                        </div>
+                        <flux:text size="sm" class="mt-1 font-medium text-emerald-700 dark:text-emerald-400">
+                            Products created
+                        </flux:text>
+                    </div>
+                    <div class="rounded-xl border border-blue-200 bg-blue-50 p-5 text-center dark:border-blue-800 dark:bg-blue-900/20">
+                        <div class="text-3xl font-bold tabular-nums text-blue-700 dark:text-blue-400">
+                            {{ $importResults['updated'] }}
+                        </div>
+                        <flux:text size="sm" class="mt-1 font-medium text-blue-700 dark:text-blue-400">
+                            Products updated
+                        </flux:text>
+                    </div>
+                </div>
+
+                @if ($importResults['failures'] + $importResults['errors'] > 0)
+                    <flux:callout variant="warning" icon="exclamation-triangle"
+                        heading="{{ $importResults['failures'] + $importResults['errors'] }} row(s) skipped"
+                        text="Those rows had missing required fields or unrecognised values and were not imported." />
+                @endif
+
+                <div class="flex justify-end gap-3 pt-2">
+                    <flux:button variant="ghost" wire:click="$set('importResults', null)">Import another</flux:button>
+                    <flux:button variant="primary" wire:click="closeImportModal">Done</flux:button>
+                </div>
+
+            @else
+                {{-- ── Upload state ── --}}
+                <div>
+                    <flux:heading>Import Products</flux:heading>
+                    <flux:subheading>Upload a spreadsheet to bulk-create or update products. Products are matched by SKU — existing SKUs are updated, new ones are created.</flux:subheading>
+                </div>
+
+                {{-- Drop zone --}}
+                <div wire:loading.class="opacity-50 pointer-events-none" wire:target="importProducts"
+                    class="rounded-xl border-2 border-dashed border-zinc-200 p-8 text-center transition-colors hover:border-zinc-300 dark:border-zinc-700 dark:hover:border-zinc-600">
+                    <div class="mx-auto mb-3 flex size-12 items-center justify-center rounded-full bg-zinc-100 dark:bg-zinc-800">
+                        <flux:icon.arrow-up-tray class="size-5 text-zinc-500 dark:text-zinc-400" />
+                    </div>
+                    <flux:heading size="sm">Choose a file to upload</flux:heading>
+                    <flux:text size="sm" class="mb-4 mt-1 text-zinc-500">CSV, XLSX or XLS · max 10 MB</flux:text>
+                    <flux:input type="file" wire:model="importFile" accept=".csv,.xlsx,.xls" class="mx-auto max-w-xs" />
+                    @error('importFile')
+                        <p class="mt-2 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                {{-- Column guide --}}
+                <flux:callout icon="information-circle" variant="secondary">
+                    <flux:callout.heading>Expected columns</flux:callout.heading>
+                    <flux:callout.text>
+                        <span class="font-medium">name</span> (required) · sku · brand · primary_category · type · status ·
+                        price_kes · sale_price_kes · cost_price_kes · stock_status · stock_quantity · visibility ·
+                        weight · is_taxable · requires_shipping
+                    </flux:callout.text>
+                    <x-slot name="actions">
+                        <flux:button size="sm" icon="arrow-down-tray" href="{{ route('admin.products.import-template') }}">
+                            Download template
+                        </flux:button>
+                    </x-slot>
+                </flux:callout>
+
+                <div class="flex justify-end gap-3 pt-2">
+                    <flux:button variant="ghost" wire:click="closeImportModal">Cancel</flux:button>
+                    <flux:button variant="primary" icon="arrow-up-tray"
+                        wire:click="importProducts" wire:loading.attr="disabled" wire:target="importProducts">
+                        <span wire:loading.remove wire:target="importProducts">Import</span>
+                        <span wire:loading wire:target="importProducts">Importing…</span>
+                    </flux:button>
+                </div>
+            @endif
+        </div>
+    </flux:modal>
 </div>

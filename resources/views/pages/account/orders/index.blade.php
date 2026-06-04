@@ -39,6 +39,13 @@ new #[Layout('layouts::account')] #[Title('Orders')] class extends Component
 
 <div class="page-fade space-y-6">
 
+    @push('breadcrumbs')
+        <flux:breadcrumbs>
+            <flux:breadcrumbs.item :href="route('home')" wire:navigate>Home</flux:breadcrumbs.item>
+            <flux:breadcrumbs.item>Orders</flux:breadcrumbs.item>
+        </flux:breadcrumbs>
+    @endpush
+
     {{-- Header --}}
     <div>
         <flux:heading size="xl">Orders</flux:heading>
@@ -73,8 +80,8 @@ new #[Layout('layouts::account')] #[Title('Orders')] class extends Component
             @endif
         </flux:card>
     @else
-        <flux:card class="p-0">
-            <flux:table :paginate="$this->orders" container:class="px-6">
+        <flux:card class="p-0 overflow-hidden">
+            <flux:table container:class="[&_th:first-child]:pl-6 [&_th:last-child]:pr-6 [&_td:first-child]:pl-6 [&_td:last-child]:pr-6">
                 <flux:table.columns>
                     <flux:table.column>Order</flux:table.column>
                     <flux:table.column class="hidden sm:table-cell">Date</flux:table.column>
@@ -105,7 +112,7 @@ new #[Layout('layouts::account')] #[Title('Orders')] class extends Component
                                 </flux:text>
                             </flux:table.cell>
                             <flux:table.cell align="end">
-                                <flux:button variant="customer-outline" size="customer"
+                                <flux:button size="sm" variant="ghost"
                                              :href="route('account.orders.show', $order)" wire:navigate>
                                     View
                                 </flux:button>
@@ -114,6 +121,12 @@ new #[Layout('layouts::account')] #[Title('Orders')] class extends Component
                     @endforeach
                 </flux:table.rows>
             </flux:table>
+
+            @if ($this->orders->hasPages())
+                <div class="border-t border-zinc-200 px-6 pb-3">
+                    <flux:pagination :paginator="$this->orders" />
+                </div>
+            @endif
         </flux:card>
     @endif
 

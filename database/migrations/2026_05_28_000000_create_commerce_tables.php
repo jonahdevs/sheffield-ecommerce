@@ -46,14 +46,11 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->foreignId('delivery_zone_id')->nullable()->constrained('delivery_zones')->nullOnDelete();
             $table->string('label')->default('Home');
-            $table->string('first_name');
-            $table->string('last_name');
+            $table->string('name');
             $table->string('phone')->nullable();
+            $table->string('alternative_phone')->nullable();
             $table->string('line1');
-            $table->string('line2')->nullable();
-            $table->string('city')->default('Nairobi');
-            $table->string('postal_code')->nullable();
-            $table->string('country')->default('KE');
+            $table->text('delivery_instructions')->nullable();
             $table->boolean('is_default')->default(false);
             $table->decimal('latitude', 10, 7)->nullable();
             $table->decimal('longitude', 10, 7)->nullable();
@@ -134,6 +131,8 @@ return new class extends Migration
             $table->bigInteger('total_cents')->default(0);
             $table->char('currency', 3)->default('KES');
             $table->text('notes')->nullable();
+            $table->boolean('delivery_required')->default(false);
+            $table->text('delivery_address')->nullable();
             $table->timestamp('sent_at')->nullable();
             $table->timestamp('expires_at')->nullable();
             $table->timestamps();

@@ -262,10 +262,22 @@ new #[Layout('layouts::app')] #[Title('Quote — Admin')] class extends Componen
     @endpush
 
     <form wire:submit="save">
+
+        {{-- Page header --}}
         <div class="mt-2 flex flex-wrap items-start justify-between gap-4">
             <div>
-                <flux:heading size="xl" class="font-mono">{{ $quote->quote_number }}</flux:heading>
-                <flux:subheading>Created {{ $quote->created_at->format('d F Y') }}</flux:subheading>
+                <div class="flex items-center gap-3">
+                    <flux:heading size="xl" class="font-mono">{{ $quote->quote_number }}</flux:heading>
+                    <flux:badge :color="$quote->status->badgeColor()">{{ $quote->status->label() }}</flux:badge>
+                </div>
+                <flux:subheading class="mt-1">
+                    Created {{ $quote->created_at->format('d F Y') }}
+                    @if ($quote->expires_at)
+                        · <span class="{{ $quote->expires_at->isPast() ? 'text-red-500' : '' }}">
+                            Expires {{ $quote->expires_at->format('M j, Y') }}
+                        </span>
+                    @endif
+                </flux:subheading>
             </div>
 
             <div class="flex items-center gap-2">
@@ -274,7 +286,6 @@ new #[Layout('layouts::app')] #[Title('Quote — Admin')] class extends Componen
                     <flux:button type="submit" variant="primary" icon="check">Save changes</flux:button>
                 @else
                     <flux:button size="sm" variant="ghost" icon="pencil-square" tooltip="Edit quote" wire:click="edit" type="button" />
-
                     @if ($quote->status === App\Enums\QuoteStatus::DRAFT)
                         <flux:button variant="primary" icon="paper-airplane" wire:click="sendToCustomer" type="button">Send to customer</flux:button>
                     @elseif (in_array($quote->status, [App\Enums\QuoteStatus::SENT, App\Enums\QuoteStatus::AWAITING_APPROVAL]))
@@ -287,45 +298,22 @@ new #[Layout('layouts::app')] #[Title('Quote — Admin')] class extends Componen
             </div>
         </div>
 
+        {{-- ── Main layout ── --}}
         <div class="mt-6 flex flex-col gap-6 lg:flex-row lg:items-start">
 
-            {{-- Main column --}}
+            {{-- Left: items → details → delivery --}}
             <div class="min-w-0 flex-1 space-y-6">
 
-                {{-- Details --}}
+                {{-- Line items (top of main column) --}}
                 <flux:card class="p-0 overflow-hidden">
-                    <div class="border-b border-zinc-200 px-6 py-4 dark:border-zinc-700">
-                        <flux:heading size="sm">Details</flux:heading>
-                    </div>
-                    <div class="space-y-4 p-6">
-                    @if ($isEditing)
-                        <flux:input wire:model="title" label="Title" required />
-                        <flux:textarea wire:model="notes" label="Notes" rows="3" placeholder="Internal notes or terms shown to the customer." />
-                    @else
-                        <div>
-                            <flux:label>Title</flux:label>
-                            <flux:text class="mt-1">{{ $quote->title }}</flux:text>
-                        </div>
-                        @if ($quote->notes)
-                            <div>
-                                <flux:label>Notes</flux:label>
-                                <flux:text class="mt-1 whitespace-pre-line">{{ $quote->notes }}</flux:text>
-                            </div>
-                        @endif
-                    @endif
-                    </div>
-                </flux:card>
-
-                {{-- Line items --}}
-                <flux:card class="p-0 overflow-hidden">
-                    <div class="border-b border-zinc-200 px-6 py-4 dark:border-zinc-700">
+                    <div class="flex items-center justify-between border-b border-zinc-200 px-6 py-4 dark:border-zinc-700">
                         <flux:heading size="sm">Line items</flux:heading>
+                        <span class="text-sm font-semibold text-brand-500 tabular-nums">{!! money($this->totalCents) !!}</span>
                     </div>
 
                     @if ($isEditing)
-                        {{-- Product picker --}}
                         <div class="border-b border-zinc-200 px-6 py-3 dark:border-zinc-700">
-                            <div class="relative max-w-md">
+                            <div class="relative max-w-sm">
                                 <flux:input
                                     wire:model.live.debounce.300ms="productSearch"
                                     placeholder="Search catalog to add a product…"
@@ -335,10 +323,10 @@ new #[Layout('layouts::app')] #[Title('Quote — Admin')] class extends Componen
                                     <div class="absolute z-10 mt-1 w-full overflow-hidden rounded-md border border-zinc-200 bg-white shadow-lg dark:border-zinc-700 dark:bg-zinc-800">
                                         @foreach ($this->productResults as $product)
                                             <button type="button" wire:click="addProduct({{ $product->id }})"
-                                                class="flex w-full items-center justify-between px-3 py-2 text-left text-sm hover:bg-zinc-100 dark:hover:bg-zinc-700">
+                                                class="flex w-full items-center justify-between px-3 py-2 text-left text-sm hover:bg-zinc-50 dark:hover:bg-zinc-700">
                                                 <span>
                                                     <span class="font-medium dark:text-white">{{ $product->name }}</span>
-                                                    <span class="ml-1 text-xs text-zinc-400">{{ $product->sku }}</span>
+                                                    <span class="ml-1.5 text-xs text-zinc-400">{{ $product->sku }}</span>
                                                 </span>
                                                 <flux:icon.plus variant="micro" class="size-4 text-zinc-400" />
                                             </button>
@@ -349,23 +337,20 @@ new #[Layout('layouts::app')] #[Title('Quote — Admin')] class extends Componen
                         </div>
                     @endif
 
-                    <flux:table
-                        container:class="[&_th:first-child]:pl-6 [&_th:last-child]:pr-6 [&_td:first-child]:pl-6 [&_td:last-child]:pr-6">
+                    <flux:table container:class="[&_th:first-child]:pl-6 [&_th:last-child]:pr-6 [&_td:first-child]:pl-6 [&_td:last-child]:pr-6">
                         <flux:table.columns class="bg-zinc-50 dark:bg-zinc-800/60">
                             <flux:table.column>Product</flux:table.column>
                             <flux:table.column class="w-32">SKU</flux:table.column>
-                            <flux:table.column class="w-32" align="end">Unit (KES)</flux:table.column>
-                            <flux:table.column class="w-20" align="end">Qty</flux:table.column>
-                            <flux:table.column class="w-32" align="end">Line total</flux:table.column>
+                            <flux:table.column class="w-36" align="end">Unit price</flux:table.column>
+                            <flux:table.column class="w-24" align="end">Qty</flux:table.column>
+                            <flux:table.column class="w-36" align="end">Line total</flux:table.column>
                             @if ($isEditing)
                                 <flux:table.column class="w-10"></flux:table.column>
                             @endif
                         </flux:table.columns>
                         <flux:table.rows>
                             @forelse ($lineItems as $index => $item)
-                                @php
-                                    $lineTotal = (int) round(((float) $item['unit_price']) * 100) * max(1, (int) $item['quantity']);
-                                @endphp
+                                @php $lineTotal = (int) round(((float) $item['unit_price']) * 100) * max(1, (int) $item['quantity']); @endphp
                                 <flux:table.row :key="'line-'.$index">
                                     <flux:table.cell>
                                         @if ($isEditing)
@@ -378,84 +363,118 @@ new #[Layout('layouts::app')] #[Title('Quote — Admin')] class extends Componen
                                         @if ($isEditing)
                                             <flux:input wire:model="lineItems.{{ $index }}.product_sku" placeholder="—" />
                                         @else
-                                            <span class="font-mono text-xs text-zinc-500">{{ $item['product_sku'] ?: '—' }}</span>
+                                            <span class="font-mono text-xs text-zinc-400">{{ $item['product_sku'] ?: '—' }}</span>
                                         @endif
                                     </flux:table.cell>
                                     <flux:table.cell align="{{ $isEditing ? 'left' : 'end' }}">
                                         @if ($isEditing)
-                                            <flux:input wire:model.live.debounce.500ms="lineItems.{{ $index }}.unit_price" type="number" min="0" step="0.01" class="text-right" />
+                                            <flux:input wire:model.live.debounce.500ms="lineItems.{{ $index }}.unit_price" type="number" min="0" step="0.01" />
                                         @else
                                             <span class="tabular-nums text-zinc-500">{!! money(round((float) $item['unit_price'] * 100)) !!}</span>
                                         @endif
                                     </flux:table.cell>
                                     <flux:table.cell align="{{ $isEditing ? 'left' : 'end' }}">
                                         @if ($isEditing)
-                                            <flux:input wire:model.live.debounce.500ms="lineItems.{{ $index }}.quantity" type="number" min="1" class="text-right" />
+                                            <flux:input wire:model.live.debounce.500ms="lineItems.{{ $index }}.quantity" type="number" min="1" />
                                         @else
                                             <span class="tabular-nums text-zinc-500">{{ $item['quantity'] }}</span>
                                         @endif
                                     </flux:table.cell>
-                                    <flux:table.cell align="end" class="font-medium tabular-nums">{!! money($lineTotal) !!}</flux:table.cell>
+                                    <flux:table.cell align="end" class="font-semibold tabular-nums">{!! money($lineTotal) !!}</flux:table.cell>
                                     @if ($isEditing)
                                         <flux:table.cell align="end">
-                                            <flux:button size="xs" variant="ghost" icon="trash" tooltip="Remove line" wire:click="removeLine({{ $index }})" type="button"
+                                            <flux:button size="xs" variant="ghost" icon="trash" tooltip="Remove" wire:click="removeLine({{ $index }})" type="button"
                                                 class="text-red-500! hover:text-red-600!" />
                                         </flux:table.cell>
                                     @endif
                                 </flux:table.row>
                             @empty
                                 <flux:table.row>
-                                    <flux:table.cell colspan="{{ $isEditing ? 6 : 5 }}" class="py-8 text-center text-sm text-zinc-400">
-                                        No line items.
+                                    <flux:table.cell colspan="{{ $isEditing ? 6 : 5 }}" class="py-10 text-center text-sm text-zinc-400">
+                                        No line items yet.
                                     </flux:table.cell>
                                 </flux:table.row>
                             @endforelse
                         </flux:table.rows>
                     </flux:table>
 
-                    <div class="flex items-center justify-between border-t border-zinc-200 px-6 py-3 dark:border-zinc-700">
-                        @if ($isEditing)
+                    @if ($isEditing)
+                        <div class="border-t border-zinc-200 px-6 py-3 dark:border-zinc-700">
                             <flux:button size="sm" variant="ghost" icon="plus" wire:click="addBlankLine" type="button">Add blank line</flux:button>
-                        @else
-                            <div></div>
-                        @endif
-                        <div class="text-right">
-                            <span class="text-xs font-bold uppercase tracking-wide text-zinc-500">Total</span>
-                            <span class="ml-3 text-xl font-semibold text-brand-500 tabular-nums">{!! money($this->totalCents) !!}</span>
                         </div>
+                    @endif
+                </flux:card>
+
+                {{-- Details --}}
+                <flux:card class="p-0 overflow-hidden">
+                    <div class="border-b border-zinc-200 px-6 py-4 dark:border-zinc-700">
+                        <flux:heading size="sm">Details</flux:heading>
+                    </div>
+                    <div class="space-y-4 p-6">
+                        @if ($isEditing)
+                            <flux:input wire:model="title" label="Title" required />
+                            <flux:textarea wire:model="notes" label="Notes" rows="4" placeholder="Internal notes or terms to include in the quote." />
+                        @else
+                            <div>
+                                <flux:label>Title</flux:label>
+                                <flux:text class="mt-1">{{ $quote->title }}</flux:text>
+                            </div>
+                            @if ($quote->notes)
+                                <div>
+                                    <flux:label>Notes</flux:label>
+                                    <flux:text class="mt-1 whitespace-pre-line">{{ $quote->notes }}</flux:text>
+                                </div>
+                            @endif
+                        @endif
                     </div>
                 </flux:card>
+
+                {{-- Delivery (if requested) --}}
+                @if ($quote->delivery_required)
+                    <flux:card class="p-0 overflow-hidden">
+                        <div class="border-b border-zinc-200 px-6 py-4 dark:border-zinc-700">
+                            <flux:heading size="sm">Delivery</flux:heading>
+                        </div>
+                        <div class="p-6">
+                            <div class="flex items-start gap-3">
+                                <flux:icon.map-pin variant="micro" class="mt-0.5 size-4 shrink-0 text-zinc-400" />
+                                <flux:text size="sm">{{ $quote->delivery_address }}</flux:text>
+                            </div>
+                        </div>
+                    </flux:card>
+                @endif
             </div>
 
-            {{-- Sidebar --}}
-            <aside class="w-full shrink-0 space-y-6 lg:w-80">
+            {{-- Right sidebar --}}
+            <aside class="w-full shrink-0 space-y-6 lg:w-72">
 
                 {{-- Status & expiry --}}
                 <flux:card class="p-0 overflow-hidden">
-                    <div class="flex items-center justify-between border-b border-zinc-200 px-6 py-4 dark:border-zinc-700">
+                    <div class="border-b border-zinc-200 px-6 py-4 dark:border-zinc-700">
                         <flux:heading size="sm">Status</flux:heading>
-                        <flux:badge size="sm" :color="$quote->status->badgeColor()">{{ $quote->status->label() }}</flux:badge>
                     </div>
                     <div class="space-y-4 p-6">
-                    @if ($isEditing)
-                        <flux:select wire:model="status" label="Change status">
-                            @foreach ($this->statuses() as $statusOption)
-                                <flux:select.option value="{{ $statusOption->value }}">{{ $statusOption->label() }}</flux:select.option>
-                            @endforeach
-                        </flux:select>
-                        <flux:input wire:model="expires_at" type="date" label="Expires on" />
-                    @else
-                        @if ($quote->expires_at)
-                            <div class="flex items-center justify-between text-sm">
-                                <span class="text-zinc-500">Expires</span>
-                                <span class="{{ $quote->expires_at->isPast() ? 'text-red-500 font-medium' : 'text-zinc-700 dark:text-zinc-300' }}">
-                                    {{ $quote->expires_at->format('M j, Y') }}
-                                </span>
-                            </div>
+                        @if ($isEditing)
+                            <flux:select wire:model="status" label="Status">
+                                @foreach ($this->statuses() as $s)
+                                    <flux:select.option value="{{ $s->value }}">{{ $s->label() }}</flux:select.option>
+                                @endforeach
+                            </flux:select>
+                            <flux:input wire:model="expires_at" type="date" label="Expires on" />
                         @else
-                            <flux:text size="sm" class="text-zinc-400">No expiry set.</flux:text>
+                            <div class="flex items-center justify-between text-sm">
+                                <span class="text-zinc-500 dark:text-zinc-400">Status</span>
+                                <flux:badge size="sm" :color="$quote->status->badgeColor()">{{ $quote->status->label() }}</flux:badge>
+                            </div>
+                            @if ($quote->expires_at)
+                                <div class="flex items-center justify-between text-sm">
+                                    <span class="text-zinc-500 dark:text-zinc-400">Expires</span>
+                                    <span class="{{ $quote->expires_at->isPast() ? 'text-red-500 font-medium' : 'text-zinc-700 dark:text-zinc-300' }}">
+                                        {{ $quote->expires_at->format('M j, Y') }}
+                                    </span>
+                                </div>
+                            @endif
                         @endif
-                    @endif
                     </div>
                 </flux:card>
 
@@ -465,51 +484,43 @@ new #[Layout('layouts::app')] #[Title('Quote — Admin')] class extends Componen
                         <flux:heading size="sm">Customer</flux:heading>
                     </div>
                     <div class="space-y-4 p-6">
-
-                    @if ($quote->user)
-                        <div class="flex items-center gap-3">
-                            <flux:avatar :name="$quote->user->name" :initials="$quote->user->initials()" size="sm" />
-                            <div class="min-w-0">
-                                <a href="{{ route('admin.customers.show', $quote->user) }}" wire:navigate
-                                    class="block truncate text-sm font-medium hover:text-brand-500 dark:text-white">
-                                    {{ $quote->user->name }}
-                                </a>
-                                <div class="truncate text-xs text-zinc-500">{{ $quote->user->email }}</div>
+                        @if ($quote->user)
+                            <div class="flex items-center gap-3">
+                                <flux:avatar :name="$quote->user->name" :initials="$quote->user->initials()" size="sm" />
+                                <div class="min-w-0">
+                                    <a href="{{ route('admin.customers.show', $quote->user) }}" wire:navigate
+                                        class="block truncate text-sm font-medium hover:text-brand-500 dark:text-white">
+                                        {{ $quote->user->name }}
+                                    </a>
+                                    <div class="truncate text-xs text-zinc-500">{{ $quote->user->email }}</div>
+                                </div>
                             </div>
-                        </div>
-                        <flux:separator />
-                    @endif
-
-                    @if ($isEditing)
-                        <flux:input wire:model="contact_name" label="Contact name" />
-                        <flux:input wire:model="contact_email" type="email" label="Contact email" />
-                        <flux:input wire:model="contact_phone" label="Contact phone" />
-                        <flux:input wire:model="contact_company" label="Company" />
-                    @else
-                        @php
-                            $contactName = $quote->contact_name ?? $quote->user?->name;
-                            $contactEmail = $quote->contact_email ?? $quote->user?->email;
-                        @endphp
-
-                        @if ($contactName || $contactEmail || $quote->contact_phone || $quote->contact_company)
-                            <div class="space-y-1.5 text-sm">
-                                @if ($contactName)
-                                    <div class="font-medium dark:text-white">{{ $contactName }}</div>
-                                @endif
-                                @if ($contactEmail)
-                                    <div class="text-zinc-500">{{ $contactEmail }}</div>
-                                @endif
-                                @if ($quote->contact_phone)
-                                    <div class="text-zinc-500">{{ $quote->contact_phone }}</div>
-                                @endif
-                                @if ($quote->contact_company)
-                                    <div class="text-zinc-400 text-xs">{{ $quote->contact_company }}</div>
-                                @endif
-                            </div>
-                        @else
-                            <flux:text size="sm" class="text-zinc-400">No contact details.</flux:text>
+                            @if ($quote->contact_name || $quote->contact_phone || $quote->contact_company)
+                                <flux:separator />
+                            @endif
                         @endif
-                    @endif
+
+                        @if ($isEditing)
+                            <flux:input wire:model="contact_name" label="Contact name" />
+                            <flux:input wire:model="contact_email" type="email" label="Email" />
+                            <flux:input wire:model="contact_phone" label="Phone" />
+                            <flux:input wire:model="contact_company" label="Company" />
+                        @else
+                            @php
+                                $contactName = $quote->contact_name ?? $quote->user?->name;
+                                $contactEmail = $quote->contact_email ?? $quote->user?->email;
+                            @endphp
+                            @if ($contactName || $contactEmail || $quote->contact_phone || $quote->contact_company)
+                                <div class="space-y-1.5 text-sm">
+                                    @if ($contactName)<div class="font-medium dark:text-white">{{ $contactName }}</div>@endif
+                                    @if ($contactEmail)<div class="text-zinc-500">{{ $contactEmail }}</div>@endif
+                                    @if ($quote->contact_phone)<div class="text-zinc-500">{{ $quote->contact_phone }}</div>@endif
+                                    @if ($quote->contact_company)<div class="text-xs text-zinc-400">{{ $quote->contact_company }}</div>@endif
+                                </div>
+                            @else
+                                <flux:text size="sm" class="text-zinc-400">No contact details.</flux:text>
+                            @endif
+                        @endif
                     </div>
                 </flux:card>
 

@@ -9,8 +9,7 @@
     $compareAt  = $compareAt !== null ? $tax->displayPriceCents($product, (int) $compareAt) : null;
     $priceLabel = $price ? money($price) : 'Request quote';
     $compareLabel = $compareAt ? money($compareAt) : null;
-    $inStock    = $product->stock_status === \App\Enums\StockStatus::IN_STOCK;
-    $isWished   = \App\Support\StorefrontSession::isWishlisted($product->slug);
+$isWished   = \App\Support\StorefrontSession::isWishlisted($product->slug);
     $isCompared = \App\Support\StorefrontSession::isCompared($product->slug);
     $cartQty    = \App\Support\StorefrontSession::cartQuantity($product->slug);
     $discount   = ($compareAt && $price && $compareAt > $price)
@@ -158,10 +157,6 @@
                 <div class="text-[11.5px] text-ink-4 line-through">{!! $compareLabel !!}</div>
             @endif
             <div class="text-[15px] font-bold text-ink tabular-nums whitespace-nowrap">{!! $priceLabel !!}</div>
-            <div class="mt-1 flex items-center gap-1.5 text-[11px] {{ $inStock ? 'text-emerald-700' : 'text-ink-3' }}">
-                <span class="size-1.5 rounded-full {{ $inStock ? 'bg-emerald-500' : 'bg-zinc-300' }}"></span>
-                {{ $inStock ? 'In stock' : 'Made to order' }}
-            </div>
         </div>
     </a>
 
