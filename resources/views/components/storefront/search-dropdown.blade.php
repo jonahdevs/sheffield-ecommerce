@@ -228,8 +228,8 @@ new class extends Component {
 
         {{-- Keyboard hint footer — desktop only --}}
         <div class="hidden items-center justify-end gap-2 border-t border-zinc-100 px-4 py-2 text-[11px] text-ink-4 lg:flex">
-            <kbd class="inline-flex h-4.5 items-center rounded border border-zinc-200 bg-zinc-50 px-1">↑</kbd>
-            <kbd class="inline-flex h-4.5 items-center rounded border border-zinc-200 bg-zinc-50 px-1">↓</kbd>
+            <kbd class="inline-flex h-4.5 items-center rounded border border-zinc-200 bg-zinc-50 px-1"><flux:icon.arrow-up variant="micro" class="size-3" /></kbd>
+            <kbd class="inline-flex h-4.5 items-center rounded border border-zinc-200 bg-zinc-50 px-1"><flux:icon.arrow-down variant="micro" class="size-3" /></kbd>
             <span class="mr-2">navigate</span>
             <kbd class="inline-flex h-4.5 items-center rounded border border-zinc-200 bg-zinc-50 px-1">esc</kbd>
             <span>close</span>

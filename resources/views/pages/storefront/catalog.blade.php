@@ -439,7 +439,7 @@ new #[Layout('layouts::storefront')] #[Title('Shop')] class extends Component {
                         @if ($minRating > 0)
                             <button type="button" wire:click="$set('minRating', 0)"
                                 class="inline-flex h-7 cursor-pointer items-center gap-1.5 rounded-full bg-surface-sunken px-3 text-[12.5px] font-medium text-ink-2 hover:bg-zinc-200">
-                                {{ $minRating }}★ &amp; up
+                                <span class="inline-flex items-center gap-0.5">{{ $minRating }}<flux:icon.star variant="micro" class="size-3 text-amber-500" /> &amp; up</span>
                                 <flux:icon.x variant="micro" class="size-3 text-ink-3" />
                             </button>
                         @endif

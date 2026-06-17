@@ -15,6 +15,7 @@ use App\Notifications\Orders\OrderStatusChanged;
 use App\Notifications\Orders\RefundProcessed;
 use App\Notifications\Quotes\QuoteReadyForReview;
 use App\Notifications\Quotes\QuoteRequestReceived;
+use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Notifications\AnonymousNotifiable;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Support\Facades\Storage;
@@ -27,6 +28,38 @@ function renderMail(MailMessage $mail): string
 {
     return view($mail->view, $mail->viewData)->render();
 }
+
+it('renders the branded email verification notification', function () {
+    $user = User::factory()->create();
+
+    // toMailUsing in FortifyServiceProvider swaps the default markdown mail
+    // for the branded transactional template.
+    $mail = (new VerifyEmail)->toMail($user);
+
+    expect($mail->view)->toBe('mails.auth.verify-email');
+
+    expect(renderMail($mail))
+        ->toContain('Verify your email')
+        ->toContain('Verify email address')
+        ->toContain(e($user->name))
+        // The signed verification link is wired to the button.
+        ->toContain('/email/verify/');
+});
+
+it('renders the classic email verification template', function () {
+    $user = User::factory()->create();
+
+    $html = view('mails.classic.auth.verify-email', [
+        'customerName' => $user->name,
+        'verifyUrl' => 'https://example.test/verify-link',
+        'expiresMinutes' => 60,
+    ])->render();
+
+    expect($html)
+        ->toContain('Verify your email')
+        ->toContain('https://example.test/verify-link')
+        ->toContain(e($user->name));
+});
 
 it('renders the order confirmation email', function () {
     $customer = User::factory()->create();

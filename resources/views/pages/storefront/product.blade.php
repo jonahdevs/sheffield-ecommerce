@@ -729,7 +729,7 @@ new #[Layout('layouts::storefront')] class extends Component
                     @click="$flux.modal('product-gallery').show()"
                 >
                     @if ($isOnSale)
-                        <span class="absolute top-4 left-4 z-10 text-[11px] font-bold tracking-[0.08em] text-brand-500 uppercase">● Sale</span>
+                        <span class="absolute top-4 left-4 z-10 inline-flex items-center gap-0.5 text-[11px] font-bold tracking-[0.08em] text-brand-500 uppercase"><flux:icon.dot class="size-4 -ml-1" />Sale</span>
                     @endif
 
                     <div class="absolute top-4 right-4 z-10 flex gap-1.5" @click.stop>

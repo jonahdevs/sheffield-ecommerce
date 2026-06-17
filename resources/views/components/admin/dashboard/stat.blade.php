@@ -34,11 +34,11 @@
                 <div class="mt-1.5 flex items-center gap-1.5">
                     @if ($hasTrend)
                         <span @class([
-                            'inline-flex items-center rounded-full px-1.5 py-0.5 text-[10px] font-semibold',
+                            'inline-flex items-center gap-0.5 rounded-full px-1.5 py-0.5 text-[10px] font-semibold',
                             'bg-emerald-100 text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-400' => $trendUp,
                             'bg-rose-100 text-rose-700 dark:bg-rose-950/50 dark:text-rose-400' => ! $trendUp,
                         ])>
-                            {{ $trendUp ? '▲' : '▼' }} {{ abs($trend) }}%
+                            <flux:icon :name="$trendUp ? 'arrow-trending-up' : 'arrow-trending-down'" variant="micro" class="size-3" /> {{ abs($trend) }}%
                         </span>
                     @endif
                     @if ($hint)

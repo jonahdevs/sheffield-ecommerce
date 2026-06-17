@@ -6,8 +6,10 @@ use App\Actions\Fortify\CreateNewUser;
 use App\Actions\Fortify\ResetUserPassword;
 use App\Http\Responses\LoginResponse;
 use App\Http\Responses\RegisterResponse;
+use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
+use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
@@ -33,7 +35,25 @@ class FortifyServiceProvider extends ServiceProvider
     {
         $this->configureActions();
         $this->configureViews();
+        $this->configureEmailVerification();
         $this->configureRateLimiting();
+    }
+
+    /**
+     * Render the email-verification notification with the branded transactional
+     * template so it matches the order and quote emails.
+     */
+    private function configureEmailVerification(): void
+    {
+        VerifyEmail::toMailUsing(function (object $notifiable, string $verifyUrl): MailMessage {
+            return (new MailMessage)
+                ->subject('Verify your email address — '.config('app.name'))
+                ->view('mails.auth.verify-email', [
+                    'customerName' => $notifiable->name ?? 'there',
+                    'verifyUrl' => $verifyUrl,
+                    'expiresMinutes' => (int) config('auth.verification.expire', 60),
+                ]);
+        });
     }
 
     /**

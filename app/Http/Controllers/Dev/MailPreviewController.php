@@ -34,6 +34,18 @@ class MailPreviewController extends Controller
     private function templates(): array
     {
         return [
+            'auth-verify-email' => [
+                'label' => 'Auth — Verify email',
+                'build' => function (): array {
+                    $user = User::factory()->create();
+
+                    return ['mails.auth.verify-email', [
+                        'customerName' => $user->name,
+                        'verifyUrl' => url('/email/verify/1/'.sha1($user->email).'?expires=0&signature=preview'),
+                        'expiresMinutes' => 60,
+                    ]];
+                },
+            ],
             'order-confirmation' => [
                 'label' => 'Order — Confirmation',
                 'build' => function (): array {
