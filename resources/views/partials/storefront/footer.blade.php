@@ -7,7 +7,8 @@
         ->orderBy('sort_order')
         ->get()
         ->pluck('category')
-        ->filter();
+        ->filter()
+        ->take(7);
 
     // TODO: extract into a view composer + cache once this becomes hot
     $showrooms = \App\Models\Showroom::query()
@@ -111,9 +112,6 @@
                 <h3 class="mb-4 text-xs font-bold tracking-widest text-[#d8c79d] uppercase">Business</h3>
                 <ul class="space-y-2.5 text-[13.5px] text-[#c9bea4]">
                     <li><a href="{{ route('quote.request') }}" class="hover:text-white" wire:navigate>Request a quote</a></li>
-                    <li><a href="{{ route('page.show', 'trade-accounts') }}" class="hover:text-white" wire:navigate>Trade accounts</a></li>
-                    <li><a href="{{ route('page.show', 'installation') }}" class="hover:text-white" wire:navigate>Installation</a></li>
-                    <li><a href="{{ route('page.show', 'spec-sheets') }}" class="hover:text-white" wire:navigate>Spec sheets</a></li>
                 </ul>
             </div>
 

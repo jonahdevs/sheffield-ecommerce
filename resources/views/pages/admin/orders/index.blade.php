@@ -28,7 +28,7 @@ new #[Layout('layouts::app')] #[Title('Orders — Admin')] class extends Compone
     public string $dateTo = '';
 
     #[Url]
-    public int $perPage = 25;
+    public int $perPage = 10;
 
     public function updatedSearch(): void
     {
@@ -91,11 +91,26 @@ new #[Layout('layouts::app')] #[Title('Orders — Admin')] class extends Compone
     #[Computed]
     public function stats(): array
     {
+        $hasRange = $this->dateFrom !== '' && $this->dateTo !== '';
+        $from     = $hasRange ? \Illuminate\Support\Carbon::parse($this->dateFrom)->startOfDay() : null;
+        $to       = $hasRange ? \Illuminate\Support\Carbon::parse($this->dateTo)->endOfDay() : null;
+
+        $paymentQ = Payment::where('status', PaymentStatus::SUCCESS);
+        $orderQ   = fn () => Order::query()->when($hasRange, fn ($q) => $q->whereBetween('created_at', [$from, $to]));
+
+        if ($hasRange) {
+            $paymentQ->whereBetween('paid_at', [$from, $to]);
+        }
+
+        $paidCount = (clone $paymentQ)->count();
+        $revenue   = (int) (clone $paymentQ)->sum('amount_cents');
+
         return [
-            'revenue' => (int) Payment::where('status', PaymentStatus::SUCCESS)->sum('amount_cents'),
-            'pending' => Order::where('status', OrderStatus::PENDING)->count(),
-            'processing' => Order::where('status', OrderStatus::PROCESSING)->count(),
-            'out_for_delivery' => Order::where('status', OrderStatus::OUT_FOR_DELIVERY)->count(),
+            'revenue'          => $revenue,
+            'aov'              => $paidCount > 0 ? (int) round($revenue / $paidCount) : 0,
+            'pending'          => $orderQ()->where('status', OrderStatus::PENDING)->count(),
+            'processing'       => $orderQ()->where('status', OrderStatus::PROCESSING)->count(),
+            'out_for_delivery' => $orderQ()->where('status', OrderStatus::OUT_FOR_DELIVERY)->count(),
         ];
     }
 
@@ -112,7 +127,7 @@ new #[Layout('layouts::app')] #[Title('Orders — Admin')] class extends Compone
 @endassets
 
 <div>
-    <div class="flex items-center justify-between">
+    <div class="flex flex-wrap items-end justify-between gap-3">
         <div>
             @push('breadcrumbs')
                 <flux:breadcrumbs>
@@ -123,6 +138,11 @@ new #[Layout('layouts::app')] #[Title('Orders — Admin')] class extends Compone
             <flux:heading size="xl">Orders</flux:heading>
             <flux:subheading>Track and fulfil customer orders.</flux:subheading>
         </div>
+        <div class="relative" wire:ignore x-data="rangePicker(@js($dateFrom), @js($dateTo))">
+            <flux:icon.calendar-days class="pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-zinc-400" />
+            <input x-ref="input" type="text" readonly placeholder="All time"
+                class="w-52 cursor-pointer rounded-lg border border-zinc-200 bg-white py-1.5 pr-3 pl-8 text-sm text-zinc-700 transition-colors hover:border-zinc-400 focus:ring-2 focus:ring-zinc-300 focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300" />
+        </div>
     </div>
 
     {{-- Stat tiles --}}
@@ -132,6 +152,7 @@ new #[Layout('layouts::app')] #[Title('Orders — Admin')] class extends Compone
             <div class="min-w-0">
                 <div class="text-2xl font-semibold tabular-nums dark:text-white">{!! money($this->stats['revenue']) !!}</div>
                 <flux:text size="sm">Total revenue</flux:text>
+                <div class="mt-0.5 text-xs text-zinc-400">AOV {!! money($this->stats['aov']) !!}</div>
             </div>
         </flux:card>
         <flux:card class="flex items-center gap-4">
@@ -191,13 +212,6 @@ new #[Layout('layouts::app')] #[Title('Orders — Admin')] class extends Compone
                 class="max-w-xs" />
 
             <div class="flex flex-wrap items-center gap-2">
-
-                {{-- Date range filter (same flatpickr range picker as the dashboard) --}}
-                <div class="relative" wire:ignore x-data="rangePicker(@js($dateFrom), @js($dateTo))">
-                    <flux:icon.calendar-days class="pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-zinc-400" />
-                    <input x-ref="input" type="text" readonly placeholder="Date range"
-                        class="w-52 cursor-pointer rounded-lg border border-zinc-200 bg-white py-1.5 pr-3 pl-8 text-sm text-zinc-700 transition-colors hover:border-zinc-400 focus:ring-2 focus:ring-zinc-300 focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300" />
-                </div>
 
                 <flux:select wire:model.live="filterStatus" class="w-44">
                     <flux:select.option value="">All statuses</flux:select.option>

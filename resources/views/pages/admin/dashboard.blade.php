@@ -12,6 +12,7 @@ use App\Models\Review;
 use App\Models\User;
 use Carbon\CarbonInterface;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
@@ -152,9 +153,6 @@ new #[Layout('layouts::app')] #[Title('Dashboard — Admin')] class extends Comp
                 'products_active' => Product::where('visibility', ProductVisibility::VISIBLE->value)->count(),
                 'low_stock' => Product::whereNotNull('stock_quantity')->whereNotNull('low_stock_threshold')->where('stock_quantity', '>', 0)->whereColumn('stock_quantity', '<=', 'low_stock_threshold')->count(),
                 'out_of_stock' => Product::whereNotNull('stock_quantity')->where('stock_quantity', 0)->count(),
-                'pending_orders' => Order::where('status', OrderStatus::PENDING->value)->count(),
-                'quotes_awaiting' => Quote::where('status', QuoteStatus::AWAITING_APPROVAL->value)->count(),
-                'sap_failed' => Order::where('sap_sync_status', 'failed')->count(),
             ];
         })();
     }
@@ -196,6 +194,18 @@ new #[Layout('layouts::app')] #[Title('Dashboard — Admin')] class extends Comp
                 ->orderByDesc('rev')
                 ->get();
 
+            $topProdRows = DB::table('order_items')
+                ->join('orders', 'order_items.order_id', '=', 'orders.id')
+                ->join('products', 'order_items.product_id', '=', 'products.id')
+                ->whereIn('orders.status', self::PAID_STATUSES)
+                ->whereBetween('orders.created_at', [$from, $to])
+                ->selectRaw('products.name as name, SUM(order_items.quantity) as units')
+                ->groupBy('products.id', 'products.name')
+                ->orderByDesc('units')
+                ->limit(6)
+                ->get();
+            $topMax = (int) ($topProdRows->first()->units ?? 1);
+
             $q = Quote::whereBetween('created_at', [$from, $to]);
 
             $reviews = Review::approved();
@@ -231,6 +241,11 @@ new #[Layout('layouts::app')] #[Title('Dashboard — Admin')] class extends Comp
                     'average' => $reviewTotal > 0 ? round((float) (clone $reviews)->avg('rating'), 1) : null,
                     'distribution' => array_values($distribution),
                 ],
+                'topProducts' => [
+                    'labels' => $topProdRows->map(fn($r) => Str::limit($r->name, 22))->all(),
+                    'data'   => $topProdRows->map(fn($r) => $topMax > 0 ? (int) round(($r->units / $topMax) * 100) : 0)->all(),
+                    'units'  => $topProdRows->map(fn($r) => (int) $r->units)->all(),
+                ],
             ];
         })();
     }
@@ -261,6 +276,11 @@ new #[Layout('layouts::app')] #[Title('Dashboard — Admin')] class extends Comp
             ->selectRaw('DATE(created_at) as d, COUNT(*) as c')
             ->groupBy('d')
             ->pluck('c', 'd');
+        $custRows = User::doesntHave('roles')
+            ->whereBetween('created_at', [$from, $to])
+            ->selectRaw('DATE(created_at) as d, COUNT(*) as c')
+            ->groupBy('d')
+            ->pluck('c', 'd');
 
         $granularity = $days <= 31 ? 'day' : ($days <= 92 ? 'week' : 'month');
 
@@ -283,11 +303,13 @@ new #[Layout('layouts::app')] #[Title('Dashboard — Admin')] class extends Comp
                 },
                 'rev' => 0,
                 'ord' => 0,
+                'cust' => 0,
             ];
 
             $d = $cursor->toDateString();
             $buckets[$key]['rev'] += (int) ($revRows[$d] ?? 0);
             $buckets[$key]['ord'] += (int) ($ordRows[$d] ?? 0);
+            $buckets[$key]['cust'] += (int) ($custRows[$d] ?? 0);
             $cursor->addDay();
         }
 
@@ -297,6 +319,7 @@ new #[Layout('layouts::app')] #[Title('Dashboard — Admin')] class extends Comp
             'labels' => array_map(fn($b) => $b['label'], $rows),
             'revenue' => array_map(fn($b) => (int) round($b['rev'] / 100), $rows),
             'orders' => array_map(fn($b) => $b['ord'], $rows),
+            'customers' => array_map(fn($b) => $b['cust'], $rows),
         ];
     }
 
@@ -307,6 +330,7 @@ new #[Layout('layouts::app')] #[Title('Dashboard — Admin')] class extends Comp
     {
         $rev = array_fill(0, 24, 0);
         $ord = array_fill(0, 24, 0);
+        $cust = array_fill(0, 24, 0);
 
         Order::whereIn('status', self::PAID_STATUSES)
             ->whereBetween('created_at', [$from, $to])
@@ -322,6 +346,13 @@ new #[Layout('layouts::app')] #[Title('Dashboard — Admin')] class extends Comp
                 $ord[(int) $o->created_at->format('G')] += 1;
             });
 
+        User::doesntHave('roles')
+            ->whereBetween('created_at', [$from, $to])
+            ->get(['created_at'])
+            ->each(function ($u) use (&$cust): void {
+                $cust[(int) $u->created_at->format('G')] += 1;
+            });
+
         $labels = [];
         for ($h = 0; $h < 24; $h++) {
             $labels[] = sprintf('%02d:00', $h);
@@ -331,6 +362,7 @@ new #[Layout('layouts::app')] #[Title('Dashboard — Admin')] class extends Comp
             'labels' => $labels,
             'revenue' => array_map(fn($c) => (int) round($c / 100), array_values($rev)),
             'orders' => array_values($ord),
+            'customers' => array_values($cust),
         ];
     }
 
@@ -546,50 +578,16 @@ new #[Layout('layouts::app')] #[Title('Dashboard — Admin')] class extends Comp
 
     {{-- KPI cards --}}
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <x-admin.dashboard.stat label="Revenue" :value="money($m['revenue_cents'])" icon="banknotes" tone="emerald" :trend="$m['revenue_trend']" />
-        <x-admin.dashboard.stat label="Orders" :value="number_format($m['orders'])" icon="shopping-bag" tone="blue" :trend="$m['orders_trend']"
-            hint="{{ $m['paid_orders'] }} paid · AOV {{ money($m['aov_cents']) }}" />
-        <x-admin.dashboard.stat label="Customers" :value="number_format($m['customers_total'])" icon="users" tone="violet" :trend="$m['customers_trend']"
-            hint="{{ $m['customers_new'] }} new · {{ $m['customers_returning'] }} returning" />
+        <x-admin.dashboard.stat label="Revenue" :value="money($m['revenue_cents'])" icon="banknotes" tone="emerald"
+            sparkRef="sparkRevenue" />
+        <x-admin.dashboard.stat label="Orders" :value="number_format($m['orders'])" icon="shopping-bag" tone="blue"
+            sparkRef="sparkOrders" />
+        <x-admin.dashboard.stat label="Customers" :value="number_format($m['customers_total'])" icon="users" tone="violet"
+            sparkRef="sparkCustomers" />
         <x-admin.dashboard.stat label="Active products" :value="number_format($m['products_active'])" icon="cube" :tone="$m['low_stock'] + $m['out_of_stock'] > 0 ? 'amber' : 'teal'"
             hint="{{ $m['low_stock'] + $m['out_of_stock'] > 0 ? $m['low_stock'] + $m['out_of_stock'] . ' need attention' : 'all stocked' }}" />
     </div>
 
-    {{-- Attention strip --}}
-    @if ($m['pending_orders'] > 0 || $m['quotes_awaiting'] > 0 || $m['sap_failed'] > 0)
-        <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
-            @if ($m['pending_orders'] > 0)
-                <a href="{{ route('admin.orders.index') }}" wire:navigate
-                    class="flex items-center gap-3 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 dark:border-amber-800 dark:bg-amber-900/20">
-                    <flux:icon.clock class="size-5 text-amber-600" />
-                    <div class="text-sm"><span
-                            class="font-semibold text-amber-800 dark:text-amber-300">{{ $m['pending_orders'] }}</span>
-                        <span class="text-amber-700 dark:text-amber-400"> pending order(s)</span>
-                    </div>
-                </a>
-            @endif
-            @if ($m['quotes_awaiting'] > 0)
-                <a href="{{ route('admin.quotes.index') }}" wire:navigate
-                    class="flex items-center gap-3 rounded-lg border border-blue-200 bg-blue-50 px-4 py-3 dark:border-blue-800 dark:bg-blue-900/20">
-                    <flux:icon.document-text class="size-5 text-blue-600" />
-                    <div class="text-sm"><span
-                            class="font-semibold text-blue-800 dark:text-blue-300">{{ $m['quotes_awaiting'] }}</span>
-                        <span class="text-blue-700 dark:text-blue-400"> quote(s) awaiting approval</span>
-                    </div>
-                </a>
-            @endif
-            @if ($m['sap_failed'] > 0)
-                <a href="{{ route('admin.sap-sync') }}" wire:navigate
-                    class="flex items-center gap-3 rounded-lg border border-red-200 bg-red-50 px-4 py-3 dark:border-red-800 dark:bg-red-900/20">
-                    <flux:icon.exclamation-triangle class="size-5 text-red-600" />
-                    <div class="text-sm"><span
-                            class="font-semibold text-red-800 dark:text-red-300">{{ $m['sap_failed'] }}</span>
-                        <span class="text-red-700 dark:text-red-400"> SAP sync failure(s)</span>
-                    </div>
-                </a>
-            @endif
-        </div>
-    @endif
 
     {{-- Revenue chart + funnel --}}
     <div class="grid grid-cols-1 gap-4 lg:grid-cols-3">
@@ -741,22 +739,8 @@ new #[Layout('layouts::app')] #[Title('Dashboard — Admin')] class extends Comp
             <div class="border-b border-zinc-200 px-6 py-3 dark:border-zinc-700">
                 <flux:heading size="sm" class="uppercase tracking-wide">Top products</flux:heading>
             </div>
-            <div class="flex flex-col gap-3 p-5">
-                @forelse ($this->topProducts as $i => $item)
-                    <div class="flex flex-col gap-1">
-                        <div class="flex items-center justify-between gap-2 text-xs">
-                            <span
-                                class="min-w-0 flex-1 truncate text-zinc-700 dark:text-zinc-300">{{ Str::limit($item['name'], 24) }}</span>
-                            <span
-                                class="shrink-0 font-semibold tabular-nums text-zinc-800 dark:text-zinc-200">{{ $item['units'] }}</span>
-                        </div>
-                        <div class="h-1.5 overflow-hidden rounded-full bg-zinc-100 dark:bg-zinc-800">
-                            <div class="h-full rounded-full bg-brand-500" style="width: {{ $item['pct'] }}%"></div>
-                        </div>
-                    </div>
-                @empty
-                    <p class="py-6 text-center text-sm text-zinc-400">No sales in this period</p>
-                @endforelse
+            <div wire:ignore>
+                <div x-ref="topProducts" class="h-[300px]"></div>
             </div>
         </flux:card>
     </div>
@@ -885,18 +869,16 @@ new #[Layout('layouts::app')] #[Title('Dashboard — Admin')] class extends Comp
 
             revenueFill() {
                 // Solid fill for bars; soft gradient for the area view.
-                return this._revType === 'bar' ?
-                    {
-                        type: 'solid',
-                        opacity: [0.9, 0.2]
-                    } :
-                    {
-                        type: 'gradient',
-                        gradient: {
-                            opacityFrom: 0.35,
-                            opacityTo: 0.05
-                        }
-                    };
+                return this._revType === 'bar' ? {
+                    type: 'solid',
+                    opacity: [0.9, 0.2]
+                } : {
+                    type: 'gradient',
+                    gradient: {
+                        opacityFrom: 0.35,
+                        opacityTo: 0.05
+                    }
+                };
             },
 
             revenueStroke() {
@@ -992,6 +974,129 @@ new #[Layout('layouts::app')] #[Title('Dashboard — Admin')] class extends Comp
                 this.charts[refName].render();
             },
 
+            polarArea(refName, d, money = false) {
+                this.charts[refName] = new ApexCharts(this.$refs[refName], {
+                    chart: {
+                        type: 'polarArea',
+                        height: 300,
+                        fontFamily: 'inherit',
+                        toolbar: {
+                            show: false
+                        },
+                    },
+                    series: d.data,
+                    labels: d.labels,
+                    colors: this.palette,
+                    stroke: {
+                        colors: ['#fff'],
+                        width: 2
+                    },
+                    fill: {
+                        opacity: 0.85
+                    },
+                    legend: {
+                        position: 'bottom'
+                    },
+                    yaxis: {
+                        show: false
+                    },
+                    dataLabels: {
+                        enabled: false
+                    },
+                    tooltip: money ? {
+                        y: {
+                            formatter: (v) => this.money(v)
+                        }
+                    } : {},
+                    noData: {
+                        text: 'No data in this period'
+                    },
+                });
+                this.charts[refName].render();
+            },
+
+            sparkline(refName, data, color) {
+                this.charts[refName] = new ApexCharts(this.$refs[refName], {
+                    chart: {
+                        type: 'area',
+                        height: 56,
+                        sparkline: {
+                            enabled: true
+                        },
+                        fontFamily: 'inherit',
+                        animations: {
+                            enabled: false
+                        },
+                    },
+                    series: [{
+                        data
+                    }],
+                    colors: [color],
+                    stroke: {
+                        curve: 'smooth',
+                        width: 1.5
+                    },
+                    fill: {
+                        type: 'gradient',
+                        gradient: {
+                            shadeIntensity: 1,
+                            opacityFrom: 0.8,
+                            opacityTo: 0.3,
+                            stops: [0, 100]
+                        },
+                    },
+                    tooltip: { enabled: false },
+                });
+                this.charts[refName].render();
+            },
+
+            radialBar(refName, d) {
+                const units = d.units || [];
+                this.charts[refName] = new ApexCharts(this.$refs[refName], {
+                    chart: {
+                        type: 'radialBar',
+                        height: 300,
+                        fontFamily: 'inherit',
+                        toolbar: { show: false },
+                    },
+                    series: d.data,
+                    labels: d.labels,
+                    colors: this.palette,
+                    plotOptions: {
+                        radialBar: {
+                            offsetY: 0,
+                            startAngle: 0,
+                            endAngle: 270,
+                            hollow: {
+                                margin: 5,
+                                size: '30%',
+                                background: 'transparent',
+                            },
+                            track: { background: '#f4f4f5', margin: 4 },
+                            dataLabels: {
+                                name: { show: false },
+                                value: { show: false },
+                            },
+                            barLabels: {
+                                enabled: true,
+                                useSeriesColors: true,
+                                offsetX: -8,
+                                fontSize: '12px',
+                                formatter: (name, opts) =>
+                                    name + ':  ' + (units[opts.seriesIndex] ?? opts.w.globals.series[opts.seriesIndex]) + ' units',
+                            },
+                        },
+                    },
+                    legend: { show: false },
+                    noData: { text: 'No sales in this period' },
+                    responsive: [{
+                        breakpoint: 480,
+                        options: { chart: { height: 250 } },
+                    }],
+                });
+                this.charts[refName].render();
+            },
+
             bar(refName, d, money = false) {
                 this.charts[refName] = new ApexCharts(this.$refs[refName], {
                     chart: {
@@ -1074,10 +1179,15 @@ new #[Layout('layouts::app')] #[Title('Dashboard — Admin')] class extends Comp
                 });
                 this.charts.funnel.render();
 
-                this.donut('channel', d.channel, true);
-                this.donut('status', d.status);
+                this.polarArea('channel', d.channel, true);
+                this.polarArea('status', d.status);
+                this.radialBar('topProducts', d.topProducts);
                 this.bar('categories', d.categories);
                 this.initCountyMap(d);
+
+                this.sparkline('sparkRevenue', d.revenue.revenue, '#10b981');
+                this.sparkline('sparkOrders', d.revenue.orders, '#3b82f6');
+                this.sparkline('sparkCustomers', d.revenue.customers, '#8b5cf6');
 
                 this.charts.satisfaction = new ApexCharts(this.$refs.satisfaction, {
                     chart: {
@@ -1234,6 +1344,26 @@ new #[Layout('layouts::app')] #[Title('Dashboard — Admin')] class extends Comp
                     }
                 });
                 this.updateMap(d);
+
+                this.charts.sparkRevenue?.updateOptions({
+                    series: [{
+                        data: d.revenue.revenue
+                    }]
+                });
+                this.charts.sparkOrders?.updateOptions({
+                    series: [{
+                        data: d.revenue.orders
+                    }]
+                });
+                this.charts.sparkCustomers?.updateOptions({
+                    series: [{
+                        data: d.revenue.customers
+                    }]
+                });
+                this.charts.topProducts?.updateOptions({
+                    series: d.topProducts.data,
+                    labels: d.topProducts.labels,
+                });
             },
         }));
     </script>

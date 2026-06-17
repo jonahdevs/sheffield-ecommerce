@@ -2,9 +2,9 @@
 
 namespace App\Services\Sap;
 
+use App\Enums\PaymentStatus;
 use App\Models\Order;
 use App\Models\Showroom;
-use App\Notifications\Orders\KraInvoiceReady;
 use App\Settings\PaymentSettings;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
@@ -19,13 +19,13 @@ class KraReceiptService
     public function __construct(private readonly SapConfig $config) {}
 
     /**
-     * Generate the KRA tax receipt PDF, store it, and update kra_receipt_path.
+     * Generate the KRA tax receipt PDF, store it, and update receipt_path.
      * Returns the storage path on success, null on failure.
      * Never throws — receipt failure must never cascade to the caller.
      */
     public function generate(Order $order): ?string
     {
-        if (! $order->kra_cu_number) {
+        if (! $order->cu_number) {
             Log::warning('KRA receipt: cannot generate — no CU number on order.', [
                 'order_id' => $order->id,
             ]);
@@ -40,8 +40,12 @@ class KraReceiptService
             $showrooms = Showroom::orderByDesc('is_hq')->orderBy('sort_order')->limit(3)->get();
             $banking = app(PaymentSettings::class)->bank_details;
 
+            $order->loadMissing(['items', 'user', 'address', 'payments']);
+            $payment = $order->payments->where('status', PaymentStatus::SUCCESS)->first();
+
             $content = Pdf::view('pdf.kra-receipt', [
-                'order' => $order->loadMissing(['items', 'user', 'address']),
+                'order' => $order,
+                'payment' => $payment,
                 'businessPin' => $this->config->businessPin(),
             ])
                 ->format('a4')
@@ -55,9 +59,7 @@ class KraReceiptService
 
             Storage::disk(self::DISK)->put($path, $content);
 
-            $order->update(['kra_receipt_path' => $path]);
-
-            $order->user?->notify(new KraInvoiceReady($order));
+            $order->update(['receipt_path' => $path]);
 
             Log::info('KRA receipt generated.', [
                 'order_id' => $order->id,

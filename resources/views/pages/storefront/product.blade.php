@@ -498,6 +498,26 @@ new #[Layout('layouts::storefront')] class extends Component
 
     /** City of the head-office showroom, used as the real stock location. */
     #[Computed]
+    public function filteredAccessories(): Collection
+    {
+        return $this->product->accessories()
+            ->visibleInCatalog()->published()
+            ->with(['images' => fn ($q) => $q->where('is_cover', true)->limit(1)])
+            ->orderBy('sort_order')
+            ->get();
+    }
+
+    #[Computed]
+    public function filteredSpareParts(): Collection
+    {
+        return $this->product->spareParts()
+            ->visibleInCatalog()->published()
+            ->with(['images' => fn ($q) => $q->where('is_cover', true)->limit(1)])
+            ->orderBy('sort_order')
+            ->get();
+    }
+
+    #[Computed]
     public function stockLocation(): ?string
     {
         return Showroom::where('is_hq', true)->value('city')
@@ -771,7 +791,7 @@ new #[Layout('layouts::storefront')] class extends Component
             {{-- Image modal (Flux) — opened via $flux.modal('product-gallery').show() on the main image --}}
             <flux:modal name="product-gallery" class="w-full max-w-xl">
                 <div class="flex flex-col gap-4">
-                    <flux:heading size="lg">Product Images</flux:heading>
+                    <flux:heading size="lg" class="uppercase">Product Images</flux:heading>
 
                     {{-- Square image stage --}}
                     <div class="group relative mx-auto aspect-square w-full max-w-[min(100%,60vh)] overflow-hidden bg-white">
@@ -810,7 +830,7 @@ new #[Layout('layouts::storefront')] class extends Component
         </div>
 
         {{-- Center column — product details --}}
-        <div>
+        <div class="min-w-0">
             @if ($product->brand)
                 <div class="text-[11.5px] font-bold tracking-[0.12em] text-brand-blue-500 uppercase">
                     {{ $product->brand->name }}
@@ -891,8 +911,8 @@ new #[Layout('layouts::storefront')] class extends Component
                     $isBundledType  = $product->type === \App\Enums\ProductType::BUNDLE;
                     $stockLineText  = match(true) {
                         $isGroupedType                       => 'Configure your set below',
-                        $inStock && $stockQty !== null       => $stockQty.' in stock'.($this->stockLocation ? ' — '.$this->stockLocation : ''),
-                        $inStock                             => 'In stock'.($this->stockLocation ? ' — '.$this->stockLocation : ''),
+                        $inStock && $stockQty !== null       => $stockQty.' in stock',
+                        $inStock                             => 'In stock',
                         $isBackorder                         => 'Available on backorder',
                         default                              => 'Out of stock at present',
                     };
@@ -1153,61 +1173,52 @@ new #[Layout('layouts::storefront')] class extends Component
             <flux:card>
 
             {{-- Trust signals --}}
-            @php
-                $trust = collect();
-                if ($product->brand) {
-                    $trust->push(['check-badge', 'Authorised distributor', $product->brand->name]);
-                }
-                if ($this->deliveryZones->isNotEmpty()) {
-                    $counties = $this->deliveryZones->pluck('county')->filter()->unique()->values();
-                    $coverage = $counties->isNotEmpty()
-                        ? $counties->take(3)->implode(', ').($counties->count() > 3 ? ' +'.($counties->count() - 3).' more' : '')
-                        : $this->deliveryZones->count().' '.\Illuminate\Support\Str::plural('zone', $this->deliveryZones->count());
-                    $trust->push(['truck', 'Delivery coverage', $coverage]);
-                }
-                if ($this->stockLocation) {
-                    $trust->push(['building-storefront', 'Ships from', $this->stockLocation]);
-                }
-                if ($product->downloadableFiles->isNotEmpty()) {
-                    $trust->push(['document-text', 'Spec sheets & manuals', $product->downloadableFiles->count().' '.\Illuminate\Support\Str::plural('document', $product->downloadableFiles->count())]);
-                }
-            @endphp
-            {{-- Delivery / seller facts --}}
-            @php
-                $storeName = app(\App\Settings\BrandingSettings::class)->store_name ?: config('app.name', 'Sheffield');
-            @endphp
             <div class="flex flex-col gap-3 text-[12.5px]">
-                <div class="flex items-start gap-2.5">
-                    <flux:icon.building-storefront variant="outline" class="size-4 shrink-0 text-brand-500" />
-                    <div>
-                        <div class="font-semibold text-ink">Sold by {{ $storeName }}</div>
-                        @if ($product->brand)
-                            <div class="text-ink-3">Authorised {{ $product->brand->name }} distributor</div>
-                        @endif
-                    </div>
-                </div>
-                @foreach ($trust as [$icon, $title, $sub])
-                    @continue($icon === 'check-badge')
+                @if ($product->brand)
                     <div class="flex items-start gap-2.5">
-                        <flux:icon :name="$icon" variant="outline" class="size-4 shrink-0 text-brand-500" />
+                        <flux:icon.check-badge variant="outline" class="size-4 shrink-0 text-brand-500" />
                         <div>
-                            <div class="font-semibold text-ink">{{ $title }}</div>
-                            <div class="text-ink-3">{{ $sub }}</div>
+                            <div class="font-semibold text-ink">Authorised distributor</div>
+                            <div class="text-ink-3">{{ $product->brand->name }}</div>
                         </div>
                     </div>
-                @endforeach
+                @endif
+                @if ($this->deliveryZones->isNotEmpty())
+                    @php
+                        $counties = $this->deliveryZones->pluck('county')->filter()->unique()->values();
+                        $coverage = $counties->isNotEmpty()
+                            ? $counties->take(3)->implode(', ').($counties->count() > 3 ? ' +'.($counties->count() - 3).' more' : '')
+                            : $this->deliveryZones->count().' '.\Illuminate\Support\Str::plural('zone', $this->deliveryZones->count());
+                    @endphp
+                    <div class="flex items-start gap-2.5">
+                        <flux:icon.truck variant="outline" class="size-4 shrink-0 text-brand-500" />
+                        <div>
+                            <div class="font-semibold text-ink">Delivery coverage</div>
+                            <div class="text-ink-3">{{ $coverage }}</div>
+                        </div>
+                    </div>
+                @endif
+                @if ($product->downloadableFiles->isNotEmpty())
+                    <div class="flex items-start gap-2.5">
+                        <flux:icon.document-text variant="outline" class="size-4 shrink-0 text-brand-500" />
+                        <div>
+                            <div class="font-semibold text-ink">Spec sheets & manuals</div>
+                            <div class="text-ink-3">{{ $product->downloadableFiles->count() }} {{ \Illuminate\Support\Str::plural('document', $product->downloadableFiles->count()) }}</div>
+                        </div>
+                    </div>
+                @endif
             </div>
 
             {{-- Policy quick-links --}}
             <div class="mt-4 flex flex-col divide-y divide-zinc-100 border-t border-zinc-200 pt-4 text-[13.5px]">
-                <a href="{{ route('page.show', 'returns-policy') }}" wire:navigate class="group flex items-center justify-between gap-3 py-2.5">
+                <a href="{{ route('page.show', ['page' => 'returns-policy']) }}" wire:navigate class="group flex items-center justify-between gap-3 py-2.5">
                     <span class="flex items-center gap-2.5 text-ink-2">
                         <flux:icon.arrow-uturn-left variant="outline" class="size-4 shrink-0 text-brand-500" />
                         Return &amp; refund policy
                     </span>
                     <flux:icon.chevron-right variant="micro" class="size-4 shrink-0 text-ink-4 transition group-hover:text-ink-2" />
                 </a>
-                <a href="{{ route('page.show', 'shipping-policy') }}" wire:navigate class="group flex items-center justify-between gap-3 py-2.5">
+                <a href="{{ route('page.show', ['page' => 'shipping-policy']) }}" wire:navigate class="group flex items-center justify-between gap-3 py-2.5">
                     <span class="flex items-center gap-2.5 text-ink-2">
                         <flux:icon.truck variant="outline" class="size-4 shrink-0 text-brand-500" />
                         Shipping &amp; delivery
@@ -1246,8 +1257,8 @@ new #[Layout('layouts::storefront')] class extends Component
 
     {{-- Accessories / spare parts add-on carousel --}}
     @php
-        $hasAccessories = $product->accessories->isNotEmpty();
-        $hasSpareParts  = $product->spareParts->isNotEmpty();
+        $hasAccessories = $this->filteredAccessories->isNotEmpty();
+        $hasSpareParts  = $this->filteredSpareParts->isNotEmpty();
         // Auto-correct stale tab: if 'accessories' is selected but none exist, switch to 'spares'
         if ($addonTab === 'accessories' && ! $hasAccessories && $hasSpareParts) {
             $addonTab = 'spares';
@@ -1268,7 +1279,7 @@ new #[Layout('layouts::storefront')] class extends Component
                             'border-transparent text-ink-3 hover:text-ink' => $addonTab !== 'accessories',
                         ])>
                         Accessories
-                        <span class="ml-1 text-[11px] text-ink-4">{{ $product->accessories->count() }}</span>
+                        <span class="ml-1 text-[11px] text-ink-4">{{ $this->filteredAccessories->count() }}</span>
                     </button>
                 @endif
                 @if ($hasSpareParts)
@@ -1279,13 +1290,13 @@ new #[Layout('layouts::storefront')] class extends Component
                             'border-transparent text-ink-3 hover:text-ink' => $addonTab !== 'spares',
                         ])>
                         Spare parts
-                        <span class="ml-1 text-[11px] text-ink-4">{{ $product->spareParts->count() }}</span>
+                        <span class="ml-1 text-[11px] text-ink-4">{{ $this->filteredSpareParts->count() }}</span>
                     </button>
                 @endif
             </div>
 
             {{-- Carousel --}}
-            @php $addonItems = $addonTab === 'spares' ? $product->spareParts : $product->accessories; @endphp
+            @php $addonItems = $addonTab === 'spares' ? $this->filteredSpareParts : $this->filteredAccessories; @endphp
             <div class="relative mt-5" data-addon-carousel>
                 <button type="button"
                     class="addon-prev absolute -left-4 top-[40%] z-10 -translate-y-1/2 hidden size-9 items-center justify-center rounded-full border border-zinc-200 bg-white shadow-sm text-ink-2 transition hover:bg-surface-sunken sm:inline-flex disabled:opacity-30">
@@ -1297,7 +1308,7 @@ new #[Layout('layouts::storefront')] class extends Component
                         @foreach ($addonItems as $addon)
                             <x-storefront.product-card
                                 :product="$addon"
-                                :badge="$addonTab === 'accessories' && $addon->pivot->is_required ? 'Needs '.$addon->pivot->default_quantity : null"
+                                :badge="$addonTab === 'accessories' && $addon->pivot->is_required ? ($addon->pivot->default_quantity > 1 ? 'Required ×'.$addon->pivot->default_quantity : 'Required') : null"
                                 class="swiper-slide !h-auto"
                                 wire:key="addon-{{ $addon->id }}" />
                         @endforeach
@@ -1595,7 +1606,7 @@ new #[Layout('layouts::storefront')] class extends Component
     @if (in_array($product->type, [\App\Enums\ProductType::BUNDLE, \App\Enums\ProductType::GROUPED], true))
         <flux:modal wire:model.self="showBundleModal" class="md:w-[560px]">
             @if ($product->type === \App\Enums\ProductType::BUNDLE)
-                <flux:heading>What's in this bundle</flux:heading>
+                <flux:heading class="uppercase">What's in this bundle</flux:heading>
                 <flux:subheading>{{ $product->name }} ships as a single package made up of the components below.</flux:subheading>
 
                 <div class="mt-5 divide-y divide-zinc-100">
@@ -1634,7 +1645,7 @@ new #[Layout('layouts::storefront')] class extends Component
                     <flux:button variant="primary" icon="shopping-cart" wire:click="addBundleToCart">Add to cart</flux:button>
                 </div>
             @else
-                <flux:heading>Choose your items</flux:heading>
+                <flux:heading class="uppercase">Choose your items</flux:heading>
                 <flux:subheading>Set a quantity for any product in this set — each is added to your cart on its own.</flux:subheading>
 
                 <div class="mt-5 divide-y divide-zinc-100">

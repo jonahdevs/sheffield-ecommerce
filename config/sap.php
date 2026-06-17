@@ -6,5 +6,5 @@ return [
     'webhook_secret' => env('SAP_WEBHOOK_SECRET'),
     'business_pin' => env('KRA_BUSINESS_PIN'),
     'verify_ssl' => env('SAP_VERIFY_SSL', true),
-    'recovery_delay_minutes' => env('SAP_RECOVERY_DELAY_MINUTES', 30),
+    'recovery_delay_minutes' => env('SAP_RECOVERY_DELAY_MINUTES', 2),
 ];

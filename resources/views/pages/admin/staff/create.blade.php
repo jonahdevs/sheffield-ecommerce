@@ -77,7 +77,7 @@ new #[Layout('layouts::app')] #[Title('Add Staff — Admin')] class extends Comp
 
             {{-- Account --}}
             <flux:card class="p-0 overflow-hidden">
-                <div class="border-b border-zinc-200 px-6 py-4 dark:border-zinc-700">
+                <div class="border-b border-zinc-200 px-6 py-3 dark:border-zinc-700">
                     <flux:heading size="sm">Account details</flux:heading>
                 </div>
                 <div class="space-y-4 p-6">
@@ -93,7 +93,7 @@ new #[Layout('layouts::app')] #[Title('Add Staff — Admin')] class extends Comp
 
             {{-- Password --}}
             <flux:card class="p-0 overflow-hidden">
-                <div class="border-b border-zinc-200 px-6 py-4 dark:border-zinc-700">
+                <div class="border-b border-zinc-200 px-6 py-3 dark:border-zinc-700">
                     <flux:heading size="sm">Password</flux:heading>
                 </div>
                 <div class="space-y-4 p-6">

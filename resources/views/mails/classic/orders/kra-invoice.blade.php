@@ -88,10 +88,10 @@
                   <td style="padding-top: 4px; padding-bottom: 4px; font-size: 14px; line-height: 20px; color: #64748b;">Order reference</td>
                   <td style="padding-top: 4px; padding-bottom: 4px; text-align: right; font-size: 14px; line-height: 20px; font-weight: 500; color: #334155;">{{ $order->order_number }}</td>
                 </tr>
-                @if ($order->kra_cu_number)
+                @if ($order->cu_number)
                 <tr>
                   <td style="padding-top: 4px; padding-bottom: 4px; font-size: 14px; line-height: 20px; color: #64748b;">KRA CU number</td>
-                  <td style="padding-top: 4px; padding-bottom: 4px; text-align: right; font-size: 14px; line-height: 20px; font-weight: 500; color: #334155;">{{ $order->kra_cu_number }}</td>
+                  <td style="padding-top: 4px; padding-bottom: 4px; text-align: right; font-size: 14px; line-height: 20px; font-weight: 500; color: #334155;">{{ $order->cu_number }}</td>
                 </tr>
                 @endif
                 <tr>

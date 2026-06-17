@@ -50,7 +50,6 @@
                             $labels = [
                                 'new-products'      => 'New products',
                                 'seasonal-catalogs' => 'Catalogs',
-                                'trade-pricing'     => 'Trade offers',
                                 'projects'          => 'Projects',
                             ];
                         @endphp

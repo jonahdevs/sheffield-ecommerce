@@ -60,7 +60,7 @@ new #[Layout('layouts::app')] #[Title('Order — Admin')] class extends Componen
     public function mount(Order $order): void
     {
         $this->order = $order->load([
-            'items.product', 'address', 'user', 'deliveryZone',
+            'items.product.images', 'address', 'user', 'deliveryZone',
             'payments', 'shipment.carrier', 'shipment.warehouse', 'shippingMethod',
             'sapSyncLogs', 'statusHistories.changedBy',
         ]);
@@ -308,12 +308,12 @@ new #[Layout('layouts::app')] #[Title('Order — Admin')] class extends Componen
 
     public function downloadReceipt(): mixed
     {
-        if (! $this->order->kra_receipt_path) {
+        if (! $this->order->receipt_path) {
             return null;
         }
 
         return Storage::disk('local')->download(
-            $this->order->kra_receipt_path,
+            $this->order->receipt_path,
             $this->order->order_number.'-receipt.pdf',
         );
     }
@@ -432,7 +432,7 @@ new #[Layout('layouts::app')] #[Title('Order — Admin')] class extends Componen
 
             {{-- Items --}}
             <flux:card class="overflow-hidden p-0">
-                <div class="border-b border-zinc-200 px-6 py-4 dark:border-zinc-700">
+                <div class="border-b border-zinc-200 px-6 py-3 dark:border-zinc-700">
                     <flux:heading size="sm" class="uppercase tracking-wide">Items</flux:heading>
                 </div>
                 <flux:table container:class="[&_th:first-child]:pl-6 [&_th:last-child]:pr-6 [&_td:first-child]:pl-6 [&_td:last-child]:pr-6">
@@ -447,10 +447,22 @@ new #[Layout('layouts::app')] #[Title('Order — Admin')] class extends Componen
                         @foreach ($order->items as $item)
                             <flux:table.row :key="$item->id">
                                 <flux:table.cell>
-                                    <span class="font-medium dark:text-white">{{ $item->product_name }}</span>
-                                    @if ($item->product_model_number)
-                                        <span class="block font-mono text-xs font-normal text-zinc-400">Model: {{ $item->product_model_number }}</span>
-                                    @endif
+                                    <div class="flex items-center gap-3">
+                                        @if ($item->product?->cover_url)
+                                            <img src="{{ $item->product->cover_url }}" alt="{{ $item->product_name }}"
+                                                class="size-10 shrink-0 rounded object-contain bg-zinc-50 dark:bg-zinc-800">
+                                        @else
+                                            <div class="flex size-10 shrink-0 items-center justify-center rounded bg-zinc-100 dark:bg-zinc-800">
+                                                <flux:icon.photo class="size-5 text-zinc-400" />
+                                            </div>
+                                        @endif
+                                        <div>
+                                            <span class="font-medium dark:text-white">{{ $item->product_name }}</span>
+                                            @if ($item->product_model_number)
+                                                <span class="block font-mono text-xs font-normal text-zinc-400">Model: {{ $item->product_model_number }}</span>
+                                            @endif
+                                        </div>
+                                    </div>
                                 </flux:table.cell>
                                 <flux:table.cell>
                                     <span class="font-mono text-xs text-zinc-400">{{ $item->product_sku ?: '—' }}</span>
@@ -463,7 +475,7 @@ new #[Layout('layouts::app')] #[Title('Order — Admin')] class extends Componen
                     </flux:table.rows>
                 </flux:table>
 
-                <div class="flex justify-end border-t border-zinc-200 px-6 py-4 dark:border-zinc-700">
+                <div class="flex justify-end border-t border-zinc-200 px-6 py-3 dark:border-zinc-700">
                     <div class="w-72 space-y-2 text-sm">
                         <div class="flex items-center justify-between">
                             <span class="text-zinc-500 dark:text-zinc-400">Subtotal</span>
@@ -497,17 +509,17 @@ new #[Layout('layouts::app')] #[Title('Order — Admin')] class extends Componen
 
             {{-- Notes --}}
             <flux:card class="overflow-hidden p-0">
-                <div class="border-b border-zinc-200 px-6 py-4 dark:border-zinc-700">
+                <div class="border-b border-zinc-200 px-6 py-3 dark:border-zinc-700">
                     <flux:heading size="sm" class="uppercase tracking-wide">Notes</flux:heading>
                 </div>
                 <div class="divide-y divide-zinc-100 dark:divide-zinc-800">
                     @if ($order->notes)
-                        <div class="px-6 py-4">
+                        <div class="px-6 py-3">
                             <div class="mb-1 text-xs font-semibold uppercase tracking-wider text-zinc-400">Customer note</div>
                             <p class="text-sm text-zinc-700 dark:text-zinc-300">{{ $order->notes }}</p>
                         </div>
                     @endif
-                    <div class="px-6 py-4">
+                    <div class="px-6 py-3">
                         <div class="mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-400">Staff notes <span class="normal-case font-normal">(internal only)</span></div>
                         <form wire:submit="saveStaffNotes" class="space-y-3">
                             <flux:textarea wire:model="staffNotes" rows="3" placeholder="Add internal notes about this order…" />
@@ -521,7 +533,7 @@ new #[Layout('layouts::app')] #[Title('Order — Admin')] class extends Componen
 
             {{-- Fulfilment timeline --}}
             <flux:card class="overflow-hidden p-0">
-                <div class="border-b border-zinc-200 px-6 py-4 dark:border-zinc-700">
+                <div class="border-b border-zinc-200 px-6 py-3 dark:border-zinc-700">
                     <flux:heading size="sm" class="uppercase tracking-wide">Status history</flux:heading>
                 </div>
                 <div class="p-6">
@@ -663,12 +675,12 @@ new #[Layout('layouts::app')] #[Title('Order — Admin')] class extends Componen
             @php
                 $hasPackingList  = (bool) $order->packing_list_path;
                 $hasDeliveryNote = (bool) $order->delivery_note_path;
-                $hasKraReceipt   = (bool) $order->kra_receipt_path;
+                $hasKraReceipt   = (bool) $order->receipt_path;
                 $hasAnyDocument  = $hasPackingList || $hasDeliveryNote || $hasKraReceipt;
             @endphp
             @if ($hasAnyDocument)
                 <flux:card class="overflow-hidden p-0">
-                    <div class="border-b border-zinc-200 px-6 py-4 dark:border-zinc-700">
+                    <div class="border-b border-zinc-200 px-6 py-3 dark:border-zinc-700">
                         <flux:heading size="sm" class="uppercase tracking-wide">Documents</flux:heading>
                     </div>
                     <div class="divide-y divide-zinc-100 dark:divide-zinc-800">
@@ -715,8 +727,8 @@ new #[Layout('layouts::app')] #[Title('Order — Admin')] class extends Componen
                                     <div>
                                         <div class="text-sm font-medium dark:text-white">KRA Tax Receipt</div>
                                         <div class="text-xs text-zinc-400">
-                                            @if ($order->kra_cu_number)
-                                                CU: {{ $order->kra_cu_number }}
+                                            @if ($order->cu_number)
+                                                CU: {{ $order->cu_number }}
                                             @endif
                                         </div>
                                     </div>
@@ -735,8 +747,7 @@ new #[Layout('layouts::app')] #[Title('Order — Admin')] class extends Componen
             @if ($this->showSapCard && $order->sapSyncLogs->isNotEmpty())
                 <div x-data="{ open: false }">
                     <flux:card class="overflow-hidden p-0">
-                        <button type="button"
-                            class="flex w-full items-center justify-between border-b border-zinc-200 px-6 py-4 text-left dark:border-zinc-700"
+                        <div class="flex w-full cursor-pointer items-center justify-between border-b border-zinc-200 px-6 py-3 text-left dark:border-zinc-700"
                             @click="open = !open">
                             <flux:heading size="sm" class="uppercase tracking-wide">SAP Sync Logs</flux:heading>
                             <div class="flex items-center gap-2">
@@ -749,7 +760,7 @@ new #[Layout('layouts::app')] #[Title('Order — Admin')] class extends Componen
                                 @endif
                                 <flux:icon.chevron-down class="size-4 text-zinc-400 transition-transform duration-200" ::class="{ 'rotate-180': open }" />
                             </div>
-                        </button>
+                        </div>
                         <div x-show="open" x-collapse>
                             <div class="divide-y divide-zinc-100 dark:divide-zinc-800">
                                 @foreach ($order->sapSyncLogs->sortByDesc('created_at') as $log)
@@ -815,7 +826,7 @@ new #[Layout('layouts::app')] #[Title('Order — Admin')] class extends Componen
 
             {{-- Payments --}}
             <flux:card class="overflow-hidden p-0">
-                <div class="border-b border-zinc-200 px-6 py-4 dark:border-zinc-700">
+                <div class="border-b border-zinc-200 px-6 py-3 dark:border-zinc-700">
                     <flux:heading size="sm" class="uppercase tracking-wide">Payments</flux:heading>
                 </div>
                 @if ($order->payments->isNotEmpty())
@@ -823,7 +834,7 @@ new #[Layout('layouts::app')] #[Title('Order — Admin')] class extends Componen
                         @foreach ($order->payments as $payment)
                             <div class="space-y-2 p-6 text-sm">
                                 <div class="flex items-center justify-between">
-                                    <span class="font-medium capitalize dark:text-white">{{ str_replace('_', ' ', (string) $payment->provider) }}</span>
+                                    <span class="font-medium dark:text-white">{{ $payment->methodLabel() }}</span>
                                     <flux:badge size="sm" inset="top bottom" :color="$payment->status->badgeColor()">
                                         {{ $payment->status->label() }}
                                     </flux:badge>
@@ -857,7 +868,7 @@ new #[Layout('layouts::app')] #[Title('Order — Admin')] class extends Componen
 
             {{-- Shipment --}}
             <flux:card class="overflow-hidden p-0">
-                <div class="border-b border-zinc-200 px-6 py-4 dark:border-zinc-700">
+                <div class="border-b border-zinc-200 px-6 py-3 dark:border-zinc-700">
                     <flux:heading size="sm" class="uppercase tracking-wide">Shipment</flux:heading>
                 </div>
 
@@ -930,7 +941,7 @@ new #[Layout('layouts::app')] #[Title('Order — Admin')] class extends Componen
                         @if (! in_array($order->status, [OrderStatus::COMPLETED, OrderStatus::CANCELLED]))
                             <button type="button" wire:click="$set('showShipmentModal', true)"
                                 class="mt-2 block w-full text-brand-500 hover:underline text-sm">
-                                Create shipment →
+                                Create shipment <flux:icon.arrow-right class="inline size-3.5" />
                             </button>
                         @endif
                     </div>
@@ -940,7 +951,7 @@ new #[Layout('layouts::app')] #[Title('Order — Admin')] class extends Componen
             {{-- SAP / KRA --}}
             @if ($this->showSapCard)
                 <flux:card class="overflow-hidden p-0">
-                    <div class="flex items-center justify-between border-b border-zinc-200 px-6 py-4 dark:border-zinc-700">
+                    <div class="flex items-center justify-between border-b border-zinc-200 px-6 py-3 dark:border-zinc-700">
                         <flux:heading size="sm" class="uppercase tracking-wide">SAP / KRA</flux:heading>
                         @if ($order->sap_sync_status !== SapSyncStatus::COMPLETED)
                             <flux:button size="xs" variant="ghost" icon="arrow-path"
@@ -983,16 +994,16 @@ new #[Layout('layouts::app')] #[Title('Order — Admin')] class extends Componen
                             @endif
                         </div>
 
-                        @if ($order->kra_cu_number)
+                        @if ($order->cu_number)
                             <div class="rounded-md border border-emerald-200 bg-emerald-50 px-3 py-2.5 dark:border-emerald-800 dark:bg-emerald-950/30">
                                 <div class="text-xs font-semibold text-emerald-700 dark:text-emerald-400">KRA CU Number</div>
-                                <div class="mt-0.5 font-mono text-sm font-semibold text-emerald-900 dark:text-emerald-300">{{ $order->kra_cu_number }}</div>
-                                @if ($order->kra_validated_at)
-                                    <div class="mt-0.5 text-xs text-emerald-600">Validated {{ $order->kra_validated_at->format('d M Y, H:i') }}</div>
+                                <div class="mt-0.5 font-mono text-sm font-semibold text-emerald-900 dark:text-emerald-300">{{ $order->cu_number }}</div>
+                                @if ($order->sap_synced_at)
+                                    <div class="mt-0.5 text-xs text-emerald-600">Synced {{ $order->sap_synced_at->format('d M Y, H:i') }}</div>
                                 @endif
                             </div>
 
-                            @if ($order->kra_receipt_path)
+                            @if ($order->receipt_path)
                                 <flux:button size="sm" variant="ghost" icon="eye" class="w-full"
                                     :href="route('admin.orders.kra-receipt', $order)" target="_blank">
                                     View KRA receipt
@@ -1005,7 +1016,7 @@ new #[Layout('layouts::app')] #[Title('Order — Admin')] class extends Componen
 
             {{-- Customer --}}
             <flux:card class="overflow-hidden p-0">
-                <div class="border-b border-zinc-200 px-6 py-4 dark:border-zinc-700">
+                <div class="border-b border-zinc-200 px-6 py-3 dark:border-zinc-700">
                     <flux:heading size="sm" class="uppercase tracking-wide">Customer</flux:heading>
                 </div>
                 <div class="p-6">
@@ -1060,7 +1071,7 @@ new #[Layout('layouts::app')] #[Title('Order — Admin')] class extends Componen
     <flux:modal wire:model.self="showStatusModal" class="w-full max-w-sm" :dismissible="true">
         <form wire:submit="updateStatus" class="space-y-5">
             <div>
-                <flux:heading size="lg">Update order status</flux:heading>
+                <flux:heading size="lg" class="uppercase tracking-wide">Update order status</flux:heading>
                 <flux:subheading>Current status: {{ $order->status->label() }}</flux:subheading>
             </div>
 
@@ -1098,7 +1109,7 @@ new #[Layout('layouts::app')] #[Title('Order — Admin')] class extends Componen
     <flux:modal wire:model.self="showShipmentModal" class="w-full max-w-lg" :dismissible="true">
         <form wire:submit="createShipment" class="space-y-5">
             <div>
-                <flux:heading size="lg">Create shipment</flux:heading>
+                <flux:heading size="lg" class="uppercase tracking-wide">Create shipment</flux:heading>
                 <flux:subheading>Assign a carrier and tracking details for this order.</flux:subheading>
             </div>
 
@@ -1135,7 +1146,7 @@ new #[Layout('layouts::app')] #[Title('Order — Admin')] class extends Componen
     <flux:modal wire:model.self="showUpdateShipmentModal" class="w-full max-w-sm" :dismissible="true">
         <form wire:submit="updateShipmentStatus" class="space-y-5">
             <div>
-                <flux:heading size="lg">Update shipment</flux:heading>
+                <flux:heading size="lg" class="uppercase tracking-wide">Update shipment</flux:heading>
                 @if ($order->shipment)
                     <flux:subheading>Current status: {{ $order->shipment->status->label() }}</flux:subheading>
                 @endif
@@ -1163,7 +1174,7 @@ new #[Layout('layouts::app')] #[Title('Order — Admin')] class extends Componen
     <flux:modal wire:model.self="showKraPreviewModal" class="w-full max-w-4xl" :dismissible="true">
         <div class="flex items-center justify-between border-b border-zinc-200 pb-4 dark:border-zinc-700">
             <div>
-                <flux:heading size="lg">KRA Tax Receipt</flux:heading>
+                <flux:heading size="lg" class="uppercase tracking-wide">KRA Tax Receipt</flux:heading>
                 <flux:subheading>{{ $order->order_number }}</flux:subheading>
             </div>
             <flux:button size="sm" variant="ghost" icon="arrow-top-right-on-square"

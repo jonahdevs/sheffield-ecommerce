@@ -72,7 +72,7 @@ new #[Layout('layouts::app')] #[Title('Add User — Admin')] class extends Compo
             {{-- Main --}}
             <div class="space-y-6 lg:col-span-2">
                 <flux:card class="p-0 overflow-hidden">
-                    <div class="border-b border-zinc-200 px-6 py-4 dark:border-zinc-700">
+                    <div class="border-b border-zinc-200 px-6 py-3 dark:border-zinc-700">
                         <flux:heading size="sm" class="uppercase tracking-wide">Account details</flux:heading>
                     </div>
                     <div class="space-y-4 p-6">
@@ -90,7 +90,7 @@ new #[Layout('layouts::app')] #[Title('Add User — Admin')] class extends Compo
             {{-- Side panel --}}
             <aside class="space-y-6">
                 <flux:card class="p-0 overflow-hidden">
-                    <div class="border-b border-zinc-200 px-6 py-4 dark:border-zinc-700">
+                    <div class="border-b border-zinc-200 px-6 py-3 dark:border-zinc-700">
                         <flux:heading size="sm" class="uppercase tracking-wide">Password</flux:heading>
                     </div>
                     <div class="p-6">

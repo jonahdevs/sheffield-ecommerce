@@ -52,7 +52,8 @@ class OrderExportController extends Controller
             ->get();
 
         return Pdf::view('exports.orders-pdf', ['orders' => $orders])
-            ->format('A4', landscape: true)
+            ->format('A4')
+            ->landscape()
             ->download('orders.pdf')
             ->toResponse($request);
     }

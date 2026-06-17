@@ -9,3 +9,7 @@ Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
 Broadcast::channel('admin.notifications', function ($user) {
     return $user->hasRole(['admin', 'staff']);
 });
+
+Broadcast::channel('admin.sap-sync', function ($user) {
+    return $user->hasRole(['admin', 'staff']);
+});

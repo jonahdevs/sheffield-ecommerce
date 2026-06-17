@@ -33,6 +33,7 @@ class DatabaseSeeder extends Seeder
             LogisticsSeeder::class,
             AddressSeeder::class,
             OrderSeeder::class,
+            HistoricalOrderSeeder::class,
             QuoteSeeder::class,
             ReviewSeeder::class,
             BannedIpSeeder::class,

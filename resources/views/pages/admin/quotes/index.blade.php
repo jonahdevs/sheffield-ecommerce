@@ -19,6 +19,12 @@ new #[Layout('layouts::app')] #[Title('Quotes — Admin')] class extends Compone
     public string $filterStatus = '';
 
     #[Url]
+    public string $dateFrom = '';
+
+    #[Url]
+    public string $dateTo = '';
+
+    #[Url]
     public int $perPage = 10;
 
     public function updatedSearch(): void
@@ -33,6 +39,25 @@ new #[Layout('layouts::app')] #[Title('Quotes — Admin')] class extends Compone
 
     public function updatedPerPage(): void
     {
+        $this->resetPage();
+    }
+
+    public function applyDateRange(): void
+    {
+        $this->validate([
+            'dateFrom' => ['nullable', 'date'],
+            'dateTo'   => ['nullable', 'date', 'after_or_equal:dateFrom'],
+        ]);
+
+        $this->resetPage();
+    }
+
+    public function clearFilters(): void
+    {
+        $this->search = '';
+        $this->filterStatus = '';
+        $this->dateFrom = '';
+        $this->dateTo = '';
         $this->resetPage();
     }
 
@@ -66,6 +91,10 @@ new #[Layout('layouts::app')] #[Title('Quotes — Admin')] class extends Compone
                 });
             })
             ->when($this->filterStatus !== '', fn ($q) => $q->where('status', $this->filterStatus))
+            ->when($this->dateFrom !== '' && $this->dateTo !== '', fn ($q) => $q->whereBetween('created_at', [
+                \Illuminate\Support\Carbon::parse($this->dateFrom)->startOfDay(),
+                \Illuminate\Support\Carbon::parse($this->dateTo)->endOfDay(),
+            ]))
             ->latest()
             ->paginate($this->perPage);
     }
@@ -74,11 +103,17 @@ new #[Layout('layouts::app')] #[Title('Quotes — Admin')] class extends Compone
     #[Computed]
     public function stats(): array
     {
+        $hasRange = $this->dateFrom !== '' && $this->dateTo !== '';
+        $from     = $hasRange ? \Illuminate\Support\Carbon::parse($this->dateFrom)->startOfDay() : null;
+        $to       = $hasRange ? \Illuminate\Support\Carbon::parse($this->dateTo)->endOfDay() : null;
+
+        $base = fn () => Quote::query()->when($hasRange, fn ($q) => $q->whereBetween('created_at', [$from, $to]));
+
         return [
-            'sent' => Quote::where('status', QuoteStatus::SENT)->count(),
-            'awaiting' => Quote::where('status', QuoteStatus::AWAITING_APPROVAL)->count(),
-            'approved' => Quote::where('status', QuoteStatus::APPROVED)->count(),
-            'declined' => Quote::where('status', QuoteStatus::DECLINED)->count(),
+            'sent'     => $base()->where('status', QuoteStatus::SENT)->count(),
+            'awaiting' => $base()->where('status', QuoteStatus::AWAITING_APPROVAL)->count(),
+            'approved' => $base()->where('status', QuoteStatus::APPROVED)->count(),
+            'declined' => $base()->where('status', QuoteStatus::DECLINED)->count(),
         ];
     }
 
@@ -89,19 +124,28 @@ new #[Layout('layouts::app')] #[Title('Quotes — Admin')] class extends Compone
     }
 }; ?>
 
+@assets
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+@endassets
+
 <div>
-    <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+    <div class="flex flex-wrap items-end justify-between gap-3">
         <div>
             @push('breadcrumbs')
-<flux:breadcrumbs>
-                <flux:breadcrumbs.item :href="route('dashboard')" wire:navigate>Dashboard</flux:breadcrumbs.item>
-                <flux:breadcrumbs.item>Quotes</flux:breadcrumbs.item>
-            </flux:breadcrumbs>
-@endpush
+                <flux:breadcrumbs>
+                    <flux:breadcrumbs.item :href="route('dashboard')" wire:navigate>Dashboard</flux:breadcrumbs.item>
+                    <flux:breadcrumbs.item>Quotes</flux:breadcrumbs.item>
+                </flux:breadcrumbs>
+            @endpush
             <flux:heading size="xl">Quotes</flux:heading>
             <flux:subheading>Price and respond to quotation requests.</flux:subheading>
         </div>
-        <flux:button variant="primary" icon="plus" wire:click="createDraft">New quote</flux:button>
+        <div class="relative" wire:ignore x-data="rangePicker(@js($dateFrom), @js($dateTo))">
+            <flux:icon.calendar-days class="pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-zinc-400" />
+            <input x-ref="input" type="text" readonly placeholder="All time"
+                class="w-52 cursor-pointer rounded-lg border border-zinc-200 bg-white py-1.5 pr-3 pl-8 text-sm text-zinc-700 transition-colors hover:border-zinc-400 focus:ring-2 focus:ring-zinc-300 focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300" />
+        </div>
     </div>
 
     {{-- Stat tiles --}}
@@ -140,6 +184,7 @@ new #[Layout('layouts::app')] #[Title('Quotes — Admin')] class extends Compone
 
         {{-- Export --}}
         <div class="flex flex-wrap items-center justify-end gap-2 border-b border-zinc-200 px-6 py-3 dark:border-zinc-700">
+            <flux:button variant="primary" size="sm" icon="plus" wire:click="createDraft">New quote</flux:button>
             <flux:dropdown>
                 <flux:button size="sm" icon="arrow-down-tray" icon-trailing="chevron-down">Export</flux:button>
                 <flux:menu>
@@ -176,6 +221,10 @@ new #[Layout('layouts::app')] #[Title('Quotes — Admin')] class extends Compone
                         <flux:select.option value="{{ $status->value }}">{{ $status->label() }}</flux:select.option>
                     @endforeach
                 </flux:select>
+
+                @if ($search || $filterStatus || $dateFrom || $dateTo)
+                    <flux:button size="sm" variant="ghost" icon="x-mark" wire:click="clearFilters">Clear</flux:button>
+                @endif
 
                 <flux:select wire:model.live="perPage" class="w-28">
                     <flux:select.option value="10">10 / page</flux:select.option>

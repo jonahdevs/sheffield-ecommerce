@@ -183,6 +183,11 @@ select:focus[data-flux-control] {
 }
 
 /* Rich-text output from Quill editor on product pages */
+.pdp-rich-text {
+    overflow-wrap: break-word;
+    word-break: break-word;
+    min-width: 0;
+}
 .pdp-rich-text p {
     margin-bottom: 0.75rem;
 }
@@ -265,4 +270,19 @@ select:focus[data-flux-control] {
     max-width: 100%;
     height: auto;
     border-radius: 6px;
+}
+
+/* Prevent Swiper FOUC — hide slides until Swiper adds .swiper-initialized */
+.swiper:not(.swiper-initialized) {
+    overflow: hidden;
+}
+.swiper:not(.swiper-initialized) .swiper-slide {
+    display: none;
+}
+.swiper.swiper-initialized {
+    opacity: 0;
+    animation: swiper-fade-in 0.2s ease forwards;
+}
+@keyframes swiper-fade-in {
+    to { opacity: 1; }
 }

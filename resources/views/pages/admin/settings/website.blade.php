@@ -571,7 +571,7 @@ new #[Layout('layouts::app')] #[Title('Website settings — Admin')] class exten
 
             <flux:text size="sm" class="px-6 pt-6 text-zinc-500">
                 Terms, Privacy, Returns and Shipping are managed as
-                <flux:link :href="route('admin.pages.index')" wire:navigate>content pages →</flux:link>
+                <flux:link :href="route('admin.pages.index')" wire:navigate>content pages <flux:icon.arrow-right class="inline size-3.5" /></flux:link>
             </flux:text>
 
             <form wire:submit="saveLegal" class="mt-4 space-y-5 px-6 pb-6">

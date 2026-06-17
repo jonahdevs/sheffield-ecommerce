@@ -3,6 +3,7 @@
 namespace App\Notifications;
 
 use App\Models\Order;
+use App\Notifications\Concerns\RespectsStaffPreferences;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
@@ -10,16 +11,21 @@ use Illuminate\Notifications\Notification;
 class SapSyncFailedNotification extends Notification
 {
     use Queueable;
+    use RespectsStaffPreferences;
 
     public function __construct(
         public readonly Order $order,
         public readonly \Throwable $exception,
     ) {}
 
-    /** @return array<int, string> */
-    public function via(object $notifiable): array
+    protected function staffGlobalKey(): ?string
     {
-        return ['mail'];
+        return null;
+    }
+
+    protected function staffPreferenceKey(): ?string
+    {
+        return null;
     }
 
     public function toMail(object $notifiable): MailMessage

@@ -78,7 +78,7 @@ class MailPreviewController extends Controller
             'order-kra-invoice' => [
                 'label' => 'Order — KRA tax invoice',
                 'build' => function (): array {
-                    [$user, $order] = $this->order(OrderStatus::COMPLETED, ['kra_cu_number' => 'KRACU0123456789']);
+                    [$user, $order] = $this->order(OrderStatus::COMPLETED, ['cu_number' => 'KRACU0123456789']);
 
                     return ['mails.orders.kra-invoice', [
                         'order' => $order,

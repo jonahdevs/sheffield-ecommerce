@@ -200,7 +200,7 @@ new #[Layout('layouts::app')] class extends Component {
         </flux:table>
 
         @if ($this->activities->hasPages())
-            <div class="border-t border-zinc-200 px-6 py-4 dark:border-zinc-700">
+            <div class="border-t border-zinc-200 px-6 py-3 dark:border-zinc-700">
                 {{ $this->activities->links() }}
             </div>
         @endif

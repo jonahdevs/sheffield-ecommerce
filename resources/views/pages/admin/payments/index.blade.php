@@ -23,10 +23,36 @@ new #[Layout('layouts::app')] #[Title('Payments — Admin')] class extends Compo
     public string $filterProvider = '';
 
     #[Url]
+    public string $dateFrom = '';
+
+    #[Url]
+    public string $dateTo = '';
+
+    #[Url]
     public int $perPage = 10;
 
     public function updatedSearch(): void
     {
+        $this->resetPage();
+    }
+
+    public function applyDateRange(): void
+    {
+        $this->validate([
+            'dateFrom' => ['nullable', 'date'],
+            'dateTo'   => ['nullable', 'date', 'after_or_equal:dateFrom'],
+        ]);
+
+        $this->resetPage();
+    }
+
+    public function clearFilters(): void
+    {
+        $this->search = '';
+        $this->filterStatus = '';
+        $this->filterProvider = '';
+        $this->dateFrom = '';
+        $this->dateTo = '';
         $this->resetPage();
     }
 
@@ -51,13 +77,17 @@ new #[Layout('layouts::app')] #[Title('Payments — Admin')] class extends Compo
         return Payment::query()
             ->with('order.user')
             ->when($this->search, function ($query) {
-                $term = '%' . $this->search . '%';
+                $term = '%'.$this->search.'%';
                 $query->where(function ($q) use ($term) {
-                    $q->where('mpesa_receipt', 'like', $term)->orWhere('phone', 'like', $term)->orWhere('account_reference', 'like', $term)->orWhereHas('order', fn($o) => $o->where('order_number', 'like', $term));
+                    $q->where('mpesa_receipt', 'like', $term)->orWhere('phone', 'like', $term)->orWhere('account_reference', 'like', $term)->orWhereHas('order', fn ($o) => $o->where('order_number', 'like', $term));
                 });
             })
-            ->when($this->filterStatus !== '', fn($q) => $q->where('status', $this->filterStatus))
-            ->when($this->filterProvider !== '', fn($q) => $q->where('provider', $this->filterProvider))
+            ->when($this->filterStatus !== '', fn ($q) => $q->where('status', $this->filterStatus))
+            ->when($this->filterProvider !== '', fn ($q) => $q->where('provider', $this->filterProvider))
+            ->when($this->dateFrom !== '' && $this->dateTo !== '', fn ($q) => $q->whereBetween('paid_at', [
+                \Illuminate\Support\Carbon::parse($this->dateFrom)->startOfDay(),
+                \Illuminate\Support\Carbon::parse($this->dateTo)->endOfDay(),
+            ]))
             ->latest()
             ->paginate($this->perPage);
     }
@@ -66,11 +96,17 @@ new #[Layout('layouts::app')] #[Title('Payments — Admin')] class extends Compo
     #[Computed]
     public function stats(): array
     {
+        $hasRange = $this->dateFrom !== '' && $this->dateTo !== '';
+        $from     = $hasRange ? \Illuminate\Support\Carbon::parse($this->dateFrom)->startOfDay() : null;
+        $to       = $hasRange ? \Illuminate\Support\Carbon::parse($this->dateTo)->endOfDay() : null;
+
+        $base = fn () => Payment::query()->when($hasRange, fn ($q) => $q->whereBetween('paid_at', [$from, $to]));
+
         return [
-            'collected' => (int) Payment::where('status', PaymentStatus::SUCCESS)->sum('amount_cents'),
-            'pending' => Payment::where('status', PaymentStatus::PENDING)->count(),
-            'failed' => Payment::where('status', PaymentStatus::FAILED)->count(),
-            'refunded' => (int) Payment::sum('refund_cents'),
+            'collected' => (int) $base()->where('status', PaymentStatus::SUCCESS)->sum('amount_cents'),
+            'pending'   => $base()->where('status', PaymentStatus::PENDING)->count(),
+            'failed'    => $base()->where('status', PaymentStatus::FAILED)->count(),
+            'refunded'  => (int) $base()->sum('refund_cents'),
         ];
     }
 
@@ -88,8 +124,13 @@ new #[Layout('layouts::app')] #[Title('Payments — Admin')] class extends Compo
     }
 }; ?>
 
+@assets
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+@endassets
+
 <div>
-    <div class="flex items-center justify-between">
+    <div class="flex flex-wrap items-end justify-between gap-3">
         <div>
             @push('breadcrumbs')
                 <flux:breadcrumbs>
@@ -99,6 +140,11 @@ new #[Layout('layouts::app')] #[Title('Payments — Admin')] class extends Compo
             @endpush
             <flux:heading size="xl">Payments</flux:heading>
             <flux:subheading>Every payment attempt across M-Pesa and card.</flux:subheading>
+        </div>
+        <div class="relative" wire:ignore x-data="rangePicker(@js($dateFrom), @js($dateTo))">
+            <flux:icon.calendar-days class="pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-zinc-400" />
+            <input x-ref="input" type="text" readonly placeholder="All time"
+                class="w-52 cursor-pointer rounded-lg border border-zinc-200 bg-white py-1.5 pr-3 pl-8 text-sm text-zinc-700 transition-colors hover:border-zinc-400 focus:ring-2 focus:ring-zinc-300 focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300" />
         </div>
     </div>
 
@@ -164,6 +210,10 @@ new #[Layout('layouts::app')] #[Title('Payments — Admin')] class extends Compo
                     <flux:select.option value="100">100 / page</flux:select.option>
                     <flux:select.option value="250">250 / page</flux:select.option>
                 </flux:select>
+
+                @if ($search || $filterStatus || $filterProvider || $dateFrom || $dateTo)
+                    <flux:button size="sm" variant="ghost" icon="x-mark" wire:click="clearFilters">Clear</flux:button>
+                @endif
             </div>
         </div>
 

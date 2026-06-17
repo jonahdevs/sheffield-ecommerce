@@ -50,7 +50,7 @@
         {{-- Optional caller badge (e.g. required-accessory quantity) — sits below the discount badge if both show --}}
         @if ($badge)
             <span @class([
-                'absolute left-0 z-10 inline-flex h-5 items-center rounded-r bg-ink px-2 text-[10.5px] font-bold tracking-wide text-white',
+                'absolute left-0 z-10 inline-flex h-5 items-center rounded-r bg-rose-500 px-2 text-[10.5px] font-bold tracking-wide text-white',
                 'top-9' => $discount,
                 'top-2.5' => !$discount,
             ])>
@@ -77,7 +77,7 @@
                     aria-label="{{ $isCompared ? 'Remove from compare' : 'Add to compare' }}"
                     @class([
                         'inline-flex size-8 cursor-pointer items-center justify-center rounded-full border shadow-sm transition',
-                        'border-ink bg-ink text-white' => $isCompared,
+                        'border-brand-blue-500 bg-brand-blue-500 text-white' => $isCompared,
                         'border-zinc-200 bg-white/95 text-ink opacity-0 hover:bg-white group-hover:opacity-100' => !$isCompared,
                     ])>
                     <flux:icon.scale variant="micro" class="size-4" />

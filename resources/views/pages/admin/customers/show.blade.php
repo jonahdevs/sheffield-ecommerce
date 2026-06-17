@@ -8,14 +8,24 @@ use Livewire\Attributes\Layout;
 use Livewire\Attributes\Locked;
 use Livewire\Attributes\Title;
 use Livewire\Component;
+use Livewire\WithPagination;
 
 new #[Layout('layouts::app')] #[Title('Customer — Admin')] class extends Component {
+    use WithPagination;
+
     #[Locked]
     public User $customer;
 
     public string $banComment = '';
 
     public bool $showBanModal = false;
+
+    public int $perPage = 10;
+
+    public function updatedPerPage(): void
+    {
+        $this->resetPage();
+    }
 
     public function mount(User $customer): void
     {
@@ -25,7 +35,7 @@ new #[Layout('layouts::app')] #[Title('Customer — Admin')] class extends Compo
     #[Computed]
     public function orders()
     {
-        return $this->customer->orders()->withCount('items')->latest()->get();
+        return $this->customer->orders()->withCount('items')->latest()->paginate($this->perPage);
     }
 
     #[Computed]
@@ -177,7 +187,7 @@ new #[Layout('layouts::app')] #[Title('Customer — Admin')] class extends Compo
                 </div>
 
                 {{-- Footer actions --}}
-                <div class="flex gap-2 border-t border-zinc-200 px-6 py-4 dark:border-zinc-700">
+                <div class="flex gap-2 border-t border-zinc-200 px-6 py-3 dark:border-zinc-700">
                     <flux:button size="sm" icon="pencil-square" class="flex-1"
                         :href="route('admin.customers.edit', $customer)" wire:navigate>
                         Edit
@@ -236,8 +246,13 @@ new #[Layout('layouts::app')] #[Title('Customer — Admin')] class extends Compo
 
             {{-- Order history --}}
             <flux:card class="p-0 overflow-hidden">
-                <div class="border-b border-zinc-200 px-6 py-4 dark:border-zinc-700">
+                <div class="flex items-center justify-between border-b border-zinc-200 px-6 py-3 dark:border-zinc-700">
                     <flux:heading size="sm">Order history</flux:heading>
+                    <flux:select wire:model.live="perPage" class="w-28">
+                        <flux:select.option value="10">10 / page</flux:select.option>
+                        <flux:select.option value="25">25 / page</flux:select.option>
+                        <flux:select.option value="50">50 / page</flux:select.option>
+                    </flux:select>
                 </div>
                 <flux:table
                     container:class="[&_th:first-child]:pl-6 [&_th:last-child]:pr-6 [&_td:first-child]:pl-6 [&_td:last-child]:pr-6">
@@ -279,6 +294,11 @@ new #[Layout('layouts::app')] #[Title('Customer — Admin')] class extends Compo
                         @endforelse
                     </flux:table.rows>
                 </flux:table>
+                @if ($this->orders->hasPages())
+                    <div class="border-t border-zinc-200 px-6 py-3 dark:border-zinc-700">
+                        {{ $this->orders->links() }}
+                    </div>
+                @endif
             </flux:card>
 
         </div>

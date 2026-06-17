@@ -18,10 +18,10 @@ Route::middleware(['auth', 'verified', 'customer'])->group(function () {
     Route::livewire('account/orders/{order}/tracking', 'pages::account.orders.tracking')->name('account.orders.tracking');
     Route::get('account/orders/{order}/receipt', function (Order $order) {
         abort_unless($order->user_id === auth()->id(), 403);
-        abort_unless($order->kra_receipt_path && Storage::disk('local')->exists($order->kra_receipt_path), 404);
+        abort_unless($order->receipt_path && Storage::disk('local')->exists($order->receipt_path), 404);
 
         return Storage::disk('local')->response(
-            $order->kra_receipt_path,
+            $order->receipt_path,
             $order->order_number.'-receipt.pdf',
             ['Content-Type' => 'application/pdf'],
         );

@@ -17,6 +17,7 @@ use App\Models\ProductImage;
 use App\Models\ProductLink;
 use App\Models\ProductVariant;
 use App\Models\TaxClass;
+use App\Settings\IntegrationSettings;
 use App\Settings\InventorySettings;
 use App\Settings\LocalizationSettings;
 use Flux\Flux;
@@ -420,11 +421,12 @@ new #[Layout('layouts::app')] class extends Component
         }
 
         // Product links (upsells / cross-sells / accessories / spare parts)
-        foreach ($product->links()->with('linkedProduct')->get() as $link) {
+        foreach ($product->links()->with('linkedProduct.images')->get() as $link) {
             $this->productLinks[$link->type->value][] = [
                 'product_id' => $link->linked_product_id,
                 'name' => $link->linkedProduct->name,
                 'sku' => $link->linkedProduct->sku,
+                'cover_url' => $link->linkedProduct->images->first()?->url,
                 'is_required' => (bool) $link->is_required,
                 'default_quantity' => max(1, (int) $link->default_quantity),
             ];
@@ -929,6 +931,7 @@ new #[Layout('layouts::app')] class extends Component
             'product_id' => $productId,
             'name' => $product->name,
             'sku' => $product->sku,
+            'cover_url' => $product->images()->first()?->url,
             'is_required' => false,
             'default_quantity' => 1,
         ];
@@ -1297,6 +1300,22 @@ new #[Layout('layouts::app')] class extends Component
     // ==================================================
     // COMPUTED
     // ==================================================
+
+    #[Computed]
+    public function sapLocksPrice(): bool
+    {
+        $sap = app(IntegrationSettings::class);
+
+        return $sap->sap_enabled && $sap->sap_sync_price;
+    }
+
+    #[Computed]
+    public function sapLocksStock(): bool
+    {
+        $sap = app(IntegrationSettings::class);
+
+        return $sap->sap_enabled && $sap->sap_sync_quantity;
+    }
 
     #[Computed]
     public function brands(): Collection

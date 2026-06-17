@@ -132,10 +132,10 @@
                 <td style="border-bottom: 1px solid; border-color: #e2e8f0; padding-top: 8px; padding-bottom: 8px; font-size: 13px; color: #64748b;">Order reference</td>
                 <td style="border-bottom: 1px solid; border-color: #e2e8f0; padding-top: 8px; padding-bottom: 8px; text-align: right; font-size: 13px; font-weight: 600; color: #334155;">{{ $order->order_number }}</td>
               </tr>
-              @if ($order->kra_cu_number)
+              @if ($order->cu_number)
               <tr>
                 <td style="border-bottom: 1px solid; border-color: #e2e8f0; padding-top: 8px; padding-bottom: 8px; font-size: 13px; color: #64748b;">KRA CU number</td>
-                <td style="border-bottom: 1px solid; border-color: #e2e8f0; padding-top: 8px; padding-bottom: 8px; text-align: right; font-size: 13px; font-weight: 600; color: #334155;">{{ $order->kra_cu_number }}</td>
+                <td style="border-bottom: 1px solid; border-color: #e2e8f0; padding-top: 8px; padding-bottom: 8px; text-align: right; font-size: 13px; font-weight: 600; color: #334155;">{{ $order->cu_number }}</td>
               </tr>
               @endif
               <tr>

@@ -109,11 +109,12 @@ class OrderSeeder extends Seeder
             'updated_at' => now()->subDays(2)->addHours(1),
         ], 3);
 
-        Payment::factory()->successful()->create([
+        Payment::factory()->successful()->paystackMobileMoney()->create([
             'order_id' => $order->id,
             'amount_cents' => $order->total_cents,
             'phone' => '254712345678',
             'mpesa_receipt' => 'MPE10092026A',
+            'paystack_reference' => 'SHF-2026-00001-MPESAABC',
             'paid_at' => now()->subDays(2),
             'account_reference' => $order->order_number,
         ]);
@@ -164,11 +165,12 @@ class OrderSeeder extends Seeder
             'updated_at' => now()->subDays(4)->addHours(2),
         ], 2);
 
-        Payment::factory()->successful()->create([
+        Payment::factory()->successful()->paystackMobileMoney()->create([
             'order_id' => $order2->id,
             'amount_cents' => $order2->total_cents,
             'phone' => '254712345678',
             'mpesa_receipt' => 'MPE20082026B',
+            'paystack_reference' => 'SHF-2026-00002-MPESADEF',
             'paid_at' => now()->subDays(4),
             'account_reference' => $order2->order_number,
         ]);
@@ -246,11 +248,12 @@ class OrderSeeder extends Seeder
             'updated_at' => now()->subHours(4),
         ], 2);
 
-        Payment::factory()->successful()->create([
+        Payment::factory()->successful()->paystackMobileMoney()->create([
             'order_id' => $order->id,
             'amount_cents' => $order->total_cents,
             'phone' => '254712345678',
             'mpesa_receipt' => 'MPE30072026C',
+            'paystack_reference' => 'SHF-2026-00003-MPESAGHI',
             'paid_at' => now()->subDays(1)->subHours(7),
             'account_reference' => $order->order_number,
         ]);
@@ -323,11 +326,12 @@ class OrderSeeder extends Seeder
             'updated_at' => now()->subHours(2),
         ], 3);
 
-        Payment::factory()->successful()->create([
+        Payment::factory()->successful()->paystackMobileMoney()->create([
             'order_id' => $order2->id,
             'amount_cents' => $order2->total_cents,
             'phone' => '254712345678',
             'mpesa_receipt' => 'MPE40062026D',
+            'paystack_reference' => 'SHF-2026-00004-MPESAJKL',
             'paid_at' => now()->subHours(5),
             'account_reference' => $order2->order_number,
         ]);
@@ -391,18 +395,18 @@ class OrderSeeder extends Seeder
             'sap_sync_status' => SapSyncStatus::COMPLETED,
             'sap_doc_entry' => 'DOC-2026-0031',
             'sap_doc_number' => 'INV-2026-0031',
-            'sap_synced_at' => now()->subDays(5)->addHours(2),
-            'kra_cu_number' => 'KRA-CU-'.fake()->numerify('######'),
-            'kra_validated_at' => now()->subDays(3)->addHours(1),
+            'cu_number' => 'KRA-CU-'.fake()->numerify('######'),
+            'sap_synced_at' => now()->subDays(3)->addHours(1),
             'created_at' => now()->subDays(5)->subHours(1),
             'updated_at' => now()->subDays(3),
         ], 2);
 
-        Payment::factory()->successful()->create([
+        Payment::factory()->successful()->paystackMobileMoney()->create([
             'order_id' => $order->id,
             'amount_cents' => $order->total_cents,
             'phone' => '254712345678',
             'mpesa_receipt' => 'MPE50052026E',
+            'paystack_reference' => 'SHF-2026-00005-MPESAMNO',
             'paid_at' => now()->subDays(5),
             'account_reference' => $order->order_number,
         ]);
@@ -464,7 +468,7 @@ class OrderSeeder extends Seeder
             'endpoint' => '/api/kra/cu-status',
             'http_method' => 'GET',
             'request_payload' => ['doc_number' => 'INV-2026-0031'],
-            'response_payload' => ['status' => 'validated', 'cu_number' => $order->kra_cu_number, 'validated_at' => $order->kra_validated_at],
+            'response_payload' => ['status' => 'validated', 'cu_number' => $order->cu_number, 'validated_at' => $order->sap_synced_at],
             'http_status_code' => 200,
             'duration_ms' => 834,
         ]);
@@ -484,14 +488,13 @@ class OrderSeeder extends Seeder
             'sap_sync_status' => SapSyncStatus::COMPLETED,
             'sap_doc_entry' => 'DOC-2026-0018',
             'sap_doc_number' => 'INV-2026-0018',
-            'sap_synced_at' => now()->subDays(11)->addHours(1),
-            'kra_cu_number' => 'KRA-CU-'.fake()->numerify('######'),
-            'kra_validated_at' => now()->subDays(10)->addHours(2),
+            'cu_number' => 'KRA-CU-'.fake()->numerify('######'),
+            'sap_synced_at' => now()->subDays(10)->addHours(2),
             'created_at' => now()->subDays(11)->subHours(2),
             'updated_at' => now()->subDays(10),
         ], 4);
 
-        Payment::factory()->successful()->stripe()->create([
+        Payment::factory()->successful()->paystack()->create([
             'order_id' => $order2->id,
             'amount_cents' => $order2->total_cents,
             'paid_at' => now()->subDays(11),
@@ -554,7 +557,7 @@ class OrderSeeder extends Seeder
             'endpoint' => '/api/kra/cu-status',
             'http_method' => 'GET',
             'request_payload' => ['doc_number' => 'INV-2026-0018'],
-            'response_payload' => ['status' => 'validated', 'cu_number' => $order2->kra_cu_number, 'validated_at' => $order2->kra_validated_at],
+            'response_payload' => ['status' => 'validated', 'cu_number' => $order2->cu_number, 'validated_at' => $order2->sap_synced_at],
             'http_status_code' => 200,
             'duration_ms' => 761,
         ]);

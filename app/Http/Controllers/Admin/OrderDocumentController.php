@@ -38,11 +38,11 @@ class OrderDocumentController extends Controller
 
     public function kraReceipt(Order $order): StreamedResponse
     {
-        abort_unless((bool) $order->kra_receipt_path, 404);
-        abort_unless(Storage::disk('local')->exists($order->kra_receipt_path), 404);
+        abort_unless((bool) $order->receipt_path, 404);
+        abort_unless(Storage::disk('local')->exists($order->receipt_path), 404);
 
         return Storage::disk('local')->response(
-            $order->kra_receipt_path,
+            $order->receipt_path,
             $order->order_number.'-receipt.pdf',
             ['Content-Type' => 'application/pdf'],
         );

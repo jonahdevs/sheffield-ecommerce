@@ -308,7 +308,7 @@ new #[Layout('layouts::app')] #[Title('Configure Carrier — Admin')] class exte
         <div class="space-y-6 lg:col-span-2">
 
             <flux:card class="p-0 overflow-hidden">
-                <div class="flex items-center justify-between border-b border-zinc-200 px-6 py-4 dark:border-zinc-700">
+                <div class="flex items-center justify-between border-b border-zinc-200 px-6 py-3 dark:border-zinc-700">
                     <div>
                         <flux:heading size="base" class="uppercase tracking-wide">Zone coverage & rates</flux:heading>
                         <flux:text size="sm" class="mt-0.5 text-zinc-500">
@@ -323,7 +323,7 @@ new #[Layout('layouts::app')] #[Title('Configure Carrier — Admin')] class exte
                     <div class="border-b border-zinc-200 dark:border-zinc-700">
 
                         {{-- Zone header --}}
-                        <div class="flex items-center justify-between px-6 py-4">
+                        <div class="flex items-center justify-between px-6 py-3">
                             <div class="flex items-center gap-3">
                                 <button wire:click="toggleZoneActive({{ $zone->id }})">
                                     <flux:badge size="sm" :color="$cz->is_active ? 'green' : 'zinc'">
@@ -414,7 +414,7 @@ new #[Layout('layouts::app')] #[Title('Configure Carrier — Admin')] class exte
 
                 {{-- Add zone --}}
                 @if ($this->availableZones->isNotEmpty())
-                    <div class="flex items-center gap-3 px-6 py-4">
+                    <div class="flex items-center gap-3 px-6 py-3">
                         <flux:select wire:model="addingZoneId" class="flex-1">
                             <flux:select.option value="">Select a zone to cover…</flux:select.option>
                             @foreach ($this->availableZones as $zone)
@@ -426,7 +426,7 @@ new #[Layout('layouts::app')] #[Title('Configure Carrier — Admin')] class exte
                         </flux:button>
                     </div>
                 @elseif ($this->coveredZones->isNotEmpty())
-                    <div class="px-6 py-4 text-sm text-zinc-400">
+                    <div class="px-6 py-3 text-sm text-zinc-400">
                         All active delivery zones are covered by this carrier.
                     </div>
                 @endif
@@ -441,7 +441,7 @@ new #[Layout('layouts::app')] #[Title('Configure Carrier — Admin')] class exte
 
             {{-- Details form --}}
             <flux:card class="p-0 overflow-hidden">
-                <div class="border-b border-zinc-200 px-6 py-4 dark:border-zinc-700">
+                <div class="border-b border-zinc-200 px-6 py-3 dark:border-zinc-700">
                     <flux:heading size="base" class="uppercase tracking-wide">Carrier details</flux:heading>
                 </div>
 
@@ -477,7 +477,7 @@ new #[Layout('layouts::app')] #[Title('Configure Carrier — Admin')] class exte
             {{-- Credentials (shown for non-self-managed drivers) --}}
             @if ($driver !== 'self_managed')
                 <flux:card class="p-0 overflow-hidden">
-                    <div class="border-b border-zinc-200 px-6 py-4 dark:border-zinc-700">
+                    <div class="border-b border-zinc-200 px-6 py-3 dark:border-zinc-700">
                         <flux:heading size="base" class="uppercase tracking-wide">API credentials</flux:heading>
                         <flux:text size="sm" class="mt-0.5 text-zinc-500">Stored encrypted. Never exposed in responses.</flux:text>
                     </div>

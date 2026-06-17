@@ -3,7 +3,9 @@
 namespace App\Observers;
 
 use App\Enums\ProductStatus;
+use App\Events\LowStockDetected;
 use App\Models\Product;
+use App\Settings\InventorySettings;
 use App\Settings\LocalizationSettings;
 use Illuminate\Support\Str;
 
@@ -33,6 +35,20 @@ class ProductObserver
     {
         if ($product->isDirty('status')) {
             $this->resolvePublishedAt($product);
+        }
+    }
+
+    public function updated(Product $product): void
+    {
+        if (! $product->wasChanged('stock_quantity') || $product->stock_quantity === null) {
+            return;
+        }
+
+        $threshold = $product->low_stock_threshold
+            ?? app(InventorySettings::class)->low_stock_threshold;
+
+        if ($product->stock_quantity <= $threshold) {
+            LowStockDetected::dispatch($product, $product->stock_quantity);
         }
     }
 

@@ -3,8 +3,10 @@
 namespace App\Models;
 
 use App\Enums\StockStatus;
+use App\Observers\ProductVariantObserver;
 use Database\Factories\ProductVariantFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -14,6 +16,7 @@ use Spatie\Activitylog\Models\Concerns\LogsActivity;
 use Spatie\Activitylog\Support\LogOptions;
 
 #[Fillable(['product_id', 'sku', 'barcode', 'price', 'compare_at_price', 'cost_price', 'stock_status', 'stock_quantity', 'allow_backorder', 'weight', 'length', 'width', 'height', 'description', 'image', 'is_active', 'sort_order', 'sap_last_synced_at'])]
+#[ObservedBy(ProductVariantObserver::class)]
 class ProductVariant extends Model
 {
     /** @use HasFactory<ProductVariantFactory> */

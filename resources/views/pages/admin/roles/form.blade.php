@@ -112,13 +112,13 @@ new #[Layout('layouts::app')] #[Title('Role — Admin')] class extends Component
 
         {{-- Permissions table --}}
         <flux:card class="mt-6 p-0 overflow-hidden">
-            <div class="border-b border-zinc-200 px-6 py-4 dark:border-zinc-700">
+            <div class="border-b border-zinc-200 px-6 py-3 dark:border-zinc-700">
                 <flux:heading size="sm" class="uppercase tracking-wide">Permissions</flux:heading>
             </div>
 
             <div class="divide-y divide-zinc-100 dark:divide-zinc-800">
                 @foreach ($this->groupedPermissions as $group => $permissions)
-                    <div class="flex items-center gap-4 px-6 py-4">
+                    <div class="flex items-center gap-4 px-6 py-3">
 
                         {{-- Resource label --}}
                         <div class="w-44 shrink-0">

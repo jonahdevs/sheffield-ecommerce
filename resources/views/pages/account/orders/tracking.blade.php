@@ -84,7 +84,7 @@ new #[Layout('layouts::account')] #[Title('Order Tracking')] class extends Compo
                         'value' => 'processing',
                         'label' => 'Being Prepared',
                         'icon' => 'cog-6-tooth',
-                        'desc' => 'Your payment was received and your items are being packed.',
+                        'desc' => 'Your payment was received and your items are being processed.',
                     ],
                     [
                         'value' => 'out_for_delivery',

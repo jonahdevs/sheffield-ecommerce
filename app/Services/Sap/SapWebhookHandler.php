@@ -5,7 +5,6 @@ namespace App\Services\Sap;
 use App\Enums\SapSyncStatus;
 use App\Models\Order;
 use App\Models\SapSyncLog;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
@@ -77,8 +76,19 @@ class SapWebhookHandler
             return;
         }
 
+        $validStates = [SapSyncStatus::SYNCING, SapSyncStatus::AWAITING_CU, SapSyncStatus::FAILED];
+
+        if (! in_array($order->sap_sync_status, $validStates)) {
+            Log::warning('SAP webhook: CU number ignored — order not in a syncable state.', [
+                'order_id' => $order->id,
+                'sap_sync_status' => $order->sap_sync_status->value,
+            ]);
+
+            return;
+        }
+
         // Idempotency — skip duplicate delivery
-        if ($order->kra_cu_number === $cuNumber) {
+        if ($order->cu_number === $cuNumber) {
             Log::info('SAP webhook: duplicate CU number ignored.', [
                 'order_id' => $order->id,
                 'cu_number' => $cuNumber,
@@ -87,13 +97,9 @@ class SapWebhookHandler
             return;
         }
 
-        $validatedAt = isset($data['validated_at'])
-            ? Carbon::parse($data['validated_at'])
-            : now();
-
         $order->update([
-            'kra_cu_number' => $cuNumber,
-            'kra_validated_at' => $validatedAt,
+            'cu_number' => $cuNumber,
+            'sap_synced_at' => now(),
             'sap_sync_status' => SapSyncStatus::COMPLETED,
         ]);
 
@@ -113,7 +119,7 @@ class SapWebhookHandler
         ]);
 
         activity()->performedOn($order)
-            ->withProperties(['kra_cu_number' => $cuNumber, 'kra_validated_at' => $validatedAt->toISOString()])
+            ->withProperties(['cu_number' => $cuNumber])
             ->log('sap_kra_validated');
 
         // Receipt failure must never cause a 500 — SAP would keep retrying the webhook.

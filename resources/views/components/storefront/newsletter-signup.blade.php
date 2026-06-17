@@ -63,7 +63,6 @@ new class extends Component
     $interestOptions = [
         ['id' => 'new-products',      'label' => 'New products'],
         ['id' => 'seasonal-catalogs', 'label' => 'Catalogs'],
-        ['id' => 'trade-pricing',     'label' => 'Trade offers'],
         ['id' => 'projects',          'label' => 'Projects'],
     ];
 @endphp

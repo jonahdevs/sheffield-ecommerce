@@ -29,8 +29,8 @@
     $customer    = $order->user;
     $vatRate     = $order->items->first()?->tax_rate ?? 16;
 
-    $kraVerifyUrl = $order->kra_cu_number
-        ? 'https://itax.kra.go.ke/KRA-Portal/invoiceChk.htm?actionCode=loadPage&invoiceNo=' . $order->kra_cu_number
+    $kraVerifyUrl = $order->cu_number
+        ? 'https://itax.kra.go.ke/KRA-Portal/invoiceChk.htm?actionCode=loadPage&invoiceNo=' . $order->cu_number
         : null;
 
     $qrSvg = null;
@@ -200,10 +200,10 @@
     {{-- ======================================================= --}}
     {{-- PAYMENT METHOD --}}
     {{-- ======================================================= --}}
-    @if ($order->payment_method)
+    @if ($payment)
         <div class="px-8 mt-4 text-[11px] text-zinc-600">
             <span class="font-semibold text-zinc-800">Payment method:</span>
-            {{ ucfirst(str_replace('_', ' ', $order->payment_method)) }}
+            {{ $payment->methodLabel() }}
         </div>
     @endif
 
@@ -225,8 +225,8 @@
                     {!! $qrSvg !!}
                 </div>
                 <div class="mt-1.5 text-[9px] font-semibold uppercase tracking-wider text-zinc-500">Verify on iTax</div>
-                @if ($order->kra_cu_number)
-                    <div class="mt-0.5 font-mono text-[9.5px] font-bold text-zinc-700">{{ $order->kra_cu_number }}</div>
+                @if ($order->cu_number)
+                    <div class="mt-0.5 font-mono text-[9.5px] font-bold text-zinc-700">{{ $order->cu_number }}</div>
                 @endif
             </div>
         @endif

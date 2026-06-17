@@ -40,8 +40,8 @@ class KraInvoiceReady extends Notification implements ShouldQueue
                 'orderUrl' => route('account.orders.show', $order),
             ]);
 
-        if ($order->kra_receipt_path && Storage::disk('local')->exists($order->kra_receipt_path)) {
-            $mail->attach(Storage::disk('local')->path($order->kra_receipt_path), [
+        if ($order->receipt_path && Storage::disk('local')->exists($order->receipt_path)) {
+            $mail->attach(Storage::disk('local')->path($order->receipt_path), [
                 'as' => 'KRA-Invoice-'.$order->order_number.'.pdf',
                 'mime' => 'application/pdf',
             ]);

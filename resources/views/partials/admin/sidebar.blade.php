@@ -10,8 +10,7 @@
 
     <flux:sidebar.nav class="scrollbar-thin">
         <flux:sidebar.group :heading="__('Overview')" class="grid">
-            <flux:sidebar.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')"
-                wire:navigate>
+            <flux:sidebar.item icon="home" :href="route('admin.dashboard')" wire:navigate>
                 {{ __('Dashboard') }}
             </flux:sidebar.item>
         </flux:sidebar.group>
@@ -62,14 +61,19 @@
             </flux:sidebar.item>
             @endcan
             @can('orders.view')
-            <flux:sidebar.item icon="shopping-cart" :href="route('admin.orders.index')" :current="request()->routeIs('admin.orders.*')"
-                wire:navigate>
-                {{ __('Orders') }}
-            </flux:sidebar.item>
-            <flux:sidebar.item icon="arrow-path-rounded-square" :href="route('admin.sap-sync')" :current="request()->routeIs('admin.sap-sync')"
-                wire:navigate>
-                {{ __('SAP sync') }}
-            </flux:sidebar.item>
+            <flux:sidebar.group icon="shopping-cart" heading="{{ __('Orders') }}" expandable
+                :expanded="request()->routeIs('admin.orders.*') || request()->routeIs('admin.sap-sync')"
+                :current="request()->routeIs('admin.orders.*') || request()->routeIs('admin.sap-sync')"
+                class="grid">
+                <flux:sidebar.item :href="route('admin.orders.index')" :current="request()->routeIs('admin.orders.*')"
+                    wire:navigate>
+                    {{ __('All orders') }}
+                </flux:sidebar.item>
+                <flux:sidebar.item :href="route('admin.sap-sync')" :current="request()->routeIs('admin.sap-sync')"
+                    wire:navigate>
+                    {{ __('SAP sync') }}
+                </flux:sidebar.item>
+            </flux:sidebar.group>
             @endcan
             @can('payments.view')
             <flux:sidebar.item icon="credit-card" :href="route('admin.payments.index')" :current="request()->routeIs('admin.payments.*')"
@@ -125,30 +129,50 @@
 
         @can('delivery.manage')
         <flux:sidebar.group :heading="__('Logistics')" class="grid">
-            <flux:sidebar.item icon="map-pin" :href="route('admin.delivery-zones')"
-                :current="request()->routeIs('admin.delivery-zones')" wire:navigate>
-                {{ __('Delivery zones') }}
-            </flux:sidebar.item>
-            <flux:sidebar.item icon="tag" :href="route('admin.delivery-promotions')"
-                :current="request()->routeIs('admin.delivery-promotions')" wire:navigate>
-                {{ __('Delivery promotions') }}
-            </flux:sidebar.item>
-            <flux:sidebar.item icon="truck" :href="route('admin.shipping.methods.index')"
-                :current="request()->routeIs('admin.shipping.methods.*')" wire:navigate>
-                {{ __('Shipping methods') }}
-            </flux:sidebar.item>
-            <flux:sidebar.item icon="link" :href="route('admin.shipping.carriers.index')"
-                :current="request()->routeIs('admin.shipping.carriers.*')" wire:navigate>
-                {{ __('Carriers') }}
-            </flux:sidebar.item>
-            <flux:sidebar.item icon="building-office" :href="route('admin.shipping.warehouses.index')"
-                :current="request()->routeIs('admin.shipping.warehouses.*')" wire:navigate>
-                {{ __('Warehouses') }}
-            </flux:sidebar.item>
-            <flux:sidebar.item icon="building-storefront" :href="route('admin.showrooms.index')"
-                :current="request()->routeIs('admin.showrooms.*')" wire:navigate>
-                {{ __('Showrooms') }}
-            </flux:sidebar.item>
+            {{-- Delivery --}}
+            <flux:sidebar.group icon="map-pin" heading="{{ __('Delivery') }}" expandable
+                :expanded="request()->routeIs('admin.delivery-zones') || request()->routeIs('admin.delivery-promotions')"
+                :current="request()->routeIs('admin.delivery-zones') || request()->routeIs('admin.delivery-promotions')"
+                class="grid">
+                <flux:sidebar.item :href="route('admin.delivery-zones')"
+                    :current="request()->routeIs('admin.delivery-zones')" wire:navigate>
+                    {{ __('Zones') }}
+                </flux:sidebar.item>
+                <flux:sidebar.item :href="route('admin.delivery-promotions')"
+                    :current="request()->routeIs('admin.delivery-promotions')" wire:navigate>
+                    {{ __('Promotions') }}
+                </flux:sidebar.item>
+            </flux:sidebar.group>
+
+            {{-- Shipping --}}
+            <flux:sidebar.group icon="truck" heading="{{ __('Shipping') }}" expandable
+                :expanded="request()->routeIs('admin.shipping.methods.*') || request()->routeIs('admin.shipping.carriers.*')"
+                :current="request()->routeIs('admin.shipping.methods.*') || request()->routeIs('admin.shipping.carriers.*')"
+                class="grid">
+                <flux:sidebar.item :href="route('admin.shipping.methods.index')"
+                    :current="request()->routeIs('admin.shipping.methods.*')" wire:navigate>
+                    {{ __('Methods') }}
+                </flux:sidebar.item>
+                <flux:sidebar.item :href="route('admin.shipping.carriers.index')"
+                    :current="request()->routeIs('admin.shipping.carriers.*')" wire:navigate>
+                    {{ __('Carriers') }}
+                </flux:sidebar.item>
+            </flux:sidebar.group>
+
+            {{-- Locations --}}
+            <flux:sidebar.group icon="building-office-2" heading="{{ __('Locations') }}" expandable
+                :expanded="request()->routeIs('admin.shipping.warehouses.*') || request()->routeIs('admin.showrooms.*')"
+                :current="request()->routeIs('admin.shipping.warehouses.*') || request()->routeIs('admin.showrooms.*')"
+                class="grid">
+                <flux:sidebar.item :href="route('admin.shipping.warehouses.index')"
+                    :current="request()->routeIs('admin.shipping.warehouses.*')" wire:navigate>
+                    {{ __('Warehouses') }}
+                </flux:sidebar.item>
+                <flux:sidebar.item :href="route('admin.showrooms.index')"
+                    :current="request()->routeIs('admin.showrooms.*')" wire:navigate>
+                    {{ __('Showrooms') }}
+                </flux:sidebar.item>
+            </flux:sidebar.group>
         </flux:sidebar.group>
         @endcan
 

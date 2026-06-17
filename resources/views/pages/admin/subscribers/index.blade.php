@@ -135,7 +135,6 @@ new #[Layout('layouts::app')] #[Title('Subscribers — Admin')] class extends Co
                 <flux:select.option value="">All interests</flux:select.option>
                 <flux:select.option value="new-products">New products</flux:select.option>
                 <flux:select.option value="seasonal-catalogs">Catalogs</flux:select.option>
-                <flux:select.option value="trade-pricing">Trade offers</flux:select.option>
                 <flux:select.option value="projects">Projects</flux:select.option>
             </flux:select>
 
@@ -165,7 +164,6 @@ new #[Layout('layouts::app')] #[Title('Subscribers — Admin')] class extends Co
                                 $labels = [
                                     'new-products'      => 'New products',
                                     'seasonal-catalogs' => 'Catalogs',
-                                    'trade-pricing'     => 'Trade offers',
                                     'projects'          => 'Projects',
                                 ];
                             @endphp

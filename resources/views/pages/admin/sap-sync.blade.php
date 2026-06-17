@@ -9,13 +9,13 @@ use Flux\Flux;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
+use Livewire\Attributes\On;
 use Livewire\Attributes\Title;
 use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithPagination;
 
-new #[Layout('layouts::app')] #[Title('SAP Sync — Admin')] class extends Component
-{
+new #[Layout('layouts::app')] #[Title('SAP Sync — Admin')] class extends Component {
     use WithPagination;
 
     /** Orders stuck mid-sync longer than this are surfaced for attention. */
@@ -43,14 +43,50 @@ new #[Layout('layouts::app')] #[Title('SAP Sync — Admin')] class extends Compo
     #[Computed]
     public function counts(): array
     {
-        $raw = Order::query()
-            ->selectRaw('sap_sync_status, count(*) as aggregate')
-            ->groupBy('sap_sync_status')
-            ->pluck('aggregate', 'sap_sync_status');
+        $raw = Order::query()->selectRaw('sap_sync_status, count(*) as aggregate')->groupBy('sap_sync_status')->pluck('aggregate', 'sap_sync_status');
 
-        return collect(SapSyncStatus::cases())
-            ->mapWithKeys(fn (SapSyncStatus $s) => [$s->value => (int) ($raw[$s->value] ?? 0)])
-            ->all();
+        return collect(SapSyncStatus::cases())->mapWithKeys(fn(SapSyncStatus $s) => [$s->value => (int) ($raw[$s->value] ?? 0)])->all();
+    }
+
+    /** @return array<string, array{label: string, count: int, color: string}> 5 KPI cards for the monitor header. */
+    #[Computed]
+    public function kpis(): array
+    {
+        $c = $this->counts;
+
+        return [
+            'pending' => [
+                'label' => 'Pending sync',
+                'count' => $c[SapSyncStatus::PENDING->value],
+                'color' => SapSyncStatus::PENDING->badgeColor(),
+            ],
+            'in_progress' => [
+                'label' => 'In progress',
+                'count' => $c[SapSyncStatus::SYNCING->value] + $c[SapSyncStatus::AWAITING_CU->value],
+                'color' => 'blue',
+            ],
+            'completed' => [
+                'label' => 'KRA validated',
+                'count' => $c[SapSyncStatus::COMPLETED->value],
+                'color' => SapSyncStatus::COMPLETED->badgeColor(),
+            ],
+            'failed' => [
+                'label' => 'Failed',
+                'count' => $c[SapSyncStatus::FAILED->value],
+                'color' => SapSyncStatus::FAILED->badgeColor(),
+            ],
+            'returned' => [
+                'label' => 'Returned',
+                'count' => $c[SapSyncStatus::RETURNED->value],
+                'color' => SapSyncStatus::RETURNED->badgeColor(),
+            ],
+        ];
+    }
+
+    #[On('echo-private:admin.sap-sync,SapSyncStatusUpdated')]
+    public function handleSapSyncUpdate(): void
+    {
+        $this->refreshLists();
     }
 
     /** Count of orders stalled mid-pipeline — drives the tab badge without loading the list. */
@@ -74,7 +110,9 @@ new #[Layout('layouts::app')] #[Title('SAP Sync — Admin')] class extends Compo
     #[Computed]
     public function stuck(): LengthAwarePaginator
     {
-        return $this->stuckQuery()->latest('updated_at')->paginate($this->perPage, ['*'], 'stuckPage');
+        return $this->stuckQuery()
+            ->latest('updated_at')
+            ->paginate($this->perPage, ['*'], 'stuckPage');
     }
 
     /** @return LengthAwarePaginator<SapSyncLog> Most recent sync attempts across all orders. */
@@ -130,16 +168,12 @@ new #[Layout('layouts::app')] #[Title('SAP Sync — Admin')] class extends Compo
 
         $this->refreshLists();
 
-        Flux::toast(
-            heading: $orders->isEmpty() ? 'Nothing to resync' : 'Queued',
-            text: $orders->isEmpty() ? 'No failed orders to resync.' : "Re-queued {$orders->count()} failed order(s).",
-            variant: $orders->isEmpty() ? 'warning' : 'success',
-        );
+        Flux::toast(heading: $orders->isEmpty() ? 'Nothing to resync' : 'Queued', text: $orders->isEmpty() ? 'No failed orders to resync.' : "Re-queued {$orders->count()} failed order(s).", variant: $orders->isEmpty() ? 'warning' : 'success');
     }
 
     private function refreshLists(): void
     {
-        unset($this->counts, $this->stuckCount, $this->failed, $this->stuck, $this->recentLogs);
+        unset($this->counts, $this->kpis, $this->stuckCount, $this->failed, $this->stuck, $this->recentLogs);
     }
 }; ?>
 
@@ -155,7 +189,8 @@ new #[Layout('layouts::app')] #[Title('SAP Sync — Admin')] class extends Compo
     <div class="flex flex-wrap items-end justify-between gap-3">
         <div>
             <flux:heading size="xl">SAP sync</flux:heading>
-            <flux:subheading>Monitor how orders are posting to SAP and KRA, and re-queue any that stall.</flux:subheading>
+            <flux:subheading>Monitor how orders are posting to SAP and KRA, and re-queue any that stall.
+            </flux:subheading>
         </div>
         @if ($this->counts[\App\Enums\SapSyncStatus::FAILED->value] > 0)
             <flux:button variant="danger" icon="arrow-path" wire:click="resyncAllFailed"
@@ -170,18 +205,18 @@ new #[Layout('layouts::app')] #[Title('SAP Sync — Admin')] class extends Compo
             <flux:callout.heading>Auto-sync is currently disabled</flux:callout.heading>
             <flux:callout.text>
                 New orders won't post to SAP automatically. You can still review history and manually resync below.
-                Enable it under <a href="{{ route('admin.settings.system') }}" wire:navigate class="underline">Settings → System → SAP</a>.
+                Enable it under <a href="{{ route('admin.settings.system') }}" wire:navigate class="underline">Settings <flux:icon.chevron-right class="inline size-3" /> System <flux:icon.chevron-right class="inline size-3" /> SAP</a>.
             </flux:callout.text>
         </flux:callout>
     @endunless
 
-    {{-- Status counts --}}
-    <div class="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
-        @foreach (\App\Enums\SapSyncStatus::cases() as $status)
+    {{-- Status KPIs --}}
+    <div class="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
+        @foreach ($this->kpis as $kpi)
             <flux:card class="p-4">
-                <div class="text-2xl font-semibold tabular-nums dark:text-white">{{ $this->counts[$status->value] }}</div>
-                <flux:badge :color="$status->badgeColor()" size="sm" inset="top bottom" class="mt-1">
-                    {{ $status->label() }}
+                <div class="text-2xl font-semibold tabular-nums dark:text-white">{{ $kpi['count'] }}</div>
+                <flux:badge :color="$kpi['color']" size="sm" inset="top bottom" class="mt-1">
+                    {{ $kpi['label'] }}
                 </flux:badge>
             </flux:card>
         @endforeach
@@ -193,7 +228,11 @@ new #[Layout('layouts::app')] #[Title('SAP Sync — Admin')] class extends Compo
         {{-- Tab bar --}}
         @php
             $tabs = [
-                'failed' => ['label' => 'Failed', 'count' => $this->counts[\App\Enums\SapSyncStatus::FAILED->value], 'color' => 'red'],
+                'failed' => [
+                    'label' => 'Failed',
+                    'count' => $this->counts[\App\Enums\SapSyncStatus::FAILED->value],
+                    'color' => 'red',
+                ],
                 'stuck' => ['label' => 'Stuck', 'count' => $this->stuckCount, 'color' => 'amber'],
                 'activity' => ['label' => 'Recent activity', 'count' => null, 'color' => null],
             ];
@@ -201,20 +240,21 @@ new #[Layout('layouts::app')] #[Title('SAP Sync — Admin')] class extends Compo
         <div class="flex items-center justify-between gap-4 border-b border-zinc-200 px-3 dark:border-zinc-700">
             <div class="flex gap-1 overflow-x-auto">
                 @foreach ($tabs as $key => $meta)
-                    <button type="button" wire:click="$set('tab', '{{ $key }}')"
-                        @class([
-                            'inline-flex items-center gap-2 whitespace-nowrap border-b-2 px-4 py-3 text-sm font-medium transition-colors',
-                            'border-brand-500 text-brand-600 dark:text-brand-400' => $tab === $key,
-                            'border-transparent text-zinc-500 hover:border-zinc-300 hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-200' => $tab !== $key,
-                        ])>
+                    <button type="button" wire:click="$set('tab', '{{ $key }}')" @class([
+                        'inline-flex items-center gap-2 whitespace-nowrap border-b-2 px-4 py-3 text-sm font-medium transition-colors',
+                        'border-brand-500 text-brand-600 dark:text-brand-400' => $tab === $key,
+                        'border-transparent text-zinc-500 hover:border-zinc-300 hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-200' =>
+                            $tab !== $key,
+                    ])>
                         {{ $meta['label'] }}
-                        @if (! is_null($meta['count']) && $meta['count'] > 0)
-                            <flux:badge :color="$meta['color']" size="sm" inset="top bottom">{{ $meta['count'] }}</flux:badge>
+                        @if (!is_null($meta['count']) && $meta['count'] > 0)
+                            <flux:badge :color="$meta['color']" size="sm" inset="top bottom">{{ $meta['count'] }}
+                            </flux:badge>
                         @endif
                     </button>
                 @endforeach
             </div>
-            <flux:select wire:model.live="perPage" class="w-28 shrink-0">
+            <flux:select wire:model.live="perPage" class="w-28 shrink-0" size="sm">
                 <flux:select.option value="10">10 / page</flux:select.option>
                 <flux:select.option value="25">25 / page</flux:select.option>
                 <flux:select.option value="50">50 / page</flux:select.option>
@@ -224,7 +264,8 @@ new #[Layout('layouts::app')] #[Title('SAP Sync — Admin')] class extends Compo
 
         {{-- FAILED --}}
         @if ($tab === 'failed')
-            <flux:table container:class="[&_th:first-child]:pl-6 [&_th:last-child]:pr-6 [&_td:first-child]:pl-6 [&_td:last-child]:pr-6">
+            <flux:table
+                container:class="[&_th:first-child]:pl-6 [&_th:last-child]:pr-6 [&_td:first-child]:pl-6 [&_td:last-child]:pr-6">
                 <flux:table.columns class="bg-zinc-50 dark:bg-zinc-800/60">
                     <flux:table.column>Order</flux:table.column>
                     <flux:table.column>Error</flux:table.column>
@@ -236,13 +277,17 @@ new #[Layout('layouts::app')] #[Title('SAP Sync — Admin')] class extends Compo
                     @forelse ($this->failed as $order)
                         <flux:table.row :key="'failed-'.$order->id" wire:key="failed-{{ $order->id }}">
                             <flux:table.cell variant="strong">
-                                <a href="{{ route('admin.orders.show', $order) }}" wire:navigate class="font-mono hover:text-brand-500">{{ $order->order_number }}</a>
+                                <a href="{{ route('admin.orders.show', $order) }}" wire:navigate
+                                    class="font-mono hover:text-brand-500">{{ $order->order_number }}</a>
                             </flux:table.cell>
-                            <flux:table.cell class="max-w-md truncate text-zinc-500" title="{{ $order->sap_sync_error }}">
+                            <flux:table.cell class="max-w-md truncate text-zinc-500"
+                                title="{{ $order->sap_sync_error }}">
                                 {{ $order->sap_sync_error ?: '—' }}
                             </flux:table.cell>
-                            <flux:table.cell align="end" class="tabular-nums text-zinc-500">{{ $order->sap_sync_attempts }}</flux:table.cell>
-                            <flux:table.cell align="end" class="text-sm text-zinc-500">{{ $order->updated_at->format('d M, H:i') }}</flux:table.cell>
+                            <flux:table.cell align="end" class="tabular-nums text-zinc-500">
+                                {{ $order->sap_sync_attempts }}</flux:table.cell>
+                            <flux:table.cell align="end" class="text-sm text-zinc-500">
+                                {{ $order->updated_at->format('d M, H:i') }}</flux:table.cell>
                             <flux:table.cell align="end">
                                 @can('orders.manage')
                                     <flux:button size="xs" variant="ghost" icon="arrow-path" tooltip="Resync"
@@ -252,7 +297,8 @@ new #[Layout('layouts::app')] #[Title('SAP Sync — Admin')] class extends Compo
                         </flux:table.row>
                     @empty
                         <flux:table.row>
-                            <flux:table.cell colspan="5" class="py-10 text-center text-zinc-400">No failed syncs. 🎉</flux:table.cell>
+                            <flux:table.cell colspan="5" class="py-10 text-center text-zinc-400">No failed syncs. 🎉
+                            </flux:table.cell>
                         </flux:table.row>
                     @endforelse
                 </flux:table.rows>
@@ -263,9 +309,10 @@ new #[Layout('layouts::app')] #[Title('SAP Sync — Admin')] class extends Compo
                 </div>
             @endif
 
-        {{-- STUCK --}}
+            {{-- STUCK --}}
         @elseif ($tab === 'stuck')
-            <flux:table container:class="[&_th:first-child]:pl-6 [&_th:last-child]:pr-6 [&_td:first-child]:pl-6 [&_td:last-child]:pr-6">
+            <flux:table
+                container:class="[&_th:first-child]:pl-6 [&_th:last-child]:pr-6 [&_td:first-child]:pl-6 [&_td:last-child]:pr-6">
                 <flux:table.columns class="bg-zinc-50 dark:bg-zinc-800/60">
                     <flux:table.column>Order</flux:table.column>
                     <flux:table.column>Status</flux:table.column>
@@ -276,14 +323,17 @@ new #[Layout('layouts::app')] #[Title('SAP Sync — Admin')] class extends Compo
                     @forelse ($this->stuck as $order)
                         <flux:table.row :key="'stuck-'.$order->id" wire:key="stuck-{{ $order->id }}">
                             <flux:table.cell variant="strong">
-                                <a href="{{ route('admin.orders.show', $order) }}" wire:navigate class="font-mono hover:text-brand-500">{{ $order->order_number }}</a>
+                                <a href="{{ route('admin.orders.show', $order) }}" wire:navigate
+                                    class="font-mono hover:text-brand-500">{{ $order->order_number }}</a>
                             </flux:table.cell>
                             <flux:table.cell>
-                                <flux:badge :color="$order->sap_sync_status?->badgeColor() ?? 'zinc'" size="sm" inset="top bottom">
+                                <flux:badge :color="$order->sap_sync_status?->badgeColor() ?? 'zinc'" size="sm"
+                                    inset="top bottom">
                                     {{ $order->sap_sync_status?->label() ?? '—' }}
                                 </flux:badge>
                             </flux:table.cell>
-                            <flux:table.cell align="end" class="text-sm text-zinc-500">{{ $order->updated_at->diffForHumans() }}</flux:table.cell>
+                            <flux:table.cell align="end" class="text-sm text-zinc-500">
+                                {{ $order->updated_at->diffForHumans() }}</flux:table.cell>
                             <flux:table.cell align="end">
                                 @can('orders.manage')
                                     <flux:button size="xs" variant="ghost" icon="arrow-path" tooltip="Resync"
@@ -293,7 +343,8 @@ new #[Layout('layouts::app')] #[Title('SAP Sync — Admin')] class extends Compo
                         </flux:table.row>
                     @empty
                         <flux:table.row>
-                            <flux:table.cell colspan="4" class="py-10 text-center text-zinc-400">Nothing stuck.</flux:table.cell>
+                            <flux:table.cell colspan="4" class="py-10 text-center text-zinc-400">Nothing stuck.
+                            </flux:table.cell>
                         </flux:table.row>
                     @endforelse
                 </flux:table.rows>
@@ -304,9 +355,10 @@ new #[Layout('layouts::app')] #[Title('SAP Sync — Admin')] class extends Compo
                 </div>
             @endif
 
-        {{-- RECENT ACTIVITY --}}
+            {{-- RECENT ACTIVITY --}}
         @else
-            <flux:table container:class="[&_th:first-child]:pl-6 [&_th:last-child]:pr-6 [&_td:first-child]:pl-6 [&_td:last-child]:pr-6">
+            <flux:table
+                container:class="[&_th:first-child]:pl-6 [&_th:last-child]:pr-6 [&_td:first-child]:pl-6 [&_td:last-child]:pr-6">
                 <flux:table.columns class="bg-zinc-50 dark:bg-zinc-800/60">
                     <flux:table.column>Order</flux:table.column>
                     <flux:table.column>Operation</flux:table.column>
@@ -319,7 +371,8 @@ new #[Layout('layouts::app')] #[Title('SAP Sync — Admin')] class extends Compo
                         <flux:table.row :key="'log-'.$log->id" wire:key="log-{{ $log->id }}">
                             <flux:table.cell variant="strong">
                                 @if ($log->order)
-                                    <a href="{{ route('admin.orders.show', $log->order_id) }}" wire:navigate class="font-mono hover:text-brand-500">{{ $log->order->order_number }}</a>
+                                    <a href="{{ route('admin.orders.show', $log->order_id) }}" wire:navigate
+                                        class="font-mono hover:text-brand-500">{{ $log->order->order_number }}</a>
                                 @else
                                     <span class="text-zinc-400">—</span>
                                 @endif
@@ -328,22 +381,27 @@ new #[Layout('layouts::app')] #[Title('SAP Sync — Admin')] class extends Compo
                             <flux:table.cell>
                                 <span @class([
                                     'text-sm font-medium',
-                                    'text-emerald-600' => $log->http_status_code && $log->http_status_code < 300,
+                                    'text-emerald-600' =>
+                                        $log->http_status_code && $log->http_status_code < 300,
                                     'text-red-500' => $log->http_status_code && $log->http_status_code >= 400,
-                                    'text-zinc-500' => ! $log->http_status_code,
+                                    'text-zinc-500' => !$log->http_status_code,
                                 ])>
                                     {{ $log->http_status_code ?: $log->status }}
                                 </span>
                                 @if ($log->error_message)
-                                    <span class="block max-w-md truncate text-xs text-zinc-400" title="{{ $log->error_message }}">{{ $log->error_message }}</span>
+                                    <span class="block max-w-md truncate text-xs text-zinc-400"
+                                        title="{{ $log->error_message }}">{{ $log->error_message }}</span>
                                 @endif
                             </flux:table.cell>
-                            <flux:table.cell class="font-mono text-xs text-zinc-500">{{ $log->sap_document_number ?: '—' }}</flux:table.cell>
-                            <flux:table.cell align="end" class="text-sm text-zinc-500">{{ $log->created_at->format('d M, H:i') }}</flux:table.cell>
+                            <flux:table.cell class="font-mono text-xs text-zinc-500">
+                                {{ $log->sap_document_number ?: '—' }}</flux:table.cell>
+                            <flux:table.cell align="end" class="text-sm text-zinc-500">
+                                {{ $log->created_at->format('d M, H:i') }}</flux:table.cell>
                         </flux:table.row>
                     @empty
                         <flux:table.row>
-                            <flux:table.cell colspan="5" class="py-10 text-center text-zinc-400">No sync activity yet.</flux:table.cell>
+                            <flux:table.cell colspan="5" class="py-10 text-center text-zinc-400">No sync activity
+                                yet.</flux:table.cell>
                         </flux:table.row>
                     @endforelse
                 </flux:table.rows>

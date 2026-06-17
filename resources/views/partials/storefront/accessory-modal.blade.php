@@ -2,7 +2,7 @@
      page that uses the InteractsWithStorefront trait; opens after a product
      with accessory links is added to the cart. --}}
 <flux:modal wire:model.self="showAccessoryModal" class="md:w-[560px]">
-    <flux:heading>Complete your purchase</flux:heading>
+    <flux:heading class="uppercase">Complete your purchase</flux:heading>
     <flux:subheading>
         @if ($accessoryParentName !== '')
             {{ $accessoryParentName }} works best with these. Adjust the quantities or uncheck anything you don't need.

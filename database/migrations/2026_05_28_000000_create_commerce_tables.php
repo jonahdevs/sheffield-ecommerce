@@ -112,9 +112,8 @@ return new class extends Migration
             $table->timestamp('sap_synced_at')->nullable();
             $table->unsignedTinyInteger('sap_sync_attempts')->default(0);
             $table->text('sap_sync_error')->nullable();
-            $table->string('kra_cu_number')->nullable();
-            $table->timestamp('kra_validated_at')->nullable();
-            $table->string('kra_receipt_path')->nullable();
+            $table->string('cu_number')->nullable();
+            $table->string('receipt_path')->nullable();
             // Dispatch documents — generated when order moves to out_for_delivery
             $table->string('packing_list_path')->nullable();
             $table->string('delivery_note_path')->nullable();

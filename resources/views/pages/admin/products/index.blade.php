@@ -587,7 +587,7 @@ new #[Layout('layouts::app')] #[Title('Products — Admin')] class extends Compo
     <flux:modal wire:model.self="showScheduleModal" class="w-full max-w-sm" :dismissible="true">
         <form wire:submit="applySchedule" class="space-y-5">
             <div>
-                <flux:heading size="lg">Schedule product</flux:heading>
+                <flux:heading size="lg" class="uppercase">Schedule product</flux:heading>
                 <flux:subheading>Set the date and time this product will go live.</flux:subheading>
             </div>
 
@@ -618,7 +618,7 @@ new #[Layout('layouts::app')] #[Title('Products — Admin')] class extends Compo
                 {{-- RESULTS STATE --}}
                 {{-- ================================================== --}}
                 <div>
-                    <flux:heading>Import complete</flux:heading>
+                    <flux:heading class="uppercase">Import complete</flux:heading>
                     <flux:subheading>Here's a summary of what was processed.</flux:subheading>
                 </div>
 
@@ -658,7 +658,7 @@ new #[Layout('layouts::app')] #[Title('Products — Admin')] class extends Compo
                 {{-- UPLOAD STATE --}}
                 {{-- ================================================== --}}
                 <div>
-                    <flux:heading>Import Products</flux:heading>
+                    <flux:heading class="uppercase">Import Products</flux:heading>
                     <flux:subheading>Upload a spreadsheet to bulk-create or update products. Products are matched by SKU
                         — existing SKUs are updated, new ones are created.</flux:subheading>
                 </div>

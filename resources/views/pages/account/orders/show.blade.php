@@ -123,17 +123,17 @@ new #[Layout('layouts::account')] #[Title('Order')] class extends Component
                         <div class="flex items-center gap-3.5 p-3.5" wire:key="item-{{ $item->id }}">
 
                             {{-- Thumbnail --}}
-                            <div class="flex size-14 shrink-0 items-center justify-center overflow-hidden rounded border border-zinc-100 bg-zinc-50">
-                                @if ($item->product?->cover_url)
-                                    <img
-                                        src="{{ $item->product->cover_url }}"
-                                        alt="{{ $item->product_name }}"
-                                        class="size-full object-contain p-1"
-                                    />
-                                @else
+                            @if ($item->product?->cover_url)
+                                <img
+                                    src="{{ $item->product->cover_url }}"
+                                    alt="{{ $item->product_name }}"
+                                    class="size-14 shrink-0 rounded object-contain"
+                                />
+                            @else
+                                <div class="flex size-14 shrink-0 items-center justify-center overflow-hidden rounded border border-zinc-100 bg-zinc-50">
                                     <flux:icon.photo variant="outline" class="size-7 text-zinc-200" />
-                                @endif
-                            </div>
+                                </div>
+                            @endif
 
                             {{-- Details --}}
                             <div class="min-w-0 flex-1">
@@ -284,45 +284,6 @@ new #[Layout('layouts::account')] #[Title('Order')] class extends Component
                                     @endif
                                 </div>
 
-                                {{-- KRA tax invoice --}}
-                                @if ($this->isPaid)
-                                    <div class="mt-5 border-t border-zinc-200 pt-5">
-                                        <p class="mb-3 text-[11px] font-bold uppercase tracking-widest text-ink-3">Tax Invoice</p>
-                                        @if ($this->hasKraReceipt)
-                                            <flux:button
-                                                tag="a"
-                                                :href="route('account.orders.receipt', $order)"
-                                                size="sm"
-                                                variant="filled"
-                                                icon="arrow-down-tray"
-                                                class="w-full"
-                                            >
-                                                Download Invoice
-                                            </flux:button>
-                                            <div class="mt-2 text-center">
-                                                <p class="text-[10px] font-bold uppercase tracking-wide text-emerald-600">KRA Validated</p>
-                                                @if ($order->kra_cu_number)
-                                                    <p class="text-[9px] text-ink-4">CU: {{ $order->kra_cu_number }}</p>
-                                                @endif
-                                            </div>
-                                        @elseif ($this->isAwaitingKraValidation)
-                                            <flux:callout icon="clock" color="violet" size="sm">
-                                                <flux:callout.heading>Pending KRA validation</flux:callout.heading>
-                                                <flux:callout.text>This usually takes a few minutes.</flux:callout.text>
-                                            </flux:callout>
-                                        @elseif ($this->hasSapSyncFailed)
-                                            <flux:callout icon="x-circle" color="red" size="sm">
-                                                <flux:callout.heading>Invoice generation issue</flux:callout.heading>
-                                                <flux:callout.text>Our support team has been notified.</flux:callout.text>
-                                            </flux:callout>
-                                        @else
-                                            <flux:callout icon="document-text" color="zinc" size="sm">
-                                                <flux:callout.heading>Invoice being prepared</flux:callout.heading>
-                                                <flux:callout.text>Your tax invoice will be available shortly.</flux:callout.text>
-                                            </flux:callout>
-                                        @endif
-                                    </div>
-                                @endif
                             @else
                                 <div class="rounded border border-dashed border-zinc-200 bg-zinc-50 py-4 text-center">
                                     <p class="text-sm italic text-ink-4">No payment info available</p>

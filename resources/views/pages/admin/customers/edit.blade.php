@@ -303,7 +303,7 @@ new #[Layout('layouts::app')] #[Title('Edit Customer — Admin')] class extends 
                 </div>
 
                 {{-- Footer actions --}}
-                <div class="flex gap-2 border-t border-zinc-200 px-6 py-4 dark:border-zinc-700">
+                <div class="flex gap-2 border-t border-zinc-200 px-6 py-3 dark:border-zinc-700">
                     @if ($customer->isBanned())
                         <flux:button size="sm" variant="ghost" icon="lock-open" class="flex-1"
                             wire:click="unban"
@@ -331,7 +331,7 @@ new #[Layout('layouts::app')] #[Title('Edit Customer — Admin')] class extends 
 
             {{-- Personal information --}}
             <flux:card class="overflow-hidden p-0">
-                <div class="border-b border-zinc-200 px-6 py-4 dark:border-zinc-700">
+                <div class="border-b border-zinc-200 px-6 py-3 dark:border-zinc-700">
                     <flux:heading size="sm" class="uppercase tracking-wide">Personal information</flux:heading>
                 </div>
                 <div class="grid grid-cols-1 gap-x-5 gap-y-4 p-6 sm:grid-cols-2">
@@ -344,7 +344,7 @@ new #[Layout('layouts::app')] #[Title('Edit Customer — Admin')] class extends 
 
             {{-- Default address --}}
             <flux:card class="overflow-hidden p-0">
-                <div class="border-b border-zinc-200 px-6 py-4 dark:border-zinc-700">
+                <div class="border-b border-zinc-200 px-6 py-3 dark:border-zinc-700">
                     <flux:heading size="sm" class="uppercase tracking-wide">Default address</flux:heading>
                 </div>
                 <div class="grid grid-cols-1 gap-x-5 gap-y-4 p-6 sm:grid-cols-2">

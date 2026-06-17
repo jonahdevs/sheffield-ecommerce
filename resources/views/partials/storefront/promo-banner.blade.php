@@ -12,10 +12,10 @@
                 Local parts &amp; service across East Africa
             </span>
             <span class="hidden opacity-60 lg:inline">·</span>
-            <span class="hidden items-center gap-1.5 lg:flex">
+            <a href="tel:+254713777111" class="hidden items-center gap-1.5 hover:text-white lg:flex">
                 <flux:icon.phone variant="micro" class="size-3.5" />
                 +254&nbsp;713&nbsp;777&nbsp;111
-            </span>
+            </a>
         </div>
         <div class="flex items-center gap-3 text-[#d8c79d]">
             <a href="{{ route('login') }}" class="hidden hover:text-white sm:inline" wire:navigate>Sign in</a>

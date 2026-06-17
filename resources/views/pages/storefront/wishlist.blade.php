@@ -119,9 +119,7 @@ new #[Layout('layouts::storefront')] #[Title('Wishlist')] class extends Componen
                         <flux:icon.magnifying-glass variant="micro" class="size-3.5" />
                         Browse products
                     </flux:button>
-                    @guest
-                        <flux:button variant="customer-outline" size="customer" :href="route('login')" wire:navigate>Sign in to sync</flux:button>
-                    @endguest
+                    <flux:button variant="customer-outline" size="customer" :href="route('home')" wire:navigate>Back to Home</flux:button>
                 </div>
             </div>
         @else

@@ -26,7 +26,7 @@ use Illuminate\Support\Facades\Storage;
 use Spatie\Activitylog\Models\Concerns\LogsActivity;
 use Spatie\Activitylog\Support\LogOptions;
 
-#[Fillable(['user_id', 'address_id', 'delivery_zone_id', 'shipping_method_id', 'warehouse_id', 'order_number', 'status', 'subtotal_cents', 'vat_cents', 'delivery_cents', 'installation_cents', 'total_cents', 'payment_method', 'notes', 'staff_notes', 'confirmed_at', 'shipped_at', 'delivered_at', 'cancelled_at', 'sap_doc_entry', 'sap_doc_number', 'sap_sync_status', 'sap_synced_at', 'sap_sync_attempts', 'sap_sync_error', 'kra_cu_number', 'kra_validated_at', 'kra_receipt_path',
+#[Fillable(['user_id', 'address_id', 'delivery_zone_id', 'shipping_method_id', 'warehouse_id', 'order_number', 'status', 'subtotal_cents', 'vat_cents', 'delivery_cents', 'installation_cents', 'total_cents', 'payment_method', 'notes', 'staff_notes', 'confirmed_at', 'shipped_at', 'delivered_at', 'cancelled_at', 'sap_doc_entry', 'sap_doc_number', 'sap_sync_status', 'sap_synced_at', 'sap_sync_attempts', 'sap_sync_error', 'cu_number', 'receipt_path',
     'packing_list_path', 'delivery_note_path'])]
 class Order extends Model
 {
@@ -52,7 +52,6 @@ class Order extends Model
             'delivered_at' => 'datetime',
             'cancelled_at' => 'datetime',
             'sap_synced_at' => 'datetime',
-            'kra_validated_at' => 'datetime',
         ];
     }
 
@@ -138,8 +137,8 @@ class Order extends Model
 
     public function hasKraReceipt(): bool
     {
-        return $this->kra_receipt_path !== null
-            && Storage::disk('local')->exists($this->kra_receipt_path);
+        return $this->receipt_path !== null
+            && Storage::disk('local')->exists($this->receipt_path);
     }
 
     public function isAwaitingKraValidation(): bool
@@ -166,6 +165,8 @@ class Order extends Model
         $this->update(['status' => OrderStatus::PROCESSING]);
         $this->recordStatusChange(OrderStatus::PENDING, OrderStatus::PROCESSING);
 
+        $this->deductStock();
+
         $this->user?->notify(new OrderConfirmed($this));
         Notification::send(StaffRecipients::for('orders.manage'), new NewOrderReceived($this));
         OrderPlaced::dispatch($this);
@@ -173,6 +174,24 @@ class Order extends Model
         $sapConfig = app(SapConfig::class);
         if ($sapConfig->isEnabled() && $sapConfig->autoSyncOrders()) {
             SyncOrderToSapJob::dispatch($this);
+        }
+    }
+
+    private function deductStock(): void
+    {
+        $this->loadMissing('items.product', 'items.variant');
+
+        foreach ($this->items as $item) {
+            // Prefer variant-level stock tracking when a variant exists.
+            if ($item->variant && $item->variant->stock_quantity !== null) {
+                $item->variant->decrement('stock_quantity', $item->quantity);
+
+                continue;
+            }
+
+            if ($item->product && $item->product->stock_quantity !== null) {
+                $item->product->decrement('stock_quantity', $item->quantity);
+            }
         }
     }
 

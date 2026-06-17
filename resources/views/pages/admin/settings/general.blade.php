@@ -86,7 +86,7 @@ new #[Layout('layouts::app')] #[Title('General settings — Admin')] class exten
                 <p class="border-b border-zinc-200 px-5 py-3 text-sm text-zinc-500 dark:border-zinc-600 dark:text-zinc-400">
                     Choose which alerts you personally receive. These override nothing — the global master switches in
                     <a href="{{ route('admin.settings.app', ['section' => 'notifications']) }}" wire:navigate
-                        class="text-brand-500 hover:underline">App → Notifications</a> take priority.
+                        class="text-brand-500 hover:underline">App <flux:icon.chevron-right class="inline size-3" /> Notifications</a> take priority.
                 </p>
 
                 {{-- Channel headers --}}

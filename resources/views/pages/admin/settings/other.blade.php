@@ -248,7 +248,7 @@ new #[Layout('layouts::app')] #[Title('Maintenance — Admin')] class extends Co
             </div>
 
             {{-- Tabs + Generate button --}}
-            <div class="flex items-center justify-between gap-4 px-6 py-4">
+            <div class="flex items-center justify-between gap-4 px-6 py-3">
                 <div class="flex gap-2">
                     <flux:button
                         wire:click="switchBackupTab('system')"

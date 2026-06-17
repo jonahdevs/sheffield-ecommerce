@@ -455,7 +455,7 @@ new #[Layout('layouts::app')] #[Title('Quote — Admin')] class extends Componen
 
                 {{-- Line items --}}
                 <flux:card class="overflow-hidden p-0">
-                    <div class="border-b border-zinc-200 px-6 py-4 dark:border-zinc-700">
+                    <div class="border-b border-zinc-200 px-6 py-3 dark:border-zinc-700">
                         <flux:heading size="sm" class="uppercase tracking-wide">Line items</flux:heading>
                     </div>
 
@@ -542,7 +542,7 @@ new #[Layout('layouts::app')] #[Title('Quote — Admin')] class extends Componen
                     </flux:table>
 
                     {{-- Summary --}}
-                    <div class="flex justify-end border-t border-zinc-200 px-6 py-4 dark:border-zinc-700">
+                    <div class="flex justify-end border-t border-zinc-200 px-6 py-3 dark:border-zinc-700">
                         <div class="w-72 space-y-2 text-sm">
                             <div class="flex items-center justify-between">
                                 <span class="text-zinc-500 dark:text-zinc-400">Subtotal</span>
@@ -594,7 +594,7 @@ new #[Layout('layouts::app')] #[Title('Quote — Admin')] class extends Componen
 
                 {{-- Instructions & Notes --}}
                 <flux:card class="overflow-hidden p-0">
-                    <div class="border-b border-zinc-200 px-6 py-4 dark:border-zinc-700">
+                    <div class="border-b border-zinc-200 px-6 py-3 dark:border-zinc-700">
                         <flux:heading size="sm" class="uppercase tracking-wide">Instructions & notes</flux:heading>
                     </div>
                     <div class="space-y-6 p-6">
@@ -642,7 +642,7 @@ new #[Layout('layouts::app')] #[Title('Quote — Admin')] class extends Componen
 
                 {{-- Status & expiry --}}
                 <flux:card class="overflow-hidden p-0">
-                    <div class="border-b border-zinc-200 px-6 py-4 dark:border-zinc-700">
+                    <div class="border-b border-zinc-200 px-6 py-3 dark:border-zinc-700">
                         <flux:heading size="sm" class="uppercase tracking-wide">Quote details</flux:heading>
                     </div>
                     <div class="space-y-4 p-6">
@@ -660,7 +660,7 @@ new #[Layout('layouts::app')] #[Title('Quote — Admin')] class extends Componen
 
                 {{-- Customer (read-only) --}}
                 <flux:card class="overflow-hidden p-0">
-                    <div class="border-b border-zinc-200 px-6 py-4 dark:border-zinc-700">
+                    <div class="border-b border-zinc-200 px-6 py-3 dark:border-zinc-700">
                         <flux:heading size="sm" class="uppercase tracking-wide">Customer</flux:heading>
                     </div>
                     <div class="space-y-4 p-6">
@@ -709,7 +709,7 @@ new #[Layout('layouts::app')] #[Title('Quote — Admin')] class extends Componen
 
                 {{-- Delivery preference (read-only) --}}
                 <flux:card class="overflow-hidden p-0">
-                    <div class="border-b border-zinc-200 px-6 py-4 dark:border-zinc-700">
+                    <div class="border-b border-zinc-200 px-6 py-3 dark:border-zinc-700">
                         <flux:heading size="sm" class="uppercase tracking-wide">Delivery preference</flux:heading>
                     </div>
                     <div class="p-6">

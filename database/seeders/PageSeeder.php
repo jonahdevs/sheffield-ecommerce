@@ -16,11 +16,6 @@ class PageSeeder extends Seeder
             ['slug' => 'returns-policy', 'title' => 'Returns Policy'],
             ['slug' => 'shipping-policy', 'title' => 'Shipping Policy'],
             ['slug' => 'cookie-policy', 'title' => 'Cookie Policy'],
-            // Business / content
-            ['slug' => 'trade-accounts', 'title' => 'Trade Accounts'],
-            ['slug' => 'installation', 'title' => 'Installation'],
-            ['slug' => 'service-contracts', 'title' => 'Service Contracts'],
-            ['slug' => 'spec-sheets', 'title' => 'Spec Sheets'],
         ];
 
         foreach ($pages as $page) {

@@ -3,10 +3,10 @@
 namespace App\Jobs;
 
 use App\Enums\SapSyncStatus;
+use App\Events\SapSyncStatusUpdated;
 use App\Models\Order;
 use App\Notifications\SapSyncFailedNotification;
 use App\Services\Sap\SapApiException;
-use App\Services\Sap\SapConfig;
 use App\Services\Sap\SapIntegrationService;
 use App\Support\StaffRecipients;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -51,8 +51,7 @@ class SyncOrderToSapJob implements ShouldQueue
                 'sap_doc_entry' => $order->sap_doc_entry,
             ]);
 
-            RecoverSapInvoiceJob::dispatch($order)
-                ->delay(now()->addMinutes(app(SapConfig::class)->recoveryDelayMinutes()));
+            RecoverSapInvoiceJob::dispatch($order);
 
             return;
         }
@@ -60,6 +59,7 @@ class SyncOrderToSapJob implements ShouldQueue
         Log::info('SAP: sync started.', ['order_id' => $order->id, 'attempt' => $this->attempts()]);
 
         $order->update(['sap_sync_status' => SapSyncStatus::SYNCING]);
+        SapSyncStatusUpdated::dispatch($order->fresh(), SapSyncStatus::SYNCING);
 
         try {
             $result = $sap->syncOrder($order);
@@ -82,15 +82,13 @@ class SyncOrderToSapJob implements ShouldQueue
             'sap_sync_attempts' => $this->attempts(),
             'sap_sync_error' => null,
         ]);
+        SapSyncStatusUpdated::dispatch($order->fresh(), SapSyncStatus::AWAITING_CU);
 
         activity()->performedOn($order)
             ->withProperties(['sap_doc_entry' => $result->docEntry, 'attempt' => $this->attempts()])
             ->log('sap_sync_completed');
 
-        // The webhook is the primary path for the CU number.
-        // RecoverSapInvoiceJob fires after the delay as a safety net if no webhook arrives.
-        RecoverSapInvoiceJob::dispatch($order->fresh())
-            ->delay(now()->addMinutes(app(SapConfig::class)->recoveryDelayMinutes()));
+        RecoverSapInvoiceJob::dispatch($order->fresh());
     }
 
     public function failed(\Throwable $exception): void
@@ -98,6 +96,20 @@ class SyncOrderToSapJob implements ShouldQueue
         $order = $this->order->fresh();
 
         if ($order->sap_sync_status === SapSyncStatus::FAILED) {
+            return;
+        }
+
+        // Phase 1 already succeeded on SAP's side — sap_doc_entry is persisted and
+        // RecoverSapInvoiceJob is queued to run Phase 2 (validate + CU number).
+        // Don't mark FAILED here; let RecoverSapInvoiceJob own the final outcome.
+        if ($order->sap_doc_entry) {
+            Log::warning('SAP: SyncOrderToSapJob failed after invoice was created — RecoverSapInvoiceJob will complete Phase 2.', [
+                'order_id' => $order->id,
+                'order_number' => $order->order_number,
+                'sap_doc_entry' => $order->sap_doc_entry,
+                'error' => $exception->getMessage(),
+            ]);
+
             return;
         }
 
@@ -112,6 +124,7 @@ class SyncOrderToSapJob implements ShouldQueue
             'sap_sync_attempts' => $this->tries,
             'sap_sync_error' => $exception->getMessage(),
         ]);
+        SapSyncStatusUpdated::dispatch($order->fresh(), SapSyncStatus::FAILED);
 
         activity()->performedOn($order)
             ->withProperties(['error' => $exception->getMessage()])

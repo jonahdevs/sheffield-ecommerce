@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Enums\SapSyncStatus;
+use App\Events\SapSyncStatusUpdated;
 use App\Models\Order;
 use App\Notifications\SapSyncFailedNotification;
 use App\Services\Sap\KraReceiptService;
@@ -78,13 +79,14 @@ class RecoverSapInvoiceJob implements ShouldQueue
         }
 
         $order->update([
-            'kra_cu_number' => $result->cuNumber,
-            'kra_validated_at' => now(),
+            'cu_number' => $result->cuNumber,
+            'sap_synced_at' => now(),
             'sap_sync_status' => SapSyncStatus::COMPLETED,
         ]);
+        SapSyncStatusUpdated::dispatch($order->fresh(), SapSyncStatus::COMPLETED);
 
         activity()->performedOn($order)
-            ->withProperties(['kra_cu_number' => $result->cuNumber])
+            ->withProperties(['cu_number' => $result->cuNumber])
             ->log('sap_kra_validated');
 
         Log::info('SAP recovery: CU number stored.', [
@@ -118,6 +120,7 @@ class RecoverSapInvoiceJob implements ShouldQueue
             'sap_sync_status' => SapSyncStatus::FAILED,
             'sap_sync_error' => $exception->getMessage(),
         ]);
+        SapSyncStatusUpdated::dispatch($order->fresh(), SapSyncStatus::FAILED);
 
         activity()->performedOn($order)
             ->withProperties(['error' => $exception->getMessage()])

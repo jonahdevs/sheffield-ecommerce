@@ -145,7 +145,7 @@ new #[Layout('layouts::app')] #[Title('Payment — Admin')] class extends Compon
         <div class="space-y-6 lg:col-span-2">
             {{-- Details --}}
             <flux:card class="p-0 overflow-hidden">
-                <div class="border-b border-zinc-200 px-6 py-4 dark:border-zinc-700">
+                <div class="border-b border-zinc-200 px-6 py-3 dark:border-zinc-700">
                     <flux:heading size="sm" class="uppercase tracking-wide">Transaction details</flux:heading>
                 </div>
                 <div class="divide-y divide-zinc-100 dark:divide-zinc-800">
@@ -162,7 +162,7 @@ new #[Layout('layouts::app')] #[Title('Payment — Admin')] class extends Compon
             @if ($payment->payload)
                 <flux:card class="p-0 overflow-hidden" x-data="{ open: false }">
                     <button type="button" x-on:click="open = !open"
-                            class="flex w-full items-center justify-between px-6 py-4"
+                            class="flex w-full items-center justify-between px-6 py-3"
                             :class="open ? 'border-b border-zinc-200 dark:border-zinc-700' : ''">
                         <flux:heading size="sm" class="uppercase tracking-wide">Gateway payload</flux:heading>
                         <span class="inline-flex transition-transform duration-200" :class="open ? 'rotate-180' : ''">
@@ -170,7 +170,7 @@ new #[Layout('layouts::app')] #[Title('Payment — Admin')] class extends Compon
                         </span>
                     </button>
                     <div x-show="open" x-collapse x-cloak>
-                        <pre class="overflow-x-auto px-6 py-4 text-xs text-zinc-600 dark:text-zinc-300">{{ json_encode($payment->payload, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) }}</pre>
+                        <pre class="overflow-x-auto px-6 py-3 text-xs text-zinc-600 dark:text-zinc-300">{{ json_encode($payment->payload, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) }}</pre>
                     </div>
                 </flux:card>
             @endif
@@ -179,7 +179,7 @@ new #[Layout('layouts::app')] #[Title('Payment — Admin')] class extends Compon
         {{-- Order sidebar --}}
         <aside class="space-y-6">
             <flux:card class="p-0 overflow-hidden">
-                <div class="border-b border-zinc-200 px-6 py-4 dark:border-zinc-700">
+                <div class="border-b border-zinc-200 px-6 py-3 dark:border-zinc-700">
                     <flux:heading size="sm" class="uppercase tracking-wide">Order</flux:heading>
                 </div>
                 <div class="p-6">

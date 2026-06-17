@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use App\Events\LowStockDetected;
 use App\Http\Middleware\ValidateRecaptcha;
+use App\Listeners\HandleLowStockAlert;
 use App\Listeners\SyncCartOnLogin;
 use App\Services\Mpesa\DarajaClient;
 use App\Services\PaymentCredentials;
@@ -54,6 +56,7 @@ class AppServiceProvider extends ServiceProvider
         // Merge the guest cart into the user's persisted cart on every login,
         // registration, 2FA and passkey auth (all dispatch the Login event).
         Event::listen(Login::class, SyncCartOnLogin::class);
+        Event::listen(LowStockDetected::class, HandleLowStockAlert::class);
     }
 
     /**
