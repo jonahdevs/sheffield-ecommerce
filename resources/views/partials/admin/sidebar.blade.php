@@ -1,8 +1,12 @@
 {{-- Admin navigation sidebar. Shared by the main admin layout and the admin
      error layout. Items are permission-gated, so an unauthenticated viewer (e.g.
      an expired session landing on an error page) simply sees the minimal set. --}}
+{{-- `dark admin-sidebar-indigo`: the admin sidebar is always a dark Workshop-indigo
+     panel regardless of the app theme. The `dark` class forces Flux's internal nav
+     items to their light-ink variants so text stays readable; the indigo background
+     and active-item palette live in resources/css/app.css. --}}
 <flux:sidebar sticky collapsible="mobile"
-    class="scrollbar-thin border-e border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900 print:hidden">
+    class="dark admin-sidebar-indigo scrollbar-thin border-e print:hidden">
     <flux:sidebar.header>
         <x-app-logo :sidebar="true" href="{{ route('dashboard') }}" wire:navigate />
         <flux:sidebar.collapse class="lg:hidden" />

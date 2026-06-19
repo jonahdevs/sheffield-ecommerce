@@ -5,7 +5,9 @@
     @include('partials.head')
 </head>
 
-<body class="min-h-screen bg-white dark:bg-zinc-800">
+{{-- Sunken canvas so flux:card surfaces (bg-white / dark:bg-white/10) lift off the
+     main content area instead of blending into it, per the handoff design. --}}
+<body class="min-h-screen bg-zinc-100 dark:bg-zinc-900">
     @include('partials.admin.sidebar')
 
     {{-- Top navbar — always visible, contains toolbar actions --}}

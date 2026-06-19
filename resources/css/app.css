@@ -73,6 +73,22 @@
     backdrop-filter: blur(4px);
 }
 
+/* Admin sidebar — Workshop indigo panel (mirrors the handoff design spec).
+   The panel renders dark regardless of the app theme; the `dark` utility class on
+   the sidebar (see partials/admin/sidebar.blade.php) forces Flux's nav items to
+   their light-ink variants so text stays readable on the indigo background. */
+.admin-sidebar-indigo {
+    --color-accent-content: #ffffff; /* active nav-item text → white, not the red brand accent */
+    background-color: hsl(229, 52%, 17%);
+    border-color: hsl(229, 40%, 24%);
+}
+
+/* Current nav item: solid indigo highlight instead of Flux's faint white tint. */
+.admin-sidebar-indigo [data-flux-sidebar-item][data-current] {
+    background-color: hsl(229, 52%, 24%);
+    border-color: transparent;
+}
+
 /* Spin the modal close (x) icon on hover. */
 [data-flux-modal-close] svg {
     transition: transform 0.2s ease;
