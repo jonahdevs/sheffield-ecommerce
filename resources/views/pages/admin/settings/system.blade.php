@@ -68,6 +68,14 @@ new #[Layout('layouts::app')] #[Title('System settings — Admin')] class extend
 
     public ?string $google_redirect_url = null;
 
+    public bool $facebook_login_enabled = false;
+
+    public ?string $facebook_client_id = null;
+
+    public ?string $facebook_client_secret = null;
+
+    public ?string $facebook_redirect_url = null;
+
     public string $google_maps_api_key = '';
 
     public string $map_provider = 'leaflet';
@@ -140,6 +148,10 @@ new #[Layout('layouts::app')] #[Title('System settings — Admin')] class extend
         $this->google_client_id = $integrations->google_client_id;
         $this->google_client_secret = $integrations->google_client_secret;
         $this->google_redirect_url = $integrations->google_redirect_url;
+        $this->facebook_login_enabled = $integrations->facebook_login_enabled;
+        $this->facebook_client_id = $integrations->facebook_client_id;
+        $this->facebook_client_secret = $integrations->facebook_client_secret;
+        $this->facebook_redirect_url = $integrations->facebook_redirect_url;
         $this->google_maps_api_key = $integrations->google_maps_api_key;
         $this->map_provider = $integrations->map_provider;
         $this->recaptcha_enabled = $integrations->recaptcha_enabled;
@@ -240,6 +252,29 @@ new #[Layout('layouts::app')] #[Title('System settings — Admin')] class extend
         ])->save();
 
         Flux::toast(heading: 'Saved', text: 'Google login settings updated.', variant: 'success');
+        $this->showIntegrationModal = false;
+    }
+
+    public function updatedFacebookLoginEnabled(): void
+    {
+        app(IntegrationSettings::class)->fill(['facebook_login_enabled' => $this->facebook_login_enabled])->save();
+    }
+
+    public function saveFacebookLoginConfig(IntegrationSettings $settings): void
+    {
+        $this->validate([
+            'facebook_client_id'     => ['nullable', 'string', 'max:255'],
+            'facebook_client_secret' => ['nullable', 'string', 'max:255'],
+            'facebook_redirect_url'  => ['nullable', 'url', 'max:255'],
+        ]);
+
+        $settings->fill([
+            'facebook_client_id'     => $this->facebook_client_id ?: null,
+            'facebook_client_secret' => $this->facebook_client_secret ?: null,
+            'facebook_redirect_url'  => $this->facebook_redirect_url ?: null,
+        ])->save();
+
+        Flux::toast(heading: 'Saved', text: 'Facebook login settings updated.', variant: 'success');
         $this->showIntegrationModal = false;
     }
 
@@ -538,6 +573,7 @@ new #[Layout('layouts::app')] #[Title('System settings — Admin')] class extend
     @if ($section === 'integrations')
     @php
         $googleLoginConnected = (bool) ($google_client_id ?: config('services.google.client_id'));
+        $facebookLoginConnected = (bool) ($facebook_client_id ?: config('services.facebook.client_id'));
         $mapsConnected = (bool) ($google_maps_api_key ?: config('services.google.maps_api_key'));
         $recaptchaConnected = (bool) ($recaptcha_site_key ?: config('services.recaptcha.site_key'));
 
@@ -553,6 +589,16 @@ new #[Layout('layouts::app')] #[Title('System settings — Admin')] class extend
                 'enabled'      => $google_login_enabled,
                 'configurable' => true,
                 'connected'    => $googleLoginConnected,
+            ],
+            [
+                'key'          => 'facebook_login',
+                'name'         => 'Sign in with Facebook',
+                'icon'         => 'user-group',
+                'description'  => 'Allow customers to sign in using their Facebook account. OAuth credentials from your Meta app dashboard.',
+                'toggleable'   => true,
+                'enabled'      => $facebook_login_enabled,
+                'configurable' => true,
+                'connected'    => $facebookLoginConnected,
             ],
             [
                 'key'          => 'google_maps',
@@ -652,6 +698,18 @@ new #[Layout('layouts::app')] #[Title('System settings — Admin')] class extend
             <div class="mt-6 flex justify-end gap-3">
                 <flux:button wire:click="$set('showIntegrationModal', false)" variant="ghost">Cancel</flux:button>
                 <flux:button wire:click="saveGoogleLoginConfig" variant="primary">Save</flux:button>
+            </div>
+        @elseif ($configuringIntegration === 'facebook_login')
+            <flux:heading>Sign in with Facebook</flux:heading>
+            <flux:subheading class="mt-1">Get credentials from your <a href="https://developers.facebook.com/apps" target="_blank" class="text-brand-500 hover:underline">Meta app dashboard</a>.</flux:subheading>
+            <div class="mt-5 space-y-4">
+                <flux:input wire:model="facebook_client_id" label="App ID" />
+                <flux:input wire:model="facebook_client_secret" label="App Secret" type="password" viewable />
+                <flux:input wire:model="facebook_redirect_url" label="Redirect URL" type="url" placeholder="{{ url('/auth/facebook/callback') }}" />
+            </div>
+            <div class="mt-6 flex justify-end gap-3">
+                <flux:button wire:click="$set('showIntegrationModal', false)" variant="ghost">Cancel</flux:button>
+                <flux:button wire:click="saveFacebookLoginConfig" variant="primary">Save</flux:button>
             </div>
         @elseif ($configuringIntegration === 'google_maps')
             <flux:heading>Google Maps</flux:heading>

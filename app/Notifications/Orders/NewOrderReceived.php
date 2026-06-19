@@ -38,10 +38,12 @@ class NewOrderReceived extends Notification implements ShouldQueue
 
         return (new MailMessage)
             ->subject('New order '.$this->order->order_number.' — '.money($this->order->total_cents))
-            ->greeting('New order received')
-            ->line($customer.' placed order '.$this->order->order_number.'.')
-            ->line('Total: '.money($this->order->total_cents))
-            ->action('Open in admin', route('admin.orders.show', $this->order));
+            ->markdown('mails.staff.new-order', [
+                'customer' => $customer,
+                'orderNumber' => $this->order->order_number,
+                'total' => money($this->order->total_cents),
+                'url' => route('admin.orders.show', $this->order),
+            ]);
     }
 
     public function toWhatsapp(object $notifiable): WhatsAppMessage

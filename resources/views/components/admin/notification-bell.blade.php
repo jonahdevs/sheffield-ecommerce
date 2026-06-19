@@ -9,13 +9,25 @@ new class extends Component
     #[Computed]
     public function unreadCount(): int
     {
-        return auth()->user()->unreadNotifications()->count();
+        return auth()->user()->unreadNotifications()
+            ->where(function ($q) {
+                $q->where('data->type', 'new_order')
+                    ->orWhere('data->type', 'quote_request');
+            })
+            ->count();
     }
 
     #[Computed]
     public function notifications()
     {
-        return auth()->user()->notifications()->latest()->limit(15)->get();
+        return auth()->user()->notifications()
+            ->where(function ($q) {
+                $q->where('data->type', 'new_order')
+                    ->orWhere('data->type', 'quote_request');
+            })
+            ->latest()
+            ->limit(15)
+            ->get();
     }
 
     public function markAllRead(): void

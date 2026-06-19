@@ -31,14 +31,14 @@ class SapSyncFailedNotification extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-            ->error()
             ->subject('SAP sync failed — '.$this->order->order_number)
-            ->greeting('SAP sync failed')
-            ->line('Order **'.$this->order->order_number.'** could not be synced to SAP after all retry attempts.')
-            ->line('**Customer:** '.($this->order->user?->name ?? 'Guest').' ('.($this->order->user?->email ?? '—').')')
-            ->line('**Total:** '.number_format($this->order->total_cents / 100, 2).' KES')
-            ->line('**Error:** '.$this->exception->getMessage())
-            ->action('View order', route('admin.orders.show', $this->order))
-            ->line('Please sync this order manually or contact the SAP administrator.');
+            ->markdown('mails.staff.sap-sync-failed', [
+                'orderNumber' => $this->order->order_number,
+                'customerName' => $this->order->user?->name ?? 'Guest',
+                'customerEmail' => $this->order->user?->email ?? '—',
+                'total' => number_format($this->order->total_cents / 100, 2).' KES',
+                'errorMessage' => $this->exception->getMessage(),
+                'url' => route('admin.orders.show', $this->order),
+            ]);
     }
 }

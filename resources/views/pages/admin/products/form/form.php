@@ -13,13 +13,13 @@ use App\Models\DownloadableFile;
 use App\Models\GroupedProductItem;
 use App\Models\Product;
 use App\Models\ProductAttribute;
-use App\Models\ProductImage;
 use App\Models\ProductLink;
 use App\Models\ProductVariant;
 use App\Models\TaxClass;
 use App\Settings\IntegrationSettings;
 use App\Settings\InventorySettings;
 use App\Settings\LocalizationSettings;
+use App\Support\MediaNaming;
 use Flux\Flux;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
@@ -32,6 +32,7 @@ use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use Livewire\WithFileUploads;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Spatie\Tags\Tag;
 
 new #[Layout('layouts::app')] class extends Component
@@ -274,7 +275,7 @@ new #[Layout('layouts::app')] class extends Component
             return;
         }
 
-        $product->load(['productAttributes.attribute.values', 'variants.attributeValues', 'downloadableFiles', 'tags', 'images']);
+        $product->load(['productAttributes.attribute.values', 'variants.attributeValues', 'downloadableFiles', 'tags', 'media']);
 
         $this->productId = $product->id;
         $this->name = $product->name;
@@ -421,12 +422,12 @@ new #[Layout('layouts::app')] class extends Component
         }
 
         // Product links (upsells / cross-sells / accessories / spare parts)
-        foreach ($product->links()->with('linkedProduct.images')->get() as $link) {
+        foreach ($product->links()->with('linkedProduct.media')->get() as $link) {
             $this->productLinks[$link->type->value][] = [
                 'product_id' => $link->linked_product_id,
                 'name' => $link->linkedProduct->name,
                 'sku' => $link->linkedProduct->sku,
-                'cover_url' => $link->linkedProduct->images->first()?->url,
+                'cover_url' => $link->linkedProduct->cover_url,
                 'is_required' => (bool) $link->is_required,
                 'default_quantity' => max(1, (int) $link->default_quantity),
             ];
@@ -440,12 +441,12 @@ new #[Layout('layouts::app')] class extends Component
             ->all();
 
         // Images
-        $cover = $product->images->firstWhere('is_cover', true);
-        $this->coverImage = $cover ? ['id' => $cover->id, 'url' => $cover->url, 'alt' => (string) $cover->alt] : null;
+        $cover = $product->getFirstMedia('images', ['is_cover' => true]);
+        $this->coverImage = $cover ? ['id' => $cover->id, 'url' => $cover->getUrl('card') ?: $cover->getUrl(), 'alt' => $cover->getCustomProperty('alt', '')] : null;
 
-        $this->galleryImages = $product->images
-            ->where('is_cover', false)
-            ->map(fn ($img) => ['id' => $img->id, 'url' => $img->url, 'alt' => (string) $img->alt])
+        $this->galleryImages = $product->getMedia('images')
+            ->filter(fn ($m) => ! $m->getCustomProperty('is_cover', false))
+            ->map(fn ($m) => ['id' => $m->id, 'url' => $m->getUrl(), 'alt' => $m->getCustomProperty('alt', '')])
             ->values()
             ->all();
     }
@@ -931,7 +932,7 @@ new #[Layout('layouts::app')] class extends Component
             'product_id' => $productId,
             'name' => $product->name,
             'sku' => $product->sku,
-            'cover_url' => $product->images()->first()?->url,
+            'cover_url' => $product->cover_url,
             'is_required' => false,
             'default_quantity' => 1,
         ];
@@ -977,7 +978,7 @@ new #[Layout('layouts::app')] class extends Component
     public function removeCoverImage(): void
     {
         if ($this->coverImage) {
-            ProductImage::find($this->coverImage['id'])?->delete();
+            Media::find($this->coverImage['id'])?->delete();
             $this->coverImage = null;
         }
 
@@ -989,7 +990,7 @@ new #[Layout('layouts::app')] class extends Component
         $image = $this->galleryImages[$index] ?? null;
 
         if ($image) {
-            ProductImage::find($image['id'])?->delete();
+            Media::find($image['id'])?->delete();
         }
 
         unset($this->galleryImages[$index]);
@@ -1166,7 +1167,12 @@ new #[Layout('layouts::app')] class extends Component
                 if ($v['image_path']) {
                     Storage::disk('public')->delete($v['image_path']);
                 }
-                $variantData['image'] = $this->pendingVariantImages[$i]->store('products/variants', 'public');
+                $variantFile = $this->pendingVariantImages[$i];
+                $variantData['image'] = $variantFile->storeAs(
+                    'products/variants',
+                    MediaNaming::productVariant($product->name, $product->sku, $i + 1, $variantFile->getClientOriginalExtension()),
+                    'public',
+                );
             } else {
                 $variantData['image'] = $v['image_path'];
             }
@@ -1265,23 +1271,34 @@ new #[Layout('layouts::app')] class extends Component
         // COVER IMAGE
         // ==================================================
         if ($this->pendingCoverImage) {
-            $product->images()->where('is_cover', true)->delete();
-            $path = $this->pendingCoverImage->store('products', 'public');
-            $product->images()->create(['path' => $path, 'is_cover' => true, 'sort_order' => 0]);
+            $product->getFirstMedia('images', ['is_cover' => true])?->delete();
+            $cover = $product
+                ->addMedia($this->pendingCoverImage->getRealPath())
+                ->usingFileName(MediaNaming::product($product->name, $product->sku, $this->pendingCoverImage->getClientOriginalExtension()))
+                ->usingName($product->name)
+                ->withCustomProperties(['is_cover' => true])
+                ->toMediaCollection('images');
             $this->pendingCoverImage = null;
-            $cover = $product->images()->where('is_cover', true)->first();
-            $this->coverImage = $cover ? ['id' => $cover->id, 'url' => $cover->url, 'alt' => ''] : null;
+            $this->coverImage = ['id' => $cover->id, 'url' => $cover->getUrl('card') ?: $cover->getUrl(), 'alt' => ''];
         }
 
         // ==================================================
         // GALLERY IMAGES
         // ==================================================
         if (! empty($this->pendingGalleryImages)) {
-            $sortStart = $product->images()->where('is_cover', false)->max('sort_order') + 1;
-            foreach ($this->pendingGalleryImages as $i => $file) {
-                $path = $file->store('products', 'public');
-                $img = $product->images()->create(['path' => $path, 'is_cover' => false, 'sort_order' => $sortStart + $i]);
-                $this->galleryImages[] = ['id' => $img->id, 'url' => $img->url, 'alt' => ''];
+            // Continue numbering after any gallery images already attached.
+            $galleryIndex = $product->getMedia('images')
+                ->reject(fn ($media) => $media->getCustomProperty('is_cover'))
+                ->count();
+            foreach ($this->pendingGalleryImages as $file) {
+                $galleryIndex++;
+                $img = $product
+                    ->addMedia($file->getRealPath())
+                    ->usingFileName(MediaNaming::productGallery($product->name, $product->sku, $galleryIndex, $file->getClientOriginalExtension()))
+                    ->usingName($product->name)
+                    ->withCustomProperties(['is_cover' => false])
+                    ->toMediaCollection('images');
+                $this->galleryImages[] = ['id' => $img->id, 'url' => $img->getUrl(), 'alt' => ''];
             }
             $this->pendingGalleryImages = [];
         }
@@ -1370,7 +1387,7 @@ new #[Layout('layouts::app')] class extends Component
             ->whereNotIn('id', $alreadyLinkedIds)
             ->when($this->productId, fn ($q) => $q->where('id', '!=', $this->productId))
             ->whereNotIn('type', [ProductType::GROUPED->value, ProductType::BUNDLE->value])
-            ->with(['brand:id,name', 'images' => fn ($q) => $q->where('is_cover', true)]);
+            ->with(['brand:id,name', 'media']);
 
         if (strlen(trim($this->linkPickerSearch)) >= 2) {
             $term = '%'.$this->linkPickerSearch.'%';

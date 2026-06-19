@@ -43,6 +43,8 @@ Route::middleware(['auth', 'verified', EnsureTwoFactorWhenRequired::class, 'staf
             Route::livewire('/categories', 'pages::admin.categories.index')->name('categories.index');
             Route::livewire('/categories/create', 'pages::admin.categories.create')->name('categories.create');
             Route::livewire('/categories/{category}/edit', 'pages::admin.categories.edit')->name('categories.edit');
+            Route::livewire('/placements', 'pages::admin.placements.index')->name('placements.index');
+            Route::livewire('/placements/{section}', 'pages::admin.placements.edit')->name('placements.edit');
             Route::livewire('/brands', 'pages::admin.brands.index')->name('brands.index');
             Route::livewire('/attributes', 'pages::admin.attributes.index')->name('attributes.index');
             Route::livewire('/attributes/create', 'pages::admin.attributes.create')->name('attributes.create');

@@ -65,24 +65,24 @@ new #[Layout('layouts::storefront')] class extends Component
         $this->product = $product->load([
             'brand',
             'primaryCategory',
-            'images',
+            'media',
             'productAttributes' => fn ($q) => $q->where('is_visible', true)->orderBy('sort_order'),
             'productAttributes.attribute',
             'downloadableFiles',
-            'accessories' => fn ($q) => $q->visibleInCatalog()->published()->with(['images' => fn ($q) => $q->where('is_cover', true)->limit(1)])->orderBy('sort_order'),
-            'spareParts'  => fn ($q) => $q->visibleInCatalog()->published()->with(['images' => fn ($q) => $q->where('is_cover', true)->limit(1)])->orderBy('sort_order'),
+            'accessories' => fn ($q) => $q->visibleInCatalog()->published()->with('media')->orderBy('sort_order'),
+            'spareParts'  => fn ($q) => $q->visibleInCatalog()->published()->with('media')->orderBy('sort_order'),
         ]);
 
         if ($this->product->type === ProductType::BUNDLE) {
             $this->product->load([
                 'bundleItems.product.brand',
-                'bundleItems.product.images' => fn ($q) => $q->where('is_cover', true)->limit(1),
+                'bundleItems.product.media',
                 'bundleItems.variant',
             ]);
         } elseif ($this->product->type === ProductType::GROUPED) {
             $this->product->load([
                 'groupedItems.brand',
-                'groupedItems.images' => fn ($q) => $q->where('is_cover', true)->limit(1),
+                'groupedItems.media',
             ]);
         } elseif ($this->product->type === ProductType::VARIABLE) {
             $this->product->load([
@@ -419,7 +419,7 @@ new #[Layout('layouts::storefront')] class extends Component
         }
 
         return Product::query()
-            ->with(['brand', 'taxClass', 'images' => fn ($q) => $q->where('is_cover', true)->limit(1)])
+            ->with(['brand', 'taxClass', 'media'])
             ->whereIn('id', $this->relatedIds)
             ->get()
             ->sortBy(fn (Product $product) => array_search($product->id, $this->relatedIds, true))
@@ -434,7 +434,7 @@ new #[Layout('layouts::storefront')] class extends Component
         }
 
         return Product::query()
-            ->with(['brand', 'taxClass', 'images' => fn ($q) => $q->where('is_cover', true)->limit(1)])
+            ->with(['brand', 'taxClass', 'media'])
             ->whereIn('id', $this->brandProductIds)
             ->get()
             ->sortBy(fn (Product $p) => array_search($p->id, $this->brandProductIds, true))
@@ -449,7 +449,7 @@ new #[Layout('layouts::storefront')] class extends Component
         }
 
         return Product::query()
-            ->with(['brand', 'taxClass', 'images' => fn ($q) => $q->where('is_cover', true)->limit(1)])
+            ->with(['brand', 'taxClass', 'media'])
             ->whereIn('id', $this->alsoViewedIds)
             ->where('visibility', 'visible')
             ->get()
@@ -465,7 +465,7 @@ new #[Layout('layouts::storefront')] class extends Component
         }
 
         return Product::query()
-            ->with(['brand', 'taxClass', 'images' => fn ($q) => $q->where('is_cover', true)->limit(1)])
+            ->with(['brand', 'taxClass', 'media'])
             ->whereIn('id', $this->recentlyViewedIds)
             ->get()
             ->sortBy(fn (Product $p) => array_search($p->id, $this->recentlyViewedIds, true))
@@ -502,7 +502,7 @@ new #[Layout('layouts::storefront')] class extends Component
     {
         return $this->product->accessories()
             ->visibleInCatalog()->published()
-            ->with(['images' => fn ($q) => $q->where('is_cover', true)->limit(1)])
+            ->with('media')
             ->orderBy('sort_order')
             ->get();
     }
@@ -512,7 +512,7 @@ new #[Layout('layouts::storefront')] class extends Component
     {
         return $this->product->spareParts()
             ->visibleInCatalog()->published()
-            ->with(['images' => fn ($q) => $q->where('is_cover', true)->limit(1)])
+            ->with('media')
             ->orderBy('sort_order')
             ->get();
     }
@@ -692,7 +692,13 @@ new #[Layout('layouts::storefront')] class extends Component
             x-data="{
                 lens: null,
                 lbIdx: {{ $galleryIdx }},
-                gallery: @js($gallery->values()->map(fn ($img) => ['url' => $img->url, 'alt' => $img->alt ?? $product->name, 'label' => $img->alt ?? ''])),
+                gallery: @js($gallery->values()->map(fn ($img) => [
+                    'url'   => $img->getUrl('card') ?: $img->getUrl(),
+                    'zoom'  => $img->getUrl('zoom') ?: $img->getUrl(),
+                    'thumb' => $img->getUrl('thumb') ?: $img->getUrl(),
+                    'alt'   => $img->getCustomProperty('alt', '') ?: $product->name,
+                    'label' => $img->getCustomProperty('alt', '') ?: '',
+                ])),
                 prevLb() { this.lbIdx = (this.lbIdx - 1 + this.gallery.length) % this.gallery.length; },
                 nextLb() { this.lbIdx = (this.lbIdx + 1) % this.gallery.length; },
             }"
@@ -713,7 +719,7 @@ new #[Layout('layouts::storefront')] class extends Component
                                     'border-2 border-brand-500' => $i === $galleryIdx,
                                     'border border-zinc-200 hover:border-zinc-400' => $i !== $galleryIdx,
                                 ])>
-                                <img src="{{ $img->url }}" alt="{{ $img->alt ?? '' }}"
+                                <img src="{{ $img->getUrl('thumb') ?: $img->getUrl() }}" alt="{{ $img->getCustomProperty('alt', '') }}"
                                     class="size-full object-cover" loading="lazy" />
                             </button>
                         @endforeach
@@ -759,8 +765,8 @@ new #[Layout('layouts::storefront')] class extends Component
 
                     @php $shown = $gallery->values()->get($galleryIdx); @endphp
                     @if ($shown)
-                        <img src="{{ $shown->url }}"
-                            alt="{{ $shown->alt ?? $product->name }}"
+                        <img src="{{ $shown->getUrl('card') ?: $shown->getUrl() }}"
+                            alt="{{ $shown->getCustomProperty('alt', '') ?: $product->name }}"
                             class="size-full object-cover transition-transform duration-75 will-change-transform"
                             :style="lens ? `transform:scale(2.3);transform-origin:${lens.x}% ${lens.y}%` : ''"
                             draggable="false" />
@@ -802,7 +808,7 @@ new #[Layout('layouts::storefront')] class extends Component
                             </button>
                         </template>
 
-                        <img :src="gallery[lbIdx]?.url" :alt="gallery[lbIdx]?.alt"
+                        <img :src="gallery[lbIdx]?.zoom" :alt="gallery[lbIdx]?.alt"
                             class="size-full select-none object-contain" draggable="false" />
 
                         <template x-if="gallery.length > 1">
@@ -820,7 +826,7 @@ new #[Layout('layouts::storefront')] class extends Component
                                 <button type="button" @click="lbIdx = i"
                                     class="size-14 cursor-pointer overflow-hidden rounded border-2 bg-white transition"
                                     :class="i === lbIdx ? 'border-brand-500' : 'border-zinc-200 hover:border-zinc-400'">
-                                    <img :src="img.url" :alt="img.alt" class="size-full object-cover" />
+                                    <img :src="img.thumb" :alt="img.alt" class="size-full object-cover" />
                                 </button>
                             </template>
                         </div>

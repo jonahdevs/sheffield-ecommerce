@@ -145,19 +145,6 @@ return new class extends Migration
         });
 
         // ----------------------------------------------------------------
-        // PRODUCT IMAGES
-        // ----------------------------------------------------------------
-        Schema::create('product_images', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('product_id')->constrained()->cascadeOnDelete();
-            $table->string('path');
-            $table->string('alt')->nullable();
-            $table->boolean('is_cover')->default(false);
-            $table->unsignedInteger('sort_order')->default(0);
-            $table->timestamps();
-        });
-
-        // ----------------------------------------------------------------
         // PRODUCT ATTRIBUTES  (which attributes a variable product uses)
         // ----------------------------------------------------------------
         Schema::create('product_attributes', function (Blueprint $table) {
@@ -370,7 +357,6 @@ return new class extends Migration
         Schema::dropIfExists('product_variant_attribute_values');
         Schema::dropIfExists('product_variants');
         Schema::dropIfExists('product_attributes');
-        Schema::dropIfExists('product_images');
         Schema::dropIfExists('product_links');
         Schema::dropIfExists('category_product');
         Schema::dropIfExists('products');

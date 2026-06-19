@@ -23,14 +23,57 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Activitylog\Models\Concerns\LogsActivity;
 use Spatie\Activitylog\Support\LogOptions;
+use Spatie\Image\Enums\Fit;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\MediaLibrary\MediaCollections\MediaCollection;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Spatie\Tags\HasTags;
 
 #[Fillable(['name', 'slug', 'sku', 'brand_id', 'primary_category_id', 'model_number', 'type', 'status', 'published_at', 'short_description', 'description', 'technical_specification', 'price', 'sale_price', 'cost_price', 'is_taxable', 'tax_class_id', 'requires_shipping', 'is_virtual', 'is_downloadable', 'weight', 'length', 'width', 'height', 'weight_unit', 'dimension_unit', 'stock_status', 'stock_quantity', 'allow_backorder', 'low_stock_threshold', 'requires_quotation', 'quotation_notes', 'min_order_quantity', 'visibility', 'meta_title', 'meta_description', 'canonical_url', 'sort_order', 'default_variant_id', 'sap_last_synced_at'])]
 #[ObservedBy(ProductObserver::class)]
-class Product extends Model
+class Product extends Model implements HasMedia
 {
     /** @use HasFactory<ProductFactory> */
-    use HasFactory, HasTags, LogsActivity, SoftDeletes;
+    use HasFactory, HasTags, InteractsWithMedia, LogsActivity, SoftDeletes;
+
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('images');
+    }
+
+    public function registerMediaConversions(?Media $media = null): void
+    {
+        $this->addMediaConversion('thumb')
+            ->performOnCollections('images')
+            ->fit(Fit::Crop, 120, 120);
+
+        $this->addMediaConversion('card')
+            ->performOnCollections('images')
+            ->fit(Fit::Crop, 600, 600);
+
+        $this->addMediaConversion('card-webp')
+            ->performOnCollections('images')
+            ->fit(Fit::Crop, 600, 600)
+            ->format('webp')
+            ->quality(85);
+
+        $this->addMediaConversion('zoom')
+            ->performOnCollections('images')
+            ->fit(Fit::Max, 1200, 1200);
+
+        $this->addMediaConversion('zoom-webp')
+            ->performOnCollections('images')
+            ->fit(Fit::Max, 1200, 1200)
+            ->format('webp')
+            ->quality(85);
+
+        $this->addMediaConversion('lqip')
+            ->performOnCollections('images')
+            ->width(64)
+            ->quality(20)
+            ->format('jpg');
+    }
 
     public function getActivitylogOptions(): LogOptions
     {
@@ -122,11 +165,6 @@ class Product extends Model
             ->orderByPivot('sort_order');
     }
 
-    public function images(): HasMany
-    {
-        return $this->hasMany(ProductImage::class)->orderBy('sort_order');
-    }
-
     public function productAttributes(): HasMany
     {
         return $this->hasMany(ProductAttribute::class);
@@ -214,13 +252,92 @@ class Product extends Model
     // ACCESSORS
     // ==================================================
 
+    /**
+     * Cover image URL — prefers the 'card' conversion when generated, falls back
+     * to the original so images show immediately after import before conversions run.
+     */
     protected function coverUrl(): Attribute
     {
         return Attribute::get(function () {
-            $cover = $this->images->firstWhere('is_cover', true) ?? $this->images->first();
+            $cover = $this->getFirstMedia('images', ['is_cover' => true])
+                ?? $this->getFirstMedia('images');
 
-            return $cover?->url;
+            if (! $cover) {
+                return null;
+            }
+
+            return $cover->hasGeneratedConversion('card')
+                ? $cover->getUrl('card')
+                : $cover->getUrl();
         });
+    }
+
+    /** WebP version of the cover image; null until the conversion has been generated. */
+    protected function coverWebpUrl(): Attribute
+    {
+        return Attribute::get(function () {
+            $cover = $this->getFirstMedia('images', ['is_cover' => true])
+                ?? $this->getFirstMedia('images');
+
+            return ($cover && $cover->hasGeneratedConversion('card-webp'))
+                ? $cover->getUrl('card-webp')
+                : null;
+        });
+    }
+
+    /** Small 120×120 thumbnail of the cover image; used in admin lists and line-item previews. */
+    protected function thumbUrl(): Attribute
+    {
+        return Attribute::get(function () {
+            $cover = $this->getFirstMedia('images', ['is_cover' => true])
+                ?? $this->getFirstMedia('images');
+
+            if (! $cover) {
+                return null;
+            }
+
+            return $cover->hasGeneratedConversion('thumb')
+                ? $cover->getUrl('thumb')
+                : $cover->getUrl();
+        });
+    }
+
+    /** Inline base64 LQIP for the cover image; null when no lqip conversion exists. */
+    protected function coverPlaceholder(): Attribute
+    {
+        return Attribute::get(fn () => $this->mediaPlaceholder());
+    }
+
+    private function mediaPlaceholder(): ?string
+    {
+        $cover = $this->getFirstMedia('images', ['is_cover' => true])
+            ?? $this->getFirstMedia('images');
+
+        if (! $cover || ! $cover->hasGeneratedConversion('lqip')) {
+            return null;
+        }
+
+        return cache()->rememberForever(
+            "product-lqip-{$cover->id}-{$cover->updated_at?->timestamp}",
+            function () use ($cover) {
+                $path = $cover->getPath('lqip');
+
+                if (! is_file($path)) {
+                    return null;
+                }
+
+                return 'data:image/jpeg;base64,'.base64_encode(file_get_contents($path));
+            }
+        );
+    }
+
+    /**
+     * All product images as a Media collection. Used by templates that previously
+     * iterated over the ProductImage HasMany relationship ($product->images).
+     */
+    public function getImagesAttribute(): MediaCollection
+    {
+        return $this->getMedia('images');
     }
 
     // ==================================================

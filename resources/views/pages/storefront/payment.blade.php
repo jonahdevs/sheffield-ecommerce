@@ -29,7 +29,7 @@ new #[Layout('layouts::storefront')] #[Title('Payment')] class extends Component
             return;
         }
 
-        $order->load(['items.product', 'items.product.images' => fn($q) => $q->where('is_cover', true)->limit(1)]);
+        $order->load(['items.product', 'items.product.media']);
         $this->order = $order;
 
         // The popup offers whatever channels the merchant has activated.
@@ -48,7 +48,7 @@ new #[Layout('layouts::storefront')] #[Title('Payment')] class extends Component
     {
         return $this->order
             ->items()
-            ->with(['product', 'product.images' => fn($q) => $q->where('is_cover', true)->limit(1)])
+            ->with(['product', 'product.media'])
             ->get();
     }
 

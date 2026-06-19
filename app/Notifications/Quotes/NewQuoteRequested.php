@@ -39,14 +39,17 @@ class NewQuoteRequested extends Notification implements ShouldQueue
 
         return (new MailMessage)
             ->subject('New quote request — '.$quote->quote_number)
-            ->greeting('New quote request')
-            ->line($who.' submitted quote request '.$quote->quote_number.'.')
-            ->line($quote->contact_email.($quote->contact_phone ? ' · '.$quote->contact_phone : ''))
-            ->when($quote->contact_company, fn ($m) => $m->line('Company: '.$quote->contact_company))
-            ->line($quote->items->count().' item(s) to price.')
-            ->when($quote->delivery_required, fn ($m) => $m->line('Delivery required to: '.$quote->delivery_address))
-            ->when($quote->notes, fn ($m) => $m->line('Notes: '.$quote->notes))
-            ->action('Prepare quote', route('admin.quotes.show', $quote));
+            ->markdown('mails.staff.new-quote', [
+                'who' => $who,
+                'quoteNumber' => $quote->quote_number,
+                'email' => $quote->contact_email,
+                'phone' => $quote->contact_phone,
+                'company' => $quote->contact_company,
+                'items' => $quote->items,
+                'deliveryAddress' => $quote->delivery_required ? $quote->delivery_address : null,
+                'notes' => $quote->notes,
+                'url' => route('admin.quotes.show', $quote),
+            ]);
     }
 
     public function toWhatsapp(object $notifiable): WhatsAppMessage

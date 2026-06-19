@@ -33,25 +33,18 @@ class ContactEnquiryReceived extends Notification implements ShouldQueue
     {
         $enquiry = $this->enquiry;
 
-        $mail = (new MailMessage)
+        return (new MailMessage)
             ->subject('New contact enquiry — '.$enquiry['inquiry'].' ['.$enquiry['reference'].']')
-            ->greeting('New contact enquiry')
-            ->line('**Type:** '.$enquiry['inquiry'])
-            ->line('**Name:** '.$enquiry['name'].($enquiry['business'] ? ' — '.$enquiry['business'] : ''))
-            ->line('**Email:** '.$enquiry['email']);
-
-        if ($enquiry['phone']) {
-            $mail->line('**Phone:** '.$enquiry['phone']);
-        }
-
-        if ($enquiry['location']) {
-            $mail->line('**Nearest showroom:** '.$enquiry['location']);
-        }
-
-        return $mail
-            ->line('**Message:**')
-            ->line($enquiry['message'])
-            ->line('Reference: '.$enquiry['reference'])
-            ->replyTo($enquiry['email'], $enquiry['name']);
+            ->replyTo($enquiry['email'], $enquiry['name'])
+            ->markdown('mails.staff.contact-enquiry', [
+                'inquiry' => $enquiry['inquiry'],
+                'reference' => $enquiry['reference'],
+                'name' => $enquiry['name'],
+                'business' => $enquiry['business'] ?? null,
+                'email' => $enquiry['email'],
+                'phone' => $enquiry['phone'] ?? null,
+                'location' => $enquiry['location'] ?? null,
+                'message' => $enquiry['message'],
+            ]);
     }
 }

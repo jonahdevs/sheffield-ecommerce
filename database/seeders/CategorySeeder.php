@@ -51,6 +51,7 @@ class CategorySeeder extends Seeder
             'slug' => Str::slug($data['name']),
             'parent_id' => $parentId,
             'description' => $data['description'] ?? null,
+            'banner' => $data['banner'] ?? null,
             'image' => $data['image'] ?? null,
             'icon' => $data['icon'] ?? null,
             'status' => CategoryStatus::ACTIVE,

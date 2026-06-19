@@ -11,6 +11,8 @@ use App\Models\Quote;
 use App\Models\QuoteItem;
 use App\Models\User;
 use Database\Seeders\PermissionSeeder;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Livewire\Livewire;
 
 beforeEach(function () {
@@ -133,6 +135,8 @@ it('adds a catalog product as a line item', function () {
 });
 
 it('keeps the product image and slug in the snapshot when an admin prices a quote', function () {
+    Storage::fake('media');
+
     $brand = Brand::create(['name' => 'ImgBrand', 'slug' => 'img-brand', 'is_active' => true, 'sort_order' => 1]);
     $category = Category::create(['name' => 'ImgCat', 'slug' => 'img-cat', 'status' => CategoryStatus::ACTIVE, 'sort_order' => 1]);
 
@@ -142,7 +146,11 @@ it('keeps the product image and slug in the snapshot when an admin prices a quot
         'type' => 'simple', 'price' => 250000, 'stock_status' => StockStatus::IN_STOCK->value,
         'visibility' => ProductVisibility::VISIBLE->value,
     ]);
-    $product->images()->create(['path' => 'products/blast-chiller.jpg', 'is_cover' => true, 'sort_order' => 0]);
+    $fakeFile = UploadedFile::fake()->image('blast-chiller.jpg');
+    $product->addMedia($fakeFile->getRealPath())
+        ->usingFileName('blast-chiller.jpg')
+        ->withCustomProperties(['is_cover' => true])
+        ->toMediaCollection('images');
 
     $quote = Quote::factory()->create(['total_cents' => 0]);
 
@@ -151,7 +159,7 @@ it('keeps the product image and slug in the snapshot when an admin prices a quot
     Livewire::test('pages::admin.quotes.show', ['quote' => $quote])
         ->call('addProduct', $product->id)
         // The line item shows the product thumbnail before the name.
-        ->assertSeeHtml('products/blast-chiller.jpg')
+        ->assertSeeHtml('blast-chiller')
         ->set('lineItems.0.unit_price', 2500)
         ->call('save')
         ->assertHasNoErrors();
@@ -159,10 +167,12 @@ it('keeps the product image and slug in the snapshot when an admin prices a quot
     $snapshot = $quote->fresh()->items->first()->product_snapshot;
 
     expect($snapshot['slug'])->toBe('blast-chiller')
-        ->and($snapshot['cover_url'])->toContain('products/blast-chiller.jpg');
+        ->and($snapshot['cover_url'])->toContain('blast-chiller');
 });
 
 it('shows the product thumbnail in the admin create-quote line items', function () {
+    Storage::fake('media');
+
     $brand = Brand::create(['name' => 'NewBrand', 'slug' => 'new-brand', 'is_active' => true, 'sort_order' => 1]);
     $category = Category::create(['name' => 'NewCat', 'slug' => 'new-cat', 'status' => CategoryStatus::ACTIVE, 'sort_order' => 1]);
 
@@ -172,12 +182,16 @@ it('shows the product thumbnail in the admin create-quote line items', function 
         'type' => 'simple', 'price' => 300000, 'stock_status' => StockStatus::IN_STOCK->value,
         'visibility' => ProductVisibility::VISIBLE->value,
     ]);
-    $product->images()->create(['path' => 'products/combi-oven.jpg', 'is_cover' => true, 'sort_order' => 0]);
+    $fakeFile = UploadedFile::fake()->image('combi-oven.jpg');
+    $product->addMedia($fakeFile->getRealPath())
+        ->usingFileName('combi-oven.jpg')
+        ->withCustomProperties(['is_cover' => true])
+        ->toMediaCollection('images');
 
     Livewire::test('pages::admin.quotes.create')
         ->call('addProduct', $product->id)
         ->assertSet('lineItems.0.product_name', 'Combi Oven')
-        ->assertSeeHtml('products/combi-oven.jpg');
+        ->assertSeeHtml('combi-oven');
 });
 
 it('forbids a view-only user from approving a quote', function () {

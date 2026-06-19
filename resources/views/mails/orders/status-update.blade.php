@@ -256,6 +256,17 @@
             </div>
           </div>
           <!--[if mso]></td></tr></table><![endif]-->
+          @if (isset($confirmationUrl) && $confirmationUrl)
+          <!--[if mso]><table role="none" cellpadding="0" cellspacing="0" style="width: 100%"><tr><td style="background-color: #f0fdf4; padding: 20px 36px; border-top: 2px solid #bbf7d0;"><![endif]-->
+          <div style="background-color: #f0fdf4; padding: 20px 36px; border-top: 2px solid #bbf7d0; text-align: center;">
+            <p style="margin: 0 0 4px; font-size: 11px; font-weight: 700; letter-spacing: .05em; color: #15803d; text-transform: uppercase;">Confirm your delivery</p>
+            <p style="margin: 0 0 14px; font-size: 13px; color: #166534;">When your order arrives, click below to confirm receipt and close the loop.</p>
+            <a style="background-color: #16a34a; display: inline-block; border-radius: 6px; padding: 10px 28px; font-size: 14px; line-height: 20px; font-weight: 700; color: #ffffff; text-decoration: none;" href="{{ $confirmationUrl }}">
+              <span style="mso-text-raise: 16px;">Confirm receipt</span>
+            </a>
+          </div>
+          <!--[if mso]></td></tr></table><![endif]-->
+          @endif
           <!--[if mso]><table role="none" cellpadding="0" cellspacing="0" style="width: 100%"><tr><td style="background-color: #fffffe; padding: 24px 36px 40px"><![endif]-->
           <div style="background-color: #fffffe; padding: 24px 36px 40px;">
             <p style="margin: 0; font-size: 13px; line-height: 20px; color: #64748b;">Questions about your order? Just reply to this email — our team is happy to help.</p>

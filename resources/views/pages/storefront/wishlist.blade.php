@@ -62,7 +62,7 @@ new #[Layout('layouts::storefront')] #[Title('Wishlist')] class extends Componen
         $wishlistSlugs = StorefrontSession::wishlist();
 
         return Product::query()
-            ->with(['brand', 'taxClass', 'images' => fn ($q) => $q->where('is_cover', true)->limit(1)])
+            ->with(['brand', 'taxClass', 'media'])
             ->visibleInCatalog()
             ->published()
             ->honorStockVisibility()

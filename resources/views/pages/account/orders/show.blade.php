@@ -21,7 +21,7 @@ new #[Layout('layouts::account')] #[Title('Order')] class extends Component
         SEOMeta::setTitle('Order '.$order->order_number);
         SEOMeta::setRobots('noindex,follow');
         $this->order = $order->load([
-            'items.product.images',
+            'items.product.media',
             'address',
             'latestPayment',
             'quote',

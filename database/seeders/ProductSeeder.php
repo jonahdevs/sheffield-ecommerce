@@ -16,11 +16,11 @@ use App\Models\DownloadableFile;
 use App\Models\GroupedProductItem;
 use App\Models\Product;
 use App\Models\ProductAttribute;
-use App\Models\ProductImage;
 use App\Models\ProductLink;
 use App\Models\ProductVariant;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Spatie\Tags\Tag;
 
@@ -251,24 +251,30 @@ class ProductSeeder extends Seeder
      */
     private function createImages(Product $product, array $data): void
     {
-        $sortOrder = 0;
+        // Conversions are dispatched as queued jobs; we push them to the null
+        // driver here so the seeder stays fast. Run `media-library:regenerate`
+        // after seeding to build thumbs, cards, zoom, and lqip in one pass.
+        $previousQueue = config('queue.default');
+        config(['queue.default' => 'null']);
 
-        if (! empty($data['image'])) {
-            ProductImage::create([
-                'product_id' => $product->id,
-                'path' => $data['image'],
-                'is_cover' => true,
-                'sort_order' => $sortOrder++,
-            ]);
-        }
+        try {
+            if (! empty($data['image']) && Storage::disk('public')->exists($data['image'])) {
+                $product->addMediaFromDisk($data['image'], 'public')
+                    ->withCustomProperties(['is_cover' => true])
+                    ->preservingOriginal()
+                    ->toMediaCollection('images');
+            }
 
-        foreach ($data['gallery'] ?? [] as $path) {
-            ProductImage::create([
-                'product_id' => $product->id,
-                'path' => $path,
-                'is_cover' => false,
-                'sort_order' => $sortOrder++,
-            ]);
+            foreach ($data['gallery'] ?? [] as $path) {
+                if (Storage::disk('public')->exists($path)) {
+                    $product->addMediaFromDisk($path, 'public')
+                        ->withCustomProperties(['is_cover' => false])
+                        ->preservingOriginal()
+                        ->toMediaCollection('images');
+                }
+            }
+        } finally {
+            config(['queue.default' => $previousQueue]);
         }
     }
 

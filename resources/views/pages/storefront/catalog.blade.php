@@ -62,6 +62,12 @@ new #[Layout('layouts::storefront')] #[Title('Shop')] class extends Component {
     #[Url(history: true)]
     public string $sort = 'popularity';
 
+    #[Url(as: 'tag', history: true)]
+    public string $selectedTag = '';
+
+    #[Url(as: 'arrivals', history: true)]
+    public bool $newArrivalsOnly = false;
+
     public function updating(string $prop): void
     {
         $this->perPage = 24;
@@ -76,7 +82,7 @@ new #[Layout('layouts::storefront')] #[Title('Shop')] class extends Component {
 
     public function clearFilters(): void
     {
-        $this->reset(['selectedCategories', 'selectedBrands', 'inStockOnly', 'minRating']);
+        $this->reset(['selectedCategories', 'selectedBrands', 'inStockOnly', 'minRating', 'selectedTag', 'newArrivalsOnly']);
         $this->priceMin = 0;
         $this->priceMax = 6000000;
         $this->perPage = 24;
@@ -97,7 +103,7 @@ new #[Layout('layouts::storefront')] #[Title('Shop')] class extends Component {
     public function products(): LengthAwarePaginator
     {
         $query = Product::query()
-            ->with(['brand', 'taxClass', 'images' => fn($q) => $q->where('is_cover', true)->limit(1)])
+            ->with(['brand', 'taxClass', 'media'])
             ->visibleInCatalog()
             ->published()
             ->honorStockVisibility();
@@ -111,6 +117,19 @@ new #[Layout('layouts::storefront')] #[Title('Shop')] class extends Component {
 
         if ($this->selectedBrands) {
             $query->whereIn('brand_id', $this->selectedBrands);
+        }
+
+        if ($this->selectedTag !== '') {
+            $query->whereHas('tags', fn ($t) => $t->where('name->'.config('app.locale', 'en'), $this->selectedTag));
+        }
+
+        if ($this->newArrivalsOnly) {
+            $query->where('stock_status', StockStatus::IN_STOCK)
+                ->whereNotNull('price')
+                ->where('price', '>', 0)
+                ->where(fn ($q) => $q
+                    ->where('published_at', '>=', now()->subDays(60))
+                    ->orWhereHas('tags', fn ($t) => $t->where('name->'.config('app.locale', 'en'), 'New Arrival')));
         }
 
         if ($this->inStockOnly) {
@@ -149,7 +168,10 @@ new #[Layout('layouts::storefront')] #[Title('Shop')] class extends Component {
     #[Computed]
     public function categoriesList(): Collection
     {
-        return Category::query()->withCount('products')->orderBy('name')->get();
+        return Category::query()
+            ->withCount(['products' => fn ($q) => $q->published()->visibleInCatalog()])
+            ->orderBy('name')
+            ->get();
     }
 
     #[Computed]
@@ -160,7 +182,7 @@ new #[Layout('layouts::storefront')] #[Title('Shop')] class extends Component {
 
     public function hasActiveFilters(): bool
     {
-        return !empty($this->selectedCategories) || !empty($this->selectedBrands) || $this->inStockOnly || $this->minRating > 0 || $this->priceMin > 0 || $this->priceMax < 6000000;
+        return !empty($this->selectedCategories) || !empty($this->selectedBrands) || $this->inStockOnly || $this->minRating > 0 || $this->priceMin > 0 || $this->priceMax < 6000000 || $this->selectedTag !== '' || $this->newArrivalsOnly;
     }
 }; ?>
 
@@ -175,7 +197,25 @@ new #[Layout('layouts::storefront')] #[Title('Shop')] class extends Component {
         {{-- Header --}}
         <div class="flex items-end justify-between">
             <div>
-                <h1 class="text-3xl font-semibold tracking-tight">Catalog</h1>
+                <div class="flex items-center gap-3">
+                    <h1 class="text-3xl font-semibold tracking-tight">Catalog</h1>
+                    @if ($selectedTag !== '')
+                        <div class="flex items-center gap-1.5 rounded-full border border-zinc-200 bg-zinc-100 px-3 py-1 text-[12px] font-medium text-zinc-600 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300">
+                            {{ $selectedTag }}
+                            <button wire:click="$set('selectedTag', '')" class="ml-0.5 text-zinc-400 hover:text-zinc-600">
+                                <flux:icon.x-mark variant="micro" class="size-3" />
+                            </button>
+                        </div>
+                    @endif
+                    @if ($newArrivalsOnly)
+                        <div class="flex items-center gap-1.5 rounded-full border border-zinc-200 bg-zinc-100 px-3 py-1 text-[12px] font-medium text-zinc-600 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300">
+                            New Arrivals
+                            <button wire:click="$set('newArrivalsOnly', false)" class="ml-0.5 text-zinc-400 hover:text-zinc-600">
+                                <flux:icon.x-mark variant="micro" class="size-3" />
+                            </button>
+                        </div>
+                    @endif
+                </div>
                 <p class="mt-2 max-w-xl text-[14.5px] text-ink-3">
                     Commercial kitchen equipment across {{ $this->categoriesList->count() }} categories from
                     {{ $this->brandsList->count() }} authorised brands.
@@ -199,8 +239,7 @@ new #[Layout('layouts::storefront')] #[Title('Shop')] class extends Component {
                     x-transition:enter-start="-translate-x-full" x-transition:enter-end="translate-x-0"
                     x-transition:leave="transition ease-in duration-200" x-transition:leave-start="translate-x-0"
                     x-transition:leave-end="-translate-x-full"
-                    class="relative flex h-full w-72 max-w-[85vw] flex-col overflow-y-auto bg-white shadow-xl"
-                    x-data="{ openBrands: false }">
+                    class="relative flex h-full w-72 max-w-[85vw] flex-col overflow-y-auto bg-white shadow-xl">
 
                     {{-- Drawer header --}}
                     <div
@@ -223,19 +262,25 @@ new #[Layout('layouts::storefront')] #[Title('Shop')] class extends Component {
                     {{-- Filter sections --}}
                     <div class="flex-1 divide-y divide-zinc-200 text-sm">
 
-                        <div class="px-5 py-4">
-                            <div class="mb-3 text-[12px] font-bold uppercase tracking-[0.08em] text-ink-2">Category
-                            </div>
-                            <div class="scrollbar-thin flex max-h-64 flex-col gap-2 overflow-y-auto pr-1">
+                        {{-- Category --}}
+                        <div class="px-5 py-4" x-data="{ open: true }">
+                            <button type="button" x-on:click="open = !open"
+                                class="flex w-full cursor-pointer items-center justify-between text-[12px] font-bold uppercase tracking-[0.08em] text-ink-2">
+                                <span>Category</span>
+                                <span class="flex transition-transform duration-200"
+                                    x-bind:class="open ? 'rotate-0' : '-rotate-90'">
+                                    <flux:icon.chevron-down variant="micro" class="size-3.5 text-zinc-400" />
+                                </span>
+                            </button>
+                            <div x-show="open"
+                                class="scrollbar-hover mt-3 flex max-h-64 flex-col gap-2 overflow-y-auto pl-0.5 pr-1">
                                 @foreach ($this->categoriesList as $cat)
                                     <flux:field variant="inline">
-                                        <flux:checkbox wire:model.live="selectedCategories"
-                                            value="{{ $cat->slug }}" />
+                                        <flux:checkbox wire:model.live="selectedCategories" value="{{ $cat->slug }}" />
                                         <flux:label>
                                             {{ $cat->name }}
                                             <x-slot:trailing>
-                                                <span
-                                                    class="text-xs text-ink-4 tabular-nums">{{ $cat->products_count }}</span>
+                                                <span class="text-xs text-ink-4 tabular-nums">{{ $cat->products_count }}</span>
                                             </x-slot:trailing>
                                         </flux:label>
                                     </flux:field>
@@ -243,37 +288,82 @@ new #[Layout('layouts::storefront')] #[Title('Shop')] class extends Component {
                             </div>
                         </div>
 
-                        @include('partials.storefront.price-filter')
-
-                        @include('partials.storefront.rating-filter')
-
-                        <div class="px-5 py-4">
-                            <div class="mb-3 text-[12px] font-bold uppercase tracking-[0.08em] text-ink-2">Brand</div>
-                            <div class="scrollbar-thin flex flex-col gap-2"
-                                :class="openBrands ? 'max-h-64 overflow-y-auto pr-1' : ''">
-                                @foreach ($this->brandsList as $i => $brand)
-                                    <div @if ($i >= 6) x-show="openBrands" x-cloak @endif>
-                                        <flux:checkbox wire:model.live="selectedBrands" value="{{ $brand->id }}"
-                                            :label="$brand->name" />
-                                    </div>
-                                @endforeach
+                        {{-- Price --}}
+                        <div class="px-5 py-4" x-data="{ open: true }">
+                            <button type="button" x-on:click="open = !open"
+                                class="flex w-full cursor-pointer items-center justify-between text-[12px] font-bold uppercase tracking-[0.08em] text-ink-2">
+                                <span>Price</span>
+                                <span class="flex transition-transform duration-200"
+                                    x-bind:class="open ? 'rotate-0' : '-rotate-90'">
+                                    <flux:icon.chevron-down variant="micro" class="size-3.5 text-zinc-400" />
+                                </span>
+                            </button>
+                            <div x-show="open" class="mt-3">
+                                @include('partials.storefront.price-filter', ['hideHeading' => true])
                             </div>
-                            @if ($this->brandsList->count() > 6)
-                                <button type="button" @click="openBrands = !openBrands"
-                                    class="mt-2 cursor-pointer text-[12.5px] text-brand-500 hover:underline">
-                                    <span x-show="!openBrands" class="inline-flex items-center gap-1">
-                                        Show all {{ $this->brandsList->count() }} brands
-                                        <flux:icon.arrow-right variant="micro" class="size-3.5" />
-                                    </span>
-                                    <span x-show="openBrands" x-cloak>Show fewer</span>
-                                </button>
-                            @endif
                         </div>
 
-                        <div class="px-5 py-4">
-                            <div class="mb-3 text-[12px] font-bold uppercase tracking-[0.08em] text-ink-2">Availability
+                        {{-- Rating --}}
+                        <div class="px-5 py-4" x-data="{ open: false }">
+                            <button type="button" x-on:click="open = !open"
+                                class="flex w-full cursor-pointer items-center justify-between text-[12px] font-bold uppercase tracking-[0.08em] text-ink-2">
+                                <span>Rating</span>
+                                <span class="flex transition-transform duration-200"
+                                    x-bind:class="open ? 'rotate-0' : '-rotate-90'">
+                                    <flux:icon.chevron-down variant="micro" class="size-3.5 text-zinc-400" />
+                                </span>
+                            </button>
+                            <div x-show="open" x-cloak class="mt-3">
+                                @include('partials.storefront.rating-filter', ['hideHeading' => true])
                             </div>
-                            <flux:checkbox wire:model.live="inStockOnly" label="In stock — ships now" />
+                        </div>
+
+                        {{-- Brand --}}
+                        <div class="px-5 py-4" x-data="{ open: false, openBrands: false }">
+                            <button type="button" x-on:click="open = !open"
+                                class="flex w-full cursor-pointer items-center justify-between text-[12px] font-bold uppercase tracking-[0.08em] text-ink-2">
+                                <span>Brand</span>
+                                <span class="flex transition-transform duration-200"
+                                    x-bind:class="open ? 'rotate-0' : '-rotate-90'">
+                                    <flux:icon.chevron-down variant="micro" class="size-3.5 text-zinc-400" />
+                                </span>
+                            </button>
+                            <div x-show="open" x-cloak class="mt-3">
+                                <div class="scrollbar-hover flex flex-col gap-2"
+                                    x-bind:class="openBrands ? 'max-h-64 overflow-y-auto pr-1' : ''">
+                                    @foreach ($this->brandsList as $i => $brand)
+                                        <div @if ($i >= 6) x-show="openBrands" x-cloak @endif>
+                                            <flux:checkbox wire:model.live="selectedBrands" value="{{ $brand->id }}"
+                                                :label="$brand->name" />
+                                        </div>
+                                    @endforeach
+                                </div>
+                                @if ($this->brandsList->count() > 6)
+                                    <button type="button" x-on:click="openBrands = !openBrands"
+                                        class="mt-2 cursor-pointer text-[12.5px] text-brand-500 hover:underline">
+                                        <span x-show="!openBrands" class="inline-flex items-center gap-1">
+                                            Show all {{ $this->brandsList->count() }} brands
+                                            <flux:icon.arrow-right variant="micro" class="size-3.5" />
+                                        </span>
+                                        <span x-show="openBrands" x-cloak>Show fewer</span>
+                                    </button>
+                                @endif
+                            </div>
+                        </div>
+
+                        {{-- Availability --}}
+                        <div class="px-5 py-4" x-data="{ open: true }">
+                            <button type="button" x-on:click="open = !open"
+                                class="flex w-full cursor-pointer items-center justify-between text-[12px] font-bold uppercase tracking-[0.08em] text-ink-2">
+                                <span>Availability</span>
+                                <span class="flex transition-transform duration-200"
+                                    x-bind:class="open ? 'rotate-0' : '-rotate-90'">
+                                    <flux:icon.chevron-down variant="micro" class="size-3.5 text-zinc-400" />
+                                </span>
+                            </button>
+                            <div x-show="open" class="mt-3">
+                                <flux:checkbox wire:model.live="inStockOnly" label="In stock — ships now" />
+                            </div>
                         </div>
 
                     </div>
@@ -292,22 +382,28 @@ new #[Layout('layouts::storefront')] #[Title('Shop')] class extends Component {
         <div class="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-[260px_1fr]">
             {{-- Filters sidebar (desktop only) --}}
             <aside
-                class="hidden lg:block lg:sticky lg:top-32 lg:self-start lg:max-h-[calc(100vh-9rem)] lg:overflow-y-auto scrollbar-thin"
-                x-data="{ openBrands: false }">
+                class="hidden lg:block lg:sticky lg:top-32 lg:self-start lg:max-h-[calc(100vh-9rem)] lg:overflow-y-auto scrollbar-hover">
                 <div class="divide-y divide-zinc-200 rounded-md border border-zinc-200 bg-white text-sm">
 
                     {{-- Category --}}
-                    <div class="px-5 py-4">
-                        <div class="mb-3 text-[12px] font-bold uppercase tracking-[0.08em] text-ink-2">Category</div>
-                        <div class="scrollbar-thin flex max-h-72 flex-col gap-2 overflow-y-auto pr-1">
+                    <div class="px-5 py-4" x-data="{ open: true }">
+                        <button type="button" x-on:click="open = !open"
+                            class="flex w-full cursor-pointer items-center justify-between text-[12px] font-bold uppercase tracking-[0.08em] text-ink-2">
+                            <span>Category</span>
+                            <span class="flex transition-transform duration-200"
+                                x-bind:class="open ? 'rotate-0' : '-rotate-90'">
+                                <flux:icon.chevron-down variant="micro" class="size-3.5 text-zinc-400" />
+                            </span>
+                        </button>
+                        <div x-show="open"
+                            class="scrollbar-hover mt-3 flex max-h-64 flex-col gap-2 overflow-y-auto pl-0.5 pr-1">
                             @foreach ($this->categoriesList as $cat)
                                 <flux:field variant="inline">
                                     <flux:checkbox wire:model.live="selectedCategories" value="{{ $cat->slug }}" />
                                     <flux:label>
                                         {{ $cat->name }}
                                         <x-slot:trailing>
-                                            <span
-                                                class="text-xs text-ink-4 tabular-nums">{{ $cat->products_count }}</span>
+                                            <span class="text-xs text-ink-4 tabular-nums">{{ $cat->products_count }}</span>
                                         </x-slot:trailing>
                                     </flux:label>
                                 </flux:field>
@@ -316,40 +412,81 @@ new #[Layout('layouts::storefront')] #[Title('Shop')] class extends Component {
                     </div>
 
                     {{-- Price --}}
-                    @include('partials.storefront.price-filter')
+                    <div class="px-5 py-4" x-data="{ open: true }">
+                        <button type="button" x-on:click="open = !open"
+                            class="flex w-full cursor-pointer items-center justify-between text-[12px] font-bold uppercase tracking-[0.08em] text-ink-2">
+                            <span>Price</span>
+                            <span class="flex transition-transform duration-200"
+                                x-bind:class="open ? 'rotate-0' : '-rotate-90'">
+                                <flux:icon.chevron-down variant="micro" class="size-3.5 text-zinc-400" />
+                            </span>
+                        </button>
+                        <div x-show="open" class="mt-3">
+                            @include('partials.storefront.price-filter', ['hideHeading' => true])
+                        </div>
+                    </div>
 
                     {{-- Rating --}}
-                    @include('partials.storefront.rating-filter')
+                    <div class="px-5 py-4" x-data="{ open: false }">
+                        <button type="button" x-on:click="open = !open"
+                            class="flex w-full cursor-pointer items-center justify-between text-[12px] font-bold uppercase tracking-[0.08em] text-ink-2">
+                            <span>Rating</span>
+                            <span class="flex transition-transform duration-200"
+                                x-bind:class="open ? 'rotate-0' : '-rotate-90'">
+                                <flux:icon.chevron-down variant="micro" class="size-3.5 text-zinc-400" />
+                            </span>
+                        </button>
+                        <div x-show="open" x-cloak class="mt-3">
+                            @include('partials.storefront.rating-filter', ['hideHeading' => true])
+                        </div>
+                    </div>
 
                     {{-- Brand --}}
-                    <div class="px-5 py-4">
-                        <div class="mb-3 text-[12px] font-bold uppercase tracking-[0.08em] text-ink-2">Brand</div>
-                        <div class="scrollbar-thin flex flex-col gap-2"
-                            :class="openBrands ? 'max-h-96 overflow-y-auto pr-1' : ''">
-                            @foreach ($this->brandsList as $i => $brand)
-                                <div @if ($i >= 6) x-show="openBrands" x-cloak @endif>
-                                    <flux:checkbox wire:model.live="selectedBrands" value="{{ $brand->id }}"
-                                        :label="$brand->name" />
-                                </div>
-                            @endforeach
+                    <div class="px-5 py-4" x-data="{ open: false, openBrands: false }">
+                        <button type="button" x-on:click="open = !open"
+                            class="flex w-full cursor-pointer items-center justify-between text-[12px] font-bold uppercase tracking-[0.08em] text-ink-2">
+                            <span>Brand</span>
+                            <span class="flex transition-transform duration-200"
+                                x-bind:class="open ? 'rotate-0' : '-rotate-90'">
+                                <flux:icon.chevron-down variant="micro" class="size-3.5 text-zinc-400" />
+                            </span>
+                        </button>
+                        <div x-show="open" x-cloak class="mt-3">
+                            <div class="scrollbar-hover flex flex-col gap-2"
+                                x-bind:class="openBrands ? 'max-h-64 overflow-y-auto pr-1' : ''">
+                                @foreach ($this->brandsList as $i => $brand)
+                                    <div @if ($i >= 6) x-show="openBrands" x-cloak @endif>
+                                        <flux:checkbox wire:model.live="selectedBrands" value="{{ $brand->id }}"
+                                            :label="$brand->name" />
+                                    </div>
+                                @endforeach
+                            </div>
+                            @if ($this->brandsList->count() > 6)
+                                <button type="button" x-on:click="openBrands = !openBrands"
+                                    class="mt-2 cursor-pointer text-[12.5px] text-brand-500 hover:underline">
+                                    <span x-show="!openBrands" class="inline-flex items-center gap-1">
+                                        Show all {{ $this->brandsList->count() }} brands
+                                        <flux:icon.arrow-right variant="micro" class="size-3.5" />
+                                    </span>
+                                    <span x-show="openBrands" x-cloak>Show fewer</span>
+                                </button>
+                            @endif
                         </div>
-                        @if ($this->brandsList->count() > 6)
-                            <button type="button" @click="openBrands = !openBrands"
-                                class="mt-2 cursor-pointer text-[12.5px] text-brand-500 hover:underline">
-                                <span x-show="!openBrands" class="inline-flex items-center gap-1">
-                                    Show all {{ $this->brandsList->count() }} brands
-                                    <flux:icon.arrow-right variant="micro" class="size-3.5" />
-                                </span>
-                                <span x-show="openBrands" x-cloak>Show fewer</span>
-                            </button>
-                        @endif
                     </div>
 
                     {{-- Availability --}}
-                    <div class="px-5 py-4">
-                        <div class="mb-3 text-[12px] font-bold uppercase tracking-[0.08em] text-ink-2">Availability
+                    <div class="px-5 py-4" x-data="{ open: true }">
+                        <button type="button" x-on:click="open = !open"
+                            class="flex w-full cursor-pointer items-center justify-between text-[12px] font-bold uppercase tracking-[0.08em] text-ink-2">
+                            <span>Availability</span>
+                            <span class="flex transition-transform duration-200"
+                                x-bind:class="open ? 'rotate-0' : '-rotate-90'">
+                                <flux:icon.chevron-down variant="micro" class="size-3.5 text-zinc-400" />
+                            </span>
+                        </button>
+                        <div x-show="open" class="mt-3">
+                            <flux:checkbox wire:model.live="inStockOnly" label="In stock — ships now" />
                         </div>
-                        <flux:checkbox wire:model.live="inStockOnly" label="In stock — ships now" />
                     </div>
 
                 </div>
@@ -361,7 +498,7 @@ new #[Layout('layouts::storefront')] #[Title('Shop')] class extends Component {
                 <div class="mb-5 flex flex-col gap-3 py-2.5 sm:flex-row sm:items-center sm:justify-between">
                     <div class="flex items-center gap-3">
                         {{-- Mobile: open filter drawer --}}
-                        <flux:button variant="ghost" size="sm" icon="funnel"
+                        <flux:button size="sm" icon="funnel"
                             wire:click="$set('showFilters', true)" class="lg:hidden">
                             Filters
                             @if ($this->hasActiveFilters())

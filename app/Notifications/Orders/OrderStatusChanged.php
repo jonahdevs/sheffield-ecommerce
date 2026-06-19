@@ -10,6 +10,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use Illuminate\Support\Facades\URL;
 
 /**
  * Customer update for fulfilment milestones (out for delivery, delivered,
@@ -44,12 +45,17 @@ class OrderStatusChanged extends Notification implements ShouldQueue
             default => 'Order update — '.$number,
         };
 
+        $confirmationUrl = ($order->status === OrderStatus::OUT_FOR_DELIVERY && $order->shipment)
+            ? URL::signedRoute('delivery.confirm', ['shipment' => $order->shipment])
+            : null;
+
         return (new MailMessage)
             ->subject($subject)
             ->view('mails.orders.status-update', [
                 'order' => $order,
                 'customerName' => $order->user?->name ?? 'there',
                 'newStatus' => $order->status,
+                'confirmationUrl' => $confirmationUrl,
             ]);
     }
 

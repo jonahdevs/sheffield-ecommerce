@@ -50,15 +50,15 @@ trait RespectsPreferences
             }
         }
 
-        // In-app (database) channel
-        if ($settings->inapp_channel_enabled) {
+        // In-app (database) channel — only for User notifiables that opt in via
+        // supportsInApp(). Anonymous notifiables (guests, central-email routes)
+        // have no notifications() relationship to write to.
+        if ($notifiable instanceof User && $this->supportsInApp() && $settings->inapp_channel_enabled) {
             $inappKey = $this->resolveGlobalKey($key, 'inapp');
 
             if ($inappKey === null || $settings->{$inappKey}) {
                 [$group, $field] = $key;
-                $inappPrefs = ($notifiable instanceof User)
-                    ? ($notifiable->notification_preferences['inapp'] ?? [])
-                    : [];
+                $inappPrefs = $notifiable->notification_preferences['inapp'] ?? [];
 
                 $inappMuted = in_array($group, ['marketing', 'account'])
                     ? ($inappPrefs[$group] ?? true) === false
@@ -106,6 +106,15 @@ trait RespectsPreferences
      * @return array{0: string, 1: string}|null
      */
     abstract protected function preferenceKey(): ?array;
+
+    /**
+     * Override to return true in notifications that implement toArray() for
+     * the customer in-app notification centre.
+     */
+    protected function supportsInApp(): bool
+    {
+        return false;
+    }
 
     /**
      * Derive the NotificationSettings property name for a given channel.

@@ -111,6 +111,7 @@
             <div class="md:col-span-2">
                 <h3 class="mb-4 text-xs font-bold tracking-widest text-[#d8c79d] uppercase">Business</h3>
                 <ul class="space-y-2.5 text-[13.5px] text-[#c9bea4]">
+                    <li><a href="{{ route('categories.index') }}" class="hover:text-white" wire:navigate>All categories</a></li>
                     <li><a href="{{ route('quote.request') }}" class="hover:text-white" wire:navigate>Request a quote</a></li>
                 </ul>
             </div>

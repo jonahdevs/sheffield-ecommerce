@@ -143,7 +143,7 @@ return new class extends Migration
         // 6. SHIPMENTS
         // ==================================================
         // One row per order. Tracks the full lifecycle:
-        //   pending → booked → picked_up → in_transit → delivered | failed | returned
+        //   pending → picked_up → in_transit → delivered | failed | returned
         // For pickup orders: warehouse_id is set, carrier_id is null.
         Schema::create('shipments', function (Blueprint $table) {
             $table->id();
@@ -175,6 +175,12 @@ return new class extends Migration
             $table->timestamp('failed_at')->nullable();
 
             $table->text('notes')->nullable();
+
+            // Customer delivery confirmation (separate from staff DELIVERED status)
+            $table->timestamp('customer_confirmed_at')->nullable();
+            $table->timestamp('customer_disputed_at')->nullable();
+            $table->text('customer_notes')->nullable();
+
             $table->timestamps();
         });
 

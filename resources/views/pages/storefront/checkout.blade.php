@@ -546,7 +546,7 @@ new #[Layout('layouts::storefront')] #[Title('Checkout')] class extends Componen
                         </div>
 
                         <flux:button variant="customer-primary" size="customer-lg" wire:click="placeOrder"
-                            icon:trailing="arrow-right" class="mt-5! w-full!" wire:loading.attr="disabled"
+                            icon:trailing="chevron-right" class="mt-5! w-full!" wire:loading.attr="disabled"
                             wire:target="placeOrder">
                             Continue to payment
                         </flux:button>

@@ -10,6 +10,7 @@ use App\Models\Quote;
 use App\Models\QuoteItem;
 use App\Notifications\Quotes\NewQuoteRequested;
 use App\Notifications\Quotes\QuoteRequestReceived;
+use App\Rules\Recaptcha;
 use App\Services\DeliveryResolver;
 use App\Settings\QuotationSettings;
 use App\Support\StaffRecipients;
@@ -77,6 +78,8 @@ new #[Layout('layouts::storefront')] #[Title('Request a quote')] class extends C
 
     public string $contact_company = '';
 
+    public string $recaptchaToken = '';
+
     public function mount(): void
     {
         abort_unless(app(QuotationSettings::class)->quotes_enabled, 404);
@@ -123,7 +126,7 @@ new #[Layout('layouts::storefront')] #[Title('Request a quote')] class extends C
         $keys = collect($this->items)->keys()->map(fn($key) => StorefrontSession::splitKey($key));
 
         $products = Product::query()
-            ->with(['brand', 'images' => fn($q) => $q->where('is_cover', true)->limit(1)])
+            ->with(['brand', 'media'])
             ->whereIn('slug', $keys->pluck('slug')->unique()->all())
             ->published()
             ->visibleInCatalog()
@@ -172,7 +175,7 @@ new #[Layout('layouts::storefront')] #[Title('Request a quote')] class extends C
     public function searchResults(): LengthAwarePaginator
     {
         $query = Product::query()
-            ->with(['brand', 'images' => fn($q) => $q->where('is_cover', true)->limit(1)])
+            ->with(['brand', 'media'])
             ->published()
             ->visibleInCatalog()
             ->whereNotIn('slug', array_keys($this->items));
@@ -360,6 +363,7 @@ new #[Layout('layouts::storefront')] #[Title('Request a quote')] class extends C
             'contact_email' => [auth()->guest() ? 'required' : 'nullable', 'email', 'max:150'],
             'contact_phone' => ['nullable', 'string', 'max:30'],
             'contact_company' => ['nullable', 'string', 'max:150'],
+            'recaptchaToken' => [new Recaptcha('quote')],
         ]);
 
         if ($this->lines->isEmpty()) {
@@ -453,7 +457,8 @@ new #[Layout('layouts::storefront')] #[Title('Request a quote')] class extends C
             </p>
         </div>
 
-        <form wire:submit="submit" class="mt-6 flex flex-col gap-8 lg:flex-row lg:items-start">
+        <x-recaptcha-livewire />
+        <form x-data @submit.prevent="__rcSubmit('quote', $wire)" class="mt-6 flex flex-col gap-8 lg:flex-row lg:items-start">
 
             {{-- ================================================== --}}
             {{-- LEFT: DETAILS --}}
@@ -490,8 +495,7 @@ new #[Layout('layouts::storefront')] #[Title('Request a quote')] class extends C
                         <div class="grid gap-4 sm:grid-cols-2">
                             <flux:field>
                                 <flux:label>Phone</flux:label>
-                                <flux:input wire:model.blur="contact_phone" type="tel"
-                                    placeholder="+254 712 345 678" />
+                                <x-phone-input wire:model="contact_phone" />
                                 <flux:error name="contact_phone" />
                             </flux:field>
                             <flux:field>

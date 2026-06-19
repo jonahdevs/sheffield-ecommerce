@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Enums\CategoryStatus;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -16,10 +17,10 @@ use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
-#[Fillable(['name', 'slug', 'parent_id', 'description', 'image', 'thumbnail', 'icon', 'icon_svg', 'status', 'sort_order', 'meta_title', 'meta_description', 'canonical_url'])]
+#[Fillable(['name', 'slug', 'parent_id', 'description', 'banner', 'image', 'icon', 'icon_svg', 'status', 'sort_order', 'meta_title', 'meta_description', 'canonical_url'])]
 class Category extends Model implements HasMedia
 {
-    use InteractsWithMedia, LogsActivity;
+    use HasFactory, InteractsWithMedia, LogsActivity;
 
     /**
      * Distinct image roles, each a single-file collection:
@@ -41,9 +42,23 @@ class Category extends Model implements HasMedia
             ->fit(Fit::Crop, 1920, 600)
             ->nonQueued();
 
+        $this->addMediaConversion('web-webp')
+            ->performOnCollections('banner')
+            ->fit(Fit::Crop, 1920, 600)
+            ->format('webp')
+            ->quality(85)
+            ->nonQueued();
+
         $this->addMediaConversion('card')
             ->performOnCollections('square')
             ->fit(Fit::Crop, 600, 600)
+            ->nonQueued();
+
+        $this->addMediaConversion('card-webp')
+            ->performOnCollections('square')
+            ->fit(Fit::Crop, 600, 600)
+            ->format('webp')
+            ->quality(85)
             ->nonQueued();
 
         // Small square crop of the main image, shown in the admin category list.
@@ -52,10 +67,12 @@ class Category extends Model implements HasMedia
             ->fit(Fit::Crop, 120, 120)
             ->nonQueued();
 
-        // Tiny low-quality image placeholder (LQIP) inlined as base64 for blur-up loading.
+        // Tiny placeholder inlined as base64 for blur-up loading. JPEG at q20 keeps it under 1 KB.
         $this->addMediaConversion('lqip')
             ->performOnCollections('banner', 'square')
             ->width(64)
+            ->quality(20)
+            ->format('jpg')
             ->nonQueued();
     }
 
@@ -104,40 +121,65 @@ class Category extends Model implements HasMedia
     // ==================================================
 
     /**
-     * Wide hero banner shown at the top of the category page (null when unset).
-     * Prefers the Media Library 'web' conversion, falling back to the legacy
-     * image column so seeded/un-migrated rows still render.
+     * Wide hero banner for the category page.
+     * Falls back to image_url so categories with only a square image still
+     * get a hero rather than a blank stripe.
      */
     protected function bannerUrl(): Attribute
     {
         return Attribute::get(fn () => $this->getFirstMediaUrl('banner', 'web')
+            ?: ProductImage::resolveUrl($this->banner)
+            ?: $this->image_url);
+    }
+
+    /** Primary square image for grid tiles and menus. Null when none is set. */
+    protected function imageUrl(): Attribute
+    {
+        return Attribute::get(fn () => $this->getFirstMediaUrl('square', 'card')
             ?: ProductImage::resolveUrl($this->image));
     }
 
-    /** Square tile for grids/menus; falls back to the banner until a square is uploaded. */
-    protected function squareUrl(): Attribute
+    /** WebP version of the square tile; null until the conversion has been generated. */
+    protected function imageWebpUrl(): Attribute
     {
-        return Attribute::get(fn () => $this->getFirstMediaUrl('square', 'card')
-            ?: (ProductImage::resolveUrl($this->thumbnail) ?? $this->banner_url));
+        return Attribute::get(function () {
+            $media = $this->getFirstMedia('square');
+
+            return $media?->hasGeneratedConversion('card-webp')
+                ? $media->getUrl('card-webp')
+                : null;
+        });
     }
 
-    /** Small square crop of the main image for the admin list; falls back to the full square/banner. */
+    /** WebP version of the banner hero; null until the conversion has been generated. */
+    protected function bannerWebpUrl(): Attribute
+    {
+        return Attribute::get(function () {
+            $media = $this->getFirstMedia('banner');
+
+            return $media?->hasGeneratedConversion('web-webp')
+                ? $media->getUrl('web-webp')
+                : null;
+        });
+    }
+
+    /** Small square crop of the main image for the admin list; falls back to the full image/banner. */
     protected function imageThumbUrl(): Attribute
     {
         return Attribute::get(fn () => $this->getFirstMediaUrl('square', 'thumb')
-            ?: $this->square_url);
+            ?: $this->image_url);
     }
 
-    /** Inline base64 LQIP for the banner, shown blurred until the full image loads. */
+    /** Inline base64 LQIP for the banner; falls back to the square lqip when only an image is set. */
     protected function bannerPlaceholder(): Attribute
     {
-        return Attribute::get(fn () => $this->mediaPlaceholder('banner'));
+        return Attribute::get(fn () => $this->mediaPlaceholder('banner') ?? $this->mediaPlaceholder('square'));
     }
 
-    /** Inline base64 LQIP for the main square image; falls back to the banner's. */
+    /** Inline base64 LQIP for the square image. Null when no square image is set. */
     protected function imagePlaceholder(): Attribute
     {
-        return Attribute::get(fn () => $this->mediaPlaceholder('square') ?? $this->mediaPlaceholder('banner'));
+        return Attribute::get(fn () => $this->mediaPlaceholder('square'));
     }
 
     /** Small navigation icon image (SVG markup in icon_svg is handled separately). */
@@ -168,21 +210,16 @@ class Category extends Model implements HasMedia
                     return null;
                 }
 
-                return 'data:'.($media->mime_type ?: 'image/jpeg').';base64,'.base64_encode(file_get_contents($path));
+                return 'data:image/jpeg;base64,'.base64_encode(file_get_contents($path));
             }
         );
     }
 
-    // Backwards-compatible aliases for the previous column-based accessors.
-
-    protected function imageUrl(): Attribute
-    {
-        return Attribute::get(fn () => $this->banner_url);
-    }
+    // Backwards-compatible alias for the previous column-based accessor.
 
     protected function thumbnailUrl(): Attribute
     {
-        return Attribute::get(fn () => $this->square_url);
+        return Attribute::get(fn () => $this->image_url);
     }
 
     protected function iconUrl(): Attribute

@@ -106,13 +106,13 @@ new #[Layout('layouts::account')] #[Title('Write a Review')] class extends Compo
     @endpush
 
     @php
-        $cover = $product->images->where('is_cover', true)->first() ?? $product->images->first();
+        $coverUrl = $product->cover_url;
     @endphp
 
     {{-- Product summary card --}}
     <div class="flex items-center gap-4 rounded-md border border-zinc-200 bg-white p-4">
-        @if ($cover)
-            <img src="{{ Storage::url($cover->path) }}"
+        @if ($coverUrl)
+            <img src="{{ $coverUrl }}"
                  alt="{{ $product->name }}"
                  class="size-16 rounded-md border border-zinc-100 object-contain p-1 shrink-0">
         @else

@@ -92,7 +92,11 @@ new #[Layout('layouts::app')] #[Title('Edit Customer — Admin')] class extends 
             if ($this->customer->avatar) {
                 Storage::disk('public')->delete($this->customer->avatar);
             }
-            $avatarPath = $this->pendingAvatar->store('avatars', 'public');
+            $avatarPath = $this->pendingAvatar->storeAs(
+                'avatars',
+                \App\Support\MediaNaming::avatar($this->name, $this->customer->id, $this->pendingAvatar->getClientOriginalExtension()),
+                'public',
+            );
             $this->pendingAvatar = null;
         }
 

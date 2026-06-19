@@ -5,6 +5,7 @@ use App\Http\Controllers\NewsletterController;
 use App\Http\Controllers\Payments\MpesaCallbackController;
 use App\Http\Controllers\Payments\PaystackWebhookController;
 use App\Http\Controllers\Payments\StripeWebhookController;
+use App\Http\Controllers\DeliveryConfirmationController;
 use App\Http\Controllers\SocialAuthController;
 use App\Models\Cart;
 use App\Support\StorefrontSession;
@@ -21,6 +22,7 @@ Route::post('/api/webhooks/paystack', PaystackWebhookController::class)->name('p
 // Storefront (guests + logged-in browsing)
 // ---------------------------------------------------------------------------
 Route::livewire('/', 'pages::storefront.home')->name('home');
+Route::livewire('/categories', 'pages::storefront.categories')->name('categories.index');
 Route::livewire('/shop', 'pages::storefront.catalog')->name('catalog');
 Route::livewire('/shop/{category:slug}', 'pages::storefront.category')->name('category.show');
 Route::livewire('/cart', 'pages::storefront.cart')->name('cart');
@@ -67,6 +69,18 @@ Route::middleware('guest')
     });
 
 // ---------------------------------------------------------------------------
+// Social auth — Facebook
+// ---------------------------------------------------------------------------
+Route::middleware('guest')
+    ->controller(SocialAuthController::class)
+    ->prefix('auth/facebook')
+    ->name('auth.facebook.')
+    ->group(function () {
+        Route::get('redirect', 'redirectToFacebook')->name('redirect');
+        Route::get('callback', 'handleFacebookCallback')->name('callback');
+    });
+
+// ---------------------------------------------------------------------------
 // Post-login landing — branches by role.
 // Customers go to their account dashboard; admins are bounced to /admin.
 // TODO: swap the hasRole check for spatie/laravel-permission once installed.
@@ -80,6 +94,20 @@ Route::middleware(['auth', 'verified'])->get('/dashboard', function () {
 
     return redirect()->route('account.dashboard');
 })->name('dashboard');
+
+// ---------------------------------------------------------------------------
+// Delivery confirmation — public signed URLs (no auth required)
+// Customers confirm receipt or raise a dispute after receiving their order.
+// ---------------------------------------------------------------------------
+Route::controller(DeliveryConfirmationController::class)
+    ->prefix('delivery')
+    ->name('delivery.')
+    ->group(function () {
+        Route::get('{shipment}/confirm', 'show')->name('confirm')->middleware('signed');
+        Route::post('{shipment}/confirm', 'confirm')->name('confirm.submit')->middleware('signed');
+        Route::get('{shipment}/dispute', 'showDispute')->name('dispute')->middleware('signed');
+        Route::post('{shipment}/dispute', 'submitDispute')->name('dispute.submit')->middleware('signed');
+    });
 
 require __DIR__.'/account.php';
 require __DIR__.'/admin.php';

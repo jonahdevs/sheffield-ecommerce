@@ -95,7 +95,7 @@
                 x-on:keydown.enter.prevent="filtered[active] && choose(filtered[active])"
                 type="text"
                 placeholder="{{ $placeholder }}"
-                class="w-full border-0 bg-transparent py-2 pe-3 ps-9 text-sm text-zinc-700 placeholder-zinc-400 focus:ring-0 dark:text-zinc-200 dark:placeholder-zinc-400"
+                class="w-full border-0 bg-transparent py-2 pe-3 ps-9 text-sm text-zinc-700 placeholder-zinc-400 focus:outline-none focus:ring-0 dark:text-zinc-200 dark:placeholder-zinc-400"
             />
         </div>
 

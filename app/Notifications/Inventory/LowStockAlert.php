@@ -39,9 +39,11 @@ class LowStockAlert extends Notification implements ShouldQueue
     {
         return (new MailMessage)
             ->subject('Low stock alert — '.$this->product->name)
-            ->greeting('Low stock alert')
-            ->line('"'.$this->product->name.'" has '.$this->currentQuantity.' unit(s) remaining, at or below its low stock threshold.')
-            ->action('View product', route('admin.products.edit', $this->product));
+            ->markdown('mails.staff.low-stock', [
+                'productName' => $this->product->name,
+                'currentQuantity' => $this->currentQuantity,
+                'url' => route('admin.products.edit', $this->product),
+            ]);
     }
 
     public function toWhatsapp(object $notifiable): WhatsAppMessage

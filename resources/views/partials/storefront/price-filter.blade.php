@@ -8,7 +8,7 @@
     $step = 50000;
     $symbol = app(\App\Settings\CurrencySettings::class)->symbol;
 @endphp
-<div class="px-5 py-4" wire:ignore x-data="{
+<div class="{{ ($hideHeading ?? false) ? '' : 'px-5 py-4' }}" wire:ignore x-data="{
     absMin: {{ $absMin }},
     absMax: {{ $absMax }},
     step: {{ $step }},
@@ -40,8 +40,10 @@
     $wire.$watch('priceMin', value => { min = Number(value); });
     $wire.$watch('priceMax', value => { max = Number(value); });
 ">
-    <div class="mb-3 flex items-center justify-between">
-        <div class="text-[12px] font-bold uppercase tracking-[0.08em] text-ink-2">Price</div>
+    <div class="{{ ($hideHeading ?? false) ? 'mb-3 flex justify-end' : 'mb-3 flex items-center justify-between' }}">
+        @unless($hideHeading ?? false)
+            <div class="text-[12px] font-bold uppercase tracking-[0.08em] text-ink-2">Price</div>
+        @endunless
         <button type="button" x-show="dirty" x-cloak @click="reset()"
             class="cursor-pointer text-[11.5px] font-medium text-brand-500 hover:underline">Reset</button>
     </div>

@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Enums\ShipmentStatus;
 use App\Logistics\DTOs\TrackingResult;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -14,9 +15,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
     'carrier_booking_ref', 'carrier_payload',
     'estimated_delivery_at', 'booked_at', 'picked_up_at',
     'delivered_at', 'failed_at', 'notes',
+    'customer_confirmed_at', 'customer_disputed_at', 'customer_notes',
 ])]
 class Shipment extends Model
 {
+    use HasFactory;
+
     protected function casts(): array
     {
         return [
@@ -27,6 +31,8 @@ class Shipment extends Model
             'picked_up_at' => 'datetime',
             'delivered_at' => 'datetime',
             'failed_at' => 'datetime',
+            'customer_confirmed_at' => 'datetime',
+            'customer_disputed_at' => 'datetime',
         ];
     }
 
@@ -61,7 +67,6 @@ class Shipment extends Model
     public function transitionTo(ShipmentStatus $status): void
     {
         $timestamps = match ($status) {
-            ShipmentStatus::BOOKED => ['booked_at' => now()],
             ShipmentStatus::PICKED_UP => ['picked_up_at' => now()],
             ShipmentStatus::DELIVERED => ['delivered_at' => now()],
             ShipmentStatus::FAILED => ['failed_at' => now()],

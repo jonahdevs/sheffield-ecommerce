@@ -93,7 +93,7 @@ new #[Layout('layouts::settings')] #[Title('Security')] class extends Component 
         Auth::user()->update(['password' => $validated['password']]);
         $this->reset('current_password', 'password', 'password_confirmation');
 
-        Flux::toast(variant: 'success', text: __('Password updated.'));
+        Flux::toast(heading: __('Password updated'), text: __('Your account password has been changed.'), variant: 'success');
     }
 
     /** @return array{strength: int, label: string, color: string} */
@@ -145,7 +145,7 @@ new #[Layout('layouts::settings')] #[Title('Security')] class extends Component 
         $this->reset('logout_password');
         unset($this->sessions);
 
-        Flux::toast(variant: 'success', text: 'Signed out of all other devices.');
+        Flux::toast(heading: 'Devices signed out', text: 'All other active sessions have been terminated.', variant: 'success');
     }
 
     /* @chisel-passkeys */

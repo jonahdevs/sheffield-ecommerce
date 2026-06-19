@@ -176,7 +176,7 @@ new #[Layout('layouts::app')] #[Title('Website settings — Admin')] class exten
             if ($this->logo_path) {
                 Storage::disk('public')->delete($this->logo_path);
             }
-            $this->logo_path = $this->pendingLogo->store('branding', 'public');
+            $this->logo_path = $this->pendingLogo->storeAs('branding', 'logo-'.now()->format('YmdHis').'.'.$this->pendingLogo->getClientOriginalExtension(), 'public');
             $this->pendingLogo = null;
         }
 
@@ -184,7 +184,7 @@ new #[Layout('layouts::app')] #[Title('Website settings — Admin')] class exten
             if ($this->favicon_path) {
                 Storage::disk('public')->delete($this->favicon_path);
             }
-            $this->favicon_path = $this->pendingFavicon->store('branding', 'public');
+            $this->favicon_path = $this->pendingFavicon->storeAs('branding', 'favicon-'.now()->format('YmdHis').'.'.$this->pendingFavicon->getClientOriginalExtension(), 'public');
             $this->pendingFavicon = null;
         }
 
@@ -277,7 +277,7 @@ new #[Layout('layouts::app')] #[Title('Website settings — Admin')] class exten
             if ($this->og_image_path) {
                 Storage::disk('public')->delete($this->og_image_path);
             }
-            $this->og_image_path = $this->pendingOgImage->store('branding', 'public');
+            $this->og_image_path = $this->pendingOgImage->storeAs('branding', 'og-image-'.now()->format('YmdHis').'.'.$this->pendingOgImage->getClientOriginalExtension(), 'public');
             $this->pendingOgImage = null;
         }
 

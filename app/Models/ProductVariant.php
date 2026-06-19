@@ -14,13 +14,30 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Activitylog\Models\Concerns\LogsActivity;
 use Spatie\Activitylog\Support\LogOptions;
+use Spatie\Image\Enums\Fit;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 #[Fillable(['product_id', 'sku', 'barcode', 'price', 'compare_at_price', 'cost_price', 'stock_status', 'stock_quantity', 'allow_backorder', 'weight', 'length', 'width', 'height', 'description', 'image', 'is_active', 'sort_order', 'sap_last_synced_at'])]
 #[ObservedBy(ProductVariantObserver::class)]
-class ProductVariant extends Model
+class ProductVariant extends Model implements HasMedia
 {
     /** @use HasFactory<ProductVariantFactory> */
-    use HasFactory, LogsActivity, SoftDeletes;
+    use HasFactory, InteractsWithMedia, LogsActivity, SoftDeletes;
+
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('image')->singleFile();
+    }
+
+    public function registerMediaConversions(?Media $media = null): void
+    {
+        $this->addMediaConversion('thumb')
+            ->performOnCollections('image')
+            ->fit(Fit::Crop, 120, 120)
+            ->nonQueued();
+    }
 
     public function getActivitylogOptions(): LogOptions
     {

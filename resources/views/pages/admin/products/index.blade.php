@@ -126,7 +126,7 @@ new #[Layout('layouts::app')] #[Title('Products — Admin')] class extends Compo
     public function products()
     {
         return Product::query()
-            ->with(['brand', 'primaryCategory', 'images' => fn ($q) => $q->where('is_cover', true)->limit(1)])
+            ->with(['brand', 'primaryCategory', 'media'])
             ->when(
                 $this->search,
                 fn ($q) => $q->where(function ($q) {
@@ -465,8 +465,8 @@ new #[Layout('layouts::app')] #[Title('Products — Admin')] class extends Compo
                         <flux:table.cell>
                             <div
                                 class="size-10 overflow-hidden rounded border border-zinc-200 bg-zinc-50 p-0.5 dark:border-zinc-700 dark:bg-zinc-800">
-                                @if ($product->cover_url)
-                                    <img src="{{ $product->cover_url }}" alt=""
+                                @if ($product->thumb_url ?? $product->cover_url)
+                                    <img src="{{ $product->thumb_url ?? $product->cover_url }}" alt=""
                                         class="size-full object-contain" />
                                 @else
                                     <flux:icon.photo variant="micro" class="m-auto mt-2 size-5 text-zinc-300" />

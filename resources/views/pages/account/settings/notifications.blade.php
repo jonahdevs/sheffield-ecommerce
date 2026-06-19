@@ -79,7 +79,7 @@ new #[Layout('layouts::settings')] #[Title('Notifications')] class extends Compo
     {
         Auth::user()->update(['notification_preferences' => $this->prefs]);
 
-        Flux::toast(variant: 'success', text: __('Notification preferences saved.'));
+        Flux::toast(heading: __('Preferences saved'), text: __('Your notification settings have been updated.'), variant: 'success');
     }
 }; ?>
 

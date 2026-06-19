@@ -48,7 +48,7 @@
     {{-- Passkey supported: show passkey + optional social side by side --}}
     <template x-if="supported">
         <div>
-            <div class="{{ isset($social) ? 'grid grid-cols-2 gap-3' : 'grid gap-2' }}">
+            <div class="grid gap-3">
                 <flux:button
                     variant="outline"
                     icon="finger-print"

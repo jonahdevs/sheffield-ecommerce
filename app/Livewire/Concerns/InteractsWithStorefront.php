@@ -79,7 +79,7 @@ trait InteractsWithStorefront
         $accessories = $parent->accessories()
             ->visibleInCatalog()
             ->published()
-            ->with(['images' => fn ($q) => $q->where('is_cover', true)->limit(1)])
+            ->with('media')
             ->get();
 
         if ($accessories->isEmpty()) {
@@ -97,7 +97,7 @@ trait InteractsWithStorefront
             $items[] = [
                 'slug' => $accessory->slug,
                 'name' => $accessory->name,
-                'image' => $accessory->images->first()?->url ?? $accessory->cover_url,
+                'image' => $accessory->cover_url,
                 'price_cents' => $price ? $tax->displayPriceCents($accessory, (int) $price) : null,
                 'is_required' => (bool) $accessory->pivot->is_required,
                 'in_stock' => $accessory->stock_status === StockStatus::IN_STOCK,

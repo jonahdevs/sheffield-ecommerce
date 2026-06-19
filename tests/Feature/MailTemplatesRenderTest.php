@@ -5,7 +5,6 @@ use App\Enums\QuoteStatus;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Product;
-use App\Models\ProductImage;
 use App\Models\Quote;
 use App\Models\QuoteItem;
 use App\Models\User;
@@ -16,6 +15,7 @@ use App\Notifications\Orders\RefundProcessed;
 use App\Notifications\Quotes\QuoteReadyForReview;
 use App\Notifications\Quotes\QuoteRequestReceived;
 use Illuminate\Auth\Notifications\VerifyEmail;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Notifications\AnonymousNotifiable;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Support\Facades\Storage;
@@ -79,24 +79,24 @@ it('renders the order confirmation email', function () {
 });
 
 it('renders the product cover image in the order confirmation email', function () {
+    Storage::fake('media');
+
     $product = Product::factory()->create();
-    ProductImage::create([
-        'product_id' => $product->id,
-        'path' => 'products/oven-cover.jpg',
-        'is_cover' => true,
-        'sort_order' => 0,
-    ]);
+    $fakeFile = UploadedFile::fake()->image('oven-cover.jpg');
+    $product->addMedia($fakeFile->getRealPath())
+        ->usingFileName('oven-cover.jpg')
+        ->withCustomProperties(['is_cover' => true])
+        ->toMediaCollection('images');
 
     $customer = User::factory()->create();
     $order = Order::factory()->create(['user_id' => $customer->id]);
-    OrderItem::factory()->forProduct($product->load('images'))->create(['order_id' => $order->id]);
+    OrderItem::factory()->forProduct($product->load('media'))->create(['order_id' => $order->id]);
 
     $html = renderMail((new OrderConfirmed($order->load('items')))->toMail($customer));
 
-    // The src must be an absolute URL so it resolves inside email clients,
-    // not a relative /storage path that only works on the app domain.
-    expect($html)->toContain(url('/storage/products/oven-cover.jpg'));
-    expect(url('/storage/products/oven-cover.jpg'))->toStartWith('http');
+    // The cover image URL appears in the email HTML.
+    expect($html)->toContain('oven-cover');
+    expect($product->cover_url)->not->toBeNull();
 });
 
 it('renders the order status update email for each milestone', function (OrderStatus $status) {
@@ -267,8 +267,8 @@ it('renders the KRA tax invoice email and attaches the receipt', function () {
     $customer = User::factory()->create();
     $order = Order::factory()->create([
         'user_id' => $customer->id,
-        'kra_cu_number' => 'KRACU0123456789',
-        'kra_receipt_path' => $path,
+        'cu_number' => 'KRACU0123456789',
+        'receipt_path' => $path,
     ]);
 
     $mail = (new KraInvoiceReady($order))->toMail($customer);

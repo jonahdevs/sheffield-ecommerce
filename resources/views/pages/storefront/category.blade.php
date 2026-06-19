@@ -80,7 +80,7 @@ new #[Layout('layouts::storefront')] class extends Component
             ->setType('BreadcrumbList')
             ->addValue('itemListElement', [
                 ['@type' => 'ListItem', 'position' => 1, 'name' => 'Home', 'item' => route('home')],
-                ['@type' => 'ListItem', 'position' => 2, 'name' => 'Shop', 'item' => route('catalog')],
+                ['@type' => 'ListItem', 'position' => 2, 'name' => 'Categories', 'item' => route('categories.index')],
                 ['@type' => 'ListItem', 'position' => 3, 'name' => $category->name, 'item' => $categoryUrl],
             ]);
     }
@@ -121,7 +121,7 @@ new #[Layout('layouts::storefront')] class extends Component
     public function products(): LengthAwarePaginator
     {
         $query = Product::query()
-            ->with(['brand', 'taxClass', 'images' => fn ($q) => $q->where('is_cover', true)->limit(1)])
+            ->with(['brand', 'taxClass', 'media'])
             ->visibleInCatalog()
             ->published()
             ->honorStockVisibility()
@@ -191,7 +191,7 @@ new #[Layout('layouts::storefront')] class extends Component
     <div class="shell py-3">
         <flux:breadcrumbs>
             <flux:breadcrumbs.item :href="route('home')" wire:navigate>Home</flux:breadcrumbs.item>
-            <flux:breadcrumbs.item :href="route('catalog')" wire:navigate>Shop</flux:breadcrumbs.item>
+            <flux:breadcrumbs.item :href="route('categories.index')" wire:navigate>Categories</flux:breadcrumbs.item>
             <flux:breadcrumbs.item>{{ $category->name }}</flux:breadcrumbs.item>
         </flux:breadcrumbs>
     </div>
@@ -206,10 +206,15 @@ new #[Layout('layouts::storefront')] class extends Component
                 <img src="{{ $bannerPlaceholder }}" alt="" aria-hidden="true"
                     class="absolute inset-0 size-full scale-110 object-cover blur-xl" />
             @endif
-            <img src="{{ $banner }}" alt="" aria-hidden="true"
-                x-data="{ loaded: false }" x-init="loaded = $el.complete" x-on:load="loaded = true"
-                x-bind:class="loaded ? 'opacity-100' : 'opacity-0'"
-                class="absolute inset-0 size-full object-cover transition-opacity duration-700" />
+            <picture class="contents">
+                @if ($category->banner_webp_url)
+                    <source srcset="{{ $category->banner_webp_url }}" type="image/webp" />
+                @endif
+                <img src="{{ $banner }}" alt="" aria-hidden="true"
+                    x-data="{ loaded: false }" x-init="loaded = $el.complete" x-on:load="loaded = true"
+                    x-bind:class="loaded ? 'opacity-100' : 'opacity-0'"
+                    class="absolute inset-0 size-full object-cover transition-opacity duration-700" />
+            </picture>
             <div class="absolute inset-0 bg-zinc-900/60"></div>
         @endif
 
@@ -242,8 +247,7 @@ new #[Layout('layouts::storefront')] class extends Component
                     x-transition:enter-start="-translate-x-full" x-transition:enter-end="translate-x-0"
                     x-transition:leave="transition ease-in duration-200" x-transition:leave-start="translate-x-0"
                     x-transition:leave-end="-translate-x-full"
-                    class="relative flex h-full w-72 max-w-[85vw] flex-col overflow-y-auto bg-white shadow-xl"
-                    x-data="{ openBrands: false }">
+                    class="relative flex h-full w-72 max-w-[85vw] flex-col overflow-y-auto bg-white shadow-xl">
 
                     {{-- Drawer header --}}
                     <div class="sticky top-0 z-10 flex items-center justify-between border-b border-zinc-200 bg-white px-5 py-3.5">
@@ -265,38 +269,84 @@ new #[Layout('layouts::storefront')] class extends Component
                     {{-- Filter sections (no category filter — already scoped) --}}
                     <div class="flex-1 divide-y divide-zinc-200 text-sm">
 
-                        @include('partials.storefront.price-filter')
+                        {{-- Price --}}
+                        <div class="px-5 py-4" x-data="{ open: true }">
+                            <button type="button" x-on:click="open = !open"
+                                class="flex w-full cursor-pointer items-center justify-between text-[12px] font-bold uppercase tracking-[0.08em] text-ink-2">
+                                <span>Price</span>
+                                <span class="flex transition-transform duration-200"
+                                    x-bind:class="open ? 'rotate-0' : '-rotate-90'">
+                                    <flux:icon.chevron-down variant="micro" class="size-3.5 text-zinc-400" />
+                                </span>
+                            </button>
+                            <div x-show="open" class="mt-3">
+                                @include('partials.storefront.price-filter', ['hideHeading' => true])
+                            </div>
+                        </div>
 
-                        @include('partials.storefront.rating-filter')
+                        {{-- Rating --}}
+                        <div class="px-5 py-4" x-data="{ open: false }">
+                            <button type="button" x-on:click="open = !open"
+                                class="flex w-full cursor-pointer items-center justify-between text-[12px] font-bold uppercase tracking-[0.08em] text-ink-2">
+                                <span>Rating</span>
+                                <span class="flex transition-transform duration-200"
+                                    x-bind:class="open ? 'rotate-0' : '-rotate-90'">
+                                    <flux:icon.chevron-down variant="micro" class="size-3.5 text-zinc-400" />
+                                </span>
+                            </button>
+                            <div x-show="open" x-cloak class="mt-3">
+                                @include('partials.storefront.rating-filter', ['hideHeading' => true])
+                            </div>
+                        </div>
 
+                        {{-- Brand --}}
                         @if ($this->brandsList->isNotEmpty())
-                            <div class="px-5 py-4">
-                                <div class="mb-3 text-[12px] font-bold uppercase tracking-[0.08em] text-ink-2">Brand</div>
-                                <div class="scrollbar-thin flex flex-col gap-2"
-                                    :class="openBrands ? 'max-h-64 overflow-y-auto pr-1' : ''">
-                                    @foreach ($this->brandsList as $i => $brand)
-                                        <div @if ($i >= 6) x-show="openBrands" x-cloak @endif>
-                                            <flux:checkbox wire:model.live="selectedBrands" value="{{ $brand->id }}"
-                                                :label="$brand->name" />
-                                        </div>
-                                    @endforeach
+                            <div class="px-5 py-4" x-data="{ open: false, openBrands: false }">
+                                <button type="button" x-on:click="open = !open"
+                                    class="flex w-full cursor-pointer items-center justify-between text-[12px] font-bold uppercase tracking-[0.08em] text-ink-2">
+                                    <span>Brand</span>
+                                    <span class="flex transition-transform duration-200"
+                                        x-bind:class="open ? 'rotate-0' : '-rotate-90'">
+                                        <flux:icon.chevron-down variant="micro" class="size-3.5 text-zinc-400" />
+                                    </span>
+                                </button>
+                                <div x-show="open" x-cloak class="mt-3">
+                                    <div class="scrollbar-hover flex flex-col gap-2"
+                                        x-bind:class="openBrands ? 'max-h-64 overflow-y-auto pr-1' : ''">
+                                        @foreach ($this->brandsList as $i => $brand)
+                                            <div @if ($i >= 6) x-show="openBrands" x-cloak @endif>
+                                                <flux:checkbox wire:model.live="selectedBrands" value="{{ $brand->id }}"
+                                                    :label="$brand->name" />
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                    @if ($this->brandsList->count() > 6)
+                                        <button type="button" x-on:click="openBrands = !openBrands"
+                                            class="mt-2 cursor-pointer text-[12.5px] text-brand-500 hover:underline">
+                                            <span x-show="!openBrands" class="inline-flex items-center gap-1">
+                                                Show all {{ $this->brandsList->count() }} brands
+                                                <flux:icon.arrow-right variant="micro" class="size-3.5" />
+                                            </span>
+                                            <span x-show="openBrands" x-cloak>Show fewer</span>
+                                        </button>
+                                    @endif
                                 </div>
-                                @if ($this->brandsList->count() > 6)
-                                    <button type="button" @click="openBrands = !openBrands"
-                                        class="mt-2 cursor-pointer text-[12.5px] text-brand-500 hover:underline">
-                                        <span x-show="!openBrands" class="inline-flex items-center gap-1">
-                                            Show all {{ $this->brandsList->count() }} brands
-                                            <flux:icon.arrow-right variant="micro" class="size-3.5" />
-                                        </span>
-                                        <span x-show="openBrands" x-cloak>Show fewer</span>
-                                    </button>
-                                @endif
                             </div>
                         @endif
 
-                        <div class="px-5 py-4">
-                            <div class="mb-3 text-[12px] font-bold uppercase tracking-[0.08em] text-ink-2">Availability</div>
-                            <flux:checkbox wire:model.live="inStockOnly" label="In stock — ships now" />
+                        {{-- Availability --}}
+                        <div class="px-5 py-4" x-data="{ open: true }">
+                            <button type="button" x-on:click="open = !open"
+                                class="flex w-full cursor-pointer items-center justify-between text-[12px] font-bold uppercase tracking-[0.08em] text-ink-2">
+                                <span>Availability</span>
+                                <span class="flex transition-transform duration-200"
+                                    x-bind:class="open ? 'rotate-0' : '-rotate-90'">
+                                    <flux:icon.chevron-down variant="micro" class="size-3.5 text-zinc-400" />
+                                </span>
+                            </button>
+                            <div x-show="open" class="mt-3">
+                                <flux:checkbox wire:model.live="inStockOnly" label="In stock — ships now" />
+                            </div>
                         </div>
 
                     </div>
@@ -314,41 +364,87 @@ new #[Layout('layouts::storefront')] class extends Component
 
         <div class="mt-4 grid grid-cols-1 gap-8 lg:grid-cols-[260px_1fr]">
             {{-- Filters sidebar (desktop only — no category filter, already scoped) --}}
-            <aside class="scrollbar-thin hidden lg:block lg:sticky lg:top-32 lg:max-h-[calc(100vh-9rem)] lg:self-start lg:overflow-y-auto" x-data="{ openBrands: false }">
+            <aside class="scrollbar-hover hidden lg:block lg:sticky lg:top-32 lg:max-h-[calc(100vh-9rem)] lg:self-start lg:overflow-y-auto">
                 <div class="divide-y divide-zinc-200 rounded-md border border-zinc-200 bg-white text-sm">
 
                     {{-- Price --}}
-                    @include('partials.storefront.price-filter')
+                    <div class="px-5 py-4" x-data="{ open: true }">
+                        <button type="button" x-on:click="open = !open"
+                            class="flex w-full cursor-pointer items-center justify-between text-[12px] font-bold uppercase tracking-[0.08em] text-ink-2">
+                            <span>Price</span>
+                            <span class="flex transition-transform duration-200"
+                                x-bind:class="open ? 'rotate-0' : '-rotate-90'">
+                                <flux:icon.chevron-down variant="micro" class="size-3.5 text-zinc-400" />
+                            </span>
+                        </button>
+                        <div x-show="open" class="mt-3">
+                            @include('partials.storefront.price-filter', ['hideHeading' => true])
+                        </div>
+                    </div>
 
                     {{-- Rating --}}
-                    @include('partials.storefront.rating-filter')
+                    <div class="px-5 py-4" x-data="{ open: false }">
+                        <button type="button" x-on:click="open = !open"
+                            class="flex w-full cursor-pointer items-center justify-between text-[12px] font-bold uppercase tracking-[0.08em] text-ink-2">
+                            <span>Rating</span>
+                            <span class="flex transition-transform duration-200"
+                                x-bind:class="open ? 'rotate-0' : '-rotate-90'">
+                                <flux:icon.chevron-down variant="micro" class="size-3.5 text-zinc-400" />
+                            </span>
+                        </button>
+                        <div x-show="open" x-cloak class="mt-3">
+                            @include('partials.storefront.rating-filter', ['hideHeading' => true])
+                        </div>
+                    </div>
 
+                    {{-- Brand --}}
                     @if ($this->brandsList->isNotEmpty())
-                        <div class="px-5 py-4">
-                            <div class="mb-3 text-[12px] font-bold uppercase tracking-[0.08em] text-ink-2">Brand</div>
-                            <div class="scrollbar-thin flex flex-col gap-2" :class="openBrands ? 'max-h-96 overflow-y-auto pr-1' : ''">
-                                @foreach ($this->brandsList as $i => $brand)
-                                    <div @if ($i >= 6) x-show="openBrands" x-cloak @endif>
-                                        <flux:checkbox wire:model.live="selectedBrands" value="{{ $brand->id }}" :label="$brand->name" />
-                                    </div>
-                                @endforeach
+                        <div class="px-5 py-4" x-data="{ open: false, openBrands: false }">
+                            <button type="button" x-on:click="open = !open"
+                                class="flex w-full cursor-pointer items-center justify-between text-[12px] font-bold uppercase tracking-[0.08em] text-ink-2">
+                                <span>Brand</span>
+                                <span class="flex transition-transform duration-200"
+                                    x-bind:class="open ? 'rotate-0' : '-rotate-90'">
+                                    <flux:icon.chevron-down variant="micro" class="size-3.5 text-zinc-400" />
+                                </span>
+                            </button>
+                            <div x-show="open" x-cloak class="mt-3">
+                                <div class="scrollbar-hover flex flex-col gap-2"
+                                    x-bind:class="openBrands ? 'max-h-64 overflow-y-auto pr-1' : ''">
+                                    @foreach ($this->brandsList as $i => $brand)
+                                        <div @if ($i >= 6) x-show="openBrands" x-cloak @endif>
+                                            <flux:checkbox wire:model.live="selectedBrands" value="{{ $brand->id }}"
+                                                :label="$brand->name" />
+                                        </div>
+                                    @endforeach
+                                </div>
+                                @if ($this->brandsList->count() > 6)
+                                    <button type="button" x-on:click="openBrands = !openBrands"
+                                        class="mt-2 cursor-pointer text-[12.5px] text-brand-500 hover:underline">
+                                        <span x-show="!openBrands" class="inline-flex items-center gap-1">
+                                            Show all {{ $this->brandsList->count() }} brands
+                                            <flux:icon.arrow-right variant="micro" class="size-3.5" />
+                                        </span>
+                                        <span x-show="openBrands" x-cloak>Show fewer</span>
+                                    </button>
+                                @endif
                             </div>
-                            @if ($this->brandsList->count() > 6)
-                                <button type="button" @click="openBrands = !openBrands"
-                                    class="mt-2 cursor-pointer text-[12.5px] text-brand-500 hover:underline">
-                                    <span x-show="!openBrands" class="inline-flex items-center gap-1">
-                                        Show all {{ $this->brandsList->count() }} brands
-                                        <flux:icon.arrow-right variant="micro" class="size-3.5" />
-                                    </span>
-                                    <span x-show="openBrands" x-cloak>Show fewer</span>
-                                </button>
-                            @endif
                         </div>
                     @endif
 
-                    <div class="px-5 py-4">
-                        <div class="mb-3 text-[12px] font-bold uppercase tracking-[0.08em] text-ink-2">Availability</div>
-                        <flux:checkbox wire:model.live="inStockOnly" label="In stock — ships now" />
+                    {{-- Availability --}}
+                    <div class="px-5 py-4" x-data="{ open: true }">
+                        <button type="button" x-on:click="open = !open"
+                            class="flex w-full cursor-pointer items-center justify-between text-[12px] font-bold uppercase tracking-[0.08em] text-ink-2">
+                            <span>Availability</span>
+                            <span class="flex transition-transform duration-200"
+                                x-bind:class="open ? 'rotate-0' : '-rotate-90'">
+                                <flux:icon.chevron-down variant="micro" class="size-3.5 text-zinc-400" />
+                            </span>
+                        </button>
+                        <div x-show="open" class="mt-3">
+                            <flux:checkbox wire:model.live="inStockOnly" label="In stock — ships now" />
+                        </div>
                     </div>
 
                 </div>
@@ -360,7 +456,7 @@ new #[Layout('layouts::storefront')] class extends Component
                     class="mb-5 flex flex-col gap-3 py-2.5 sm:flex-row sm:items-center sm:justify-between">
                     <div class="flex items-center gap-3">
                         {{-- Mobile: open filter drawer --}}
-                        <flux:button variant="ghost" size="sm" icon="funnel"
+                        <flux:button size="sm" icon="funnel"
                             wire:click="$set('showFilters', true)" class="lg:hidden">
                             Filters
                             @if ($this->hasActiveFilters())

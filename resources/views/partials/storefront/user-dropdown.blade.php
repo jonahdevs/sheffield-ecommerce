@@ -1,4 +1,4 @@
-<flux:dropdown position="bottom" align="end" gap="10">
+<flux:dropdown position="bottom" align="end" gap="16">
     @auth
         <button type="button" aria-label="Account"
             class="inline-flex size-10 items-center justify-center rounded-md text-ink-2 transition hover:bg-surface-sunken">

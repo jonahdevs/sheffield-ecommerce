@@ -35,10 +35,12 @@ class QuoteDecisionReceived extends Notification implements ShouldQueue
 
         return (new MailMessage)
             ->subject('Quote '.$this->quote->quote_number.' '.($approved ? 'approved' : 'declined'))
-            ->greeting('Quote '.($approved ? 'approved' : 'declined'))
-            ->line($who.' has '.($approved ? 'approved' : 'declined').' quotation '.$this->quote->quote_number.'.')
-            ->line($approved ? 'You can now convert it to an order.' : 'You may want to follow up with the customer.')
-            ->action('Open quote', route('admin.quotes.show', $this->quote));
+            ->markdown('mails.staff.quote-decision', [
+                'approved' => $approved,
+                'who' => $who,
+                'quoteNumber' => $this->quote->quote_number,
+                'url' => route('admin.quotes.show', $this->quote),
+            ]);
     }
 
     public function toWhatsapp(object $notifiable): WhatsAppMessage

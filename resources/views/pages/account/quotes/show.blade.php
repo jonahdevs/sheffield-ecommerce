@@ -27,7 +27,7 @@ new #[Layout('layouts::account')] #[Title('Quote')] class extends Component {
         abort_unless($quote->user_id === auth()->id(), 403);
         SEOMeta::setTitle('Quote ' . $quote->quote_number);
         SEOMeta::setRobots('noindex,follow');
-        $this->quote = $quote->load(['items.product.images', 'statusHistories', 'order']);
+        $this->quote = $quote->load(['items.product.media', 'statusHistories', 'order']);
     }
 
     #[Computed]

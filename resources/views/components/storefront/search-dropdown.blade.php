@@ -18,7 +18,7 @@ new class extends Component {
         }
 
         return Product::query()
-            ->with(['brand', 'images' => fn($q) => $q->where('is_cover', true)->limit(1)])
+            ->with(['brand', 'media'])
             ->visibleInSearch()
             ->published()
             ->where(function ($q) {
@@ -153,15 +153,14 @@ new class extends Component {
                             <a href="{{ route('product.show', $product) }}" wire:navigate
                                 @click="saveRecent('{{ addslashes($product->name) }}')"
                                 class="grid cursor-pointer grid-cols-[44px_1fr_auto] items-center gap-3 px-4 py-2.5 hover:bg-surface-sunken">
-                                <div
-                                    class="size-11 overflow-hidden rounded border border-zinc-100 bg-surface-sunken p-1">
-                                    @if ($product->cover_url)
-                                        <img src="{{ $product->cover_url }}" alt=""
-                                            class="size-full object-contain" loading="lazy" />
-                                    @else
-                                        <flux:icon.photo class="size-full text-ink-4" />
-                                    @endif
-                                </div>
+                                @if ($product->cover_url)
+                                    <img src="{{ $product->cover_url }}" alt=""
+                                        class="size-11 rounded object-contain" loading="lazy" />
+                                @else
+                                    <div class="flex size-11 items-center justify-center rounded border border-zinc-100 bg-surface-sunken">
+                                        <flux:icon.photo class="size-5 text-ink-4" />
+                                    </div>
+                                @endif
                                 <div class="min-w-0">
                                     @if ($product->brand)
                                         <div

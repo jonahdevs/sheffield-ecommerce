@@ -60,7 +60,7 @@ new #[Layout('layouts::app')] #[Title('Order — Admin')] class extends Componen
     public function mount(Order $order): void
     {
         $this->order = $order->load([
-            'items.product.images', 'address', 'user', 'deliveryZone',
+            'items.product.media', 'address', 'user', 'deliveryZone',
             'payments', 'shipment.carrier', 'shipment.warehouse', 'shippingMethod',
             'sapSyncLogs', 'statusHistories.changedBy',
         ]);
@@ -929,7 +929,25 @@ new #[Layout('layouts::app')] #[Title('Order — Admin')] class extends Componen
                                     <span class="dark:text-white">{{ $order->shipment->delivered_at->format('d M, H:i') }}</span>
                                 </div>
                             @endif
+                            @if ($order->shipment->customer_confirmed_at)
+                                <div class="flex justify-between gap-2">
+                                    <span class="shrink-0 text-zinc-500">Customer confirmed</span>
+                                    <span class="text-emerald-600 dark:text-emerald-400">{{ $order->shipment->customer_confirmed_at->format('d M, H:i') }}</span>
+                                </div>
+                            @elseif ($order->shipment->customer_disputed_at)
+                                <div class="flex justify-between gap-2">
+                                    <span class="shrink-0 text-zinc-500">Customer disputed</span>
+                                    <span class="text-amber-600 dark:text-amber-400">{{ $order->shipment->customer_disputed_at->format('d M, H:i') }}</span>
+                                </div>
+                            @endif
                         </div>
+
+                        @if ($order->shipment->customer_disputed_at && $order->shipment->customer_notes)
+                            <div class="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2.5 dark:border-amber-800 dark:bg-amber-900/20">
+                                <p class="text-xs font-semibold text-amber-700 dark:text-amber-400">Customer dispute</p>
+                                <p class="mt-1 text-xs text-amber-600 dark:text-amber-300">{{ $order->shipment->customer_notes }}</p>
+                            </div>
+                        @endif
 
                         @if ($order->shipment->notes)
                             <p class="text-xs italic text-zinc-500">{{ $order->shipment->notes }}</p>

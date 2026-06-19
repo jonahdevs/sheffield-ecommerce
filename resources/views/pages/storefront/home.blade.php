@@ -71,7 +71,7 @@ new #[Layout('layouts::storefront')] #[Title('Commercial Kitchen, Cold Room, Lau
     {
         // Curated: products staff have tagged "Featured", ordered by sort_order.
         $featured = Product::query()
-            ->with(['brand', 'taxClass', 'images' => fn ($q) => $q->where('is_cover', true)->limit(1)])
+            ->with(['brand', 'taxClass', 'media'])
             ->visibleInCatalog()
             ->published()
             ->where('stock_status', StockStatus::IN_STOCK)
@@ -88,7 +88,7 @@ new #[Layout('layouts::storefront')] #[Title('Commercial Kitchen, Cold Room, Lau
 
         // Fallback: nothing curated yet — show the locked random pool from mount().
         return Product::query()
-            ->with(['brand', 'taxClass', 'images' => fn ($q) => $q->where('is_cover', true)->limit(1)])
+            ->with(['brand', 'taxClass', 'media'])
             ->whereIn('id', $this->featuredProductIds)
             ->get()
             ->sortBy(fn ($p) => array_search($p->id, $this->featuredProductIds))
@@ -99,7 +99,7 @@ new #[Layout('layouts::storefront')] #[Title('Commercial Kitchen, Cold Room, Lau
     public function newArrivals(): Collection
     {
         $base = Product::query()
-            ->with(['brand', 'taxClass', 'images' => fn ($q) => $q->where('is_cover', true)->limit(1)])
+            ->with(['brand', 'taxClass', 'media'])
             ->visibleInCatalog()
             ->published()
             ->where('stock_status', StockStatus::IN_STOCK)
@@ -267,7 +267,7 @@ new #[Layout('layouts::storefront')] #[Title('Commercial Kitchen, Cold Room, Lau
     <section class="shell pt-14">
         <div class="mb-4 flex items-baseline justify-between">
             <h2 class="text-[22px] font-semibold tracking-tight">Shop by category</h2>
-            <a href="{{ route('catalog') }}" wire:navigate
+            <a href="{{ route('categories.index') }}" wire:navigate
                 class="inline-flex items-center gap-1.5 text-[13px] text-ink-3 transition-colors hover:text-ink">
                 View all <flux:icon.arrow-right variant="micro" class="size-3.5" />
             </a>
@@ -280,15 +280,20 @@ new #[Layout('layouts::storefront')] #[Title('Commercial Kitchen, Cold Room, Lau
             @foreach ($this->featuredCategories as $category)
                 <a href="{{ route('category.show', $category) }}" wire:navigate class="group block transition">
                     <div class="relative aspect-square overflow-hidden bg-surface-sunken">
-                        @if ($category->square_url)
+                        @if ($category->image_url)
                             @if ($placeholder = $category->image_placeholder)
                                 <img src="{{ $placeholder }}" alt="" aria-hidden="true"
                                     class="absolute inset-0 size-full scale-110 object-cover blur-xl" />
                             @endif
-                            <img src="{{ $category->square_url }}" alt="" loading="lazy"
-                                x-data="{ loaded: false }" x-init="loaded = $el.complete" x-on:load="loaded = true"
-                                x-bind:class="loaded ? 'opacity-100' : 'opacity-0'"
-                                class="relative block size-full object-cover transition duration-500 group-hover:scale-[1.04]" />
+                            <picture class="contents">
+                                @if ($category->image_webp_url)
+                                    <source srcset="{{ $category->image_webp_url }}" type="image/webp" />
+                                @endif
+                                <img src="{{ $category->image_url }}" alt="" loading="lazy"
+                                    x-data="{ loaded: false }" x-init="loaded = $el.complete" x-on:load="loaded = true"
+                                    x-bind:class="loaded ? 'opacity-100' : 'opacity-0'"
+                                    class="relative block size-full object-cover transition duration-500 group-hover:scale-[1.04]" />
+                            </picture>
                         @endif
                     </div>
                     <div class="flex items-baseline justify-between gap-2 pt-2.5">
@@ -349,7 +354,7 @@ new #[Layout('layouts::storefront')] #[Title('Commercial Kitchen, Cold Room, Lau
                     <div class="text-[11px] font-semibold uppercase tracking-widest text-white/60">Just In</div>
                     <div class="mt-2 font-serif text-4xl leading-none text-white">New</div>
                     <div class="mt-3 text-[13px] leading-relaxed text-white/75">Discover what's just dropped</div>
-                    <a href="{{ route('catalog') }}?sort=newest" wire:navigate
+                    <a href="{{ route('catalog') }}?arrivals=1" wire:navigate
                         class="group mt-5 inline-flex w-fit items-center gap-1.5 rounded-full border border-white/30 px-4 py-2 text-xs font-semibold text-white transition-all hover:border-white hover:bg-white/10">
                         View All
                         <flux:icon.arrow-right class="size-3 transition-transform duration-200 group-hover:translate-x-1" />
@@ -406,7 +411,7 @@ new #[Layout('layouts::storefront')] #[Title('Commercial Kitchen, Cold Room, Lau
     <section class="shell pt-14">
         <div class="mb-4 flex items-baseline justify-between">
             <h2 class="text-[22px] font-semibold tracking-tight">Featured equipment</h2>
-            <a href="{{ route('catalog') }}" wire:navigate
+            <a href="{{ route('catalog') }}?tag=Featured" wire:navigate
                 class="inline-flex items-center gap-1.5 text-[13px] text-ink-3 transition-colors hover:text-ink">
                 View all <flux:icon.arrow-right variant="micro" class="size-3.5" />
             </a>

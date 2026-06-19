@@ -74,8 +74,8 @@ return new class extends Migration
             $table->string('slug')->unique();
             $table->foreignId('parent_id')->nullable()->constrained('categories')->nullOnDelete();
             $table->text('description')->nullable();
+            $table->string('banner', 500)->nullable();
             $table->string('image', 500)->nullable();
-            $table->string('thumbnail', 500)->nullable();
             $table->string('icon', 500)->nullable();
             $table->text('icon_svg')->nullable();
             $table->string('status')->default('draft');

@@ -86,7 +86,7 @@ new #[Layout('layouts::storefront')] #[Title('Cart')] class extends Component
         return Product::query()
             ->whereIn('id', $crossSellIds)
             ->where('visibility', 'visible')
-            ->with(['brand', 'taxClass', 'images' => fn ($q) => $q->where('is_cover', true)->limit(1)])
+            ->with(['brand', 'taxClass', 'media'])
             ->get();
     }
 }; ?>
@@ -114,9 +114,9 @@ new #[Layout('layouts::storefront')] #[Title('Cart')] class extends Component
         <div class="flex items-center justify-between">
             <h1 class="text-2xl font-semibold tracking-tight sm:text-3xl">Cart</h1>
             @if ($this->lines->isNotEmpty())
-                <flux:button variant="customer-danger" size="customer" wire:click="clear" wire:confirm="Remove all items from your cart?">
-                    Clear cart
-                </flux:button>
+                <flux:modal.trigger name="confirm-clear-cart">
+                    <flux:button variant="customer-danger" size="customer">Clear cart</flux:button>
+                </flux:modal.trigger>
             @endif
         </div>
 
@@ -274,7 +274,7 @@ new #[Layout('layouts::storefront')] #[Title('Cart')] class extends Component
                             <span class="text-2xl font-bold text-brand-500 tabular-nums">{!! money($totalCents) !!}</span>
                         </div>
 
-                        <flux:button variant="customer-primary" size="customer-lg" :href="route('checkout')" wire:navigate icon:trailing="arrow-right" class="mt-5! w-full!">
+                        <flux:button variant="customer-primary" size="customer-lg" :href="route('checkout')" wire:navigate icon:trailing="chevron-right" class="mt-5! w-full!">
                             Proceed to checkout
                         </flux:button>
 
@@ -329,4 +329,18 @@ new #[Layout('layouts::storefront')] #[Title('Cart')] class extends Component
     </div>
 
     @include('partials.storefront.accessory-modal')
+
+    {{-- Clear cart confirmation --}}
+    <flux:modal name="confirm-clear-cart" class="max-w-sm">
+        <flux:heading size="lg" class="uppercase tracking-wide">Clear your cart?</flux:heading>
+        <flux:subheading class="mt-2">All {{ $this->lines->count() }} {{ \Illuminate\Support\Str::plural('item', $this->lines->count()) }} will be removed. This cannot be undone.</flux:subheading>
+        <div class="mt-6 flex gap-3">
+            <flux:modal.close class="flex-1">
+                <flux:button variant="ghost" class="w-full">Cancel</flux:button>
+            </flux:modal.close>
+            <flux:button variant="danger" class="flex-1" wire:click="clear" x-on:click="$flux.modal('confirm-clear-cart').close()">
+                Yes, clear cart
+            </flux:button>
+        </div>
+    </flux:modal>
 </div>

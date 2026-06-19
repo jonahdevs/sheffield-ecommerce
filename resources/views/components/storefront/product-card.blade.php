@@ -30,8 +30,19 @@
         {{-- Clickable image link fills the entire area --}}
         <a href="{{ route('product.show', $product) }}" wire:navigate class="absolute inset-0">
             @if ($product->cover_url)
-                <img src="{{ $product->cover_url }}" alt="{{ $product->name }}" loading="lazy"
-                    class="size-full object-contain object-center" />
+                @if ($placeholder = $product->cover_placeholder)
+                    <img src="{{ $placeholder }}" alt="" aria-hidden="true"
+                        class="absolute inset-0 size-full scale-110 object-contain blur-xl" />
+                @endif
+                <picture class="contents">
+                    @if ($product->cover_webp_url)
+                        <source srcset="{{ $product->cover_webp_url }}" type="image/webp" />
+                    @endif
+                    <img src="{{ $product->cover_url }}" alt="{{ $product->name }}" loading="lazy"
+                        x-data="{ loaded: false }" x-init="loaded = $el.complete" x-on:load="loaded = true"
+                        x-bind:class="loaded ? 'opacity-100' : 'opacity-0'"
+                        class="relative size-full object-contain object-center transition duration-500" />
+                </picture>
             @else
                 <div class="flex size-full items-center justify-center text-ink-4">
                     <flux:icon.photo class="size-12" />

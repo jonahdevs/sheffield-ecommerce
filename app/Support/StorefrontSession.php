@@ -82,7 +82,7 @@ final class StorefrontSession
         $keys = collect($cart)->keys()->map(fn ($key) => self::splitKey($key));
 
         $products = Product::query()
-            ->with(['brand', 'taxClass', 'images' => fn ($q) => $q->where('is_cover', true)->limit(1)])
+            ->with(['brand', 'taxClass', 'media'])
             ->whereIn('slug', $keys->pluck('slug')->unique()->all())
             ->where('visibility', 'visible')
             ->get()
@@ -319,7 +319,7 @@ final class StorefrontSession
         }
 
         $products = Product::query()
-            ->with(['brand', 'images' => fn ($q) => $q->where('is_cover', true)->limit(1)])
+            ->with(['brand', 'media'])
             ->whereIn('slug', $slugs)
             ->where('visibility', 'visible')
             ->get()
@@ -428,7 +428,7 @@ final class StorefrontSession
             ->with([
                 'brand',
                 'primaryCategory',
-                'images' => fn ($q) => $q->where('is_cover', true)->limit(1),
+                'media',
                 'productAttributes' => fn ($q) => $q->where('is_visible', true)->orderBy('sort_order'),
                 'productAttributes.attribute',
             ])

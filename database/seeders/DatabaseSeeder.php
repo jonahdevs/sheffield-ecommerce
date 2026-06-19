@@ -37,6 +37,8 @@ class DatabaseSeeder extends Seeder
             QuoteSeeder::class,
             ReviewSeeder::class,
             BannedIpSeeder::class,
+            // Must run last: builds image conversions for all media attached above.
+            MediaSeeder::class,
         ]);
     }
 }

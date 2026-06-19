@@ -133,7 +133,8 @@ new #[Layout('layouts::app')] #[Title('Edit Category — Admin')] class extends 
 
         $this->category
             ->addMedia($this->{$pendingProperty}->getRealPath())
-            ->usingFileName($this->{$pendingProperty}->getClientOriginalName())
+            ->usingFileName(\App\Support\MediaNaming::category($this->slug, $collection, $this->{$pendingProperty}->getClientOriginalExtension()))
+            ->usingName($this->name)
             ->toMediaCollection($collection);
 
         $this->{$pendingProperty} = null;
@@ -203,8 +204,7 @@ new #[Layout('layouts::app')] #[Title('Edit Category — Admin')] class extends 
                 <flux:subheading>Edit category details, images, and SEO.</flux:subheading>
             </div>
             <div class="flex items-center gap-3">
-                <flux:button variant="ghost" :href="route('admin.categories.index')" wire:navigate>Cancel</flux:button>
-                <flux:button type="submit" variant="primary" icon="check">Save changes</flux:button>
+                <flux:button type="submit" variant="primary">Save changes</flux:button>
             </div>
         </div>
 

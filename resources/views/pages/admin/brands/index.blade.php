@@ -203,7 +203,18 @@ new #[Layout('layouts::app')] #[Title('Brands — Admin')] class extends Compone
             <flux:table.rows>
                 @forelse ($this->brands as $brand)
                     <flux:table.row :key="$brand->id">
-                        <flux:table.cell variant="strong">{{ $brand->name }}</flux:table.cell>
+                        <flux:table.cell>
+                            <div class="flex items-center gap-3">
+                                <div class="size-8 shrink-0 overflow-hidden rounded border border-zinc-100 bg-zinc-50 p-0.5">
+                                    @if ($brand->logo_url)
+                                        <img src="{{ $brand->logo_url }}" alt="{{ $brand->name }}" class="size-full object-contain" />
+                                    @else
+                                        <flux:icon.building-storefront variant="outline" class="size-full text-zinc-300" />
+                                    @endif
+                                </div>
+                                <span class="font-semibold text-zinc-800 dark:text-white">{{ $brand->name }}</span>
+                            </div>
+                        </flux:table.cell>
                         <flux:table.cell class="font-mono text-xs text-zinc-400">{{ $brand->slug }}</flux:table.cell>
                         <flux:table.cell class="text-zinc-500">
                             @if ($brand->website_url)
@@ -230,13 +241,13 @@ new #[Layout('layouts::app')] #[Title('Brands — Admin')] class extends Compone
                         <flux:table.cell align="end">
                             <div class="flex items-center justify-end gap-1">
                                 <flux:tooltip content="Activity log">
-                                    <flux:button size="xs" variant="ghost" icon="clock"
+                                    <flux:button size="xs" variant="ghost" icon="clock" icon:variant="outline"
                                         :href="route('admin.activity.item', ['brand', $brand->id])"
                                         wire:navigate />
                                 </flux:tooltip>
-                                <flux:button size="xs" variant="ghost" icon="pencil-square"
+                                <flux:button size="xs" variant="ghost" icon="pencil-square" icon:variant="outline"
                                     wire:click="openEdit({{ $brand->id }})" />
-                                <flux:button size="xs" variant="ghost" icon="trash-2"
+                                <flux:button size="xs" variant="ghost" icon="trash-2" icon:variant="outline"
                                     wire:click="delete({{ $brand->id }})"
                                     wire:confirm="Delete '{{ addslashes($brand->name) }}'?"
                                     class="text-red-500! hover:text-red-600!" />

@@ -166,27 +166,56 @@
     @endif
 
     {{-- RECEIPT CONFIRMATION --}}
+    @php
+        use BaconQrCode\Renderer\ImageRenderer;
+        use BaconQrCode\Renderer\Image\SvgImageBackEnd;
+        use BaconQrCode\Renderer\RendererStyle\RendererStyle;
+        use BaconQrCode\Writer;
+
+        $confirmUrl = $order->shipment
+            ? \Illuminate\Support\Facades\URL::signedRoute('delivery.confirm', ['shipment' => $order->shipment])
+            : null;
+
+        $qrSvg = null;
+        if ($confirmUrl) {
+            $renderer = new ImageRenderer(new RendererStyle(160), new SvgImageBackEnd());
+            $writer   = new Writer($renderer);
+            $qrSvg    = $writer->writeString($confirmUrl);
+        }
+    @endphp
+
     <div class="mt-8">
         <div class="text-[10.5px] font-bold uppercase tracking-widest text-zinc-600 mb-4">Receipt confirmation</div>
-        <div class="grid grid-cols-3 gap-6 text-[11px]">
-            <div>
-                <div class="text-zinc-500 mb-1">Received by</div>
-                <div class="border-b border-zinc-400 h-7"></div>
-                <div class="mt-1 text-[10px] text-zinc-400">Full name</div>
+        <div class="flex items-start gap-6">
+            <div class="flex-1 space-y-5">
+                <div class="grid grid-cols-3 gap-6 text-[11px]">
+                    <div>
+                        <div class="text-zinc-500 mb-1">Received by</div>
+                        <div class="border-b border-zinc-400 h-7"></div>
+                        <div class="mt-1 text-[10px] text-zinc-400">Full name</div>
+                    </div>
+                    <div>
+                        <div class="text-zinc-500 mb-1">Signature</div>
+                        <div class="border-b border-zinc-400 h-7"></div>
+                        <div class="mt-1 text-[10px] text-zinc-400">Sign here</div>
+                    </div>
+                    <div>
+                        <div class="text-zinc-500 mb-1">Date received</div>
+                        <div class="border-b border-zinc-400 h-7"></div>
+                        <div class="mt-1 text-[10px] text-zinc-400">DD / MM / YYYY</div>
+                    </div>
+                </div>
+                <div class="text-[10px] text-zinc-400 italic">
+                    By signing above you confirm receipt of the items listed in good condition.
+                </div>
             </div>
-            <div>
-                <div class="text-zinc-500 mb-1">Signature</div>
-                <div class="border-b border-zinc-400 h-7"></div>
-                <div class="mt-1 text-[10px] text-zinc-400">Sign here</div>
-            </div>
-            <div>
-                <div class="text-zinc-500 mb-1">Date received</div>
-                <div class="border-b border-zinc-400 h-7"></div>
-                <div class="mt-1 text-[10px] text-zinc-400">DD / MM / YYYY</div>
-            </div>
-        </div>
-        <div class="mt-3 text-[10px] text-zinc-400 italic">
-            By signing above you confirm receipt of the items listed in good condition.
+
+            @if ($qrSvg)
+                <div class="shrink-0 text-center">
+                    <div class="border border-zinc-200 p-1 inline-block">{!! $qrSvg !!}</div>
+                    <div class="mt-1 text-[9px] text-zinc-400 leading-tight">Scan to confirm<br>receipt digitally</div>
+                </div>
+            @endif
         </div>
     </div>
 

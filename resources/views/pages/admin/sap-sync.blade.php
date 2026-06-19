@@ -25,7 +25,7 @@ new #[Layout('layouts::app')] #[Title('SAP Sync — Admin')] class extends Compo
     public string $tab = 'failed';
 
     #[Url]
-    public int $perPage = 25;
+    public int $perPage = 10;
 
     public function updatedPerPage(): void
     {
@@ -205,7 +205,9 @@ new #[Layout('layouts::app')] #[Title('SAP Sync — Admin')] class extends Compo
             <flux:callout.heading>Auto-sync is currently disabled</flux:callout.heading>
             <flux:callout.text>
                 New orders won't post to SAP automatically. You can still review history and manually resync below.
-                Enable it under <a href="{{ route('admin.settings.system') }}" wire:navigate class="underline">Settings <flux:icon.chevron-right class="inline size-3" /> System <flux:icon.chevron-right class="inline size-3" /> SAP</a>.
+                Enable it under <a href="{{ route('admin.settings.system') }}" wire:navigate class="underline">Settings
+                    <flux:icon.chevron-right class="inline size-3" /> System <flux:icon.chevron-right
+                        class="inline size-3" /> SAP</a>.
             </flux:callout.text>
         </flux:callout>
     @endunless

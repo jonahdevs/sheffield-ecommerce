@@ -19,6 +19,10 @@ return new class extends SettingsMigration
         $this->migrator->addEncrypted('integrations.google_client_secret', null);
         $this->migrator->add('integrations.google_redirect_url', null);
         $this->migrator->addEncrypted('integrations.google_maps_api_key', '');
+        $this->migrator->add('integrations.facebook_login_enabled', false);
+        $this->migrator->add('integrations.facebook_client_id', null);
+        $this->migrator->addEncrypted('integrations.facebook_client_secret', null);
+        $this->migrator->add('integrations.facebook_redirect_url', null);
         $this->migrator->add('integrations.map_provider', 'leaflet');
         $this->migrator->add('integrations.recaptcha_enabled', false);
         $this->migrator->add('integrations.recaptcha_site_key', '');

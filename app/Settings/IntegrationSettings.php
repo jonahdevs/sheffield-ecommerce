@@ -16,6 +16,15 @@ class IntegrationSettings extends Settings
 
     public ?string $google_redirect_url;
 
+    public bool $facebook_login_enabled;
+
+    public ?string $facebook_client_id;
+
+    #[ShouldBeEncrypted]
+    public ?string $facebook_client_secret;
+
+    public ?string $facebook_redirect_url;
+
     #[ShouldBeEncrypted]
     public string $google_maps_api_key;
 

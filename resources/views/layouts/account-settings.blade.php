@@ -27,7 +27,7 @@
 
                             <flux:separator class="my-2" />
 
-                            <flux:navlist.item icon="arrow-left" :href="route('account.dashboard')" wire:navigate>
+                            <flux:navlist.item icon="chevron-left" :href="route('account.dashboard')" wire:navigate>
                                 Back to account
                             </flux:navlist.item>
 

@@ -24,10 +24,17 @@
             </flux:sidebar.item>
             @endcan
             @can('catalog.manage')
-            <flux:sidebar.item icon="folder" :href="route('admin.categories.index')" :current="request()->routeIs('admin.categories.*')"
-                wire:navigate>
-                {{ __('Categories') }}
-            </flux:sidebar.item>
+            <flux:sidebar.group icon="folder" heading="{{ __('Categories') }}" expandable
+                :expanded="request()->routeIs('admin.categories.*') || request()->routeIs('admin.placements.*')"
+                :current="request()->routeIs('admin.categories.*') || request()->routeIs('admin.placements.*')"
+                class="grid">
+                <flux:sidebar.item :href="route('admin.categories.index')" :current="request()->routeIs('admin.categories.*')" wire:navigate>
+                    {{ __('All categories') }}
+                </flux:sidebar.item>
+                <flux:sidebar.item :href="route('admin.placements.index')" :current="request()->routeIs('admin.placements.*')" wire:navigate>
+                    {{ __('Placements') }}
+                </flux:sidebar.item>
+            </flux:sidebar.group>
             <flux:sidebar.item icon="tag" :href="route('admin.brands.index')" :current="request()->routeIs('admin.brands.*')"
                 wire:navigate>
                 {{ __('Brands') }}

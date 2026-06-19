@@ -16,7 +16,7 @@ class ProductsMissingImagesExport implements FromQuery, WithColumnWidths, WithHe
     {
         return Product::query()
             ->with(['brand', 'primaryCategory'])
-            ->whereDoesntHave('images')
+            ->whereDoesntHave('media')
             ->orderBy('name');
     }
 

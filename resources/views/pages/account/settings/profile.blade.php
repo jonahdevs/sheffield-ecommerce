@@ -59,7 +59,7 @@ new #[Layout('layouts::settings')] #[Title('Profile')] class extends Component {
 
         $user->save();
 
-        Flux::toast(variant: 'success', text: __('Profile updated.'));
+        Flux::toast(heading: __('Profile updated'), text: __('Your personal details have been saved.'), variant: 'success');
     }
 
     public function updatedAvatar(): void
@@ -80,7 +80,7 @@ new #[Layout('layouts::settings')] #[Title('Profile')] class extends Component {
 
         $this->avatar = null;
 
-        Flux::toast(variant: 'success', text: __('Avatar updated.'));
+        Flux::toast(heading: __('Avatar updated'), text: __('Your profile picture has been changed.'), variant: 'success');
     }
 
     public function removeAvatar(): void
@@ -93,7 +93,7 @@ new #[Layout('layouts::settings')] #[Title('Profile')] class extends Component {
 
         $user->update(['avatar' => null]);
 
-        Flux::toast(variant: 'success', text: __('Avatar removed.'));
+        Flux::toast(heading: __('Avatar removed'), text: __('Your profile picture has been cleared.'), variant: 'success');
     }
 
     /* @chisel-email-verification */

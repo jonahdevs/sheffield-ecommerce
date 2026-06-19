@@ -8,6 +8,12 @@ new class extends Component
 {
     #[On('cart-updated')]
     public function refresh(): void {}
+
+    public function removeFromCart(string $key): void
+    {
+        StorefrontSession::removeFromCart($key);
+        $this->dispatch('cart-updated');
+    }
 }; ?>
 
 @php
@@ -16,7 +22,7 @@ new class extends Component
     $totalCents   = $lines->sum('line_total_cents');
 @endphp
 
-<flux:dropdown position="bottom" align="end" gap="10">
+<flux:dropdown position="bottom" align="end" gap="16">
     <button type="button" aria-label="Cart"
         class="relative inline-flex size-10 cursor-pointer items-center justify-center rounded-md text-ink-2 transition hover:bg-surface-sunken hover:text-ink">
         <flux:icon.shopping-cart variant="micro" class="size-5" />
@@ -57,6 +63,11 @@ new class extends Component
                                 {{ $line['qty'] }} × {!! money($product->sale_price ?? $product->price ?? 0) !!}
                             </div>
                         </div>
+                        <button type="button" wire:click="removeFromCart('{{ $line['key'] }}')"
+                            class="shrink-0 cursor-pointer rounded p-0.5 text-zinc-400 transition hover:bg-zinc-100 hover:text-zinc-600"
+                            aria-label="Remove {{ $product->name }} from cart">
+                            <flux:icon.x-mark variant="micro" class="size-4" />
+                        </button>
                     </div>
                 @endforeach
             </div>

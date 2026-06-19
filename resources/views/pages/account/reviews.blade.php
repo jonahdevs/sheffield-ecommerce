@@ -23,7 +23,7 @@ new #[Layout('layouts::account')] #[Title('Pending Reviews')] class extends Comp
 
         $rows = $user->orders()
             ->where('status', OrderStatus::COMPLETED->value)
-            ->with(['items.product.images' => fn ($q) => $q->where('is_cover', true)->limit(1)])
+            ->with(['items.product.media'])
             ->get()
             ->flatMap(fn ($order) => $order->items->map(fn ($item) => [
                 'product'      => $item->product,
@@ -81,14 +81,14 @@ new #[Layout('layouts::account')] #[Title('Pending Reviews')] class extends Comp
                         @php
                             $product   = $row['product'];
                             $review    = $row['review'];
-                            $cover     = $product->images->first();
+                            $cover     = $product->getFirstMedia('images');
                             $hasReview = $review !== null;
                         @endphp
                         <flux:table.row wire:key="product-{{ $product->id }}">
                             <flux:table.cell>
                                 <div class="flex items-center gap-3">
                                     @if ($cover)
-                                        <img src="{{ Storage::url($cover->path) }}"
+                                        <img src="{{ $cover->getUrl('thumb') ?: $cover->getUrl() }}"
                                              alt="{{ $product->name }}"
                                              class="hidden size-10 shrink-0 rounded border border-zinc-100 object-contain p-0.5 sm:block">
                                     @else

@@ -1,8 +1,10 @@
 {{-- Rating filter — filters products by average approved-review rating.
      Expects the host Livewire component to expose an int $minRating property
      (0 = any). Structure mirrors the legacy storefront's radio.group. --}}
-<div class="px-5 py-4">
-    <div class="mb-3 text-[12px] font-bold uppercase tracking-[0.08em] text-ink-2">Rating</div>
+<div class="{{ ($hideHeading ?? false) ? '' : 'px-5 py-4' }}">
+    @unless($hideHeading ?? false)
+        <div class="mb-3 text-[12px] font-bold uppercase tracking-[0.08em] text-ink-2">Rating</div>
+    @endunless
     <flux:radio.group wire:model.live="minRating">
         @for ($rating = 4; $rating >= 1; $rating--)
             <flux:field class="flex! items-center!">

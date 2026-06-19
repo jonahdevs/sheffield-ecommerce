@@ -4,21 +4,33 @@ use App\Enums\QuoteStatus;
 use App\Models\Product;
 use App\Models\Quote;
 use App\Models\User;
+use App\Settings\QuotationSettings;
+use Flux\Flux;
 use Illuminate\Support\Collection;
+use Illuminate\Validation\ValidationException;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
-new #[Layout('layouts::app')] #[Title('New Quote — Admin')] class extends Component {
+new #[Layout('layouts::app')] #[Title('New Quote — Admin')] class extends Component
+{
     public string $notes = '';
+
     public string $expires_at = '';
+
     public string $contact_name = '';
+
     public string $contact_email = '';
+
     public string $contact_phone = '';
+
     public string $contact_company = '';
+
     public string $productSearch = '';
+
     public string $customerSearch = '';
+
     public ?int $selectedUserId = null;
 
     /** @var array<int, array{product_name: string, product_sku: string, product_model_number: string, product_slug?: string, product_cover_url?: string|null, unit_price: float|string, quantity: int}> */
@@ -26,7 +38,7 @@ new #[Layout('layouts::app')] #[Title('New Quote — Admin')] class extends Comp
 
     public function mount(): void
     {
-        $this->expires_at = now()->addDays(app(\App\Settings\QuotationSettings::class)->default_validity_days)->format('Y-m-d');
+        $this->expires_at = now()->addDays(app(QuotationSettings::class)->default_validity_days)->format('Y-m-d');
     }
 
     /** @return Collection<int, Product> */
@@ -68,11 +80,16 @@ new #[Layout('layouts::app')] #[Title('New Quote — Admin')] class extends Comp
         return $this->selectedUserId ? User::find($this->selectedUserId) : null;
     }
 
+    private function unitPriceCents(mixed $value): int
+    {
+        return (int) round((float) str_replace(',', '', (string) $value) * 100);
+    }
+
     #[Computed]
     public function totalCents(): int
     {
         return collect($this->lineItems)->sum(
-            fn ($item) => (int) round(((float) $item['unit_price']) * 100) * max(1, (int) $item['quantity'])
+            fn ($item) => $this->unitPriceCents($item['unit_price']) * max(1, (int) $item['quantity'])
         );
     }
 
@@ -124,30 +141,41 @@ new #[Layout('layouts::app')] #[Title('New Quote — Admin')] class extends Comp
     }
 
     /**
-     * The unit-price inputs are comma-masked for display; strip the separators
-     * on sync so the stored value stays numeric for casts, validation and totals.
+     * The unit-price inputs are comma-masked for display, so the property holds
+     * strings like "1,234.56" while editing. Strip the separators in one pass
+     * before validation and persistence keep the stored value numeric. Doing
+     * this here — rather than in an updated() hook — leaves the masked value
+     * untouched between renders so the input formatting survives a blur.
      */
-    public function updated(string $name, mixed $value): void
+    private function normalizePrices(): void
     {
-        if (preg_match('/^lineItems\.(\d+)\.unit_price$/', $name, $matches)) {
-            $this->lineItems[(int) $matches[1]]['unit_price'] = str_replace(',', '', (string) $value);
+        foreach ($this->lineItems as $i => $item) {
+            $this->lineItems[$i]['unit_price'] = str_replace(',', '', (string) $item['unit_price']);
         }
     }
 
     public function create(): void
     {
-        $this->validate([
-            'contact_name' => ['nullable', 'string', 'max:255'],
-            'contact_email' => ['nullable', 'email', 'max:255'],
-            'contact_phone' => ['nullable', 'string', 'max:50'],
-            'contact_company' => ['nullable', 'string', 'max:255'],
-            'notes' => ['nullable', 'string'],
-            'expires_at' => ['nullable', 'date'],
-            'lineItems' => ['array'],
-            'lineItems.*.product_name' => ['required', 'string', 'max:255'],
-            'lineItems.*.unit_price' => ['numeric', 'min:0'],
-            'lineItems.*.quantity' => ['integer', 'min:1'],
-        ]);
+        $this->normalizePrices();
+
+        try {
+            $this->validate([
+                'contact_name' => ['nullable', 'string', 'max:255'],
+                'contact_email' => ['nullable', 'email', 'max:255'],
+                'contact_phone' => ['nullable', 'string', 'max:50'],
+                'contact_company' => ['nullable', 'string', 'max:255'],
+                'notes' => ['nullable', 'string'],
+                'expires_at' => ['nullable', 'date'],
+                'lineItems' => ['array'],
+                'lineItems.*.product_name' => ['required', 'string', 'max:255'],
+                'lineItems.*.unit_price' => ['numeric', 'min:0'],
+                'lineItems.*.quantity' => ['integer', 'min:1'],
+            ]);
+        } catch (ValidationException $e) {
+            Flux::toast(heading: 'Could not create quote', text: $e->validator->errors()->first(), variant: 'danger');
+
+            throw $e;
+        }
 
         $quote = Quote::create([
             'user_id' => $this->selectedUserId,
@@ -163,7 +191,7 @@ new #[Layout('layouts::app')] #[Title('New Quote — Admin')] class extends Comp
         ]);
 
         foreach ($this->lineItems as $item) {
-            $unitCents = (int) round(((float) $item['unit_price']) * 100);
+            $unitCents = $this->unitPriceCents($item['unit_price']);
             $quantity = max(1, (int) $item['quantity']);
 
             $quote->items()->create([
@@ -269,7 +297,7 @@ new #[Layout('layouts::app')] #[Title('New Quote — Admin')] class extends Comp
                         <flux:table.rows>
                             @forelse ($lineItems as $index => $item)
                                 @php
-                                    $lineTotal = (int) round(((float) $item['unit_price']) * 100) * max(1, (int) $item['quantity']);
+                                    $lineTotal = $this->unitPriceCents($item['unit_price']) * max(1, (int) $item['quantity']);
                                 @endphp
                                 <flux:table.row :key="'line-'.$index">
                                     <flux:table.cell>

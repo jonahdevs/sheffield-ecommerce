@@ -16,4 +16,22 @@ enum CategorySection: string
             self::FOOTER => 'Footer',
         };
     }
+
+    public function description(): string
+    {
+        return match ($this) {
+            self::NAVBAR => 'Categories shown in the main navigation menu.',
+            self::HOME_PAGE_FEATURED => 'Categories displayed in the "Shop by category" grid on the homepage.',
+            self::FOOTER => 'Category links in the site footer.',
+        };
+    }
+
+    public function icon(): string
+    {
+        return match ($this) {
+            self::NAVBAR => 'bars-3',
+            self::HOME_PAGE_FEATURED => 'home',
+            self::FOOTER => 'document-text',
+        };
+    }
 }

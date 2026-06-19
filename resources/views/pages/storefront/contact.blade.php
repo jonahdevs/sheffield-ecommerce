@@ -2,6 +2,7 @@
 
 use App\Models\Showroom;
 use App\Notifications\ContactEnquiryReceived;
+use App\Rules\Recaptcha;
 use App\Settings\BusinessSettings;
 use Artesaos\SEOTools\Facades\SEOMeta;
 use Illuminate\Support\Collection;
@@ -34,6 +35,8 @@ new #[Layout('layouts::storefront')] #[Title('Contact & Showrooms')] class exten
     public bool $sent = false;
 
     public string $reference = '';
+
+    public string $recaptchaToken = '';
 
     public function mount(): void
     {
@@ -68,6 +71,7 @@ new #[Layout('layouts::storefront')] #[Title('Contact & Showrooms')] class exten
                 'location' => ['nullable', 'integer', 'exists:showrooms,id'],
                 'message' => ['required', 'string', 'max:5000'],
                 'consent' => ['accepted'],
+                'recaptchaToken' => [new Recaptcha('contact')],
             ],
             [
                 'consent.accepted' => 'Please agree to be contacted about your enquiry.',
@@ -257,7 +261,8 @@ new #[Layout('layouts::storefront')] #[Title('Contact & Showrooms')] class exten
                         </div>
                     </div>
                 @else
-                    <form wire:submit="submit">
+                    <x-recaptcha-livewire />
+                    <form x-data @submit.prevent="__rcSubmit('contact', $wire)">
                         <h2 class="font-serif text-[28px] text-ink">Send us a message</h2>
                         <p class="mt-1.5 mb-6 text-[14px] text-ink-3">
                             Tell us what you're working on. The more detail, the faster we can help.

@@ -32,7 +32,7 @@ class QuoteConversionService
             }
 
             $lines = $quote->items()
-                ->with(['product.taxClass', 'product.images' => fn ($q) => $q->where('is_cover', true)->limit(1)])
+                ->with(['product.taxClass', 'product.media'])
                 ->get();
 
             // For items where the admin didn't link a product, resolve by SKU.
@@ -44,7 +44,7 @@ class QuoteConversionService
                 ->values();
 
             $resolvedBySku = $unresolvedSkus->isNotEmpty()
-                ? Product::with(['images' => fn ($q) => $q->where('is_cover', true)->limit(1)])
+                ? Product::with('media')
                     ->whereIn('sku', $unresolvedSkus)
                     ->get()
                     ->keyBy('sku')

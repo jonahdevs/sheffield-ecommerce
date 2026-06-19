@@ -109,7 +109,8 @@ new #[Layout('layouts::app')] #[Title('New Category — Admin')] class extends C
 
         $category
             ->addMedia($this->{$pendingProperty}->getRealPath())
-            ->usingFileName($this->{$pendingProperty}->getClientOriginalName())
+            ->usingFileName(\App\Support\MediaNaming::category($this->slug, $collection, $this->{$pendingProperty}->getClientOriginalExtension()))
+            ->usingName($this->name)
             ->toMediaCollection($collection);
     }
 }; ?>

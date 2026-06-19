@@ -10,6 +10,7 @@ beforeEach(function () {
     $this->seed(PermissionSeeder::class);
     actingAsAdmin();
     Storage::fake('public');
+    Storage::fake('media');
 });
 
 it('attaches uploaded images to the correct media collections on create', function () {
@@ -27,20 +28,20 @@ it('attaches uploaded images to the correct media collections on create', functi
         ->and($category->getFirstMedia('square'))->not->toBeNull()
         ->and($category->getFirstMedia('icon'))->not->toBeNull()
         ->and($category->banner_url)->not->toBeNull()
-        ->and($category->square_url)->not->toBeNull();
+        ->and($category->image_url)->not->toBeNull();
 });
 
-it('falls back to the banner for the square url until a square image exists', function () {
+it('falls back to the image for the banner url when no banner is uploaded', function () {
     $category = Category::create(['name' => 'Refrigeration', 'slug' => 'refrigeration', 'status' => 'active']);
 
-    $banner = UploadedFile::fake()->image('banner.jpg', 1600, 500);
-    $category->addMedia($banner->getRealPath())
-        ->usingFileName('banner.jpg')
-        ->toMediaCollection('banner');
+    $square = UploadedFile::fake()->image('square.jpg', 800, 800);
+    $category->addMedia($square->getRealPath())
+        ->usingFileName('square.jpg')
+        ->toMediaCollection('square');
 
-    expect($category->getFirstMedia('square'))->toBeNull()
-        ->and($category->square_url)->not->toBeNull()
-        ->and($category->square_url)->toBe($category->banner_url);
+    expect($category->getFirstMedia('banner'))->toBeNull()
+        ->and($category->image_url)->not->toBeNull()
+        ->and($category->banner_url)->toBe($category->image_url);
 });
 
 it('replaces the banner when a new one is uploaded on edit (single file collection)', function () {
@@ -64,7 +65,7 @@ it('replaces the banner when a new one is uploaded on edit (single file collecti
 it('exposes a square thumb url once a main image exists, and falls back otherwise', function () {
     $category = Category::create(['name' => 'Mixers', 'slug' => 'mixers', 'status' => 'active']);
 
-    // No media yet -> falls back (to square_url, which is null here).
+    // No media yet -> image_url is null (no banner fallback when neither exists).
     expect($category->image_thumb_url)->toBeNull();
 
     $square = UploadedFile::fake()->image('square.jpg', 800, 800);
@@ -111,12 +112,12 @@ it('backfills category media from legacy columns via the sync command', function
         'name' => 'Fryers',
         'slug' => 'fryers',
         'status' => 'active',
-        'image' => $path,
+        'banner' => $path,
     ]);
 
     expect($category->getFirstMedia('banner'))->toBeNull();
 
-    $this->artisan('categories:sync-media')->assertSuccessful();
+    $this->artisan('media:sync', ['--model' => 'categories'])->assertSuccessful();
 
     expect($category->refresh()->getFirstMedia('banner'))->not->toBeNull();
 });
