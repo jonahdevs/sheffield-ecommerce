@@ -428,6 +428,10 @@ new #[Layout('layouts::app')] #[Title('Maintenance — Admin')] class extends Co
                             {{ $ban->isExpired() ? 'Expired' : 'Expires' }} {{ $ban->expires_at->format('d M Y') }}
                         </p>
                     @endif
+
+                    <p class="mt-1.5 text-xs text-zinc-400">
+                        Banned by {{ $ban->createdBy?->name ?? 'System' }} · {{ $ban->created_at->format('d M Y') }}
+                    </p>
                 </div>
 
                 @if ($loop->last)

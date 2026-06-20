@@ -234,7 +234,10 @@ new class extends Component {
                             <div x-data class="flex items-center justify-center h-full p-4">
                                 <div
                                     class="bg-white p-3 rounded"
-                                    :style="($flux.appearance === 'dark' || ($flux.appearance === 'system' && $flux.dark)) ? 'filter: invert(1) brightness(1.5)' : ''"
+                                    {{-- Invert only when the page actually renders dark (staff side). On the
+                         customer side `.dark` is never applied, so $flux.dark stays false and the
+                         QR is left untouched even if localStorage carries a stale 'dark' value. --}}
+                    :style="$flux.dark ? 'filter: invert(1) brightness(1.5)' : ''"
                                 >
                                     {!! $qrCodeSvg !!}
                                 </div>

@@ -120,7 +120,7 @@ it('builds the order_confirmed WhatsApp template with body parameters', function
     $message = (new OrderConfirmed($order))->toWhatsapp($customer);
 
     expect($message->template)->toBe('order_confirmed')
-        ->and($message->language)->toBe('en_US')
+        ->and($message->language)->toBe('en')
         ->and($message->components)->toHaveCount(1);
 
     $params = array_map(fn ($p) => $p['text'], $message->components[0]['parameters']);

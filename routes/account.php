@@ -43,8 +43,9 @@ Route::middleware(['auth', 'verified', 'customer'])->group(function () {
 
 // ---------------------------------------------------------------------------
 // Settings — URLs live under /account/settings/* but route names are kept
-// short (profile.edit / security.edit / appearance.edit) so existing layout
-// and component references don't need to change.
+// short (profile.edit / security.edit) so existing layout and component
+// references don't need to change. Appearance/dark-mode is staff-only and is
+// intentionally not exposed to customers here.
 // ---------------------------------------------------------------------------
 Route::middleware(['auth', 'customer'])->group(function () {
     Route::redirect('account/settings', 'account/settings/profile');
@@ -54,7 +55,6 @@ Route::middleware(['auth', 'customer'])->group(function () {
 
 Route::middleware(['auth', 'verified', 'customer'])->group(function () {
     Route::livewire('account/settings/notifications', 'pages::account.settings.notifications')->name('notifications.edit');
-    Route::livewire('account/settings/appearance', 'pages::account.settings.appearance')->name('appearance.edit');
     Route::livewire('account/settings/privacy', 'pages::account.settings.privacy')->name('privacy.edit');
 
     Route::livewire('account/settings/security', 'pages::account.settings.security')

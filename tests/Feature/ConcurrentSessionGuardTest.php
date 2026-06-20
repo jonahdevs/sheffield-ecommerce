@@ -30,7 +30,7 @@ function insertSession(User $user, string $sessionId, int $lastActivity): void
 
 it('renders nothing for guests', function () {
     Livewire::test('concurrent-session-guard')
-        ->assertDontSee('New device sign-in');
+        ->assertDontSee('New Device Sign-In');
 });
 
 it('does not block when limit is 0 (unlimited)', function () {
@@ -62,7 +62,7 @@ it('blocks when other sessions meet or exceed the limit', function () {
     $component = Livewire::actingAs($user)->test('concurrent-session-guard');
 
     expect($component->get('isBlocked'))->toBeTrue();
-    $component->assertSee('New device sign-in');
+    $component->assertSee('New Device Sign-In');
 });
 
 it('revokeAll removes all other sessions', function () {

@@ -40,7 +40,8 @@
 
     {{-- Rows 1 & 2 pin together as a single sticky block. Alpine drawer state lives here. --}}
     <div class="sticky top-0 z-40 bg-white" x-data="{ drawerOpen: false, searchOpen: false }"
-        x-effect="document.body.style.overflow = drawerOpen ? 'hidden' : ''">
+        x-effect="document.body.style.overflow = drawerOpen ? 'hidden' : ''"
+        x-init="$nextTick(() => { const sync = () => document.documentElement.style.setProperty('--sticky-header-h', $el.offsetHeight + 'px'); sync(); window.addEventListener('resize', sync); new ResizeObserver(sync).observe($el); })">
         {{-- Row 1 — Promo banner --}}
         @include('partials.storefront.promo-banner')
 
@@ -182,6 +183,17 @@
 
     {{-- Row 3 — Category navigation --}}
     @include('partials.storefront.category-nav')
+
+    {{-- Demo-site notice — hazard-striped banner.
+         Sits after the category bar at rest; on scroll it sticks just below the
+         sticky logo/search header (offset measured into --sticky-header-h). --}}
+    <div class="sticky z-30 bg-[#f7d000] text-center" style="top: var(--sticky-header-h, 108px)">
+        <div class="h-1" style="background-image: repeating-linear-gradient(-45deg, #1a1a1a 0, #1a1a1a 6px, #f7d000 6px, #f7d000 12px);"></div>
+        <p class="px-4 py-2 text-[13px] font-bold leading-snug tracking-wide text-zinc-900">
+            This is a demo site — products, pricing and content are for demonstration purposes only.
+        </p>
+        <div class="h-1" style="background-image: repeating-linear-gradient(-45deg, #1a1a1a 0, #1a1a1a 6px, #f7d000 6px, #f7d000 12px);"></div>
+    </div>
 
     <main>
         {{ $slot }}

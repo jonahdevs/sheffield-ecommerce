@@ -3,6 +3,11 @@
 
 <head>
     @include('partials.head')
+
+    {{-- Dark mode is supported on the staff side only, so the appearance script
+         (which toggles the `.dark` class from localStorage) lives here rather than
+         in the shared head partial. --}}
+    @fluxAppearance
 </head>
 
 {{-- Sunken canvas so flux:card surfaces (bg-white / dark:bg-white/10) lift off the
@@ -37,7 +42,9 @@
         </flux:tooltip>
 
         {{-- Account dropdown — only when signed in (e.g. an expired session landing
-             on an error page has no user, so fall back to a sign-in link). --}}
+             on an error page has no user, so fall back to a sign-in link). A left
+             border divides it from the appearance toggle. --}}
+        <div class="ml-1 flex items-center border-l border-zinc-200 pl-3 dark:border-zinc-700">
         @auth
             <flux:dropdown position="bottom" align="end">
                 <flux:profile circle :initials="auth()->user()->initials()" icon-trailing="chevron-down" />
@@ -72,6 +79,7 @@
                 Log in
             </flux:button>
         @endauth
+        </div>
     </flux:header>
 
     {{ $slot }}

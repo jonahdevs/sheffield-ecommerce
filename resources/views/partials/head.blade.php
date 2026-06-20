@@ -63,4 +63,7 @@
 @fonts
 
 @vite(['resources/css/app.css', 'resources/js/app.js'])
-@fluxAppearance
+
+{{-- Dark mode is staff-only. @fluxAppearance (which applies the `.dark` class from
+     localStorage) is intentionally NOT included here so it can't leak onto the
+     storefront, customer, or auth pages. The staff layout adds it on its own. --}}

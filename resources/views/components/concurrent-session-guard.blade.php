@@ -113,26 +113,23 @@ new class extends Component
                 name="session-guard"
                 :dismissible="false"
                 :closable="false"
-                x-init="$flux.modal('session-guard').show()"
+                x-init="$nextTick(() => $flux.modal('session-guard').show())"
                 class="max-w-md"
             >
                 <div class="space-y-5">
                     {{-- Header — centered --}}
                     <div class="text-center">
-                        <div class="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-amber-50 dark:bg-amber-900/20">
-                            <flux:icon.device-phone-mobile class="size-7 text-amber-600 dark:text-amber-400" />
-                        </div>
-                        <flux:heading size="lg">New device sign-in</flux:heading>
+                        <img src="/images/handshake_1549580.png" alt="" class="mx-auto mb-4 h-14 w-14 object-contain" />
+                        <flux:heading size="lg">New Device Sign-In</flux:heading>
                         <flux:text class="mt-1.5">
                             You are signed in on another device. Please log out from that session to continue here.
                         </flux:text>
                     </div>
 
                     {{-- Session list --}}
-                    <div class="-mx-6 divide-y divide-zinc-100 border-y border-zinc-100 dark:divide-zinc-700 dark:border-zinc-700">
+                    <div class="overflow-hidden rounded-lg border border-zinc-100 divide-y divide-zinc-100 dark:divide-zinc-700 dark:border-zinc-700">
                         @foreach ($this->otherSessions as $session)
-                            <label class="flex cursor-pointer items-center gap-4 px-6 py-3.5 transition hover:bg-zinc-50 dark:hover:bg-zinc-800">
-                                <flux:checkbox value="{{ $session['id'] }}" x-model="sel" />
+                            <label class="flex cursor-pointer items-center gap-4 px-4 py-3.5 transition hover:bg-zinc-50 dark:hover:bg-zinc-800">
                                 <div class="flex flex-1 items-center gap-3">
                                     <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-zinc-100 dark:bg-zinc-800">
                                         <flux:icon.computer-desktop class="size-5 text-zinc-500" />
@@ -146,6 +143,7 @@ new class extends Component
                                         </p>
                                     </div>
                                 </div>
+                                <flux:checkbox value="{{ $session['id'] }}" x-model="sel" />
                             </label>
                         @endforeach
                     </div>

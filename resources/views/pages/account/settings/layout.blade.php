@@ -26,9 +26,6 @@
                 <flux:navlist.item :href="route('security.edit')" :current="request()->routeIs('security.edit')" wire:navigate>
                     {{ __('Security') }}
                 </flux:navlist.item>
-                <flux:navlist.item :href="route('appearance.edit')" :current="request()->routeIs('appearance.edit')" wire:navigate>
-                    {{ __('Appearance') }}
-                </flux:navlist.item>
                 <flux:navlist.item :href="route('privacy.edit')" :current="request()->routeIs('privacy.edit')" wire:navigate>
                     {{ __('Privacy & Data') }}
                 </flux:navlist.item>

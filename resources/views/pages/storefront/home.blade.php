@@ -17,8 +17,7 @@ use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
-new #[Layout('layouts::storefront')] #[Title('Commercial Kitchen, Cold Room, Laundry & Healthcare Equipment')] class extends Component
-{
+new #[Layout('layouts::storefront')] #[Title('Commercial Kitchen, Cold Room, Laundry & Healthcare Equipment')] class extends Component {
     use InteractsWithStorefront;
 
     /**
@@ -39,16 +38,7 @@ new #[Layout('layouts::storefront')] #[Title('Commercial Kitchen, Cold Room, Lau
         TwitterCard::setDescription($description);
         JsonLdMulti::setDescription($description)->setType('Organization');
 
-        $this->featuredProductIds = Product::query()
-            ->visibleInCatalog()
-            ->published()
-            ->where('stock_status', StockStatus::IN_STOCK)
-            ->whereNotNull('price')
-            ->where('price', '>', 0)
-            ->inRandomOrder()
-            ->take(6)
-            ->pluck('id')
-            ->toArray();
+        $this->featuredProductIds = Product::query()->visibleInCatalog()->published()->where('stock_status', StockStatus::IN_STOCK)->whereNotNull('price')->where('price', '>', 0)->inRandomOrder()->take(6)->pluck('id')->toArray();
     }
 
     // TODO: cache these once they become hot. View composer would be cleaner.
@@ -56,7 +46,7 @@ new #[Layout('layouts::storefront')] #[Title('Commercial Kitchen, Cold Room, Lau
     public function featuredCategories(): Collection
     {
         return CategoryPlacement::query()
-            ->with(['category' => fn ($q) => $q->withCount('products')])
+            ->with(['category' => fn($q) => $q->withCount('products')])
             ->where('location', CategorySection::HOME_PAGE_FEATURED)
             ->where('status', CategoryStatus::ACTIVE)
             ->orderBy('sort_order')
@@ -77,7 +67,7 @@ new #[Layout('layouts::storefront')] #[Title('Commercial Kitchen, Cold Room, Lau
             ->where('stock_status', StockStatus::IN_STOCK)
             ->whereNotNull('price')
             ->where('price', '>', 0)
-            ->whereHas('tags', fn ($t) => $t->where('name->'.config('app.locale', 'en'), 'Featured'))
+            ->whereHas('tags', fn($t) => $t->where('name->' . config('app.locale', 'en'), 'Featured'))
             ->orderBy('sort_order')
             ->take(6)
             ->get();
@@ -91,7 +81,7 @@ new #[Layout('layouts::storefront')] #[Title('Commercial Kitchen, Cold Room, Lau
             ->with(['brand', 'taxClass', 'media'])
             ->whereIn('id', $this->featuredProductIds)
             ->get()
-            ->sortBy(fn ($p) => array_search($p->id, $this->featuredProductIds))
+            ->sortBy(fn($p) => array_search($p->id, $this->featuredProductIds))
             ->values();
     }
 
@@ -108,18 +98,10 @@ new #[Layout('layouts::storefront')] #[Title('Commercial Kitchen, Cold Room, Lau
 
         // Engine: published within the window, OR manually pinned with the
         // "New Arrival" tag (overrides the age cut-off).
-        $arrivals = (clone $base)
-            ->where(fn ($q) => $q
-                ->where('published_at', '>=', now()->subDays(self::NEW_ARRIVAL_WINDOW_DAYS))
-                ->orWhereHas('tags', fn ($t) => $t->where('name->'.config('app.locale', 'en'), 'New Arrival')))
-            ->latest('published_at')
-            ->take(12)
-            ->get();
+        $arrivals = (clone $base)->where(fn($q) => $q->where('published_at', '>=', now()->subDays(self::NEW_ARRIVAL_WINDOW_DAYS))->orWhereHas('tags', fn($t) => $t->where('name->' . config('app.locale', 'en'), 'New Arrival')))->latest('published_at')->take(12)->get();
 
         // Fallback: nothing qualifies (new or slow catalog) — show the latest anyway.
-        return $arrivals->isNotEmpty()
-            ? $arrivals
-            : (clone $base)->latest('published_at')->take(12)->get();
+        return $arrivals->isNotEmpty() ? $arrivals : (clone $base)->latest('published_at')->take(12)->get();
     }
 
     #[Computed]
@@ -275,8 +257,7 @@ new #[Layout('layouts::storefront')] #[Title('Commercial Kitchen, Cold Room, Lau
 
         {{-- All featured categories stay visible at every breakpoint; only the column
              count changes, so the same chips simply reflow. --}}
-        <div
-            class="grid grid-cols-2 gap-x-5 gap-y-7 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 2xl:grid-cols-7">
+        <div class="grid grid-cols-2 gap-x-5 gap-y-7 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 2xl:grid-cols-7">
             @foreach ($this->featuredCategories as $category)
                 <a href="{{ route('category.show', $category) }}" wire:navigate class="group block transition">
                     <div class="relative aspect-square overflow-hidden bg-surface-sunken">
@@ -317,7 +298,8 @@ new #[Layout('layouts::storefront')] #[Title('Commercial Kitchen, Cold Room, Lau
                 {{-- Title panel — hidden below md so the marquee runs edge to edge on phones --}}
                 <div
                     class="relative z-10 hidden min-w-60 flex-col justify-center border-r border-zinc-200 bg-white px-8 py-8 md:flex">
-                    <h2 class="font-serif text-[22px] leading-tight font-semibold uppercase">The brands<br>professionals trust.</h2>
+                    <h2 class="font-serif text-[22px] leading-tight font-semibold uppercase">The brands<br>professionals
+                        trust.</h2>
                 </div>
 
                 <div class="brand-marquee relative flex items-stretch overflow-hidden">
@@ -329,8 +311,9 @@ new #[Layout('layouts::storefront')] #[Title('Commercial Kitchen, Cold Room, Lau
                     </div>
                     <div class="brand-marquee-track flex w-max items-stretch">
                         @foreach ([...$this->brands->all(), ...$this->brands->all()] as $brand)
-                            <a href="#" wire:navigate
-                                class="flex w-45 shrink-0 flex-col items-center justify-center gap-2 self-stretch border-r border-zinc-200 px-5 py-7 text-center transition hover:bg-surface-sunken">
+                            <a href="{{ $brand->website_url ?: '#' }}"
+                                @if ($brand->website_url) target="_blank" rel="noopener noreferrer" @endif
+                                class="flex w-45 shrink-0 flex-col items-center justify-center gap-2 self-stretch border-r border-zinc-200 px-5 py-7 text-center transition">
                                 @if ($brand->logo_url)
                                     <img src="{{ $brand->logo_url }}" alt="{{ $brand->name }}"
                                         class="h-24 w-full object-contain" loading="lazy" />
@@ -350,38 +333,39 @@ new #[Layout('layouts::storefront')] #[Title('Commercial Kitchen, Cold Room, Lau
         <div class="overflow-hidden rounded-md bg-brand-500">
             <div class="grid grid-cols-1 lg:grid-cols-6">
                 {{-- Left editorial panel --}}
-                <div class="flex flex-col justify-center border-b border-white/10 px-6 py-8 lg:col-span-1 lg:border-b-0 lg:border-r lg:border-white/10">
+                <div
+                    class="flex flex-col justify-center border-b border-white/10 px-6 py-8 lg:col-span-1 lg:border-b-0 lg:border-r lg:border-white/10">
                     <div class="text-[11px] font-semibold uppercase tracking-widest text-white/60">Just In</div>
                     <div class="mt-2 font-serif text-4xl leading-none text-white">New</div>
                     <div class="mt-3 text-[13px] leading-relaxed text-white/75">Discover what's just dropped</div>
                     <a href="{{ route('catalog') }}?arrivals=1" wire:navigate
                         class="group mt-5 inline-flex w-fit items-center gap-1.5 rounded-full border border-white/30 px-4 py-2 text-xs font-semibold text-white transition-all hover:border-white hover:bg-white/10">
                         View All
-                        <flux:icon.arrow-right class="size-3 transition-transform duration-200 group-hover:translate-x-1" />
+                        <flux:icon.arrow-right
+                            class="size-3 transition-transform duration-200 group-hover:translate-x-1" />
                     </a>
                 </div>
 
                 {{-- Products carousel --}}
-                <div class="relative px-4 py-5 lg:col-span-5"
-                    x-data="{
-                        swiper: null,
-                        init() {
-                            this.swiper = new Swiper($refs.carousel, {
-                                spaceBetween: 12,
-                                loop: true,
-                                speed: 400,
-                                preventClicks: false,
-                                preventClicksPropagation: false,
-                                touchStartPreventDefault: false,
-                                breakpoints: {
-                                    375: { slidesPerView: 2 },
-                                    640: { slidesPerView: 3 },
-                                    768: { slidesPerView: 4 },
-                                    1024: { slidesPerView: 5 },
-                                },
-                            });
-                        }
-                    }">
+                <div class="relative px-4 py-5 lg:col-span-5" x-data="{
+                    swiper: null,
+                    init() {
+                        this.swiper = new Swiper($refs.carousel, {
+                            spaceBetween: 12,
+                            loop: true,
+                            speed: 400,
+                            preventClicks: false,
+                            preventClicksPropagation: false,
+                            touchStartPreventDefault: false,
+                            breakpoints: {
+                                375: { slidesPerView: 2 },
+                                640: { slidesPerView: 3 },
+                                768: { slidesPerView: 4 },
+                                1024: { slidesPerView: 5 },
+                            },
+                        });
+                    }
+                }">
                     <div class="swiper" x-ref="carousel">
                         <div class="swiper-wrapper pb-1">
                             @foreach ($this->newArrivals as $product)

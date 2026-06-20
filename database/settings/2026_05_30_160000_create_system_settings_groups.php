@@ -8,8 +8,8 @@ return new class extends SettingsMigration
     {
         // Email & SMS
         $this->migrator->add('email.from_name', config('app.name', 'My Store'));
-        $this->migrator->add('email.from_address', config('mail.from.address', 'hello@example.com'));
-        $this->migrator->add('email.mail_driver', config('mail.default', 'smtp'));
+        $this->migrator->add('email.from_address', env('MAIL_FROM_ADDRESS', 'hello@example.com'));
+        $this->migrator->add('email.mail_driver', env('MAIL_MAILER', 'smtp'));
         $this->migrator->add('email.sms_provider', 'none');
         $this->migrator->add('email.sms_sender_id', '');
 

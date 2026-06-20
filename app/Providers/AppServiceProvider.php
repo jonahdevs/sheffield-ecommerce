@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Events\LowStockDetected;
 use App\Http\Middleware\ValidateRecaptcha;
 use App\Listeners\HandleLowStockAlert;
+use App\Listeners\SendBanNotification;
 use App\Listeners\SyncCartOnLogin;
 use App\Services\Mpesa\DarajaClient;
 use App\Services\PaymentCredentials;
@@ -15,6 +16,7 @@ use App\Settings\SecuritySettings;
 use App\Support\ActivitySource;
 use App\Support\Money;
 use Carbon\CarbonImmutable;
+use Cog\Laravel\Ban\Events\ModelWasBanned;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
@@ -57,6 +59,9 @@ class AppServiceProvider extends ServiceProvider
         // registration, 2FA and passkey auth (all dispatch the Login event).
         Event::listen(Login::class, SyncCartOnLogin::class);
         Event::listen(LowStockDetected::class, HandleLowStockAlert::class);
+
+        // Email the customer a suspension notice whenever they are banned.
+        Event::listen(ModelWasBanned::class, SendBanNotification::class);
     }
 
     /**

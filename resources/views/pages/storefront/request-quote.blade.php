@@ -452,8 +452,8 @@ new #[Layout('layouts::storefront')] #[Title('Request a quote')] class extends C
         <div class="max-w-2xl">
             <h1 class="text-3xl font-semibold tracking-tight">Request a quote</h1>
             <p class="mt-2 text-ink-3">
-                Building a kitchen, fitting out a site, or tendering a project? Tell us what you need and our team
-                will prepare a formal quotation. Add products on the right, or just describe your requirements.
+                Fitting out a commercial kitchen, cold room, laundry or healthcare facility? Tell us what you need and
+                our team will prepare a formal quotation. Add products on the right, or just describe your requirements.
             </p>
         </div>
 

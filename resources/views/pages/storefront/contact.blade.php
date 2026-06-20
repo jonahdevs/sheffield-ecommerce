@@ -167,7 +167,7 @@ new #[Layout('layouts::storefront')] #[Title('Contact & Showrooms')] class exten
 
     {{-- ───────── Masthead ───────── --}}
     <section class="border-b border-line bg-surface-sunken">
-        <div class="shell pt-4 pb-12 lg:pb-16">
+        <div class="shell pt-4 pb-7 lg:pb-9">
             <div class="max-w-3xl">
                 <flux:breadcrumbs class="mb-4">
                     <flux:breadcrumbs.item :href="route('home')" wire:navigate>Home</flux:breadcrumbs.item>
@@ -466,7 +466,7 @@ new #[Layout('layouts::storefront')] #[Title('Contact & Showrooms')] class exten
                 <div class="flex flex-wrap gap-1.5 border-b border-line pb-3.5">
                     @foreach ($this->showrooms as $loc)
                         <button type="button" @click="active = {{ $loc->id }}"
-                            class="inline-flex h-8.5 items-center gap-1.5 rounded-full border px-3.5 text-[13px] transition"
+                            class="inline-flex h-8.5 cursor-pointer items-center gap-1.5 rounded-full border px-3.5 text-[13px] transition"
                             :class="active === {{ $loc->id }} ? 'border-ink bg-ink text-white font-semibold' :
                                 'border-line bg-surface text-ink-2 font-medium hover:border-line-strong'">
                             {{ $loc->city }}

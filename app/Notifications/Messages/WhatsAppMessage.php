@@ -4,7 +4,7 @@ namespace App\Notifications\Messages;
 
 class WhatsAppMessage
 {
-    public string $language = 'en_US';
+    public string $language = 'en';
 
     /** @var array<int, array<string, mixed>> */
     public array $components = [];

@@ -1,5 +1,10 @@
 @php
-    $store = app(\App\Settings\BrandingSettings::class)->store_name ?: config('app.name', 'Sheffield');
+    $branding = app(\App\Settings\BrandingSettings::class);
+    $store = $branding->store_name ?: config('app.name', 'Sheffield');
+    $logoUrl = $branding->favicon_path
+        ? \Illuminate\Support\Facades\Storage::disk('public')->url($branding->favicon_path)
+        : '/favicon.svg';
+    $contactEmail = app(\App\Settings\BusinessSettings::class)->contact_email ?: 'info@sheffieldafrica.com';
 @endphp
 <!DOCTYPE html>
 <html lang="en">
@@ -12,11 +17,17 @@
     <style>
         body {
             margin: 0;
+            box-sizing: border-box;
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: #0f1d33;
+            background-color: #0f1d33;
+            background-image: linear-gradient(rgba(15, 29, 51, 0.93), rgba(15, 29, 51, 0.93)),
+                url('/images/WEBSITE%20CIRCLES-01.webp');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
             color: #e6ddc8;
             font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
             padding: 2rem;
@@ -27,11 +38,10 @@
             text-align: center;
         }
 
-        .store {
-            font-size: 0.78rem;
-            letter-spacing: 0.18em;
-            text-transform: uppercase;
-            color: #d8c79d;
+        .logo {
+            height: 3rem;
+            width: auto;
+            margin: 0 auto;
         }
 
         h1 {
@@ -45,14 +55,27 @@
             line-height: 1.65;
             color: #c9bea4;
         }
+
+        .contact {
+            margin-top: 1.5rem;
+            font-size: 0.85rem;
+            color: #c9bea4;
+        }
+
+        .contact a {
+            color: #f6ecd9;
+            text-decoration: none;
+            font-weight: 600;
+        }
     </style>
 </head>
 
 <body>
     <div class="card">
-        <div class="store">{{ $store }}</div>
+        <img class="logo" src="{{ $logoUrl }}" alt="{{ $store }}" />
         <h1>We’ll be right back</h1>
         <p>{{ $message }}</p>
+        <p class="contact">Reach us on <a href="mailto:{{ $contactEmail }}">{{ $contactEmail }}</a></p>
     </div>
 </body>
 

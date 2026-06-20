@@ -18,12 +18,12 @@ return new class extends SettingsMigration
         // SOCIAL & SHARING
         // ==================================================
         $this->migrator->add('social.og_image_path', null);
-        $this->migrator->add('social.twitter_handle', '');
-        $this->migrator->add('social.facebook_url', '');
-        $this->migrator->add('social.instagram_url', '');
-        $this->migrator->add('social.x_url', '');
-        $this->migrator->add('social.linkedin_url', '');
-        $this->migrator->add('social.youtube_url', '');
+        $this->migrator->add('social.twitter_handle', 'sheffield_afric');
+        $this->migrator->add('social.facebook_url', 'https://www.facebook.com/SheffieldAfricaFacilitySolutions');
+        $this->migrator->add('social.instagram_url', 'https://www.instagram.com/sheffieldafrica/');
+        $this->migrator->add('social.x_url', 'https://x.com/sheffield_afric');
+        $this->migrator->add('social.linkedin_url', 'https://www.linkedin.com/company/sheffield-steel-systems-ltd/');
+        $this->migrator->add('social.youtube_url', 'https://www.youtube.com/channel/UCK-oWPdQazenIHndl4zABew');
         $this->migrator->add('social.whatsapp_number', '+254114838130');
         $this->migrator->add('social.whatsapp_order_enabled', false);
 

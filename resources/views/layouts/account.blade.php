@@ -45,7 +45,7 @@
 
                             <flux:separator class="my-2" />
 
-                            <flux:navlist.item icon="cog-6-tooth" :href="route('profile.edit')" :current="request()->routeIs('profile.edit', 'security.edit', 'appearance.edit', 'notifications.edit', 'privacy.edit')" wire:navigate>
+                            <flux:navlist.item icon="cog-6-tooth" :href="route('profile.edit')" :current="request()->routeIs('profile.edit', 'security.edit', 'notifications.edit', 'privacy.edit')" wire:navigate>
                                 Account Settings
                             </flux:navlist.item>
 

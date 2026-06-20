@@ -5,7 +5,7 @@ use App\Http\Middleware\ConfigureSeo;
 use App\Http\Middleware\EnsureIsCustomer;
 use App\Http\Middleware\EnsureIsStaffMember;
 use App\Http\Middleware\EnsureStoreNotInMaintenance;
-use Cog\Laravel\Ban\Http\Middleware\ForbidBannedUser;
+use App\Http\Middleware\ForbidBannedUser;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
