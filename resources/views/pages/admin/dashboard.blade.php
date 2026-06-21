@@ -815,7 +815,10 @@ new #[Layout('layouts::app')] #[Title('Dashboard — Admin')] class extends Comp
                 this.fp = flatpickr(this.$refs.input, {
                     mode: 'range',
                     dateFormat: 'M j, Y',
-                    defaultDate: [from, to],
+                    // Pass Date objects (not Y-m-d strings) so flatpickr doesn't try to
+                    // parse them with the display dateFormat above — otherwise the input
+                    // renders empty and the active default range isn't shown.
+                    defaultDate: [new Date(from + 'T00:00:00'), new Date(to + 'T00:00:00')],
                     maxDate: 'today',
                     onClose: (dates) => {
                         if (dates.length === 2) {

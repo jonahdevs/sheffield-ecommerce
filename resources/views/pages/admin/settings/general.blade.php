@@ -34,6 +34,38 @@ new #[Layout('layouts::app')] #[Title('General settings — Admin')] class exten
             static::$notificationDefaults,
             $prefs['notifications'] ?? [],
         );
+
+        $this->guardSecuritySection();
+    }
+
+    public function updatedSection(string $value): void
+    {
+        if ($value === 'security') {
+            $this->guardSecuritySection();
+        }
+    }
+
+    /**
+     * Mirror the `password.confirm` middleware that protects the customer
+     * security page: the personal Security section may only be viewed after a
+     * recent password confirmation. The section is swapped client-side via a
+     * Livewire property, so the route middleware never runs — we enforce it here.
+     */
+    protected function guardSecuritySection(): void
+    {
+        if ($this->section !== 'security') {
+            return;
+        }
+
+        $confirmedAt = session('auth.password_confirmed_at', 0);
+
+        if (time() - $confirmedAt < config('auth.password_timeout', 10800)) {
+            return;
+        }
+
+        session()->put('url.intended', route('admin.settings.general', ['section' => 'security']));
+
+        $this->redirectRoute('password.confirm');
     }
 
     #[Computed]

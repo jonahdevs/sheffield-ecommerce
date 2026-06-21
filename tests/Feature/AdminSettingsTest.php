@@ -86,10 +86,33 @@ test('admin can save localization', function () {
 
 test('the general tab renders the embedded personal sections', function (string $section) {
     $this->actingAs($this->admin)
+        ->withSession(['auth.password_confirmed_at' => time()])
         ->get(route('admin.settings.general', ['section' => $section]))
         ->assertOk()
         ->assertSeeLivewire('pages::account.settings.'.$section);
 })->with(['profile', 'security', 'appearance']);
+
+test('the staff security section requires a recent password confirmation', function () {
+    $this->actingAs($this->admin)
+        ->get(route('admin.settings.general', ['section' => 'security']))
+        ->assertRedirect(route('password.confirm'));
+});
+
+test('switching to the staff security section requires password confirmation', function () {
+    $this->actingAs($this->admin);
+
+    Livewire::test('pages::admin.settings.general', ['section' => 'profile'])
+        ->set('section', 'security')
+        ->assertRedirect(route('password.confirm'));
+});
+
+test('the staff security section is shown after password confirmation', function () {
+    $this->actingAs($this->admin)
+        ->withSession(['auth.password_confirmed_at' => time()])
+        ->get(route('admin.settings.general', ['section' => 'security']))
+        ->assertOk()
+        ->assertSeeLivewire('pages::account.settings.security');
+});
 
 test('the embedded profile section does not render the standalone settings nav', function () {
     $this->actingAs($this->admin)
