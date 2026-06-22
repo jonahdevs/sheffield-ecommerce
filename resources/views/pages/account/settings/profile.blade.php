@@ -124,7 +124,7 @@ new #[Layout('layouts::settings')] #[Title('Profile')] class extends Component {
     @push('breadcrumbs')
         <flux:breadcrumbs>
             <flux:breadcrumbs.item :href="route('home')" wire:navigate>Home</flux:breadcrumbs.item>
-            <flux:breadcrumbs.item>Settings</flux:breadcrumbs.item>
+            <flux:breadcrumbs.item :href="route('account.dashboard')" wire:navigate>Account</flux:breadcrumbs.item>
             <flux:breadcrumbs.item>Profile</flux:breadcrumbs.item>
         </flux:breadcrumbs>
     @endpush
@@ -139,67 +139,60 @@ new #[Layout('layouts::settings')] #[Title('Profile')] class extends Component {
 
         <div class="space-y-4">
 
-            {{-- Avatar --}}
-            <flux:card class="p-0">
-                <div class="flex items-center gap-3 border-b border-zinc-200 px-5 py-3 dark:border-zinc-700">
-                    <flux:icon.user variant="outline" class="size-4 text-zinc-600 dark:text-zinc-400" />
-                    <flux:heading size="sm" class="uppercase tracking-wide">Profile Photo</flux:heading>
-                </div>
-
-                <div class="flex items-center gap-5 p-5">
-                    <div class="relative shrink-0">
-                        <label for="avatarInput" class="cursor-pointer">
-                            @if (Auth::user()->avatar)
-                                <flux:avatar circle class="size-20" src="{{ Storage::disk('public')->url(Auth::user()->avatar) }}" />
-                            @else
-                                <flux:avatar circle class="size-20" name="{{ Auth::user()->name }}" />
-                            @endif
-                            <div class="absolute bottom-0 right-0 flex size-6 items-center justify-center rounded-full border-2 border-white bg-zinc-700 dark:border-zinc-900">
-                                <flux:icon.pencil-square class="size-3 text-white" />
-                            </div>
-                        </label>
-                    </div>
-
-                    <div class="flex-1">
-                        <div class="font-semibold text-zinc-900 dark:text-white">{{ Auth::user()->name }}</div>
-                        <div class="mb-3 text-sm text-zinc-500">{{ Auth::user()->email }}</div>
-
-                        <div class="flex items-center gap-2">
-                            <flux:button tag="label" for="avatarInput" variant="filled" size="sm" icon="arrow-up-tray">
-                                <span wire:loading.remove wire:target="avatar">Upload photo</span>
-                                <span wire:loading wire:target="avatar">Uploading…</span>
-                            </flux:button>
-
-                            @if (Auth::user()->avatar)
-                                <flux:button type="button" wire:click="removeAvatar" variant="ghost" size="sm">
-                                    Remove
-                                </flux:button>
-                            @endif
-                        </div>
-
-                        <input type="file" id="avatarInput" wire:model="avatar" accept="image/*" class="hidden">
-                        <p class="mt-2 text-xs text-zinc-400">JPG, PNG, GIF or WEBP. Max 2MB.</p>
-
-                        @error('avatar')
-                            <p class="mt-1 text-xs font-semibold text-red-500">{{ $message }}</p>
-                        @enderror
-                    </div>
-                </div>
-            </flux:card>
-
             {{-- Profile Information --}}
             <form wire:submit="updateProfileInformation">
                 <flux:card class="p-0">
                     <div class="flex items-center gap-3 border-b border-zinc-200 px-5 py-3 dark:border-zinc-700">
-                        <flux:icon.pencil-square variant="outline" class="size-4 text-zinc-600 dark:text-zinc-400" />
+                        <flux:icon.user variant="outline" class="size-4 text-zinc-600 dark:text-zinc-400" />
                         <flux:heading size="sm" class="uppercase tracking-wide">Personal Information</flux:heading>
                     </div>
 
                     <div class="space-y-5 p-5">
-                        <flux:input wire:model="name" :label="__('Full name')" type="text" required autofocus autocomplete="name" />
+                        {{-- Avatar --}}
+                        <div class="flex items-center gap-5">
+                            <div class="relative shrink-0">
+                                <label for="avatarInput" class="cursor-pointer">
+                                    @if (Auth::user()->avatar)
+                                        <flux:avatar circle class="size-20" src="{{ Storage::disk('public')->url(Auth::user()->avatar) }}" />
+                                    @else
+                                        <flux:avatar circle class="size-20" name="{{ Auth::user()->name }}" />
+                                    @endif
+                                    <div class="absolute bottom-0 right-0 flex size-6 items-center justify-center rounded-full border-2 border-white bg-zinc-700 dark:border-zinc-900">
+                                        <flux:icon.pencil-square class="size-3 text-white" />
+                                    </div>
+                                </label>
+                            </div>
 
-                        <div>
-                            <flux:input wire:model="email" :label="__('Email address')" type="email" required autocomplete="email" />
+                            <div class="flex-1">
+                                <div class="flex items-center gap-2">
+                                    <flux:button tag="label" for="avatarInput" variant="filled" size="sm" icon="arrow-up-tray">
+                                        <span wire:loading.remove wire:target="avatar">Upload photo</span>
+                                        <span wire:loading wire:target="avatar">Uploading…</span>
+                                    </flux:button>
+
+                                    @if (Auth::user()->avatar)
+                                        <flux:button type="button" wire:click="removeAvatar" variant="ghost" size="sm">
+                                            Remove
+                                        </flux:button>
+                                    @endif
+                                </div>
+
+                                <input type="file" id="avatarInput" wire:model="avatar" accept="image/*" class="hidden">
+                                <p class="mt-2 text-xs text-zinc-400">JPG, PNG, GIF or WEBP. Max 2MB.</p>
+
+                                @error('avatar')
+                                    <p class="mt-1 text-xs font-semibold text-red-500">{{ $message }}</p>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <flux:separator variant="subtle" />
+
+                        <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+                            <flux:input wire:model="name" :label="__('Full name')" type="text" required autofocus autocomplete="name" />
+
+                            <div>
+                                <flux:input wire:model="email" :label="__('Email address')" type="email" required autocomplete="email" />
 
                             {{-- @chisel-email-verification --}}
                             @if ($this->hasUnverifiedEmail)
@@ -219,6 +212,7 @@ new #[Layout('layouts::settings')] #[Title('Profile')] class extends Component {
                                 </div>
                             @endif
                             {{-- @end-chisel-email-verification --}}
+                            </div>
                         </div>
 
                         <flux:field>

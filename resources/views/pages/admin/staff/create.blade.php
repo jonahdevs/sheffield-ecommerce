@@ -84,8 +84,10 @@ new #[Layout('layouts::app')] #[Title('Add Staff — Admin')] class extends Comp
                     <flux:heading size="sm">Account details</flux:heading>
                 </div>
                 <div class="space-y-4 p-6">
-                    <flux:input wire:model="name" label="Full name" placeholder="Jane Doe" required autofocus />
-                    <flux:input wire:model="email" type="email" label="Email address" placeholder="jane@example.com" required />
+                    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                        <flux:input wire:model="name" label="Full name" placeholder="Jane Doe" required autofocus />
+                        <flux:input wire:model="email" type="email" label="Email address" placeholder="jane@example.com" required />
+                    </div>
                     <flux:field>
                         <flux:label>Phone number</flux:label>
                         <x-phone-input wire:model="phone" placeholder="700 000 000" />

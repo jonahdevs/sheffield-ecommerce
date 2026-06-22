@@ -257,7 +257,7 @@ new #[Layout('layouts::settings')] #[Title('Security')] class extends Component 
     @push('breadcrumbs')
         <flux:breadcrumbs>
             <flux:breadcrumbs.item :href="route('home')" wire:navigate>Home</flux:breadcrumbs.item>
-            <flux:breadcrumbs.item>Settings</flux:breadcrumbs.item>
+            <flux:breadcrumbs.item :href="route('account.dashboard')" wire:navigate>Account</flux:breadcrumbs.item>
             <flux:breadcrumbs.item>Password &amp; Security</flux:breadcrumbs.item>
         </flux:breadcrumbs>
     @endpush
