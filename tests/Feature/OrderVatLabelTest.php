@@ -25,14 +25,14 @@ it('labels VAT with the rate snapshotted on the order items', function () {
     orderItemFor($order, 16.0);
     orderItemFor($order, 16.0);
 
-    expect($order->load('items')->vatLabel())->toBe('VAT (16%)');
+    expect($order->load('items')->vatLabel())->toBe('VAT 16%');
 });
 
 it('keeps a fractional rate in the VAT label', function () {
     $order = Order::factory()->create();
     orderItemFor($order, 12.5);
 
-    expect($order->load('items')->vatLabel())->toBe('VAT (12.5%)');
+    expect($order->load('items')->vatLabel())->toBe('VAT 12.5%');
 });
 
 it('falls back to a plain VAT label when item rates differ', function () {
@@ -40,12 +40,12 @@ it('falls back to a plain VAT label when item rates differ', function () {
     orderItemFor($order, 16.0);
     orderItemFor($order, 8.0);
 
-    expect($order->load('items')->vatLabel())->toBe('VAT');
+    expect($order->load('items')->vatLabel())->toBe('VAT (mixed rates)');
 });
 
 it('falls back to a plain VAT label when no rate was charged', function () {
     $order = Order::factory()->create();
     orderItemFor($order, 0.0);
 
-    expect($order->load('items')->vatLabel())->toBe('VAT');
+    expect($order->load('items')->vatLabel())->toBe('VAT (mixed rates)');
 });

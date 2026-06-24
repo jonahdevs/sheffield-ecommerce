@@ -182,7 +182,7 @@
                     </tr>
                     @if ($order->discount_cents > 0)
                     <tr>
-                      <td style="padding-top: 4px; padding-bottom: 4px; font-size: 13px; color: #64748b;">Discount@if ($order->coupon_code) ({{ $order->coupon_code }})@endif</td>
+                      <td style="padding-top: 4px; padding-bottom: 4px; font-size: 13px; color: #64748b;">Discount{{ $order->coupon_code ? ' ('.$order->coupon_code.')' : '' }}</td>
                       <td style="padding-top: 4px; padding-bottom: 4px; text-align: right; font-size: 13px; font-weight: 600; white-space: nowrap; color: #059669;">− {{ money($order->discount_cents) }}</td>
                     </tr>
                     @endif

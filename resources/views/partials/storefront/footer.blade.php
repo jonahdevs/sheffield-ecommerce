@@ -54,7 +54,7 @@
     ];
 @endphp
 
-<footer class="mt-10 bg-brand-blue-500 pt-16 pb-8 text-[#e6ddc8]">
+<footer class="mt-5 bg-brand-blue-500 pt-10 pb-8 text-[#e6ddc8] md:mt-10 md:pt-16">
     <div class="shell">
         <div class="grid grid-cols-2 gap-6 sm:grid-cols-3 md:grid-cols-12">
             <div class="col-span-2 sm:col-span-3 md:col-span-4">

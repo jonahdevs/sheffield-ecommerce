@@ -39,7 +39,7 @@
     @endif
 
     {{-- Rows 1 & 2 pin together as a single sticky block. Alpine drawer state lives here. --}}
-    <div class="sticky top-0 z-40 bg-white" x-data="{ drawerOpen: false, searchOpen: false }"
+    <div class="sticky top-0 z-40 bg-white" x-data="{ drawerOpen: false }"
         x-effect="document.body.style.overflow = drawerOpen ? 'hidden' : ''"
         x-init="$nextTick(() => { const sync = () => document.documentElement.style.setProperty('--sticky-header-h', $el.offsetHeight + 'px'); sync(); window.addEventListener('resize', sync); new ResizeObserver(sync).observe($el); })">
         {{-- Row 1 — Promo banner --}}
@@ -61,13 +61,9 @@
                     <img src="{{ $headerLogo }}" alt="{{ $storeName }}" class="h-9 w-auto sm:h-10" />
                 </a>
 
-                {{-- Search — on mobile it drops down as an absolute overlay below the bar (no height
-                     change to the header); on lg+ it sits inline (flex-1) and the toggle state is ignored. --}}
-                <div class="absolute inset-x-0 top-full z-50 border-t border-zinc-200 bg-white p-3 shadow-lg
-                            lg:static lg:order-2 lg:inset-auto lg:top-auto lg:z-auto lg:!block lg:w-auto lg:max-w-xl lg:flex-1 lg:border-0 lg:bg-transparent lg:p-0 lg:shadow-none"
-                    x-bind:class="searchOpen ? 'block' : 'hidden'"
-                    x-on:keydown.escape.window="searchOpen = false"
-                    x-on:click.outside="if (! $refs.searchToggle?.contains($event.target)) searchOpen = false">
+                {{-- Search — desktop only (inline flex-1); mobile opens a full-screen overlay
+                     via the toggle button below, handled inside the search-dropdown component. --}}
+                <div class="hidden lg:order-2 lg:flex lg:flex-1 lg:max-w-xl">
                     <livewire:storefront.search-dropdown />
                 </div>
 
@@ -85,12 +81,10 @@
                 </nav>
 
                 <div class="order-3 ml-auto flex items-center gap-1 lg:order-4">
-                    {{-- Search toggle — mobile/tablet only. Expands the full-width search line below. --}}
-                    <button type="button" aria-label="Toggle search" x-ref="searchToggle" x-bind:aria-expanded="searchOpen"
-                        @click="searchOpen = !searchOpen; if (searchOpen) $nextTick(() => $root.querySelector('input[type=search]')?.focus())"
+                    {{-- Search toggle — mobile/tablet only. Opens the full-screen overlay inside search-dropdown. --}}
+                    <button type="button" aria-label="Search" @click="$dispatch('open-mobile-search')"
                         class="inline-flex size-11 shrink-0 items-center justify-center rounded-md text-zinc-900 transition hover:bg-black/5 lg:hidden">
-                        <flux:icon.magnifying-glass variant="outline" class="size-6" x-show="!searchOpen" />
-                        <flux:icon.x-mark variant="outline" class="size-6" x-show="searchOpen" x-cloak />
+                        <flux:icon.magnifying-glass variant="outline" class="size-6" />
                     </button>
 
                     {{-- Each indicator is its own Livewire SFC so it re-renders on
@@ -127,55 +121,107 @@
                         <img src="{{ $headerLogo }}" alt="{{ $storeName }}" class="h-9 w-auto" />
                     </a>
                     <button type="button" @click="drawerOpen = false" aria-label="Close menu"
-                        class="inline-flex size-11 items-center justify-center rounded-md text-ink-2 transition hover:bg-surface-sunken">
+                        class="inline-flex size-11 items-center justify-center rounded-md text-ink-2 transition hover:bg-surface-sunken [&>svg]:transition [&>svg]:duration-300 hover:[&>svg]:rotate-90">
                         <flux:icon.x-mark variant="outline" class="size-6" />
                     </button>
                 </div>
 
                 {{-- Scrollable body --}}
                 <div class="scrollbar-thin flex-1 overflow-y-auto">
-                    {{-- Primary nav --}}
-                    <nav class="border-b border-zinc-100 py-2">
-                        @foreach ($primaryNav as $link)
-                            <a href="{{ route($link['route']) }}" wire:navigate @click="drawerOpen = false"
-                               @class([
-                                   'flex items-center px-4 py-3 text-[15px] font-semibold transition',
-                                   'text-brand-500'                              => request()->routeIs($link['match']),
-                                   'text-ink hover:bg-surface-sunken hover:text-brand-500' => ! request()->routeIs($link['match']),
-                               ])>
-                                {{ $link['label'] }}
+
+                    {{-- My Account --}}
+                    <section class="border-b border-zinc-100">
+                        <p class="px-4 pb-2 pt-4 text-[11px] font-semibold uppercase tracking-wider text-ink-3">My Account</p>
+                        @auth
+                            <nav class="pb-2">
+                                <a href="{{ route('account.dashboard') }}" wire:navigate @click="drawerOpen = false"
+                                    class="flex items-center gap-3 px-4 py-2.5 text-[14px] text-ink transition hover:text-brand-500">
+                                    <flux:icon.squares-2x2 variant="micro" class="size-4 shrink-0 text-ink-3" /> Account dashboard
+                                </a>
+                                <a href="{{ route('account.orders.index') }}" wire:navigate @click="drawerOpen = false"
+                                    class="flex items-center gap-3 px-4 py-2.5 text-[14px] text-ink transition hover:text-brand-500">
+                                    <flux:icon.document-text variant="micro" class="size-4 shrink-0 text-ink-3" /> My Orders
+                                </a>
+                                <a href="{{ route('account.quotes.index') }}" wire:navigate @click="drawerOpen = false"
+                                    class="flex items-center gap-3 px-4 py-2.5 text-[14px] text-ink transition hover:text-brand-500">
+                                    <flux:icon.clipboard-document-list variant="micro" class="size-4 shrink-0 text-ink-3" /> My Quotes
+                                </a>
+                                <a href="{{ route('wishlist') }}" wire:navigate @click="drawerOpen = false"
+                                    class="flex items-center gap-3 px-4 py-2.5 text-[14px] text-ink transition hover:text-brand-500">
+                                    <flux:icon.heart variant="micro" class="size-4 shrink-0 text-ink-3" /> Wishlist
+                                </a>
+                                <a href="{{ route('compare') }}" wire:navigate @click="drawerOpen = false"
+                                    class="flex items-center gap-3 px-4 py-2.5 text-[14px] text-ink transition hover:text-brand-500">
+                                    <flux:icon.scale variant="micro" class="size-4 shrink-0 text-ink-3" /> Compare
+                                </a>
+                            </nav>
+                        @else
+                            <nav class="pb-2">
+                                <a href="{{ route('login') }}" wire:navigate @click="drawerOpen = false"
+                                    class="flex items-center gap-3 px-4 py-2.5 text-[14px] text-ink transition hover:text-brand-500">
+                                    <flux:icon.user variant="micro" class="size-4 shrink-0 text-ink-3" /> Sign in
+                                </a>
+                                <a href="{{ route('register') }}" wire:navigate @click="drawerOpen = false"
+                                    class="flex items-center gap-3 px-4 py-2.5 text-[14px] text-ink transition hover:text-brand-500">
+                                    <flux:icon.user-plus variant="micro" class="size-4 shrink-0 text-ink-3" /> Create account
+                                </a>
+                                <a href="{{ route('wishlist') }}" wire:navigate @click="drawerOpen = false"
+                                    class="flex items-center gap-3 px-4 py-2.5 text-[14px] text-ink transition hover:text-brand-500">
+                                    <flux:icon.heart variant="micro" class="size-4 shrink-0 text-ink-3" /> Wishlist
+                                </a>
+                                <a href="{{ route('compare') }}" wire:navigate @click="drawerOpen = false"
+                                    class="flex items-center gap-3 px-4 py-2.5 text-[14px] text-ink transition hover:text-brand-500">
+                                    <flux:icon.scale variant="micro" class="size-4 shrink-0 text-ink-3" /> Compare
+                                </a>
+                            </nav>
+                        @endauth
+                    </section>
+
+                    {{-- Our Categories --}}
+                    <section class="border-b border-zinc-100">
+                        <div class="flex items-center justify-between px-4 pb-2 pt-4">
+                            <p class="text-[11px] font-semibold uppercase tracking-wider text-ink-3">Our Categories</p>
+                            <a href="{{ route('catalog') }}" wire:navigate @click="drawerOpen = false"
+                                class="text-[11px] font-medium text-brand-500 underline transition hover:text-brand-600">View all</a>
+                        </div>
+                        <nav class="pb-2">
+                            @foreach ($navCategories as $category)
+                                <a href="{{ route('category.show', $category) }}" wire:navigate @click="drawerOpen = false"
+                                    class="flex items-center gap-3 px-4 py-2.5 text-[14px] text-ink transition hover:text-brand-500">
+                                    @if ($category->icon_svg)
+                                        <span class="grid size-4 shrink-0 place-items-center text-ink-3 [&>svg]:size-full">
+                                            {!! $category->icon_svg !!}
+                                        </span>
+                                    @elseif ($category->icon_image_url)
+                                        <img src="{{ $category->icon_image_url }}" alt=""
+                                            class="size-4 shrink-0 object-contain opacity-60" loading="lazy" />
+                                    @else
+                                        <flux:icon.tag variant="micro" class="size-4 shrink-0 text-ink-3" />
+                                    @endif
+                                    <span class="truncate">{{ $category->name }}</span>
+                                </a>
+                            @endforeach
+                        </nav>
+                    </section>
+
+                    {{-- Help Centre --}}
+                    <section>
+                        <p class="px-4 pb-1.5 pt-4 text-[11px] font-semibold uppercase tracking-wider text-ink-3">Help Centre</p>
+                        <nav class="pb-4">
+                            <a href="{{ route('contact') }}" wire:navigate @click="drawerOpen = false"
+                                class="flex items-center gap-3 px-4 py-2 text-[13px] text-ink transition hover:text-brand-500">
+                                <flux:icon.chat-bubble-left-right variant="micro" class="size-4 shrink-0 text-ink-3" /> Contact us
                             </a>
-                        @endforeach
-                    </nav>
-
-                    {{-- Categories live in the dedicated category bar (Browse dropdown + scroller),
-                         so they are intentionally not duplicated here. --}}
-
-                    {{-- Quick links folded out of the action bar on mobile --}}
-                    <div class="border-t border-zinc-100 py-2 sm:hidden">
-                        <a href="{{ route('compare') }}" wire:navigate @click="drawerOpen = false"
-                            class="flex items-center gap-3 px-4 py-2.5 text-[14px] text-ink transition hover:bg-surface-sunken">
-                            <flux:icon.scale variant="micro" class="size-4 text-ink-3" /> Compare
-                        </a>
-                        <a href="{{ route('wishlist') }}" wire:navigate @click="drawerOpen = false"
-                            class="flex items-center gap-3 px-4 py-2.5 text-[14px] text-ink transition hover:bg-surface-sunken">
-                            <flux:icon.heart variant="micro" class="size-4 text-ink-3" /> Wishlist
-                        </a>
-                    </div>
-                </div>
-
-                {{-- Drawer footer --}}
-                <div class="shrink-0 border-t border-zinc-200 px-4 py-4">
-                    @guest
-                        <a href="{{ route('login') }}" wire:navigate @click="drawerOpen = false"
-                            class="flex items-center gap-2 text-[14px] font-semibold text-ink hover:text-brand-500">
-                            <flux:icon.user variant="micro" class="size-4" /> Sign in
-                        </a>
-                    @endguest
-                    <div class="mt-3 flex items-center gap-2 text-[13px] text-ink-3">
-                        <flux:icon.phone variant="micro" class="size-4" />
-                        <a href="tel:+254713777111" class="hover:text-ink">+254&nbsp;713&nbsp;777&nbsp;111</a>
-                    </div>
+                            <a href="{{ route('quote.request') }}" wire:navigate @click="drawerOpen = false"
+                                class="flex items-center gap-3 px-4 py-2 text-[13px] text-ink transition hover:text-brand-500">
+                                <flux:icon.document-plus variant="micro" class="size-4 shrink-0 text-ink-3" /> Request a quote
+                            </a>
+                            <a href="tel:+254713777111"
+                                class="flex items-center gap-3 px-4 py-2 text-[13px] text-ink transition hover:text-brand-500">
+                                <flux:icon.phone variant="micro" class="size-4 shrink-0 text-ink-3" /> +254&nbsp;713&nbsp;777&nbsp;111
+                            </a>
+                        </nav>
+                    </section>
                 </div>
             </div>
         </div>

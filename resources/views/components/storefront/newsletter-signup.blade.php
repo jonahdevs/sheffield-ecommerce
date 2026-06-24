@@ -69,12 +69,11 @@ new class extends Component
 
 <section class="mt-12 pb-2">
     <div class="shell">
-        <div class="grid grid-cols-1 gap-10 rounded-md bg-brand-blue-700 px-8 py-12 md:grid-cols-2 md:gap-12 md:px-14">
+        <div class="grid grid-cols-1 gap-6 rounded-md bg-brand-blue-700 px-5 py-7 md:grid-cols-2 md:gap-12 md:px-14 md:py-12">
 
             {{-- Left: copy --}}
             <div class="flex flex-col justify-center">
-                <div class="text-[11px] font-bold tracking-[0.14em] text-[#d8c79d] uppercase">The Sheffield Quarterly</div>
-                <h2 class="mt-3 font-serif text-3xl font-normal leading-snug text-[#f6ecd9]">
+                <h2 class="font-serif text-3xl font-normal leading-snug text-[#f6ecd9]">
                     Catalog drops, project stories, trade-only offers — four times a year.
                 </h2>
                 <ul class="mt-5 flex flex-wrap gap-x-5 gap-y-2 text-[12.5px] text-[#c9bea4]">

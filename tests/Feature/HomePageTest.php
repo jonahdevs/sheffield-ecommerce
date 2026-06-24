@@ -11,8 +11,8 @@ it('renders the storefront home page', function () {
     $response->assertOk();
     $response->assertSee('Shop by category');
     $response->assertSee('Featured equipment');
-    $response->assertSee('Just In');
-    $response->assertSee('The brands');
+    $response->assertSee('just dropped');
+    $response->assertSee('brand-marquee', false);
 });
 
 it('renders the responsive header chrome', function () {
@@ -32,10 +32,8 @@ it('wires each hero slide to a working destination', function () {
     $response = $this->get(route('home'));
 
     $response->assertOk();
+    // All active slides point to catalog; the clearance slide adds a tag filter.
     $response->assertSee('href="'.route('catalog').'"', false);
-    $response->assertSee('href="'.route('category.show', 'coffee-machines').'"', false);
-    $response->assertSee('href="'.route('category.show', 'refrigeration').'"', false);
-    $response->assertSee('href="'.route('category.show', 'bakery-preparation').'"', false);
     $response->assertSee('href="'.e(route('catalog', ['tag' => 'On Sale'])).'"', false);
 });
 

@@ -151,43 +151,140 @@ new #[Layout('layouts::storefront')] #[Title('Commercial Kitchen, Cold Room, Lau
 }; ?>
 
 @php
-    // Hero rotator slides — copy maps to a stable serialisable form for Alpine
+    // Hero rotator slides — copy maps to a stable serialisable form for Alpine.
+    //
+    // Extra keys support the three hero designs below (only one is active at a time):
+    //   'src'         desktop wide banner (text baked in)            — Options B & C
+    //   'src_mobile'  taller mobile banner (text baked in)           — Option B (designer to supply)
+    //   'headline'    live HTML headline over a plain background     — Option A
+    //   'sub'         live HTML subtext                              — Option A
+    //   'src_plain'   background photo WITHOUT baked-in text         — Option A (designer to supply)
     $heroSlides = [
         [
-            'src' => '/images/banners/topline.webp',
-            'alt' => 'Add to your topline — premium kitchen equipment',
-            'cta' => 'Upgrade now',
+            'src' => '/images/banners/kitchen-equipment-banner.webp',
+            'src_mobile' => '/images/banners/mobile/kitchen-equipment-banner.webp',
+            'src_plain' => '/images/banners/plain/kitchen-equipment-banner.webp',
+            'alt' => 'Fully equip your commercial kitchen',
+            'headline' => 'Your business, fully equipped',
+            'sub' => 'Outfit your entire kitchen from one trusted supplier — serving Africa since 2003.',
+            'cta' => 'Shop all equipment',
+            'align' => 'right',
+            'url' => route('catalog'),
+        ],
+        [
+            'src' => '/images/banners/ovens.webp',
+            'src_mobile' => '/images/banners/mobile/ovens.webp',
+            'src_plain' => '/images/banners/plain/ovens.webp',
+            'alt' => 'Commercial ovens',
+            'headline' => 'Bake. Roast. Repeat.',
+            'sub' => 'Commercial ovens engineered to perform shift after shift.',
+            'cta' => 'Shop ovens',
+            'align' => 'right',
+            'url' => route('catalog'),
+        ],
+        [
+            'src' => '/images/banners/fryers.webp',
+            'src_mobile' => '/images/banners/mobile/fryers.webp',
+            'src_plain' => '/images/banners/plain/fryers.webp',
+            'alt' => 'Commercial fryers',
+            'headline' => 'Crispy, consistent, every time',
+            'sub' => 'Heavy-duty fryers that keep pace with the lunch rush.',
+            'cta' => 'Shop fryers',
+            'align' => 'right',
+            'url' => route('catalog'),
+        ],
+        [
+            'src' => '/images/banners/prep-like-a-pro.webp',
+            'src_mobile' => '/images/banners/mobile/prep-like-a-pro.webp',
+            'src_plain' => '/images/banners/plain/prep-like-a-pro.webp',
+            'alt' => 'Food preparation equipment',
+            'headline' => 'Prep like a pro',
+            'sub' => 'Slash prep time with pro-grade processors and slicers.',
+            'cta' => 'Shop prep equipment',
+            'align' => 'left',
+            'url' => route('catalog'),
+        ],
+        [
+            'src' => '/images/banners/meat-processors.webp',
+            'src_mobile' => '/images/banners/mobile/meat-processors.webp',
+            'src_plain' => '/images/banners/plain/meat-processors.webp',
+            'alt' => 'Meat processing equipment',
+            'headline' => 'Power through the butchery',
+            'sub' => 'Mincers, slicers and bowl cutters built for serious volume.',
+            'cta' => 'Shop meat processors',
+            'align' => 'right',
+            'url' => route('catalog'),
+        ],
+        [
+            'src' => '/images/banners/clearance-sale.webp',
+            'src_mobile' => '/images/banners/mobile/clearance-sale.webp',
+            'src_plain' => '/images/banners/plain/clearance-sale.webp',
+            'alt' => 'Limited time clearance sale',
+            'headline' => 'Up to 20% off — while stocks last',
+            'sub' => 'Limited-time prices on selected commercial equipment.',
+            'cta' => 'Shop the sale',
+            'align' => 'left',
+            'url' => route('catalog', ['tag' => 'On Sale']),
+        ],
+
+        // ── Extra banners (uncomment any to add to the rotation) ──────────────
+        /*
+        [
+            'src' => '/images/banners/fast-food.webp',
+            'src_mobile' => '/images/banners/mobile/fast-food.webp',
+            'src_plain' => '/images/banners/plain/fast-food.webp',
+            'alt' => 'Fast food equipment',
+            'headline' => 'Built for the rush',
+            'sub' => 'Everything your quick-service kitchen needs to move fast.',
+            'cta' => 'Shop fast food',
+            'align' => 'right',
+            'url' => route('catalog'),
+        ],
+        [
+            'src' => '/images/banners/chafing-dishes.webp',
+            'src_mobile' => '/images/banners/mobile/chafing-dishes.webp',
+            'src_plain' => '/images/banners/plain/chafing-dishes.webp',
+            'alt' => 'Chafing dishes and buffet servery',
+            'headline' => 'Serve it hot, keep it elegant',
+            'sub' => 'Premium chafing dishes and servery for flawless buffets.',
+            'cta' => 'Shop servery',
             'align' => 'right',
             'url' => route('catalog'),
         ],
         [
             'src' => '/images/banners/coffee-machines.webp',
+            'src_mobile' => '/images/banners/mobile/coffee-machines.webp',
+            'src_plain' => '/images/banners/plain/coffee-machines.webp',
             'alt' => 'Premium coffee machines',
+            'headline' => 'Pour the perfect cup',
+            'sub' => 'Espresso, filter and bean-to-cup machines for every venue.',
             'cta' => 'Shop coffee machines',
             'align' => 'right',
             'url' => route('category.show', 'coffee-machines'),
         ],
         [
             'src' => '/images/banners/refrigeration.webp',
+            'src_mobile' => '/images/banners/mobile/refrigeration.webp',
+            'src_plain' => '/images/banners/plain/refrigeration.webp',
             'alt' => 'Smart cooling — refrigeration solutions',
+            'headline' => 'Keep it cold, keep it fresh',
+            'sub' => 'Reliable refrigeration that protects your stock around the clock.',
             'cta' => 'Shop refrigeration',
             'align' => 'right',
             'url' => route('category.show', 'refrigeration'),
         ],
         [
             'src' => '/images/banners/bakery-prep.webp',
+            'src_mobile' => '/images/banners/mobile/bakery-prep.webp',
+            'src_plain' => '/images/banners/plain/bakery-prep.webp',
             'alt' => 'Bakery preparation equipment',
+            'headline' => 'Rise to the occasion',
+            'sub' => 'Mixers, ovens and prep tools for serious baking.',
             'cta' => 'Shop bakery prep',
             'align' => 'center',
             'url' => route('category.show', 'bakery-preparation'),
         ],
-        [
-            'src' => '/images/banners/clearance-sale.webp',
-            'alt' => 'Limited time clearance sale',
-            'cta' => 'Shop clearance',
-            'align' => 'left',
-            'url' => route('catalog', ['tag' => 'On Sale']),
-        ],
+        */
     ];
 
     $usps = [
@@ -221,41 +318,112 @@ new #[Layout('layouts::storefront')] #[Title('Commercial Kitchen, Cold Room, Lau
         stop() { clearInterval(this.timer) },
     }" x-init="start()"
         @mouseenter="paused = true" @mouseleave="paused = false">
-        <div class="shell py-5">
-            <div class="relative overflow-hidden rounded-md bg-zinc-900" style="aspect-ratio: 2181 / 624">
+        <div class="shell py-3 md:py-5">
+            {{-- ================================================================
+                 HERO SLIDES — three interchangeable designs. Exactly ONE is
+                 active; the other two are commented out for testing. To switch,
+                 comment the active block and uncomment another, then update the
+                 container's aspect ratio class to match (noted on each option).
+
+                 ── DESIGNER SPECS (export sizes per screen) ───────────────────
+                 Desktop (≥768px), all options:  2181 × 624 px  (~3.5:1) wide art
+                 Option C (mobile crop):  no new art. The wide banner is cropped
+                     to 4:3 on phones, so keep the logo/headline/products within
+                     the centre ~60% width — anything near the far edges is cut.
+                 Option B (mobile art):  1080 × 1350 px (4:5) portrait, text baked
+                     in, exported to /public/images/banners/mobile/<name>.webp
+                 Option A (live text):   background photo WITHOUT baked-in text.
+                     Desktop 2400 × 800 px (3:1), mobile 1080 × 1200 px (9:10).
+                     Place the product on one side and leave the opposite ~45%
+                     visually calm for the overlaid headline. Export to
+                     /public/images/banners/plain/<name>.webp
+                 ================================================================ --}}
+
+            {{-- Positioning wrapper (not clipped) so the nav arrows can sit just
+                 outside the image on desktop instead of over the content panel. --}}
+            <div class="relative">
+
+            {{-- OPTION C — reuse wide banner, taller 4:3 crop on mobile (no new art). Container: aspect-[4/3] md:aspect-[2181/624] --}}
+            <div class="relative overflow-hidden rounded-md bg-zinc-900 aspect-[4/3] md:aspect-[2181/624]">
+                {{-- @foreach ($heroSlides as $i => $slide)
+                    <a href="{{ $slide['url'] }}" wire:navigate aria-label="{{ $slide['alt'] }}"
+                        :aria-hidden="idx !== {{ $i }}" :tabindex="idx === {{ $i }} ? 0 : -1"
+                        class="absolute inset-0 block cursor-pointer transition-opacity duration-700 {{ $i === 0 ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none' }}"
+                        :class="idx === {{ $i }} ? 'opacity-100 pointer-events-auto' :
+                            'opacity-0 pointer-events-none'">
+                        <img src="{{ $slide['src'] }}" alt="{{ $slide['alt'] }}"
+                            class="block size-full object-cover object-center"
+                            @if ($i === 0) fetchpriority="high" decoding="async" @else loading="lazy" decoding="async" @endif
+                            draggable="false" />
+                        <span aria-hidden @class([
+                            'pointer-events-none absolute bottom-3 inline-flex items-center gap-1.5 rounded-full bg-white/90 px-3 py-1.5 text-[11px] font-semibold text-ink shadow-lg backdrop-blur-md transition duration-500 md:bottom-6 md:gap-2 md:px-4 md:py-2.5 md:text-[13px]',
+                            'right-3 md:right-6' => $slide['align'] === 'left',
+                            'left-3 md:left-6' => $slide['align'] !== 'left',
+                        ])
+                            :class="idx === {{ $i }} ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'">
+                            {{ $slide['cta'] }}
+                            <flux:icon.arrow-right variant="mini" class="size-3 md:size-3.5" />
+                        </span>
+                    </a>
+                @endforeach --}}
+                {{-- 
+                OPTION A — plain background photo + live HTML headline/CTA (no baked text). Container: aspect-[9/10] md:aspect-[3/1] --}}
                 @foreach ($heroSlides as $i => $slide)
                     <a href="{{ $slide['url'] }}" wire:navigate aria-label="{{ $slide['alt'] }}"
                         :aria-hidden="idx !== {{ $i }}" :tabindex="idx === {{ $i }} ? 0 : -1"
                         class="absolute inset-0 block cursor-pointer transition-opacity duration-700 {{ $i === 0 ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none' }}"
                         :class="idx === {{ $i }} ? 'opacity-100 pointer-events-auto' :
                             'opacity-0 pointer-events-none'">
-                        <img src="{{ $slide['src'] }}" alt="{{ $slide['alt'] }}" class="block size-full object-cover"
-                            style="object-position: {{ $slide['align'] === 'left' ? 'left center' : ($slide['align'] === 'right' ? 'right center' : 'center') }}"
+                        <img src="{{ $slide['src'] }}" alt="" class="block size-full object-cover"
                             @if ($i === 0) fetchpriority="high" decoding="async" @else loading="lazy" decoding="async" @endif
                             draggable="false" />
-                        <span aria-hidden
-                            class="pointer-events-none absolute bottom-6 inline-flex items-center gap-2 rounded-full bg-white/90 px-4 py-2.5 text-[13px] font-semibold text-ink shadow-lg backdrop-blur-md transition duration-500"
-                            style="{{ $slide['align'] === 'left' ? 'right: 1.5rem;' : 'left: 1.5rem;' }}"
-                            :class="idx === {{ $i }} ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'">
-                            {{ $slide['cta'] }}
-                            <flux:icon.arrow-right variant="mini" class="size-3.5" />
-                        </span>
+                        {{-- Content panel with a bookmark shape (notch on the right edge).
+                             clip-path lives on the PARENT of the blur layer — Chromium
+                             ignores clip-path on the same element as backdrop-filter, so
+                             clipping a parent is the reliable way to confine the blur.
+                             Content sits above and is padded to clear the notch. --}}
+                        <div
+                            class="absolute inset-x-4 bottom-4 md:inset-x-auto md:bottom-auto md:top-1/2 md:left-10 md:max-w-[46%] md:-translate-y-1/2">
+                            {{-- Shaped clip parent — clips the blurred background child below --}}
+                            <div aria-hidden style="clip-path: polygon(0 0, 100% 0, 88% 50%, 100% 100%, 0 100%)"
+                                class="absolute inset-0">
+                                <div class="size-full bg-black/40 backdrop-blur-sm"></div>
+                            </div>
+                            {{-- Content above the shape, padded to stay inside it --}}
+                            <div class="relative flex flex-col gap-1.5 py-4 pl-4 pr-16 md:gap-3 md:py-7 md:pl-7 md:pr-20">
+                                <h2 class="font-serif text-xl font-semibold leading-tight text-white md:text-[40px]">
+                                    {{ $slide['headline'] }}</h2>
+                                <p class="max-w-[34ch] text-xs text-white/80 md:text-base">{{ $slide['sub'] }}</p>
+                                <span aria-hidden
+                                    class="mt-1 inline-flex w-fit items-center gap-1.5 rounded-full bg-white px-4 py-2 text-xs font-semibold text-ink shadow-lg md:mt-2 md:text-sm">
+                                    {{ $slide['cta'] }}
+                                    <flux:icon.arrow-right variant="mini" class="size-3 md:size-3.5" />
+                                </span>
+                            </div>
+                        </div>
                     </a>
                 @endforeach
 
-                {{-- Prev / Next --}}
-                <button type="button" aria-label="Previous slide" @click="idx = (idx - 1 + total) % total"
-                    class="absolute top-1/2 left-3 inline-flex size-10 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-white/85 text-ink shadow-md backdrop-blur-md hover:bg-white">
-                    <flux:icon.arrow-left variant="mini" class="size-4" />
-                </button>
-                <button type="button" aria-label="Next slide" @click="idx = (idx + 1) % total"
-                    class="absolute top-1/2 right-3 inline-flex size-10 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-white/85 text-ink shadow-md backdrop-blur-md hover:bg-white">
-                    <flux:icon.arrow-right variant="mini" class="size-4" />
-                </button>
+
+                {{-- OPTION B — separate taller mobile artwork swapped via <picture>. Container: aspect-[4/5] md:aspect-[2181/624]
+                @foreach ($heroSlides as $i => $slide)
+                    <a href="{{ $slide['url'] }}" wire:navigate aria-label="{{ $slide['alt'] }}"
+                        :aria-hidden="idx !== {{ $i }}" :tabindex="idx === {{ $i }} ? 0 : -1"
+                        class="absolute inset-0 block cursor-pointer transition-opacity duration-700 {{ $i === 0 ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none' }}"
+                        :class="idx === {{ $i }} ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'">
+                        <picture class="contents">
+                            <source media="(max-width: 767px)" srcset="{{ $slide['src_mobile'] }}" />
+                            <img src="{{ $slide['src'] }}" alt="{{ $slide['alt'] }}" class="block size-full object-cover"
+                                @if ($i === 0) fetchpriority="high" decoding="async" @else loading="lazy" decoding="async" @endif
+                                draggable="false" />
+                        </picture>
+                    </a>
+                @endforeach
+                --}}
 
                 {{-- Dots --}}
                 <div
-                    class="absolute bottom-4 left-1/2 flex -translate-x-1/2 items-center gap-1.5 rounded-full bg-black/35 px-2.5 py-1.5 backdrop-blur-sm">
+                    class="absolute bottom-2 left-1/2 flex -translate-x-1/2 items-center gap-1.5 rounded-full bg-black/35 px-2 py-1 backdrop-blur-sm md:bottom-4 md:px-2.5 md:py-1.5">
                     @for ($i = 0; $i < count($heroSlides); $i++)
                         <button type="button" aria-label="Go to slide {{ $i + 1 }}"
                             @click="idx = {{ $i }}"
@@ -266,11 +434,23 @@ new #[Layout('layouts::storefront')] #[Title('Commercial Kitchen, Cold Room, Lau
 
                 {{-- Slide counter --}}
                 <div
-                    class="absolute top-3.5 right-3.5 flex items-center gap-1.5 rounded-full bg-black/35 px-2.5 py-1 text-[11px] tracking-wider text-white tabular-nums backdrop-blur-sm">
+                    class="absolute top-2 right-2 flex items-center gap-1 rounded-full bg-black/35 px-2 py-0.5 text-[10px] tracking-wider text-white tabular-nums backdrop-blur-sm md:top-3.5 md:right-3.5 md:gap-1.5 md:px-2.5 md:py-1 md:text-[11px]">
                     <span class="font-semibold" x-text="String(idx + 1).padStart(2, '0')"></span>
                     <span class="opacity-60">/ {{ str_pad(count($heroSlides), 2, '0', STR_PAD_LEFT) }}</span>
                     <span class="opacity-70" x-show="paused" x-cloak>· paused</span>
                 </div>
+            </div>
+
+            {{-- Prev / Next — on the wrapper (not clipped) so they sit just outside
+                 the image on desktop, clear of the content panel. --}}
+            <button type="button" aria-label="Previous slide" @click="idx = (idx - 1 + total) % total"
+                class="absolute top-1/2 z-10 hidden size-10 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-white/85 text-ink shadow-md backdrop-blur-md hover:bg-white md:-left-5 md:inline-flex">
+                <flux:icon.arrow-left variant="mini" class="size-4" />
+            </button>
+            <button type="button" aria-label="Next slide" @click="idx = (idx + 1) % total"
+                class="absolute top-1/2 z-10 hidden size-10 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-white/85 text-ink shadow-md backdrop-blur-md hover:bg-white md:-right-5 md:inline-flex">
+                <flux:icon.arrow-right variant="mini" class="size-4" />
+            </button>
             </div>
         </div>
     </section>
@@ -279,11 +459,16 @@ new #[Layout('layouts::storefront')] #[Title('Commercial Kitchen, Cold Room, Lau
     <section class="border-b border-zinc-200 bg-white">
         <div class="shell grid grid-cols-2 sm:grid-cols-5 sm:divide-x sm:divide-zinc-200">
             @foreach ($usps as $u)
-                <div class="flex flex-col items-center gap-3 px-5 py-6 text-center">
-                    <flux:icon name="{{ $u['icon'] }}" variant="outline" class="size-9 text-brand-500" />
+                <div @class([
+                    'flex items-center gap-2.5 px-3 py-4 sm:flex-col sm:items-center sm:gap-3 sm:px-5 sm:py-6 sm:text-center',
+                    'hidden sm:flex' => $loop->last,
+                ])>
+                    <flux:icon name="{{ $u['icon'] }}" variant="outline"
+                        class="size-6 shrink-0 text-brand-500 sm:size-9" />
                     <div>
-                        <div class="text-[11px] font-bold tracking-widest text-ink uppercase">{{ $u['title'] }}</div>
-                        <div class="mt-0.5 text-[11px] text-ink-3">{{ $u['sub'] }}</div>
+                        <div class="text-[10px] font-bold tracking-widest text-ink uppercase sm:text-[11px]">
+                            {{ $u['title'] }}</div>
+                        <div class="mt-0.5 text-[10px] text-ink-3 sm:text-[11px]">{{ $u['sub'] }}</div>
                     </div>
                 </div>
             @endforeach
@@ -361,22 +546,22 @@ new #[Layout('layouts::storefront')] #[Title('Commercial Kitchen, Cold Room, Lau
     --}}
 
     {{-- Categories — dense Workshop grid (12 chips, square aspect, ink underline) --}}
-    <section class="shell pt-14 @container">
+    <section class="shell pt-8 md:pt-14 @container">
         <div class="mb-4 flex items-baseline justify-between">
-            <h2 class="text-[22px] font-semibold tracking-tight">Shop by category</h2>
+            <h2 class="text-[17px] font-semibold tracking-tight @md:text-[22px]">Shop by category</h2>
             <a href="{{ route('categories.index') }}" wire:navigate
-                class="inline-flex items-center gap-1.5 text-[13px] text-ink-3 transition-colors hover:text-ink">
-                View all <flux:icon.arrow-right variant="micro" class="size-3.5" />
+                class="text-[13px] font-medium text-brand-500 underline transition-colors hover:text-brand-600">
+                View all
             </a>
         </div>
 
         {{-- All featured categories stay visible at every breakpoint; only the column
              count changes, so the same chips simply reflow. --}}
         <div
-            class="grid gap-x-5 gap-y-7 grid-cols-1  @3xs:grid-cols-2 @md:grid-cols-3 @xl:grid-cols-4 @3xl:grid-cols-5 @6xl:grid-cols-6 @7xl:grid-cols-7 @8xl:grid-cols-8">
+            class="grid gap-x-3 gap-y-4 grid-cols-1 @3xs:grid-cols-2 @3xs:gap-x-4 @3xs:gap-y-5 @md:grid-cols-3 @md:gap-x-5 @md:gap-y-7 @xl:grid-cols-4 @3xl:grid-cols-5 @6xl:grid-cols-6 @7xl:grid-cols-7 @8xl:grid-cols-8">
             @foreach ($this->featuredCategories as $category)
                 <a href="{{ route('category.show', $category) }}" wire:navigate class="group block transition">
-                    <div class="relative aspect-square overflow-hidden bg-surface-sunken">
+                    <div class="relative aspect-[4/3] overflow-hidden rounded-lg bg-surface-sunken @md:aspect-square">
                         @if ($category->image_url)
                             @if ($placeholder = $category->image_placeholder)
                                 <img src="{{ $placeholder }}" alt="" aria-hidden="true"
@@ -408,13 +593,14 @@ new #[Layout('layouts::storefront')] #[Title('Commercial Kitchen, Cold Room, Lau
     </section>
 
     {{-- Brands marquee --}}
-    <section class="shell pt-14">
+    <section class="shell pt-8 md:pt-14">
         <div class="relative -mx-4 overflow-hidden border-y border-zinc-200 bg-white md:mx-0 md:rounded-md md:border">
             <div class="grid grid-cols-1 items-stretch md:grid-cols-[auto_1fr]">
                 {{-- Title panel — hidden below md so the marquee runs edge to edge on phones --}}
                 <div
                     class="relative z-10 hidden min-w-60 flex-col justify-center border-r border-zinc-200 bg-white px-8 py-8 md:flex">
-                    <h2 class="font-serif text-[22px] leading-tight font-semibold uppercase">The brands<br>professionals
+                    <h2 class="font-serif text-[22px] leading-tight font-semibold uppercase">The
+                        brands<br>professionals
                         trust.</h2>
                 </div>
 
@@ -429,10 +615,10 @@ new #[Layout('layouts::storefront')] #[Title('Commercial Kitchen, Cold Room, Lau
                         @foreach ([...$this->brands->all(), ...$this->brands->all()] as $brand)
                             <a href="{{ $brand->website_url ?: '#' }}"
                                 @if ($brand->website_url) target="_blank" rel="noopener noreferrer" @endif
-                                class="flex w-45 shrink-0 flex-col items-center justify-center gap-2 self-stretch border-r border-zinc-200 px-5 py-7 text-center transition">
+                                class="flex w-36 shrink-0 flex-col items-center justify-center gap-2 self-stretch border-r border-zinc-200 px-4 py-4 text-center transition md:w-45 md:px-5 md:py-7">
                                 @if ($brand->logo_url)
                                     <img src="{{ $brand->logo_url }}" alt="{{ $brand->name }}"
-                                        class="h-24 w-full object-contain" loading="lazy" />
+                                        class="h-14 w-full object-contain md:h-24" loading="lazy" />
                                 @else
                                     <div class="font-serif text-lg text-ink">{{ $brand->name }}</div>
                                 @endif
@@ -445,21 +631,17 @@ new #[Layout('layouts::storefront')] #[Title('Commercial Kitchen, Cold Room, Lau
     </section>
 
     {{-- New Arrivals --}}
-    <section class="shell pt-14">
+    <section class="shell pt-8 md:pt-14">
         <div class="overflow-hidden rounded-md bg-brand-500">
             <div class="grid grid-cols-1 lg:grid-cols-6">
                 {{-- Left editorial panel --}}
                 <div
-                    class="flex flex-col justify-center border-b border-white/10 px-6 py-8 lg:col-span-1 lg:border-b-0 lg:border-r lg:border-white/10">
-                    <div class="text-[11px] font-semibold uppercase tracking-widest text-white/60">Just In</div>
-                    <div class="mt-2 font-serif text-4xl leading-none text-white">New</div>
+                    class="flex flex-col justify-center border-b border-white/10 px-6 pt-8 pb-4 lg:col-span-1 lg:border-b-0 lg:border-r lg:border-white/10 lg:py-8">
+                    <div class="font-serif text-4xl leading-none text-white">New</div>
                     <div class="mt-3 text-[13px] leading-relaxed text-white/75">Discover what's just dropped</div>
-                    <a href="{{ route('catalog') }}?arrivals=1" wire:navigate
-                        class="group mt-5 inline-flex w-fit items-center gap-1.5 rounded-full border border-white/30 px-4 py-2 text-xs font-semibold text-white transition-all hover:border-white hover:bg-white/10">
+                    <flux:button href="{{ route('catalog') }}?arrivals=1" wire:navigate class="mt-5 w-fit">
                         View All
-                        <flux:icon.arrow-right
-                            class="size-3 transition-transform duration-200 group-hover:translate-x-1" />
-                    </a>
+                    </flux:button>
                 </div>
 
                 {{-- Products carousel --}}
@@ -495,11 +677,11 @@ new #[Layout('layouts::storefront')] #[Title('Commercial Kitchen, Cold Room, Lau
                     </div>
 
                     <button type="button" @click="swiper?.slidePrev()"
-                        class="absolute top-1/2 left-1 z-10 -translate-y-1/2 flex size-7 cursor-pointer items-center justify-center rounded-full border border-white/20 bg-black/20 text-white backdrop-blur-sm transition hover:border-white/40 hover:bg-black/40">
+                        class="absolute top-1/2 left-1 z-10 -translate-y-1/2 hidden size-7 cursor-pointer items-center justify-center rounded-full border border-white/20 bg-black/20 text-white backdrop-blur-sm transition hover:border-white/40 hover:bg-black/40 md:flex">
                         <flux:icon.chevron-left class="size-3.5" />
                     </button>
                     <button type="button" @click="swiper?.slideNext()"
-                        class="absolute top-1/2 right-1 z-10 -translate-y-1/2 flex size-7 cursor-pointer items-center justify-center rounded-full border border-white/20 bg-black/20 text-white backdrop-blur-sm transition hover:border-white/40 hover:bg-black/40">
+                        class="absolute top-1/2 right-1 z-10 -translate-y-1/2 hidden size-7 cursor-pointer items-center justify-center rounded-full border border-white/20 bg-black/20 text-white backdrop-blur-sm transition hover:border-white/40 hover:bg-black/40 md:flex">
                         <flux:icon.chevron-right class="size-3.5" />
                     </button>
                 </div>
@@ -508,15 +690,16 @@ new #[Layout('layouts::storefront')] #[Title('Commercial Kitchen, Cold Room, Lau
     </section>
 
     {{-- Featured products --}}
-    <section class="shell pt-14 @container">
+    <section class="shell pt-8 md:pt-14 @container">
         <div class="mb-4 flex items-baseline justify-between">
-            <h2 class="text-[22px] font-semibold tracking-tight">Featured equipment</h2>
+            <h2 class="text-[17px] font-semibold tracking-tight @md:text-[22px]">Featured equipment</h2>
             <a href="{{ route('catalog') }}?tag=Featured" wire:navigate
-                class="inline-flex items-center gap-1.5 text-[13px] text-ink-3 transition-colors hover:text-ink">
-                View all <flux:icon.arrow-right variant="micro" class="size-3.5" />
+                class="text-[13px] font-medium text-brand-500 underline transition-colors hover:text-brand-600">
+                View all
             </a>
         </div>
-        <div class="grid grid-cols-1 gap-3.5 @sm:grid-cols-2 @xl:grid-cols-3 @3xl:grid-cols-4 @6xl:grid-cols-6">
+        <div
+            class="grid grid-cols-1 gap-3.5 @xs:grid-cols-2 @md:grid-cols-3 @2xl:grid-cols-4 4xl:grid-cols-5 @6xl:grid-cols-6">
             @foreach ($this->featuredProducts as $product)
                 <x-storefront.product-card :product="$product" />
             @endforeach

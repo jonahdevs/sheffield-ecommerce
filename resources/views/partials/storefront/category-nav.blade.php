@@ -51,7 +51,7 @@
             setTimeout(() => this.updateArrows(), 300);
         },
     }" x-init="updateArrows()" @resize.window="updateArrows()" @click.outside="browseOpen = false"
-        class="group relative shell flex items-center lg:hidden">
+        class="group relative shell hidden items-center lg:hidden">
 
         {{-- Browse Categories button --}}
         <div class="relative shrink-0">
