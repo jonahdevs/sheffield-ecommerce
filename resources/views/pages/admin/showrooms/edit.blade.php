@@ -116,7 +116,7 @@ new #[Layout('layouts::app')] #[Title('Edit Showroom — Admin')] class extends 
             </div>
             <div class="flex items-center gap-3">
                 <flux:button variant="ghost" :href="route('admin.showrooms.index')" wire:navigate>Cancel</flux:button>
-                <flux:button type="submit" variant="primary" icon="check">Save showroom</flux:button>
+                <flux:button type="submit" variant="primary">Save showroom</flux:button>
             </div>
         </div>
 

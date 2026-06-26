@@ -100,7 +100,7 @@ new #[Layout('layouts::app')] #[Title('Page — Admin')] class extends Component
                         :href="route('page.show', $slug)" target="_blank">View</flux:button>
                 @endif
                 <flux:button variant="ghost" :href="route('admin.pages.index')" wire:navigate>Cancel</flux:button>
-                <flux:button type="submit" variant="primary" icon="check">{{ $pageId ? 'Save changes' : 'Add page' }}</flux:button>
+                <flux:button type="submit" variant="primary">{{ $pageId ? 'Save changes' : 'Add page' }}</flux:button>
             </div>
         </div>
 

@@ -32,7 +32,7 @@
             </div>
             <div class="flex items-center gap-3">
                 <flux:button variant="ghost" :href="route('admin.products.index')" wire:navigate>Cancel</flux:button>
-                <flux:button type="submit" variant="primary" icon="check">
+                <flux:button type="submit" variant="primary">
                     {{ $productId ? 'Save changes' : 'Add product' }}</flux:button>
             </div>
         </div>

@@ -102,7 +102,7 @@ new #[Layout('layouts::app')] #[Title('Edit User — Admin')] class extends Comp
             </div>
             <div class="flex items-center gap-3">
                 <flux:button variant="ghost" :href="route('admin.roles.index')" wire:navigate>Cancel</flux:button>
-                <flux:button type="submit" variant="primary" icon="check">Save changes</flux:button>
+                <flux:button type="submit" variant="primary">Save changes</flux:button>
             </div>
         </div>
 

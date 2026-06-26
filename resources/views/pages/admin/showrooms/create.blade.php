@@ -98,7 +98,7 @@ new #[Layout('layouts::app')] #[Title('New Showroom — Admin')] class extends C
             </div>
             <div class="flex items-center gap-3">
                 <flux:button variant="ghost" :href="route('admin.showrooms.index')" wire:navigate>Cancel</flux:button>
-                <flux:button type="submit" variant="primary" icon="check">Add showroom</flux:button>
+                <flux:button type="submit" variant="primary">Add showroom</flux:button>
             </div>
         </div>
 

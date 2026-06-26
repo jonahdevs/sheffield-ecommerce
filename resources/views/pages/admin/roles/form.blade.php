@@ -92,7 +92,7 @@ new #[Layout('layouts::app')] #[Title('Role — Admin')] class extends Component
             </div>
             <div class="flex items-center gap-3">
                 <flux:button variant="ghost" :href="route('admin.roles.index')" wire:navigate>Cancel</flux:button>
-                <flux:button type="submit" variant="primary" icon="check">{{ $roleId ? 'Save changes' : 'Create role' }}</flux:button>
+                <flux:button type="submit" variant="primary">{{ $roleId ? 'Save changes' : 'Create role' }}</flux:button>
             </div>
         </div>
 

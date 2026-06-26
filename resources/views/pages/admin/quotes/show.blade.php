@@ -490,7 +490,7 @@ new #[Layout('layouts::app')] #[Title('Quote — Admin')] class extends Componen
                 @endif
 
                 {{-- Save the editable fields (form submit) --}}
-                <flux:button type="submit" icon="check">Save</flux:button>
+                <flux:button type="submit">Save</flux:button>
 
                 {{-- Secondary / utility actions folded away to keep the header tidy --}}
                 <flux:dropdown position="bottom" align="end">
