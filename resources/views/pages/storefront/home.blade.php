@@ -300,8 +300,8 @@ new #[Layout('layouts::storefront')] #[Title('Commercial Kitchen, Cold Room, Lau
     {{-- Thin promo banner --}}
     <section class="bg-surface-sunken pt-3 pb-2">
         <div class="shell">
-            <a href="#" wire:navigate aria-label="Up to 20% off mega sale"
-                class="block overflow-hidden rounded-md" style="aspect-ratio: 3117 / 400">
+            <a href="#" wire:navigate aria-label="Up to 20% off mega sale" class="block overflow-hidden rounded-md"
+                style="aspect-ratio: 3117 / 400">
                 <img src="/images/banners/thin-banner.webp" alt="" class="size-full object-cover"
                     fetchpriority="high" decoding="async" draggable="false" />
             </a>
@@ -342,7 +342,7 @@ new #[Layout('layouts::storefront')] #[Title('Commercial Kitchen, Cold Room, Lau
                          Place the product on one side; leave opposite ~45% calm for
                          the overlaid headline. Export → /public/images/banners/plain/
                      ──────────────────────────────────────────────────────────────── --}}
-                <div class="swiper relative overflow-hidden rounded-md bg-zinc-900 aspect-[4/3] md:aspect-[2181/624]"
+                <div class="swiper relative overflow-hidden rounded-md aspect-4/3 md:aspect-[2181/624]"
                     x-ref="swiperEl">
                     <div class="swiper-wrapper">
                         @foreach ($heroSlides as $i => $slide)
@@ -375,7 +375,8 @@ new #[Layout('layouts::storefront')] #[Title('Commercial Kitchen, Cold Room, Lau
                     </div>
 
                     {{-- Dots — Alpine-driven so positioning and pill styles are fully ours --}}
-                    <div class="absolute bottom-2 left-1/2 z-10 flex -translate-x-1/2 items-center gap-1.5 rounded-full bg-black/35 px-2 py-1 backdrop-blur-sm md:bottom-4 md:px-2.5 md:py-1.5">
+                    <div
+                        class="absolute bottom-2 left-1/2 z-10 flex -translate-x-1/2 items-center gap-1.5 rounded-full bg-black/35 px-2 py-1 backdrop-blur-sm md:bottom-4 md:px-2.5 md:py-1.5">
                         @for ($i = 0; $i < count($heroSlides); $i++)
                             <button type="button" aria-label="Go to slide {{ $i + 1 }}"
                                 @click="swiper?.slideToLoop({{ $i }})"
