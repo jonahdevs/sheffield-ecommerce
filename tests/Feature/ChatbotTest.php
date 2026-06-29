@@ -301,12 +301,27 @@ it('omits tools from the request when both abilities are disabled', function () 
     Http::assertSent(fn ($request) => ! array_key_exists('tools', $request->data()));
 });
 
-it('lets an admin edit chatbot settings from the system settings page', function () {
+it('shows the AI Chatbot card under the integrations section', function () {
     actingAsAdmin();
 
-    $response = $this->get(route('admin.settings.system', ['section' => 'chatbot']));
+    $this->get(route('admin.settings.system', ['section' => 'integrations']))
+        ->assertOk()
+        ->assertSee('AI Chatbot');
+});
 
-    $response->assertOk();
-    $response->assertSee('System prompt');
-    $response->assertSee('Product search');
+it('lets an admin edit chatbot settings via the integration config modal', function () {
+    actingAsAdmin();
+
+    Livewire::test('pages::admin.settings.system', ['section' => 'integrations'])
+        ->call('configureIntegration', 'chatbot')
+        ->assertSet('showIntegrationModal', true)
+        ->assertSee('System prompt')
+        ->assertSee('Product search')
+        ->set('chatbot_greeting', 'Karibu! How can I help?')
+        ->set('chatbot_system_prompt', 'Be helpful and concise.')
+        ->call('saveChatbot')
+        ->assertHasNoErrors()
+        ->assertSet('showIntegrationModal', false);
+
+    expect(app(ChatbotSettings::class)->greeting)->toBe('Karibu! How can I help?');
 });

@@ -3,6 +3,7 @@
 use App\Enums\SapSyncStatus;
 use App\Jobs\SyncOrderToSapJob;
 use App\Models\Order;
+use App\Models\SapSyncLog;
 use App\Models\User;
 use Illuminate\Support\Facades\Queue;
 use Livewire\Livewire;
@@ -87,6 +88,50 @@ it('re-queues every failed order at once', function () {
 
     expect(Order::where('sap_sync_status', SapSyncStatus::PENDING)->count())->toBe(3);
     Queue::assertPushed(SyncOrderToSapJob::class, 3);
+});
+
+it('exposes the request and response payload for a sync attempt', function () {
+    $order = Order::factory()->create(['sap_sync_status' => SapSyncStatus::FAILED]);
+    $log = SapSyncLog::create([
+        'order_id' => $order->id,
+        'operation' => 'create_invoice',
+        'status' => 'failed',
+        'endpoint' => '/api/invoices',
+        'http_method' => 'POST',
+        'request_payload' => ['doc_total' => 1500],
+        'response_payload' => ['error' => 'Customer not found'],
+        'http_status_code' => 422,
+        'error_message' => 'Customer not found',
+    ]);
+
+    Livewire::test('pages::admin.sap-sync')
+        ->set('tab', 'activity')
+        ->call('viewLog', $log->id)
+        ->assertSet('selectedLogId', $log->id)
+        ->assertSee('doc_total')
+        ->assertSee('Customer not found')
+        ->assertSee('/api/invoices');
+});
+
+it('opens the latest log for a failed order from the failed tab', function () {
+    $order = Order::factory()->create(['sap_sync_status' => SapSyncStatus::FAILED]);
+    SapSyncLog::create([
+        'order_id' => $order->id,
+        'operation' => 'create_invoice',
+        'status' => 'failed',
+        'response_payload' => ['error' => 'stale attempt'],
+    ]);
+    $latest = SapSyncLog::create([
+        'order_id' => $order->id,
+        'operation' => 'create_invoice',
+        'status' => 'failed',
+        'response_payload' => ['error' => 'latest attempt'],
+    ]);
+
+    Livewire::test('pages::admin.sap-sync')
+        ->call('viewOrderLog', $order->id)
+        ->assertSet('selectedLogId', $latest->id)
+        ->assertSee('latest attempt');
 });
 
 it('forbids a view-only user from resyncing', function () {

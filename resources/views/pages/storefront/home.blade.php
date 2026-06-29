@@ -298,7 +298,7 @@ new #[Layout('layouts::storefront')] #[Title('Commercial Kitchen, Cold Room, Lau
 
 <div class="page-fade">
     {{-- Thin promo banner --}}
-    <section class="bg-surface-sunken pt-3 pb-2">
+    <section class="pt-3 pb-2">
         <div class="shell">
             <a href="#" wire:navigate aria-label="Up to 20% off mega sale" class="block overflow-hidden rounded-md"
                 style="aspect-ratio: 3117 / 400">
@@ -309,7 +309,7 @@ new #[Layout('layouts::storefront')] #[Title('Commercial Kitchen, Cold Room, Lau
     </section>
 
     {{-- Hero rotator --}}
-    <section class="border-b border-zinc-200 bg-surface-sunken">
+    <section class="border-b border-zinc-200">
         <div class="shell py-3 md:py-5">
             {{-- Positioning wrapper — arrows sit just outside the image on desktop --}}
             {{-- wire:ignore keeps Livewire morphing from tearing down the

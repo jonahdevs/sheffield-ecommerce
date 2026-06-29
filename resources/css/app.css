@@ -42,7 +42,7 @@
     --color-brand-blue-700: hsl(229, 52%, 29%);
 
     /* Workshop direction tokens — neutral ink scale, surfaces, lines */
-    --color-ink: #0c1421;
+    --color-ink: var(--color-slate-800);
     --color-ink-2: #2b3344;
     --color-ink-3: #5d6577;
     --color-ink-4: #8c93a3;

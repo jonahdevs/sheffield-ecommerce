@@ -27,6 +27,9 @@ new #[Layout('layouts::app')] #[Title('SAP Sync | Admin')] class extends Compone
     #[Url]
     public int $perPage = 10;
 
+    /** Log currently shown in the detail modal. */
+    public ?int $selectedLogId = null;
+
     public function updatedPerPage(): void
     {
         $this->resetPage('failedPage');
@@ -123,6 +126,38 @@ new #[Layout('layouts::app')] #[Title('SAP Sync | Admin')] class extends Compone
             ->with('order:id,order_number')
             ->latest()
             ->paginate($this->perPage, ['*'], 'logsPage');
+    }
+
+    /** The full sync-log record backing the detail modal. */
+    #[Computed]
+    public function selectedLog(): ?SapSyncLog
+    {
+        if (! $this->selectedLogId) {
+            return null;
+        }
+
+        return SapSyncLog::with('order:id,order_number')->find($this->selectedLogId);
+    }
+
+    /** Open the detail modal for a single sync attempt. */
+    public function viewLog(int $logId): void
+    {
+        $this->selectedLogId = $logId;
+        Flux::modal('sap-log')->show();
+    }
+
+    /** Open the detail modal for an order's most recent sync attempt. */
+    public function viewOrderLog(int $orderId): void
+    {
+        $log = SapSyncLog::where('order_id', $orderId)->latest('id')->first();
+
+        if (! $log) {
+            Flux::toast(heading: 'No log', text: 'No sync attempt has been recorded for this order yet.', variant: 'warning');
+
+            return;
+        }
+
+        $this->viewLog($log->id);
     }
 
     private function stuckQuery()
@@ -291,6 +326,8 @@ new #[Layout('layouts::app')] #[Title('SAP Sync | Admin')] class extends Compone
                             <flux:table.cell align="end" class="text-sm text-zinc-500">
                                 {{ $order->updated_at->format('d M, H:i') }}</flux:table.cell>
                             <flux:table.cell align="end">
+                                <flux:button size="xs" variant="ghost" icon="magnifying-glass"
+                                    tooltip="View payload & response" wire:click="viewOrderLog({{ $order->id }})" />
                                 @can('orders.manage')
                                     <flux:button size="xs" variant="ghost" icon="arrow-path" tooltip="Resync"
                                         wire:click="resync({{ $order->id }})" />
@@ -367,6 +404,7 @@ new #[Layout('layouts::app')] #[Title('SAP Sync | Admin')] class extends Compone
                     <flux:table.column>Result</flux:table.column>
                     <flux:table.column>SAP doc</flux:table.column>
                     <flux:table.column align="end">When</flux:table.column>
+                    <flux:table.column></flux:table.column>
                 </flux:table.columns>
                 <flux:table.rows>
                     @forelse ($this->recentLogs as $log)
@@ -399,10 +437,14 @@ new #[Layout('layouts::app')] #[Title('SAP Sync | Admin')] class extends Compone
                                 {{ $log->sap_document_number ?: '—' }}</flux:table.cell>
                             <flux:table.cell align="end" class="text-sm text-zinc-500">
                                 {{ $log->created_at->format('d M, H:i') }}</flux:table.cell>
+                            <flux:table.cell align="end">
+                                <flux:button size="xs" variant="ghost" icon="magnifying-glass"
+                                    tooltip="View payload & response" wire:click="viewLog({{ $log->id }})" />
+                            </flux:table.cell>
                         </flux:table.row>
                     @empty
                         <flux:table.row>
-                            <flux:table.cell colspan="5" class="py-10 text-center text-zinc-400">No sync activity
+                            <flux:table.cell colspan="6" class="py-10 text-center text-zinc-400">No sync activity
                                 yet.</flux:table.cell>
                         </flux:table.row>
                     @endforelse
@@ -415,5 +457,100 @@ new #[Layout('layouts::app')] #[Title('SAP Sync | Admin')] class extends Compone
             @endif
         @endif
     </flux:card>
+
+    {{-- Sync attempt detail --}}
+    <flux:modal name="sap-log" class="w-full md:max-w-2xl">
+        @if ($log = $this->selectedLog)
+            <div class="space-y-5">
+                <div>
+                    <flux:heading size="lg" class="uppercase tracking-wide">Sync attempt</flux:heading>
+                    <flux:subheading>
+                        {{ $log->order?->order_number ?? 'No order' }} ·
+                        {{ $log->created_at->format('d M Y, H:i:s') }}
+                    </flux:subheading>
+                </div>
+
+                {{-- Meta grid --}}
+                <div class="grid grid-cols-2 gap-3 text-sm sm:grid-cols-3">
+                    <div>
+                        <div class="text-xs text-zinc-400">Operation</div>
+                        <div class="font-medium dark:text-white">{{ $log->operation ?: '—' }}</div>
+                    </div>
+                    <div>
+                        <div class="text-xs text-zinc-400">HTTP status</div>
+                        <div @class([
+                            'font-medium',
+                            'text-emerald-600' => $log->http_status_code && $log->http_status_code < 300,
+                            'text-red-500' => $log->http_status_code && $log->http_status_code >= 400,
+                            'dark:text-white' => !$log->http_status_code,
+                        ])>
+                            {{ $log->http_status_code ?: $log->status }}
+                        </div>
+                    </div>
+                    <div>
+                        <div class="text-xs text-zinc-400">Duration</div>
+                        <div class="font-medium dark:text-white">
+                            {{ $log->duration_ms !== null ? $log->duration_ms . ' ms' : '—' }}</div>
+                    </div>
+                    <div>
+                        <div class="text-xs text-zinc-400">SAP doc</div>
+                        <div class="font-mono text-xs dark:text-white">{{ $log->sap_document_number ?: '—' }}</div>
+                    </div>
+                    <div class="col-span-2">
+                        <div class="text-xs text-zinc-400">Endpoint</div>
+                        <div class="font-mono text-xs break-all dark:text-white">
+                            {{ $log->http_method ? $log->http_method . ' ' : '' }}{{ $log->endpoint ?: '—' }}</div>
+                    </div>
+                </div>
+
+                @if ($log->error_message)
+                    <flux:callout icon="exclamation-triangle" color="red">
+                        <flux:callout.text class="font-mono text-xs">{{ $log->error_message }}</flux:callout.text>
+                    </flux:callout>
+                @endif
+
+                {{-- Payloads --}}
+                @php
+                    $pretty = fn($value) => $value
+                        ? json_encode($value, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE)
+                        : null;
+                @endphp
+                <div x-data="{ copied: false }">
+                    <div class="mb-1 text-xs font-medium text-zinc-500 dark:text-zinc-400">Request payload</div>
+                    <div class="relative">
+                        @if ($log->request_payload)
+                            <button type="button"
+                                x-on:click="navigator.clipboard.writeText($refs.req.textContent); copied = true; setTimeout(() => copied = false, 3000)"
+                                class="absolute right-2 top-2 z-10 rounded-md bg-zinc-100/90 p-1.5 text-zinc-500 backdrop-blur hover:text-brand-500 dark:bg-zinc-700/90 dark:text-zinc-300"
+                                tooltip="Copy">
+                                <flux:icon.clipboard x-show="!copied" class="size-4" />
+                                <flux:icon.clipboard-check x-show="copied" x-cloak
+                                    class="size-4 text-emerald-500" />
+                            </button>
+                        @endif
+                        <pre x-ref="req"
+                            class="scrollbar-thin max-h-64 overflow-auto rounded-md bg-zinc-50 p-3 font-mono text-xs whitespace-pre-wrap text-zinc-700 dark:bg-zinc-800/60 dark:text-zinc-200">{{ $pretty($log->request_payload) ?? '—' }}</pre>
+                    </div>
+                </div>
+                <div x-data="{ copied: false }">
+                    <div class="mb-1 text-xs font-medium text-zinc-500 dark:text-zinc-400">Response payload</div>
+                    <div class="relative">
+                        @if ($log->response_payload)
+                            <button type="button"
+                                x-on:click="navigator.clipboard.writeText($refs.res.textContent); copied = true; setTimeout(() => copied = false, 3000)"
+                                class="absolute right-2 top-2 z-10 rounded-md bg-zinc-100/90 p-1.5 text-zinc-500 backdrop-blur hover:text-brand-500 dark:bg-zinc-700/90 dark:text-zinc-300"
+                                tooltip="Copy">
+                                <flux:icon.clipboard x-show="!copied" class="size-4" />
+                                <flux:icon.clipboard-check x-show="copied" x-cloak
+                                    class="size-4 text-emerald-500" />
+                            </button>
+                        @endif
+                        <pre x-ref="res"
+                            class="scrollbar-thin max-h-64 overflow-auto rounded-md bg-zinc-50 p-3 font-mono text-xs whitespace-pre-wrap text-zinc-700 dark:bg-zinc-800/60 dark:text-zinc-200">{{ $pretty($log->response_payload) ?? '—' }}</pre>
+                    </div>
+                </div>
+            </div>
+        @endif
+    </flux:modal>
 
 </div>

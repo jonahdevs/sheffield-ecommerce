@@ -200,6 +200,11 @@ new #[Layout('layouts::app')] #[Title('System settings | Admin')] class extends 
         $this->chatbot_order_lookup_enabled = $chatbot->order_lookup_enabled;
     }
 
+    public function updatedChatbotEnabled(): void
+    {
+        app(ChatbotSettings::class)->fill(['enabled' => $this->chatbot_enabled])->save();
+    }
+
     public function saveChatbot(ChatbotSettings $settings): void
     {
         $this->validate([
@@ -218,6 +223,7 @@ new #[Layout('layouts::app')] #[Title('System settings | Admin')] class extends 
         ])->save();
 
         Flux::toast(heading: 'Saved', text: 'Chatbot settings updated.', variant: 'success');
+        $this->showIntegrationModal = false;
     }
 
     public function saveSender(EmailSettings $settings): void
@@ -656,6 +662,15 @@ new #[Layout('layouts::app')] #[Title('System settings | Admin')] class extends 
 
         $sapConnected = (bool) (($sap_base_url ?: config('sap.base_url')) && ($sap_api_key ?: config('sap.api_key')));
 
+        $providerLabels = [
+            'groq' => 'Groq',
+            'openai' => 'OpenAI',
+            'gemini' => 'Google Gemini',
+            'openrouter' => 'OpenRouter',
+            'ollama' => 'Ollama (local)',
+        ];
+        $chatbotConnected = (bool) (config("ai.providers.{$chatbot_provider}.key"));
+
         $integrationCards = [
             [
                 'key'          => 'google_login',
@@ -706,6 +721,16 @@ new #[Layout('layouts::app')] #[Title('System settings | Admin')] class extends 
                 'enabled'      => $sap_enabled,
                 'configurable' => true,
                 'connected'    => $sapConnected,
+            ],
+            [
+                'key'          => 'chatbot',
+                'name'         => 'AI Chatbot',
+                'icon'         => 'chat-bubble-left-right',
+                'description'  => 'AI assistant on the storefront for product discovery, quotes, and order lookups. Provider API keys live in your .env file.',
+                'toggleable'   => true,
+                'enabled'      => $chatbot_enabled,
+                'configurable' => true,
+                'connected'    => $chatbotConnected,
             ],
         ];
     @endphp
@@ -764,7 +789,7 @@ new #[Layout('layouts::app')] #[Title('System settings | Admin')] class extends 
     </flux:card>
 
     {{-- Integration config modal --}}
-    <flux:modal wire:model.self="showIntegrationModal" class="w-full max-w-md">
+    <flux:modal wire:model.self="showIntegrationModal" class="w-full {{ $configuringIntegration === 'chatbot' ? 'md:w-180 lg:w-215 md:max-w-none' : 'max-w-md' }}">
         @if ($configuringIntegration === 'google_login')
             <flux:heading>Sign in with Google</flux:heading>
             <div class="mt-5 space-y-4">
@@ -848,72 +873,33 @@ new #[Layout('layouts::app')] #[Title('System settings | Admin')] class extends 
                 <flux:button wire:click="$set('showIntegrationModal', false)" variant="ghost">Cancel</flux:button>
                 <flux:button wire:click="saveSapConfig" variant="primary">Save</flux:button>
             </div>
-        @endif
-    </flux:modal>
-    @endif
+        @elseif ($configuringIntegration === 'chatbot')
+            <flux:heading>AI Chatbot</flux:heading>
+            <flux:subheading class="mt-1">Provider API keys are set in your .env file.</flux:subheading>
+            <div class="mt-5 space-y-4">
+                <flux:select wire:model.live="chatbot_provider" label="AI provider"
+                    description="The model powering replies.">
+                    @foreach ($providerLabels as $key => $label)
+                        <flux:select.option value="{{ $key }}">{{ $label }}</flux:select.option>
+                    @endforeach
+                </flux:select>
+                <flux:error name="chatbot_provider" />
 
-    {{-- Chatbot --}}
-    @if ($section === 'chatbot')
-        @php
-            $providerKey = $chatbot_provider;
-            $providerConfig = config("ai.providers.{$providerKey}", []);
-            $providerConnected = (bool) ($providerConfig['key'] ?? null);
-            $providerLabels = [
-                'groq' => 'Groq',
-                'openai' => 'OpenAI',
-                'gemini' => 'Google Gemini',
-                'openrouter' => 'OpenRouter',
-                'ollama' => 'Ollama (local)',
-            ];
-        @endphp
-        <flux:card class="overflow-hidden p-0">
-            <div class="flex items-center justify-between border-b border-zinc-200 px-6 py-3 dark:border-zinc-700">
-                <flux:heading size="sm" class="uppercase tracking-wide">Chatbot</flux:heading>
-                <flux:badge :color="$providerConnected ? 'green' : 'amber'" size="sm">
-                    {{ $providerConnected ? 'API key set' : 'No API key in .env' }}
-                </flux:badge>
-            </div>
-
-            <form wire:submit="saveChatbot" class="space-y-5 p-6">
-                {{-- Master switch --}}
-                <div class="flex items-center justify-between rounded-md border border-zinc-200 px-4 py-3 dark:border-zinc-700">
-                    <div>
-                        <flux:label>Enable chat widget</flux:label>
-                        <flux:text size="sm" class="text-xs">Show the assistant on the storefront.</flux:text>
-                    </div>
-                    <flux:switch wire:model="chatbot_enabled" />
-                </div>
-
-                {{-- Provider --}}
-                <flux:field>
-                    <flux:label>AI provider</flux:label>
-                    <flux:description>The model powering replies. API keys are set in your .env file.</flux:description>
-                    <flux:select wire:model.live="chatbot_provider">
-                        @foreach ($providerLabels as $key => $label)
-                            <flux:select.option value="{{ $key }}">{{ $label }}</flux:select.option>
-                        @endforeach
-                    </flux:select>
-                    <flux:error name="chatbot_provider" />
-                </flux:field>
-
-                @unless ($providerConnected)
+                @unless ($chatbotConnected)
                     <flux:callout variant="warning" icon="key">
                         <flux:callout.text>
-                            No API key found for {{ $providerLabels[$providerKey] ?? $providerKey }}. Add it to your
-                            .env (e.g. <code>{{ strtoupper($providerKey) }}_API_KEY</code>) for the bot to respond.
+                            No API key found for {{ $providerLabels[$chatbot_provider] ?? $chatbot_provider }}. Add it to your
+                            .env (e.g. <code>{{ strtoupper($chatbot_provider) }}_API_KEY</code>) for the bot to respond.
                         </flux:callout.text>
                     </flux:callout>
                 @endunless
 
-                {{-- Greeting --}}
                 <flux:input wire:model="chatbot_greeting" label="Greeting"
                     placeholder="Hi! How can I help you today?" />
 
-                {{-- System prompt --}}
-                <flux:textarea wire:model="chatbot_system_prompt" label="System prompt / rules" rows="10"
+                <flux:textarea wire:model="chatbot_system_prompt" label="System prompt / rules" rows="8"
                     description="The standing instructions and rules sent with every conversation. This is how you 'train' the bot's tone and behaviour." />
 
-                {{-- Tools --}}
                 <flux:separator text="Abilities" />
                 <div class="space-y-3">
                     <div class="flex items-center justify-between">
@@ -931,12 +917,13 @@ new #[Layout('layouts::app')] #[Title('System settings | Admin')] class extends 
                         <flux:switch wire:model="chatbot_order_lookup_enabled" />
                     </div>
                 </div>
-
-                <div class="flex justify-end pt-2">
-                    <flux:button type="submit" variant="primary">Save changes</flux:button>
-                </div>
-            </form>
-        </flux:card>
+            </div>
+            <div class="mt-6 flex justify-end gap-3">
+                <flux:button wire:click="$set('showIntegrationModal', false)" variant="ghost">Cancel</flux:button>
+                <flux:button wire:click="saveChatbot" variant="primary">Save</flux:button>
+            </div>
+        @endif
+    </flux:modal>
     @endif
 
     {{-- Security --}}

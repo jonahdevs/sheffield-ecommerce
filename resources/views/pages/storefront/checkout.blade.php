@@ -468,6 +468,39 @@ new #[Layout('layouts::storefront')] #[Title('Checkout')] class extends Componen
             {{-- RIGHT: ORDER SUMMARY --}}
             {{-- ================================================== --}}
             <aside class="w-full shrink-0 space-y-4 lg:sticky lg:top-44 lg:w-96">
+                {{-- Promo code --}}
+                <div class="rounded-md border border-zinc-200 bg-white">
+                    <div class="px-6 pt-4 text-center">
+                        <flux:heading size="sm">Have a promo code?</flux:heading>
+                    </div>
+
+                    <div class="px-6 pb-6 pt-4">
+                        @if ($this->appliedCouponCode)
+                            <div class="flex items-center justify-between rounded-md bg-emerald-50 px-3 py-2">
+                                <div class="flex items-center gap-2">
+                                    <flux:icon.ticket variant="micro" class="size-4 text-emerald-600" />
+                                    <span
+                                        class="font-mono text-[12px] font-semibold text-emerald-700">{{ $this->appliedCouponCode }}</span>
+                                </div>
+                                <button type="button" wire:click="removeCoupon"
+                                    class="text-[11px] text-emerald-600 hover:text-red-500">Remove</button>
+                            </div>
+                        @else
+                            <flux:input.group>
+                                <flux:input wire:model="couponInput" placeholder="Coupon code" class="text-[13px]!"
+                                    wire:keydown.enter.prevent="applyCoupon" />
+                                <flux:button type="button" variant="primary" wire:click="applyCoupon"
+                                    wire:loading.attr="disabled" wire:target="applyCoupon">
+                                    Apply
+                                </flux:button>
+                            </flux:input.group>
+                            @error('couponInput')
+                                <p class="mt-1 text-[11.5px] text-red-500">{{ $message }}</p>
+                            @enderror
+                        @endif
+                    </div>
+                </div>
+
                 <div class="rounded-md border border-zinc-200 bg-white">
                     <div class="border-b border-zinc-200 px-6 py-3">
                         <flux:heading size="sm" class="uppercase tracking-wide">Order summary</flux:heading>
@@ -527,39 +560,6 @@ new #[Layout('layouts::storefront')] #[Title('Checkout')] class extends Componen
                             <a href="{{ route('quote.request') }}" wire:navigate
                                 class="font-semibold text-brand-500 hover:text-brand-600">Request a quote</a>
                         </div>
-                    </div>
-                </div>
-
-                {{-- Promo code --}}
-                <div class="rounded-md border border-zinc-200 bg-white">
-                    <div class="px-6 pt-4 text-center">
-                        <flux:heading size="sm">Have a promo code?</flux:heading>
-                    </div>
-
-                    <div class="px-6 pb-6 pt-4">
-                        @if ($this->appliedCouponCode)
-                            <div class="flex items-center justify-between rounded-md bg-emerald-50 px-3 py-2">
-                                <div class="flex items-center gap-2">
-                                    <flux:icon.ticket variant="micro" class="size-4 text-emerald-600" />
-                                    <span
-                                        class="font-mono text-[12px] font-semibold text-emerald-700">{{ $this->appliedCouponCode }}</span>
-                                </div>
-                                <button type="button" wire:click="removeCoupon"
-                                    class="text-[11px] text-emerald-600 hover:text-red-500">Remove</button>
-                            </div>
-                        @else
-                            <flux:input.group>
-                                <flux:input wire:model="couponInput" placeholder="Coupon code" class="text-[13px]!"
-                                    wire:keydown.enter.prevent="applyCoupon" />
-                                <flux:button type="button" variant="primary" wire:click="applyCoupon"
-                                    wire:loading.attr="disabled" wire:target="applyCoupon">
-                                    Apply
-                                </flux:button>
-                            </flux:input.group>
-                            @error('couponInput')
-                                <p class="mt-1 text-[11.5px] text-red-500">{{ $message }}</p>
-                            @enderror
-                        @endif
                     </div>
                 </div>
             </aside>
