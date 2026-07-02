@@ -185,6 +185,11 @@
                                 class="text-[11px] font-medium text-brand-500 underline transition hover:text-brand-600">View all</a>
                         </div>
                         <nav class="pb-2">
+                            <a href="{{ route('catalog') }}" wire:navigate @click="drawerOpen = false"
+                                class="flex items-center gap-3 px-4 py-2.5 text-[14px] font-medium text-ink transition hover:text-brand-500">
+                                <flux:icon.building-storefront variant="micro" class="size-4 shrink-0 text-ink-3" />
+                                Shop all products
+                            </a>
                             @foreach ($navCategories as $category)
                                 <a href="{{ route('category.show', $category) }}" wire:navigate @click="drawerOpen = false"
                                     class="flex items-center gap-3 px-4 py-2.5 text-[14px] text-ink transition hover:text-brand-500">

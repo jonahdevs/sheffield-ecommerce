@@ -26,6 +26,8 @@ it('renders the responsive header chrome', function () {
     // Primary nav links rendered (desktop bar + drawer)
     $response->assertSee('Request quote');
     $response->assertSee('Contact');
+    // Drawer offers a direct shop entry point
+    $response->assertSee('Shop all products');
 });
 
 it('wires each hero slide to a working destination', function () {

@@ -12,8 +12,7 @@ use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
-new #[Layout('layouts::storefront')] #[Title('All Categories')] class extends Component
-{
+new #[Layout('layouts::storefront')] #[Title('All Categories')] class extends Component {
     public function mount(): void
     {
         $description = 'Browse Sheffield Africa\'s full range of commercial equipment — kitchen, cold room, laundry and healthcare. Find the right category and explore our products.';
@@ -29,7 +28,7 @@ new #[Layout('layouts::storefront')] #[Title('All Categories')] class extends Co
     public function categories(): Collection
     {
         return Category::with('media')
-            ->withCount(['products' => fn ($q) => $q->published()->visibleInCatalog()])
+            ->withCount(['products' => fn($q) => $q->published()->visibleInCatalog()])
             ->where('status', CategoryStatus::ACTIVE)
             ->orderBy('sort_order')
             ->orderBy('name')
@@ -82,7 +81,8 @@ new #[Layout('layouts::storefront')] #[Title('All Categories')] class extends Co
                             @endif
                         </div>
                         <div class="flex items-baseline justify-between gap-2 pt-2.5">
-                            <div class="text-[11.5px] leading-tight font-semibold tracking-[0.06em] text-ink uppercase transition-colors group-hover:text-brand-500">
+                            <div
+                                class="text-[11.5px] leading-tight font-semibold tracking-[0.06em] text-ink uppercase transition-colors group-hover:text-brand-500">
                                 {{ $category->name }}
                             </div>
                             <div class="shrink-0 text-[11px] text-ink-3 tabular-nums">

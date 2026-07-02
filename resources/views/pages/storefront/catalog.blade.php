@@ -585,12 +585,13 @@ new #[Layout('layouts::storefront')] #[Title('Shop')] class extends Component {
                         <div class="font-serif text-2xl text-ink">No products match these filters</div>
                         <p class="mt-2 text-ink-3">Try widening your price range, or removing brand/category
                             constraints.</p>
-                        <flux:button variant="customer-primary" size="customer" wire:click="clearFilters" class="mt-5">
+                        <flux:button variant="customer-primary" size="customer" wire:click="clearFilters"
+                            class="mt-5">
                             Clear all filters</flux:button>
                     </div>
                 @else
                     <div
-                        class="grid grid-cols-1 gap-3.5 @sm:grid-cols-2 @xl:grid-cols-3 @3xl:grid-cols-4 @5xl:grid-cols-5">
+                        class="grid grid-cols-1 gap-3.5 @xs:grid-cols-2 @md:grid-cols-3 @2xl:grid-cols-4 @4xl:grid-cols-5 @6xl:grid-cols-6">
                         @foreach ($this->products as $product)
                             <x-storefront.product-card :product="$product" wire:key="prod-{{ $product->id }}" />
                         @endforeach
