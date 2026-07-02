@@ -111,7 +111,7 @@ new #[Layout('layouts::app')] #[Title('Permissions | Admin')] class extends Comp
             <flux:table.rows>
                 @forelse ($this->permissions as $permission)
                     <flux:table.row :key="$permission->id">
-                        <flux:table.cell variant="strong">
+                        <flux:table.cell variant="strong" class="whitespace-nowrap">
                             {{ Str::headline(Str::after($permission->name, '.')) }}
                             <span class="block font-mono text-xs font-normal text-zinc-400">{{ $permission->name }}</span>
                         </flux:table.cell>
@@ -128,7 +128,7 @@ new #[Layout('layouts::app')] #[Title('Permissions | Admin')] class extends Comp
                             @if ($permission->roles->isEmpty())
                                 <span class="text-xs text-zinc-400">—</span>
                             @else
-                                <div class="flex flex-wrap items-center gap-1">
+                                <div class="flex items-center gap-1 whitespace-nowrap">
                                     @foreach ($shown as $role)
                                         <flux:badge size="sm" inset="top bottom" color="zinc">{{ Str::headline($role->name) }}</flux:badge>
                                     @endforeach

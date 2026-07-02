@@ -683,7 +683,7 @@ new #[Layout('layouts::app')] #[Title('Dashboard | Admin')] class extends Compon
                     <tbody class="divide-y divide-zinc-100 dark:divide-zinc-800">
                         @forelse ($this->recentOrders as $order)
                             <tr class="hover:bg-zinc-50 dark:hover:bg-zinc-800/40">
-                                <td class="px-6 py-3">
+                                <td class="whitespace-nowrap px-6 py-3">
                                     <a href="{{ route('admin.orders.show', $order) }}" wire:navigate
                                         class="font-medium text-blue-600 hover:underline dark:text-blue-400">{{ $order->order_number }}</a>
                                     <div class="text-[11px] text-zinc-400">{{ $order->created_at->diffForHumans() }}

@@ -79,6 +79,19 @@ new #[Layout('layouts::app')] #[Title('Categories | Admin')] class extends Compo
         unset($this->categories);
     }
 
+    public function quickSetStatus(int $id, string $status): void
+    {
+        if (! in_array($status, array_column(CategoryStatus::cases(), 'value'), true)) {
+            return;
+        }
+
+        $category = Category::findOrFail($id);
+        $category->update(['status' => CategoryStatus::from($status)]);
+        unset($this->categories);
+
+        Flux::toast(heading: 'Status updated', text: $category->name.' is now '.CategoryStatus::from($status)->label().'.', variant: 'success');
+    }
+
     public function duplicateCategory(int $id): void
     {
         $original = Category::findOrFail($id);
@@ -294,6 +307,15 @@ new #[Layout('layouts::app')] #[Title('Categories | Admin')] class extends Compo
                                         wire:click="duplicateCategory({{ $category->id }})">
                                         Duplicate
                                     </flux:menu.item>
+                                    <flux:menu.submenu heading="Set status" icon="tag" icon-variant="outline">
+                                        @foreach (CategoryStatus::cases() as $s)
+                                            <flux:menu.item
+                                                wire:click="quickSetStatus({{ $category->id }}, '{{ $s->value }}')"
+                                                :disabled="$category->status === $s">
+                                                {{ $s->label() }}
+                                            </flux:menu.item>
+                                        @endforeach
+                                    </flux:menu.submenu>
                                     <flux:menu.item icon="clock" icon-variant="outline"
                                         :href="route('admin.activity.item', ['category', $category->id])"
                                         wire:navigate>

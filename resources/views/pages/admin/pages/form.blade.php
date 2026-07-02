@@ -89,7 +89,7 @@ new #[Layout('layouts::app')] #[Title('Page | Admin')] class extends Component {
     @endpush
 
     <form wire:submit="save">
-        <div class="flex flex-wrap items-start justify-between gap-4">
+        <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
             <div>
                 <flux:heading size="xl">{{ $pageId ? 'Edit page' : 'New page' }}</flux:heading>
                 <flux:subheading>{{ $pageId ? 'Update this content page.' : 'Add a new content page.' }}</flux:subheading>
