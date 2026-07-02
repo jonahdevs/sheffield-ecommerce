@@ -135,7 +135,7 @@ new #[Layout('layouts::app')] #[Title('Quotes | Admin')] class extends Component
 @endassets
 
 <div>
-    <div class="flex flex-wrap items-end justify-between gap-3">
+    <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
             @push('breadcrumbs')
                 <flux:breadcrumbs>
@@ -154,7 +154,7 @@ new #[Layout('layouts::app')] #[Title('Quotes | Admin')] class extends Component
     </div>
 
     {{-- Stat tiles --}}
-    <div class="mt-6 grid grid-cols-2 gap-4 lg:grid-cols-4">
+    <div class="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <flux:card class="flex items-center gap-4">
             <flux:icon.paper-airplane class="size-9 text-blue-400" />
             <div>
@@ -211,15 +211,15 @@ new #[Layout('layouts::app')] #[Title('Quotes | Admin')] class extends Component
         </div>
 
         {{-- Toolbar --}}
-        <div class="flex items-center justify-between gap-4 border-b border-zinc-200 px-6 py-3 dark:border-zinc-700">
+        <div class="flex flex-col gap-3 border-b border-zinc-200 px-6 py-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4 dark:border-zinc-700">
             <flux:input
                 wire:model.live.debounce.300ms="search"
                 placeholder="Search quote # or customer…"
                 icon="magnifying-glass"
                 clearable
-                class="max-w-xs" />
+                class="sm:max-w-xs" />
 
-            <div class="flex items-center gap-2">
+            <div class="flex flex-wrap items-center gap-2">
                 <flux:select wire:model.live="filterStatus" class="w-48">
                     <flux:select.option value="">All statuses</flux:select.option>
                     @foreach ($this->statuses() as $status)

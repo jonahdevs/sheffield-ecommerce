@@ -152,7 +152,7 @@ new #[Layout('layouts::app')] #[Title('Tax classes | Admin')] class extends Comp
 }; ?>
 
 <div>
-    <div class="flex items-center justify-between">
+    <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
             @push('breadcrumbs')
                 <flux:breadcrumbs>
@@ -167,9 +167,9 @@ new #[Layout('layouts::app')] #[Title('Tax classes | Admin')] class extends Comp
     </div>
 
     <flux:card class="mt-6 p-0 overflow-hidden">
-        <div class="flex items-center justify-between gap-4 border-b border-zinc-200 px-6 py-3 dark:border-zinc-700">
+        <div class="flex flex-col gap-3 border-b border-zinc-200 px-6 py-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4 dark:border-zinc-700">
             <flux:input wire:model.live.debounce.300ms="search" placeholder="Search tax classes…" icon="magnifying-glass"
-                clearable class="max-w-xs" />
+                clearable class="sm:max-w-xs" />
 
             <flux:select wire:model.live="perPage" class="w-28">
                 <flux:select.option value="10">10 / page</flux:select.option>

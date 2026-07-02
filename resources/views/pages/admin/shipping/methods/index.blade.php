@@ -135,7 +135,7 @@ new #[Layout('layouts::app')] #[Title('Shipping Methods | Admin')] class extends
         </flux:breadcrumbs>
     @endpush
 
-    <div class="flex items-center justify-between">
+    <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
             <flux:heading size="xl">Shipping methods</flux:heading>
             <flux:subheading>The labels customers see at checkout — pricing lives on each carrier's configuration.</flux:subheading>
@@ -148,10 +148,10 @@ new #[Layout('layouts::app')] #[Title('Shipping Methods | Admin')] class extends
     <flux:card class="mt-6 p-0 overflow-hidden">
 
         {{-- Toolbar --}}
-        <div class="flex items-center justify-between gap-4 border-b border-zinc-200 px-6 py-3 dark:border-zinc-700">
+        <div class="flex flex-col gap-3 border-b border-zinc-200 px-6 py-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4 dark:border-zinc-700">
             <flux:input wire:model.live.debounce.300ms="search" placeholder="Search methods…"
-                icon="magnifying-glass" clearable class="max-w-xs" />
-            <div class="flex items-center gap-2">
+                icon="magnifying-glass" clearable class="sm:max-w-xs" />
+            <div class="flex flex-wrap items-center gap-2">
                 <flux:select wire:model.live="filterType" class="w-40">
                     <flux:select.option value="">All types</flux:select.option>
                     @foreach (\App\Enums\ShippingMethodType::cases() as $t)

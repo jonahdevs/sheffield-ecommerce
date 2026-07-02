@@ -142,7 +142,7 @@ new #[Layout('layouts::app')] #[Title('Warehouses | Admin')] class extends Compo
         </flux:breadcrumbs>
     @endpush
 
-    <div class="flex items-center justify-between">
+    <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
             <flux:heading size="xl">Warehouses</flux:heading>
             <flux:subheading>Stock locations customers can collect orders from.</flux:subheading>
@@ -155,9 +155,9 @@ new #[Layout('layouts::app')] #[Title('Warehouses | Admin')] class extends Compo
     <flux:card class="mt-6 p-0 overflow-hidden">
 
         {{-- Toolbar --}}
-        <div class="flex items-center justify-between gap-4 border-b border-zinc-200 px-6 py-3 dark:border-zinc-700">
+        <div class="flex flex-col gap-3 border-b border-zinc-200 px-6 py-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4 dark:border-zinc-700">
             <flux:input wire:model.live.debounce.300ms="search" placeholder="Search name, city or county…"
-                icon="magnifying-glass" clearable class="max-w-xs" />
+                icon="magnifying-glass" clearable class="sm:max-w-xs" />
             <flux:select wire:model.live="filterStatus" class="w-36">
                 <flux:select.option value="">All statuses</flux:select.option>
                 <flux:select.option value="active">Active</flux:select.option>

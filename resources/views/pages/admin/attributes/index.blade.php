@@ -47,7 +47,7 @@ new #[Layout('layouts::app')] #[Title('Attributes | Admin')] class extends Compo
 }; ?>
 
 <div>
-    <div class="flex items-center justify-between">
+    <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
             @push('breadcrumbs')
                 <flux:breadcrumbs>
@@ -66,9 +66,9 @@ new #[Layout('layouts::app')] #[Title('Attributes | Admin')] class extends Compo
     <flux:card class="mt-6 p-0 overflow-hidden">
 
         {{-- Toolbar --}}
-        <div class="flex items-center justify-between gap-4 border-b border-zinc-200 px-6 py-3 dark:border-zinc-700">
+        <div class="flex flex-col gap-3 border-b border-zinc-200 px-6 py-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4 dark:border-zinc-700">
             <flux:input wire:model.live.debounce.300ms="search" placeholder="Search attributes…"
-                icon="magnifying-glass" clearable class="max-w-xs" />
+                icon="magnifying-glass" clearable class="sm:max-w-xs" />
 
             <flux:select wire:model.live="perPage" class="w-28">
                 <flux:select.option value="10">10 / page</flux:select.option>

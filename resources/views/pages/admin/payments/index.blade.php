@@ -140,7 +140,7 @@ new #[Layout('layouts::app')] #[Title('Payments | Admin')] class extends Compone
 @endassets
 
 <div>
-    <div class="flex flex-wrap items-end justify-between gap-3">
+    <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
             @push('breadcrumbs')
                 <flux:breadcrumbs>

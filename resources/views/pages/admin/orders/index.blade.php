@@ -133,7 +133,7 @@ new #[Layout('layouts::app')] #[Title('Orders | Admin')] class extends Component
 @endassets
 
 <div>
-    <div class="flex flex-wrap items-end justify-between gap-3">
+    <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
             @push('breadcrumbs')
                 <flux:breadcrumbs>
@@ -152,7 +152,7 @@ new #[Layout('layouts::app')] #[Title('Orders | Admin')] class extends Component
     </div>
 
     {{-- Stat tiles --}}
-    <div class="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-4">
+    <div class="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <flux:card class="flex items-center gap-4">
             <flux:icon.banknotes class="size-9 text-emerald-400 shrink-0" />
             <div class="min-w-0">

@@ -149,7 +149,7 @@ new #[Layout('layouts::app')] #[Title('Coupons | Admin')] class extends Componen
 }; ?>
 
 <div>
-    <div class="flex items-center justify-between">
+    <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
             @push('breadcrumbs')
                 <flux:breadcrumbs>
@@ -166,11 +166,11 @@ new #[Layout('layouts::app')] #[Title('Coupons | Admin')] class extends Componen
 
     <flux:card class="mt-6 overflow-hidden p-0">
         {{-- Toolbar --}}
-        <div class="flex items-center justify-between gap-4 border-b border-zinc-200 px-6 py-3 dark:border-zinc-700">
+        <div class="flex flex-col gap-3 border-b border-zinc-200 px-6 py-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4 dark:border-zinc-700">
             <flux:input wire:model.live.debounce.300ms="search" placeholder="Search codes…" icon="magnifying-glass"
-                clearable class="max-w-xs" />
+                clearable class="sm:max-w-xs" />
 
-            <div class="flex items-center gap-2">
+            <div class="flex flex-wrap items-center gap-2">
                 <flux:select wire:model.live="filterStatus" class="w-36">
                     <flux:select.option value="">All statuses</flux:select.option>
                     <flux:select.option value="active">Active</flux:select.option>

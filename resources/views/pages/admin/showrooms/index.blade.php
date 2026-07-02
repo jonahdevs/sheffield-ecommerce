@@ -79,7 +79,7 @@ new #[Layout('layouts::app')] #[Title('Showrooms | Admin')] class extends Compon
         </flux:breadcrumbs>
     @endpush
 
-    <div class="flex items-center justify-between">
+    <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
             <flux:heading size="xl">Showrooms</flux:heading>
             <flux:text class="mt-1">Branch locations shown in the storefront footer.</flux:text>
@@ -94,7 +94,7 @@ new #[Layout('layouts::app')] #[Title('Showrooms | Admin')] class extends Compon
         {{-- Toolbar --}}
         <div class="flex items-center border-b border-zinc-200 px-6 py-3 dark:border-zinc-700">
             <flux:input wire:model.live.debounce.300ms="search" placeholder="Search city or address…"
-                icon="magnifying-glass" clearable class="max-w-xs" />
+                icon="magnifying-glass" clearable class="w-full sm:max-w-xs" />
         </div>
 
         {{-- Bulk action bar --}}

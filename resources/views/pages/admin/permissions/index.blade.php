@@ -59,7 +59,7 @@ new #[Layout('layouts::app')] #[Title('Permissions | Admin')] class extends Comp
 }; ?>
 
 <div>
-    <div class="flex items-center justify-between">
+    <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
             @push('breadcrumbs')
                 <flux:breadcrumbs>
@@ -75,15 +75,15 @@ new #[Layout('layouts::app')] #[Title('Permissions | Admin')] class extends Comp
     <flux:card class="mt-6 p-0 overflow-hidden">
 
         {{-- Toolbar --}}
-        <div class="flex items-center justify-between gap-4 border-b border-zinc-200 px-6 py-3 dark:border-zinc-700">
+        <div class="flex flex-col gap-3 border-b border-zinc-200 px-6 py-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4 dark:border-zinc-700">
             <flux:input
                 wire:model.live.debounce.300ms="search"
                 placeholder="Search permissions…"
                 icon="magnifying-glass"
                 clearable
-                class="max-w-xs" />
+                class="sm:max-w-xs" />
 
-            <div class="flex items-center gap-2">
+            <div class="flex flex-wrap items-center gap-2">
                 <flux:select wire:model.live="filterGroup" class="w-44">
                     <flux:select.option value="">All groups</flux:select.option>
                     @foreach ($this->groups as $group)

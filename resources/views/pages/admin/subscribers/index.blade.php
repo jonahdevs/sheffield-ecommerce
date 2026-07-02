@@ -57,7 +57,7 @@ new #[Layout('layouts::app')] #[Title('Subscribers | Admin')] class extends Comp
 }; ?>
 
 <div>
-    <div class="flex items-center justify-between">
+    <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
             @push('breadcrumbs')
                 <flux:breadcrumbs>
@@ -85,7 +85,7 @@ new #[Layout('layouts::app')] #[Title('Subscribers | Admin')] class extends Comp
     </div>
 
     {{-- KPIs --}}
-    <div class="mt-6 grid grid-cols-2 gap-4 lg:grid-cols-4">
+    <div class="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <flux:card class="flex items-center gap-4">
             <flux:icon.users class="size-9 text-zinc-400" />
             <div>

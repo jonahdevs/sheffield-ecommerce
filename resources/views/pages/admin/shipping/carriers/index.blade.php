@@ -66,7 +66,7 @@ new #[Layout('layouts::app')] #[Title('Carriers | Admin')] class extends Compone
         </flux:breadcrumbs>
     @endpush
 
-    <div class="flex items-center justify-between">
+    <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
             <flux:heading size="xl">Carriers</flux:heading>
             <flux:subheading>Logistics companies that fulfil deliveries. Invisible to customers — they see method names only.</flux:subheading>
