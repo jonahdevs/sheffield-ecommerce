@@ -20,6 +20,24 @@ it('renders the contact page with its sections', function () {
         ->assertSee('Visit Our Showrooms');
 });
 
+it('lists showroom phone numbers as tel links and the email as a mailto link', function () {
+    Showroom::factory()->create([
+        'city' => 'Kisumu',
+        'country' => 'Kenya',
+        'phones' => ['+254 720 000 111', '+254 720 000 222'],
+        'email' => 'kisumu@sheffieldafrica.com',
+        'sort_order' => 2,
+    ]);
+
+    $this->get(route('contact'))
+        ->assertOk()
+        ->assertSee('+254 720 000 111')
+        ->assertSee('+254 720 000 222')
+        ->assertSee('tel:+254720000111', false)
+        ->assertSee('kisumu@sheffieldafrica.com')
+        ->assertSee('mailto:kisumu@sheffieldafrica.com', false);
+});
+
 it('renders the showroom map and honours the configured provider', function () {
     // Default provider is Leaflet — CartoDB tiles + the showroomMap component.
     $this->get(route('contact'))

@@ -1,6 +1,6 @@
 [
   {
-    "name": "DISC CUBE",
+    "name": "Disc Cube",
     "sku": "IMS/MEC/00270",
     "brand": "SKYMSEN",
     "model_number": "GC16",
@@ -13,7 +13,7 @@
     "status": "archived"
   },
   {
-    "name": "DISC Z8",
+    "name": "Disc Z8",
     "sku": "IMS/MEC/00271",
     "brand": "SKYMSEN",
     "model_number": "Z8",
@@ -26,7 +26,7 @@
     "status": "archived"
   },
   {
-    "name": "DISC Z5",
+    "name": "Disc Z5",
     "sku": "IMS/MEC/00272",
     "brand": "SKYMSEN",
     "model_number": "Z5",
@@ -39,7 +39,7 @@
     "status": "archived"
   },
   {
-    "name": "DISC W4",
+    "name": "Disc W4",
     "sku": "IMS/MEC/00273",
     "brand": "SKYMSEN",
     "model_number": "W4",
@@ -52,7 +52,7 @@
     "status": "archived"
   },
   {
-    "name": "DISC H3",
+    "name": "Disc H3",
     "sku": "IMS/MEC/00274",
     "brand": "SKYMSEN",
     "model_number": "H3/EH3",
@@ -65,7 +65,7 @@
     "status": "archived"
   },
   {
-    "name": "DISC -E3",
+    "name": "Disc -E3",
     "sku": "IMS/MEC/02131",
     "brand": "SKYMSEN",
     "model_number": "E3",
@@ -78,7 +78,7 @@
     "status": "archived"
   },
   {
-    "name": "SLICER DISC - 14MM",
+    "name": "Slicer Disc - 14MM",
     "sku": "IMS/MEC/02319",
     "brand": "SKYMSEN",
     "model_number": "14MM",
@@ -91,7 +91,7 @@
     "status": "archived"
   },
   {
-    "name": "VEGETABLE PROCESSOR PA7",
+    "name": "Vegetable Processor PA7",
     "sku": "IMG/FPR/00042",
     "brand": "SKYMSEN",
     "model_number": "PA-7",
@@ -117,7 +117,7 @@
     "status": "published"
   },
   {
-    "name": "MANUAL VEGETABLE SLICER SYSTEMATIC JSCV-2200",
+    "name": "Manual Vegetable Slicer Systematic JSCV-2200",
     "sku": "IMG/FPR/00130",
     "brand": "SYSTEMATIC",
     "model_number": "JSCV-2200",
@@ -130,7 +130,7 @@
     "status": "published"
   },
   {
-    "name": "MANUAL VEGETABLE SLICER SYSTEMATIC JSCC-9",
+    "name": "Manual Vegetable Slicer Systematic JSCC-9",
     "sku": "IMG/FPR/00131",
     "brand": "SYSTEMATIC",
     "model_number": "JSCC-9",
@@ -143,7 +143,7 @@
     "status": "published"
   },
   {
-    "name": "GRAVITY VEGETABLE SLICER SYSTEMATIC JSEC-08",
+    "name": "Gravity Vegetable Slicer Systematic JSEC-08",
     "sku": "IMG/FPR/00132",
     "brand": "SYSTEMATIC",
     "model_number": "JSEC-08",
@@ -156,7 +156,7 @@
     "status": "draft"
   },
   {
-    "name": "MANUAL VEGETABLE SLICER SYSTEMATIC JSVC2100",
+    "name": "Manual Vegetable Slicer Systematic JSVC2100",
     "sku": "IMG/FPR/00133",
     "brand": "SYSTEMATIC",
     "model_number": "JSVC2100",
@@ -169,7 +169,7 @@
     "status": "published"
   },
   {
-    "name": "VEGETABLE PROCESSOR S-QC205",
+    "name": "Vegetable Processor S-QC205",
     "sku": "IMG/FPR/00177",
     "brand": "ASTAR",
     "model_number": "S-QC205",
@@ -186,7 +186,7 @@
     "status": "archived"
   },
   {
-    "name": "ROOT VEGETABLE CUTTING MACHINE",
+    "name": "Root Vegetable Cutting Machine",
     "sku": "IMG/FPR/00212",
     "brand": "HENAN",
     "model_number": "KL-100-6",
@@ -200,7 +200,7 @@
     "status": "archived"
   },
   {
-    "name": "SALAD AND VEGETABLE DRYER 40 LT 220V SY.40-09",
+    "name": "Salad and Vegetable Dryer 40 Lt 220V SY.40-09",
     "sku": "IMG/FPR/00234",
     "brand": "EMPERO",
     "model_number": "SY.40-09",
@@ -217,7 +217,7 @@
     "status": "published"
   },
   {
-    "name": "COMMERCIAL VEGETABLE FOOD PROCESSOR QC205A",
+    "name": "Commercial Vegetable Food Processor QC205A",
     "sku": "IMG/FPR/00239",
     "brand": "KITCHENWARE",
     "model_number": "QC205A",
@@ -234,7 +234,7 @@
     "status": "published"
   },
   {
-    "name": "ASSORTED BLADE 3PACK R301UD",
+    "name": "Assorted Blade 3PACK R301UD",
     "sku": "IMG/FPR/00250",
     "brand": "ROBOT COUPE",
     "model_number": "2006",
@@ -247,7 +247,7 @@
     "status": "archived"
   },
   {
-    "name": "COMBINATION PROCESSOR R301",
+    "name": "Combination Processor R301",
     "sku": "IMG/FPR/00018",
     "brand": "ROBOT COUPE",
     "model_number": "R301",
@@ -267,7 +267,7 @@
     "status": "published"
   },
   {
-    "name": "CUTTER MIXER - ASKL-650",
+    "name": "Cutter Mixer - ASKL-650",
     "sku": "IMG/FPR/00183",
     "brand": "ASTAR",
     "model_number": "ASKL-650",
@@ -280,7 +280,7 @@
     "status": "draft"
   },
   {
-    "name": "POTATO CHIPPER TABLE TOP KAYALAR",
+    "name": "Potato Chipper Table Top Kayalar",
     "sku": "IMG/FPR/00110",
     "brand": "KAYALAR",
     "model_number": "153155040",
@@ -293,7 +293,7 @@
     "status": "published"
   },
   {
-    "name": "MALE BLADE FOR CHIPPER 10MM",
+    "name": "Male Blade for Chipper 10MM",
     "sku": "IMS/MEC/00309",
     "brand": "SKYMSEN",
     "model_number": "DAK",
@@ -306,7 +306,7 @@
     "status": "archived"
   },
   {
-    "name": "FEMALE BLADE FOR CHIPPER 10MM",
+    "name": "Female Blade for Chipper 10MM",
     "sku": "IMS/MEC/00312",
     "brand": "SKYMSEN",
     "model_number": "DAK",
@@ -319,7 +319,7 @@
     "status": "archived"
   },
   {
-    "name": "POTATO CHIPPER ON STAND SYSTEMATIC JSPCC-08",
+    "name": "Potato Chipper on Stand Systematic JSPCC-08",
     "sku": "IMG/FPR/00127",
     "brand": "SYSTEMATIC",
     "model_number": "JSPCC-08",
@@ -340,7 +340,7 @@
     "status": "published"
   },
   {
-    "name": "POTATO SMASHER ON STAND",
+    "name": "Potato Smasher on Stand",
     "sku": "IMG/FPR/00050",
     "brand": "SKYMSEN",
     "model_number": "DAK",
@@ -353,7 +353,7 @@
     "status": "draft"
   },
   {
-    "name": "POTATO PEELER 50 KG SHEFFIELD",
+    "name": "Potato Peeler 50 Kg Sheffield",
     "sku": "FAB/FPR/00241",
     "brand": "SHEFFIELD",
     "model_number": "PP50",
@@ -367,7 +367,7 @@
     "status": "archived"
   },
   {
-    "name": "POTATO PEELER 25 KG SHEFFIELD",
+    "name": "Potato Peeler 25 Kg Sheffield",
     "sku": "FAB/FPR/00315",
     "brand": "SHEFFIELD",
     "model_number": "PP25",
@@ -381,7 +381,7 @@
     "status": "archived"
   },
   {
-    "name": "POTATO PEELER 15 KG SHEFFIELD",
+    "name": "Potato Peeler 15 Kg Sheffield",
     "sku": "FAB/FPR/00372",
     "brand": "SHEFFIELD",
     "model_number": "PP15",
@@ -395,7 +395,7 @@
     "status": "archived"
   },
   {
-    "name": "POTATO PEELER 10 KG SHEFFIELD",
+    "name": "Potato Peeler 10 Kg Sheffield",
     "sku": "FAB/FPR/00435",
     "brand": "SHEFFIELD",
     "model_number": "PP10",
@@ -408,7 +408,7 @@
     "status": "archived"
   },
   {
-    "name": "POTATO PEELER 30 KG SHEFFIELD",
+    "name": "Potato Peeler 30 Kg Sheffield",
     "sku": "FAB/FPR/00458",
     "brand": "SHEFFIELD",
     "model_number": "PP30",
@@ -421,7 +421,7 @@
     "status": "archived"
   },
   {
-    "name": "POTATO PEELER 20 KG EMPERO",
+    "name": "Potato Peeler 20 Kg Empero",
     "sku": "IMG/FPR/00008",
     "brand": "EMPERO",
     "model_number": "PS.09",
@@ -435,7 +435,7 @@
     "status": "published"
   },
   {
-    "name": "POTATO PEELER 25KG SKYMSEN",
+    "name": "Potato Peeler 25KG Skymsen",
     "sku": "IMG/FPR/00048",
     "brand": "SKYMSEN",
     "model_number": "DB-25HD",
@@ -452,7 +452,7 @@
     "status": "archived"
   },
   {
-    "name": "POTATO PEELER 20KG P120 SAMMIC",
+    "name": "Potato Peeler 20KG P120 Sammic",
     "sku": "IMG/FPR/00105",
     "brand": "SAMMIC",
     "model_number": "PI-20",
@@ -465,7 +465,7 @@
     "status": "archived"
   },
   {
-    "name": "POTATO PEELER WITH DOOR, STAINLESS STEEL 10KG",
+    "name": "Potato Peeler with Door, Stainless Steel 10KG",
     "sku": "IMG/FPR/00246",
     "brand": "SKYMSEN",
     "model_number": "DB-10",
@@ -479,7 +479,7 @@
     "status": "published"
   },
   {
-    "name": "MEAT SLICER Ø 300MM",
+    "name": "Meat Slicer Ø 300MM",
     "sku": "IMG/FPR/00046",
     "brand": "HK-REDLINE",
     "model_number": "300ES-12",
@@ -496,7 +496,7 @@
     "status": "published"
   },
   {
-    "name": "MEAT SLICER Ø 250MM",
+    "name": "Meat Slicer Ø 250MM",
     "sku": "IMG/FPR/00179",
     "brand": "HK-REDLINE",
     "model_number": "250ES-10",
@@ -510,7 +510,7 @@
     "status": "published"
   },
   {
-    "name": "MEAT GRINDER 22 MODEL TK -22",
+    "name": "Meat Grinder 22 Model TK -22",
     "sku": "IMG/FPR/00164",
     "brand": "ASTAR",
     "model_number": "TK-22",
@@ -523,7 +523,7 @@
     "status": "archived"
   },
   {
-    "name": "MEAT GRINDER 42 MODEL TC-42",
+    "name": "Meat Grinder 42 Model TC-42",
     "sku": "IMG/FPR/00178",
     "brand": "ASTAR",
     "model_number": "TC-42",
@@ -536,7 +536,7 @@
     "status": "published"
   },
   {
-    "name": "MEATBALL MAKING MACHINE",
+    "name": "Meatball Making Machine",
     "sku": "IMG/FPR/00181",
     "brand": "ASTAR",
     "model_number": "SXW-280",
@@ -553,7 +553,7 @@
     "status": "archived"
   },
   {
-    "name": "MEAT SLICER 300",
+    "name": "Meat Slicer 300",
     "sku": "IMG/FPR/00215",
     "brand": "SKYMSEN",
     "model_number": "CFI-300L-N",
@@ -566,7 +566,7 @@
     "status": "published"
   },
   {
-    "name": "MEAT MINCER  TC-22",
+    "name": "Meat Mincer TC-22",
     "sku": "IMG/FPR/00251",
     "brand": "HK-REDLINE",
     "model_number": "TC-22",
@@ -583,7 +583,7 @@
     "status": "published"
   },
   {
-    "name": "MEAT MINCER  JT32",
+    "name": "Meat Mincer JT32",
     "sku": "IMG/FPR/00252",
     "brand": "HK-REDLINE",
     "model_number": "JT32",
@@ -600,7 +600,7 @@
     "status": "published"
   },
   {
-    "name": "BONE SAWER JG210",
+    "name": "Bone Sawer JG210",
     "sku": "IMG/FPR/00253",
     "brand": "HK-REDLINE",
     "model_number": "JG210",
@@ -617,7 +617,7 @@
     "status": "published"
   },
   {
-    "name": "BONE SAWER JG310",
+    "name": "Bone Sawer JG310",
     "sku": "IMG/FPR/00254",
     "brand": "HK-REDLINE",
     "model_number": "JG310",
@@ -631,7 +631,7 @@
     "status": "published"
   },
   {
-    "name": "BONE SAWER HLS-2400",
+    "name": "Bone Sawer HLS-2400",
     "sku": "IMG/FPR/00255",
     "brand": "HK-REDLINE",
     "model_number": "HLS-2400",
@@ -644,7 +644,7 @@
     "status": "published"
   },
   {
-    "name": "BONE SAW BLADE 1650MM",
+    "name": "Bone Saw Blade 1650MM",
     "sku": "IMG/FPR/00906",
     "brand": "SHEFFIELD",
     "model_number": "",
@@ -657,7 +657,7 @@
     "status": "archived"
   },
   {
-    "name": "BONE SAW FREE STANDING SI-282HD",
+    "name": "Bone Saw Free Standing SI-282HD",
     "sku": "IMG/FPR/00051",
     "brand": "SKYMSEN",
     "model_number": "SI-282HD",
@@ -677,7 +677,7 @@
     "status": "archived"
   },
   {
-    "name": "MANUAL HAMBURGER PRESS 130",
+    "name": "Manual Hamburger Press 130",
     "sku": "IMG/FPR/00184",
     "brand": "ASTAR",
     "model_number": "130",
@@ -694,7 +694,7 @@
     "status": "published"
   },
   {
-    "name": "ELECTRIC SAUSAGE STUFFER",
+    "name": "Electric Sausage Stuffer",
     "sku": "IMG/FPR/00180",
     "brand": "ASTAR",
     "model_number": "TB-10L",
@@ -708,7 +708,7 @@
     "status": "published"
   },
   {
-    "name": "TUMBLE MARINATOR",
+    "name": "Tumble Marinator",
     "sku": "IMG/HOT/00196",
     "brand": "ASTAR",
     "model_number": "BC-135L",
@@ -721,7 +721,7 @@
     "status": "published"
   },
   {
-    "name": "VACUUM PACKING MACHINE DZ300",
+    "name": "Vacuum Packing Machine DZ300",
     "sku": "IMG/FPR/00231",
     "brand": "OEM SHEFFIELD",
     "model_number": "DZ300",
@@ -738,7 +738,7 @@
     "status": "published"
   },
   {
-    "name": "VACUUM PACKING MACHINE DZ400",
+    "name": "Vacuum Packing Machine DZ400",
     "sku": "IMG/FPR/00232",
     "brand": "OEM SHEFFIELD",
     "model_number": "DZ400",
@@ -755,7 +755,7 @@
     "status": "published"
   },
   {
-    "name": "CHOPPING BOARD BLUE",
+    "name": "Chopping Board Blue",
     "sku": "IMG/FPR/00012",
     "brand": "HK-REDLINE",
     "model_number": "N/A",
@@ -769,7 +769,7 @@
     "status": "published"
   },
   {
-    "name": "CHOPPING BOARD WHITE",
+    "name": "Chopping Board White",
     "sku": "IMG/FPR/00014",
     "brand": "HK-REDLINE",
     "model_number": "N/A",
@@ -783,7 +783,7 @@
     "status": "published"
   },
   {
-    "name": "CHOPPING BOARD YELLOW",
+    "name": "Chopping Board Yellow",
     "sku": "IMG/FPR/00015",
     "brand": "HK-REDLINE",
     "model_number": "N/A",
@@ -797,7 +797,7 @@
     "status": "published"
   },
   {
-    "name": "CHOPPING BOARD GREEN",
+    "name": "Chopping Board Green",
     "sku": "IMG/FPR/00080",
     "brand": "SHEFFIELD",
     "model_number": "GREEN",
@@ -811,7 +811,7 @@
     "status": "published"
   },
   {
-    "name": "CHOPPING BLOCK 600X600X100",
+    "name": "Chopping Block 600X600X100",
     "sku": "IMG/FPR/00277",
     "brand": "SHEFFIELD",
     "model_number": "",
@@ -828,7 +828,7 @@
     "status": "published"
   },
   {
-    "name": "CHOPPING BOARD RED",
+    "name": "Chopping Board Red",
     "sku": "IMG/FPR/00081",
     "brand": "HK-REDLINE",
     "model_number": "RED",
@@ -842,7 +842,7 @@
     "status": "published"
   },
   {
-    "name": "MEAT DISPLAY COUNTER 1500",
+    "name": "Meat Display Counter 1500",
     "sku": "FAB/DIS/00007",
     "brand": "SHEFFIELD",
     "model_number": "MD1500",
@@ -859,7 +859,7 @@
     "status": "archived"
   },
   {
-    "name": "MEAT DISPLAY COUNTER 2000",
+    "name": "Meat Display Counter 2000",
     "sku": "FAB/DIS/00010",
     "brand": "SHEFFIELD",
     "model_number": "MD2000",
@@ -876,7 +876,7 @@
     "status": "archived"
   },
   {
-    "name": "BLENDER BAR 1.25 LITRES SANTOS 33E",
+    "name": "Blender Bar 1.25 Litres Santos 33E",
     "sku": "IMG/FPR/00022",
     "brand": "SANTOS",
     "model_number": "33EA",
@@ -893,7 +893,7 @@
     "status": "published"
   },
   {
-    "name": "BLENDER KITCHEN 2+4 LITRES SANTOS 37A",
+    "name": "Blender Kitchen 2+4 Litres Santos 37A",
     "sku": "IMG/FPR/00023",
     "brand": "SANTOS",
     "model_number": "37-A",
@@ -910,7 +910,7 @@
     "status": "published"
   },
   {
-    "name": "BLENDER KITCHEN 3 LITRES SS",
+    "name": "Blender Kitchen 3 Litres SS",
     "sku": "IMG/FPR/00033",
     "brand": "SKYMSEN",
     "model_number": "LAR-03MB-N",
@@ -923,7 +923,7 @@
     "status": "archived"
   },
   {
-    "name": "BLENDER KITCHEN 4 LITRES SS",
+    "name": "Blender Kitchen 4 Litres SS",
     "sku": "IMG/FPR/00034",
     "brand": "SKYMSEN",
     "model_number": "LAR-04MB-N",
@@ -940,7 +940,7 @@
     "status": "published"
   },
   {
-    "name": "BLENDER KITCHEN 8 LITRES SS",
+    "name": "Blender Kitchen 8 Litres SS",
     "sku": "IMG/FPR/00036",
     "brand": "SKYMSEN",
     "model_number": "LAR-08MB-N",
@@ -957,7 +957,7 @@
     "status": "published"
   },
   {
-    "name": "BLENDER KITCHEN 10 LITRES SS",
+    "name": "Blender Kitchen 10 Litres SS",
     "sku": "IMG/FPR/00037",
     "brand": "SKYMSEN",
     "model_number": "LAR-10MB-N",
@@ -974,7 +974,7 @@
     "status": "published"
   },
   {
-    "name": "BLENDER KITCHEN 25 LITRES SS",
+    "name": "Blender Kitchen 25 Litres SS",
     "sku": "IMG/FPR/00038",
     "brand": "SKYMSEN",
     "model_number": "LAR 25MB",
@@ -991,7 +991,7 @@
     "status": "published"
   },
   {
-    "name": "BRUSHLESS COMMERCIAL BLENDER",
+    "name": "Brushless Commercial Blender",
     "sku": "IMG/FPR/00093",
     "brand": "SHEFFIELD",
     "model_number": "SHG902",
@@ -1008,7 +1008,7 @@
     "status": "published"
   },
   {
-    "name": "COMPLETE JUG SET FOR BRUSHLESS BLENDER",
+    "name": "Complete Jug Set for Brushless Blender",
     "sku": "IMS/MEC/01890",
     "brand": "NINGBO",
     "model_number": "-",
@@ -1021,7 +1021,7 @@
     "status": "archived"
   },
   {
-    "name": "BLENDER BAR 2 LITRES SKYMSEN",
+    "name": "Blender Bar 2 Litres Skymsen",
     "sku": "IMG/FPR/00169",
     "brand": "SKYMSEN",
     "model_number": "BM2",
@@ -1038,7 +1038,7 @@
     "status": "published"
   },
   {
-    "name": "HAND IMMERSION BLENDER 350W H-KITCHEN",
+    "name": "Hand Immersion Blender 350W H-Kitchen",
     "sku": "IMG/FPR/00217",
     "brand": "H-KITCHEN",
     "model_number": "IB350CV",
@@ -1053,7 +1053,7 @@
     "status": "published"
   },
   {
-    "name": "HAND IMMERSION BLENDER 500W H-KITCHEN",
+    "name": "Hand Immersion Blender 500W H-Kitchen",
     "sku": "IMG/FPR/00218",
     "brand": "HK-REDLINE",
     "model_number": "IB500LV",
@@ -1067,7 +1067,7 @@
     "status": "published"
   },
   {
-    "name": "IMMERSION BLENDER TUBE 250 MM",
+    "name": "Immersion Blender Tube 250 Mm",
     "sku": "IMG/FPR/00219",
     "brand": "",
     "model_number": "BLD250",
@@ -1080,7 +1080,7 @@
     "status": "draft"
   },
   {
-    "name": "IMMERSION BLENDER TUBE 300 MM",
+    "name": "Immersion Blender Tube 300 Mm",
     "sku": "IMG/FPR/00220",
     "brand": "H-KITCHEN",
     "model_number": "BLD300",
@@ -1093,7 +1093,7 @@
     "status": "published"
   },
   {
-    "name": "IMMERSION BLENDER TUBE 400 MM",
+    "name": "Immersion Blender Tube 400 Mm",
     "sku": "IMG/FPR/00221",
     "brand": "H-KITCHEN",
     "model_number": "BLD400",
@@ -1108,7 +1108,7 @@
     "status": "published"
   },
   {
-    "name": "WHISK ATTACHMENT FOR IMMERSION BLENDER 250MM",
+    "name": "Whisk Attachment for Immersion Blender 250MM",
     "sku": "IMG/FPR/00222",
     "brand": "HK-REDLINE",
     "model_number": "WIK250",
@@ -1121,7 +1121,7 @@
     "status": "archived"
   },
   {
-    "name": "IMMERSION BLENDER CMP 400 VV",
+    "name": "Immersion Blender CMP 400 VV",
     "sku": "IMG/FPR/00227",
     "brand": "ROBOT COUPE",
     "model_number": "CMP 400 V.V",
@@ -1138,7 +1138,7 @@
     "status": "published"
   },
   {
-    "name": "IMMERSION BLENDER CMP 300 VV",
+    "name": "Immersion Blender CMP 300 VV",
     "sku": "IMG/FPR/00228",
     "brand": "ROBOT COUPE",
     "model_number": "CMP 300 V.V",
@@ -1152,7 +1152,7 @@
     "status": "published"
   },
   {
-    "name": "KITCHEN BLENDER WITH SOUNDPROOF COVER",
+    "name": "Kitchen Blender with Soundproof Cover",
     "sku": "IMG/FPR/00274",
     "brand": "H-KITCHEN",
     "model_number": "8002",
@@ -1168,7 +1168,7 @@
     "status": "published"
   },
   {
-    "name": "JUICE DISPENSER CLEAR JUG",
+    "name": "Juice Dispenser Clear Jug",
     "sku": "IMG/BUF/00043",
     "brand": "OEM SHEFFIELD",
     "model_number": "HY-605-1",
@@ -1181,7 +1181,7 @@
     "status": "published"
   },
   {
-    "name": "JUICE DISPENSER 1 BOWL - CAPACITY: 10 LITRES",
+    "name": "Juice Dispenser 1 Bowl - Capacity: 10 Litres",
     "sku": "IMG/BUF/00092",
     "brand": "KITCHENWARE",
     "model_number": "SJD10A",
@@ -1195,7 +1195,7 @@
     "status": "published"
   },
   {
-    "name": "JUICE DISPENSER 3 TANK LSP-18X3",
+    "name": "Juice Dispenser 3 Tank LSP-18X3",
     "sku": "IMG/BUF/00129",
     "brand": "HK-REDLINE",
     "model_number": "LSP-18X3",
@@ -1212,7 +1212,7 @@
     "status": "published"
   },
   {
-    "name": "JUICE DISPENSER 2 TANK LSP-18X2",
+    "name": "Juice Dispenser 2 Tank LSP-18X2",
     "sku": "IMG/BUF/00130",
     "brand": "HK-REDLINE",
     "model_number": "LSP-18X2",
@@ -1229,7 +1229,7 @@
     "status": "published"
   },
   {
-    "name": "JUICE DISPENSER 1 TANK 34-1A SANTOS",
+    "name": "Juice Dispenser 1 Tank 34-1A Santos",
     "sku": "IMG/BUF/00131",
     "brand": "SANTOS",
     "model_number": "34-1A",
@@ -1246,7 +1246,7 @@
     "status": "published"
   },
   {
-    "name": "CITRUS JUICER SANTOS 10A",
+    "name": "Citrus Juicer Santos 10A",
     "sku": "IMG/FPR/00021",
     "brand": "SANTOS",
     "model_number": "10A",
@@ -1263,7 +1263,7 @@
     "status": "published"
   },
   {
-    "name": "JUICE EXTRACTOR CENTRIFUGAL SANTOS 68",
+    "name": "Juice Extractor Centrifugal Santos 68",
     "sku": "IMG/FPR/00027",
     "brand": "SANTOS",
     "model_number": "68JA",
@@ -1280,7 +1280,7 @@
     "status": "published"
   },
   {
-    "name": "CITRUS JUICER SANTOS 70A",
+    "name": "Citrus Juicer Santos 70A",
     "sku": "IMG/FPR/00032",
     "brand": "SANTOS",
     "model_number": "70A",
@@ -1297,7 +1297,7 @@
     "status": "published"
   },
   {
-    "name": "JUICE EXTRACTOR CENTRIFUGAL SKYMSEN CSE",
+    "name": "Juice Extractor Centrifugal Skymsen CSE",
     "sku": "IMG/FPR/00040",
     "brand": "SKYMSEN",
     "model_number": "CSE",
@@ -1314,7 +1314,7 @@
     "status": "published"
   },
   {
-    "name": "ORANGE JUICER Z06A-N",
+    "name": "Orange Juicer Z06A-N",
     "sku": "IMG/FPR/00079",
     "brand": "ZUMMO INNOCACIONES",
     "model_number": "Z06A-N",
@@ -1331,7 +1331,7 @@
     "status": "archived"
   },
   {
-    "name": "AUTOMATIC ORANGE JUICER CANCAN 38",
+    "name": "Automatic Orange Juicer Cancan 38",
     "sku": "IMG/FPR/00123",
     "brand": "CANCAN",
     "model_number": "CANCAN 38",
@@ -1348,7 +1348,7 @@
     "status": "published"
   },
   {
-    "name": "AUTOMATIC ORANGE JUICER SYSTEMATIC JSJC-12",
+    "name": "Automatic Orange Juicer Systematic JSJC-12",
     "sku": "IMG/FPR/00140",
     "brand": "SYSTEMATIC",
     "model_number": "JSJC-12",
@@ -1365,7 +1365,7 @@
     "status": "published"
   },
   {
-    "name": "JUICE EXTRACTOR SANTOS 50A",
+    "name": "Juice Extractor Santos 50A",
     "sku": "IMG/FPR/00174",
     "brand": "SANTOS",
     "model_number": "50A",
@@ -1382,7 +1382,7 @@
     "status": "published"
   },
   {
-    "name": "JUICE EXTRACTOR ESB SUPER N",
+    "name": "Juice Extractor ESB Super N",
     "sku": "IMG/FPR/00214",
     "brand": "SKYMSEN",
     "model_number": "ESB SUPER-N",
@@ -1395,7 +1395,7 @@
     "status": "published"
   },
   {
-    "name": "COLD PRESS JUICER NUTRISANTOS 65",
+    "name": "Cold Press Juicer Nutrisantos 65",
     "sku": "IMG/FPR/00229",
     "brand": "SANTOS",
     "model_number": "65A",
@@ -1409,7 +1409,7 @@
     "status": "published"
   },
   {
-    "name": "CLASSIC CITRUS JUICER 11",
+    "name": "Classic Citrus Juicer 11",
     "sku": "IMG/FPR/00230",
     "brand": "SANTOS",
     "model_number": "11A",
@@ -1426,7 +1426,7 @@
     "status": "published"
   },
   {
-    "name": "JUICE EXTRACTOR WF-B3000",
+    "name": "Juice Extractor WF-B3000",
     "sku": "IMG/FPR/00257",
     "brand": "HK-REDLINE",
     "model_number": "WF-B3000",
@@ -1440,7 +1440,7 @@
     "status": "published"
   },
   {
-    "name": "SUGARCANE JUICING MACHINE SYSTEMATIC",
+    "name": "Sugarcane Juicing Machine Systematic",
     "sku": "IMG/FPR/00139",
     "brand": "SYSTEMATIC",
     "model_number": "JSESCJ-300",
@@ -1457,7 +1457,7 @@
     "status": "published"
   },
   {
-    "name": "MILK SHAKE MIXER SINGLE SKYMSEN",
+    "name": "Milk Shake Mixer Single Skymsen",
     "sku": "IMG/ICE/00019",
     "brand": "SKYMSEN",
     "model_number": "BMS-N",
@@ -1474,7 +1474,7 @@
     "status": "published"
   },
   {
-    "name": "MILK SHAKE MIXER TRIPLE SKYMSEN",
+    "name": "Milk Shake Mixer Triple Skymsen",
     "sku": "IMG/ICE/00020",
     "brand": "SKYMSEN",
     "model_number": "BMS-3-N",
@@ -1491,7 +1491,7 @@
     "status": "published"
   },
   {
-    "name": "MILK SHAKE MIXER SINGLE WARING",
+    "name": "Milk Shake Mixer Single Waring",
     "sku": "IMG/ICE/00021",
     "brand": "WARING",
     "model_number": "WDM120K",
@@ -1508,7 +1508,7 @@
     "status": "published"
   },
   {
-    "name": "MILK SHAKER DOUBLE BL-018",
+    "name": "Milk Shaker Double BL-018",
     "sku": "IMG/ICE/00040",
     "brand": "HK-REDLINE",
     "model_number": "BL-018",
@@ -1522,7 +1522,7 @@
   },
   {
     "sku": "IMG/REF/00032",
-    "name": "UPRIGHT GLASS DOOR CHILLER SINGLE 7008 BLUELINE",
+    "name": "Upright Glass Door Chiller Single 7008 Blueline",
     "brand": "SHEFFIELD BLUELINE",
     "model_number": "GN650TNG",
     "category": "Refrigeration",
@@ -1539,7 +1539,7 @@
   },
   {
     "sku": "IMG/REF/00034",
-    "name": "COUNTER CHILLER 9007 BLUELINE",
+    "name": "Counter Chiller 9007 Blueline",
     "brand": "SHEFFIELD BLUELINE",
     "model_number": "GN1100TN",
     "category": "Refrigeration",
@@ -1556,7 +1556,7 @@
   },
   {
     "sku": "IMG/REF/00036",
-    "name": "COUNTER CHILLER 1407 BLUELINE",
+    "name": "Counter Chiller 1407 Blueline",
     "brand": "SHEFFIELD BLUELINE",
     "model_number": "GN2100TN",
     "category": "Refrigeration",
@@ -1573,7 +1573,7 @@
   },
   {
     "sku": "IMG/REF/00037",
-    "name": "COUNTER CHILLER 1807 BLUELINE",
+    "name": "Counter Chiller 1807 Blueline",
     "brand": "SHEFFIELD BLUELINE",
     "model_number": "GN3100TN",
     "category": "Refrigeration",
@@ -1590,7 +1590,7 @@
   },
   {
     "sku": "IMG/REF/00041",
-    "name": "BARLINE CHILLER 2207 BLUELINE",
+    "name": "Barline Chiller 2207 Blueline",
     "brand": "SHEFFIELD BLUELINE",
     "model_number": "GN4100TNG",
     "category": "Refrigeration",
@@ -1607,7 +1607,7 @@
   },
   {
     "sku": "IMG/REF/00042",
-    "name": "UPRIGHT SOLID DOOR DUAL CHILLER FREEZER 2 DOOR BLUELINE",
+    "name": "Upright Solid Door Dual Chiller Freezer 2 Door Blueline",
     "brand": "SHEFFIELD BLUELINE",
     "model_number": "GN1200BTV",
     "category": "Refrigeration",
@@ -1621,7 +1621,7 @@
   },
   {
     "sku": "IMG/REF/00043",
-    "name": "DRAWER COUNTER CHILLER 6 DRAWERS 1800 BLUELINE",
+    "name": "Drawer Counter Chiller 6 Drawers 1800 Blueline",
     "brand": "SHEFFIELD BLUELINE",
     "model_number": "U-GN3160TN",
     "category": "Refrigeration",
@@ -1638,7 +1638,7 @@
   },
   {
     "sku": "IMG/REF/00044",
-    "name": "UPRIGHT SOLID DOOR CHILLER 1 DOOR BLUELINE",
+    "name": "Upright Solid Door Chiller 1 Door Blueline",
     "brand": "SHEFFIELD BLUELINE",
     "model_number": "GN650TN",
     "category": "Refrigeration",
@@ -1655,7 +1655,7 @@
   },
   {
     "sku": "IMG/REF/00049",
-    "name": "UPRIGHT GLASS DOOR CHILLER SINGLE 8007 DGD",
+    "name": "Upright Glass Door Chiller Single 8007 DGD",
     "brand": "TECNODOM",
     "model_number": "AFO7EKOMTNPV",
     "category": "Refrigeration",
@@ -1672,7 +1672,7 @@
   },
   {
     "sku": "IMG/REF/00057",
-    "name": "BLAST CHILLER 5 TRAYS DGD",
+    "name": "Blast Chiller 5 Trays DGD",
     "brand": "TECNODOM",
     "model_number": "ATT-05",
     "category": "Refrigeration",
@@ -1693,7 +1693,7 @@
   },
   {
     "sku": "IMG/REF/00060",
-    "name": "UPRIGHT SOLID DOOR CHILLER 2 DOOR DGD AF14PKMTN",
+    "name": "Upright Solid Door Chiller 2 Door DGD AF14PKMTN",
     "brand": "TECNODOM",
     "model_number": "AF14PKMTN",
     "category": "Refrigeration",
@@ -1710,7 +1710,7 @@
   },
   {
     "sku": "IMG/REF/00062",
-    "name": "UPRIGHT SOLID DOOR CHILLER 1 DOOR DGD AF07PKMTN",
+    "name": "Upright Solid Door Chiller 1 Door DGD AF07PKMTN",
     "brand": "TECNODOM",
     "model_number": "AF07PKMTN",
     "category": "Refrigeration",
@@ -1727,7 +1727,7 @@
   },
   {
     "sku": "IMG/REF/00095",
-    "name": "UPRIGHT SOLID DOOR CHILLER 2 DOOR BLUELINE GN1410TN",
+    "name": "Upright Solid Door Chiller 2 Door Blueline GN1410TN",
     "brand": "SHEFFIELD BLUELINE",
     "model_number": "GN1410TN",
     "category": "Refrigeration",
@@ -1744,7 +1744,7 @@
   },
   {
     "sku": "IMG/REF/00097",
-    "name": "UPRIGHT GLASS DOOR CHILLER DOUBLE 1408 BLUELINE GN1410TNG",
+    "name": "Upright Glass Door Chiller Double 1408 Blueline GN1410TNG",
     "brand": "SHEFFIELD BLUELINE",
     "model_number": "GN1410TNG",
     "category": "Refrigeration",
@@ -1761,7 +1761,7 @@
   },
   {
     "sku": "IMG/REF/00099",
-    "name": "DRAWER COUNTER CHILLER 8 DRAWERS 2200 BLUELINE",
+    "name": "Drawer Counter Chiller 8 Drawers 2200 Blueline",
     "brand": "SHEFFIELD BLUELINE",
     "model_number": "U-GN4180TN",
     "category": "Refrigeration",
@@ -1778,7 +1778,7 @@
   },
   {
     "sku": "IMG/REF/00102",
-    "name": "COUNTER CHILLER 2207 BLUELINE GN4100TN",
+    "name": "Counter Chiller 2207 Blueline GN4100TN",
     "brand": "SHEFFIELD BLUELINE",
     "model_number": "GN4100TN",
     "category": "Refrigeration",
@@ -1795,7 +1795,7 @@
   },
   {
     "sku": "IMG/REF/00105",
-    "name": "BARLINE CHILLER 1207 BLUELINE GN2100TNG-1200",
+    "name": "Barline Chiller 1207 Blueline GN2100TNG-1200",
     "brand": "SHEFFIELD BLUELINE",
     "model_number": "GN2100TNG-1200",
     "category": "Refrigeration",
@@ -1812,7 +1812,7 @@
   },
   {
     "sku": "IMG/REF/00106",
-    "name": "BARLINE CHILLER 1507 BLUELINE GN2100TNG-1500",
+    "name": "Barline Chiller 1507 Blueline GN2100TNG-1500",
     "brand": "SHEFFIELD BLUELINE",
     "model_number": "GN2100TNG-1500",
     "category": "Refrigeration",
@@ -1829,7 +1829,7 @@
   },
   {
     "sku": "IMG/REF/00107",
-    "name": "BARLINE CHILLER 1807 BLUELINE GN3100TNG",
+    "name": "Barline Chiller 1807 Blueline GN3100TNG",
     "brand": "SHEFFIELD BLUELINE",
     "model_number": "GN3100TNG",
     "category": "Refrigeration",
@@ -1846,7 +1846,7 @@
   },
   {
     "sku": "IMG/REF/00126",
-    "name": "3 DOOR COUNTER CHILLER 1800X600X860 SNACK3100TN-1800",
+    "name": "3 Door Counter Chiller 1800X600X860 SNACK3100TN-1800",
     "brand": "SHEFFIELD BLUELINE",
     "model_number": "SNACK3100TN",
     "category": "Refrigeration",
@@ -1863,7 +1863,7 @@
   },
   {
     "sku": "IMG/REF/00136",
-    "name": "BULK MILK CHILLER 500 LITRES BMC-500",
+    "name": "Bulk Milk Chiller 500 Litres BMC-500",
     "brand": "ICEMAKE",
     "model_number": "BMC-500",
     "category": "Refrigeration",
@@ -1880,7 +1880,7 @@
   },
   {
     "sku": "IMG/REF/00144",
-    "name": "BARLINE CHILLER 1207 BLUELINE",
+    "name": "Barline Chiller 1207 Blueline",
     "brand": "SHEFFIELD BLUELINE",
     "model_number": "GN2100TNG",
     "category": "Refrigeration",
@@ -1897,7 +1897,7 @@
   },
   {
     "sku": "IMG/REF/00155",
-    "name": "BARLINE CHILLER 2206 BLUELINE",
+    "name": "Barline Chiller 2206 Blueline",
     "brand": "SHEFFIELD BLUELINE",
     "model_number": "SNACK4100TNG",
     "category": "Refrigeration",
@@ -1914,7 +1914,7 @@
   },
   {
     "sku": "IMG/REF/00156",
-    "name": "SOLID DOOR CHILLER 1 DOOR UNDER COUNTER DR200 S/S",
+    "name": "Solid Door Chiller 1 Door Under Counter DR200 S/S",
     "brand": "SHEFFIELD BLUELINE",
     "model_number": "DR200 S/S",
     "category": "Refrigeration",
@@ -1931,7 +1931,7 @@
   },
   {
     "sku": "IMG/REF/00157",
-    "name": "UPRIGHT SOLID 1 DOOR CHILLER 600 SRIES DR400 S/S",
+    "name": "Upright Solid 1 Door Chiller 600 Sries DR400 S/S",
     "brand": "SHEFFIELD BLUELINE",
     "model_number": "DR400 S/S",
     "category": "Refrigeration",
@@ -1948,7 +1948,7 @@
   },
   {
     "sku": "IMG/REF/00160",
-    "name": "BARLINE CHILLER 1406 BLUELINE",
+    "name": "Barline Chiller 1406 Blueline",
     "brand": "SHEFFIELD BLUELINE",
     "model_number": "SNACK2100TNG",
     "category": "Refrigeration",
@@ -1965,7 +1965,7 @@
   },
   {
     "sku": "IMG/REF/00161",
-    "name": "BARLINE CHILLER 1806 BLUELINE",
+    "name": "Barline Chiller 1806 Blueline",
     "brand": "SHEFFIELD BLUELINE",
     "model_number": "SNACK3100TNG",
     "category": "Refrigeration",
@@ -1982,7 +1982,7 @@
   },
   {
     "sku": "IMG/REF/00166",
-    "name": "COUNTER CHILLER WITH 4 DRAWERS",
+    "name": "Counter Chiller with 4 Drawers",
     "brand": "SHEFFIELD BLUELINE",
     "model_number": "GN2140TN",
     "category": "Refrigeration",
@@ -1995,7 +1995,7 @@
   },
   {
     "sku": "IMG/REF/00167",
-    "name": "COUNTER CHILLER WITH 4 DRAWERS & 1 DOOR",
+    "name": "Counter Chiller with 4 Drawers & 1 Door",
     "brand": "SHEFFIELD BLUELINE",
     "model_number": "GN3140TN",
     "category": "Refrigeration",
@@ -2012,7 +2012,7 @@
   },
   {
     "sku": "IMG/REF/00168",
-    "name": "3 DOOR SALADETTE COUNTER 1340 BLUELINE",
+    "name": "3 Door Saladette Counter 1340 Blueline",
     "brand": "SHEFFIELD BLUELINE",
     "model_number": "S903",
     "category": "Refrigeration",
@@ -2026,7 +2026,7 @@
   },
   {
     "sku": "IMG/REF/00177",
-    "name": "COUNTER CHILLER (ENGINEERING VERSION) 1200*700",
+    "name": "Counter Chiller (Engineering Version) 1200*700",
     "brand": "SV-BLUELINE",
     "model_number": "PLR-12N2F(HB)",
     "category": "Refrigeration",
@@ -2043,7 +2043,7 @@
   },
   {
     "sku": "IMG/REF/00178",
-    "name": "COUNTER CHILLER (ENGINEERING VERSION) 1500*700",
+    "name": "Counter Chiller (Engineering Version) 1500*700",
     "brand": "SV-BLUELINE",
     "model_number": "PLR-15N2F(HB)",
     "category": "Refrigeration",
@@ -2060,7 +2060,7 @@
   },
   {
     "sku": "IMG/REF/00182",
-    "name": "REFRIGERATED COUNTER CHILLER 2 DOORS & 4 DRAWERS (2230*700)",
+    "name": "Refrigerated Counter Chiller 2 Doors & 4 Drawers (2230*700)",
     "brand": "SHEFFIELD BLUELINE",
     "model_number": "GN4140TN",
     "category": "Refrigeration",
@@ -2077,7 +2077,7 @@
   },
   {
     "sku": "IMG/REF/00184",
-    "name": "UPRIGHT SINGLE SOLID DOOR CHILLER CFR-20N1F(HB)",
+    "name": "Upright Single Solid Door Chiller CFR-20N1F(HB)",
     "brand": "SV-BLUELINE",
     "model_number": "CFR-20N1F(HB)",
     "category": "Refrigeration",
@@ -2094,7 +2094,7 @@
   },
   {
     "sku": "IMG/REF/00186",
-    "name": "UPRIGHT DOUBLE SOLID DOOR CHILLER CFR-40N2F(HB)",
+    "name": "Upright Double Solid Door Chiller CFR-40N2F(HB)",
     "brand": "SV-BLUELINE",
     "model_number": "CFR-40N2F(HB)",
     "category": "Refrigeration",
@@ -2111,7 +2111,7 @@
   },
   {
     "sku": "IMG/REF/00193",
-    "name": "BLAST CHILLER FOR 10 TRAYS GN1/1 OR 60X40-ABBATT",
+    "name": "Blast Chiller for 10 Trays GN1/1 or 60X40-ABBATT",
     "brand": "TECNODOM",
     "model_number": "P-ATT10EA",
     "category": "Refrigeration",
@@ -2128,7 +2128,7 @@
   },
   {
     "sku": "IMG/REF/00194",
-    "name": "2 DOOR COUNTER CHILLER 1200X600X860 SNACK2100TN-1200",
+    "name": "2 Door Counter Chiller 1200X600X860 SNACK2100TN-1200",
     "brand": "BLUELINE",
     "model_number": "SNACK2100TN-1200",
     "category": "Refrigeration",
@@ -2145,7 +2145,7 @@
   },
   {
     "sku": "IMG/REF/00195",
-    "name": "2 DOOR COUNTER CHILLER 1500X600X860 SNACK2100TN-1500",
+    "name": "2 Door Counter Chiller 1500X600X860 SNACK2100TN-1500",
     "brand": "BLUELINE",
     "model_number": "SNACK2100TN-1500",
     "category": "Refrigeration",
@@ -2162,7 +2162,7 @@
   },
   {
     "sku": "IMG/REF/00196",
-    "name": "4 DOOR COUNTER CHILLER 2230X600X860 SNACK4100TN",
+    "name": "4 Door Counter Chiller 2230X600X860 SNACK4100TN",
     "brand": "BLUELINE",
     "model_number": "SNACK4100TN",
     "category": "Refrigeration",
@@ -2179,7 +2179,7 @@
   },
   {
     "sku": "IMG/REF/00215",
-    "name": "COUNTER CHILLER 9006 BLUELINE",
+    "name": "Counter Chiller 9006 Blueline",
     "brand": "SHEFFIELD BLUELINE",
     "model_number": "SNACK1100TN",
     "category": "Refrigeration",
@@ -2196,7 +2196,7 @@
   },
   {
     "sku": "IMG/REF/00220",
-    "name": "BARLINE CHILLER 1506 BLUELINE SNACK2100TNG-1500",
+    "name": "Barline Chiller 1506 Blueline SNACK2100TNG-1500",
     "brand": "SHEFFIELD BLUELINE",
     "model_number": "SNACK2100TNG-1500",
     "category": "Refrigeration",
@@ -2213,7 +2213,7 @@
   },
   {
     "sku": "IMG/REF/00231",
-    "name": "COUNTER CHILLER (ENGINEERING VERSION) 1800*700",
+    "name": "Counter Chiller (Engineering Version) 1800*700",
     "brand": "SV-BLUELINE",
     "model_number": "PLR-18N2F(HB)",
     "category": "Refrigeration",
@@ -2231,7 +2231,7 @@
   },
   {
     "sku": "IMG/REF/00031",
-    "name": "UPRIGHT SOLID DOOR FREEZER 2 SEMI DOORS BLUELINE",
+    "name": "Upright Solid Door Freezer 2 Semi Doors Blueline",
     "brand": "SHEFFIELD BLUELINE",
     "model_number": "GN650BTM",
     "category": "Refrigeration",
@@ -2248,7 +2248,7 @@
   },
   {
     "sku": "IMG/REF/00033",
-    "name": "UPRIGHT GLASS DOOR FREEZER SINGLE 7008 MEILEDA",
+    "name": "Upright Glass Door Freezer Single 7008 Meileda",
     "brand": "SHEFFIELD BLUELINE",
     "model_number": "GN650BTG",
     "category": "Refrigeration",
@@ -2265,7 +2265,7 @@
   },
   {
     "sku": "IMG/REF/00035",
-    "name": "COUNTER FREEZER 9007 BLUELINE",
+    "name": "Counter Freezer 9007 Blueline",
     "brand": "SHEFFIELD BLUELINE",
     "model_number": "GN1100BT",
     "category": "Refrigeration",
@@ -2282,7 +2282,7 @@
   },
   {
     "sku": "IMG/REF/00038",
-    "name": "SALAD COUNTER 3 DOOR 1800 BLUELINE",
+    "name": "Salad Counter 3 Door 1800 Blueline",
     "brand": "SHEFFIELD BLUELINE",
     "model_number": "SH3000/700",
     "category": "Refrigeration",
@@ -2299,7 +2299,7 @@
   },
   {
     "sku": "IMG/REF/00039",
-    "name": "SALAD COUNTER 3 DOOR 2000 BLUELINE",
+    "name": "Salad Counter 3 Door 2000 Blueline",
     "brand": "SHEFFIELD BLUELINE",
     "model_number": "SH3000/800",
     "category": "Refrigeration",
@@ -2316,7 +2316,7 @@
   },
   {
     "sku": "IMG/REF/00040",
-    "name": "2 DOOR SALADETTE COUNTER 1045 BLUELINE",
+    "name": "2 Door Saladette Counter 1045 Blueline",
     "brand": "SHEFFIELD BLUELINE",
     "model_number": "S902V",
     "category": "Refrigeration",
@@ -2333,7 +2333,7 @@
   },
   {
     "sku": "IMG/REF/00045",
-    "name": "UPRIGHT SOLID DOOR FREEZER 1 DOOR BLUELINE",
+    "name": "Upright Solid Door Freezer 1 Door Blueline",
     "brand": "SHEFFIELD BLUELINE",
     "model_number": "GN650BT",
     "category": "Refrigeration",
@@ -2350,7 +2350,7 @@
   },
   {
     "sku": "IMG/REF/00096",
-    "name": "UPRIGHT SOLID DOOR FREEZER 2 DOOR BLUELINE GN1410BT",
+    "name": "Upright Solid Door Freezer 2 Door Blueline GN1410BT",
     "brand": "SHEFFIELD BLUELINE",
     "model_number": "GN1410BT",
     "category": "Refrigeration",
@@ -2367,7 +2367,7 @@
   },
   {
     "sku": "IMG/REF/00098",
-    "name": "UPRIGHT GLASS DOOR FREEZER DOUBLE 1408 BLUELINE GN1410BTG",
+    "name": "Upright Glass Door Freezer Double 1408 Blueline GN1410BTG",
     "brand": "SHEFFIELD BLUELINE",
     "model_number": "GN1410BTG",
     "category": "Refrigeration",
@@ -2384,7 +2384,7 @@
   },
   {
     "sku": "IMG/REF/00103",
-    "name": "COUNTER FREEZER 1207 BLUELINE GN2100BT-1200",
+    "name": "Counter Freezer 1207 Blueline GN2100BT-1200",
     "brand": "SHEFFIELD BLUELINE",
     "model_number": "GN2100BT-1200",
     "category": "Refrigeration",
@@ -2401,7 +2401,7 @@
   },
   {
     "sku": "IMG/REF/00104",
-    "name": "COUNTER FREEZER 1507 BLUELINE GN2100BT-1500",
+    "name": "Counter Freezer 1507 Blueline GN2100BT-1500",
     "brand": "SHEFFIELD BLUELINE",
     "model_number": "GN2100BT-1500",
     "category": "Refrigeration",
@@ -2418,7 +2418,7 @@
   },
   {
     "sku": "IMG/REF/00127",
-    "name": "COUNTER FREEZER SNACK2100BT 600 SERIES",
+    "name": "Counter Freezer SNACK2100BT 600 Series",
     "brand": "SHEFFIELD BLUELINE",
     "model_number": "SNACK2100BT",
     "category": "Refrigeration",
@@ -2435,7 +2435,7 @@
   },
   {
     "sku": "IMG/REF/00128",
-    "name": "COUNTER FREEZER SNACK3100BT 600 SERIES",
+    "name": "Counter Freezer SNACK3100BT 600 Series",
     "brand": "SHEFFIELD BLUELINE",
     "model_number": "SNACK3100BT",
     "category": "Refrigeration",
@@ -2452,7 +2452,7 @@
   },
   {
     "sku": "IMG/REF/00158",
-    "name": "SOLID DOOR FREEZER 1 DOOR UNDER COUNTER DF200 S/S",
+    "name": "Solid Door Freezer 1 Door Under Counter DF200 S/S",
     "brand": "SHEFFIELD BLUELINE",
     "model_number": "DF200 S/S",
     "category": "Refrigeration",
@@ -2469,7 +2469,7 @@
   },
   {
     "sku": "IMG/REF/00159",
-    "name": "UPRIGHT SOLID 1 DOOR FREEZER 600 SRIES DF400 S/S",
+    "name": "Upright Solid 1 Door Freezer 600 Sries DF400 S/S",
     "brand": "SHEFFIELD BLUELINE",
     "model_number": "DF400 S/S",
     "category": "Refrigeration",
@@ -2486,7 +2486,7 @@
   },
   {
     "sku": "IMG/REF/00217",
-    "name": "2 DOOR COUNTER FREEZER 1500X600X860 SNACK2100BT-1500",
+    "name": "2 Door Counter Freezer 1500X600X860 SNACK2100BT-1500",
     "brand": "SHEFFIELD BLUELINE",
     "model_number": "SNACK2100BT-150",
     "category": "Refrigeration",
@@ -2504,7 +2504,7 @@
   },
   {
     "sku": "IMG/REF/00218",
-    "name": "2 DOOR COUNTER FREEZER 1200X600X860 SNACK2100BT-1200",
+    "name": "2 Door Counter Freezer 1200X600X860 SNACK2100BT-1200",
     "brand": "SHEFFIELD BLUELINE",
     "model_number": "SNACK2100BT-1200",
     "category": "Refrigeration",
@@ -2522,7 +2522,7 @@
   },
   {
     "sku": "IMG/REF/00219",
-    "name": "COUNTER FREEZER 9006 SNACK1100BT",
+    "name": "Counter Freezer 9006 SNACK1100BT",
     "brand": "SHEFFIELD BLUELINE",
     "model_number": "SNACK1100BT",
     "category": "Refrigeration",
@@ -2540,7 +2540,7 @@
   },
   {
     "sku": "IMG/DIS/00069",
-    "name": "REFRIGERATED PIZZA DISPLAY VRX1500/380 FG",
+    "name": "Refrigerated Pizza Display VRX1500/380 FG",
     "brand": "BLUELINE",
     "model_number": "VRX1500/80 FG",
     "category": "Refrigeration",
@@ -2557,7 +2557,7 @@
   },
   {
     "sku": "IMG/DIS/00131",
-    "name": "WIDENED ISLAND FREEZER WITH THICKENED FOAM LAYER",
+    "name": "Widened Island Freezer with Thickened Foam Layer",
     "brand": "SV-BLUELINE",
     "model_number": "SD/SC-2000K",
     "category": "Refrigeration",
@@ -2574,7 +2574,7 @@
   },
   {
     "sku": "IMG/DIS/00137",
-    "name": "REFRIGERATED PIZZA DISPLAY VRX1800/380 FG",
+    "name": "Refrigerated Pizza Display VRX1800/380 FG",
     "brand": "BLUELINE",
     "model_number": "VRX1800/380 FG",
     "category": "Refrigeration",
@@ -2591,7 +2591,7 @@
   },
   {
     "sku": "IMG/REF/00179",
-    "name": "COUNTER CHILLER (ENGINEERING VERSION) 1800*600",
+    "name": "Counter Chiller (Engineering Version) 1800*600",
     "brand": "SV-BLUELINE",
     "model_number": "PLR-18N2F(HB)",
     "category": "Refrigeration",
@@ -2608,7 +2608,7 @@
   },
   {
     "sku": "IMG/REF/00183",
-    "name": "UPRIGHT SINGLE SOLID DOOR FREEZER CFD-20N1(HB)",
+    "name": "Upright Single Solid Door Freezer CFD-20N1(HB)",
     "brand": "SV-BLUELINE",
     "model_number": "CFD-20N1(HB)",
     "category": "Refrigeration",
@@ -2625,7 +2625,7 @@
   },
   {
     "sku": "IMG/REF/00185",
-    "name": "UPRIGHT DOUBLE SOLID DOOR FREEZER CFD-40N2F(HB)",
+    "name": "Upright Double Solid Door Freezer CFD-40N2F(HB)",
     "brand": "SV-BLUELINE",
     "model_number": "CFD-40N2F(HB)",
     "category": "Refrigeration",
@@ -2642,7 +2642,7 @@
   },
   {
     "sku": "IMG/REF/00197",
-    "name": "SINGLE TEMPERATURE DOUBLE TOP FREEZER BD/BC-388",
+    "name": "Single Temperature Double Top Freezer BD/BC-388",
     "brand": "SV-BLUELINE",
     "model_number": "BD/BC-388",
     "category": "Refrigeration",
@@ -2659,7 +2659,7 @@
   },
   {
     "sku": "IMG/REF/00198",
-    "name": "ARCHED GLASS DOOR FREEZER SD/SC-158Y",
+    "name": "Arched Glass Door Freezer SD/SC-158Y",
     "brand": "SV-BLUELINE",
     "model_number": "SD/SC-158Y",
     "category": "Refrigeration",
@@ -2673,7 +2673,7 @@
   },
   {
     "sku": "IMG/REF/00200",
-    "name": "ISLAND FREEZER SD/SC-518",
+    "name": "Island Freezer SD/SC-518",
     "brand": "SV-BLUELINE",
     "model_number": "SD/SC-518",
     "category": "Refrigeration",
@@ -2693,7 +2693,7 @@
   },
   {
     "sku": "IMG/REF/00201",
-    "name": "COUNTER FREEZER (AIR COOLED FREEZING) PLD-15N2F(HB)",
+    "name": "Counter Freezer (Air Cooled Freezing) PLD-15N2F(HB)",
     "brand": "SV-BLUELINE",
     "model_number": "PLD-15N2F(HB)",
     "category": "Refrigeration",
@@ -2710,7 +2710,7 @@
   },
   {
     "sku": "IMG/REF/00202",
-    "name": "UPRIGHT TRIPLE SOLID DOOR FREEZER (CFD-60D3F-K)",
+    "name": "Upright Triple Solid Door Freezer (CFD-60D3F-K)",
     "brand": "SV-BLUELINE",
     "model_number": "CFD-60D3F-K",
     "category": "Refrigeration",
@@ -2727,7 +2727,7 @@
   },
   {
     "sku": "IMG/REF/00204",
-    "name": "ORDER DISH MULTIFUNCTIONAL CABINET (LMD-1894QK)",
+    "name": "Order Dish Multifunctional Cabinet (LMD-1894QK)",
     "brand": "SV-BLUELINE",
     "model_number": "LMD-1894QK",
     "category": "Refrigeration",
@@ -2741,7 +2741,7 @@
   },
   {
     "sku": "IMG/REF/00205",
-    "name": "ORDER DISH CONVENIENCE STORE CABINET LCD-639",
+    "name": "Order Dish Convenience Store Cabinet LCD-639",
     "brand": "SV-BLUELINE",
     "model_number": "LCD-639",
     "category": "Refrigeration",
@@ -2755,7 +2755,7 @@
   },
   {
     "sku": "IMG/REF/00232",
-    "name": "COUNTER FREEZER (AIR COOLED FREEZING) 1500*700",
+    "name": "Counter Freezer (Air Cooled Freezing) 1500*700",
     "brand": "SV-BLUELINE",
     "model_number": "PLR-15N2F(HB)",
     "category": "Refrigeration",
@@ -2772,7 +2772,7 @@
   },
   {
     "sku": "IMG/REF/00061",
-    "name": "UPRIGHT SOLID DOOR FREEZER 1 DOOR DGD AF07PKMBT",
+    "name": "Upright Solid Door Freezer 1 Door DGD AF07PKMBT",
     "brand": "TECNODOM",
     "model_number": "AF07PKMBT",
     "category": "Refrigeration",
@@ -2785,7 +2785,7 @@
   },
   {
     "sku": "IMG/REF/00063",
-    "name": "UPRIGHT SOLID DOOR FREEZER 2 DOOR DGD AF14PKMBT",
+    "name": "Upright Solid Door Freezer 2 Door DGD AF14PKMBT",
     "brand": "TECNODOM",
     "model_number": "AF14PKMBT",
     "category": "Refrigeration",
@@ -2802,7 +2802,7 @@
   },
   {
     "sku": "IMG/REF/00211",
-    "name": "FREEZER COUNTER 2 DOORS GN 1/1 MID LINE",
+    "name": "Freezer Counter 2 Doors GN 1/1 Mid Line",
     "brand": "TECNODOM",
     "model_number": "TF02MIDBT",
     "category": "Refrigeration",
@@ -2815,7 +2815,7 @@
   },
   {
     "sku": "IMG/REF/00212",
-    "name": "FREEZER COUNTER 3 DOORS GN 1/1 MID LINE",
+    "name": "Freezer Counter 3 Doors GN 1/1 Mid Line",
     "brand": "TECNODOM",
     "model_number": "TF03MIDBT",
     "category": "Refrigeration",
@@ -2827,7 +2827,7 @@
     "status": "draft"
   },
   {
-    "name": "BACK BAR COOLER SINGLE DOOR H KITCHEN",
+    "name": "Back Bar Cooler Single Door H Kitchen",
     "sku": "IMG/DIS/00022",
     "brand": "HK-REDLINE",
     "model_number": "HK-BC-01B",
@@ -2844,7 +2844,7 @@
     "status": "published"
   },
   {
-    "name": "BACK BAR COOLER DOUBLE DOOR SS H KITCHEN",
+    "name": "Back Bar Cooler Double Door SS H Kitchen",
     "sku": "IMG/DIS/00023",
     "brand": "HK-REDLINE",
     "model_number": "HK-BC-02B",
@@ -2861,7 +2861,7 @@
     "status": "published"
   },
   {
-    "name": "BACK BAR COOLER TRIPLE DOOR H KITCHEN",
+    "name": "Back Bar Cooler Triple Door H Kitchen",
     "sku": "IMG/DIS/00024",
     "brand": "HK-REDLINE",
     "model_number": "HK-BC-03B",
@@ -2878,7 +2878,7 @@
     "status": "published"
   },
   {
-    "name": "BACK BAR COOLER DOUBLE DOOR BLACK H KITCHEN",
+    "name": "Back Bar Cooler Double Door Black H Kitchen",
     "sku": "IMG/DIS/00112",
     "brand": "HK-REDLINE",
     "model_number": "HK-BC-02",
@@ -2895,7 +2895,7 @@
     "status": "published"
   },
   {
-    "name": "BOTTLE COOLER TABLE TOP TEFCOLD BC 60",
+    "name": "Bottle Cooler Table Top Tefcold BC 60",
     "sku": "IMG/DIS/00042",
     "brand": "TEFCOLD",
     "model_number": "BC 60",
@@ -2908,7 +2908,7 @@
     "status": "archived"
   },
   {
-    "name": "BOTTLE COOLER TABLE TOP TEFCOLD BC 85-1",
+    "name": "Bottle Cooler Table Top Tefcold BC 85-1",
     "sku": "IMG/DIS/00060",
     "brand": "TEFCOLD",
     "model_number": "BC 85-1",
@@ -2925,7 +2925,7 @@
     "status": "published"
   },
   {
-    "name": "VEGETABLE PROCESSOR PA7",
+    "name": "Vegetable Processor PA7",
     "sku": "IMG/DIS/00093",
     "brand": "TECNODOM",
     "model_number": "V6060SL",
@@ -2949,7 +2949,7 @@
     "status": "published"
   },
   {
-    "name": "MULTI DECK DISPLAY COOLER VB80250SL DGD",
+    "name": "Multi Deck Display Cooler VB80250SL DGD",
     "sku": "IMG/DIS/00095",
     "brand": "TECNODOM",
     "model_number": "VB80250SL",
@@ -2962,7 +2962,7 @@
     "status": "published"
   },
   {
-    "name": "MULTI DECK DISPLAY COOLER V60187SL DGD",
+    "name": "Multi Deck Display Cooler V60187SL DGD",
     "sku": "IMG/DIS/00096",
     "brand": "TECNODOM",
     "model_number": "V60187SL",
@@ -2979,7 +2979,7 @@
     "status": "published"
   },
   {
-    "name": "MULTI DECK DISPLAY COOLER VS60150SLINOX DGD",
+    "name": "Multi Deck Display Cooler VS60150SLINOX DGD",
     "sku": "IMG/DIS/00100",
     "brand": "TECNODOM",
     "model_number": "VS60150SLINOX",
@@ -2996,7 +2996,7 @@
     "status": "published"
   },
   {
-    "name": "MULTI DECK DISPLAY COOLER V6080SLINOX DGD",
+    "name": "Multi Deck Display Cooler V6080SLINOX DGD",
     "sku": "IMG/DIS/00106",
     "brand": "TECNODOM",
     "model_number": "V6080SLINOX",
@@ -3013,7 +3013,7 @@
     "status": "published"
   },
   {
-    "name": "WINE COOLER UPRIGHT EWB470G",
+    "name": "Wine Cooler Upright EWB470G",
     "sku": "IMG/DIS/00120",
     "brand": "SHEFFIELD BLUELINE",
     "model_number": "EWB470G",
@@ -3030,7 +3030,7 @@
     "status": "published"
   },
   {
-    "name": "WINE COOLER UNDER COUNTER YC-53",
+    "name": "Wine Cooler Under Counter YC-53",
     "sku": "IMG/DIS/00142",
     "brand": "H-KITCHEN",
     "model_number": "YC-53",
@@ -3044,7 +3044,7 @@
     "status": "published"
   },
   {
-    "name": "BEVERAGE COOLER YC-120-2D",
+    "name": "Beverage Cooler YC-120-2D",
     "sku": "IMG/DIS/00143",
     "brand": "H-KITCHEN",
     "model_number": "TYC-120-2D",
@@ -3058,7 +3058,7 @@
     "status": "published"
   },
   {
-    "name": "BACK BAR COOLER SINGLE DOOR BLACK H KITCHEN",
+    "name": "Back Bar Cooler Single Door Black H Kitchen",
     "sku": "IMG/DIS/00146",
     "brand": "HK-REDLINE",
     "model_number": "HK-BC-01",
@@ -3071,7 +3071,7 @@
     "status": "draft"
   },
   {
-    "name": "VERTICAL DISPLAY CABINET TRIPLE DOOR CHILLER(ALU FRAME) LC-1500(T)",
+    "name": "Vertical Display Cabinet Triple Door Chiller(Alu Frame) LC-1500(T)",
     "sku": "IMG/REF/00203",
     "brand": "SV-BLUELINE",
     "model_number": "LC-1500(T)",
@@ -3085,7 +3085,7 @@
     "status": "published"
   },
   {
-    "name": "VERTICAL DISPLAY CABINET SINGLE DOOR CHILLER (ALUMINUM FRAME)",
+    "name": "Vertical Display Cabinet Single Door Chiller (Aluminum Frame)",
     "sku": "IMG/DIS/00132",
     "brand": "SV-BLUELINE",
     "model_number": "LC-298B",
@@ -3102,7 +3102,7 @@
     "status": "published"
   },
   {
-    "name": "VERTICAL DISPLAY CABINET DOUBLE DOOR CHILLER (ALUMINUM FRAME)",
+    "name": "Vertical Display Cabinet Double Door Chiller (Aluminum Frame)",
     "sku": "IMG/DIS/00133",
     "brand": "SV-BLUELINE",
     "model_number": "LC-1200(T)",
@@ -3119,7 +3119,7 @@
     "status": "published"
   },
   {
-    "name": "PASTRY DISPLAY FOUR GLASS BERJAYA",
+    "name": "Pastry Display Four Glass Berjaya",
     "sku": "IMG/DIS/00001",
     "brand": "BERJAYA",
     "model_number": "BJY-4GDC-78L",
@@ -3136,7 +3136,7 @@
     "status": "archived"
   },
   {
-    "name": "PASTRY DISPLAY SQUARE 1500 EVOK",
+    "name": "Pastry Display Square 1500 Evok",
     "sku": "IMG/DIS/00037",
     "brand": "TECNODOM",
     "model_number": "EVOK150V",
@@ -3153,7 +3153,7 @@
     "status": "archived"
   },
   {
-    "name": "PASTRY DISPLAY SQUARE 1500 FGDG 1500LS-3",
+    "name": "Pastry Display Square 1500 FGDG 1500LS-3",
     "sku": "IMG/DIS/00019",
     "brand": "HK-REDLINE",
     "model_number": "FGDG1.0A-1500LS",
@@ -3170,7 +3170,7 @@
     "status": "archived"
   },
   {
-    "name": "PASTRY DISPLAY SQUARE 1500 FGDG 1500LSD-3",
+    "name": "Pastry Display Square 1500 FGDG 1500LSD-3",
     "sku": "IMG/DIS/00021",
     "brand": "HK-REDLINE",
     "model_number": "FGDG 1500LSD-3",
@@ -3187,7 +3187,7 @@
     "status": "archived"
   },
   {
-    "name": "PASTRY DISPLAY SQUARE 1800",
+    "name": "Pastry Display Square 1800",
     "sku": "IMG/DIS/00020",
     "brand": "HK-REDLINE",
     "model_number": "FGDG 1800LS-3",
@@ -3204,7 +3204,7 @@
     "status": "archived"
   },
   {
-    "name": "PASTRY DISPLAY TABLE TOP 160L XCW-160L",
+    "name": "Pastry Display Table Top 160L XCW-160L",
     "sku": "IMG/DIS/00059",
     "brand": "TUNGSTEN",
     "model_number": "XCW-160L",
@@ -3217,7 +3217,7 @@
     "status": "archived"
   },
   {
-    "name": "PASTRY SHOWCASE SQUARE 1200 FG-1200LS",
+    "name": "Pastry Showcase Square 1200 FG-1200LS",
     "sku": "IMG/DIS/00090",
     "brand": "ASTAR",
     "model_number": "FG-1200LS",
@@ -3230,7 +3230,7 @@
     "status": "archived"
   },
   {
-    "name": "CAKE CABINET SQUARE 900FZ",
+    "name": "Cake Cabinet Square 900FZ",
     "sku": "IMG/DIS/00126",
     "brand": "SV-BLUELINE",
     "model_number": "DG-900FZ",
@@ -3247,7 +3247,7 @@
     "status": "published"
   },
   {
-    "name": "CAKE CABINET SQUARE 1200FZ",
+    "name": "Cake Cabinet Square 1200FZ",
     "sku": "IMG/DIS/00127",
     "brand": "SV-BLUELINE",
     "model_number": "DG-1200FZ",
@@ -3264,7 +3264,7 @@
     "status": "published"
   },
   {
-    "name": "CAKE CABINET SQUARE 1500FZ",
+    "name": "Cake Cabinet Square 1500FZ",
     "sku": "IMG/DIS/00128",
     "brand": "SV-BLUELINE",
     "model_number": "DG-1500FZ",
@@ -3281,7 +3281,7 @@
     "status": "published"
   },
   {
-    "name": "CAKE CABINET CURVED DG-TY700",
+    "name": "Cake Cabinet Curved DG-TY700",
     "sku": "IMG/DIS/00129",
     "brand": "SV-BLUELINE",
     "model_number": "DG-TY700",
@@ -3298,7 +3298,7 @@
     "status": "published"
   },
   {
-    "name": "CAKE CABINET SQUARE DG-TZ700",
+    "name": "Cake Cabinet Square DG-TZ700",
     "sku": "IMG/DIS/00130",
     "brand": "SV-BLUELINE",
     "model_number": "DG-TZ700",
@@ -3315,7 +3315,7 @@
     "status": "published"
   },
   {
-    "name": "ICE CREAM DISPLAY LK-1.2DD",
+    "name": "Ice Cream Display LK-1.2DD",
     "sku": "IMG/DIS/00145",
     "brand": "OUCBOLL",
     "model_number": "LK-1.2DD",
@@ -3332,7 +3332,7 @@
     "status": "published"
   },
   {
-    "name": "ICE CREAM DISPLAY LK-1.6BY",
+    "name": "Ice Cream Display LK-1.6BY",
     "sku": "IMG/DIS/00144",
     "brand": "OUCBOLL",
     "model_number": "LK-1.6BY",
@@ -3349,7 +3349,7 @@
     "status": "published"
   },
   {
-    "name": "ICE STATIC DISPLAY CASE INFRICO VBZ12",
+    "name": "Ice Static Display Case Infrico VBZ12",
     "sku": "IMG/DIS/00062",
     "brand": "INFRICO",
     "model_number": "VBZ12S",
@@ -3366,7 +3366,7 @@
     "status": "published"
   },
   {
-    "name": "WARM DISPLAY TABLE TOP R60-2",
+    "name": "Warm Display Table Top R60-2",
     "sku": "IMG/DIS/00103",
     "brand": "HK-REDLINE",
     "model_number": "R60-2",
@@ -3383,7 +3383,7 @@
     "status": "published"
   },
   {
-    "name": "HEATED DISPLAY COUNTER TOP 700MM HDS",
+    "name": "Heated Display Counter Top 700MM HDS",
     "sku": "IMG/DIS/00138",
     "brand": "HDS",
     "model_number": "HDSHDN-26",
@@ -3396,7 +3396,7 @@
     "status": "published"
   },
   {
-    "name": "HEATED DISPLAY COUNTER TOP 900MM HDS",
+    "name": "Heated Display Counter Top 900MM HDS",
     "sku": "IMG/DIS/00139",
     "brand": "HDS",
     "model_number": "HDSHDN-36",
@@ -3409,7 +3409,7 @@
     "status": "published"
   },
   {
-    "name": "CONVECTION OVEN HDSECO-4A",
+    "name": "Convection Oven HDSECO-4A",
     "sku": "IMG/OVE/00223",
     "brand": "HDS",
     "model_number": "HDSECO-4A",
@@ -3426,7 +3426,7 @@
     "status": "published"
   },
   {
-    "name": "CONVECTION OVEN HDSECO-8A",
+    "name": "Convection Oven HDSECO-8A",
     "sku": "IMG/OVE/00224",
     "brand": "HDS",
     "model_number": "HDSECO-8A",
@@ -3443,7 +3443,7 @@
     "status": "published"
   },
   {
-    "name": "DECK OVEN ELECTRIC DOUBLE HTD-40",
+    "name": "Deck Oven Electric Double HTD-40",
     "sku": "IMG/OVE/00169",
     "brand": "HK-REDLINE",
     "model_number": "HTD-40",
@@ -3460,7 +3460,7 @@
     "status": "published"
   },
   {
-    "name": "DECK OVEN ELECTRIC SINGLE HTD-20",
+    "name": "Deck Oven Electric Single HTD-20",
     "sku": "IMG/OVE/00205",
     "brand": "HK-REDLINE",
     "model_number": "HTD-20",
@@ -3477,7 +3477,7 @@
     "status": "published"
   },
   {
-    "name": "ELEC. CONVECTION OVEN YXD-1AE",
+    "name": "Elec. Convection Oven YXD-1AE",
     "sku": "IMG/OVE/00229",
     "brand": "HK-REDLINE",
     "model_number": "YXD-1AE",
@@ -3494,7 +3494,7 @@
     "status": "published"
   },
   {
-    "name": "ELEC. CONVECTION OVEN YXD-8A-3",
+    "name": "Elec. Convection Oven YXD-8A-3",
     "sku": "IMG/OVE/00230",
     "brand": "HK-REDLINE",
     "model_number": "YXD-8A-3",
@@ -3511,7 +3511,7 @@
     "status": "published"
   },
   {
-    "name": "LUXURIOUS ELECTRIC DECK OVEN NFD-20F",
+    "name": "Luxurious Electric Deck Oven NFD-20F",
     "sku": "IMG/OVE/00168",
     "brand": "HK-REDLINE",
     "model_number": "NFD-20F",
@@ -3524,7 +3524,7 @@
     "status": "published"
   },
   {
-    "name": "OVEN CONVECTION ELECTRIC 3 TRAYS TECNODOM FED03NE02V",
+    "name": "Oven Convection Electric 3 Trays Tecnodom FED03NE02V",
     "sku": "IMG/OVE/00076",
     "brand": "TECNODOM",
     "model_number": "FED03NE02V",
@@ -3545,7 +3545,7 @@
     "status": "published"
   },
   {
-    "name": "OVEN CONVECTION ELECTRIC 4 TRAYS 435X350 FEDG04NE595V",
+    "name": "Oven Convection Electric 4 Trays 435X350 FEDG04NE595V",
     "sku": "IMG/OVE/00078",
     "brand": "TECNODOM",
     "model_number": "FEMG04NE595V",
@@ -3565,7 +3565,7 @@
     "status": "published"
   },
   {
-    "name": "OVEN CONVECTION ELECTRIC 4 TRAYS 600X400 FEM04NEPSV",
+    "name": "Oven Convection Electric 4 Trays 600X400 FEM04NEPSV",
     "sku": "IMG/OVE/00128",
     "brand": "TECNODOM",
     "model_number": "FEM04NEPSV",
@@ -3582,7 +3582,7 @@
     "status": "published"
   },
   {
-    "name": "OVEN CONVECTION TURBO ELECTRICAL 4 TRAY MAXICONV",
+    "name": "Oven Convection Turbo Electrical 4 Tray Maxiconv",
     "sku": "IMG/OVE/00215",
     "brand": "SKYMSEN (DISCOVERY)",
     "model_number": "MAXICONV",
@@ -3599,7 +3599,7 @@
     "status": "published"
   },
   {
-    "name": "PIZZA OVEN ELECTRIC DOUBLE DECK - PRISMA FOOD",
+    "name": "Pizza Oven Electric Double Deck - Prisma Food",
     "sku": "IMG/OVE/00018",
     "brand": "PRISMA FOOD",
     "model_number": "BASIC 44",
@@ -3616,7 +3616,7 @@
     "status": "published"
   },
   {
-    "name": "PIZZA OVEN ELECTRIC SINGLE DECK - PRISMA FOOD",
+    "name": "Pizza Oven Electric Single Deck - Prisma Food",
     "sku": "IMG/OVE/00017",
     "brand": "PRISMA FOOD",
     "model_number": "BASIC 1/50 LAMP",
@@ -3633,7 +3633,7 @@
     "status": "published"
   },
   {
-    "name": "PIZZA OVEN ELECTRIC SINGLE DECK CG-P340A",
+    "name": "Pizza Oven Electric Single Deck CG-P340A",
     "sku": "IMG/OVE/00199",
     "brand": "DIQIAN",
     "model_number": "CG-P340A",
@@ -3650,7 +3650,7 @@
     "status": "published"
   },
   {
-    "name": "PIZZA OVEN GAS SINGLE DECK CG-P330",
+    "name": "Pizza Oven Gas Single Deck CG-P330",
     "sku": "IMG/OVE/00200",
     "brand": "DIQIAN",
     "model_number": "CG-P330",
@@ -3667,7 +3667,7 @@
     "status": "published"
   },
   {
-    "name": "PROOFER ELECTRIC 14 TRAYS FX-14",
+    "name": "Proofer Electric 14 Trays FX-14",
     "sku": "IMG/PAS/00011",
     "brand": "HK-REDLINE",
     "model_number": "FX-14",
@@ -3684,7 +3684,7 @@
     "status": "published"
   },
   {
-    "name": "OVEN STAND OS85075S 201 GRADE HEIGHT 670",
+    "name": "Oven Stand OS85075S 201 Grade Height 670",
     "sku": "FAB/PSB/00061",
     "brand": "SHEFFIELD",
     "model_number": "OS85075S",
@@ -3697,7 +3697,7 @@
     "status": "archived"
   },
   {
-    "name": "BAKING TRAYS",
+    "name": "Baking Trays",
     "sku": "IMG/OVE/00130",
     "brand": "SHEFFIELD",
     "model_number": "",
@@ -3710,7 +3710,7 @@
     "status": "archived"
   },
   {
-    "name": "4\" HAMBURGER PAN-15",
+    "name": "4\" Hamburger PAN-15",
     "sku": "IMG/OVE/00234",
     "brand": "HK-REDLINE",
     "model_number": "HK-13220",
@@ -3723,7 +3723,7 @@
     "status": "published"
   },
   {
-    "name": "4\" NON-STICK HAMBURGER PAN-15",
+    "name": "4\" Non-Stick Hamburger PAN-15",
     "sku": "IMG/OVE/00235",
     "brand": "HK-REDLINE",
     "model_number": "HK-13221",
@@ -3737,7 +3737,7 @@
   },
   {
     "sku": "IMG/OVE/00020",
-    "name": "CONVEYOR PIZZA OVEN ELECTRIC C/50",
+    "name": "Conveyor Pizza Oven Electric C/50",
     "brand": "PRISMA FOOD",
     "model_number": "TUNNEL C/50",
     "category": "Ovens",
@@ -3754,7 +3754,7 @@
   },
   {
     "sku": "IMG/OVE/00217",
-    "name": "CONVEYOR PIZZA OVEN-DIGITAL",
+    "name": "Conveyor Pizza Oven-Digital",
     "brand": "HKITCHEN",
     "model_number": "HX-1SA",
     "category": "Ovens",
@@ -3771,7 +3771,7 @@
   },
   {
     "sku": "IMG/OVE/00009",
-    "name": "DECK OVEN ELECTRIC TRIPLE HTD-90",
+    "name": "Deck Oven Electric Triple HTD-90",
     "brand": "HK-REDLINE",
     "model_number": "HTD-90",
     "category": "Ovens",
@@ -3788,7 +3788,7 @@
   },
   {
     "sku": "IMG/OVE/00206",
-    "name": "DECK OVEN GAS SINGLE 1 TRAY HTR-10C",
+    "name": "Deck Oven Gas Single 1 Tray HTR-10C",
     "brand": "HK-REDLINE",
     "model_number": "HTR-101C",
     "category": "Ovens",
@@ -3805,7 +3805,7 @@
   },
   {
     "sku": "IMG/OVE/00088",
-    "name": "DOUBLE DECK GAS OVEN HTR-40Q",
+    "name": "Double Deck Gas Oven HTR-40Q",
     "brand": "HK-REDLINE",
     "model_number": "HTR-40Q",
     "category": "Ovens",
@@ -3822,7 +3822,7 @@
   },
   {
     "sku": "IMG/OVE/00213",
-    "name": "GAS CONVECTION OVEN FTG 480",
+    "name": "Gas Convection Oven FTG 480",
     "brand": "GPANIZ",
     "model_number": "FTE 480",
     "category": "Ovens",
@@ -3835,7 +3835,7 @@
   },
   {
     "sku": "IMG/OVE/00087",
-    "name": "GAS DECK OVEN SINGLE HTR-20Q",
+    "name": "Gas Deck Oven Single HTR-20Q",
     "brand": "HK-REDLINE",
     "model_number": "HTR-20Q",
     "category": "Ovens",
@@ -3851,7 +3851,7 @@
   },
   {
     "sku": "IMG/OVE/00079",
-    "name": "OVEN CONVECTION ELECTRIC 6 TRAYS TECNODOM FEM06NEMIDVH2O",
+    "name": "Oven Convection Electric 6 Trays Tecnodom FEM06NEMIDVH2O",
     "brand": "TECNODOM",
     "model_number": "FEM06NEMIDVH2O",
     "category": "Ovens",
@@ -3868,7 +3868,7 @@
   },
   {
     "sku": "IMG/OVE/00107",
-    "name": "OVEN CONVECTION ELECTRIC BLODGETT CTB SGL",
+    "name": "Oven Convection Electric Blodgett CTB SGL",
     "brand": "BLODGETT",
     "model_number": "CTB SGL",
     "category": "Ovens",
@@ -3885,7 +3885,7 @@
   },
   {
     "sku": "IMG/OVE/00219",
-    "name": "GAS STONE BASE PIZZA OVEN EMP.SPO.H-70-W",
+    "name": "Gas Stone Base Pizza Oven EMP.SPO.H-70-W",
     "brand": "EMPERO",
     "model_number": "EMP.SPO.H-70-W",
     "category": "Ovens",
@@ -3902,7 +3902,7 @@
   },
   {
     "sku": "IMG/OVE/00201",
-    "name": "OVEN CONVECTION GAS HDS GCO",
+    "name": "Oven Convection Gas HDS GCO",
     "brand": "HDS",
     "model_number": "HDSGCO-1",
     "category": "Ovens",
@@ -3919,7 +3919,7 @@
   },
   {
     "sku": "IMG/OVE/00214",
-    "name": "OVEN CONVECTION TURBO ELECTRICAL 10 TRAYS DISCOVERY 10",
+    "name": "Oven Convection Turbo Electrical 10 Trays Discovery 10",
     "brand": "SKYMSEN (DISCOVERY)",
     "model_number": "DISCOVERY 10",
     "category": "Ovens",
@@ -3936,7 +3936,7 @@
   },
   {
     "sku": "IMG/OVE/00019",
-    "name": "PIZZA OVEN SINGLE GAS DECK - PRISMA FOOD",
+    "name": "Pizza Oven Single Gas Deck - Prisma Food",
     "brand": "PRISMA FOOD",
     "model_number": "GAS 4 PF PROPANO",
     "category": "Ovens",
@@ -3953,7 +3953,7 @@
   },
   {
     "sku": "IMG/OVE/00089",
-    "name": "OVEN CONVECTION 10 TRAY TECNODOM FEDL10NEMIDVH2O",
+    "name": "Oven Convection 10 Tray Tecnodom FEDL10NEMIDVH2O",
     "brand": "TECNODOM",
     "model_number": "FEDL10NEMIDVH2O",
     "category": "Ovens",
@@ -3969,7 +3969,7 @@
     "status": "archived"
   },
   {
-    "name": "DOUGH MIXER SPIRAL 20 LITRES PRISMA",
+    "name": "Dough Mixer Spiral 20 Litres Prisma",
     "sku": "IMG/PAS/00012",
     "brand": "PRISMA FOOD",
     "model_number": "IBT20",
@@ -3986,7 +3986,7 @@
     "status": "published"
   },
   {
-    "name": "DOUGH MIXER SPIRAL 30 LITRES PRISMA",
+    "name": "Dough Mixer Spiral 30 Litres Prisma",
     "sku": "IMG/PAS/00013",
     "brand": "PRISMA FOOD",
     "model_number": "IBT30",
@@ -3999,7 +3999,7 @@
     "status": "published"
   },
   {
-    "name": "DOUGH MIXER SPIRAL 40 LITRES PRISMA",
+    "name": "Dough Mixer Spiral 40 Litres Prisma",
     "sku": "IMG/PAS/00014",
     "brand": "PRISMA FOOD",
     "model_number": "IBT40",
@@ -4016,7 +4016,7 @@
     "status": "published"
   },
   {
-    "name": "DOUGH MIXER SPIRAL 50 LITRES PRISMA",
+    "name": "Dough Mixer Spiral 50 Litres Prisma",
     "sku": "IMG/PAS/00015",
     "brand": "PRISMA FOOD",
     "model_number": "IBT50",
@@ -4033,7 +4033,7 @@
     "status": "published"
   },
   {
-    "name": "DOUGH MIXER SPIRAL 60 LITRES PRISMA",
+    "name": "Dough Mixer Spiral 60 Litres Prisma",
     "sku": "IMG/PAS/00016",
     "brand": "PRISMA FOOD",
     "model_number": "IBT 60",
@@ -4050,7 +4050,7 @@
     "status": "published"
   },
   {
-    "name": "DOUGH MIXER SPIRAL 50 LITRES EMPERO",
+    "name": "Dough Mixer Spiral 50 Litres Empero",
     "sku": "IMG/PAS/00003",
     "brand": "EMPERO",
     "model_number": "HY 05",
@@ -4067,7 +4067,7 @@
     "status": "published"
   },
   {
-    "name": "DOUGH MIXER SPIRAL 60 LITRES EMPERO",
+    "name": "Dough Mixer Spiral 60 Litres Empero",
     "sku": "IMG/PAS/00007",
     "brand": "EMPERO",
     "model_number": "SH 03",
@@ -4081,7 +4081,7 @@
     "status": "published"
   },
   {
-    "name": "SPIRAL MIXER 80 LITRES/25KG BM-25",
+    "name": "Spiral Mixer 80 LITRES/25KG BM-25",
     "sku": "IMG/PAS/00155",
     "brand": "HK-REDLINE",
     "model_number": "BM-25",
@@ -4098,7 +4098,7 @@
     "status": "published"
   },
   {
-    "name": "SPIRAL MIXER 130 LITRES/50KG BM-50",
+    "name": "Spiral Mixer 130 LITRES/50KG BM-50",
     "sku": "IMG/PAS/00157",
     "brand": "HK-REDLINE",
     "model_number": "BM-50",
@@ -4115,7 +4115,7 @@
     "status": "published"
   },
   {
-    "name": "SPIRAL MIXER 200 LITRES/75KG BM-75",
+    "name": "Spiral Mixer 200 LITRES/75KG BM-75",
     "sku": "IMG/PAS/00156",
     "brand": "HK-REDLINE",
     "model_number": "BM-75",
@@ -4132,7 +4132,7 @@
     "status": "published"
   },
   {
-    "name": "SPIRAL MIXER 250 LITRES/100KG BM-100",
+    "name": "Spiral Mixer 250 LITRES/100KG BM-100",
     "sku": "IMG/PAS/00169",
     "brand": "HK-REDLINE",
     "model_number": "BM-100",
@@ -4145,7 +4145,7 @@
     "status": "published"
   },
   {
-    "name": "CAKE MIXER PLANETARY 7 LITRES H-KITCHEN",
+    "name": "Cake Mixer Planetary 7 Litres H-Kitchen",
     "sku": "IMG/PAS/00102",
     "brand": "HK-REDLINE",
     "model_number": "HK-B7",
@@ -4158,7 +4158,7 @@
     "status": "published"
   },
   {
-    "name": "CAKE MIXER PLANETARY 10 LITRES B10GFA",
+    "name": "Cake Mixer Planetary 10 Litres B10GFA",
     "sku": "IMG/PAS/00103",
     "brand": "HK-REDLINE",
     "model_number": "B10GFA",
@@ -4175,7 +4175,7 @@
     "status": "published"
   },
   {
-    "name": "CAKE MIXER PLANETARY 20 LITRES BERJAYA",
+    "name": "Cake Mixer Planetary 20 Litres Berjaya",
     "sku": "IMG/PAS/00001",
     "brand": "BERJAYA",
     "model_number": "I/BSP-BM20",
@@ -4188,7 +4188,7 @@
     "status": "archived"
   },
   {
-    "name": "CAKE MIXER PLANETARY 20 LITRES H-KITCHEN",
+    "name": "Cake Mixer Planetary 20 Litres H-Kitchen",
     "sku": "IMG/PAS/00101",
     "brand": "HK-REDLINE",
     "model_number": "B20GA",
@@ -4205,7 +4205,7 @@
     "status": "published"
   },
   {
-    "name": "CAKE MIXER PLANETARY 30 LITRES H-KITCHEN",
+    "name": "Cake Mixer Planetary 30 Litres H-Kitchen",
     "sku": "IMG/PAS/00145",
     "brand": "HK-REDLINE",
     "model_number": "B30GA",
@@ -4239,7 +4239,7 @@
     "status": "published"
   },
   {
-    "name": "DOUGH DIVIDER",
+    "name": "Dough Divider",
     "sku": "IMG/PAS/00164",
     "brand": "HK-REDLINE",
     "model_number": "KT-20",
@@ -4256,7 +4256,7 @@
     "status": "published"
   },
   {
-    "name": "BREAD SLICER EMPERO",
+    "name": "Bread Slicer Empero",
     "sku": "IMG/PAS/00002",
     "brand": "EMPERO",
     "model_number": "EMP.3004",
@@ -4273,7 +4273,7 @@
     "status": "published"
   },
   {
-    "name": "BREAD MOULDER",
+    "name": "Bread Moulder",
     "sku": "IMG/PAS/00166",
     "brand": "HK-REDLINE",
     "model_number": "NFQ-380",
@@ -4290,7 +4290,7 @@
     "status": "published"
   },
   {
-    "name": "BUN DIVIDER",
+    "name": "Bun Divider",
     "sku": "IMG/PAS/00159",
     "brand": "H-KITCHEN",
     "model_number": "NFK-30I",
@@ -4307,7 +4307,7 @@
     "status": "published"
   },
   {
-    "name": "CHAFFING DISH 9L OBLONG ROLL TOP CHAFER",
+    "name": "Chaffing Dish 9L Oblong Roll Top Chafer",
     "sku": "IMG/BUF/00219",
     "brand": "OEM SHEFFIELD",
     "model_number": "431001",
@@ -4324,7 +4324,7 @@
     "status": "published"
   },
   {
-    "name": "CHAFFING DISH 9L OBLONG ROLL TOP CHAFER WITH VISIBLE WINDOW",
+    "name": "Chaffing Dish 9L Oblong Roll Top Chafer with Visible Window",
     "sku": "IMG/BUF/00220",
     "brand": "OEM SHEFFIELD",
     "model_number": "432102",
@@ -4341,7 +4341,7 @@
     "status": "published"
   },
   {
-    "name": "DIGITAL SS RECTANGULAR CHAFFING DISH 9 LTRS",
+    "name": "Digital SS Rectangular Chaffing Dish 9 Ltrs",
     "sku": "IMG/BUF/00241",
     "brand": "STEELOLOGY",
     "model_number": "RH002",
@@ -4358,7 +4358,7 @@
     "status": "published"
   },
   {
-    "name": "CHAFING DISH DROP IN SQUARE H KITCHEN",
+    "name": "Chafing Dish Drop in Square H Kitchen",
     "sku": "IMG/BUF/00019",
     "brand": "HK-REDLINE",
     "model_number": "YFR01-2",
@@ -4375,7 +4375,7 @@
     "status": "published"
   },
   {
-    "name": "CHAFING DISH DROP IN SQUARE H KITCHEN DAT 60",
+    "name": "Chafing Dish Drop in Square H Kitchen DAT 60",
     "sku": "IMG/BUF/00020",
     "brand": "HK-REDLINE",
     "model_number": "DAT 60063-2",
@@ -4388,7 +4388,7 @@
     "status": "published"
   },
   {
-    "name": "CHAFING DISH SQUARE H KITCHEN YFL02-1",
+    "name": "Chafing Dish Square H Kitchen YFL02-1",
     "sku": "IMG/BUF/00021",
     "brand": "HK-REDLINE",
     "model_number": "YFL02-1",
@@ -4405,7 +4405,7 @@
     "status": "published"
   },
   {
-    "name": "CHAFING DISH INDUCTION ROUND AT50293 H KITCHEN",
+    "name": "Chafing Dish Induction Round AT50293 H Kitchen",
     "sku": "IMG/BUF/00027",
     "brand": "HK-REDLINE",
     "model_number": "AT50293",
@@ -4421,7 +4421,7 @@
     "status": "published"
   },
   {
-    "name": "CHAFING DISH INDUCTION SQUARE H-KITCHEN",
+    "name": "Chafing Dish Induction Square H-Kitchen",
     "sku": "IMG/BUF/00028",
     "brand": "HK-REDLINE",
     "model_number": "AT60293",
@@ -4438,7 +4438,7 @@
     "status": "published"
   },
   {
-    "name": "CHAFING DISH RECTANGULAR",
+    "name": "Chafing Dish Rectangular",
     "sku": "IMG/BUF/00035",
     "brand": "OEM SHEFFIELD",
     "model_number": "HY-834",
@@ -4451,7 +4451,7 @@
     "status": "published"
   },
   {
-    "name": "CHAFING DISH DROP IN",
+    "name": "Chafing Dish Drop in",
     "sku": "IMG/BUF/00037",
     "brand": "OEM SHEFFIELD",
     "model_number": "HY-902",
@@ -4464,7 +4464,7 @@
     "status": "archived"
   },
   {
-    "name": "CHAFING DISH OBLONG HY 501-2",
+    "name": "Chafing Dish Oblong HY 501-2",
     "sku": "IMG/BUF/00056",
     "brand": "OEM SHEFFIELD",
     "model_number": "HY 501-2",
@@ -4477,7 +4477,7 @@
     "status": "draft"
   },
   {
-    "name": "CHAFING DISH INSERT ROUND PORCELAIN PAN/INSERT",
+    "name": "Chafing Dish Insert Round Porcelain Pan/Insert",
     "sku": "IMG/BUF/00060",
     "brand": "OEM SHEFFIELD",
     "model_number": "D10",
@@ -4490,7 +4490,7 @@
     "status": "published"
   },
   {
-    "name": "CHAFING DISH ROLL TOP 9 LITRES RA2302",
+    "name": "Chafing Dish Roll Top 9 Litres RA2302",
     "sku": "IMG/BUF/00095",
     "brand": "KITCHENWARE",
     "model_number": "RA2302",
@@ -4507,7 +4507,7 @@
     "status": "published"
   },
   {
-    "name": "CHAFING DISH INSERT PORCELAIN 2/3 GN",
+    "name": "Chafing Dish Insert Porcelain 2/3 GN",
     "sku": "IMG/BUF/00115",
     "brand": "HK-REDLINE",
     "model_number": "T23065",
@@ -4524,7 +4524,7 @@
     "status": "published"
   },
   {
-    "name": "CHAFING DISH INDUCTION SQUARE AT60293 H-KITCHEN",
+    "name": "Chafing Dish Induction Square AT60293 H-Kitchen",
     "sku": "IMG/BUF/00143",
     "brand": "HK-REDLINE",
     "model_number": "AT60293",
@@ -4540,7 +4540,7 @@
     "height": 400
   },
   {
-    "name": "CHAFING DISH DROP IN HY-902",
+    "name": "Chafing Dish Drop in HY-902",
     "sku": "IMG/BUF/00145",
     "brand": "HY",
     "model_number": "HY-902",
@@ -4553,7 +4553,7 @@
     "status": "archived"
   },
   {
-    "name": "CHAFING DISH OVAL HY-836",
+    "name": "Chafing Dish Oval HY-836",
     "sku": "IMG/BUF/00146",
     "brand": "HY",
     "model_number": "HY-836",
@@ -4566,7 +4566,7 @@
     "status": "archived"
   },
   {
-    "name": "CHAFING DISH ROLL TOP 9 LITRES RA2301",
+    "name": "Chafing Dish Roll Top 9 Litres RA2301",
     "sku": "IMG/BUF/00177",
     "brand": "KITCHENWARE",
     "model_number": "RA2301",
@@ -4579,7 +4579,7 @@
     "status": "published"
   },
   {
-    "name": "CHAFING DISH ROLL TOP 9 LITRES ELECTRIC RA2301AE",
+    "name": "Chafing Dish Roll Top 9 Litres Electric RA2301AE",
     "sku": "IMG/BUF/00178",
     "brand": "KITCHENWARE",
     "model_number": "RA2301AE",
@@ -4596,7 +4596,7 @@
     "status": "published"
   },
   {
-    "name": "CHAFING DISH ROLL TOP ELECTRIC ECD09C",
+    "name": "Chafing Dish Roll Top Electric ECD09C",
     "sku": "IMG/BUF/00179",
     "brand": "KITCHENWARE",
     "model_number": "ECD09C",
@@ -4613,7 +4613,7 @@
     "status": "published"
   },
   {
-    "name": "ELECTRIC CHAFING DISH GOLDEN FRAME",
+    "name": "Electric Chafing Dish Golden Frame",
     "sku": "IMG/BUF/00252",
     "brand": "WINNERS",
     "model_number": "EG2016X",
@@ -4630,7 +4630,7 @@
     "status": "published"
   },
   {
-    "name": "ELECTRIC CHAFING DISH GOLDEN FRAME SQUARE 9L",
+    "name": "Electric Chafing Dish Golden Frame Square 9L",
     "sku": "IMG/BUF/00253",
     "brand": "WINNERS",
     "model_number": "EG2017X",
@@ -4644,7 +4644,7 @@
     "status": "published"
   },
   {
-    "name": "ELECTRIC CHAFING DISH HAMMER POINT",
+    "name": "Electric Chafing Dish Hammer Point",
     "sku": "IMG/BUF/00254",
     "brand": "WINNERS",
     "model_number": "EC2016",
@@ -4658,7 +4658,7 @@
     "status": "published"
   },
   {
-    "name": "ELECTRIC CHAFING DISH HAMMERED SS FINISH 6 LITRES ROUND",
+    "name": "Electric Chafing Dish Hammered SS Finish 6 Litres Round",
     "sku": "IMG/BUF/00255",
     "brand": "WINNERS",
     "model_number": "EC2018",
@@ -4675,7 +4675,7 @@
     "status": "published"
   },
   {
-    "name": "CHAFING DISH WITH FUEL HOLDER 6016H",
+    "name": "Chafing Dish with Fuel Holder 6016H",
     "sku": "IMG/BUF/00256",
     "brand": "WINNERS",
     "model_number": "6016H",
@@ -4689,7 +4689,7 @@
     "status": "published"
   },
   {
-    "name": "CHAFING DISH WITH FUEL HOLDER 6018H",
+    "name": "Chafing Dish with Fuel Holder 6018H",
     "sku": "IMG/BUF/00257",
     "brand": "WINNERS",
     "model_number": "6018H",
@@ -4703,7 +4703,7 @@
     "status": "published"
   },
   {
-    "name": "WET AND DRY INTELLIGENT BUILT-IN ELEC CHAFING DISH",
+    "name": "Wet and Dry Intelligent Built-In Elec Chafing Dish",
     "sku": "IMG/BUF/00258",
     "brand": "WINNERS",
     "model_number": "QR016",
@@ -4716,7 +4716,7 @@
     "status": "published"
   },
   {
-    "name": "45-BUILT-IN WARMER STOVE 1200MM",
+    "name": "45-BUILT-IN Warmer Stove 1200MM",
     "sku": "IMG/BUF/00267",
     "brand": "WINNERS",
     "model_number": "EMBEDDED-1200",
@@ -4731,7 +4731,7 @@
     "status": "published"
   },
   {
-    "name": "45-BUILT-IN WARMER STOVE 1500MM",
+    "name": "45-BUILT-IN Warmer Stove 1500MM",
     "sku": "IMG/BUF/00268",
     "brand": "WINNERS",
     "model_number": "EMBEDDED-1500",
@@ -4746,7 +4746,7 @@
     "status": "published"
   },
   {
-    "name": "45-BUILT-IN WARMER STOVE 900MM",
+    "name": "45-BUILT-IN Warmer Stove 900MM",
     "sku": "IMG/BUF/00266",
     "brand": "WINNERS",
     "model_number": "EMBEDDED-900",
@@ -4760,7 +4760,7 @@
     "status": "published"
   },
   {
-    "name": "BUFFET WARMER ELECTRIC TC-2F",
+    "name": "Buffet Warmer Electric TC-2F",
     "sku": "IMG/BUF/00249",
     "brand": "H-KITCHEN",
     "model_number": "TC-2F",
@@ -4777,7 +4777,7 @@
     "status": "published"
   },
   {
-    "name": "CUP WARMER BRAVILOR SHELF",
+    "name": "Cup Warmer Bravilor Shelf",
     "sku": "IMG/BUF/00073",
     "brand": "NISBET",
     "model_number": "WHK003",
@@ -4790,7 +4790,7 @@
     "status": "archived"
   },
   {
-    "name": "CUP WARMER H KITCHEN",
+    "name": "Cup Warmer H Kitchen",
     "sku": "IMG/BUF/00022",
     "brand": "HK-REDLINE",
     "model_number": "2009/ED",
@@ -4803,7 +4803,7 @@
     "status": "published"
   },
   {
-    "name": "DISH WARMER GLASS TOP - SUNK IN MODEL (COMMERCIAL INDUCTION COOKER)",
+    "name": "Dish Warmer Glass Top - Sunk in Model (Commercial Induction Cooker)",
     "sku": "IMG/BUF/00235",
     "brand": "STEELOLOGY",
     "model_number": "SUNK IN",
@@ -4820,7 +4820,7 @@
     "status": "published"
   },
   {
-    "name": "ELECTRIC FOOD WARMER CART OT-10B-21 REDLINE",
+    "name": "Electric Food Warmer Cart OT-10B-21 Redline",
     "sku": "IMG/HOT/00195",
     "brand": "HK-REDLINE",
     "model_number": "OT-10B-21",
@@ -4837,7 +4837,7 @@
     "status": "archived"
   },
   {
-    "name": "FOOD DISPLAY WARMER H KITCHEN OT-01P",
+    "name": "Food Display Warmer H Kitchen OT-01P",
     "sku": "IMG/DIS/00045",
     "brand": "HK-REDLINE",
     "model_number": "OT-01P",
@@ -4850,7 +4850,7 @@
     "status": "published"
   },
   {
-    "name": "FOOD WARMER ELECTRIC BERTOS",
+    "name": "Food Warmer Electric Bertos",
     "sku": "IMG/HOT/00005",
     "brand": "BERTOS",
     "model_number": "E7SP-4B",
@@ -4863,7 +4863,7 @@
     "status": "archived"
   },
   {
-    "name": "FOOD WARMER ELECTRIC REDLINE CS-310",
+    "name": "Food Warmer Electric Redline CS-310",
     "sku": "IMG/HOT/00222",
     "brand": "HK-REDLINE",
     "model_number": "CS-310",
@@ -4877,7 +4877,7 @@
     "status": "published"
   },
   {
-    "name": "HOT POT WITH WARMER STOVE 36CM ROSE GOLD 6L",
+    "name": "Hot Pot with Warmer Stove 36CM Rose Gold 6L",
     "sku": "IMG/BUF/00260",
     "brand": "WINNERS",
     "model_number": "3602",
@@ -4895,7 +4895,7 @@
     "status": "published"
   },
   {
-    "name": "HOT POT WITH WARMER STOVE 36CM STAINLESS STEEL 6L",
+    "name": "Hot Pot with Warmer Stove 36CM Stainless Steel 6L",
     "sku": "IMG/BUF/00261",
     "brand": "WINNERS",
     "model_number": "3602",
@@ -4910,7 +4910,7 @@
     "status": "published"
   },
   {
-    "name": "PLATE WARMER CART DOUBLE",
+    "name": "Plate Warmer Cart Double",
     "sku": "IMG/BUF/00032",
     "brand": "HK-REDLINE",
     "model_number": "DR-2",
@@ -4927,7 +4927,7 @@
     "status": "published"
   },
   {
-    "name": "PLATE WARMER CART DROP IN",
+    "name": "Plate Warmer Cart Drop in",
     "sku": "IMG/BUF/00033",
     "brand": "HK-REDLINE",
     "model_number": "DR-3",
@@ -4942,7 +4942,7 @@
     "status": "published"
   },
   {
-    "name": "PLATE WARMER CART SINGLE",
+    "name": "Plate Warmer Cart Single",
     "sku": "IMG/BUF/00031",
     "brand": "HK-REDLINE",
     "model_number": "DR-1",
@@ -4959,7 +4959,7 @@
     "status": "published"
   },
   {
-    "name": "VEGETABLE WARMER RECTANGLE DL206",
+    "name": "Vegetable Warmer Rectangle DL206",
     "sku": "IMG/BUF/00274",
     "brand": "WINNERS",
     "model_number": "DL206",
@@ -4973,7 +4973,7 @@
     "status": "published"
   },
   {
-    "name": "WARMER LAMP D7016T",
+    "name": "Warmer Lamp D7016T",
     "sku": "IMG/BUF/00259",
     "brand": "WINNERS",
     "model_number": "D7016T",
@@ -4987,7 +4987,7 @@
     "status": "published"
   },
   {
-    "name": "WARMER LAMP RECTANGLE ZT001",
+    "name": "Warmer Lamp Rectangle ZT001",
     "sku": "IMG/BUF/00272",
     "brand": "WINNERS",
     "model_number": "ZT001",
@@ -5001,7 +5001,7 @@
     "status": "published"
   },
   {
-    "name": "HEATING LAMP BLACK DIA 175",
+    "name": "Heating Lamp Black Dia 175",
     "sku": "IMG/BUF/00023",
     "brand": "HK-REDLINE",
     "model_number": "A032",
@@ -5018,7 +5018,7 @@
     "status": "published"
   },
   {
-    "name": "HEATING LAMP GOLD DIA 175",
+    "name": "Heating Lamp Gold Dia 175",
     "sku": "IMG/BUF/00024",
     "brand": "HK-REDLINE",
     "model_number": "A032",
@@ -5034,7 +5034,7 @@
     "status": "published"
   },
   {
-    "name": "HEATING LAMP GOLD DIA 290",
+    "name": "Heating Lamp Gold Dia 290",
     "sku": "IMG/BUF/00025",
     "brand": "HK-REDLINE",
     "model_number": "A035",
@@ -5048,7 +5048,7 @@
     "status": "published"
   },
   {
-    "name": "HEATING LAMP SILVER DIA 290",
+    "name": "Heating Lamp Silver Dia 290",
     "sku": "IMG/BUF/00026",
     "brand": "HK-REDLINE",
     "model_number": "A035",
@@ -5064,7 +5064,7 @@
     "status": "published"
   },
   {
-    "name": "HEATING LAMP INFRARED 900MM",
+    "name": "Heating Lamp Infrared 900MM",
     "sku": "IMG/BUF/00236",
     "brand": "KITCHENWARE",
     "model_number": "XD-HHB900",
@@ -5077,7 +5077,7 @@
     "status": "published"
   },
   {
-    "name": "HEATING LAMP COPPER",
+    "name": "Heating Lamp Copper",
     "sku": "IMG/BUF/00244",
     "brand": "HK-REDLINE",
     "model_number": "A032",
@@ -5090,7 +5090,7 @@
     "status": "published"
   },
   {
-    "name": "ROSE GOLD HEAT LAMP D002",
+    "name": "Rose Gold Heat Lamp D002",
     "sku": "IMG/BUF/00269",
     "brand": "WINNERS",
     "model_number": "D002",
@@ -5104,7 +5104,7 @@
     "status": "published"
   },
   {
-    "name": "ROSE GOLD HEAT LAMP D005",
+    "name": "Rose Gold Heat Lamp D005",
     "sku": "IMG/BUF/00270",
     "brand": "WINNERS",
     "model_number": "D005",
@@ -5121,7 +5121,7 @@
     "status": "published"
   },
   {
-    "name": "ROSE GOLD HEAT LAMP D011",
+    "name": "Rose Gold Heat Lamp D011",
     "sku": "IMG/BUF/00271",
     "brand": "WINNERS",
     "model_number": "D011",
@@ -5138,7 +5138,7 @@
     "status": "published"
   },
   {
-    "name": "BAIN MARIE TABLE TOP H-KITCHEN BS-6V",
+    "name": "Bain Marie Table Top H-Kitchen BS-6V",
     "sku": "IMG/HOT/00063",
     "brand": "HK-REDLINE",
     "model_number": "BS-6V",
@@ -5155,7 +5155,7 @@
     "status": "published"
   },
   {
-    "name": "BAIN MARIE SAUCE BIN 240X210",
+    "name": "Bain Marie Sauce Bin 240X210",
     "sku": "IMG/HOT/00112",
     "brand": "BILGE",
     "model_number": "240*120",
@@ -5168,7 +5168,7 @@
     "status": "archived"
   },
   {
-    "name": "BAIN MARIE COUNTER TOP GAS SOT-4",
+    "name": "Bain Marie Counter Top Gas SOT-4",
     "sku": "IMG/HOT/00272",
     "brand": "H-KITCHEN",
     "model_number": "SOT-4",
@@ -5181,7 +5181,7 @@
     "status": "archived"
   },
   {
-    "name": "BAIN MARIE TABLE TOP H-KITCHEN BS-4",
+    "name": "Bain Marie Table Top H-Kitchen BS-4",
     "sku": "IMG/HOT/00275",
     "brand": "HK-REDLINE",
     "model_number": "BS-4V",
@@ -5197,7 +5197,7 @@
     "status": "published"
   },
   {
-    "name": "BAIN MARIE H-KITCHEN KG-165",
+    "name": "Bain Marie H-Kitchen KG-165",
     "sku": "IMG/HOT/00276",
     "brand": "HK-REDLINE",
     "model_number": "KG-165F",
@@ -5210,7 +5210,7 @@
     "status": "published"
   },
   {
-    "name": "INDUCTION COOKER DROP IN RIGA RIB 3520 EB",
+    "name": "Induction Cooker Drop in Riga Rib 3520 EB",
     "sku": "IMG/BUF/00012",
     "brand": "EUROTEC RIGA",
     "model_number": "RIB 3520 EB",
@@ -5227,7 +5227,7 @@
     "status": "archived"
   },
   {
-    "name": "INDUCTION COOKER H KITCHEN EB-1200",
+    "name": "Induction Cooker H Kitchen EB-1200",
     "sku": "IMG/BUF/00030",
     "brand": "HK-REDLINE",
     "model_number": "EB-1200",
@@ -5244,7 +5244,7 @@
     "status": "published"
   },
   {
-    "name": "INDUCTION COOKER KASSIDY",
+    "name": "Induction Cooker Kassidy",
     "sku": "IMG/BUF/00051",
     "brand": "OEM SHEFFIELD",
     "model_number": "TC-1",
@@ -5257,7 +5257,7 @@
     "status": "archived"
   },
   {
-    "name": "INDUCTION COOKER WANHUI",
+    "name": "Induction Cooker Wanhui",
     "sku": "IMG/BUF/00090",
     "brand": "KITCHENWARE",
     "model_number": "A6-650N-32",
@@ -5274,7 +5274,7 @@
     "status": "published"
   },
   {
-    "name": "INDUCTION HOB DK977",
+    "name": "Induction Hob DK977",
     "sku": "IMG/BUF/00127",
     "brand": "LINCAT",
     "model_number": "DK977",
@@ -5287,7 +5287,7 @@
     "status": "archived"
   },
   {
-    "name": "INDUCTION COOKER SINGLE ZONE 3.5KW TABLE TOP SL-G35-TP3",
+    "name": "Induction Cooker Single Zone 3.5KW Table Top SL-G35-TP3",
     "sku": "IMG/BUF/00226",
     "brand": "SULTE",
     "model_number": "SL-G35-TP3",
@@ -5304,7 +5304,7 @@
     "status": "published"
   },
   {
-    "name": "INDUCTION COOKER DROP IN 3KW SL-30C-XP3",
+    "name": "Induction Cooker Drop in 3KW SL-30C-XP3",
     "sku": "IMG/BUF/00227",
     "brand": "SULTE",
     "model_number": "SL-30C -XP3",
@@ -5321,7 +5321,7 @@
     "status": "published"
   },
   {
-    "name": "INDUCTION COOKER SINGLE ZONE 5KW TABLE TOP SL-G50-KP9",
+    "name": "Induction Cooker Single Zone 5KW Table Top SL-G50-KP9",
     "sku": "IMG/BUF/00228",
     "brand": "SULTE",
     "model_number": "SL-G50-KP9",
@@ -5338,7 +5338,7 @@
     "status": "published"
   },
   {
-    "name": "INDUCTION WOK 5KW TABLE TOP SINGLE SL-G50-KA12",
+    "name": "Induction Wok 5KW Table Top Single SL-G50-KA12",
     "sku": "IMG/BUF/00229",
     "brand": "SULTE",
     "model_number": "SL-G50-KA12",
@@ -5355,7 +5355,7 @@
     "status": "published"
   },
   {
-    "name": "INDUCTION COOKER TWO ZONE TABLE TOP 7KW",
+    "name": "Induction Cooker Two Zone Table Top 7KW",
     "sku": "IMG/BUF/00230",
     "brand": "SULTE",
     "model_number": "SL-C351-KPP3-Y",
@@ -5372,7 +5372,7 @@
     "status": "published"
   },
   {
-    "name": "INDUCTION COOKER TWO ZONE (SIDE BY SIDE) 7KW SL-C351-KPP2",
+    "name": "Induction Cooker Two Zone (Side by Side) 7KW SL-C351-KPP2",
     "sku": "IMG/BUF/00231",
     "brand": "SULTE",
     "model_number": "SL-C351-KPP2",
@@ -5389,7 +5389,7 @@
     "status": "published"
   },
   {
-    "name": "INDUCTION COOKER 4 ZONE 14KW SL-C351-4S13-Y",
+    "name": "Induction Cooker 4 Zone 14KW SL-C351-4S13-Y",
     "sku": "IMG/BUF/00232",
     "brand": "SULTE",
     "model_number": "SL-C351-4S13-Y",
@@ -5406,7 +5406,7 @@
     "status": "published"
   },
   {
-    "name": "INDUCTION FRYER 23L SL-FR1C23A",
+    "name": "Induction Fryer 23L SL-FR1C23A",
     "sku": "IMG/BUF/00233",
     "brand": "SULTE",
     "model_number": "SL-FR1C23A",
@@ -5423,7 +5423,7 @@
     "status": "published"
   },
   {
-    "name": "INDUCTION GRIDDLE 6KW GRT24B",
+    "name": "Induction Griddle 6KW GRT24B",
     "sku": "IMG/BUF/00234",
     "brand": "SULTE",
     "model_number": "GRT24B",
@@ -5440,7 +5440,7 @@
     "status": "published"
   },
   {
-    "name": "INDUCTION GRIDDLE 6KW GRT36B",
+    "name": "Induction Griddle 6KW GRT36B",
     "sku": "IMG/BUF/00282",
     "brand": "SULTE",
     "model_number": "GRT36B",
@@ -5453,7 +5453,7 @@
     "status": "archived"
   },
   {
-    "name": "DOUBLE BULB INDUCTION WITH 2 COPPER COATED HAMMER FINISH CHAFFING DISHES",
+    "name": "Double Bulb Induction with 2 Copper Coated Hammer Finish Chaffing Dishes",
     "sku": "IMG/BUF/00277",
     "brand": "STEELOLOGY",
     "model_number": "",
@@ -5467,7 +5467,7 @@
     "status": "published"
   },
   {
-    "name": "INDUCTION PLATE PFD/3500N SINGLE PH",
+    "name": "Induction Plate PFD/3500N Single PH",
     "sku": "IMG/HOT/00395",
     "brand": "FIMAR GROUP",
     "model_number": "PRD35N235M",
@@ -5484,7 +5484,7 @@
     "status": "published"
   },
   {
-    "name": "GN CONTAINER 1/3 65 BERJAYA",
+    "name": "GN Container 1/3 65 Berjaya",
     "sku": "IMG/TCW/00086",
     "brand": "BERJAYA",
     "model_number": "FP 1/3-2.5",
@@ -5497,7 +5497,7 @@
     "status": "draft"
   },
   {
-    "name": "GN CONTAINER 1/4 65 BERJAYA",
+    "name": "GN Container 1/4 65 Berjaya",
     "sku": "IMG/TCW/00087",
     "brand": "BERJAYA",
     "model_number": "FP 1/4-2.5",
@@ -5510,7 +5510,7 @@
     "status": "published"
   },
   {
-    "name": "GN CONTAINER 1/1 100 BERJAYA",
+    "name": "GN Container 1/1 100 Berjaya",
     "sku": "IMG/TCW/00089",
     "brand": "BERJAYA",
     "model_number": "FP 1/1-4",
@@ -5523,7 +5523,7 @@
     "status": "published"
   },
   {
-    "name": "GN CONTAINER 1/2 100 BERJAYA",
+    "name": "GN Container 1/2 100 Berjaya",
     "sku": "IMG/TCW/00090",
     "brand": "BERJAYA",
     "model_number": "FP 1/2-4",
@@ -5537,7 +5537,7 @@
     "status": "published"
   },
   {
-    "name": "GN CONTAINER 1/3 100 BERJAYA",
+    "name": "GN Container 1/3 100 Berjaya",
     "sku": "IMG/TCW/00091",
     "brand": "BERJAYA",
     "model_number": "FP 1/3-4",
@@ -5550,7 +5550,7 @@
     "status": "published"
   },
   {
-    "name": "GN CONTAINER PERFORATED 1/1 65 BILGE",
+    "name": "GN Container Perforated 1/1 65 Bilge",
     "sku": "IMG/TCW/00103",
     "brand": "BILGE",
     "model_number": "1/1*65 -P",
@@ -5563,7 +5563,7 @@
     "status": "published"
   },
   {
-    "name": "GN CONTAINER PERFORATED 1/1 100 BILGE",
+    "name": "GN Container Perforated 1/1 100 Bilge",
     "sku": "IMG/TCW/00104",
     "brand": "BILGE",
     "model_number": "1/1*100 - P",
@@ -5576,7 +5576,7 @@
     "status": "draft"
   },
   {
-    "name": "GN CONTAINER PERFORATED 1/2 100 BILGE",
+    "name": "GN Container Perforated 1/2 100 Bilge",
     "sku": "IMG/TCW/00105",
     "brand": "BILGE",
     "model_number": "1/2*100 -P",
@@ -5589,7 +5589,7 @@
     "status": "draft"
   },
   {
-    "name": "GN CONTAINER 1/1 65 BILGE",
+    "name": "GN Container 1/1 65 Bilge",
     "sku": "IMG/TCW/00106",
     "brand": "BILGE",
     "model_number": "1/1*65",
@@ -5602,7 +5602,7 @@
     "status": "draft"
   },
   {
-    "name": "GN CONTAINER 1/2 65 BILGE",
+    "name": "GN Container 1/2 65 Bilge",
     "sku": "IMG/TCW/00107",
     "brand": "BILGE",
     "model_number": "1/2*65",
@@ -5615,7 +5615,7 @@
     "status": "draft"
   },
   {
-    "name": "GN CONTAINER 1/3 65 BILGE",
+    "name": "GN Container 1/3 65 Bilge",
     "sku": "IMG/TCW/00108",
     "brand": "BILGE",
     "model_number": "1/3*65",
@@ -5628,7 +5628,7 @@
     "status": "published"
   },
   {
-    "name": "GN CONTAINER 1/6 65 BILGE",
+    "name": "GN Container 1/6 65 Bilge",
     "sku": "IMG/TCW/00110",
     "brand": "BILGE",
     "model_number": "1/6*65",
@@ -5641,7 +5641,7 @@
     "status": "published"
   },
   {
-    "name": "GN CONTAINER 1/9 65 BILGE",
+    "name": "GN Container 1/9 65 Bilge",
     "sku": "IMG/TCW/00111",
     "brand": "BILGE",
     "model_number": "1/9*65",
@@ -5654,7 +5654,7 @@
     "status": "published"
   },
   {
-    "name": "GN CONTAINER 1/1 100 BILGE",
+    "name": "GN Container 1/1 100 Bilge",
     "sku": "IMG/TCW/00112",
     "brand": "BILGE",
     "model_number": "1/1*100",
@@ -5667,7 +5667,7 @@
     "status": "published"
   },
   {
-    "name": "GN CONTAINER 1/2 100 BILGE",
+    "name": "GN Container 1/2 100 Bilge",
     "sku": "IMG/TCW/00113",
     "brand": "BILGE",
     "model_number": "1/2*100",
@@ -5680,7 +5680,7 @@
     "status": "published"
   },
   {
-    "name": "GN CONTAINER 1/3 100 BILGE",
+    "name": "GN Container 1/3 100 Bilge",
     "sku": "IMG/TCW/00114",
     "brand": "BILGE",
     "model_number": "1/3*100",
@@ -5693,7 +5693,7 @@
     "status": "draft"
   },
   {
-    "name": "GN CONTAINER 1/4 100 BILGE",
+    "name": "GN Container 1/4 100 Bilge",
     "sku": "IMG/TCW/00115",
     "brand": "BILGE",
     "model_number": "1/4*100",
@@ -5706,7 +5706,7 @@
     "status": "published"
   },
   {
-    "name": "GN CONTAINER 1/6 100 BILGE",
+    "name": "GN Container 1/6 100 Bilge",
     "sku": "IMG/TCW/00116",
     "brand": "BILGE",
     "model_number": "1/6*100",
@@ -5719,7 +5719,7 @@
     "status": "published"
   },
   {
-    "name": "GN CONTAINER 1/9 100 BILGE",
+    "name": "GN Container 1/9 100 Bilge",
     "sku": "IMG/TCW/00117",
     "brand": "BILGE",
     "model_number": "1/9*100",
@@ -5732,7 +5732,7 @@
     "status": "draft"
   },
   {
-    "name": "GN CONTAINER 1/1 150 BILGE",
+    "name": "GN Container 1/1 150 Bilge",
     "sku": "IMG/TCW/00118",
     "brand": "BILGE",
     "model_number": "1/1*150",
@@ -5745,7 +5745,7 @@
     "status": "draft"
   },
   {
-    "name": "GN CONTAINER 1/2 150 BILGE",
+    "name": "GN Container 1/2 150 Bilge",
     "sku": "IMG/TCW/00119",
     "brand": "BILGE",
     "model_number": "1/2*150",
@@ -5758,7 +5758,7 @@
     "status": "published"
   },
   {
-    "name": "GN CONTAINER 1/3 150 BILGE",
+    "name": "GN Container 1/3 150 Bilge",
     "sku": "IMG/TCW/00120",
     "brand": "BILGE",
     "model_number": "1/3*150",
@@ -5771,7 +5771,7 @@
     "status": "draft"
   },
   {
-    "name": "GN CONTAINER 1/4 150 BILGE",
+    "name": "GN Container 1/4 150 Bilge",
     "sku": "IMG/TCW/00121",
     "brand": "BILGE",
     "model_number": "1/4*150",
@@ -5784,7 +5784,7 @@
     "status": "published"
   },
   {
-    "name": "GN CONTAINER 1/6 150 BILGE",
+    "name": "GN Container 1/6 150 Bilge",
     "sku": "IMG/TCW/00122",
     "brand": "BILGE",
     "model_number": "1/6 *150",
@@ -5797,7 +5797,7 @@
     "status": "published"
   },
   {
-    "name": "GN CONTAINER 1/1 200 BILGE",
+    "name": "GN Container 1/1 200 Bilge",
     "sku": "IMG/TCW/00124",
     "brand": "BILGE",
     "model_number": "1/1*200",
@@ -5810,7 +5810,7 @@
     "status": "draft"
   },
   {
-    "name": "GN CONTAINER 1/1 20 NON STICK",
+    "name": "GN Container 1/1 20 Non Stick",
     "sku": "IMG/TCW/00526",
     "brand": "KITCHENWARE",
     "model_number": "NF811-20",
@@ -5823,7 +5823,7 @@
     "status": "published"
   },
   {
-    "name": "GN CONTAINER 1/1 40 NON STICK",
+    "name": "GN Container 1/1 40 Non Stick",
     "sku": "IMG/TCW/00527",
     "brand": "KITCHENWARE",
     "model_number": "NF811-40",
@@ -5836,7 +5836,7 @@
     "status": "published"
   },
   {
-    "name": "GN LIDS 1/1 BERJAYA",
+    "name": "GN Lids 1/1 Berjaya",
     "sku": "IMG/TCW/00097",
     "brand": "BERJAYA",
     "model_number": "FP 1/1C",
@@ -5849,7 +5849,7 @@
     "status": "published"
   },
   {
-    "name": "GN LIDS 1/2 BERJAYA",
+    "name": "GN Lids 1/2 Berjaya",
     "sku": "IMG/TCW/00098",
     "brand": "BERJAYA",
     "model_number": "FP 1/2C",
@@ -5862,7 +5862,7 @@
     "status": "draft"
   },
   {
-    "name": "GN LIDS 1/3 BERJAYA",
+    "name": "GN Lids 1/3 Berjaya",
     "sku": "IMG/TCW/00099",
     "brand": "BERJAYA",
     "model_number": "FP 1/3C",
@@ -5875,7 +5875,7 @@
     "status": "draft"
   },
   {
-    "name": "GN LIDS 1/4 BERJAYA",
+    "name": "GN Lids 1/4 Berjaya",
     "sku": "IMG/TCW/00100",
     "brand": "BERJAYA",
     "model_number": "FP 1/4C",
@@ -5888,7 +5888,7 @@
     "status": "draft"
   },
   {
-    "name": "GN LIDS 1/9 BERJAYA",
+    "name": "GN Lids 1/9 Berjaya",
     "sku": "IMG/TCW/00102",
     "brand": "BERJAYA",
     "model_number": "FP 1/9C",
@@ -5901,7 +5901,7 @@
     "status": "draft"
   },
   {
-    "name": "GN LIDS 1/1 BILGE",
+    "name": "GN Lids 1/1 Bilge",
     "sku": "IMG/TCW/00125",
     "brand": "BILGE",
     "model_number": "1/1-C",
@@ -5914,7 +5914,7 @@
     "status": "published"
   },
   {
-    "name": "GN LIDS 1/2 BILGE",
+    "name": "GN Lids 1/2 Bilge",
     "sku": "IMG/TCW/00126",
     "brand": "BILGE",
     "model_number": "1/2 - C",
@@ -5927,7 +5927,7 @@
     "status": "draft"
   },
   {
-    "name": "GN LIDS 1/3 BILGE",
+    "name": "GN Lids 1/3 Bilge",
     "sku": "IMG/TCW/00127",
     "brand": "BILGE",
     "model_number": "1/3 - C",
@@ -5940,7 +5940,7 @@
     "status": "draft"
   },
   {
-    "name": "GN LIDS 1/4 BILGE",
+    "name": "GN Lids 1/4 Bilge",
     "sku": "IMG/TCW/00128",
     "brand": "BILGE",
     "model_number": "1/4 - C",
@@ -5953,7 +5953,7 @@
     "status": "draft"
   },
   {
-    "name": "GN LIDS 1/6 BILGE",
+    "name": "GN Lids 1/6 Bilge",
     "sku": "IMG/TCW/00129",
     "brand": "BILGE",
     "model_number": "1/6 - C",
@@ -5966,7 +5966,7 @@
     "status": "draft"
   },
   {
-    "name": "GN LIDS 1/9 BILGE",
+    "name": "GN Lids 1/9 Bilge",
     "sku": "IMG/TCW/00130",
     "brand": "BILGE",
     "model_number": "BLGNL1/9",
@@ -5979,7 +5979,7 @@
     "status": "draft"
   },
   {
-    "name": "VERTICAL BUN TOASTER VCT-1000 230V 50/60HZ BS-1363, 13 AMP",
+    "name": "Vertical Bun Toaster VCT-1000 230V 50/60HZ BS-1363, 13 Amp",
     "sku": "IMG/COF/00116",
     "brand": "ANTUNES",
     "model_number": "9210710",
@@ -5996,7 +5996,7 @@
     "status": "archived"
   },
   {
-    "name": "TOASTER 4 SLOTS WARING",
+    "name": "Toaster 4 Slots Waring",
     "sku": "IMG/HOT/00108",
     "brand": "WARING",
     "model_number": "WCT805K",
@@ -6013,7 +6013,7 @@
     "status": "archived"
   },
   {
-    "name": "TOASTER 6 SLOTS H-KITCHEN",
+    "name": "Toaster 6 Slots H-Kitchen",
     "sku": "IMG/HOT/00271",
     "brand": "HK-REDLINE",
     "model_number": "6ATS-C",
@@ -6030,7 +6030,7 @@
     "status": "published"
   },
   {
-    "name": "ELECTRIC CONVEYOR TOASTER H260D",
+    "name": "Electric Conveyor Toaster H260D",
     "sku": "IMG/HOT/00281",
     "brand": "SHINEHO",
     "model_number": "H260D",
@@ -6043,7 +6043,7 @@
     "status": "archived"
   },
   {
-    "name": "CONVEYOR TOASTER CT-3",
+    "name": "Conveyor Toaster CT-3",
     "sku": "IMG/HOT/00352",
     "brand": "HK-REDLINE",
     "model_number": "CT-3",
@@ -6060,7 +6060,7 @@
     "status": "published"
   },
   {
-    "name": "EGG WAFFLE MAKER",
+    "name": "Egg Waffle Maker",
     "sku": "IMG/HOT/00244",
     "brand": "KINGMA",
     "model_number": "FY-6",
@@ -6073,7 +6073,7 @@
     "status": "archived"
   },
   {
-    "name": "WAFFLE MAKER SINGLE WB-1",
+    "name": "Waffle Maker Single WB-1",
     "sku": "IMG/HOT/00416",
     "brand": "HK-REDLINE",
     "model_number": "WB-1",
@@ -6086,7 +6086,7 @@
     "status": "published"
   },
   {
-    "name": "WAFFLE MAKER DOUBLE WB-2",
+    "name": "Waffle Maker Double WB-2",
     "sku": "IMG/HOT/00417",
     "brand": "HK-REDLINE",
     "model_number": "WB-2",
@@ -6099,7 +6099,7 @@
     "status": "published"
   },
   {
-    "name": "PRETZEL & SANDWICH SLICER",
+    "name": "Pretzel & Sandwich Slicer",
     "sku": "IMG/PAS/00005",
     "brand": "EMPERO",
     "model_number": "EMP.3005",
@@ -6116,7 +6116,7 @@
     "status": "published"
   },
   {
-    "name": "SHAWARMA ELECTRIC ROLLER GRILL",
+    "name": "Shawarma Electric Roller Grill",
     "sku": "IMG/HOT/00099",
     "brand": "ROLLER GRILL",
     "model_number": "GR80E",
@@ -6133,7 +6133,7 @@
     "status": "archived"
   },
   {
-    "name": "INFRA RED GRILL MERCATUS STAN MC167",
+    "name": "Infra Red Grill Mercatus Stan MC167",
     "sku": "IMG/HOT/00154",
     "brand": "MERCATUS",
     "model_number": "STAN MC167",
@@ -6153,7 +6153,7 @@
     "status": "published"
   },
   {
-    "name": "INFRA RED GRILL MERCATUS XXL MC167",
+    "name": "Infra Red Grill Mercatus XXL MC167",
     "sku": "IMG/HOT/00155",
     "brand": "MERCATUS",
     "model_number": "XXL MC167",
@@ -6170,7 +6170,7 @@
     "status": "published"
   },
   {
-    "name": "INFRA RED GRILL MERCATUS XL MC167",
+    "name": "Infra Red Grill Mercatus XL MC167",
     "sku": "IMG/HOT/00156",
     "brand": "MERCATUS",
     "model_number": "XL MC167",
@@ -6187,7 +6187,7 @@
     "status": "published"
   },
   {
-    "name": "PANINI GRILL SINGLE GH-811E",
+    "name": "Panini Grill Single GH-811E",
     "sku": "IMG/HOT/00353",
     "brand": "HK-REDLINE",
     "model_number": "GH-811E",
@@ -6204,7 +6204,7 @@
     "status": "published"
   },
   {
-    "name": "PANINI GRILL DOUBLE GH-813",
+    "name": "Panini Grill Double GH-813",
     "sku": "IMG/HOT/00354",
     "brand": "HK-REDLINE",
     "model_number": "GH-813",
@@ -6221,7 +6221,7 @@
     "status": "published"
   },
   {
-    "name": "CHARCOAL GRILL AUTOMATIC 1750MM 60 SKEWERS TRS-60",
+    "name": "Charcoal Grill Automatic 1750MM 60 Skewers TRS-60",
     "sku": "IMG/HOT/00382",
     "brand": "TECNOROAST",
     "model_number": "TRS-60",
@@ -6235,7 +6235,7 @@
     "status": "archived"
   },
   {
-    "name": "CHARCOAL GRILL AUTOMATIC 850MM 20 SKEWERS TRS-20",
+    "name": "Charcoal Grill Automatic 850MM 20 Skewers TRS-20",
     "sku": "IMG/HOT/00384",
     "brand": "TECNOROAST",
     "model_number": "TRS-20",
@@ -6249,7 +6249,7 @@
     "status": "archived"
   },
   {
-    "name": "STEAM COOKER GRILLS ELECTRIC EMPERO",
+    "name": "Steam Cooker Grills Electric Empero",
     "sku": "IMG/HOT/00385",
     "brand": "EMPERO",
     "model_number": "EMP.6LE010",
@@ -6266,7 +6266,7 @@
     "status": "archived"
   },
   {
-    "name": "LIFTED CHARCOAL GRILL EMP.BTG.01",
+    "name": "Lifted Charcoal Grill EMP.BTG.01",
     "sku": "IMG/HOT/00400",
     "brand": "EMPERO",
     "model_number": "EMP.BTG.01",
@@ -6283,7 +6283,7 @@
     "status": "published"
   },
   {
-    "name": "SALAMANDER ELECTRIC LIFT UP EB-450",
+    "name": "Salamander Electric Lift Up EB-450",
     "sku": "IMG/HOT/00066",
     "brand": "HK-REDLINE",
     "model_number": "EB-450",
@@ -6300,7 +6300,7 @@
     "status": "published"
   },
   {
-    "name": "SALAMANDER ELECTRIC LIFT UP EB-600",
+    "name": "Salamander Electric Lift Up EB-600",
     "sku": "IMG/HOT/00071",
     "brand": "HK-REDLINE",
     "model_number": "EB-600",
@@ -6317,7 +6317,7 @@
     "status": "published"
   },
   {
-    "name": "SALAMANDER ELECTRIC BARON SE40/OCB",
+    "name": "Salamander Electric Baron SE40/OCB",
     "sku": "IMG/HOT/00186",
     "brand": "BARON",
     "model_number": "SE40/OCB",
@@ -6334,7 +6334,7 @@
     "status": "archived"
   },
   {
-    "name": "MICROWAVE OVEN 25LTR EM025FJTS0SF00",
+    "name": "Microwave Oven 25LTR EM025FJTS0SF00",
     "sku": "IMG/HOT/00402",
     "brand": "SULTE",
     "model_number": "EM025FJTS0SF00",
@@ -6351,7 +6351,7 @@
     "status": "published"
   },
   {
-    "name": "MICROWAVE OVEN 34LTR EMA34GTQS00E00",
+    "name": "Microwave Oven 34LTR EMA34GTQS00E00",
     "sku": "IMG/HOT/00403",
     "brand": "SULTE",
     "model_number": "EMA34GTQS00E00",
@@ -6368,7 +6368,7 @@
     "status": "published"
   },
   {
-    "name": "PASTA COOKER GAS GH-538",
+    "name": "Pasta Cooker Gas GH-538",
     "sku": "IMG/HOT/00304",
     "brand": "ASTAR",
     "model_number": "GH-538",
@@ -6381,7 +6381,7 @@
     "status": "published"
   },
   {
-    "name": "HOT DOG ROLLER ELECTRIC",
+    "name": "Hot Dog Roller Electric",
     "sku": "IMG/HOT/00069",
     "brand": "HK-REDLINE",
     "model_number": "CZ-9",
@@ -6398,7 +6398,7 @@
     "status": "published"
   },
   {
-    "name": "FRYER DOUBLE 25 LITRES TABLE TOP ELECTRIC ELABORATEX HEF-904",
+    "name": "Fryer Double 25 Litres Table Top Electric Elaboratex HEF-904",
     "sku": "IMG/HOT/00042",
     "brand": "OEM SHEFFIELD",
     "model_number": "HEF-904",
@@ -6415,7 +6415,7 @@
     "status": "published"
   },
   {
-    "name": "FRYER ROLLER GRILL RFG 12",
+    "name": "Fryer Roller Grill RFG 12",
     "sku": "IMG/HOT/00098",
     "brand": "ROLLER GRILL",
     "model_number": "RFG 12",
@@ -6432,7 +6432,7 @@
     "status": "archived"
   },
   {
-    "name": "SINGLE WELL ELECTRIC FRYER 15 LTR TABLE TOP BARON DI7FRE415",
+    "name": "Single Well Electric Fryer 15 Ltr Table Top Baron DI7FRE415",
     "sku": "IMG/HOT/00189",
     "brand": "BARON",
     "model_number": "DI7FRE415",
@@ -6449,7 +6449,7 @@
     "status": "archived"
   },
   {
-    "name": "ELECTRIC FRYER SINGLE EF-11L",
+    "name": "Electric Fryer Single EF-11L",
     "sku": "IMG/HOT/00419",
     "brand": "HK-REDLINE",
     "model_number": "EF-11L",
@@ -6462,7 +6462,7 @@
     "status": "published"
   },
   {
-    "name": "ELECTRIC FRYER DOUBLE EF-11L-2",
+    "name": "Electric Fryer Double EF-11L-2",
     "sku": "IMG/HOT/00420",
     "brand": "HK-REDLINE",
     "model_number": "EF-11L-2",
@@ -6475,7 +6475,7 @@
     "status": "published"
   },
   {
-    "name": "FRYER BASKETS FOR HDSFGH-150S",
+    "name": "Fryer Baskets for HDSFGH-150S",
     "sku": "IMG/HOT/00407",
     "brand": "HDS",
     "model_number": "70201104400",
@@ -6488,7 +6488,7 @@
     "status": "published"
   },
   {
-    "name": "FRYER BASKETS FOR HDSFGH-90S",
+    "name": "Fryer Baskets for HDSFGH-90S",
     "sku": "IMG/HOT/00424",
     "brand": "HDS",
     "model_number": "70201104400",
@@ -6501,7 +6501,7 @@
     "status": "published"
   },
   {
-    "name": "FRYER BASKETS FOR HDSFGH-120S LP",
+    "name": "Fryer Baskets for HDSFGH-120S LP",
     "sku": "IMG/HOT/00425",
     "brand": "HDS",
     "model_number": "70201105746",
@@ -6514,7 +6514,7 @@
     "status": "published"
   },
   {
-    "name": "HEF-904 FRYER BASKET",
+    "name": "HEF-904 Fryer Basket",
     "sku": "IMG/HOT/00427",
     "brand": "OEM SHEFFIELD",
     "model_number": "HEF-904 BASKET",
@@ -6528,7 +6528,7 @@
   },
   {
     "sku": "IMG/HOT/00085",
-    "name": "FRYER SINGLE 13 LITRES GAS LINCAR",
+    "name": "Fryer Single 13 Litres Gas Lincar",
     "brand": "LINCAR MEMME",
     "model_number": "G1140VN",
     "category": "Fryers",
@@ -6542,7 +6542,7 @@
   },
   {
     "sku": "IMG/HOT/00219",
-    "name": "FRYER SINGLE 28 LITRES ELECTRIC REDLINE",
+    "name": "Fryer Single 28 Litres Electric Redline",
     "brand": "HK-REDLINE",
     "model_number": "DF-28L",
     "category": "Fryers",
@@ -6558,7 +6558,7 @@
   },
   {
     "sku": "IMG/HOT/00257",
-    "name": "FRYER SINGLE 23 LITRES GAS GF90 REDLINE",
+    "name": "Fryer Single 23 Litres Gas GF90 Redline",
     "brand": "SHEFFIELD REDLINE",
     "model_number": "GF90",
     "category": "Fryers",
@@ -6572,7 +6572,7 @@
   },
   {
     "sku": "IMG/HOT/00278",
-    "name": "PRESSURE FRYER COUNTER TOP MDXZ-16 REDLINE",
+    "name": "Pressure Fryer Counter Top MDXZ-16 Redline",
     "brand": "HK-REDLINE",
     "model_number": "MDXZ-16",
     "category": "Fryers",
@@ -6589,7 +6589,7 @@
   },
   {
     "sku": "IMG/HOT/00282",
-    "name": "PRESSURE FRYER ELECTRIC MDXZ-24 REDLINE",
+    "name": "Pressure Fryer Electric MDXZ-24 Redline",
     "brand": "HK-REDLINE",
     "model_number": "MDXZ-24",
     "category": "Fryers",
@@ -6606,7 +6606,7 @@
   },
   {
     "sku": "IMG/HOT/00332",
-    "name": "PRESSURE FRYER ELECTRIC BROASTER 1600",
+    "name": "Pressure Fryer Electric Broaster 1600",
     "brand": "HDS",
     "model_number": "BROASTER 1600E",
     "category": "Fryers",
@@ -6623,7 +6623,7 @@
   },
   {
     "sku": "IMG/HOT/00333",
-    "name": "PRESSURE FRYER GAS BROASTER 1800",
+    "name": "Pressure Fryer Gas Broaster 1800",
     "brand": "HDS",
     "model_number": "BROASTER 1800G",
     "category": "Fryers",
@@ -6640,7 +6640,7 @@
   },
   {
     "sku": "IMG/HOT/00390",
-    "name": "PRESSURE FRYER ELECTRIC BROASTER 1800",
+    "name": "Pressure Fryer Electric Broaster 1800",
     "brand": "HDS",
     "model_number": "BROASTER 1800E",
     "category": "Fryers",
@@ -6657,7 +6657,7 @@
   },
   {
     "sku": "IMG/HOT/00344",
-    "name": "FRYER SINGLE 22 LITRES GAS HDS-120",
+    "name": "Fryer Single 22 Litres Gas HDS-120",
     "brand": "HDS",
     "model_number": "HDSFGH-120",
     "category": "Fryers",
@@ -6673,7 +6673,7 @@
   },
   {
     "sku": "IMG/HOT/00345",
-    "name": "FRYER SINGLE 30 LITRES GAS HDS-150",
+    "name": "Fryer Single 30 Litres Gas HDS-150",
     "brand": "HDS",
     "model_number": "HDSFGH-150",
     "category": "Fryers",
@@ -6690,7 +6690,7 @@
   },
   {
     "sku": "IMG/HOT/00347",
-    "name": "FRYER SPLIT TYPE 15 + 15 LTRS HDS-150S",
+    "name": "Fryer Split Type 15 + 15 Ltrs HDS-150S",
     "brand": "HDS",
     "model_number": "HDSFGH-150S",
     "category": "Fryers",
@@ -6707,7 +6707,7 @@
   },
   {
     "sku": "IMG/HOT/00436",
-    "name": "FRYER SPLIT TYPE 10 + 10 LITRES HDS ELECTRIC",
+    "name": "Fryer Split Type 10 + 10 Litres HDS Electric",
     "brand": "HDS",
     "model_number": "",
     "category": "Fryers",
@@ -6720,7 +6720,7 @@
   },
   {
     "sku": "IMG/HOT/00434",
-    "name": "FRYER SPLIT TYPE 10 + 10 LITRES H KITCHEN ELECTRIC",
+    "name": "Fryer Split Type 10 + 10 Litres H Kitchen Electric",
     "brand": "HK-REDLINE",
     "model_number": "",
     "category": "Fryers",
@@ -6733,7 +6733,7 @@
   },
   {
     "sku": "IMG/HOT/00386",
-    "name": "FRYER DOUBLE 21 + 21 LITRES ELECTRIC",
+    "name": "Fryer Double 21 + 21 Litres Electric",
     "brand": "HK-REDLINE",
     "model_number": "JZH-TCX2",
     "category": "Fryers",
@@ -6750,7 +6750,7 @@
   },
   {
     "sku": "IMG/HOT/00388",
-    "name": "FRYER SPLIT TYPE 15 + 15 LTRS H-KITCHEN",
+    "name": "Fryer Split Type 15 + 15 Ltrs H-Kitchen",
     "brand": "HK-REDLINE",
     "model_number": "RC-400T",
     "category": "Fryers",
@@ -6767,7 +6767,7 @@
   },
   {
     "sku": "IMG/HOT/00389",
-    "name": "FRYER SPLIT TYPE 11 + 11 LTRS H-KITCHEN",
+    "name": "Fryer Split Type 11 + 11 Ltrs H-Kitchen",
     "brand": "HK-REDLINE",
     "model_number": "GF-120T",
     "category": "Fryers",
@@ -6780,7 +6780,7 @@
   },
   {
     "sku": "IMG/HOT/00406",
-    "name": "FREE STANDING 21 LTRS SINGLE WELL FRYER HDSFGH-90",
+    "name": "Free Standing 21 Ltrs Single Well Fryer HDSFGH-90",
     "brand": "HDS",
     "model_number": "HDSFGH-90",
     "category": "Fryers",
@@ -6793,7 +6793,7 @@
   },
   {
     "sku": "IMG/HOT/00421",
-    "name": "ELEC FRYER EF-28L",
+    "name": "Elec Fryer EF-28L",
     "brand": "HK-REDLINE",
     "model_number": "EF-28L",
     "category": "Fryers",
@@ -6805,7 +6805,7 @@
     "status": "archived"
   },
   {
-    "name": "MILK BOILER WITH INDIRECT WATER HEATING JACKET 12 LITRES",
+    "name": "Milk Boiler with Indirect Water Heating Jacket 12 Litres",
     "sku": "IMG/COF/00023",
     "brand": "PRADEEP",
     "model_number": "9228/12",
@@ -6819,7 +6819,7 @@
     "status": "published"
   },
   {
-    "name": "MILK BOILER WITH INDIRECT WATER HEATING JACKET 20 LITRES",
+    "name": "Milk Boiler with Indirect Water Heating Jacket 20 Litres",
     "sku": "IMG/COF/00024",
     "brand": "PRADEEP",
     "model_number": "9228/20",
@@ -6833,7 +6833,7 @@
     "status": "published"
   },
   {
-    "name": "MILK BOILER WITH INDIRECT WATER HEATING JACKET 30 LITRES",
+    "name": "Milk Boiler with Indirect Water Heating Jacket 30 Litres",
     "sku": "IMG/COF/00025",
     "brand": "PRADEEP",
     "model_number": "9228/30",
@@ -6846,7 +6846,7 @@
     "status": "published"
   },
   {
-    "name": "WATER BOILER INSULATED 10 LITRES",
+    "name": "Water Boiler Insulated 10 Litres",
     "sku": "IMG/COF/00026",
     "brand": "SHEFFIELD",
     "model_number": null,
@@ -6859,7 +6859,7 @@
     "status": "archived"
   },
   {
-    "name": "WATER BOILER EF-20 (HYDROBOIL)",
+    "name": "Water Boiler EF-20 (Hydroboil)",
     "sku": "IMG/COF/00108",
     "brand": "HK-REDLINE",
     "model_number": "EF-20",
@@ -6873,7 +6873,7 @@
     "status": "published"
   },
   {
-    "name": "WATER BOILER INSULATED 20 LITRES SS",
+    "name": "Water Boiler Insulated 20 Litres SS",
     "sku": "IMG/COF/00027",
     "brand": "OEM SHEFFIELD",
     "model_number": "WBB20L",
@@ -6886,7 +6886,7 @@
     "status": "published"
   },
   {
-    "name": "ELECTRIC CATERING URN 9 LTR (WATER BOILER)",
+    "name": "Electric Catering Urn 9 Ltr (Water Boiler)",
     "sku": "IMG/COF/00112",
     "brand": "PRADEEP",
     "model_number": "111102",
@@ -6899,7 +6899,7 @@
     "status": "published"
   },
   {
-    "name": "ELECTRIC CATERING URN 18 LTR (WATER BOILER)",
+    "name": "Electric Catering Urn 18 Ltr (Water Boiler)",
     "sku": "IMG/COF/00113",
     "brand": "PRADEEP",
     "model_number": "111104",
@@ -6912,7 +6912,7 @@
     "status": "published"
   },
   {
-    "name": "ELECTRIC CATERING URN 27 LTR (WATER BOILER)",
+    "name": "Electric Catering Urn 27 Ltr (Water Boiler)",
     "sku": "IMG/COF/00114",
     "brand": "PRADEEP",
     "model_number": "111106",
@@ -6925,7 +6925,7 @@
     "status": "published"
   },
   {
-    "name": "ELECTRIC CATERING URN 40 LTR (WATER BOILER)",
+    "name": "Electric Catering Urn 40 Ltr (Water Boiler)",
     "sku": "IMG/COF/00115",
     "brand": "PRADEEP",
     "model_number": null,
@@ -6938,7 +6938,7 @@
     "status": "published"
   },
   {
-    "name": "COFFEE BREWER WITH COFFEE FILTER",
+    "name": "Coffee Brewer with Coffee Filter",
     "sku": "IMG/COF/00033",
     "brand": "PRADEEP",
     "model_number": "9230",
@@ -6952,7 +6952,7 @@
     "status": "published"
   },
   {
-    "name": "COFFEE FILTER WITH HEATER PLATE 5 LTR",
+    "name": "Coffee Filter with Heater Plate 5 Ltr",
     "sku": "IMG/COF/00111",
     "brand": "PRADEEP",
     "model_number": "111504",
@@ -6965,7 +6965,7 @@
     "status": "draft"
   },
   {
-    "name": "HEATED INSULATED WATER URN 36 LITRES",
+    "name": "Heated Insulated Water Urn 36 Litres",
     "sku": "IMG/COF/00032",
     "brand": "PRADEEP",
     "model_number": "9G",
@@ -6979,7 +6979,7 @@
     "status": "published"
   },
   {
-    "name": "NON HEATED INSULATED CATERING URN/THERMOS 16 LITRES",
+    "name": "Non Heated Insulated Catering Urn/Thermos 16 Litres",
     "sku": "IMG/COF/00029",
     "brand": "PRADEEP",
     "model_number": "7217/16",
@@ -6993,7 +6993,7 @@
     "status": "published"
   },
   {
-    "name": "NON HEATED INSULATED CATERING URN/THERMOS 20 LITRES",
+    "name": "Non Heated Insulated Catering Urn/Thermos 20 Litres",
     "sku": "IMG/COF/00030",
     "brand": "PRADEEP",
     "model_number": "7217/20",
@@ -7007,7 +7007,7 @@
     "status": "published"
   },
   {
-    "name": "NON HEATED INSULATED CATERING URN/THERMOS 30 LITRES",
+    "name": "Non Heated Insulated Catering Urn/Thermos 30 Litres",
     "sku": "IMG/COF/00031",
     "brand": "PRADEEP",
     "model_number": "7217/30",
@@ -7021,7 +7021,7 @@
     "status": "published"
   },
   {
-    "name": "HEATED INSULATED WATER URN 40 LITRES",
+    "name": "Heated Insulated Water Urn 40 Litres",
     "sku": "IMG/COF/00098",
     "brand": "JANGMEN",
     "model_number": "WBB40L",
@@ -7034,7 +7034,7 @@
     "status": "archived"
   },
   {
-    "name": "HEATED WATER URN NON-EXPOSED ELEMENT 15 LITRES",
+    "name": "Heated Water Urn Non-Exposed Element 15 Litres",
     "sku": "IMG/COF/00020",
     "brand": "HK-REDLINE",
     "model_number": "WB15A",
@@ -7048,7 +7048,7 @@
     "status": "published"
   },
   {
-    "name": "HEATED WATER URN WITH EXPOSED ELEMENT 20 LITRES",
+    "name": "Heated Water Urn with Exposed Element 20 Litres",
     "sku": "IMG/COF/00021",
     "brand": "HK-REDLINE",
     "model_number": "WB20A",
@@ -7062,7 +7062,7 @@
     "status": "published"
   },
   {
-    "name": "HEATED WATER URN WITH EXPOSED ELEMENT 30 LITRES",
+    "name": "Heated Water Urn with Exposed Element 30 Litres",
     "sku": "IMG/COF/00022",
     "brand": "HK-REDLINE",
     "model_number": "WB30A",
@@ -7076,7 +7076,7 @@
     "status": "published"
   },
   {
-    "name": "HEATED WATER URN WITH EXPOSED ELEMENT 30 LITRES BERJAYA",
+    "name": "Heated Water Urn with Exposed Element 30 Litres Berjaya",
     "sku": "IMG/COF/00001",
     "brand": "BERJAYA",
     "model_number": "U 30",
@@ -7092,7 +7092,7 @@
     "status": "published"
   },
   {
-    "name": "HEATED WATER URN WITH EXPOSED ELEMENT 40 LITRES BERJAYA",
+    "name": "Heated Water Urn with Exposed Element 40 Litres Berjaya",
     "sku": "IMG/COF/00002",
     "brand": "BERJAYA",
     "model_number": "U 40",
@@ -7108,7 +7108,7 @@
     "status": "published"
   },
   {
-    "name": "COFFEE BREWER WITH SINGLE DECANTER BRAVILOR B10",
+    "name": "Coffee Brewer with Single Decanter Bravilor B10",
     "sku": "IMG/COF/00137",
     "brand": "BRAVILOR",
     "model_number": "B10",
@@ -7121,7 +7121,7 @@
     "status": "archived"
   },
   {
-    "name": "AIR POT WITH SIGHT GAUGE",
+    "name": "Air Pot with Sight Gauge",
     "sku": "IMG/COF/00011",
     "brand": "CREM",
     "model_number": "113184",
@@ -7137,7 +7137,7 @@
     "status": "archived"
   },
   {
-    "name": "COFFEE BREWER SINGLE CATER",
+    "name": "Coffee Brewer Single Cater",
     "sku": "IMG/COF/00004",
     "brand": "CREM",
     "model_number": "1008620",
@@ -7154,7 +7154,7 @@
     "status": "archived"
   },
   {
-    "name": "COFFEE BREWER WITH 2 DECANTER",
+    "name": "Coffee Brewer with 2 Decanter",
     "sku": "IMG/COF/00006",
     "brand": "CREM",
     "model_number": "CQM2",
@@ -7167,7 +7167,7 @@
     "status": "archived"
   },
   {
-    "name": "CUP DISPENSER",
+    "name": "Cup Dispenser",
     "sku": "IMG/COF/00007",
     "brand": "CREM",
     "model_number": null,
@@ -7180,7 +7180,7 @@
     "status": "archived"
   },
   {
-    "name": "DECANTER 1.8 LITRES",
+    "name": "Decanter 1.8 Litres",
     "sku": "IMG/COF/00008",
     "brand": "CREM",
     "model_number": "110001",
@@ -7193,7 +7193,7 @@
     "status": "archived"
   },
   {
-    "name": "SERVING STATION 2.5 LITRES",
+    "name": "Serving Station 2.5 Litres",
     "sku": "IMG/COF/00009",
     "brand": "CREM",
     "model_number": "1103303",
@@ -7206,7 +7206,7 @@
     "status": "archived"
   },
   {
-    "name": "SERVING STATION 5 LITRES",
+    "name": "Serving Station 5 Litres",
     "sku": "IMG/COF/00010",
     "brand": "CREM",
     "model_number": "1103302",
@@ -7219,7 +7219,7 @@
     "status": "archived"
   },
   {
-    "name": "THERMOS PERCOLATOR SS",
+    "name": "Thermos Percolator SS",
     "sku": "IMG/COF/00012",
     "brand": "CREM",
     "model_number": "1103256",
@@ -7234,7 +7234,7 @@
     "height": 170
   },
   {
-    "name": "WARMING PLATE DOUBLE",
+    "name": "Warming Plate Double",
     "sku": "IMG/COF/00013",
     "brand": "CREM",
     "model_number": "CQ V-2 1001120",
@@ -7247,7 +7247,7 @@
     "status": "archived"
   },
   {
-    "name": "COFFEE BREWER SINGLE CATER FLC 250",
+    "name": "Coffee Brewer Single Cater FLC 250",
     "sku": "IMG/COF/00105",
     "brand": "KEF",
     "model_number": "FLC 250",
@@ -7267,7 +7267,7 @@
     "status": "published"
   },
   {
-    "name": "COFFEE BREWER WITH 1 DECANTER FTL120 BLACK",
+    "name": "Coffee Brewer with 1 Decanter FTL120 Black",
     "sku": "IMG/COF/00103",
     "brand": "KEF",
     "model_number": "FTL120 BLACK",
@@ -7284,7 +7284,7 @@
     "status": "published"
   },
   {
-    "name": "COFFEE BREWER WITH 2 DECANTER FTL120-2 INOX",
+    "name": "Coffee Brewer with 2 Decanter FTL120-2 Inox",
     "sku": "IMG/COF/00104",
     "brand": "KEF",
     "model_number": "FLT120 INOX",
@@ -7301,7 +7301,7 @@
     "status": "published"
   },
   {
-    "name": "COFFEE BREWER WITH DOUBLE CATER (THERMOS)",
+    "name": "Coffee Brewer with Double Cater (Thermos)",
     "sku": "IMG/COF/00138",
     "brand": "KEF",
     "model_number": null,
@@ -7314,7 +7314,7 @@
     "status": "draft"
   },
   {
-    "name": "DECANTER 1.8 LITRES KEF",
+    "name": "Decanter 1.8 Litres KEF",
     "sku": "IMG/COF/00101",
     "brand": "KEF",
     "model_number": "CMP-2",
@@ -7327,7 +7327,7 @@
     "status": "published"
   },
   {
-    "name": "BANQUET TROLLEY HOT SINGLE EMP.BQ1",
+    "name": "Banquet Trolley Hot Single EMP.BQ1",
     "sku": "IMG/BUF/00009",
     "brand": "EMPERO",
     "model_number": "EMP.BQ1",
@@ -7344,7 +7344,7 @@
     "status": "archived"
   },
   {
-    "name": "HOT AND COLD MEAL DISTRIBUTION TROLLEY 24 TRAY",
+    "name": "Hot and Cold Meal Distribution Trolley 24 Tray",
     "sku": "IMG/BUF/00155",
     "brand": "EMPERO",
     "model_number": "EMP.MED.S.24-1/3",
@@ -7361,7 +7361,7 @@
     "status": "archived"
   },
   {
-    "name": "AVATHERM THERMOTRAY WITH LOCKS",
+    "name": "Avatherm Thermotray with Locks",
     "sku": "IMG/BUF/00099",
     "brand": "EMPERO",
     "model_number": "AVT-PP-LCK",
@@ -7380,7 +7380,7 @@
     "status": "published"
   },
   {
-    "name": "SDX THERMOBOX K120RD/F120RD",
+    "name": "SDX Thermobox K120RD/F120RD",
     "sku": "IMG/BUF/00150",
     "brand": "SDX",
     "model_number": "K120RD/F120RD",
@@ -7393,7 +7393,7 @@
     "status": "archived"
   },
   {
-    "name": "THERMO BOX 3 GN H-KITCHEN",
+    "name": "Thermo Box 3 GN H-Kitchen",
     "sku": "IMG/BUF/00183",
     "brand": "HK-REDLINE",
     "model_number": "CPWK090-1",
@@ -7409,7 +7409,7 @@
     "height": 620
   },
   {
-    "name": "THERMO BOX 6 GN HEATED",
+    "name": "Thermo Box 6 GN Heated",
     "sku": "IMG/BUF/00186",
     "brand": "HK-REDLINE",
     "model_number": "CPWK090-31",
@@ -7422,7 +7422,7 @@
     "status": "published"
   },
   {
-    "name": "INSECT KILLER BERJAYA IK30",
+    "name": "Insect Killer Berjaya IK30",
     "sku": "IMG/HYS/00179",
     "brand": "BERJAYA",
     "model_number": "IK30",
@@ -7435,7 +7435,7 @@
     "status": "archived"
   },
   {
-    "name": "HAND WASH BASIN KNEE OPERATED BILGE",
+    "name": "Hand Wash Basin Knee Operated Bilge",
     "sku": "IMG/HYS/00001",
     "brand": "BILGE",
     "model_number": "BLGHWBK",
@@ -7451,7 +7451,7 @@
     "status": "published"
   },
   {
-    "name": "KNIFE STERILIZER EMP.BST.001",
+    "name": "Knife Sterilizer EMP.BST.001",
     "sku": "IMG/HYS/00003",
     "brand": "EMPERO",
     "model_number": "EMP.BST.001",
@@ -7468,7 +7468,7 @@
     "status": "archived"
   },
   {
-    "name": "FOGGING MACHINE 5 LITRE ELECTRIC",
+    "name": "Fogging Machine 5 Litre Electric",
     "sku": "IMG/HYS/00190",
     "brand": "FOSHAN",
     "model_number": "SM5L",
@@ -7482,7 +7482,7 @@
     "status": "published"
   },
   {
-    "name": "TOWEL CABINET HOT & COLD KD 20SL-FL",
+    "name": "Towel Cabinet Hot & Cold KD 20SL-FL",
     "sku": "IMG/HYS/00196",
     "brand": "H-KITCHEN",
     "model_number": "KD 20SL-FL",
@@ -7499,7 +7499,7 @@
     "status": "published"
   },
   {
-    "name": "INSECT KILLER PJ-FK40",
+    "name": "Insect Killer PJ-FK40",
     "sku": "IMG/HYS/00032",
     "brand": "MAYSIN",
     "model_number": "PJ-FK40",
@@ -7516,7 +7516,7 @@
     "status": "archived"
   },
   {
-    "name": "WALL MOUNTED RETRACTABLE HOSE REEL",
+    "name": "Wall Mounted Retractable Hose Reel",
     "sku": "IMG/HYS/00014",
     "brand": "SHEFFIELD",
     "model_number": null,
@@ -7529,7 +7529,7 @@
     "status": "archived"
   },
   {
-    "name": "HAND WASH BASIN KNEE OPERATED YLS42",
+    "name": "Hand Wash Basin Knee Operated YLS42",
     "sku": "IMG/HYS/00220",
     "brand": "SHEFFIELD",
     "model_number": "YLS42",
@@ -7546,7 +7546,7 @@
     "status": "archived"
   },
   {
-    "name": "HAND WASH BASIN 400X400 YLS44B",
+    "name": "Hand Wash Basin 400X400 YLS44B",
     "sku": "IMG/HYS/00221",
     "brand": "SHEFFIELD",
     "model_number": "YLS44B",
@@ -7563,7 +7563,7 @@
     "status": "archived"
   },
   {
-    "name": "INSECT KILLER 2X15 WATTS",
+    "name": "Insect Killer 2X15 Watts",
     "sku": "IMG/HYS/00273",
     "brand": "SHEFFIELD",
     "model_number": null,
@@ -7576,7 +7576,7 @@
     "status": "archived"
   },
   {
-    "name": "STAINLESS STEEL CONTAINER 100X100MM",
+    "name": "Stainless Steel Container 100X100MM",
     "sku": "IMG/HYS/00266",
     "brand": "STEELOLOGY",
     "model_number": null,
@@ -7589,7 +7589,7 @@
     "status": "archived"
   },
   {
-    "name": "STAINLESS STEEL CONTAINER 125X135MM",
+    "name": "Stainless Steel Container 125X135MM",
     "sku": "IMG/HYS/00267",
     "brand": "STEELOLOGY",
     "model_number": null,
@@ -7602,7 +7602,7 @@
     "status": "archived"
   },
   {
-    "name": "STAINLESS STEEL CONTAINER 150X165MM",
+    "name": "Stainless Steel Container 150X165MM",
     "sku": "IMG/HYS/00268",
     "brand": "STEELOLOGY",
     "model_number": null,
@@ -7615,7 +7615,7 @@
     "status": "archived"
   },
   {
-    "name": "STAINLESS STEEL CONTAINER 190X200MM",
+    "name": "Stainless Steel Container 190X200MM",
     "sku": "IMG/HYS/00269",
     "brand": "STEELOLOGY",
     "model_number": null,
@@ -7628,7 +7628,7 @@
     "status": "archived"
   },
   {
-    "name": "INSECT KILLER 30W SPIDER TYPE",
+    "name": "Insect Killer 30W Spider Type",
     "sku": "IMG/HYS/00281",
     "brand": "STEELOLOGY",
     "model_number": "30W",
@@ -7641,7 +7641,7 @@
     "status": "draft"
   },
   {
-    "name": "INSECT KILLER 45W SPIDER TYPE",
+    "name": "Insect Killer 45W Spider Type",
     "sku": "IMG/HYS/00282",
     "brand": "STEELOLOGY",
     "model_number": "45W",
@@ -7654,7 +7654,7 @@
     "status": "draft"
   },
   {
-    "name": "FOOD SINK SHREDDER DISPOSER ED1100",
+    "name": "Food Sink Shredder Disposer ED1100",
     "sku": "IMG/HYS/00274",
     "brand": "SUNNYLUX",
     "model_number": "ED1100",
@@ -7668,7 +7668,7 @@
     "status": "published"
   },
   {
-    "name": "HAND WASH BASIN WALL MOUNTED HSWM-006",
+    "name": "Hand Wash Basin Wall Mounted HSWM-006",
     "sku": "IMG/HYS/00284",
     "brand": "GRACHOO",
     "model_number": "HSWM-006",
@@ -7681,7 +7681,7 @@
     "status": "draft"
   },
   {
-    "name": "HAND WASH BASIN KNEE OPERATED HSWM-001",
+    "name": "Hand Wash Basin Knee Operated HSWM-001",
     "sku": "IMG/HYS/00283",
     "brand": "GRACHOO",
     "model_number": "HSWM-001",
@@ -7694,7 +7694,7 @@
     "status": "published"
   },
   {
-    "name": "RATIONAL CARE RINSE DETERGENT",
+    "name": "Rational Care Rinse Detergent",
     "sku": "IMG/HYS/00033",
     "brand": "RATIONAL",
     "model_number": "9006.0137",
@@ -7707,7 +7707,7 @@
     "status": "archived"
   },
   {
-    "name": "RATIONAL CARE TABLETS 56.00.562",
+    "name": "Rational Care Tablets 56.00.562",
     "sku": "IMG/HYS/00034",
     "brand": "RATIONAL",
     "model_number": "56.00.562",
@@ -7721,7 +7721,7 @@
     "status": "published"
   },
   {
-    "name": "RATIONAL CARE TABS LOOSE",
+    "name": "Rational Care Tabs Loose",
     "sku": "IMG/HYS/00035",
     "brand": "RATIONAL",
     "model_number": "56.00.562",
@@ -7734,7 +7734,7 @@
     "status": "archived"
   },
   {
-    "name": "RATIONAL CLEANER TABS LOOSE",
+    "name": "Rational Cleaner Tabs Loose",
     "sku": "IMG/HYS/00038",
     "brand": "RATIONAL",
     "model_number": "56.00.210",
@@ -7747,7 +7747,7 @@
     "status": "archived"
   },
   {
-    "name": "RATIONAL DESCALER",
+    "name": "Rational Descaler",
     "sku": "IMG/HYS/00039",
     "brand": "RATIONAL",
     "model_number": "6006.011",
@@ -7761,7 +7761,7 @@
     "status": "archived"
   },
   {
-    "name": "RATIONAL RINSE AID TABLETS",
+    "name": "Rational Rinse Aid Tablets",
     "sku": "IMG/HYS/00040",
     "brand": "RATIONAL",
     "model_number": "56.00.211",
@@ -7775,7 +7775,7 @@
     "status": "archived"
   },
   {
-    "name": "RATIONAL ACTIVE GREEN CLEANER TABS",
+    "name": "Rational Active Green Cleaner Tabs",
     "sku": "IMG/HYS/00085",
     "brand": "RATIONAL",
     "model_number": "56.01.628",
@@ -7789,7 +7789,7 @@
     "status": "published"
   },
   {
-    "name": "RATIONAL ACTIVE GREEN CLEANER TABS LOOSE",
+    "name": "Rational Active Green Cleaner Tabs Loose",
     "sku": "IMG/HYS/00096",
     "brand": "RATIONAL",
     "model_number": "56.01.535",
@@ -7802,7 +7802,7 @@
     "status": "archived"
   },
   {
-    "name": "RATIONAL CLEANER TABLETS 56.00.22",
+    "name": "Rational Cleaner Tablets 56.00.22",
     "sku": "IMG/HYS/00207",
     "brand": "RATIONAL",
     "model_number": "56.00.22",
@@ -7815,7 +7815,7 @@
     "status": "published"
   },
   {
-    "name": "RATIONAL ACTIVE GREEN CARTRIDGE",
+    "name": "Rational Active Green Cartridge",
     "sku": "IMG/HYS/00264",
     "brand": "RATIONAL",
     "model_number": "56.01.912",
@@ -7828,7 +7828,7 @@
     "status": "draft"
   },
   {
-    "name": "RATIONAL CARE CARTRIDGE",
+    "name": "Rational Care Cartridge",
     "sku": "IMG/HYS/00265",
     "brand": "RATIONAL",
     "model_number": "56.01.914",
@@ -7841,7 +7841,7 @@
     "status": "draft"
   },
   {
-    "name": "CHICKEN SUPER SPIKE 8 BIRDS",
+    "name": "Chicken Super Spike 8 Birds",
     "sku": "IMG/OVE/00021",
     "brand": "RATIONAL",
     "model_number": "6035.1006",
@@ -7854,7 +7854,7 @@
     "status": "published"
   },
   {
-    "name": "CHICKEN SUPER SPIKE 10 BIRDS",
+    "name": "Chicken Super Spike 10 Birds",
     "sku": "IMG/OVE/00022",
     "brand": "RATIONAL",
     "model_number": "6035.101",
@@ -7867,7 +7867,7 @@
     "status": "published"
   },
   {
-    "name": "CHICKEN SUPER SPIKE 4 BIRD ½ GN",
+    "name": "Chicken Super Spike 4 Bird ½ GN",
     "sku": "IMG/OVE/00023",
     "brand": "RATIONAL",
     "model_number": "6035.1015",
@@ -7880,7 +7880,7 @@
     "status": "archived"
   },
   {
-    "name": "COMBI FRY 1/1",
+    "name": "Combi Fry 1/1",
     "sku": "IMG/OVE/00024",
     "brand": "RATIONAL",
     "model_number": "6019.115",
@@ -7893,7 +7893,7 @@
     "status": "published"
   },
   {
-    "name": "COMBI FRY 2/3",
+    "name": "Combi Fry 2/3",
     "sku": "IMG/OVE/00025",
     "brand": "RATIONAL",
     "model_number": "60.73.619",
@@ -7906,7 +7906,7 @@
     "status": "published"
   },
   {
-    "name": "COMBI GRILL 1/1",
+    "name": "Combi Grill 1/1",
     "sku": "IMG/OVE/00026",
     "brand": "RATIONAL",
     "model_number": "6035.1017",
@@ -7922,7 +7922,7 @@
     "status": "published"
   },
   {
-    "name": "CONNECTION KIT",
+    "name": "Connection Kit",
     "sku": "IMG/OVE/00027",
     "brand": "RATIONAL",
     "model_number": null,
@@ -7935,7 +7935,7 @@
     "status": "published"
   },
   {
-    "name": "CROSS N STRIPE GRILL 2/3 GN",
+    "name": "Cross N Stripe Grill 2/3 GN",
     "sku": "IMG/OVE/00028",
     "brand": "RATIONAL",
     "model_number": "60.73.801",
@@ -7951,7 +7951,7 @@
     "status": "published"
   },
   {
-    "name": "CROSS N STRIPE GRILL 1/1 GN",
+    "name": "Cross N Stripe Grill 1/1 GN",
     "sku": "IMG/OVE/00029",
     "brand": "RATIONAL",
     "model_number": "60.73.314",
@@ -8052,7 +8052,7 @@
     "status": "published"
   },
   {
-    "name": "GRILL AND TANDOORI SKEWER FRAME 1/1GN",
+    "name": "Grill and Tandoori Skewer Frame 1/1GN",
     "sku": "IMG/OVE/00036",
     "brand": "RATIONAL",
     "model_number": "60.72.224",
@@ -8065,7 +8065,7 @@
     "status": "published"
   },
   {
-    "name": "GRILLING AND PIZZA TRAY 1/1GN",
+    "name": "Grilling and Pizza Tray 1/1GN",
     "sku": "IMG/OVE/00038",
     "brand": "RATIONAL",
     "model_number": "60.70.943",
@@ -8081,7 +8081,7 @@
     "status": "published"
   },
   {
-    "name": "GRILLING AND PIZZA TRAY 2/3 GN",
+    "name": "Grilling and Pizza Tray 2/3 GN",
     "sku": "IMG/OVE/00039",
     "brand": "RATIONAL",
     "model_number": "60.73.798",
@@ -8097,7 +8097,7 @@
     "status": "published"
   },
   {
-    "name": "GRILLING AND ROASTING PLATTER 1/1 GN",
+    "name": "Grilling and Roasting Platter 1/1 GN",
     "sku": "IMG/OVE/00040",
     "brand": "RATIONAL",
     "model_number": "60.71.617",
@@ -8113,7 +8113,7 @@
     "status": "published"
   },
   {
-    "name": "HIGH GRADE GRID 2/3 GN",
+    "name": "High Grade Grid 2/3 GN",
     "sku": "IMG/OVE/00041",
     "brand": "RATIONAL",
     "model_number": "6010.2301",
@@ -8126,7 +8126,7 @@
     "status": "published"
   },
   {
-    "name": "TRANSPORT TROLLEY FOR MOBILE OVEN RACK",
+    "name": "Transport Trolley for Mobile Oven Rack",
     "sku": "IMG/OVE/00042",
     "brand": "RATIONAL",
     "model_number": "60.22.086",
@@ -8139,7 +8139,7 @@
     "status": "draft"
   },
   {
-    "name": "MOBILE PLATE RACK",
+    "name": "Mobile Plate Rack",
     "sku": "IMG/OVE/00043",
     "brand": "RATIONAL",
     "model_number": "60.61.047",
@@ -8152,7 +8152,7 @@
     "status": "draft"
   },
   {
-    "name": "MULTIBAKER 1/1GN",
+    "name": "Multibaker 1/1GN",
     "sku": "IMG/OVE/00047",
     "brand": "RATIONAL",
     "model_number": "60.71.157",
@@ -8168,7 +8168,7 @@
     "status": "published"
   },
   {
-    "name": "MULTIBAKER 2/3 GN",
+    "name": "Multibaker 2/3 GN",
     "sku": "IMG/OVE/00048",
     "brand": "RATIONAL",
     "model_number": "60.73.646",
@@ -8184,7 +8184,7 @@
     "status": "published"
   },
   {
-    "name": "MULTIBAKER 1/3 GN",
+    "name": "Multibaker 1/3 GN",
     "sku": "IMG/OVE/00049",
     "brand": "RATIONAL",
     "model_number": "60.73.764",
@@ -8200,7 +8200,7 @@
     "status": "published"
   },
   {
-    "name": "PERFORATED BAKING TRAYS BAKING STD",
+    "name": "Perforated Baking Trays Baking STD",
     "sku": "IMG/OVE/00050",
     "brand": "RATIONAL",
     "model_number": "6015.1",
@@ -8216,7 +8216,7 @@
     "status": "published"
   },
   {
-    "name": "PERFORATED BAKING TRAY 1/1 GN",
+    "name": "Perforated Baking Tray 1/1 GN",
     "sku": "IMG/OVE/00051",
     "brand": "RATIONAL",
     "model_number": "6015.1103",
@@ -8232,7 +8232,7 @@
     "status": "published"
   },
   {
-    "name": "POTATO BAKER 1/1GN",
+    "name": "Potato Baker 1/1GN",
     "sku": "IMG/OVE/00054",
     "brand": "RATIONAL",
     "model_number": "6035.1019",
@@ -8245,7 +8245,7 @@
     "status": "published"
   },
   {
-    "name": "RIB GRID 1/1GN",
+    "name": "Rib Grid 1/1GN",
     "sku": "IMG/OVE/00055",
     "brand": "RATIONAL",
     "model_number": "6035.1018",
@@ -8258,7 +8258,7 @@
     "status": "published"
   },
   {
-    "name": "ROASTING AND BAKING TRAY 1/1 GN",
+    "name": "Roasting and Baking Tray 1/1 GN",
     "sku": "IMG/OVE/00058",
     "brand": "RATIONAL",
     "model_number": "6013.1103",
@@ -8274,7 +8274,7 @@
     "status": "published"
   },
   {
-    "name": "ROASTING AND BAKING TRAY BAKING 2/1GN",
+    "name": "Roasting and Baking Tray Baking 2/1GN",
     "sku": "IMG/OVE/00059",
     "brand": "RATIONAL",
     "model_number": "6013.1003",
@@ -8290,7 +8290,7 @@
     "status": "published"
   },
   {
-    "name": "ROASTING AND BAKING TRAY 2/3GN",
+    "name": "Roasting and Baking Tray 2/3GN",
     "sku": "IMG/OVE/00060",
     "brand": "RATIONAL",
     "model_number": "60.73.671",
@@ -8306,7 +8306,7 @@
     "status": "published"
   },
   {
-    "name": "RATIONAL SS GRID 1/1GN",
+    "name": "Rational SS Grid 1/1GN",
     "sku": "IMG/OVE/00064",
     "brand": "RATIONAL",
     "model_number": "6010.1101",
@@ -8332,7 +8332,7 @@
     "status": "archived"
   },
   {
-    "name": "DETERGENT SPOT REMOVER",
+    "name": "Detergent Spot Remover",
     "sku": "IMG/HYS/00237",
     "brand": "RIMPAR",
     "model_number": "FM180-200",
@@ -8345,7 +8345,7 @@
     "status": "archived"
   },
   {
-    "name": "DETERGENT PARFUM",
+    "name": "Detergent Parfum",
     "sku": "IMG/HYS/00238",
     "brand": "RIMPAR",
     "model_number": "PARFUM",
@@ -8358,7 +8358,7 @@
     "status": "archived"
   },
   {
-    "name": "CARPET SHAMPOO 20 LTS",
+    "name": "Carpet Shampoo 20 Lts",
     "sku": "IMG/HYS/00239",
     "brand": "RIMPAR",
     "model_number": "SHAMPOO",
@@ -8371,7 +8371,7 @@
     "status": "archived"
   },
   {
-    "name": "STEAM CLEANER",
+    "name": "Steam Cleaner",
     "sku": "IMG/HYS/00271",
     "brand": "RIMPAR",
     "model_number": "ECO 400",
@@ -8384,7 +8384,7 @@
     "status": "archived"
   },
   {
-    "name": "TASKI AERO 8 UK",
+    "name": "Taski Aero 8 UK",
     "sku": "IMG/HYS/00098",
     "brand": "TASKI",
     "model_number": "7524255",
@@ -8397,7 +8397,7 @@
     "status": "published"
   },
   {
-    "name": "TASKI AERO 8/15 DISP. FLEECE BAGS 10PC",
+    "name": "Taski Aero 8/15 Disp. Fleece Bags 10PC",
     "sku": "IMG/HYS/00100",
     "brand": "TASKI",
     "model_number": "7524288",
@@ -8410,7 +8410,7 @@
     "status": "draft"
   },
   {
-    "name": "TASKI AERO 8/15 FILTER PAPER BAGS 10PC",
+    "name": "Taski Aero 8/15 Filter Paper Bags 10PC",
     "sku": "IMG/HYS/00101",
     "brand": "TASKI",
     "model_number": "7524289",
@@ -8423,7 +8423,7 @@
     "status": "draft"
   },
   {
-    "name": "TASKI AERO 15 PLUS UK",
+    "name": "Taski Aero 15 Plus UK",
     "sku": "IMG/HYS/00103",
     "brand": "TASKI",
     "model_number": "7524258",
@@ -8437,7 +8437,7 @@
     "status": "published"
   },
   {
-    "name": "TASKI GO UK",
+    "name": "Taski Go UK",
     "sku": "IMG/HYS/00106",
     "brand": "TASKI",
     "model_number": "7524187",
@@ -8450,7 +8450,7 @@
     "status": "archived"
   },
   {
-    "name": "TASKI GO FILTER PAPER BAGS 10PC",
+    "name": "Taski Go Filter Paper Bags 10PC",
     "sku": "IMG/HYS/00107",
     "brand": "TASKI",
     "model_number": "7524191",
@@ -8463,7 +8463,7 @@
     "status": "archived"
   },
   {
-    "name": "TASKI GO BASIC ACCESSORY SET 32MM",
+    "name": "Taski Go Basic Accessory Set 32MM",
     "sku": "IMG/HYS/00108",
     "brand": "TASKI",
     "model_number": "7524189",
@@ -8476,7 +8476,7 @@
     "status": "archived"
   },
   {
-    "name": "TASKI AERO BP E UK",
+    "name": "Taski Aero BP E UK",
     "sku": "IMG/HYS/00109",
     "brand": "TASKI",
     "model_number": "7524495",
@@ -8489,7 +8489,7 @@
     "status": "archived"
   },
   {
-    "name": "TASKI AERO BP B LI-ION",
+    "name": "Taski Aero BP B Li-Ion",
     "sku": "IMG/HYS/00110",
     "brand": "TASKI",
     "model_number": "7524498",
@@ -8502,7 +8502,7 @@
     "status": "published"
   },
   {
-    "name": "TASKI AERO TELESCOPIC TUBE 32MM",
+    "name": "Taski Aero Telescopic Tube 32MM",
     "sku": "IMG/HYS/00111",
     "brand": "TASKI",
     "model_number": "7524295",
@@ -8515,7 +8515,7 @@
     "status": "archived"
   },
   {
-    "name": "TASKI AERO BP SUCTION HOSE 1.5M",
+    "name": "Taski Aero BP Suction Hose 1.5M",
     "sku": "IMG/HYS/00112",
     "brand": "TASKI",
     "model_number": "7524502",
@@ -8528,7 +8528,7 @@
     "status": "archived"
   },
   {
-    "name": "TASKI AERO BP DISP. FLEECE BAGS 10PC",
+    "name": "Taski Aero BP Disp. Fleece Bags 10PC",
     "sku": "IMG/HYS/00113",
     "brand": "TASKI",
     "model_number": "7524500",
@@ -8541,7 +8541,7 @@
     "status": "archived"
   },
   {
-    "name": "TASKI AERO BP MOTOR FOAM FILTER",
+    "name": "Taski Aero BP Motor Foam Filter",
     "sku": "IMG/HYS/00114",
     "brand": "TASKI",
     "model_number": "7524501",
@@ -8554,7 +8554,7 @@
     "status": "archived"
   },
   {
-    "name": "TASKI VACUMAT 22 UK",
+    "name": "Taski Vacumat 22 UK",
     "sku": "IMG/HYS/00118",
     "brand": "TASKI",
     "model_number": "7517929",
@@ -8567,7 +8567,7 @@
     "status": "published"
   },
   {
-    "name": "SET WET VACUUM CLEANING PREMIUM",
+    "name": "Set Wet Vacuum Cleaning Premium",
     "sku": "IMG/HYS/00119",
     "brand": "TASKI",
     "model_number": "8504480",
@@ -8580,7 +8580,7 @@
     "status": "draft"
   },
   {
-    "name": "PA OF 10 DOUBLE FILTER BAGS",
+    "name": "Pa of 10 Double Filter Bags",
     "sku": "IMG/HYS/00120",
     "brand": "TASKI",
     "model_number": "8504940",
@@ -8593,7 +8593,7 @@
     "status": "draft"
   },
   {
-    "name": "30014-61 FILTER (10 PARTS)",
+    "name": "30014-61 Filter (10 Parts)",
     "sku": "IMG/HYS/00121",
     "brand": "TASKI",
     "model_number": "4091150",
@@ -8606,7 +8606,7 @@
     "status": "draft"
   },
   {
-    "name": "FIXOMAT FOR VACUMAT 44T",
+    "name": "Fixomat for Vacumat 44T",
     "sku": "IMG/HYS/00124",
     "brand": "TASKI",
     "model_number": "8505420",
@@ -8619,7 +8619,7 @@
     "status": "draft"
   },
   {
-    "name": "TASKI VACUUM CLEANER VACUMAT 44T UK",
+    "name": "Taski Vacuum Cleaner Vacumat 44T UK",
     "sku": "IMG/HYS/00127",
     "brand": "TASKI",
     "model_number": "VACUMAT 44T UK",
@@ -8632,7 +8632,7 @@
     "status": "published"
   },
   {
-    "name": "DRIVING DISC ERGODISC D43",
+    "name": "Driving Disc Ergodisc D43",
     "sku": "IMG/HYS/00133",
     "brand": "TASKI",
     "model_number": "8504410",
@@ -8645,7 +8645,7 @@
     "status": "draft"
   },
   {
-    "name": "SCRUBBING BRUSH UNI 43",
+    "name": "Scrubbing Brush Uni 43",
     "sku": "IMG/HYS/00134",
     "brand": "TASKI",
     "model_number": "8504750",
@@ -8658,7 +8658,7 @@
     "status": "draft"
   },
   {
-    "name": "TASKI WATER TANK FOR SCRUBBER",
+    "name": "Taski Water Tank for Scrubber",
     "sku": "IMG/HYS/00135",
     "brand": "TASKI",
     "model_number": "ERGODISC",
@@ -8671,7 +8671,7 @@
     "status": "published"
   },
   {
-    "name": "TASKI FLOOR SCRUBBER ERGODISC 165 UK",
+    "name": "Taski Floor Scrubber Ergodisc 165 UK",
     "sku": "IMG/HYS/00136",
     "brand": "TASKI",
     "model_number": "ERGODISC 165",
@@ -8684,7 +8684,7 @@
     "status": "published"
   },
   {
-    "name": "TASKI FOAM GENERATOR FG2",
+    "name": "Taski Foam Generator FG2",
     "sku": "IMG/HYS/00140",
     "brand": "TASKI",
     "model_number": "FG2",
@@ -8697,7 +8697,7 @@
     "status": "published"
   },
   {
-    "name": "SHAMPOOING BRUSH DRY D43",
+    "name": "Shampooing Brush Dry D43",
     "sku": "IMG/HYS/00141",
     "brand": "TASKI",
     "model_number": "8504830",
@@ -8710,7 +8710,7 @@
     "status": "draft"
   },
   {
-    "name": "SHAMPOOING BRUSH WET D43",
+    "name": "Shampooing Brush Wet D43",
     "sku": "IMG/HYS/00142",
     "brand": "TASKI",
     "model_number": "8504860",
@@ -8723,7 +8723,7 @@
     "status": "draft"
   },
   {
-    "name": "HAND SHAMPOOING SET",
+    "name": "Hand Shampooing Set",
     "sku": "IMG/HYS/00143",
     "brand": "TASKI",
     "model_number": "8505010",
@@ -8736,7 +8736,7 @@
     "status": "draft"
   },
   {
-    "name": "TASKI ERGODISK 165 DUO",
+    "name": "Taski Ergodisk 165 Duo",
     "sku": "IMG/HYS/00148",
     "brand": "TASKI",
     "model_number": "ERGODISK 165 DUO",
@@ -8749,7 +8749,7 @@
     "status": "published"
   },
   {
-    "name": "HIGH-SPEED DRIVING DISC 43/01",
+    "name": "High-Speed Driving Disc 43/01",
     "sku": "IMG/HYS/00152",
     "brand": "TASKI",
     "model_number": "7510030",
@@ -8762,7 +8762,7 @@
     "status": "draft"
   },
   {
-    "name": "PAD DRIVER 43CM",
+    "name": "Pad Driver 43CM",
     "sku": "IMG/HYS/00160",
     "brand": "TASKI",
     "model_number": "7510829",
@@ -8775,7 +8775,7 @@
     "status": "draft"
   },
   {
-    "name": "TASKI SPRAYER BP 15 LI-ION",
+    "name": "Taski Sprayer BP 15 Li-Ion",
     "sku": "IMG/HYS/00170",
     "brand": "TASKI",
     "model_number": "BP 15 Li-ION",
@@ -8788,7 +8788,7 @@
     "status": "archived"
   },
   {
-    "name": "ACCESSORIES SET AQUAMAT 20/PROCARPET",
+    "name": "Accessories Set Aquamat 20/PROCARPET",
     "sku": "IMG/HYS/00172",
     "brand": "TASKI",
     "model_number": "8505160",
@@ -8801,7 +8801,7 @@
     "status": "draft"
   },
   {
-    "name": "KIT DRY VACUUM CLEANING VACUUM 22",
+    "name": "Kit Dry Vacuum Cleaning Vacuum 22",
     "sku": "IMG/HYS/00218",
     "brand": "TASKI",
     "model_number": "8504930",
@@ -8814,7 +8814,7 @@
     "status": "draft"
   },
   {
-    "name": "SCRUBBING BRUSH ABRASIVE 43",
+    "name": "Scrubbing Brush Abrasive 43",
     "sku": "IMG/HYS/00226",
     "brand": "TASKI",
     "model_number": "",
@@ -8827,7 +8827,7 @@
     "status": "archived"
   },
   {
-    "name": "TASKI AQUAMAT 20.01 UK",
+    "name": "Taski Aquamat 20.01 UK",
     "sku": "IMG/HYS/00228",
     "brand": "TASKI",
     "model_number": "AQUAMAT 20",
@@ -8840,7 +8840,7 @@
     "status": "published"
   },
   {
-    "name": "FILTER CLOTH WITH RING FOR VACUMAT 44T",
+    "name": "Filter Cloth with Ring for Vacumat 44T",
     "sku": "IMG/HYS/00229",
     "brand": "TASKI",
     "model_number": "",
@@ -8853,7 +8853,7 @@
     "status": "archived"
   },
   {
-    "name": "ACCESSORIES SET FOR AQUAMAT 10.1",
+    "name": "Accessories Set for Aquamat 10.1",
     "sku": "IMG/HYS/00230",
     "brand": "TASKI",
     "model_number": null,
@@ -8866,7 +8866,7 @@
     "status": "draft"
   },
   {
-    "name": "SET OF DRY VACUUMS TASKI VACUMAT 12",
+    "name": "Set of Dry Vacuums Taski Vacumat 12",
     "sku": "IMG/HYS/00240",
     "brand": "TASKI",
     "model_number": "8504500",
@@ -8879,7 +8879,7 @@
     "status": "archived"
   },
   {
-    "name": "TASKI SWINGO 250 UCRO",
+    "name": "Taski Swingo 250 UCRO",
     "sku": "IMG/HYS/00248",
     "brand": "TASKI",
     "model_number": "7524889",
@@ -8892,7 +8892,7 @@
     "status": "published"
   },
   {
-    "name": "PAD DRIVER 28CM",
+    "name": "Pad Driver 28CM",
     "sku": "IMG/HYS/00249",
     "brand": "TASKI",
     "model_number": "7510634",
@@ -8905,7 +8905,7 @@
     "status": "draft"
   },
   {
-    "name": "SCRUBBING BRUSH 28",
+    "name": "Scrubbing Brush 28",
     "sku": "IMG/HYS/00250",
     "brand": "TASKI",
     "model_number": "7519395",
@@ -8931,7 +8931,7 @@
     "status": "draft"
   },
   {
-    "name": "TASKI BALIMAT 45 SWEEPER",
+    "name": "Taski Balimat 45 Sweeper",
     "sku": "IMG/HYS/00252",
     "brand": "TASKI",
     "model_number": "8004690",
@@ -8944,7 +8944,7 @@
     "status": "archived"
   },
   {
-    "name": "TASKI BALIMAT 3300 RTU SWEEPER",
+    "name": "Taski Balimat 3300 RTU Sweeper",
     "sku": "IMG/HYS/00253",
     "brand": "TASKI",
     "model_number": "7524906",
@@ -8970,7 +8970,7 @@
     "status": "draft"
   },
   {
-    "name": "CENTER BROOM B3300",
+    "name": "Center Broom B3300",
     "sku": "IMG/HYS/00255",
     "brand": "TASKI",
     "model_number": "7524909",
@@ -8983,7 +8983,7 @@
     "status": "draft"
   },
   {
-    "name": "SIDE BROOM B3300",
+    "name": "Side Broom B3300",
     "sku": "IMG/HYS/00256",
     "brand": "TASKI",
     "model_number": "7524910",
@@ -8996,7 +8996,7 @@
     "status": "draft"
   },
   {
-    "name": "BRUSH 225MM 2PC",
+    "name": "Brush 225MM 2PC",
     "sku": "IMG/HYS/00257",
     "brand": "TASKI",
     "model_number": "7524893",
@@ -9009,7 +9009,7 @@
     "status": "draft"
   },
   {
-    "name": "DISC DRIVE 225MM 2PC",
+    "name": "Disc Drive 225MM 2PC",
     "sku": "IMG/HYS/00258",
     "brand": "TASKI",
     "model_number": "7524894",
@@ -9035,7 +9035,7 @@
     "status": "draft"
   },
   {
-    "name": "NX CHARGER 100-240V/50/60HZ",
+    "name": "NX Charger 100-240V/50/60HZ",
     "sku": "IMG/HYS/00260",
     "brand": "TASKI",
     "model_number": "7524892",
@@ -9048,7 +9048,7 @@
     "status": "draft"
   },
   {
-    "name": "TASKI SWINGO 2100 MICRO BMS UK",
+    "name": "Taski Swingo 2100 Micro BMS UK",
     "sku": "IMG/HYS/00261",
     "brand": "TASKI",
     "model_number": "7523422",
@@ -9061,7 +9061,7 @@
     "status": "archived"
   },
   {
-    "name": "PVC SHELVES 910 CAMBRO",
+    "name": "PVC Shelves 910 Cambro",
     "sku": "IMG/STO/00001",
     "brand": "CAMBRO",
     "model_number": "CB4213672V4580",
@@ -9078,7 +9078,7 @@
     "status": "published"
   },
   {
-    "name": "CHROME WIRE SHELVING 1220",
+    "name": "Chrome Wire Shelving 1220",
     "sku": "IMG/STO/00005",
     "brand": "OEM SHEFFIELD",
     "model_number": "JW-N4821",
@@ -9091,7 +9091,7 @@
     "status": "published"
   },
   {
-    "name": "PVC SHELVES VENTED 1060 PERFECT",
+    "name": "PVC Shelves Vented 1060 Perfect",
     "sku": "IMG/STO/00007",
     "brand": "OEM SHEFFIELD",
     "model_number": "JW-P4221",
@@ -9108,7 +9108,7 @@
     "status": "published"
   },
   {
-    "name": "PVC SHELVES VENTED 1220 PERFECT",
+    "name": "PVC Shelves Vented 1220 Perfect",
     "sku": "IMG/STO/00008",
     "brand": "OEM SHEFFIELD",
     "model_number": "JW-P4821",
@@ -9125,7 +9125,7 @@
     "status": "published"
   },
   {
-    "name": "PVC SHELVES VENTED 910 PERFECT",
+    "name": "PVC Shelves Vented 910 Perfect",
     "sku": "IMG/STO/00009",
     "brand": "OEM SHEFFIELD",
     "model_number": "JW-P3621",
@@ -9142,7 +9142,7 @@
     "status": "published"
   },
   {
-    "name": "DINING CARTS SS 2 TIER",
+    "name": "Dining Carts SS 2 Tier",
     "sku": "IMG/STO/00011",
     "brand": "HK-REDLINE",
     "model_number": "HK-DC-M2A",
@@ -9155,7 +9155,7 @@
     "status": "published"
   },
   {
-    "name": "DINING CARTS SS 3 TIER",
+    "name": "Dining Carts SS 3 Tier",
     "sku": "IMG/STO/00012",
     "brand": "HK-REDLINE",
     "model_number": "HK-DC-M3A",
@@ -9168,7 +9168,7 @@
     "status": "published"
   },
   {
-    "name": "TROLLEY FOR DISH WASHER RACK H KITCHEN",
+    "name": "Trolley for Dish Washer Rack H Kitchen",
     "sku": "IMG/STO/00013",
     "brand": "HK-REDLINE",
     "model_number": "HK-113103",
@@ -9181,7 +9181,7 @@
     "status": "draft"
   },
   {
-    "name": "STOCK POT 17 LITRES EI2828",
+    "name": "Stock Pot 17 Litres EI2828",
     "sku": "IMG/TCW/00355",
     "brand": "KITCHENWARE",
     "model_number": "SDI2828",
@@ -9197,7 +9197,7 @@
     "status": "published"
   },
   {
-    "name": "STOCK POT 12 LITRES EI2525",
+    "name": "Stock Pot 12 Litres EI2525",
     "sku": "IMG/TCW/00363",
     "brand": "WANHUI",
     "model_number": "SDI2525",
@@ -9210,7 +9210,7 @@
     "status": "published"
   },
   {
-    "name": "STOCK POT 36 LITRES EI3636",
+    "name": "Stock Pot 36 Litres EI3636",
     "sku": "IMG/TCW/00368",
     "brand": "KITCHENWARE",
     "model_number": "SDI3636",
@@ -9226,7 +9226,7 @@
     "status": "published"
   },
   {
-    "name": "STOCK POT 12 LITRES CSP 2525",
+    "name": "Stock Pot 12 Litres CSP 2525",
     "sku": "IMG/TCW/00386",
     "brand": "KITCHENWARE",
     "model_number": "CSP 2525",
@@ -9242,7 +9242,7 @@
     "status": "published"
   },
   {
-    "name": "STOCK POT 71 LITRES CSP 4545",
+    "name": "Stock Pot 71 Litres CSP 4545",
     "sku": "IMG/TCW/00388",
     "brand": "KITCHENWARE",
     "model_number": "SDI4545",
@@ -9258,7 +9258,7 @@
     "status": "published"
   },
   {
-    "name": "STOCK POT 50 LITRES CSP 4040",
+    "name": "Stock Pot 50 Litres CSP 4040",
     "sku": "IMG/TCW/00389",
     "brand": "KITCHENWARE",
     "model_number": "SDI4040",
@@ -9271,7 +9271,7 @@
     "status": "published"
   },
   {
-    "name": "HIGH SAUCE PAN 10 LITRES E22816",
+    "name": "High Sauce Pan 10 Litres E22816",
     "sku": "IMG/TCW/00354",
     "brand": "KITCHENWARE",
     "model_number": "SD22816",
@@ -9284,7 +9284,7 @@
     "status": "published"
   },
   {
-    "name": "HIGH SAUCE PAN 6.5 LITRES E22414",
+    "name": "High Sauce Pan 6.5 Litres E22414",
     "sku": "IMG/TCW/00357",
     "brand": "KITCHENWARE",
     "model_number": "SD22414",
@@ -9297,7 +9297,7 @@
     "status": "published"
   },
   {
-    "name": "HIGH SAUCE PAN 4 LITRES",
+    "name": "High Sauce Pan 4 Litres",
     "sku": "IMG/TCW/00382",
     "brand": "KITCHENWARE",
     "model_number": "SD22013",
@@ -9310,7 +9310,7 @@
     "status": "published"
   },
   {
-    "name": "HIGH SAUCE PAN 8.5 LITRES SS 25X18",
+    "name": "High Sauce Pan 8.5 Litres SS 25X18",
     "sku": "IMG/TCW/00519",
     "brand": "KITCHENWARE",
     "model_number": "SDI2518",
@@ -9323,7 +9323,7 @@
     "status": "published"
   },
   {
-    "name": "HIGH SAUCE PAN 18 LITRES SS 32X22",
+    "name": "High Sauce Pan 18 Litres SS 32X22",
     "sku": "IMG/TCW/00520",
     "brand": "KITCHENWARE",
     "model_number": "SDI3222",
@@ -9336,7 +9336,7 @@
     "status": "published"
   },
   {
-    "name": "CASSEROLE HIGH ANDYMAN 58122",
+    "name": "Casserole High Andyman 58122",
     "sku": "IMG/TCW/00006",
     "brand": "ANDYMAN",
     "model_number": "58122",
@@ -9349,7 +9349,7 @@
     "status": "archived"
   },
   {
-    "name": "CASSEROLE 24 LITRES E13624",
+    "name": "Casserole 24 Litres E13624",
     "sku": "IMG/TCW/00366",
     "brand": "WANHUI",
     "model_number": "SDI3624",
@@ -9362,7 +9362,7 @@
     "status": "published"
   },
   {
-    "name": "PRESSURE COOKER 16 LITRES SSPC-16",
+    "name": "Pressure Cooker 16 Litres SSPC-16",
     "sku": "IMG/HOT/00167",
     "brand": "STEELOLOGY",
     "model_number": "SSPC-16",
@@ -9375,7 +9375,7 @@
     "status": "published"
   },
   {
-    "name": "PRESSURE COOKER 25 LITRES H KITCHEN SSPC-25",
+    "name": "Pressure Cooker 25 Litres H Kitchen SSPC-25",
     "sku": "IMG/HOT/00168",
     "brand": "HK-REDLINE",
     "model_number": "SSPC-25",
@@ -9388,7 +9388,7 @@
     "status": "published"
   },
   {
-    "name": "PRESSURE COOKER 40 LITRES",
+    "name": "Pressure Cooker 40 Litres",
     "sku": "IMG/HOT/00169",
     "brand": "GENEVA",
     "model_number": "SSPC-40",
@@ -9401,7 +9401,7 @@
     "status": "archived"
   },
   {
-    "name": "PRESSURE COOKER 60 LITRES",
+    "name": "Pressure Cooker 60 Litres",
     "sku": "IMG/HOT/00170",
     "brand": "GENEVA",
     "model_number": "SSPC-60",
@@ -9415,7 +9415,7 @@
   },
   {
     "sku": "IMG/COF/00041",
-    "name": "CAPPUCCINO MACHINE SILVIA",
+    "name": "Cappuccino Machine Silvia",
     "brand": "RANCILIO",
     "model": "SILVIA",
     "category": "coffee machines",
@@ -9432,7 +9432,7 @@
   },
   {
     "sku": "IMG/COF/00079",
-    "name": "CAPPUCCINO MACHINE SILVIA PRO",
+    "name": "Cappuccino Machine Silvia Pro",
     "brand": "RANCILIO",
     "model": "SILVIA PRO",
     "category": "coffee machines",
@@ -9449,7 +9449,7 @@
   },
   {
     "sku": "IMG/COF/00035",
-    "name": "ESPRESSO MACHINE CLASS 5S GR1",
+    "name": "Espresso Machine Class 5S GR1",
     "brand": "RANCILIO",
     "model": "CLASS 5S GR 1",
     "category": "coffee machines",
@@ -9466,7 +9466,7 @@
   },
   {
     "sku": "IMG/COF/00037",
-    "name": "ESPRESSO MACHINE CLASS 5S GR2 BLACK",
+    "name": "Espresso Machine Class 5S GR2 Black",
     "brand": "RANCILIO",
     "model": "CLASS 5S GR 2",
     "category": "coffee machines",
@@ -9483,7 +9483,7 @@
   },
   {
     "sku": "IMG/COF/00038",
-    "name": "ESPRESSO MACHINE CLASS 5S GR2 WHITE",
+    "name": "Espresso Machine Class 5S GR2 White",
     "brand": "RANCILIO",
     "model": "CLASS 5S GR 2",
     "category": "coffee machines",
@@ -9500,7 +9500,7 @@
   },
   {
     "sku": "IMG/COF/00036",
-    "name": "ESPRESSO MACHINE CLASS 5ST GR1",
+    "name": "Espresso Machine Class 5ST GR1",
     "brand": "RANCILIO",
     "model": "CLASS 5ST GR 1",
     "category": "coffee machines",
@@ -9517,7 +9517,7 @@
   },
   {
     "sku": "IMG/COF/00048",
-    "name": "WATER SOFTENERS DP2",
+    "name": "Water Softeners DP2",
     "brand": "RANCILIO",
     "model": "IV8",
     "category": "coffee machines",
@@ -9534,7 +9534,7 @@
   },
   {
     "sku": "IMG/COF/00070",
-    "name": "WATER SOFTENERS HLT.12",
+    "name": "Water Softeners HLT.12",
     "brand": "SHEFFIELD",
     "model": "HLT.12",
     "category": "coffee machines",
@@ -9547,7 +9547,7 @@
   },
   {
     "sku": "IMG/COF/00135",
-    "name": "AUTOMATIC COFFEE GRINDER KRYO 65 OD",
+    "name": "Automatic Coffee Grinder Kryo 65 OD",
     "brand": "RANCILIO",
     "model": "KRYO 65 OD",
     "category": "coffee machines",
@@ -9560,7 +9560,7 @@
   },
   {
     "sku": "IMG/COF/00043",
-    "name": "COFFEE GRINDER KRYO 65 ST",
+    "name": "Coffee Grinder Kryo 65 St",
     "brand": "RANCILIO",
     "model": "KRYO 65 ST",
     "category": "coffee machines",
@@ -9577,7 +9577,7 @@
   },
   {
     "sku": "IMG/COF/00044",
-    "name": "COFFEE GRINDER ROCKY",
+    "name": "Coffee Grinder Rocky",
     "brand": "RANCILIO",
     "model": "ROCKY",
     "category": "coffee machines",
@@ -9594,7 +9594,7 @@
   },
   {
     "sku": "IMG/COF/00128",
-    "name": "RANCILIO ROCKY DOSER NERO BLACK",
+    "name": "Rancilio Rocky Doser Nero Black",
     "brand": "RANCILIO",
     "model": "ROCKY",
     "category": "coffee machines",
@@ -9607,7 +9607,7 @@
   },
   {
     "sku": "IMS/MEC/00303",
-    "name": "COFFEE TAMPER STAINLESS STEEL",
+    "name": "Coffee Tamper Stainless Steel",
     "brand": "RANCILIO",
     "model": "RANCILIO",
     "category": "coffee machines",
@@ -9621,7 +9621,7 @@
   },
   {
     "sku": "IMS/MEC/00469",
-    "name": "COFFEE TAMPER PVC",
+    "name": "Coffee Tamper PVC",
     "brand": "RANCILIO",
     "model": "RANCILIO",
     "category": "coffee machines",
@@ -9635,7 +9635,7 @@
   },
   {
     "sku": "IMG/COF/00039",
-    "name": "ESPRESSO MACHINE CLASS 7S GR3",
+    "name": "Espresso Machine Class 7S GR3",
     "brand": "RANCILIO",
     "model": "CLASS 7S GR 3",
     "category": "coffee machines",
@@ -9662,7 +9662,7 @@
   },
   {
     "sku": "IMG/COF/00099",
-    "name": "AUTOMATIC COFFEE MACHINE F11 BIG",
+    "name": "Automatic Coffee Machine F11 Big",
     "brand": "DR. COFFEE",
     "model": "F11 BIG",
     "category": "coffee machines",
@@ -9679,7 +9679,7 @@
   },
   {
     "sku": "IMG/COF/00096",
-    "name": "AUTOMATIC COFFEE MACHINE MINIBAR",
+    "name": "Automatic Coffee Machine Minibar",
     "brand": "DR. COFFEE",
     "model": "MINIBAR",
     "category": "coffee machines",
@@ -9696,7 +9696,7 @@
   },
   {
     "sku": "IMG/COF/00054",
-    "name": "ESPRESSO MACHINE MICROBAR II SIMONELLI",
+    "name": "Espresso Machine Microbar II Simonelli",
     "brand": "SIMONELLI",
     "model": "MICROBAR II",
     "category": "coffee machines",
@@ -9713,7 +9713,7 @@
   },
   {
     "sku": "IMG/COF/00073",
-    "name": "AUTOMATIC COFFEE MACHINE FAB 100",
+    "name": "Automatic Coffee Machine Fab 100",
     "brand": "KALERM",
     "model": "K90L BGS",
     "category": "coffee machines",
@@ -9730,7 +9730,7 @@
   },
   {
     "sku": "IMG/COF/00074",
-    "name": "AUTOMATIC COFFEE MACHINE FAS 100",
+    "name": "Automatic Coffee Machine Fas 100",
     "brand": "KALERM",
     "model": "K905 EBGS",
     "category": "coffee machines",
@@ -9747,7 +9747,7 @@
   },
   {
     "sku": "IMG/COF/00072",
-    "name": "AUTOMATIC COFFEE MACHINE FAB50",
+    "name": "Automatic Coffee Machine FAB50",
     "brand": "KALERM",
     "model": "FAB 50",
     "category": "coffee machines",
@@ -9764,7 +9764,7 @@
   },
   {
     "sku": "IMG/COF/00097",
-    "name": "MILK FRIDGE SC15",
+    "name": "Milk Fridge SC15",
     "brand": "DR. COFFEE",
     "model": "SC15",
     "category": "coffee machines",
@@ -9781,7 +9781,7 @@
   },
   {
     "sku": "IMG/COF/00047",
-    "name": "MILK FRIDGE EGRO ZERO MAEA03",
+    "name": "Milk Fridge Egro Zero MAEA03",
     "brand": "RANCILIO",
     "model": "MAEA03",
     "category": "coffee machines",
@@ -9794,7 +9794,7 @@
   },
   {
     "sku": "IMG/COF/00071",
-    "name": "AUTOMATIC COFFEE MACHINE FAO 30",
+    "name": "Automatic Coffee Machine Fao 30",
     "brand": "KALERM",
     "model": "FAO 30",
     "category": "coffee machines",
@@ -9815,7 +9815,7 @@
   },
   {
     "sku": "IMG/COF/00125",
-    "name": "AQ-HC-RO",
+    "name": "Aq-Hc-Ro",
     "brand": "ANTUNES",
     "model": "9710165",
     "category": "coffee machines",
@@ -9828,7 +9828,7 @@
   },
   {
     "sku": "IMG/COF/00130",
-    "name": "AQ-RO-600 WATERMARK",
+    "name": "AQ-RO-600 Watermark",
     "brand": "ANTUNES",
     "model": "9710162",
     "category": "coffee machines",
@@ -9842,7 +9842,7 @@
   },
   {
     "sku": "IMG/COF/00133",
-    "name": "CUP DISPENSER DAC-05",
+    "name": "Cup Dispenser DAC-05",
     "brand": "ANTUNES",
     "model": "9900305",
     "category": "coffee machines",
@@ -9868,7 +9868,7 @@
   },
   {
     "sku": "IMG/COF/00132",
-    "name": "HRS HARDNESS REDUCTION SYSTEM",
+    "name": "Hrs Hardness Reduction System",
     "brand": "ANTUNES",
     "model": "9700562",
     "category": "coffee machines",
@@ -9882,7 +9882,7 @@
   },
   {
     "sku": "IMG/COF/00131",
-    "name": "ULTRAFILTRATION SYSTEM VZN-511V",
+    "name": "Ultrafiltration System VZN-511V",
     "brand": "ANTUNES",
     "model": "9710122",
     "category": "coffee machines",
@@ -9896,7 +9896,7 @@
   },
   {
     "sku": "IMG/REF/00081",
-    "name": "ICE CUBE MACHINE CB-249A BREMA",
+    "name": "Ice Cube Machine CB-249A Brema",
     "brand": "BREMA",
     "model_number": "CB 249A HC",
     "category": "Ice Cube Machines",
@@ -9909,7 +9909,7 @@
   },
   {
     "sku": "IMG/REF/00082",
-    "name": "ICE CUBE MACHINE CB-416A BREMA",
+    "name": "Ice Cube Machine CB-416A Brema",
     "brand": "BREMA",
     "model_number": "CB 416A HC",
     "category": "Ice Cube Machines",
@@ -9926,7 +9926,7 @@
   },
   {
     "sku": "IMG/REF/00154",
-    "name": "ICE CUBE MACHINE CB-640A BREMA",
+    "name": "Ice Cube Machine CB-640A Brema",
     "brand": "BREMA",
     "model_number": "CB 640A HC",
     "category": "Ice Cube Machines",
@@ -9943,7 +9943,7 @@
   },
   {
     "sku": "IMG/REF/00181",
-    "name": "ICE CUBE MACHINE CB 955A HC BREMA",
+    "name": "Ice Cube Machine CB 955A HC Brema",
     "brand": "BREMA",
     "model_number": "CB 955A HC",
     "category": "Ice Cube Machines",
@@ -9960,7 +9960,7 @@
   },
   {
     "sku": "IMG/REF/00076",
-    "name": "ICE CUBE MACHINE CB-1565A BREMA",
+    "name": "Ice Cube Machine CB-1565A Brema",
     "brand": "BREMA",
     "model_number": "CB 1565A HC",
     "category": "Ice Cube Machines",
@@ -9973,7 +9973,7 @@
   },
   {
     "sku": "IMG/REF/00022",
-    "name": "ICE CUBE MACHINE ZBJ-40P IBERNA",
+    "name": "Ice Cube Machine ZBJ-40P Iberna",
     "brand": "IBERNA",
     "model_number": "ZBJ-40P",
     "category": "Ice Cube Machines",
@@ -9987,7 +9987,7 @@
   },
   {
     "sku": "IMG/REF/00021",
-    "name": "ICE CUBE MACHINE ZBJ-60P IBERNA",
+    "name": "Ice Cube Machine ZBJ-60P Iberna",
     "brand": "IBERNA",
     "model_number": "ZBJ-60P",
     "category": "Ice Cube Machines",
@@ -10001,7 +10001,7 @@
   },
   {
     "sku": "IMG/REF/00209",
-    "name": "ICE CUBE MACHINE ZBJ-80P IBERNA",
+    "name": "Ice Cube Machine ZBJ-80P Iberna",
     "brand": "IBERNA",
     "model_number": "ZBJ-80P",
     "category": "Ice Cube Machines",
@@ -10018,7 +10018,7 @@
   },
   {
     "sku": "IMG/REF/00020",
-    "name": "ICE CUBE MACHINE ZBJ-100L IBERNA",
+    "name": "Ice Cube Machine ZBJ-100L Iberna",
     "brand": "IBERNA",
     "model_number": "ZBJ-100L",
     "category": "Ice Cube Machines",
@@ -10031,7 +10031,7 @@
   },
   {
     "sku": "IMG/REF/00019",
-    "name": "ICE CUBE MACHINE ZBJ-150P IBERNA",
+    "name": "Ice Cube Machine ZBJ-150P Iberna",
     "brand": "IBERNA",
     "model_number": "ZBJ-150P",
     "category": "Ice Cube Machines",
@@ -10045,7 +10045,7 @@
   },
   {
     "sku": "IMG/REF/00210",
-    "name": "ICE CUBE MACHINE ZBJ-250P IBERNA",
+    "name": "Ice Cube Machine ZBJ-250P Iberna",
     "brand": "IBERNA",
     "model_number": "ZBJ-250P",
     "category": "Ice Cube Machines",
@@ -10059,7 +10059,7 @@
   },
   {
     "sku": "IMG/ICE/00017",
-    "name": "ICE CREAM MACHINE TABLE TOP S110F",
+    "name": "Ice Cream Machine Table Top S110F",
     "brand": "PASMO",
     "model_number": "S110F",
     "category": "Ice Cream Machines",
@@ -10076,7 +10076,7 @@
   },
   {
     "sku": "IMG/ICE/00018",
-    "name": "ICE CREAM MACHINE FREE STANDING",
+    "name": "Ice Cream Machine Free Standing",
     "brand": "PASMO",
     "model_number": "S520F",
     "category": "Ice Cream Machines",
@@ -10093,7 +10093,7 @@
   },
   {
     "sku": "IMG/ICE/00029",
-    "name": "ICE CREAM MACHINE TABLE TOP PASMO S230F",
+    "name": "Ice Cream Machine Table Top Pasmo S230F",
     "brand": "PASMO",
     "model_number": "S230F",
     "category": "Ice Cream Machines",
@@ -10110,7 +10110,7 @@
   },
   {
     "sku": "IMG/ICE/00026",
-    "name": "ICE CREAM MACHINE TURBO MIX",
+    "name": "Ice Cream Machine Turbo Mix",
     "brand": "CARPIGIANI",
     "model_number": "TURBO MIX",
     "category": "Ice Cream Machines",
@@ -10126,7 +10126,7 @@
   },
   {
     "sku": "IMG/ICE/00027",
-    "name": "ICE CREAM MACHINE MAESTRO-2STELLE HCD",
+    "name": "Ice Cream Machine MAESTRO-2STELLE HCD",
     "brand": "CARPIGIANI",
     "model_number": "MAESTRO-2STELLE HCD",
     "category": "Ice Cream Machines",
@@ -10143,7 +10143,7 @@
   },
   {
     "sku": "IMG/ICE/00028",
-    "name": "ICE CREAM MACHINE PASTO MASTER",
+    "name": "Ice Cream Machine Pasto Master",
     "brand": "CARPIGIANI",
     "model_number": "PASTO MASTER",
     "category": "Ice Cream Machines",
@@ -10160,7 +10160,7 @@
   },
   {
     "sku": "IMG/HOT/00255",
-    "name": "6 BURNER GAS RANGE WITH GAS OVEN RGR36 REDLINE",
+    "name": "6 Burner Gas Range with Gas Oven RGR36 Redline",
     "brand": "SHEFFIELD REDLINE",
     "model_number": "RGR36",
     "category": "Burners",
@@ -10176,7 +10176,7 @@
   },
   {
     "sku": "IMG/HOT/00437",
-    "name": "6 BURNER GAS RANGE WITH GAS OVEN HDSGR-36",
+    "name": "6 Burner Gas Range with Gas Oven HDSGR-36",
     "brand": "HDS",
     "model_number": "HDSGR-36",
     "category": "Burners",
@@ -10189,7 +10189,7 @@
   },
   {
     "sku": "IMG/HOT/00048",
-    "name": "4 BURNER TABLE TOP FAGOR CG7-40",
+    "name": "4 Burner Table Top Fagor CG7-40",
     "brand": "FAGOR",
     "model_number": "CG7-40",
     "category": "Burners",
@@ -10202,7 +10202,7 @@
   },
   {
     "sku": "IMG/HOT/00049",
-    "name": "4 BURNER TABLE TOP FAGOR CG6-40",
+    "name": "4 Burner Table Top Fagor CG6-40",
     "brand": "FAGOR",
     "model_number": "CG6-40",
     "category": "Burners",
@@ -10215,7 +10215,7 @@
   },
   {
     "sku": "IMG/HOT/00067",
-    "name": "4 BURNER TABLE TOP H KITCHEN",
+    "name": "4 Burner Table Top H Kitchen",
     "brand": "HK-REDLINE",
     "model_number": "SOT-4S",
     "category": "Burners",
@@ -10228,7 +10228,7 @@
   },
   {
     "sku": "IMG/HOT/00120",
-    "name": "4 BURNER GAS RANGE + ELECTRIC OVEN KUSINA",
+    "name": "4 Burner Gas Range + Electric Oven Kusina",
     "brand": "KUSINA",
     "model_number": "G7K210G-E",
     "category": "Burners",
@@ -10241,7 +10241,7 @@
   },
   {
     "sku": "IMG/HOT/00256",
-    "name": "4 BURNER GAS RANGE WITH GAS OVEN RGR24 REDLINE",
+    "name": "4 Burner Gas Range with Gas Oven RGR24 Redline",
     "brand": "SHEFFIELD REDLINE",
     "model_number": "RGR24",
     "category": "Burners",
@@ -10258,7 +10258,7 @@
   },
   {
     "sku": "IMG/HOT/00267",
-    "name": "4 BURNER GAS RANGE TABLE TOP EHP-4S",
+    "name": "4 Burner Gas Range Table Top EHP-4S",
     "brand": "H-KITCHEN",
     "model_number": "EHP-4S",
     "category": "Burners",
@@ -10271,7 +10271,7 @@
   },
   {
     "sku": "IMG/HOT/OO438",
-    "name": "GAS BURNERS WITH OVEN AND 24 INCH GRIDDLE/SALAMANDER",
+    "name": "Gas Burners with Oven and 24 Inch Griddle/Salamander",
     "brand": "HDS",
     "model_number": "",
     "category": "Burners",
@@ -10284,7 +10284,7 @@
   },
   {
     "sku": "IMG/DWW/00085",
-    "name": "DISH WASHER HOOD PC-09",
+    "name": "Dish Washer Hood PC-09",
     "brand": "COMENDA",
     "model_number": "PC-09",
     "category": "Dishwashers",
@@ -10300,7 +10300,7 @@
   },
   {
     "sku": "IMG/DWW/00093",
-    "name": "DISH WASHER HOOD TYPE PC 07",
+    "name": "Dish Washer Hood Type PC 07",
     "brand": "COMENDA",
     "model_number": "PC 07",
     "category": "Dishwashers",
@@ -10317,7 +10317,7 @@
   },
   {
     "sku": "IMG/DWW/00158",
-    "name": "DISH WASHER HOOD TYPE EC44",
+    "name": "Dish Washer Hood Type EC44",
     "brand": "COMENDA",
     "model_number": "EC44",
     "category": "Dishwashers",
@@ -10330,7 +10330,7 @@
   },
   {
     "sku": "IMG/DWW/00159",
-    "name": "DISH WASHER UNDERCOUNTER EF36M",
+    "name": "Dish Washer Undercounter EF36M",
     "brand": "COMENDA",
     "model_number": "EF36M",
     "category": "Dishwashers",
@@ -10343,7 +10343,7 @@
   },
   {
     "sku": "IMG/DWW/00160",
-    "name": "GLASS WASHER UNDERCOUNTER EB28",
+    "name": "Glass Washer Undercounter EB28",
     "brand": "COMENDA",
     "model_number": "EB28",
     "category": "Dishwashers",
@@ -10356,7 +10356,7 @@
   },
   {
     "sku": "IMG/DWW/00151",
-    "name": "UNDER COUNTER DISHWASHER HATTONS",
+    "name": "Under Counter Dishwasher Hattons",
     "brand": "HATTONS",
     "model_number": "HT-T2",
     "category": "Dishwashers",
@@ -10373,7 +10373,7 @@
   },
   {
     "sku": "IMG/DWW/00032",
-    "name": "CUTLERY RACK 8 COMPARTMENT",
+    "name": "Cutlery Rack 8 Compartment",
     "brand": "COMENDA",
     "model_number": "N/A",
     "category": "Dishwashers",
@@ -10389,7 +10389,7 @@
   },
   {
     "sku": "IMG/DWW/00033",
-    "name": "DISH WASH RACK 400MM",
+    "name": "Dish Wash Rack 400MM",
     "brand": "COMENDA",
     "model_number": "N/A",
     "category": "Dishwashers",
@@ -10402,7 +10402,7 @@
   },
   {
     "sku": "IMG/DWW/00040",
-    "name": "GLASS RACK EXTENDER 16 COMPARTMENT",
+    "name": "Glass Rack Extender 16 Compartment",
     "brand": "OEM SHEFFIELD",
     "model_number": "JW-162",
     "category": "Dishwashers",
@@ -10415,7 +10415,7 @@
   },
   {
     "sku": "IMG/DWW/00043",
-    "name": "GLASS RACK EXTENDER 25 COMPARTMENT",
+    "name": "Glass Rack Extender 25 Compartment",
     "brand": "OEM SHEFFIELD",
     "model_number": "JW-253",
     "category": "Dishwashers",
@@ -10428,7 +10428,7 @@
   },
   {
     "sku": "IMG/DWW/00071",
-    "name": "GLASS RACK 16 COMPARTMENTS WITH 1 EXTENDER",
+    "name": "Glass Rack 16 Compartments with 1 Extender",
     "brand": "KAYALAR",
     "model_number": "153114021",
     "category": "Dishwashers",
@@ -10441,7 +10441,7 @@
   },
   {
     "sku": "IMG/DWW/00072",
-    "name": "GLASS RACK 36 COMPARTMENTS WITH 2 EXTENDER",
+    "name": "Glass Rack 36 Compartments with 2 Extender",
     "brand": "KAYALAR",
     "model_number": "153114030",
     "category": "Dishwashers",
@@ -10454,7 +10454,7 @@
   },
   {
     "sku": "IMG/DWW/00073",
-    "name": "GLASS RACK 16 COMPARTMENTS WITH 2 EXTENDER",
+    "name": "Glass Rack 16 Compartments with 2 Extender",
     "brand": "KAYALAR",
     "model_number": "153114022",
     "category": "Dishwashers",
@@ -10467,7 +10467,7 @@
   },
   {
     "sku": "IMG/DWW/00074",
-    "name": "GLASS RACK 49 COMPARTMENTS WITH 1 EXTENDER",
+    "name": "Glass Rack 49 Compartments with 1 Extender",
     "brand": "KAYALAR",
     "model_number": "153114033",
     "category": "Dishwashers",
@@ -10480,7 +10480,7 @@
   },
   {
     "sku": "IMG/DWW/00075",
-    "name": "GLASS RACK 49 COMPARTMENTS WITH 2 EXTENDER",
+    "name": "Glass Rack 49 Compartments with 2 Extender",
     "brand": "KAYALAR",
     "model_number": "KAY 37",
     "category": "Dishwashers",
@@ -10493,7 +10493,7 @@
   },
   {
     "sku": "IMG/DWW/00097",
-    "name": "PLATE RACK 64 COMPARTMENT JW-64B",
+    "name": "Plate Rack 64 Compartment JW-64B",
     "brand": "OEM SHEFFIELD",
     "model_number": "JW-64B",
     "category": "Dishwashers",
@@ -10509,7 +10509,7 @@
   },
   {
     "sku": "IMG/DWW/00098",
-    "name": "GLASS RACK 36 COMPARTMENT JW-36",
+    "name": "Glass Rack 36 Compartment JW-36",
     "brand": "OEM SHEFFIELD",
     "model_number": "JW-36",
     "category": "Dishwashers",
@@ -10522,7 +10522,7 @@
   },
   {
     "sku": "IMG/DWW/00101",
-    "name": "GLASS RACK 16 COMPARTMENT JW-16",
+    "name": "Glass Rack 16 Compartment JW-16",
     "brand": "OEM SHEFFIELD",
     "model_number": "JW-16",
     "category": "Dishwashers",
@@ -10538,7 +10538,7 @@
   },
   {
     "sku": "IMG/DWW/00103",
-    "name": "PLATE RACK 25 COMPARTMENT JW-25B",
+    "name": "Plate Rack 25 Compartment JW-25B",
     "brand": "OEM SHEFFIELD",
     "model_number": "JW-25B",
     "category": "Dishwashers",
@@ -10554,7 +10554,7 @@
   },
   {
     "sku": "IMG/DWW/00104",
-    "name": "GLASS RACK 25 COMPARTMENT JW-25",
+    "name": "Glass Rack 25 Compartment JW-25",
     "brand": "OEM SHEFFIELD",
     "model_number": "JW-25",
     "category": "Dishwashers",
@@ -10570,7 +10570,7 @@
   },
   {
     "sku": "IMG/DWW/00105",
-    "name": "MOBILE PLATE RACK - CAPACITY 48 PLATES",
+    "name": "Mobile Plate Rack - Capacity 48 Plates",
     "brand": "OEM SHEFFIELD",
     "model_number": "JW-DC48",
     "category": "Dishwashers",
@@ -10586,7 +10586,7 @@
   },
   {
     "sku": "IMG/DWW/00107",
-    "name": "PLATE RACKS 64 COMP CAMRACK GREY",
+    "name": "Plate Racks 64 Comp Camrack Grey",
     "brand": "CAMBRO",
     "model_number": "PR59314151",
     "category": "Dishwashers",
@@ -10599,7 +10599,7 @@
   },
   {
     "sku": "IMG/DWW/00110",
-    "name": "OPEN RACK JW-SS",
+    "name": "Open Rack Jw-Ss",
     "brand": "OEM SHEFFIELD",
     "model_number": "JW-S",
     "category": "Dishwashers",
@@ -10612,7 +10612,7 @@
   },
   {
     "sku": "IMG/DWW/00142",
-    "name": "OPEN PLATE & TRAY RACK BLUE 25 COMPARTMENT",
+    "name": "Open Plate & Tray Rack Blue 25 Compartment",
     "brand": "OEM SHEFFIELD",
     "model_number": "JW-25P",
     "category": "Dishwashers",
@@ -10628,7 +10628,7 @@
   },
   {
     "sku": "IMG/DWW/00143",
-    "name": "OPEN RACK JW-S",
+    "name": "Open Rack JW-S",
     "brand": "OEM SHEFFIELD",
     "model_number": "JW-S",
     "category": "Dishwashers",
@@ -10641,7 +10641,7 @@
   },
   {
     "sku": "IMG/DWW/00144",
-    "name": "CUTLERY RACK JW-C",
+    "name": "Cutlery Rack JW-C",
     "brand": "OEM SHEFFIELD",
     "model_number": "JW-C",
     "category": "Dishwashers",
@@ -10654,7 +10654,7 @@
   },
   {
     "sku": "IMG/DWW/00150",
-    "name": "GLASS RACK 49 COMPARTMENT JW-49",
+    "name": "Glass Rack 49 Compartment JW-49",
     "brand": "GUANGDONG PERFECT",
     "model_number": "JW-49",
     "category": "Dishwashers",
@@ -10667,7 +10667,7 @@
   },
   {
     "sku": "IMG/DWW/00156",
-    "name": "CB COMBINATION RACK",
+    "name": "CB Combination Rack",
     "brand": "COMENDA",
     "model_number": "CB-12/18",
     "category": "Dishwashers",
@@ -10680,7 +10680,7 @@
   },
   {
     "sku": "IMG/DWW/00157",
-    "name": "PLATE RACK",
+    "name": "Plate Rack",
     "brand": "COMENDA",
     "model_number": "PR",
     "category": "Dishwashers",
@@ -10693,7 +10693,7 @@
   },
   {
     "sku": "IMG/DWW/00149",
-    "name": "HOOD TYPE DISHWASHER",
+    "name": "Hood Type Dishwasher",
     "brand": "HATTON",
     "model_number": "HT-Z1",
     "category": "Dishwashers",

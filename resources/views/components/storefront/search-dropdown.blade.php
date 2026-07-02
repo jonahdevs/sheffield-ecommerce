@@ -1,9 +1,11 @@
 <?php
 
+use App\Enums\CategoryStatus;
 use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
 
@@ -11,6 +13,43 @@ new class extends Component {
     public string $query = '';
 
     public bool $mobileOpen = false;
+
+    /**
+     * Trending search terms: the most-viewed products of the last 30 days,
+     * topped up with the newest arrivals when view data is thin.
+     *
+     * @return Collection<int, string>
+     */
+    #[Computed]
+    public function trending(): Collection
+    {
+        $terms = Cache::remember('storefront.trending-searches', now()->addHour(), function (): array {
+            $terms = Product::query()
+                ->published()
+                ->visibleInSearch()
+                ->whereHas('views', fn ($q) => $q->where('viewed_at', '>=', now()->subDays(30)))
+                ->withCount(['views as recent_views_count' => fn ($q) => $q->where('viewed_at', '>=', now()->subDays(30))])
+                ->orderByDesc('recent_views_count')
+                ->take(6)
+                ->pluck('name');
+
+            if ($terms->count() < 6) {
+                $terms = $terms->concat(
+                    Product::query()
+                        ->published()
+                        ->visibleInSearch()
+                        ->whereNotIn('name', $terms)
+                        ->latest()
+                        ->take(6 - $terms->count())
+                        ->pluck('name')
+                );
+            }
+
+            return $terms->values()->all();
+        });
+
+        return collect($terms);
+    }
 
     #[Computed]
     public function products(): Collection
@@ -41,6 +80,7 @@ new class extends Component {
         }
 
         return Category::query()
+            ->where('status', CategoryStatus::ACTIVE)
             ->withCount('products')
             ->where('name', 'like', "%{$this->query}%")
             ->take(3)
@@ -78,10 +118,6 @@ new class extends Component {
         unset($this->products, $this->categories, $this->brands);
     }
 }; ?>
-
-@php
-    $trending = ['Combi oven', 'Blast chiller', 'Rational', 'Hobart mixer', 'Espresso machine', 'Refrigeration'];
-@endphp
 
 <div class="relative w-full" x-data="{
     show: false,
@@ -142,17 +178,19 @@ new class extends Component {
                 </template>
             </div>
 
-            <div class="border-t border-zinc-100 px-4 pb-4 pt-3">
-                <div class="mb-2.5 text-[10.5px] font-bold tracking-widest text-ink-4 uppercase">Trending</div>
-                <div class="flex flex-wrap gap-1.5">
-                    @foreach ($trending as $term)
-                        <button type="button" wire:click="$set('query', '{{ $term }}')"
-                            class="inline-flex h-7 cursor-pointer items-center rounded-full bg-surface-sunken px-3 text-[12.5px] font-medium text-ink-2 transition hover:bg-zinc-200">
-                            {{ $term }}
-                        </button>
-                    @endforeach
+            @if ($this->trending->isNotEmpty())
+                <div class="border-t border-zinc-100 px-4 pb-4 pt-3">
+                    <div class="mb-2.5 text-[10.5px] font-bold tracking-widest text-ink-4 uppercase">Trending</div>
+                    <div class="flex flex-wrap gap-1.5">
+                        @foreach ($this->trending as $term)
+                            <button type="button" wire:click="$set('query', '{{ addslashes($term) }}')"
+                                class="inline-flex h-7 cursor-pointer items-center rounded-full bg-surface-sunken px-3 text-[12.5px] font-medium text-ink-2 transition hover:bg-zinc-200">
+                                {{ $term }}
+                            </button>
+                        @endforeach
+                    </div>
                 </div>
-            </div>
+            @endif
         @else
             <a href="{{ route('catalog') }}?q={{ urlencode($query) }}" wire:navigate
                 @click="saveRecent('{{ addslashes($query) }}')"
@@ -181,7 +219,7 @@ new class extends Component {
                                     </div>
                                 @endif
                                 <div class="min-w-0">
-                                    <div class="truncate text-[13.5px] text-ink">{{ $product->name }}</div>
+                                    <div class="line-clamp-2 text-[13.5px] leading-snug text-ink">{{ $product->name }}</div>
                                 </div>
                                 <flux:icon.chevron-right variant="micro" class="size-3.5 text-ink-4" />
                             </a>
@@ -292,17 +330,19 @@ new class extends Component {
                     </div>
 
                     {{-- Trending --}}
-                    <div class="border-t border-zinc-100 px-4 pb-5 pt-4">
-                        <div class="mb-3 text-[10.5px] font-bold tracking-widest text-ink-4 uppercase">Trending</div>
-                        <div class="flex flex-wrap gap-2">
-                            @foreach ($trending as $term)
-                                <button type="button" wire:click="$set('query', '{{ $term }}')"
-                                    class="inline-flex h-8 cursor-pointer items-center rounded-full bg-surface-sunken px-3.5 text-[13px] font-medium text-ink-2 transition hover:bg-zinc-200">
-                                    {{ $term }}
-                                </button>
-                            @endforeach
+                    @if ($this->trending->isNotEmpty())
+                        <div class="border-t border-zinc-100 px-4 pb-5 pt-4">
+                            <div class="mb-3 text-[10.5px] font-bold tracking-widest text-ink-4 uppercase">Trending</div>
+                            <div class="flex flex-wrap gap-2">
+                                @foreach ($this->trending as $term)
+                                    <button type="button" wire:click="$set('query', '{{ addslashes($term) }}')"
+                                        class="inline-flex h-8 cursor-pointer items-center rounded-full bg-surface-sunken px-3.5 text-[13px] font-medium text-ink-2 transition hover:bg-zinc-200">
+                                        {{ $term }}
+                                    </button>
+                                @endforeach
+                            </div>
                         </div>
-                    </div>
+                    @endif
 
                     {{-- Empty state hint --}}
                     <div class="flex flex-col items-center px-6 py-12 text-center">
@@ -338,7 +378,7 @@ new class extends Component {
                                             </div>
                                         @endif
                                         <div class="min-w-0">
-                                            <div class="truncate text-[14px] text-ink">{{ $product->name }}</div>
+                                            <div class="line-clamp-2 text-[14px] leading-snug text-ink">{{ $product->name }}</div>
                                         </div>
                                         <flux:icon.chevron-right variant="micro" class="size-4 text-ink-4" />
                                     </a>

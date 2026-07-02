@@ -136,42 +136,42 @@
                             <nav class="pb-2">
                                 <a href="{{ route('account.dashboard') }}" wire:navigate @click="drawerOpen = false"
                                     class="flex items-center gap-3 px-4 py-2.5 text-[14px] text-ink transition hover:text-brand-500">
-                                    <flux:icon.squares-2x2 variant="micro" class="size-4 shrink-0 text-ink-3" /> Account dashboard
+                                    <flux:icon.squares-2x2 variant="outline" class="size-4 shrink-0 text-ink-3" /> Account dashboard
                                 </a>
                                 <a href="{{ route('account.orders.index') }}" wire:navigate @click="drawerOpen = false"
                                     class="flex items-center gap-3 px-4 py-2.5 text-[14px] text-ink transition hover:text-brand-500">
-                                    <flux:icon.document-text variant="micro" class="size-4 shrink-0 text-ink-3" /> My Orders
+                                    <flux:icon.document-text variant="outline" class="size-4 shrink-0 text-ink-3" /> My Orders
                                 </a>
                                 <a href="{{ route('account.quotes.index') }}" wire:navigate @click="drawerOpen = false"
                                     class="flex items-center gap-3 px-4 py-2.5 text-[14px] text-ink transition hover:text-brand-500">
-                                    <flux:icon.clipboard-document-list variant="micro" class="size-4 shrink-0 text-ink-3" /> My Quotes
+                                    <flux:icon.clipboard-document-list variant="outline" class="size-4 shrink-0 text-ink-3" /> My Quotes
                                 </a>
                                 <a href="{{ route('wishlist') }}" wire:navigate @click="drawerOpen = false"
                                     class="flex items-center gap-3 px-4 py-2.5 text-[14px] text-ink transition hover:text-brand-500">
-                                    <flux:icon.heart variant="micro" class="size-4 shrink-0 text-ink-3" /> Wishlist
+                                    <flux:icon.heart variant="outline" class="size-4 shrink-0 text-ink-3" /> Wishlist
                                 </a>
                                 <a href="{{ route('compare') }}" wire:navigate @click="drawerOpen = false"
                                     class="flex items-center gap-3 px-4 py-2.5 text-[14px] text-ink transition hover:text-brand-500">
-                                    <flux:icon.scale variant="micro" class="size-4 shrink-0 text-ink-3" /> Compare
+                                    <flux:icon.scale variant="outline" class="size-4 shrink-0 text-ink-3" /> Compare
                                 </a>
                             </nav>
                         @else
                             <nav class="pb-2">
                                 <a href="{{ route('login') }}" wire:navigate @click="drawerOpen = false"
                                     class="flex items-center gap-3 px-4 py-2.5 text-[14px] text-ink transition hover:text-brand-500">
-                                    <flux:icon.user variant="micro" class="size-4 shrink-0 text-ink-3" /> Sign in
+                                    <flux:icon.user variant="outline" class="size-4 shrink-0 text-ink-3" /> Sign in
                                 </a>
                                 <a href="{{ route('register') }}" wire:navigate @click="drawerOpen = false"
                                     class="flex items-center gap-3 px-4 py-2.5 text-[14px] text-ink transition hover:text-brand-500">
-                                    <flux:icon.user-plus variant="micro" class="size-4 shrink-0 text-ink-3" /> Create account
+                                    <flux:icon.user-plus variant="outline" class="size-4 shrink-0 text-ink-3" /> Create account
                                 </a>
                                 <a href="{{ route('wishlist') }}" wire:navigate @click="drawerOpen = false"
                                     class="flex items-center gap-3 px-4 py-2.5 text-[14px] text-ink transition hover:text-brand-500">
-                                    <flux:icon.heart variant="micro" class="size-4 shrink-0 text-ink-3" /> Wishlist
+                                    <flux:icon.heart variant="outline" class="size-4 shrink-0 text-ink-3" /> Wishlist
                                 </a>
                                 <a href="{{ route('compare') }}" wire:navigate @click="drawerOpen = false"
                                     class="flex items-center gap-3 px-4 py-2.5 text-[14px] text-ink transition hover:text-brand-500">
-                                    <flux:icon.scale variant="micro" class="size-4 shrink-0 text-ink-3" /> Compare
+                                    <flux:icon.scale variant="outline" class="size-4 shrink-0 text-ink-3" /> Compare
                                 </a>
                             </nav>
                         @endauth
@@ -187,7 +187,7 @@
                         <nav class="pb-2">
                             <a href="{{ route('catalog') }}" wire:navigate @click="drawerOpen = false"
                                 class="flex items-center gap-3 px-4 py-2.5 text-[14px] font-medium text-ink transition hover:text-brand-500">
-                                <flux:icon.building-storefront variant="micro" class="size-4 shrink-0 text-ink-3" />
+                                <flux:icon.building-storefront variant="outline" class="size-4 shrink-0 text-ink-3" />
                                 Shop all products
                             </a>
                             @foreach ($navCategories as $category)
@@ -201,7 +201,7 @@
                                         <img src="{{ $category->icon_image_url }}" alt=""
                                             class="size-4 shrink-0 object-contain opacity-60" loading="lazy" />
                                     @else
-                                        <flux:icon.tag variant="micro" class="size-4 shrink-0 text-ink-3" />
+                                        <flux:icon.tag variant="outline" class="size-4 shrink-0 text-ink-3" />
                                     @endif
                                     <span class="truncate">{{ $category->name }}</span>
                                 </a>
@@ -215,15 +215,15 @@
                         <nav class="pb-4">
                             <a href="{{ route('contact') }}" wire:navigate @click="drawerOpen = false"
                                 class="flex items-center gap-3 px-4 py-2 text-[13px] text-ink transition hover:text-brand-500">
-                                <flux:icon.chat-bubble-left-right variant="micro" class="size-4 shrink-0 text-ink-3" /> Contact us
+                                <flux:icon.chat-bubble-left-right variant="outline" class="size-4 shrink-0 text-ink-3" /> Contact us
                             </a>
                             <a href="{{ route('quote.request') }}" wire:navigate @click="drawerOpen = false"
                                 class="flex items-center gap-3 px-4 py-2 text-[13px] text-ink transition hover:text-brand-500">
-                                <flux:icon.document-plus variant="micro" class="size-4 shrink-0 text-ink-3" /> Request a quote
+                                <flux:icon.document-plus variant="outline" class="size-4 shrink-0 text-ink-3" /> Request a quote
                             </a>
                             <a href="tel:+254713777111"
                                 class="flex items-center gap-3 px-4 py-2 text-[13px] text-ink transition hover:text-brand-500">
-                                <flux:icon.phone variant="micro" class="size-4 shrink-0 text-ink-3" /> +254&nbsp;713&nbsp;777&nbsp;111
+                                <flux:icon.phone variant="outline" class="size-4 shrink-0 text-ink-3" /> +254&nbsp;713&nbsp;777&nbsp;111
                             </a>
                         </nav>
                     </section>

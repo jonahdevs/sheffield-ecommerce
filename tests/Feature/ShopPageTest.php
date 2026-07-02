@@ -130,6 +130,27 @@ it('excludes products with only pending reviews from the rating filter', functio
         ->assertDontSee('Pending Review Mixer');
 });
 
+it('lists only active categories in the catalog filter facet', function () {
+    Category::create(['name' => 'Visible Range', 'slug' => 'visible-range', 'status' => CategoryStatus::ACTIVE, 'sort_order' => 1]);
+    Category::create(['name' => 'Hidden Draft Cat', 'slug' => 'hidden-draft-cat', 'status' => CategoryStatus::DRAFT, 'sort_order' => 2]);
+    Category::create(['name' => 'Hidden Inactive Cat', 'slug' => 'hidden-inactive-cat', 'status' => CategoryStatus::INACTIVE, 'sort_order' => 3]);
+
+    Livewire::test('pages::storefront.catalog')
+        ->assertSee('Visible Range')
+        ->assertDontSee('Hidden Draft Cat')
+        ->assertDontSee('Hidden Inactive Cat');
+});
+
+it('shows only active categories in search results', function () {
+    Category::create(['name' => 'Searchable Fridge', 'slug' => 'searchable-fridge', 'status' => CategoryStatus::ACTIVE, 'sort_order' => 1]);
+    Category::create(['name' => 'Searchable Ghost', 'slug' => 'searchable-ghost', 'status' => CategoryStatus::ARCHIVED, 'sort_order' => 2]);
+
+    Livewire::test('storefront.search-dropdown')
+        ->set('query', 'Searchable')
+        ->assertSee('Searchable Fridge')
+        ->assertDontSee('Searchable Ghost');
+});
+
 it('routes /shop/{category} to the category page', function () {
     $cat = Category::create(['name' => 'Ranges', 'slug' => 'ranges', 'status' => CategoryStatus::ACTIVE, 'sort_order' => 1]);
 

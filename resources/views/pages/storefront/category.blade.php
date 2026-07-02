@@ -422,7 +422,7 @@ new #[Layout('layouts::storefront')] class extends Component {
 
                         {{-- Brand --}}
                         @if ($this->brandsList->isNotEmpty())
-                            <div class="px-5 py-4" x-data="{ open: false, openBrands: false }">
+                            <div class="px-5 py-4" x-data="{ open: false }">
                                 <button type="button" x-on:click="open = !open"
                                     class="flex w-full cursor-pointer items-center justify-between text-[12px] font-bold uppercase tracking-[0.08em] text-ink-2">
                                     <span>Brand</span>
@@ -432,25 +432,12 @@ new #[Layout('layouts::storefront')] class extends Component {
                                     </span>
                                 </button>
                                 <div x-show="open" x-cloak class="mt-3">
-                                    <div class="scrollbar-hover flex flex-col gap-2"
-                                        x-bind:class="openBrands ? 'max-h-64 overflow-y-auto pr-1' : ''">
-                                        @foreach ($this->brandsList as $i => $brand)
-                                            <div @if ($i >= 6) x-show="openBrands" x-cloak @endif>
-                                                <flux:checkbox wire:model.live="selectedBrands"
-                                                    value="{{ $brand->id }}" :label="$brand->name" />
-                                            </div>
+                                    <div class="scrollbar-hover flex max-h-64 flex-col gap-2 overflow-y-auto pr-1">
+                                        @foreach ($this->brandsList as $brand)
+                                            <flux:checkbox wire:model.live="selectedBrands"
+                                                value="{{ $brand->id }}" :label="$brand->name" />
                                         @endforeach
                                     </div>
-                                    @if ($this->brandsList->count() > 6)
-                                        <button type="button" x-on:click="openBrands = !openBrands"
-                                            class="mt-2 cursor-pointer text-[12.5px] text-brand-500 hover:underline">
-                                            <span x-show="!openBrands" class="inline-flex items-center gap-1">
-                                                Show all {{ $this->brandsList->count() }} brands
-                                                <flux:icon.arrow-right variant="micro" class="size-3.5" />
-                                            </span>
-                                            <span x-show="openBrands" x-cloak>Show fewer</span>
-                                        </button>
-                                    @endif
                                 </div>
                             </div>
                         @endif
@@ -483,7 +470,7 @@ new #[Layout('layouts::storefront')] class extends Component {
             </div>
         </template>
 
-        <div class="mt-4 grid grid-cols-1 gap-8 lg:grid-cols-[260px_1fr]">
+        <div class="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-[260px_1fr]">
             {{-- Filters sidebar (desktop only) --}}
             <aside
                 class="scrollbar-hover hidden lg:block lg:sticky lg:top-32 lg:max-h-[calc(100vh-9rem)] lg:self-start lg:overflow-y-auto">
@@ -556,7 +543,7 @@ new #[Layout('layouts::storefront')] class extends Component {
 
                     {{-- Brand --}}
                     @if ($this->brandsList->isNotEmpty())
-                        <div class="px-5 py-4" x-data="{ open: false, openBrands: false }">
+                        <div class="px-5 py-4" x-data="{ open: false }">
                             <button type="button" x-on:click="open = !open"
                                 class="flex w-full cursor-pointer items-center justify-between text-[12px] font-bold uppercase tracking-[0.08em] text-ink-2">
                                 <span>Brand</span>
@@ -566,25 +553,12 @@ new #[Layout('layouts::storefront')] class extends Component {
                                 </span>
                             </button>
                             <div x-show="open" x-cloak class="mt-3">
-                                <div class="scrollbar-hover flex flex-col gap-2"
-                                    x-bind:class="openBrands ? 'max-h-64 overflow-y-auto pr-1' : ''">
-                                    @foreach ($this->brandsList as $i => $brand)
-                                        <div @if ($i >= 6) x-show="openBrands" x-cloak @endif>
-                                            <flux:checkbox wire:model.live="selectedBrands"
-                                                value="{{ $brand->id }}" :label="$brand->name" />
-                                        </div>
+                                <div class="scrollbar-hover flex max-h-64 flex-col gap-2 overflow-y-auto pr-1">
+                                    @foreach ($this->brandsList as $brand)
+                                        <flux:checkbox wire:model.live="selectedBrands"
+                                            value="{{ $brand->id }}" :label="$brand->name" />
                                     @endforeach
                                 </div>
-                                @if ($this->brandsList->count() > 6)
-                                    <button type="button" x-on:click="openBrands = !openBrands"
-                                        class="mt-2 cursor-pointer text-[12.5px] text-brand-500 hover:underline">
-                                        <span x-show="!openBrands" class="inline-flex items-center gap-1">
-                                            Show all {{ $this->brandsList->count() }} brands
-                                            <flux:icon.arrow-right variant="micro" class="size-3.5" />
-                                        </span>
-                                        <span x-show="openBrands" x-cloak>Show fewer</span>
-                                    </button>
-                                @endif
                             </div>
                         </div>
                     @endif
@@ -609,7 +583,7 @@ new #[Layout('layouts::storefront')] class extends Component {
 
             {{-- Results --}}
             <div class="@container min-w-0">
-                <div class="mb-5 flex flex-col gap-3 py-2.5 sm:flex-row sm:items-center sm:justify-between">
+                <div class="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                     <div class="flex items-center gap-3">
                         {{-- Mobile: open filter drawer --}}
                         <flux:button size="sm" icon="funnel" wire:click="$set('showFilters', true)"

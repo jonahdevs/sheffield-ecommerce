@@ -59,7 +59,7 @@ new class extends Component
 
     {{-- Bell button with unread badge --}}
     <flux:tooltip content="Notifications" position="bottom">
-        <button type="button" x-on:click="open = !open"
+        <button type="button" x-on:click="open = !open" data-test="notification-bell"
                 class="relative inline-flex size-9 items-center justify-center rounded-md text-zinc-500 transition hover:bg-zinc-100 hover:text-zinc-700 dark:hover:bg-zinc-700 dark:hover:text-zinc-300">
             <flux:icon.bell variant="outline" class="size-5" />
             @if ($this->unreadCount > 0)
@@ -71,11 +71,11 @@ new class extends Component
     </flux:tooltip>
 
     {{-- Dropdown panel --}}
-    <div x-show="open" x-cloak x-on:click.outside="open = false"
+    <div x-show="open" x-cloak x-on:click.outside="open = false" data-test="notification-panel"
          x-transition:enter="transition duration-[120ms] ease-out"
          x-transition:enter-start="opacity-0 -translate-y-1"
          x-transition:enter-end="opacity-100 translate-y-0"
-         class="absolute right-0 top-[calc(100%+8px)] z-50 w-80 overflow-hidden rounded-md border border-zinc-200 bg-white shadow-xl dark:border-zinc-700 dark:bg-zinc-900">
+         class="fixed right-2 top-16 z-50 w-80 max-w-[calc(100vw-1rem)] overflow-hidden rounded-md border border-zinc-200 bg-white shadow-xl sm:absolute sm:right-0 sm:top-[calc(100%+8px)] dark:border-zinc-700 dark:bg-zinc-900">
 
         {{-- Header --}}
         <div class="flex items-center justify-between border-b border-zinc-100 px-4 py-3 dark:border-zinc-700">

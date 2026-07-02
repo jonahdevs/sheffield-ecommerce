@@ -355,10 +355,40 @@ new #[Layout('layouts::storefront')] #[Title('Contact & Showrooms')] class exten
                                     class="rounded-sm bg-surface-sunken px-1.5 py-px text-[9px] font-bold tracking-[0.06em] text-brand-blue-600">HQ</span>
                             @endif
                         </div>
-                        <div class="mt-1.5 text-[13.5px] leading-relaxed text-ink-3">
-                            {{ $loc->address }}<br>
-                            {{ $loc->city }}, {{ $loc->country }}@if ($loc->pobox)
-                                · {{ $loc->pobox }}
+                        <div class="mt-1.5 space-y-1.5 text-[13.5px] leading-relaxed text-ink-3">
+                            {{-- Address --}}
+                            <div class="flex items-start gap-2">
+                                <flux:icon.map-pin variant="outline" class="mt-0.5 size-4 shrink-0 text-ink-3" />
+                                <span>
+                                    {{ $loc->address }}<br>
+                                    {{ $loc->city }}, {{ $loc->country }}@if ($loc->pobox)
+                                        · {{ $loc->pobox }}
+                                    @endif
+                                </span>
+                            </div>
+
+                            {{-- Phones — multiple numbers separated by a slash --}}
+                            @if (!empty($loc->phones))
+                                <div class="flex items-center gap-2">
+                                    <flux:icon.phone variant="outline" class="size-4 shrink-0 text-ink-3" />
+                                    <span>
+                                        @foreach ($loc->phones as $phone)
+                                            <a href="tel:{{ preg_replace('/\s+/', '', $phone) }}"
+                                                class="transition hover:text-brand-500">{{ $phone }}</a>@unless ($loop->last)
+                                                <span class="text-ink-4">/</span>
+                                            @endunless
+                                        @endforeach
+                                    </span>
+                                </div>
+                            @endif
+
+                            {{-- Email --}}
+                            @if ($loc->email)
+                                <a href="mailto:{{ $loc->email }}"
+                                    class="flex items-center gap-2 transition hover:text-brand-500">
+                                    <flux:icon.envelope variant="outline" class="size-4 shrink-0 text-ink-3" />
+                                    {{ $loc->email }}
+                                </a>
                             @endif
                         </div>
                     </div>
