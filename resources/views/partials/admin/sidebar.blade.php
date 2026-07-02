@@ -210,4 +210,18 @@
         @endcan
     </flux:sidebar.nav>
 
+    @auth
+        <flux:sidebar.spacer />
+
+        <flux:sidebar.nav>
+            <form method="POST" action="{{ route('logout') }}" class="w-full">
+                @csrf
+                <flux:sidebar.item type="submit" icon="arrow-right-start-on-rectangle"
+                    class="w-full cursor-pointer" data-test="admin-logout-button">
+                    {{ __('Log out') }}
+                </flux:sidebar.item>
+            </form>
+        </flux:sidebar.nav>
+    @endauth
+
 </flux:sidebar>

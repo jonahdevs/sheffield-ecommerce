@@ -189,7 +189,7 @@ new #[Layout('layouts::settings')] #[Title('Profile')] class extends Component {
                         <flux:separator variant="subtle" />
 
                         <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
-                            <flux:input wire:model="name" :label="__('Full name')" type="text" required autofocus autocomplete="name" />
+                            <flux:input wire:model="name" :label="__('Full name')" type="text" required autocomplete="name" />
 
                             <div>
                                 <flux:input wire:model="email" :label="__('Email address')" type="email" required autocomplete="email" />

@@ -229,18 +229,18 @@ new #[Layout('layouts::account')] #[Title('Quote')] class extends Component {
                 <div class="flex flex-col divide-y divide-zinc-100 rounded border border-zinc-200">
                     @foreach ($quote->items as $item)
                         @php $coverUrl = $item->product_snapshot['cover_url'] ?? $item->product?->cover_url; @endphp
-                        <div class="flex items-center gap-3.5 p-3.5" wire:key="item-{{ $item->id }}">
+                        <div class="flex items-start gap-3 p-3.5 sm:gap-3.5" wire:key="item-{{ $item->id }}">
 
                             {{-- Thumbnail --}}
-                            <div
-                                class="flex size-14 shrink-0 items-center justify-center overflow-hidden rounded border border-zinc-100 bg-zinc-50">
-                                @if ($coverUrl)
-                                    <img src="{{ $coverUrl }}" alt="{{ $item->product_name }}"
-                                        class="size-full object-contain p-1" />
-                                @else
+                            @if ($coverUrl)
+                                <img src="{{ $coverUrl }}" alt="{{ $item->product_name }}"
+                                    class="size-12 shrink-0 rounded object-contain sm:size-14" />
+                            @else
+                                <div
+                                    class="flex size-12 shrink-0 items-center justify-center overflow-hidden rounded border border-zinc-100 bg-zinc-50 sm:size-14">
                                     <flux:icon.photo variant="outline" class="size-7 text-zinc-200" />
-                                @endif
-                            </div>
+                                </div>
+                            @endif
 
                             {{-- Details --}}
                             <div class="min-w-0 flex-1">
@@ -254,9 +254,9 @@ new #[Layout('layouts::account')] #[Title('Quote')] class extends Component {
                                 </p>
                                 @if ($item->product)
                                     <a href="{{ route('product.show', $item->product) }}" wire:navigate
-                                        class="truncate text-[13px] font-semibold text-ink transition-colors hover:text-brand-500">{{ $item->product_name }}</a>
+                                        class="line-clamp-2 text-[13px] font-semibold text-ink transition-colors hover:text-brand-500">{{ $item->product_name }}</a>
                                 @else
-                                    <p class="truncate text-[13px] font-semibold text-ink">{{ $item->product_name }}
+                                    <p class="line-clamp-2 text-[13px] font-semibold text-ink">{{ $item->product_name }}
                                     </p>
                                 @endif
                                 <p class="mt-0.5 text-[11px] text-ink-3">Qty: {{ $item->quantity }}</p>
@@ -442,8 +442,7 @@ new #[Layout('layouts::account')] #[Title('Quote')] class extends Component {
                             {{-- Dot --}}
                             <div @class([
                                 'relative z-10 flex size-9 shrink-0 items-center justify-center rounded-full transition-all',
-                                'bg-brand-500 text-white ring-4 ring-brand-500/20' => $isCurrent,
-                                'bg-brand-500 text-white' => $reached && !$isCurrent,
+                                'bg-brand-500 text-white' => $reached,
                                 'bg-zinc-50 border border-zinc-100 text-zinc-300' => !$reached,
                             ])>
                                 <flux:icon :name="$step['icon']" variant="mini" class="size-4.5" />
@@ -498,7 +497,7 @@ new #[Layout('layouts::account')] #[Title('Quote')] class extends Component {
                             <div class="relative flex gap-6 pb-0">
                                 @if ($isDeclined)
                                     <div
-                                        class="relative z-10 flex size-9 shrink-0 items-center justify-center rounded-full bg-red-50 text-red-500 ring-4 ring-red-50/50">
+                                        class="relative z-10 flex size-9 shrink-0 items-center justify-center rounded-full bg-red-50 text-red-500">
                                         <flux:icon.x-circle variant="mini" class="size-4.5" />
                                     </div>
                                     <div class="flex-1 pt-0.5">

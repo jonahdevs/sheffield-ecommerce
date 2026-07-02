@@ -585,7 +585,7 @@ new #[Layout('layouts::app')] #[Title('Order | Admin')] class extends Component
                                 @php $cancelledInjected = true; @endphp
                                 <li class="relative flex items-start gap-4 pb-8">
                                     <div class="absolute left-4 top-8 bottom-0 w-0.5 -translate-x-1/2 bg-zinc-200 dark:bg-zinc-700"></div>
-                                    <div class="relative z-10 flex size-8 shrink-0 items-center justify-center rounded-full bg-red-500 ring-4 ring-white dark:ring-zinc-900">
+                                    <div class="relative z-10 flex size-8 shrink-0 items-center justify-center rounded-full bg-red-500">
                                         <flux:icon.x-mark variant="solid" class="size-4 text-white" />
                                     </div>
                                     <div class="flex flex-1 flex-wrap items-start justify-between gap-x-4 pt-1">
@@ -617,16 +617,16 @@ new #[Layout('layouts::app')] #[Title('Order | Admin')] class extends Component
 
                                 {{-- Icon --}}
                                 @if ($isDone && ! $isCancelledOrder)
-                                    <div class="relative z-10 flex size-8 shrink-0 items-center justify-center rounded-full bg-emerald-500 ring-4 ring-white dark:ring-zinc-900">
+                                    <div class="relative z-10 flex size-8 shrink-0 items-center justify-center rounded-full bg-emerald-500">
                                         <flux:icon.check variant="solid" class="size-4 text-white" />
                                     </div>
                                 @elseif ($isDone && $isCancelledOrder)
                                     {{-- Completed before cancellation --}}
-                                    <div class="relative z-10 flex size-8 shrink-0 items-center justify-center rounded-full bg-emerald-500 ring-4 ring-white dark:ring-zinc-900">
+                                    <div class="relative z-10 flex size-8 shrink-0 items-center justify-center rounded-full bg-emerald-500">
                                         <flux:icon.check variant="solid" class="size-4 text-white" />
                                     </div>
                                 @else
-                                    <div class="relative z-10 flex size-8 shrink-0 items-center justify-center rounded-full bg-zinc-100 ring-4 ring-white dark:bg-zinc-800 dark:ring-zinc-900">
+                                    <div class="relative z-10 flex size-8 shrink-0 items-center justify-center rounded-full bg-zinc-100 dark:bg-zinc-800">
                                         <flux:icon :icon="$step['icon']" variant="solid" class="size-4 text-zinc-400 dark:text-zinc-500" />
                                     </div>
                                 @endif
@@ -664,7 +664,7 @@ new #[Layout('layouts::app')] #[Title('Order | Admin')] class extends Component
                         {{-- Cancelled at the very end if the order never progressed past PENDING --}}
                         @if ($isCancelledOrder && $cancelEntry && ! isset($cancelledInjected))
                             <li class="relative flex items-start gap-4 pb-8 last:pb-0">
-                                <div class="relative z-10 flex size-8 shrink-0 items-center justify-center rounded-full bg-red-500 ring-4 ring-white dark:ring-zinc-900">
+                                <div class="relative z-10 flex size-8 shrink-0 items-center justify-center rounded-full bg-red-500">
                                     <flux:icon.x-mark variant="solid" class="size-4 text-white" />
                                 </div>
                                 <div class="flex flex-1 flex-wrap items-start justify-between gap-x-4 pt-1">

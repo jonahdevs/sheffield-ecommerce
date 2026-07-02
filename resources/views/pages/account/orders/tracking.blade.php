@@ -144,8 +144,7 @@ new #[Layout('layouts::account')] #[Title('Order Tracking')] class extends Compo
                         {{-- Dot --}}
                         <div @class([
                             'relative z-10 flex size-9 shrink-0 items-center justify-center rounded-full transition-all',
-                            'bg-brand-500 text-white ring-4 ring-brand-500/20' => $isCurrent,
-                            'bg-brand-500 text-white' => $reached && ! $isCurrent,
+                            'bg-brand-500 text-white' => $reached,
                             'bg-zinc-50 border border-zinc-100 text-zinc-300' => ! $reached,
                         ])>
                             <flux:icon :name="$step['icon']" variant="mini" class="size-4.5" />
@@ -206,7 +205,7 @@ new #[Layout('layouts::account')] #[Title('Order Tracking')] class extends Compo
                         @php $cancelHistory = $histories->get('cancelled'); @endphp
                         <div class="relative flex gap-6 pb-0">
                             <div
-                                class="relative z-10 flex size-9 shrink-0 items-center justify-center rounded-full bg-red-50 text-red-500 ring-4 ring-red-50/50">
+                                class="relative z-10 flex size-9 shrink-0 items-center justify-center rounded-full bg-red-50 text-red-500">
                                 <flux:icon.x-circle variant="mini" class="size-4.5" />
                             </div>
                             <div class="flex-1 pt-0.5">

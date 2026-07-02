@@ -561,6 +561,19 @@ new #[Layout('layouts::app')] #[Title('Dashboard | Admin')] class extends Compon
             background: transparent;
             font: inherit;
         }
+
+        /* ApexCharts axis ticks and legend keys default to a dark ink that is
+           invisible on the dark card background — force a legible muted tone. */
+        .dark .apexcharts-xaxis-label,
+        .dark .apexcharts-yaxis-label,
+        .dark .apexcharts-xaxis-title text,
+        .dark .apexcharts-yaxis-title text {
+            fill: #94a3b8 !important;
+        }
+
+        .dark .apexcharts-legend-text {
+            color: #94a3b8 !important;
+        }
     </style>
 @endassets
 

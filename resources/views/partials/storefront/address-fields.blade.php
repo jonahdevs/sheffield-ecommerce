@@ -5,7 +5,7 @@
     <flux:error name="name" />
 </flux:field>
 
-<div class="grid grid-cols-2 gap-4">
+<div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
     <flux:field>
         <flux:label>Phone</flux:label>
         <x-phone-input wire:model="phone" placeholder="712 345 678" />

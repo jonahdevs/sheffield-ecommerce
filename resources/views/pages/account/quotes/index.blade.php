@@ -25,7 +25,7 @@ new #[Layout('layouts::account')] #[Title('Quotes')] class extends Component {
     public function quotes()
     {
         return auth()->user()->quotes()
-            ->select(['id', 'user_id', 'quote_number', 'title', 'status', 'total_cents', 'expires_at', 'created_at'])
+            ->select(['id', 'user_id', 'quote_number', 'status', 'total_cents', 'expires_at', 'created_at'])
             ->when($this->status === 'active', fn ($q) => $q->whereIn('status', ['draft', 'sent', 'awaiting_approval', 'approved']))
             ->when($this->status === 'rejected', fn ($q) => $q->whereIn('status', ['declined', 'expired']))
             ->latest()
@@ -104,8 +104,6 @@ new #[Layout('layouts::account')] #[Title('Quotes')] class extends Component {
                             class="cursor-pointer hover:bg-zinc-50 dark:hover:bg-zinc-800/40">
                             <flux:table.cell>
                                 <flux:text class="font-semibold text-ink">{{ $quote->quote_number }}</flux:text>
-                                <flux:text size="sm" class="mt-0.5 text-ink-4 line-clamp-1">{{ $quote->title }}
-                                </flux:text>
                             </flux:table.cell>
                             <flux:table.cell class="hidden sm:table-cell">
                                 <flux:text size="sm">{{ $quote->created_at->format('d M Y') }}</flux:text>

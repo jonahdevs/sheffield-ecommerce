@@ -219,7 +219,7 @@ new #[Layout('layouts::app')] #[Title('Delivery zones | Admin')] class extends C
         </flux:breadcrumbs>
     @endpush
 
-    <div class="flex items-center justify-between">
+    <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
             <flux:heading size="xl">Delivery zones</flux:heading>
             <flux:text class="mt-1">Circular areas you deliver to. A customer's map pin must fall inside an active zone.</flux:text>
@@ -230,9 +230,9 @@ new #[Layout('layouts::app')] #[Title('Delivery zones | Admin')] class extends C
     <flux:card class="mt-6 p-0 overflow-hidden">
 
         {{-- Toolbar --}}
-        <div class="flex items-center justify-between gap-4 border-b border-zinc-200 px-6 py-3 dark:border-zinc-700">
+        <div class="flex flex-col gap-3 border-b border-zinc-200 px-6 py-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4 dark:border-zinc-700">
             <flux:input wire:model.live.debounce.300ms="search" placeholder="Search name or county…"
-                icon="magnifying-glass" clearable class="max-w-xs" />
+                icon="magnifying-glass" clearable class="sm:max-w-xs" />
             <flux:select wire:model.live="filterStatus" class="w-36">
                 <flux:select.option value="">All statuses</flux:select.option>
                 <flux:select.option value="active">Active</flux:select.option>

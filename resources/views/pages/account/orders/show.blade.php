@@ -120,17 +120,17 @@ new #[Layout('layouts::account')] #[Title('Order')] class extends Component
 
                 <div class="flex flex-col divide-y divide-zinc-100 rounded border border-zinc-200">
                     @foreach ($order->items as $item)
-                        <div class="flex items-center gap-3.5 p-3.5" wire:key="item-{{ $item->id }}">
+                        <div class="flex items-start gap-3 p-3.5 sm:gap-3.5" wire:key="item-{{ $item->id }}">
 
                             {{-- Thumbnail --}}
                             @if ($item->product?->cover_url)
                                 <img
                                     src="{{ $item->product->cover_url }}"
                                     alt="{{ $item->product_name }}"
-                                    class="size-14 shrink-0 rounded object-contain"
+                                    class="size-12 shrink-0 rounded object-contain sm:size-14"
                                 />
                             @else
-                                <div class="flex size-14 shrink-0 items-center justify-center overflow-hidden rounded border border-zinc-100 bg-zinc-50">
+                                <div class="flex size-12 shrink-0 items-center justify-center overflow-hidden rounded border border-zinc-100 bg-zinc-50 sm:size-14">
                                     <flux:icon.photo variant="outline" class="size-7 text-zinc-200" />
                                 </div>
                             @endif
@@ -143,11 +143,11 @@ new #[Layout('layouts::account')] #[Title('Order')] class extends Component
                                 </p>
                                 @if ($item->product)
                                     <a href="{{ route('product.show', $item->product) }}" wire:navigate
-                                        class="truncate text-[13px] font-semibold text-ink transition-colors hover:text-brand-500">
+                                        class="line-clamp-2 text-[13px] font-semibold text-ink transition-colors hover:text-brand-500">
                                         {{ $item->product_name }}
                                     </a>
                                 @else
-                                    <p class="truncate text-[13px] font-semibold text-ink">{{ $item->product_name }}</p>
+                                    <p class="line-clamp-2 text-[13px] font-semibold text-ink">{{ $item->product_name }}</p>
                                 @endif
                                 <p class="mt-0.5 text-[11px] text-ink-3">Qty: {{ $item->quantity }}</p>
                                 @if ($order->hasMixedTaxRates() && (float) $item->tax_rate > 0)

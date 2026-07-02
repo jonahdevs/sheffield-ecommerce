@@ -264,7 +264,7 @@ new #[Layout('layouts::app')] #[Title('Delivery promotions | Admin')] class exte
         </flux:breadcrumbs>
     @endpush
 
-    <div class="flex items-center justify-between">
+    <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
             <flux:heading size="xl">Delivery promotions</flux:heading>
             <flux:text class="mt-1">Overrides applied on top of zone fees — e.g. a launch free-delivery offer.</flux:text>

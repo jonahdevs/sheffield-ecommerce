@@ -80,12 +80,12 @@ new #[Layout('layouts::account')] #[Title('My Account')] class extends Component
             ['icon' => 'star',          'label' => 'Pending Reviews', 'value' => $this->pendingReviewsCount, 'color' => 'text-emerald-500', 'bg' => 'bg-emerald-50'],
         ];
     @endphp
-    <div class="grid grid-cols-2 gap-3 sm:grid-cols-4">
+    <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
         @foreach ($kpis as $kpi)
             <flux:card class="p-5">
                 <div class="flex items-center justify-between">
                     <span class="text-[11px] font-bold uppercase tracking-wide text-ink-3">{{ $kpi['label'] }}</span>
-                    <div class="flex size-8 items-center justify-center rounded-md {{ $kpi['bg'] }}">
+                    <div class="flex size-8 shrink-0 items-center justify-center rounded-md {{ $kpi['bg'] }}">
                         <flux:icon :icon="$kpi['icon']" variant="outline" class="size-4 {{ $kpi['color'] }}" />
                     </div>
                 </div>

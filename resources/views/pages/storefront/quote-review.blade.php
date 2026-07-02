@@ -101,7 +101,6 @@ new #[Layout('layouts::storefront')] #[Title('Review Your Quote')] class extends
                 <flux:badge :color="$quote->status->badgeColor()" size="sm">{{ $quote->status->label() }}</flux:badge>
             </div>
             <p class="mt-1 text-sm text-ink-3">
-                {{ $quote->title }}
                 @if ($quote->expires_at)
                     &middot;
                     <span @class(['text-red-500' => $quote->expires_at->isPast()])>
