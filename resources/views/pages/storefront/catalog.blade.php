@@ -329,7 +329,7 @@ new #[Layout('layouts::storefront')] #[Title('Shop')] class extends Component {
                                 </span>
                             </button>
                             <div x-show="open" class="mt-3">
-                                <flux:checkbox wire:model.live="inStockOnly" label="In stock — ships now" />
+                                <flux:checkbox wire:model.live="inStockOnly" label="In stock" />
                             </div>
                         </div>
 
@@ -440,7 +440,7 @@ new #[Layout('layouts::storefront')] #[Title('Shop')] class extends Component {
                             </span>
                         </button>
                         <div x-show="open" class="mt-3">
-                            <flux:checkbox wire:model.live="inStockOnly" label="In stock — ships now" />
+                            <flux:checkbox wire:model.live="inStockOnly" label="In stock" />
                         </div>
                     </div>
 

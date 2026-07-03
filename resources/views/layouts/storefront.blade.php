@@ -2,6 +2,13 @@
     $branding = app(\App\Settings\BrandingSettings::class);
     $analytics = app(\App\Settings\AnalyticsSettings::class);
     $legal = app(\App\Settings\LegalSettings::class);
+
+    // Mirrors the gate in partials/storefront/analytics.blade.php: the GTM
+    // noscript fallback can't obey Consent Mode, so it only renders once the
+    // visitor has opted in (or the banner is disabled entirely).
+    $cookieConsentGranted = ! $legal->cookie_consent_enabled
+        || request()->cookie('cookie_consent') === 'accepted';
+
     $storeName = $branding->store_name ?: config('app.name', 'Sheffield');
     $headerLogo = $branding->logo_path
         ? \Illuminate\Support\Facades\Storage::disk('public')->url($branding->logo_path)
@@ -30,10 +37,14 @@
 
 <head>
     @include('partials.head')
+
+    {{-- Analytics (GA4 / GTM / Meta Pixel) — storefront only, so admin, auth and
+         print pages never send internal traffic to Google/Meta. --}}
+    @include('partials.storefront.analytics')
 </head>
 
 <body class="min-h-screen bg-white text-ink antialiased">
-    @if (filled($analytics->gtm_id))
+    @if (filled($analytics->gtm_id) && $cookieConsentGranted)
         <noscript><iframe src="https://www.googletagmanager.com/ns.html?id={{ $analytics->gtm_id }}"
                 height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     @endif

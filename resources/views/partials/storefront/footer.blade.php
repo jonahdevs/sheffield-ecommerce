@@ -16,6 +16,7 @@
     $business = app(\App\Settings\BusinessSettings::class);
     $branding = app(\App\Settings\BrandingSettings::class);
     $social = app(\App\Settings\SocialSettings::class);
+    $legal = app(\App\Settings\LegalSettings::class);
 
     // Fall back to the founding defaults until an admin fills the settings.
     $storeName = $branding->store_name ?: config('app.name', 'Sheffield');
@@ -156,6 +157,10 @@
                     wire:navigate>Terms</a>
                 <a href="{{ route('page.show', 'privacy-policy') }}" class="hover:text-white" wire:navigate>Privacy</a>
                 <a href="{{ route('page.show', 'cookie-policy') }}" class="hover:text-white" wire:navigate>Cookies</a>
+                @if ($legal->cookie_consent_enabled)
+                    <button type="button" x-data x-on:click="$dispatch('open-cookie-settings')"
+                        class="hover:text-white">Cookie settings</button>
+                @endif
             </div>
             <div class="flex items-center gap-4">
                 <span>Authorised distributor</span>

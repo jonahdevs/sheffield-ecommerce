@@ -38,7 +38,9 @@ return new class extends SettingsMigration
         // LEGAL
         // ==================================================
         // Policy content lives in CMS Pages (App\Models\Page); this is just the
-        // cookie-banner behaviour toggle.
-        $this->migrator->add('legal.cookie_consent_enabled', false);
+        // cookie-banner behaviour toggle. Defaults to on because analytics and
+        // marketing scripts load ungated when it is off — turning it off is an
+        // explicit owner decision, not the out-of-the-box state.
+        $this->migrator->add('legal.cookie_consent_enabled', true);
     }
 };

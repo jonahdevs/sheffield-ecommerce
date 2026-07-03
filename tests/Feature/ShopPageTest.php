@@ -16,7 +16,7 @@ it('renders the shop page', function () {
     $response->assertOk();
     $response->assertSee('Catalog');
     $response->assertSee('Most popular');
-    $response->assertSee('In stock — ships now', escape: false);
+    $response->assertSee('In stock', escape: false);
 });
 
 it('filters by selected brand', function () {

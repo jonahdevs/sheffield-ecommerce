@@ -35,13 +35,60 @@ it('injects the GA4 tag only when a measurement id is set', function () {
 });
 
 it('shows the cookie banner only when enabled', function () {
-    $this->get(route('home'))->assertOk()->assertDontSee('cookie-consent');
-
-    $legal = app(LegalSettings::class);
-    $legal->cookie_consent_enabled = true;
-    $legal->save();
-
+    // Enabled by default (see the website settings migration).
     $this->get(route('home'))->assertOk()->assertSee('cookie-consent');
+
+    app(LegalSettings::class)->fill(['cookie_consent_enabled' => false])->save();
+
+    $this->get(route('home'))->assertOk()->assertDontSee('cookie-consent');
+});
+
+it('keeps analytics off non-storefront pages', function () {
+    app(AnalyticsSettings::class)->fill(['ga4_id' => 'G-TEST12345', 'gtm_id' => 'GTM-TEST123'])->save();
+
+    $this->get(route('home'))->assertOk()->assertSee('googletagmanager.com', false);
+
+    // Auth (and admin/print) layouts share partials/head but must not track.
+    $this->get(route('login'))->assertOk()->assertDontSee('googletagmanager.com', false);
+});
+
+it('defaults Google consent to denied until the visitor accepts', function () {
+    app(AnalyticsSettings::class)->fill(['ga4_id' => 'G-TEST12345'])->save();
+    app(LegalSettings::class)->fill(['cookie_consent_enabled' => true])->save();
+
+    // First visit, no consent cookie → Consent Mode v2 defaults to denied.
+    $this->get(route('home'))
+        ->assertOk()
+        ->assertSee("analytics_storage: 'denied'", false);
+
+    // Returning visitor who accepted → storage granted server-side.
+    $this->withUnencryptedCookie('cookie_consent', 'accepted')
+        ->get(route('home'))
+        ->assertOk()
+        ->assertSee("analytics_storage: 'granted'", false);
+});
+
+it('loads the Meta pixel only after consent when the banner is enabled', function () {
+    app(AnalyticsSettings::class)->fill(['meta_pixel_id' => '1234567890'])->save();
+    app(LegalSettings::class)->fill(['cookie_consent_enabled' => true])->save();
+
+    // The noscript beacon only renders once consent is granted.
+    $this->get(route('home'))->assertOk()->assertDontSee('facebook.com/tr?id=', false);
+
+    $this->withUnencryptedCookie('cookie_consent', 'accepted')
+        ->get(route('home'))
+        ->assertOk()
+        ->assertSee('facebook.com/tr?id=1234567890', false);
+});
+
+it('does not gate tracking when the consent banner is disabled', function () {
+    app(AnalyticsSettings::class)->fill(['ga4_id' => 'G-TEST12345', 'meta_pixel_id' => '1234567890'])->save();
+    app(LegalSettings::class)->fill(['cookie_consent_enabled' => false])->save();
+
+    $this->get(route('home'))
+        ->assertOk()
+        ->assertSee('facebook.com/tr?id=1234567890', false)
+        ->assertSee("analytics_storage: 'granted'", false);
 });
 
 it('uses the default meta description as a fallback', function () {

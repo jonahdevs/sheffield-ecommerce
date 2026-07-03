@@ -33,6 +33,12 @@ return Application::configure(basePath: dirname(__DIR__))
             'customer' => EnsureIsCustomer::class,
         ]);
 
+        // Set by the cookie banner via JS, so it can't be encrypted; the server
+        // reads it to decide whether tracking scripts may render.
+        $middleware->encryptCookies(except: [
+            'cookie_consent',
+        ]);
+
         // Payment provider webhooks are server-to-server and carry no CSRF token.
         $middleware->validateCsrfTokens(except: [
             'api/webhooks/mpesa',

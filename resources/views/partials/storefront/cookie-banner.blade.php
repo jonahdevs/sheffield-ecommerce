@@ -1,7 +1,37 @@
-{{-- Cookie consent notice — shown until accepted or declined (stored in localStorage). --}}
+{{-- Cookie consent notice — shown until accepted or declined. The choice is kept
+     in an unencrypted `cookie_consent` cookie (12 months) so the server can skip
+     rendering tracking scripts; see partials/storefront/analytics.blade.php.
+     Reopens via a window `open-cookie-settings` event (footer "Cookie settings"). --}}
 <div
-    x-data="{ show: false }"
-    x-init="show = ! localStorage.getItem('cookie-consent')"
+    x-data="{
+        show: false,
+        setConsent(value) {
+            document.cookie = 'cookie_consent=' + value + ';path=/;max-age=31536000;SameSite=Lax';
+            this.show = false;
+        },
+        accept() {
+            this.setConsent('accepted');
+            window.grantCookieConsent?.();
+        },
+        decline() {
+            const withdrawing = document.cookie.includes('cookie_consent=accepted');
+            this.setConsent('declined');
+            if (withdrawing) {
+                // Trackers from the earlier accept are already running: tell
+                // Google to stop, then reload so nothing is re-rendered.
+                window.revokeCookieConsent?.();
+                window.location.reload();
+            }
+        },
+    }"
+    x-init="
+        // Migrate the choice visitors made when it lived in localStorage.
+        if (! document.cookie.includes('cookie_consent=') && localStorage.getItem('cookie-consent')) {
+            setConsent(localStorage.getItem('cookie-consent'));
+        }
+        show = ! document.cookie.includes('cookie_consent=');
+    "
+    x-on:open-cookie-settings.window="show = true"
     x-show="show"
     x-cloak
     x-transition:enter="transition ease-out duration-300"
@@ -36,14 +66,14 @@
             size="sm"
             variant="ghost"
             class="flex-1"
-            x-on:click="localStorage.setItem('cookie-consent', 'declined'); show = false">
+            x-on:click="decline()">
             No, thank you
         </flux:button>
         <flux:button
             size="sm"
             variant="primary"
             class="flex-1"
-            x-on:click="localStorage.setItem('cookie-consent', 'accepted'); show = false">
+            x-on:click="accept()">
             Sounds Good!
         </flux:button>
     </div>

@@ -6,9 +6,6 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-{{-- Analytics (GA4 / GTM / Meta Pixel) — loaded as high in <head> as possible. --}}
-@include('partials.storefront.analytics')
-
 {{-- Bridge per-request data into SEOTools so a single page-level title flows
      through to <title>, OpenGraph, Twitter and JSON-LD; also resolves the current
      absolute URL and default OG image, and applies store-wide SEO settings. --}}
