@@ -1,0 +1,28 @@
+{
+    "id": "/",
+    "name": "Sheffield Steel Systems",
+    "short_name": "Sheffield",
+    "description": "Sheffield Steel Systems — food processing and steel fabrication equipment.",
+    "lang": "en",
+    "dir": "ltr",
+    "scope": "/",
+    "orientation": "portrait-primary",
+    "icons": [
+        {
+            "src": "/android-chrome-192x192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "/android-chrome-512x512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any maskable"
+        }
+    ],
+    "theme_color": "#c12534",
+    "background_color": "#ffffff",
+    "display": "standalone",
+    "start_url": "/"
+}

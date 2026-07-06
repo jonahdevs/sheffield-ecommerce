@@ -161,6 +161,21 @@
                     <button type="button" x-data x-on:click="$dispatch('open-cookie-settings')"
                         class="hover:text-white">Cookie settings</button>
                 @endif
+                <button type="button" x-data="{ show: !! window.deferredInstallPrompt }" x-show="show" x-cloak
+                    style="display:none"
+                    x-init="
+                        window.addEventListener('pwa:installable', () => show = true);
+                        window.addEventListener('pwa:installed', () => show = false);
+                    "
+                    x-on:click="
+                        const prompt = window.deferredInstallPrompt;
+                        if (! prompt) return;
+                        prompt.prompt();
+                        prompt.userChoice.finally(() => { window.deferredInstallPrompt = null; show = false; });
+                    "
+                    class="inline-flex items-center gap-1.5 hover:text-white">
+                    <flux:icon.arrow-down-tray variant="micro" class="size-3.5" /> Install app
+                </button>
             </div>
             <div class="flex items-center gap-4">
                 <span>Authorised distributor</span>

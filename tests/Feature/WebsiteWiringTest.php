@@ -24,6 +24,54 @@ it('renders configured social links and contact details in the footer', function
         ->assertSee('sales@sheffield.test');
 });
 
+it('renders the full favicon set and web app manifest in the head', function () {
+    $this->get(route('home'))
+        ->assertOk()
+        ->assertSee('sizes="32x32" href="/favicon-32x32.png"', false)
+        ->assertSee('sizes="16x16" href="/favicon-16x16.png"', false)
+        ->assertSee('href="/favicon.svg"', false)
+        ->assertSee('rel="apple-touch-icon" href="/apple-touch-icon.png"', false)
+        ->assertSee('rel="manifest" href="/site.webmanifest"', false)
+        ->assertSee('name="theme-color"', false);
+});
+
+it('serves the web app manifest with icon references', function () {
+    expect(file_get_contents(public_path('site.webmanifest')))
+        ->toContain('/android-chrome-192x192.png')
+        ->toContain('/android-chrome-512x512.png');
+});
+
+it('ships the PWA service worker, offline fallback and registration', function () {
+    // Manifest is a valid installable manifest (name + 192/512 icons + standalone).
+    $manifest = json_decode(file_get_contents(public_path('site.webmanifest')), true);
+    expect($manifest)
+        ->toHaveKeys(['name', 'start_url', 'display', 'icons'])
+        ->and($manifest['display'])->toBe('standalone')
+        ->and(collect($manifest['icons'])->pluck('sizes'))->toContain('192x192', '512x512');
+
+    // Service worker precaches the offline page and skips authenticated areas.
+    $sw = file_get_contents(public_path('sw.js'));
+    expect($sw)
+        ->toContain("'/offline.html'")
+        ->toContain("'/admin'")
+        ->toContain("'/account'");
+
+    // Offline fallback exists and is self-contained.
+    expect(file_get_contents(public_path('offline.html')))->toContain("You're offline");
+
+    // The app registers the worker (production-guarded) and captures the install prompt.
+    expect(file_get_contents(resource_path('js/app.js')))
+        ->toContain("navigator.serviceWorker.register('/sw.js')")
+        ->toContain("'beforeinstallprompt'");
+});
+
+it('renders the install-app button in the storefront footer', function () {
+    $this->get(route('home'))
+        ->assertOk()
+        ->assertSee('Install app')
+        ->assertSee('deferredInstallPrompt', false);
+});
+
 it('injects the GA4 tag only when a measurement id is set', function () {
     $this->get(route('home'))->assertOk()->assertDontSee('googletagmanager.com/gtag');
 

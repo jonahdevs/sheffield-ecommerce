@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>You're offline — Sheffield Steel Systems</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <style>
+        :root { color-scheme: light; }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            min-height: 100dvh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+            font-family: 'Public Sans', ui-sans-serif, system-ui, -apple-system, sans-serif;
+            background: #f8f7f6;
+            color: #1c1917;
+        }
+        .card {
+            width: 100%;
+            max-width: 26rem;
+            text-align: center;
+            background: #fff;
+            border: 1px solid #e7e5e4;
+            border-radius: 0.5rem;
+            padding: 2.5rem 2rem;
+        }
+        .logo { width: 64px; height: 64px; margin: 0 auto 1.25rem; }
+        h1 { font-size: 1.375rem; margin: 0 0 0.5rem; }
+        p { margin: 0 0 1.5rem; color: #57534e; line-height: 1.5; }
+        button {
+            appearance: none;
+            border: 0;
+            cursor: pointer;
+            font: inherit;
+            font-weight: 600;
+            color: #fff;
+            background: #c12534;
+            padding: 0.65rem 1.5rem;
+            border-radius: 0.5rem;
+        }
+        button:hover { background: #a81f2c; }
+        @media (prefers-color-scheme: dark) {
+            body { background: #0c0a09; color: #fafaf9; }
+            .card { background: #1c1917; border-color: #292524; }
+            p { color: #a8a29e; }
+        }
+    </style>
+</head>
+<body>
+    <main class="card">
+        <img class="logo" src="/favicon.svg" alt="Sheffield Steel Systems">
+        <h1>You're offline</h1>
+        <p>We couldn't reach the network. Check your connection and try again — any pages you've already visited will still load.</p>
+        <button type="button" onclick="location.reload()">Try again</button>
+    </main>
+</body>
+</html>
