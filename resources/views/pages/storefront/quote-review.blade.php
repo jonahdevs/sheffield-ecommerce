@@ -91,7 +91,8 @@ new #[Layout('layouts::storefront')] #[Title('Review Your Quote')] class extends
 }; ?>
 
 <div class="page-fade">
-    <div class="shell pt-4 pb-20">
+    {{-- pb-8 + the newsletter section's mt-12 = a 5rem gap, matching the page rhythm --}}
+    <div class="shell pt-4 pb-8">
 
     {{-- Page header --}}
     <div class="mb-6 flex flex-wrap items-start justify-between gap-4">

@@ -47,6 +47,39 @@ it('filters by selected brand', function () {
         ->assertDontSee('Bananas');
 });
 
+it('filters the catalog by the nav search handoff (?q=)', function () {
+    $brandA = Brand::create(['name' => 'Rational', 'slug' => 'rational', 'is_active' => true, 'sort_order' => 1]);
+    $brandB = Brand::create(['name' => 'Electrolux', 'slug' => 'electrolux', 'is_active' => true, 'sort_order' => 2]);
+    $cat = Category::create(['name' => 'Cooking', 'slug' => 'cooking', 'status' => CategoryStatus::ACTIVE, 'sort_order' => 1]);
+
+    Product::create([
+        'name' => 'Combi Oven', 'slug' => 'combi-oven', 'sku' => 'CO-100', 'model_number' => 'ICP-61',
+        'brand_id' => $brandA->id, 'primary_category_id' => $cat->id,
+        'type' => 'simple', 'price' => 10000, 'stock_status' => StockStatus::IN_STOCK->value,
+        'visibility' => ProductVisibility::VISIBLE->value, 'status' => ProductStatus::PUBLISHED->value,
+    ]);
+    Product::create([
+        'name' => 'Dough Mixer', 'slug' => 'dough-mixer', 'sku' => 'DM-200', 'model_number' => 'MX-500',
+        'brand_id' => $brandB->id, 'primary_category_id' => $cat->id,
+        'type' => 'simple', 'price' => 20000, 'stock_status' => StockStatus::IN_STOCK->value,
+        'visibility' => ProductVisibility::VISIBLE->value, 'status' => ProductStatus::PUBLISHED->value,
+    ]);
+
+    // The nav search hands off via /catalog?q=… — the page must pick it up from the URL.
+    Livewire::withQueryParams(['q' => 'Combi'])
+        ->test('pages::storefront.catalog')
+        ->assertSet('q', 'Combi')
+        ->assertSee('Combi Oven')
+        ->assertDontSee('Dough Mixer');
+
+    // SKU, model number and brand name all match too.
+    Livewire::test('pages::storefront.catalog')
+        ->set('q', 'DM-200')->assertSee('Dough Mixer')->assertDontSee('Combi Oven')
+        ->set('q', 'ICP-61')->assertSee('Combi Oven')->assertDontSee('Dough Mixer')
+        ->set('q', 'Electrolux')->assertSee('Dough Mixer')->assertDontSee('Combi Oven')
+        ->set('q', '')->assertSee('Combi Oven')->assertSee('Dough Mixer');
+});
+
 it('filters by price min and max bounds', function () {
     $brand = Brand::create(['name' => 'PriceBrand', 'slug' => 'price-brand', 'is_active' => true, 'sort_order' => 1]);
     $cat = Category::create(['name' => 'PriceCat', 'slug' => 'price-cat', 'status' => CategoryStatus::ACTIVE, 'sort_order' => 1]);
@@ -130,15 +163,24 @@ it('excludes products with only pending reviews from the rating filter', functio
         ->assertDontSee('Pending Review Mixer');
 });
 
-it('lists only active categories in the catalog filter facet', function () {
-    Category::create(['name' => 'Visible Range', 'slug' => 'visible-range', 'status' => CategoryStatus::ACTIVE, 'sort_order' => 1]);
+it('lists only active categories with products in the catalog filter facet', function () {
+    $visible = Category::create(['name' => 'Visible Range', 'slug' => 'visible-range', 'status' => CategoryStatus::ACTIVE, 'sort_order' => 1]);
     Category::create(['name' => 'Hidden Draft Cat', 'slug' => 'hidden-draft-cat', 'status' => CategoryStatus::DRAFT, 'sort_order' => 2]);
     Category::create(['name' => 'Hidden Inactive Cat', 'slug' => 'hidden-inactive-cat', 'status' => CategoryStatus::INACTIVE, 'sort_order' => 3]);
+    Category::create(['name' => 'Empty Range', 'slug' => 'empty-range', 'status' => CategoryStatus::ACTIVE, 'sort_order' => 4]);
+
+    Product::create([
+        'name' => 'Range Cooker', 'slug' => 'range-cooker', 'sku' => 'RC-1',
+        'primary_category_id' => $visible->id, 'type' => 'simple', 'price' => 100000,
+        'stock_status' => StockStatus::IN_STOCK->value, 'visibility' => ProductVisibility::VISIBLE->value,
+        'status' => ProductStatus::PUBLISHED->value,
+    ]);
 
     Livewire::test('pages::storefront.catalog')
         ->assertSee('Visible Range')
         ->assertDontSee('Hidden Draft Cat')
-        ->assertDontSee('Hidden Inactive Cat');
+        ->assertDontSee('Hidden Inactive Cat')
+        ->assertDontSee('Empty Range');
 });
 
 it('shows only active categories in search results', function () {
@@ -180,6 +222,51 @@ it('rolls up products from child categories on a parent category page', function
     Livewire::test('pages::storefront.category', ['category' => $parent])
         ->assertSee('Direct Chiller')
         ->assertSee('Child Chiller');
+});
+
+it('hides brands without products from the catalog filter facet', function () {
+    $stocked = Brand::create(['name' => 'Stocked Brand', 'slug' => 'stocked-brand', 'is_active' => true, 'sort_order' => 1]);
+    Brand::create(['name' => 'Empty Brand', 'slug' => 'empty-brand', 'is_active' => true, 'sort_order' => 2]);
+    $cat = Category::create(['name' => 'FacetCat', 'slug' => 'facet-cat', 'status' => CategoryStatus::ACTIVE, 'sort_order' => 1]);
+
+    Product::create([
+        'name' => 'Facet Fryer', 'slug' => 'facet-fryer', 'sku' => 'FF-1',
+        'brand_id' => $stocked->id, 'primary_category_id' => $cat->id,
+        'type' => 'simple', 'price' => 100000, 'stock_status' => StockStatus::IN_STOCK->value,
+        'visibility' => ProductVisibility::VISIBLE->value, 'status' => ProductStatus::PUBLISHED->value,
+    ]);
+
+    Livewire::test('pages::storefront.catalog')
+        ->assertSee('Stocked Brand')
+        ->assertDontSee('Empty Brand');
+});
+
+it('hides empty child categories from the category-page filter facet', function () {
+    $parent = Category::create(['name' => 'Healthcare', 'slug' => 'healthcare', 'status' => CategoryStatus::ACTIVE, 'sort_order' => 1]);
+    $stocked = Category::create(['name' => 'Sluice Room', 'slug' => 'sluice-room', 'parent_id' => $parent->id, 'status' => CategoryStatus::ACTIVE, 'sort_order' => 1]);
+    Category::create(['name' => 'Empty Ward', 'slug' => 'empty-ward', 'parent_id' => $parent->id, 'status' => CategoryStatus::ACTIVE, 'sort_order' => 2]);
+
+    // A grandchild's product must keep its (directly empty) parent visible.
+    $deep = Category::create(['name' => 'Deep Section', 'slug' => 'deep-section', 'parent_id' => $parent->id, 'status' => CategoryStatus::ACTIVE, 'sort_order' => 3]);
+    $grandchild = Category::create(['name' => 'Deep Leaf', 'slug' => 'deep-leaf', 'parent_id' => $deep->id, 'status' => CategoryStatus::ACTIVE, 'sort_order' => 1]);
+
+    Product::create([
+        'name' => 'Bedpan Washer', 'slug' => 'bedpan-washer', 'sku' => 'HC-1',
+        'primary_category_id' => $stocked->id, 'type' => 'simple', 'price' => 100000,
+        'stock_status' => StockStatus::IN_STOCK->value, 'visibility' => ProductVisibility::VISIBLE->value,
+        'status' => ProductStatus::PUBLISHED->value,
+    ]);
+    Product::create([
+        'name' => 'Deep Autoclave', 'slug' => 'deep-autoclave', 'sku' => 'HC-2',
+        'primary_category_id' => $grandchild->id, 'type' => 'simple', 'price' => 100000,
+        'stock_status' => StockStatus::IN_STOCK->value, 'visibility' => ProductVisibility::VISIBLE->value,
+        'status' => ProductStatus::PUBLISHED->value,
+    ]);
+
+    Livewire::test('pages::storefront.category', ['category' => $parent])
+        ->assertSee('Sluice Room')
+        ->assertSee('Deep Section')
+        ->assertDontSee('Empty Ward');
 });
 
 it('narrows the listing by a child-category filter', function () {

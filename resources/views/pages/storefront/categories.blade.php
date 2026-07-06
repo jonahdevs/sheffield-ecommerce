@@ -38,10 +38,11 @@ new #[Layout('layouts::storefront')] #[Title('All Categories')] class extends Co
 
 <div class="page-fade">
 
-    <div class="shell pt-4 pb-20">
+    {{-- pb-8 + the newsletter section's mt-12 = a 5rem gap, matching the page rhythm --}}
+    <div class="shell pt-4 pb-8">
 
         {{-- Breadcrumb --}}
-        <flux:breadcrumbs class="mb-4">
+        <flux:breadcrumbs class="mb-4 border-b border-zinc-200 pb-3">
             <flux:breadcrumbs.item :href="route('home')" wire:navigate>Home</flux:breadcrumbs.item>
             <flux:breadcrumbs.item>Categories</flux:breadcrumbs.item>
         </flux:breadcrumbs>

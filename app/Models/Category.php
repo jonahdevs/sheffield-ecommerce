@@ -116,6 +116,12 @@ class Category extends Model implements HasMedia
         return $this->belongsToMany(Product::class)->withPivot('sort_order');
     }
 
+    /** Products that name this category as their primary category. */
+    public function primaryProducts(): HasMany
+    {
+        return $this->hasMany(Product::class, 'primary_category_id');
+    }
+
     // ==================================================
     // ACCESSORS
     // ==================================================

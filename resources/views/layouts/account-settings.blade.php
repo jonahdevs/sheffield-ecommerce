@@ -1,6 +1,9 @@
 <x-layouts::storefront :title="$title ?? null">
-    <div class="shell pt-4 pb-10">
-        @stack('breadcrumbs')
+    {{-- no pb: the newsletter section's own mt-12 provides the gap --}}
+    <div class="shell pt-4">
+        <div class="border-b border-zinc-200 pb-3">
+            @stack('breadcrumbs')
+        </div>
         <div class="mt-6 flex flex-col gap-8 lg:flex-row lg:items-start">
 
             {{-- Settings sidebar --}}

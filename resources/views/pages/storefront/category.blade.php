@@ -167,7 +167,23 @@ new #[Layout('layouts::storefront')] class extends Component {
     #[Computed]
     public function childCategories(): Collection
     {
-        return Category::query()->where('parent_id', $this->category->id)->where('status', CategoryStatus::ACTIVE)->orderBy('sort_order')->orderBy('name')->get();
+        // Hide children whose whole subtree holds no catalog items — ticking
+        // such a checkbox could only ever produce an empty listing.
+        return Category::query()
+            ->where('parent_id', $this->category->id)
+            ->where('status', CategoryStatus::ACTIVE)
+            ->orderBy('sort_order')
+            ->orderBy('name')
+            ->get()
+            ->filter(fn(Category $child) => Product::query()
+                ->published()
+                ->visibleInCatalog()
+                ->where(function ($q) use ($child) {
+                    $ids = $this->subtreeIds((int) $child->id);
+                    $q->whereIn('primary_category_id', $ids)->orWhereHas('categories', fn($q2) => $q2->whereIn('categories.id', $ids));
+                })
+                ->exists())
+            ->values();
     }
 
     /**
@@ -251,7 +267,7 @@ new #[Layout('layouts::storefront')] class extends Component {
         return Brand::query()
             ->where('is_active', true)
             ->whereHas('products', function ($q) {
-                $q->where('visibility', 'visible')->where(function ($q2) {
+                $q->published()->visibleInCatalog()->where(function ($q2) {
                     $ids = $this->fullSubtreeIds;
                     $q2->whereIn('primary_category_id', $ids)->orWhereHas('categories', fn($q3) => $q3->whereIn('categories.id', $ids));
                 });
@@ -269,12 +285,14 @@ new #[Layout('layouts::storefront')] class extends Component {
 
 <div class="page-fade">
     {{-- Breadcrumb --}}
-    <div class="shell py-3">
-        <flux:breadcrumbs>
-            <flux:breadcrumbs.item :href="route('home')" wire:navigate>Home</flux:breadcrumbs.item>
-            <flux:breadcrumbs.item :href="route('categories.index')" wire:navigate>Categories</flux:breadcrumbs.item>
-            <flux:breadcrumbs.item>{{ $category->name }}</flux:breadcrumbs.item>
-        </flux:breadcrumbs>
+    <div class="border-b border-zinc-200">
+        <div class="shell py-3">
+            <flux:breadcrumbs>
+                <flux:breadcrumbs.item :href="route('home')" wire:navigate>Home</flux:breadcrumbs.item>
+                <flux:breadcrumbs.item :href="route('categories.index')" wire:navigate>Categories</flux:breadcrumbs.item>
+                <flux:breadcrumbs.item>{{ $category->name }}</flux:breadcrumbs.item>
+            </flux:breadcrumbs>
+        </div>
     </div>
 
     {{-- Category hero --}}
@@ -315,7 +333,8 @@ new #[Layout('layouts::storefront')] class extends Component {
         </div>
     </div>
 
-    <div class="shell pt-4 pb-20">
+    {{-- pb-8 + the newsletter section's mt-12 = a 5rem gap, matching the page rhythm --}}
+    <div class="shell pt-4 pb-8">
         {{-- Mobile filter drawer (teleported to body) --}}
         <template x-teleport="body">
             <div x-show="$wire.showFilters" x-transition:enter="transition ease-out duration-300"
@@ -555,8 +574,8 @@ new #[Layout('layouts::storefront')] class extends Component {
                             <div x-show="open" x-cloak class="mt-3">
                                 <div class="scrollbar-hover flex max-h-64 flex-col gap-2 overflow-y-auto pr-1">
                                     @foreach ($this->brandsList as $brand)
-                                        <flux:checkbox wire:model.live="selectedBrands"
-                                            value="{{ $brand->id }}" :label="$brand->name" />
+                                        <flux:checkbox wire:model.live="selectedBrands" value="{{ $brand->id }}"
+                                            :label="$brand->name" />
                                     @endforeach
                                 </div>
                             </div>
@@ -635,7 +654,7 @@ new #[Layout('layouts::storefront')] class extends Component {
                     </div>
                 @else
                     <div
-                        class="grid grid-cols-1 gap-3.5 @xs:grid-cols-2 @md:grid-cols-3 @2xl:grid-cols-4 @4xl:grid-cols-5 @6xl:grid-cols-6">
+                        class="grid grid-cols-1 gap-3.5 @xs:grid-cols-2 @md:grid-cols-3 @2xl:grid-cols-4 @4xl:grid-cols-5 @7xl:grid-cols-6">
                         @foreach ($this->products as $product)
                             <x-storefront.product-card :product="$product" wire:key="prod-{{ $product->id }}" />
                         @endforeach

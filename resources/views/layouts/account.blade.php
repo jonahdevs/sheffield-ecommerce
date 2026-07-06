@@ -1,11 +1,12 @@
 <x-layouts::storefront :title="$title ?? null">
     {{-- Breadcrumb --}}
-    <div class="bg-surface-sunken">
+    <div class="border-b border-zinc-200 bg-surface-sunken">
         <div class="shell py-3">
             @stack('breadcrumbs')
         </div>
     </div>
-    <div class="shell pt-6 pb-10">
+    {{-- no pb: the newsletter section's own mt-12 provides the gap --}}
+    <div class="shell pt-6">
         <div class="flex flex-col gap-8 lg:flex-row lg:items-start">
 
             {{-- Sidebar --}}

@@ -179,7 +179,7 @@ new #[Layout('layouts::storefront')] #[Title('Contact & Showrooms')] class exten
     @include('partials.storefront.showroom-map-scripts')
 
     {{-- Breadcrumb --}}
-    <div class="bg-surface-sunken">
+    <div class="border-b border-zinc-200 bg-surface-sunken">
         <div class="shell py-3">
             <flux:breadcrumbs>
                 <flux:breadcrumbs.item :href="route('home')" wire:navigate>Home</flux:breadcrumbs.item>
@@ -398,7 +398,8 @@ new #[Layout('layouts::storefront')] #[Title('Contact & Showrooms')] class exten
     </section>
 
     {{-- ───────── Service highlights ───────── --}}
-    <section class="shell pb-12 lg:pb-14">
+    {{-- pb-8 + the newsletter section's mt-12 = a 5rem gap, matching the page rhythm --}}
+    <section class="shell pb-8">
         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
             @foreach ($features as $feature)
                 <div class="flex items-center gap-3.5 rounded-lg border border-line bg-surface px-5 py-5">

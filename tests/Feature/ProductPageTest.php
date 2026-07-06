@@ -261,6 +261,15 @@ it('picks related products once and keeps them stable across round-trips', funct
     expect($component->get('relatedIds'))->toBe($firstPick);
 });
 
+it('shows no related products when the product has no primary category', function () {
+    makeProduct(['slug' => 'other-product']);
+    $product = makeProduct(['slug' => 'uncategorised', 'primary_category_id' => null]);
+
+    $ids = Livewire::test('pages::storefront.product', ['product' => $product])->get('relatedIds');
+
+    expect($ids)->toBeEmpty();
+});
+
 it('excludes self, out-of-stock, price-less and hidden products from related', function () {
     $product = makeProduct(['slug' => 'main']);
     $visible = makeProduct(['slug' => 'rel-visible']);

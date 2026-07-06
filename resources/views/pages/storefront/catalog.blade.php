@@ -69,6 +69,10 @@ new #[Layout('layouts::storefront')] #[Title('Shop')] class extends Component {
     #[Url(as: 'arrivals', history: true)]
     public bool $newArrivalsOnly = false;
 
+    /** Free-text search term handed off from the nav search ("?q="). */
+    #[Url(history: true)]
+    public string $q = '';
+
     public function updating(string $prop): void
     {
         $this->perPage = 24;
@@ -83,7 +87,7 @@ new #[Layout('layouts::storefront')] #[Title('Shop')] class extends Component {
 
     public function clearFilters(): void
     {
-        $this->reset(['selectedCategories', 'selectedBrands', 'inStockOnly', 'minRating', 'selectedTag', 'newArrivalsOnly']);
+        $this->reset(['selectedCategories', 'selectedBrands', 'inStockOnly', 'minRating', 'selectedTag', 'newArrivalsOnly', 'q']);
         $this->priceMin = 0;
         $this->priceMax = 6000000;
         $this->perPage = 24;
@@ -108,6 +112,16 @@ new #[Layout('layouts::storefront')] #[Title('Shop')] class extends Component {
             ->visibleInCatalog()
             ->published()
             ->honorStockVisibility();
+
+        if (trim($this->q) !== '') {
+            $term = trim($this->q);
+            $query->where(function ($q) use ($term) {
+                $q->where('name', 'like', "%{$term}%")
+                    ->orWhere('sku', 'like', "%{$term}%")
+                    ->orWhere('model_number', 'like', "%{$term}%")
+                    ->orWhereHas('brand', fn($b) => $b->where('name', 'like', "%{$term}%"));
+            });
+        }
 
         if ($this->selectedCategories) {
             $catIds = Category::whereIn('slug', $this->selectedCategories)->pluck('id');
@@ -167,9 +181,15 @@ new #[Layout('layouts::storefront')] #[Title('Shop')] class extends Component {
     #[Computed]
     public function categoriesList(): Collection
     {
+        // Only categories that actually hold catalog items (as primary category
+        // or via the pivot) — an empty checkbox would filter to zero results.
         return Category::query()
             ->where('status', CategoryStatus::ACTIVE)
             ->withCount(['products' => fn($q) => $q->published()->visibleInCatalog()])
+            ->where(function ($q) {
+                $q->whereHas('primaryProducts', fn($p) => $p->published()->visibleInCatalog())
+                    ->orWhereHas('products', fn($p) => $p->published()->visibleInCatalog());
+            })
             ->orderBy('name')
             ->get(['id', 'name', 'slug']);
     }
@@ -177,21 +197,24 @@ new #[Layout('layouts::storefront')] #[Title('Shop')] class extends Component {
     #[Computed]
     public function brandsList(): Collection
     {
+        // Only brands with at least one catalog item — same reasoning as the
+        // category facet: an empty checkbox would filter to zero results.
         return Brand::query()
             ->where('is_active', true)
+            ->whereHas('products', fn($p) => $p->published()->visibleInCatalog())
             ->orderBy('name')
             ->get(['id', 'name']);
     }
 
     public function hasActiveFilters(): bool
     {
-        return !empty($this->selectedCategories) || !empty($this->selectedBrands) || $this->inStockOnly || $this->minRating > 0 || $this->priceMin > 0 || $this->priceMax < 6000000 || $this->selectedTag !== '' || $this->newArrivalsOnly;
+        return !empty($this->selectedCategories) || !empty($this->selectedBrands) || $this->inStockOnly || $this->minRating > 0 || $this->priceMin > 0 || $this->priceMax < 6000000 || $this->selectedTag !== '' || $this->newArrivalsOnly || trim($this->q) !== '';
     }
 }; ?>
 
 <div class="page-fade">
     {{-- Breadcrumb --}}
-    <div class="bg-surface-sunken">
+    <div class="border-b border-zinc-200 bg-surface-sunken">
         <div class="shell py-3">
             <flux:breadcrumbs>
                 <flux:breadcrumbs.item :href="route('home')" wire:navigate>Home</flux:breadcrumbs.item>
@@ -200,7 +223,8 @@ new #[Layout('layouts::storefront')] #[Title('Shop')] class extends Component {
         </div>
     </div>
 
-    <div class="shell pb-20">
+    {{-- pb-8 + the newsletter section's mt-12 = a 5rem gap, matching the page rhythm --}}
+    <div class="shell pb-8">
         {{-- Mobile filter drawer (teleported to body) --}}
         <template x-teleport="body">
             <div x-show="$wire.showFilters" x-transition:enter="transition ease-out duration-300"
@@ -337,8 +361,8 @@ new #[Layout('layouts::storefront')] #[Title('Shop')] class extends Component {
 
                     {{-- Drawer footer --}}
                     <div class="sticky bottom-0 border-t border-zinc-200 bg-white px-5 py-3.5">
-                        <flux:button variant="customer-primary" size="customer"
-                            wire:click="$set('showFilters', false)" class="w-full!">
+                        <flux:button variant="customer-primary" size="customer" wire:click="$set('showFilters', false)"
+                            class="w-full!">
                             View {{ $this->products->total() }} results
                         </flux:button>
                     </div>
@@ -487,6 +511,14 @@ new #[Layout('layouts::storefront')] #[Title('Shop')] class extends Component {
                 {{-- Active filter chips --}}
                 @if ($this->hasActiveFilters())
                     <div class="mb-5 flex flex-wrap gap-2">
+                        @if (trim($q) !== '')
+                            <button type="button" wire:click="$set('q', '')"
+                                class="inline-flex h-7 cursor-pointer items-center gap-1.5 rounded-full bg-surface-sunken px-3 text-[12.5px] font-medium text-ink-2 hover:bg-zinc-200">
+                                <flux:icon.magnifying-glass variant="micro" class="size-3 text-ink-3" />
+                                "{{ $q }}"
+                                <flux:icon.x variant="micro" class="size-3 text-ink-3" />
+                            </button>
+                        @endif
                         @if ($selectedTag !== '')
                             <button type="button" wire:click="$set('selectedTag', '')"
                                 class="inline-flex h-7 cursor-pointer items-center gap-1.5 rounded-full bg-surface-sunken px-3 text-[12.5px] font-medium text-ink-2 hover:bg-zinc-200">
@@ -567,7 +599,7 @@ new #[Layout('layouts::storefront')] #[Title('Shop')] class extends Component {
                     </div>
                 @else
                     <div
-                        class="grid grid-cols-1 gap-3.5 @xs:grid-cols-2 @md:grid-cols-3 @2xl:grid-cols-4 @4xl:grid-cols-5 @6xl:grid-cols-6">
+                        class="grid grid-cols-1 gap-3.5 @xs:grid-cols-2 @md:grid-cols-3 @2xl:grid-cols-4 @4xl:grid-cols-5 @7xl:grid-cols-6">
                         @foreach ($this->products as $product)
                             <x-storefront.product-card :product="$product" wire:key="prod-{{ $product->id }}" />
                         @endforeach

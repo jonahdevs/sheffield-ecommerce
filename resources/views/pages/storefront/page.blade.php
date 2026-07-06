@@ -26,7 +26,7 @@ new #[Layout('layouts::storefront')] class extends Component
 
 <div class="page-fade">
     {{-- Breadcrumb --}}
-    <div class="bg-surface-sunken">
+    <div class="border-b border-zinc-200 bg-surface-sunken">
         <div class="shell py-3">
             <flux:breadcrumbs>
                 <flux:breadcrumbs.item :href="route('home')" wire:navigate>Home</flux:breadcrumbs.item>
@@ -35,7 +35,8 @@ new #[Layout('layouts::storefront')] class extends Component
         </div>
     </div>
 
-    <div class="shell pt-3 pb-20">
+    {{-- pb-8 + the newsletter section's mt-12 = a 5rem gap, matching the page rhythm --}}
+    <div class="shell pt-3 pb-8">
         <h1 class="text-3xl font-semibold tracking-tight">{{ $page->title }}</h1>
 
         <div class="mt-6 max-w-3xl space-y-4 text-[14.5px] leading-relaxed text-ink-2

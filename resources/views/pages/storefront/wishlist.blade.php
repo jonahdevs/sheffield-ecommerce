@@ -74,7 +74,7 @@ new #[Layout('layouts::storefront')] #[Title('Wishlist')] class extends Componen
 
 <div class="page-fade">
     {{-- Breadcrumb --}}
-    <div class="bg-surface-sunken">
+    <div class="border-b border-zinc-200 bg-surface-sunken">
         <div class="shell py-3">
             <flux:breadcrumbs>
                 <flux:breadcrumbs.item :href="route('home')" wire:navigate>Home</flux:breadcrumbs.item>
@@ -83,7 +83,8 @@ new #[Layout('layouts::storefront')] #[Title('Wishlist')] class extends Componen
         </div>
     </div>
 
-    <div class="shell pt-3 pb-20">
+    {{-- pb-8 + the newsletter section's mt-12 = the same 5rem rhythm as the pt-20 above the recommendations --}}
+    <div class="shell pt-3 pb-8">
         <div class="flex flex-wrap items-end justify-between gap-4">
             <div>
                 <h1 class="text-2xl font-semibold tracking-tight sm:text-3xl">Wishlist</h1>

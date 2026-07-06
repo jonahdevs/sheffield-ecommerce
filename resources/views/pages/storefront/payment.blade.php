@@ -75,9 +75,10 @@ new #[Layout('layouts::storefront')] #[Title('Payment')] class extends Component
 @endassets
 
 <div class="page-fade">
-    <div class="shell pt-4 pb-20">
+    {{-- pb-8 + the newsletter section's mt-12 = a 5rem gap, matching the page rhythm --}}
+    <div class="shell pt-4 pb-8">
 
-        <flux:breadcrumbs class="mb-4">
+        <flux:breadcrumbs class="mb-4 border-b border-zinc-200 pb-3">
             <flux:breadcrumbs.item :href="route('home')" wire:navigate>Home</flux:breadcrumbs.item>
             <flux:breadcrumbs.item :href="route('checkout')" wire:navigate>Checkout</flux:breadcrumbs.item>
             <flux:breadcrumbs.item>Payment</flux:breadcrumbs.item>

@@ -348,7 +348,7 @@ new #[Layout('layouts::storefront')] #[Title('Checkout')] class extends Componen
     <div x-data="paystackCheckout" @paystack-open.window="open($event.detail.accessCode)"></div>
 
     {{-- Breadcrumb --}}
-    <div class="bg-surface-sunken">
+    <div class="border-b border-zinc-200 bg-surface-sunken">
         <div class="shell py-3">
             <flux:breadcrumbs>
                 <flux:breadcrumbs.item :href="route('home')" wire:navigate>Home</flux:breadcrumbs.item>
@@ -358,7 +358,8 @@ new #[Layout('layouts::storefront')] #[Title('Checkout')] class extends Componen
         </div>
     </div>
 
-    <div class="shell pt-6 pb-20">
+    {{-- pb-8 + the newsletter section's mt-12 = a 5rem gap, matching the page rhythm --}}
+    <div class="shell pt-6 pb-8">
 
         {{-- Page header --}}
         <h1 class="text-3xl font-semibold tracking-tight">Checkout</h1>

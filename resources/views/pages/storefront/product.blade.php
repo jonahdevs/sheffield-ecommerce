@@ -141,15 +141,19 @@ new #[Layout('layouts::storefront')] class extends Component
     {
         $categoryId = $this->product->primary_category_id;
 
+        if (! $categoryId) {
+            return [];
+        }
+
         return Product::query()
             ->where('visibility', 'visible')
             ->where('stock_status', StockStatus::IN_STOCK)
             ->whereNotNull('price')
             ->where('price', '>', 0)
             ->where('id', '!=', $this->product->id)
-            ->when($categoryId, fn ($q) => $q->where('primary_category_id', $categoryId))
+            ->where('primary_category_id', $categoryId)
             ->inRandomOrder()
-            ->take(6)
+            ->take(12)
             ->pluck('id')
             ->all();
     }
@@ -168,7 +172,7 @@ new #[Layout('layouts::storefront')] class extends Component
             ->where('id', '!=', $this->product->id)
             ->where('brand_id', $this->product->brand_id)
             ->inRandomOrder()
-            ->take(6)
+            ->take(12)
             ->pluck('id')
             ->all();
     }
@@ -183,7 +187,7 @@ new #[Layout('layouts::storefront')] class extends Component
             ->where('r1.product_id', $this->product->id)
             ->groupBy('r2.product_id')
             ->orderByRaw('COUNT(*) DESC')
-            ->limit(6)
+            ->limit(12)
             ->pluck('r2.product_id')
             ->all();
     }
@@ -197,7 +201,7 @@ new #[Layout('layouts::storefront')] class extends Component
         return \App\Models\RecentlyViewed::where('user_id', auth()->id())
             ->where('product_id', '!=', $this->product->id)
             ->orderByDesc('viewed_at')
-            ->limit(8)
+            ->limit(12)
             ->pluck('product_id')
             ->all();
     }
@@ -707,7 +711,7 @@ new #[Layout('layouts::storefront')] class extends Component
 
 <div class="page-fade">
     {{-- Breadcrumb --}}
-    <div class="bg-surface-sunken">
+    <div class="border-b border-zinc-200 bg-surface-sunken">
         <div class="shell py-3">
             <flux:breadcrumbs>
                 <flux:breadcrumbs.item :href="route('home')" wire:navigate>Home</flux:breadcrumbs.item>
@@ -722,7 +726,8 @@ new #[Layout('layouts::storefront')] class extends Component
         </div>
     </div>
 
-    <div class="shell pt-6 pb-24">
+    {{-- pb-4 + the newsletter section's mt-12 = the same 4rem rhythm as the mt-16 between sections --}}
+    <div class="shell pt-6 pb-4">
     {{-- Main: gallery + details + buy-box (3-column on lg+, stacked below) --}}
     <div class="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)_minmax(300px,340px)] lg:gap-10 xl:gap-12">
         {{-- Gallery --}}
@@ -1571,77 +1576,28 @@ new #[Layout('layouts::storefront')] class extends Component
         </div>
     </div>
 
-    {{-- You May Also Like (same category) --}}
+    {{-- Related Products (same category) --}}
     @if ($this->related->isNotEmpty())
-        <div class="mt-16 @container">
-            <div class="mb-4 flex items-baseline justify-between">
-                <h2 class="text-[22px] font-semibold tracking-tight">You May Also Like</h2>
-                @if ($product->primaryCategory)
-                    <a href="{{ route('category.show', $product->primaryCategory) }}" wire:navigate
-                        class="text-[13px] font-medium text-brand-500 underline transition-colors hover:text-brand-600">
-                        View all
-                    </a>
-                @endif
-            </div>
-            <div class="grid grid-cols-1 gap-3.5 @xs:grid-cols-2 @md:grid-cols-3 @2xl:grid-cols-4 4xl:grid-cols-5 @6xl:grid-cols-6">
-                @foreach ($this->related as $rel)
-                    <x-storefront.product-card :product="$rel" wire:key="rel-{{ $rel->id }}" />
-                @endforeach
-            </div>
-        </div>
+        <x-storefront.product-carousel title="Related Products" :products="$this->related"
+            :view-all-url="$product->primaryCategory ? route('category.show', $product->primaryCategory) : null" />
     @endif
 
     {{-- More from [Brand] --}}
     @if ($this->brandProducts->isNotEmpty())
-        <div class="mt-16 @container">
-            <div class="mb-4 flex items-baseline justify-between">
-                <h2 class="text-[22px] font-semibold tracking-tight">More from {{ $product->brand->name }}</h2>
-                @if ($product->brand)
-                    <a href="{{ route('catalog', ['brand' => [$product->brand->id]]) }}" wire:navigate
-                        class="text-[13px] font-medium text-brand-500 underline transition-colors hover:text-brand-600">
-                        View all
-                    </a>
-                @endif
-            </div>
-            <div class="grid grid-cols-1 gap-3.5 @xs:grid-cols-2 @md:grid-cols-3 @2xl:grid-cols-4 4xl:grid-cols-5 @6xl:grid-cols-6">
-                @foreach ($this->brandProducts as $bp)
-                    <x-storefront.product-card :product="$bp" wire:key="bp-{{ $bp->id }}" />
-                @endforeach
-            </div>
-        </div>
+        <x-storefront.product-carousel title="More from {{ $product->brand->name }}" :products="$this->brandProducts"
+            :view-all-url="route('catalog', ['brand' => [$product->brand->id]])" />
     @endif
 
     {{-- Customers who viewed this also viewed --}}
     @if ($this->alsoViewed->isNotEmpty())
-        <div class="mt-16 @container">
-            <div class="mb-4">
-                <h2 class="text-[22px] font-semibold tracking-tight">Customers who viewed this also viewed</h2>
-            </div>
-            <div class="grid grid-cols-1 gap-3.5 @xs:grid-cols-2 @md:grid-cols-3 @2xl:grid-cols-4 4xl:grid-cols-5 @6xl:grid-cols-6">
-                @foreach ($this->alsoViewed as $av)
-                    <x-storefront.product-card :product="$av" wire:key="av-{{ $av->id }}" />
-                @endforeach
-            </div>
-        </div>
+        <x-storefront.product-carousel title="Customers who viewed this also viewed" :products="$this->alsoViewed" />
     @endif
 
     {{-- Recently Viewed (auth users only) --}}
     @auth
         @if ($this->recentlyViewedProducts->isNotEmpty())
-            <div class="mt-16 @container">
-                <div class="mb-4 flex items-baseline justify-between">
-                    <h2 class="text-[22px] font-semibold tracking-tight">Recently Viewed</h2>
-                    <a href="{{ route('account.recently-viewed') }}" wire:navigate
-                        class="text-[13px] font-medium text-brand-500 underline transition-colors hover:text-brand-600">
-                        View all
-                    </a>
-                </div>
-                <div class="grid grid-cols-1 gap-3.5 @xs:grid-cols-2 @md:grid-cols-3 @2xl:grid-cols-4 4xl:grid-cols-5 @6xl:grid-cols-6">
-                    @foreach ($this->recentlyViewedProducts as $rv)
-                        <x-storefront.product-card :product="$rv" wire:key="rv-{{ $rv->id }}" />
-                    @endforeach
-                </div>
-            </div>
+            <x-storefront.product-carousel title="Recently Viewed" :products="$this->recentlyViewedProducts"
+                :view-all-url="route('account.recently-viewed')" />
         @endif
     @endauth
 
