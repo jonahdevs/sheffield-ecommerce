@@ -160,17 +160,17 @@ new #[Layout('layouts::storefront')] #[Title('Commercial Kitchen, Cold Room, Lau
     //   'sub'         live HTML subtext                              — Option A
     //   'src_plain'   background photo WITHOUT baked-in text         — Option A (designer to supply)
     $heroSlides = [
-        [
-            'src' => '/images/banners/kitchen-equipment-banner.webp',
-            'src_mobile' => '/images/banners/mobile/kitchen-equipment-banner.webp',
-            'src_plain' => '/images/banners/plain/kitchen-equipment-banner.webp',
-            'alt' => 'Fully equip your commercial kitchen',
-            'headline' => 'Your business, fully equipped',
-            'sub' => 'Outfit your entire kitchen from one trusted supplier — serving Africa since 2003.',
-            'cta' => 'Shop all equipment',
-            'align' => 'right',
-            'url' => route('catalog'),
-        ],
+        // [
+        //     'src' => '/images/banners/kitchen-equipment-banner.webp',
+        //     'src_mobile' => '/images/banners/mobile/kitchen-equipment-banner.webp',
+        //     'src_plain' => '/images/banners/plain/kitchen-equipment-banner.webp',
+        //     'alt' => 'Fully equip your commercial kitchen',
+        //     'headline' => 'Your business, fully equipped',
+        //     'sub' => 'Outfit your entire kitchen from one trusted supplier — serving Africa since 2003.',
+        //     'cta' => 'Shop all equipment',
+        //     'align' => 'right',
+        //     'url' => route('catalog'),
+        // ],
         [
             'src' => '/images/banners/ovens.webp',
             'src_mobile' => '/images/banners/mobile/ovens.webp',

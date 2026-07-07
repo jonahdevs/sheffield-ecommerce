@@ -3,6 +3,7 @@
 use App\Enums\OrderStatus;
 use App\Models\Order;
 use App\Models\User;
+use Illuminate\Support\Facades\Storage;
 use Livewire\Livewire;
 
 beforeEach(function () {
@@ -47,6 +48,28 @@ it('shows a cancelled status badge when the order is cancelled', function () {
 
     Livewire::test('pages::account.orders.show', ['order' => $order])
         ->assertSee(OrderStatus::CANCELLED->label());
+});
+
+it('shows a download invoice button that opens in a new tab when a receipt exists', function () {
+    Storage::fake('local');
+    Storage::disk('local')->put('kra-receipts/SHF-TEST03-receipt.pdf', 'pdf');
+
+    $order = Order::factory()->for($this->user)->create([
+        'order_number' => 'SHF-TEST03',
+        'receipt_path' => 'kra-receipts/SHF-TEST03-receipt.pdf',
+    ]);
+
+    Livewire::test('pages::account.orders.show', ['order' => $order])
+        ->assertSee('Download Invoice')
+        ->assertSeeHtml(route('account.orders.receipt', $order))
+        ->assertSeeHtml('target="_blank"');
+});
+
+it('hides the download invoice button when no receipt exists', function () {
+    $order = Order::factory()->for($this->user)->create(['receipt_path' => null]);
+
+    Livewire::test('pages::account.orders.show', ['order' => $order])
+        ->assertDontSee('Download Invoice');
 });
 
 it('returns 403 for an order belonging to a different user', function () {

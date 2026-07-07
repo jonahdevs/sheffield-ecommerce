@@ -477,7 +477,7 @@ new #[Layout('layouts::storefront')] #[Title('Shop')] class extends Component {
                 <div class="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                     <div class="flex items-center gap-3">
                         {{-- Mobile: open filter drawer --}}
-                        <flux:button size="sm" icon="funnel" wire:click="$set('showFilters', true)"
+                        <flux:button size="sm" icon="funnel" icon:variant="outline" wire:click="$set('showFilters', true)"
                             class="lg:hidden">
                             Filters
                             @if ($this->hasActiveFilters())

@@ -527,23 +527,23 @@ new #[Layout('layouts::app')] #[Title('Products | Admin')] class extends Compone
                             <flux:dropdown align="end">
                                 <flux:button size="sm" icon-trailing="chevron-down">Actions</flux:button>
                                 <flux:menu>
-                                    <flux:menu.item icon="pencil-square"
+                                    <flux:menu.item icon="pencil-square" icon:variant="outline"
                                         :href="route('admin.products.edit', $product)" wire:navigate>
                                         Edit
                                     </flux:menu.item>
-                                    <flux:menu.item icon="chart-bar"
+                                    <flux:menu.item icon="chart-bar" icon:variant="outline"
                                         :href="route('admin.products.show', $product)" wire:navigate>
                                         Analytics
                                     </flux:menu.item>
-                                    <flux:menu.item icon="arrow-top-right-on-square"
+                                    <flux:menu.item icon="arrow-top-right-on-square" icon:variant="outline"
                                         :href="route('product.show', $product)" target="_blank">
                                         View on store
                                     </flux:menu.item>
-                                    <flux:menu.item icon="document-duplicate"
+                                    <flux:menu.item icon="document-duplicate" icon:variant="outline"
                                         wire:click="duplicateProduct({{ $product->id }})">
                                         Duplicate
                                     </flux:menu.item>
-                                    <flux:menu.submenu heading="Set status" icon="tag">
+                                    <flux:menu.submenu heading="Set status" icon="tag" icon:variant="outline">
                                         @foreach (ProductStatus::cases() as $s)
                                             <flux:menu.item
                                                 wire:click="quickSetStatus({{ $product->id }}, '{{ $s->value }}')"
@@ -552,7 +552,7 @@ new #[Layout('layouts::app')] #[Title('Products | Admin')] class extends Compone
                                             </flux:menu.item>
                                         @endforeach
                                     </flux:menu.submenu>
-                                    <flux:menu.item icon="clock"
+                                    <flux:menu.item icon="clock" icon:variant="outline"
                                         :href="route('admin.activity.item', ['product', $product->id])" wire:navigate>
                                         Activity log
                                     </flux:menu.item>

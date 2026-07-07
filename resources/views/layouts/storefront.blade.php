@@ -277,6 +277,8 @@
         </flux:toast.group>
     @endpersist
 
+    <x-confirm-dialog />
+
     @if ($legal->cookie_consent_enabled)
         @include('partials.storefront.cookie-banner')
     @endif

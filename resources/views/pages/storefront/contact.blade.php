@@ -403,7 +403,7 @@ new #[Layout('layouts::storefront')] #[Title('Contact & Showrooms')] class exten
         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
             @foreach ($features as $feature)
                 <div class="flex items-center gap-3.5 rounded-lg border border-line bg-surface px-5 py-5">
-                    <flux:icon :icon="$feature['icon']" variant="outline" class="size-8 shrink-0 text-brand-blue-600" />
+                    <flux:icon :icon="$feature['icon']" variant="outline" class="size-8 shrink-0 text-brand-500" />
                     <div>
                         <div class="text-[15px] font-bold text-ink">{{ $feature['title'] }}</div>
                         <div class="mt-0.5 text-[12.5px] text-ink-3">{{ $feature['sub'] }}</div>

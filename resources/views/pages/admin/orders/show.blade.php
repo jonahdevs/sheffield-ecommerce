@@ -18,6 +18,7 @@ use Illuminate\Validation\Rule;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Locked;
+use Livewire\Attributes\On;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
@@ -76,6 +77,19 @@ new #[Layout('layouts::app')] #[Title('Order | Admin')] class extends Component
     protected function authorizeManage(): void
     {
         abort_unless(auth()->user()?->can('orders.manage'), 403);
+    }
+
+    /**
+     * Re-render live when the order changes elsewhere (SAP webhook stores the
+     * CU number / receipt, payment confirms, another staff member updates it).
+     * The order is re-hydrated fresh from the database on this request; only
+     * the form fields seeded in mount() need re-seeding.
+     */
+    #[On('echo-private:orders.{order.id},OrderUpdated')]
+    public function handleOrderUpdated(): void
+    {
+        $this->status = $this->order->status->value;
+        $this->shipmentStatus = $this->order->shipment?->status->value ?? ShipmentStatus::PENDING->value;
     }
 
     // ==================================================

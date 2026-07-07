@@ -7,6 +7,7 @@ use Flux\Flux;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Locked;
+use Livewire\Attributes\On;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
@@ -27,6 +28,17 @@ new #[Layout('layouts::account')] #[Title('Order')] class extends Component
             'quote',
             'shippingMethod',
         ]);
+    }
+
+    /**
+     * Re-render live when SAP validates the invoice (receipt becomes available)
+     * or the order status changes. Livewire re-hydrates the order fresh from
+     * the database on this request, so an empty handler is enough.
+     */
+    #[On('echo-private:orders.{order.id},OrderUpdated')]
+    public function handleOrderUpdated(): void
+    {
+        //
     }
 
     #[Computed]
@@ -350,6 +362,8 @@ new #[Layout('layouts::account')] #[Title('Order')] class extends Component
                         icon="arrow-down-tray"
                         tag="a"
                         :href="route('account.orders.receipt', $order)"
+                        target="_blank"
+                        rel="noopener"
                     >
                         Download Invoice
                     </flux:button>

@@ -6,6 +6,7 @@ use App\Enums\OrderStatus;
 use App\Enums\PaymentStatus;
 use App\Enums\SapSyncStatus;
 use App\Events\OrderPlaced;
+use App\Events\OrderUpdated;
 use App\Jobs\SyncOrderToSapJob;
 use App\Models\Concerns\HasStatusHistory;
 use App\Notifications\Orders\NewOrderReceived;
@@ -60,6 +61,12 @@ class Order extends Model
     {
         static::created(function (Order $order): void {
             $order->recordStatusChange(null, OrderStatus::PENDING);
+        });
+
+        static::updated(function (Order $order): void {
+            if ($order->wasChanged(['status', 'sap_sync_status', 'cu_number', 'receipt_path'])) {
+                OrderUpdated::dispatch($order);
+            }
         });
     }
 
@@ -174,6 +181,9 @@ class Order extends Model
         }
 
         $this->status = OrderStatus::PROCESSING;
+
+        // The conditional UPDATE above bypasses Eloquent events, so broadcast explicitly.
+        OrderUpdated::dispatch($this);
 
         $this->recordStatusChange(OrderStatus::PENDING, OrderStatus::PROCESSING);
         $this->deductStock();

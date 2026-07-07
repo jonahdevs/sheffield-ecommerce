@@ -3,6 +3,7 @@
 namespace App\Services\Sap;
 
 use App\Enums\SapSyncStatus;
+use App\Events\SapSyncStatusUpdated;
 use App\Models\Order;
 use App\Models\SapSyncLog;
 use Illuminate\Http\Request;
@@ -121,6 +122,10 @@ class SapWebhookHandler
         activity()->performedOn($order)
             ->withProperties(['cu_number' => $cuNumber])
             ->log('sap_kra_validated');
+
+        // Keep the admin SAP-sync monitor live on the webhook path, matching
+        // the polling path in RecoverSapInvoiceJob.
+        SapSyncStatusUpdated::dispatch($order->fresh(), SapSyncStatus::COMPLETED);
 
         // Receipt failure must never cause a 500 — SAP would keep retrying the webhook.
         $this->receipts->generate($order);
