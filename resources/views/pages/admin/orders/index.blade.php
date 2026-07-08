@@ -282,15 +282,27 @@ new #[Layout('layouts::app')] #[Title('Orders | Admin')] class extends Component
                             {{ $order->created_at->format('M j, Y') }}
                         </flux:table.cell>
                         <flux:table.cell align="end">
-                            <div class="flex items-center justify-end gap-1">
-                                <flux:tooltip content="Activity log">
-                                    <flux:button size="xs" variant="ghost" icon="clock"
-                                        :href="route('admin.activity.item', ['order', $order->id])"
-                                        wire:navigate />
-                                </flux:tooltip>
-                                <flux:button size="xs" variant="ghost" icon="eye" tooltip="View order"
-                                    :href="route('admin.orders.show', $order)" wire:navigate />
-                            </div>
+                            <flux:dropdown align="end" position="bottom">
+                                <flux:button size="xs" variant="ghost" icon="ellipsis-vertical" inset="top bottom"
+                                    aria-label="Order actions" />
+                                <flux:menu>
+                                    <flux:menu.item icon="eye" icon:variant="outline"
+                                        :href="route('admin.orders.show', $order)" wire:navigate>
+                                        View order
+                                    </flux:menu.item>
+                                    <flux:menu.item icon="clock" icon:variant="outline"
+                                        :href="route('admin.activity.item', ['order', $order->id])" wire:navigate>
+                                        Activity log
+                                    </flux:menu.item>
+                                    @if ($order->receipt_path)
+                                        <flux:menu.separator />
+                                        <flux:menu.item icon="document-text" icon:variant="outline"
+                                            :href="route('admin.orders.kra-receipt', $order)" target="_blank">
+                                            KRA receipt
+                                        </flux:menu.item>
+                                    @endif
+                                </flux:menu>
+                            </flux:dropdown>
                         </flux:table.cell>
                     </flux:table.row>
                 @empty

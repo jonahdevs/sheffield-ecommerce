@@ -32,4 +32,12 @@ class ShipmentFactory extends Factory
     {
         return $this->state(['status' => ShipmentStatus::OUT_FOR_DELIVERY]);
     }
+
+    public function withDriver(): static
+    {
+        return $this->state([
+            'driver_name' => fake()->name(),
+            'driver_phone' => '07'.fake()->numerify('########'),
+        ]);
+    }
 }

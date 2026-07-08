@@ -1,6 +1,7 @@
 <?php
 
 use App\Enums\OrderStatus;
+use App\Enums\ShipmentStatus;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\User;
@@ -69,6 +70,42 @@ it('updates an order status from the show page', function () {
         ->assertHasNoErrors();
 
     expect($order->fresh()->status)->toBe(OrderStatus::COMPLETED);
+});
+
+it('creates a shipment with a human delivery driver', function () {
+    $order = Order::factory()->create(['status' => OrderStatus::PROCESSING]);
+    OrderItem::factory()->create(['order_id' => $order->id]);
+
+    Livewire::test('pages::admin.orders.show', ['order' => $order])
+        ->set('trackingNumber', 'SHF-TRK-001')
+        ->set('driverName', 'John Kamau')
+        ->set('driverPhone', '0712345678')
+        ->call('createShipment')
+        ->assertHasNoErrors();
+
+    $shipment = $order->fresh()->shipment;
+    expect($shipment->driver_name)->toBe('John Kamau')
+        ->and($shipment->driver_phone)->toBe('0712345678')
+        ->and($shipment->hasDriver())->toBeTrue();
+});
+
+it('shows the delivery driver on the customer tracking page once out for delivery', function () {
+    $customer = User::factory()->create();
+    $order = Order::factory()->create([
+        'user_id' => $customer->id,
+        'status' => OrderStatus::OUT_FOR_DELIVERY,
+    ]);
+    $order->shipment()->create([
+        'status' => ShipmentStatus::OUT_FOR_DELIVERY,
+        'driver_name' => 'Grace Achieng',
+        'driver_phone' => '0798765432',
+    ]);
+
+    $this->actingAs($customer)
+        ->get(route('account.orders.tracking', $order))
+        ->assertOk()
+        ->assertSee('Grace Achieng')
+        ->assertSee('0798765432');
 });
 
 it('forbids a view-only user from mutating an order', function () {

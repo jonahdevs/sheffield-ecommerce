@@ -53,6 +53,27 @@
             </ul>
         </div>
 
+        {{-- Delivery driver --}}
+        @if ($shipment->hasDriver())
+            <div class="flex items-center gap-3 rounded-xl border border-zinc-200 bg-white px-5 py-4">
+                <div class="flex size-9 shrink-0 items-center justify-center rounded-full bg-zinc-100 text-zinc-500">
+                    <svg class="size-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M8 7a4 4 0 108 0 4 4 0 00-8 0zM3 20a7 7 0 0114 0" />
+                    </svg>
+                </div>
+                <div class="min-w-0 flex-1">
+                    <p class="text-xs font-bold uppercase tracking-widest text-zinc-400">Delivered by</p>
+                    @if ($shipment->driver_name)
+                        <p class="text-sm font-semibold text-zinc-800">{{ $shipment->driver_name }}</p>
+                    @endif
+                </div>
+                @if ($shipment->driver_phone)
+                    <a href="tel:{{ $shipment->driver_phone }}"
+                        class="shrink-0 text-sm font-semibold text-emerald-600 hover:underline">{{ $shipment->driver_phone }}</a>
+                @endif
+            </div>
+        @endif
+
         @if ($shipment->customer_disputed_at)
             {{-- Already disputed --}}
             <div class="rounded-xl border border-amber-200 bg-amber-50 px-5 py-4">

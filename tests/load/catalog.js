@@ -55,9 +55,9 @@ export const options = {
 const PAGES = [
     { url: '/',                                                              type: 'dynamic' },
     { url: '/shop',                                                          type: 'dynamic' },
-    { url: '/shop/commercial-kitchen',                                       type: 'dynamic' },
-    { url: '/shop/cold-room',                                                type: 'dynamic' },
-    { url: '/shop/laundry',                                                  type: 'dynamic' },
+    { url: '/shop/vegetable-processors',                                     type: 'dynamic' },
+    { url: '/shop/ovens',                                                    type: 'dynamic' },
+    { url: '/shop/refrigeration',                                            type: 'dynamic' },
     { url: '/product/vegetable-processor-pa7-imgfpr00042',                   type: 'dynamic' },
     { url: '/product/manual-vegetable-slicer-systematic-jscv-2200-imgfpr00130', type: 'dynamic' },
     { url: '/product/salad-and-vegetable-dryer-40-lt-220v-sy40-09-imgfpr00234', type: 'dynamic' },

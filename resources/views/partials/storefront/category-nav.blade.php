@@ -1,14 +1,21 @@
-{{-- $navCategories is computed once in layouts/storefront.blade.php.
+{{-- $navCategories is computed once in layouts/storefront.blade.php (with children eager-loaded).
 
      Two responsive layouts (pattern carried over from the previous site):
-       • lg+   : capped 2-row grid (6 cols).
-       • < lg  : a single bar with a "Browse" dropdown (full, scrollable list — deep access)
-                 plus a horizontal scroll strip with fade/chevron affordances (broad swipe browse). --}}
-<nav class="bg-brand-blue-500 text-[#f2ead9]">
+       • lg+   : capped 2-row grid (6 cols) of triggers + a Reka-style mega-menu.
+                 Hovering/focusing a trigger opens a single shared "viewport" that
+                 cross-fades content and smoothly morphs height between categories.
+       • < lg  : a horizontal scroll strip with fade/chevron affordances (broad swipe browse).
 
-    {{-- Desktop (lg+) — grid-rows-2 + auto-rows-[0] caps visible content at exactly 2 rows.
-         Items in implicit (overflow) rows collapse to 0 height and get clipped.
-         gap-px + a subtle divider color on the parent paints 1px dividers between cells. --}}
+     Flyout content is fetched on hover from route('menu.flyout', $category) and rendered
+     by partials/storefront/mega-menu-panel.blade.php — the category's image on the left,
+     a grid of child categories on the right. See App\Http\Controllers\Storefront\
+     CategoryMenuController for the (currently random) children source. --}}
+<nav x-data="megaMenu" @mousemove="trackPointer($event)" @mouseleave="close()"
+    @keydown.escape.window="close()" @scroll.window.passive="onScroll()"
+    class="relative bg-brand-blue-500 text-[#f2ead9]">
+
+    {{-- Desktop (lg+) — trigger grid. grid-rows-2 + auto-rows-[0] caps visible content at
+         exactly 2 rows; overflow rows collapse to 0 height and get clipped. --}}
     <div class="shell hidden lg:block">
         <div
             class="grid grid-cols-6 grid-rows-2 auto-rows-[0] gap-px overflow-hidden border-x border-white/20 bg-white/20">
@@ -17,11 +24,21 @@
                     $isActive =
                         request()->routeIs('category.show') && request()->route('category')?->id === $category->id;
                 @endphp
-                <a href="{{ route('category.show', $category) }}" wire:navigate @class([
-                    'flex items-center gap-2 px-3 py-2.5 text-sm transition',
-                    'bg-brand-blue-500 text-[#f2ead9] hover:bg-brand-blue-600 hover:text-white' => !$isActive,
-                    'bg-brand-blue-700 font-medium text-white' => $isActive,
-                ])>
+                {{-- Only categories with sub-categories are mega-menu triggers;
+                     the rest stay plain links (no empty flyout). --}}
+                <a href="{{ route('category.show', $category) }}" wire:navigate
+                    @if ($category->children_count > 0)
+                        @mouseenter="hover($event, {{ $category->id }}, '{{ route('menu.flyout', $category) }}')"
+                        @mouseleave="cancelOpen()"
+                        @focus="focus($event, {{ $category->id }}, '{{ route('menu.flyout', $category) }}')"
+                        aria-haspopup="true" :aria-expanded="(active === {{ $category->id }} && isOpen).toString()"
+                    @endif
+                    @class([
+                        'flex items-center gap-2 px-3 py-2.5 text-sm transition',
+                        'bg-brand-blue-700 font-medium text-white' => $isActive,
+                        'bg-brand-blue-500 text-[#f2ead9] hover:bg-brand-blue-600 hover:text-white' => !$isActive,
+                    ])
+                    :class="active === {{ $category->id }} && isOpen ? 'bg-brand-blue-600 text-white' : ''">
                     @if ($category->icon_svg)
                         <span class="grid size-5 shrink-0 place-items-center [&>svg]:size-full">
                             {!! $category->icon_svg !!}
@@ -36,7 +53,34 @@
         </div>
     </div>
 
-    {{-- Mobile / tablet (< lg) — Browse dropdown + horizontal scroller with edge fades --}}
+    {{-- Shared mega-menu viewport (lg+). Two stacked layers cross-slide: the
+         outgoing panel exits toward the direction of travel while the incoming
+         one enters from the opposite edge. The viewport morphs height between
+         them. Layer transforms/opacity are driven imperatively from swap(). --}}
+    {{-- perspective on the direct parent gives the card's rotateX real depth (Reka scaleIn). --}}
+    <div class="absolute inset-x-0 top-full z-40 hidden text-ink lg:block">
+        <div class="shell [perspective:2000px]">
+            <div x-cloak x-show="isOpen" x-transition:enter="transition duration-200 ease-out origin-top transform-3d"
+                x-transition:enter-start="opacity-0 -rotate-x-10 scale-90"
+                x-transition:enter-end="opacity-100 rotate-x-0 scale-100"
+                x-transition:leave="transition duration-150 ease-in origin-top transform-3d"
+                x-transition:leave-start="opacity-100 rotate-x-0 scale-100"
+                x-transition:leave-end="opacity-0 -rotate-x-10 scale-95"
+                class="relative overflow-hidden rounded-b-md bg-white shadow-xl ring-1 ring-zinc-200 transition-[height] duration-300 ease-out"
+                :style="`height: ${height || 240}px`">
+                {{-- Two content layers, populated + cross-slid by swap() --}}
+                <div x-ref="layer0" class="absolute inset-x-0 top-0 transition duration-300 ease-out"></div>
+                <div x-ref="layer1" class="absolute inset-x-0 top-0 transition duration-300 ease-out"></div>
+
+                {{-- Loading spinner on first fetch (before any content exists) --}}
+                <div x-show="loading && ! hasContent" class="grid h-60 place-items-center">
+                    <span class="size-6 animate-spin rounded-full border-2 border-zinc-200 border-t-brand-blue-500"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- Mobile / tablet (< lg) — horizontal scroller with edge fades --}}
     <section x-data="{
         showLeft: false,
         showRight: true,

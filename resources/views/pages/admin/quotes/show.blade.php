@@ -51,7 +51,7 @@ new #[Layout('layouts::app')] #[Title('Quote | Admin')] class extends Component 
 
     public function mount(Quote $quote): void
     {
-        $this->quote = $quote->load('items', 'user');
+        $this->quote = $quote->load('items', 'user', 'statusHistories.changedBy');
         $this->syncFromQuote();
     }
 
@@ -813,6 +813,32 @@ new #[Layout('layouts::app')] #[Title('Quote | Admin')] class extends Component 
                                 </flux:text>
                             </div>
                         @endif
+                    </div>
+                </flux:card>
+
+                {{-- Quotation history --}}
+                <flux:card class="overflow-hidden p-0">
+                    <div class="border-b border-zinc-200 px-6 py-3 dark:border-zinc-700">
+                        <flux:heading size="sm" class="uppercase tracking-wide">Quotation history</flux:heading>
+                    </div>
+                    <div class="p-6">
+                        @php
+                            $quoteSteps = [
+                                ['value' => 'draft', 'label' => 'Request Submitted', 'icon' => 'document-text', 'desc' => 'The quotation request was received.'],
+                                ['value' => 'awaiting_approval', 'label' => 'Quotation Ready', 'icon' => 'clipboard-document-check', 'desc' => 'Priced and sent to the customer for review.'],
+                                ['value' => 'approved', 'label' => 'Quote Accepted', 'icon' => 'check-badge', 'desc' => 'The customer accepted and an order was created.'],
+                            ];
+                            $isDeclined = $quote->status === App\Enums\QuoteStatus::DECLINED;
+                            $isExpired = $quote->hasExpired();
+                        @endphp
+
+                        <x-status-timeline :steps="$quoteSteps" :histories="$quote->statusHistories"
+                            :implicit-first="$quote->created_at" :aliases="['awaiting_approval' => 'sent']"
+                            :is-terminal="$isDeclined || $isExpired" :terminal="
+                                $isDeclined
+                                    ? ['value' => 'declined', 'label' => 'Quote Declined', 'icon' => 'x-circle', 'tone' => 'danger', 'desc' => 'The quotation was declined.']
+                                    : ['value' => 'expired', 'label' => 'Quote Expired', 'icon' => 'clock', 'tone' => 'muted', 'desc' => 'The validity period ended without a response.']
+                            " :show-actor="true" />
                     </div>
                 </flux:card>
 

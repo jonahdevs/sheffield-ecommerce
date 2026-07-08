@@ -192,20 +192,9 @@ new class extends Component {
                 </div>
             @endif
         @else
-            <a href="{{ route('catalog') }}?q={{ urlencode($query) }}" wire:navigate
-                @click="saveRecent('{{ addslashes($query) }}')"
-                class="flex items-center gap-3 px-4 py-3 text-[13.5px] text-ink-2 hover:bg-surface-sunken">
-                <flux:icon.magnifying-glass variant="micro" class="size-3.5 shrink-0 text-ink-4" />
-                <span>Search Sheffield for <strong class="text-ink">"{{ $query }}"</strong></span>
-                <flux:icon.arrow-right variant="micro" class="ml-auto size-3.5 text-ink-4" />
-            </a>
-
             @if ($this->hasResults())
                 @if ($this->products->isNotEmpty())
-                    <div class="border-t border-zinc-100">
-                        <div class="px-4 py-2 text-[10.5px] font-bold tracking-widest text-ink-4 uppercase">
-                            Products <span class="text-ink-5 ml-1">({{ $this->products->count() }})</span>
-                        </div>
+                    <div class="border-t border-zinc-100 pt-1">
                         @foreach ($this->products as $product)
                             <a href="{{ route('product.show', $product) }}" wire:navigate
                                 @click="saveRecent('{{ addslashes($product->name) }}')"
@@ -361,10 +350,7 @@ new class extends Component {
 
                     @if ($this->hasResults())
                         @if ($this->products->isNotEmpty())
-                            <div class="border-t border-zinc-100">
-                                <div class="px-4 py-2.5 text-[10.5px] font-bold uppercase tracking-widest text-ink-4">
-                                    Products <span class="ml-1 text-ink-5">({{ $this->products->count() }})</span>
-                                </div>
+                            <div class="border-t border-zinc-100 pt-1">
                                 @foreach ($this->products as $product)
                                     <a href="{{ route('product.show', $product) }}" wire:navigate
                                         @click="saveRecent('{{ addslashes($product->name) }}'); $wire.closeMobile()"

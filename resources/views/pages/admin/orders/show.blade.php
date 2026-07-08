@@ -44,6 +44,10 @@ new #[Layout('layouts::app')] #[Title('Order | Admin')] class extends Component
 
     public string $trackingNumber = '';
 
+    public string $driverName = '';
+
+    public string $driverPhone = '';
+
     public string $estimatedDeliveryAt = '';
 
     public string $shipmentNotes = '';
@@ -54,9 +58,6 @@ new #[Layout('layouts::app')] #[Title('Order | Admin')] class extends Component
     public string $shipmentStatus = '';
 
     public bool $showUpdateShipmentModal = false;
-
-    // KRA receipt preview modal
-    public bool $showKraPreviewModal = false;
 
     public function mount(Order $order): void
     {
@@ -204,6 +205,8 @@ new #[Layout('layouts::app')] #[Title('Order | Admin')] class extends Component
             'carrierId' => ['nullable', 'exists:shipping_carriers,id'],
             'warehouseId' => ['nullable', 'exists:warehouses,id'],
             'trackingNumber' => ['nullable', 'string', 'max:255'],
+            'driverName' => ['nullable', 'string', 'max:255'],
+            'driverPhone' => ['nullable', 'string', 'max:30'],
             'estimatedDeliveryAt' => ['nullable', 'date', 'after:today'],
             'shipmentNotes' => ['nullable', 'string', 'max:1000'],
         ]);
@@ -219,6 +222,8 @@ new #[Layout('layouts::app')] #[Title('Order | Admin')] class extends Component
             'warehouse_id' => $this->warehouseId,
             'tracking_number' => $this->trackingNumber ?: null,
             'tracking_url' => $trackingUrl,
+            'driver_name' => $this->driverName ?: null,
+            'driver_phone' => $this->driverPhone ?: null,
             'status' => ShipmentStatus::PENDING,
             'estimated_delivery_at' => $this->estimatedDeliveryAt ?: null,
             'notes' => $this->shipmentNotes ?: null,
@@ -568,210 +573,25 @@ new #[Layout('layouts::app')] #[Title('Order | Admin')] class extends Component
                 </div>
                 <div class="p-6">
                     @php
-                        // Fixed pipeline — always rendered in full.
-                        $pipeline = [
-                            ['status' => OrderStatus::PENDING,          'icon' => 'shopping-bag'],
-                            ['status' => OrderStatus::PROCESSING,        'icon' => 'cog-6-tooth'],
-                            ['status' => OrderStatus::OUT_FOR_DELIVERY,  'icon' => 'truck'],
-                            ['status' => OrderStatus::COMPLETED,         'icon' => 'home'],
+                        $orderSteps = [
+                            ['value' => 'pending', 'label' => 'Order Placed', 'icon' => 'clipboard-document-check', 'desc' => 'The order was placed successfully.'],
+                            ['value' => 'processing', 'label' => 'Being Prepared', 'icon' => 'cog-6-tooth', 'desc' => 'Payment received — items are being processed.'],
+                            ['value' => 'out_for_delivery', 'label' => 'Out for Delivery', 'icon' => 'truck', 'desc' => 'The order is on its way to the customer.'],
+                            ['value' => 'completed', 'label' => 'Delivered', 'icon' => 'check-badge', 'desc' => 'The order was delivered successfully.'],
                         ];
-
-                        // Index history by to_status for O(1) lookup.
-                        $historyByStatus = $order->statusHistories->keyBy('to_status');
-
-                        $isCancelledOrder = $order->status === OrderStatus::CANCELLED;
-                        $cancelEntry      = $historyByStatus->get(OrderStatus::CANCELLED->value);
                     @endphp
 
-                    <ol>
-                        @foreach ($pipeline as $step)
-                            @php
-                                $entry  = $historyByStatus->get($step['status']->value);
-                                $isDone = $entry !== null;
-
-                                // On a cancelled order, stop rendering pipeline steps
-                                // once we reach a step that never happened.
-                                $skipRest = $isCancelledOrder && ! $isDone;
-                            @endphp
-
-                            {{-- Inject the CANCELLED row just before the first skipped step --}}
-                            @if ($skipRest && $cancelEntry && $loop->first === false && ! isset($cancelledInjected))
-                                @php $cancelledInjected = true; @endphp
-                                <li class="relative flex items-start gap-4 pb-8">
-                                    <div class="absolute left-4 top-8 bottom-0 w-0.5 -translate-x-1/2 bg-zinc-200 dark:bg-zinc-700"></div>
-                                    <div class="relative z-10 flex size-8 shrink-0 items-center justify-center rounded-full bg-red-500">
-                                        <flux:icon.x-mark variant="solid" class="size-4 text-white" />
-                                    </div>
-                                    <div class="flex flex-1 flex-wrap items-start justify-between gap-x-4 pt-1">
-                                        <div class="min-w-0">
-                                            <p class="text-sm font-semibold text-red-600 dark:text-red-400">Cancelled</p>
-                                            @if ($cancelEntry->changedBy)
-                                                <p class="mt-0.5 text-xs text-zinc-400">by {{ $cancelEntry->changedBy->name }}</p>
-                                            @endif
-                                            @if ($cancelEntry->note)
-                                                <p class="mt-1 text-xs italic text-zinc-500 dark:text-zinc-400">{{ $cancelEntry->note }}</p>
-                                            @endif
-                                        </div>
-                                        <time class="shrink-0 pt-0.5 text-xs text-zinc-400 dark:text-zinc-500">
-                                            {{ $cancelEntry->created_at->format('d M Y, H:i') }}
-                                        </time>
-                                    </div>
-                                </li>
-                            @endif
-
-                            <li class="relative flex items-start gap-4 pb-8 last:pb-0">
-                                {{-- Connector --}}
-                                @if (! $loop->last)
-                                    <div @class([
-                                        'absolute left-4 top-8 bottom-0 w-0.5 -translate-x-1/2',
-                                        'bg-emerald-400 dark:bg-emerald-500' => $isDone && ! $isCancelledOrder,
-                                        'bg-zinc-200 dark:bg-zinc-700'       => ! $isDone || $isCancelledOrder,
-                                    ])></div>
-                                @endif
-
-                                {{-- Icon --}}
-                                @if ($isDone && ! $isCancelledOrder)
-                                    <div class="relative z-10 flex size-8 shrink-0 items-center justify-center rounded-full bg-emerald-500">
-                                        <flux:icon.check variant="solid" class="size-4 text-white" />
-                                    </div>
-                                @elseif ($isDone && $isCancelledOrder)
-                                    {{-- Completed before cancellation --}}
-                                    <div class="relative z-10 flex size-8 shrink-0 items-center justify-center rounded-full bg-emerald-500">
-                                        <flux:icon.check variant="solid" class="size-4 text-white" />
-                                    </div>
-                                @else
-                                    <div class="relative z-10 flex size-8 shrink-0 items-center justify-center rounded-full bg-zinc-100 dark:bg-zinc-800">
-                                        <flux:icon :icon="$step['icon']" variant="solid" class="size-4 text-zinc-400 dark:text-zinc-500" />
-                                    </div>
-                                @endif
-
-                                {{-- Content --}}
-                                <div class="flex flex-1 flex-wrap items-start justify-between gap-x-4 pt-1">
-                                    <div class="min-w-0">
-                                        <p @class([
-                                            'text-sm font-semibold',
-                                            'text-zinc-900 dark:text-white'    => $isDone,
-                                            'text-zinc-400 dark:text-zinc-500' => ! $isDone,
-                                        ])>{{ $step['status']->label() }}</p>
-                                        @if ($isDone)
-                                            @if ($entry->changedBy)
-                                                <p class="mt-0.5 text-xs text-zinc-400">by {{ $entry->changedBy->name }}</p>
-                                            @elseif ($entry->from_status === null)
-                                                <p class="mt-0.5 text-xs text-zinc-400">by {{ $order->user?->name ?? 'Customer' }}</p>
-                                            @else
-                                                <p class="mt-0.5 text-xs text-zinc-400">System</p>
-                                            @endif
-                                            @if ($entry->note)
-                                                <p class="mt-1 text-xs italic text-zinc-500 dark:text-zinc-400">{{ $entry->note }}</p>
-                                            @endif
-                                        @endif
-                                    </div>
-                                    @if ($isDone)
-                                        <time class="shrink-0 pt-0.5 text-xs text-zinc-400 dark:text-zinc-500">
-                                            {{ $entry->created_at->format('d M Y, H:i') }}
-                                        </time>
-                                    @endif
-                                </div>
-                            </li>
-                        @endforeach
-
-                        {{-- Cancelled at the very end if the order never progressed past PENDING --}}
-                        @if ($isCancelledOrder && $cancelEntry && ! isset($cancelledInjected))
-                            <li class="relative flex items-start gap-4 pb-8 last:pb-0">
-                                <div class="relative z-10 flex size-8 shrink-0 items-center justify-center rounded-full bg-red-500">
-                                    <flux:icon.x-mark variant="solid" class="size-4 text-white" />
-                                </div>
-                                <div class="flex flex-1 flex-wrap items-start justify-between gap-x-4 pt-1">
-                                    <div class="min-w-0">
-                                        <p class="text-sm font-semibold text-red-600 dark:text-red-400">Cancelled</p>
-                                        @if ($cancelEntry->changedBy)
-                                            <p class="mt-0.5 text-xs text-zinc-400">by {{ $cancelEntry->changedBy->name }}</p>
-                                        @endif
-                                        @if ($cancelEntry->note)
-                                            <p class="mt-1 text-xs italic text-zinc-500 dark:text-zinc-400">{{ $cancelEntry->note }}</p>
-                                        @endif
-                                    </div>
-                                    <time class="shrink-0 pt-0.5 text-xs text-zinc-400 dark:text-zinc-500">
-                                        {{ $cancelEntry->created_at->format('d M Y, H:i') }}
-                                    </time>
-                                </div>
-                            </li>
-                        @endif
-                    </ol>
+                    <x-status-timeline :steps="$orderSteps" :histories="$order->statusHistories"
+                        :implicit-first="$order->created_at"
+                        :is-terminal="$order->status === \App\Enums\OrderStatus::CANCELLED" :terminal="[
+                            'value' => 'cancelled',
+                            'label' => 'Order Cancelled',
+                            'icon' => 'x-circle',
+                            'tone' => 'danger',
+                            'desc' => 'This order has been cancelled and will not be processed further.',
+                        ]" :show-actor="true" />
                 </div>
             </flux:card>
-
-            {{-- Documents --}}
-            @php
-                $hasPackingList  = (bool) $order->packing_list_path;
-                $hasDeliveryNote = (bool) $order->delivery_note_path;
-                $hasKraReceipt   = (bool) $order->receipt_path;
-                $hasAnyDocument  = $hasPackingList || $hasDeliveryNote || $hasKraReceipt;
-            @endphp
-            @if ($hasAnyDocument)
-                <flux:card class="overflow-hidden p-0">
-                    <div class="border-b border-zinc-200 px-6 py-3 dark:border-zinc-700">
-                        <flux:heading size="sm" class="uppercase tracking-wide">Documents</flux:heading>
-                    </div>
-                    <div class="divide-y divide-zinc-100 dark:divide-zinc-800">
-                        @if ($hasPackingList)
-                            <div class="flex items-center justify-between px-6 py-3">
-                                <div class="flex items-center gap-3">
-                                    <div class="flex size-8 items-center justify-center rounded-lg bg-zinc-100 dark:bg-zinc-800">
-                                        <flux:icon.clipboard-document-list class="size-4 text-zinc-500" />
-                                    </div>
-                                    <div>
-                                        <div class="text-sm font-medium dark:text-white">Packing List</div>
-                                        <div class="text-xs text-zinc-400">Internal use only</div>
-                                    </div>
-                                </div>
-                                <flux:button size="xs" variant="ghost" icon="arrow-down-tray"
-                                    :href="route('admin.orders.packing-list', $order)" target="_blank">
-                                    Download
-                                </flux:button>
-                            </div>
-                        @endif
-                        @if ($hasDeliveryNote)
-                            <div class="flex items-center justify-between px-6 py-3">
-                                <div class="flex items-center gap-3">
-                                    <div class="flex size-8 items-center justify-center rounded-lg bg-zinc-100 dark:bg-zinc-800">
-                                        <flux:icon.document-text class="size-4 text-zinc-500" />
-                                    </div>
-                                    <div>
-                                        <div class="text-sm font-medium dark:text-white">Delivery Note</div>
-                                        <div class="text-xs text-zinc-400">Goes with the shipment</div>
-                                    </div>
-                                </div>
-                                <flux:button size="xs" variant="ghost" icon="arrow-down-tray"
-                                    :href="route('admin.orders.delivery-note', $order)" target="_blank">
-                                    Download
-                                </flux:button>
-                            </div>
-                        @endif
-                        @if ($hasKraReceipt)
-                            <div class="flex items-center justify-between px-6 py-3">
-                                <div class="flex items-center gap-3">
-                                    <div class="flex size-8 items-center justify-center rounded-lg bg-emerald-50 dark:bg-emerald-950/40">
-                                        <flux:icon.receipt-percent class="size-4 text-emerald-600 dark:text-emerald-400" />
-                                    </div>
-                                    <div>
-                                        <div class="text-sm font-medium dark:text-white">KRA Tax Receipt</div>
-                                        <div class="text-xs text-zinc-400">
-                                            @if ($order->cu_number)
-                                                CU: {{ $order->cu_number }}
-                                            @endif
-                                        </div>
-                                    </div>
-                                </div>
-                                <flux:button size="xs" variant="ghost" icon="eye"
-                                    wire:click="$set('showKraPreviewModal', true)">
-                                    Preview
-                                </flux:button>
-                            </div>
-                        @endif
-                    </div>
-                </flux:card>
-            @endif
 
             {{-- SAP Sync Logs --}}
             @if ($this->showSapCard && $order->sapSyncLogs->isNotEmpty())
@@ -933,6 +753,18 @@ new #[Layout('layouts::app')] #[Title('Order | Admin')] class extends Component
                                 <div class="flex justify-between gap-2">
                                     <span class="shrink-0 text-zinc-500">Tracking #</span>
                                     <span class="font-mono text-xs dark:text-white">{{ $order->shipment->tracking_number }}</span>
+                                </div>
+                            @endif
+                            @if ($order->shipment->driver_name)
+                                <div class="flex justify-between gap-2">
+                                    <span class="shrink-0 text-zinc-500">Driver</span>
+                                    <span class="truncate text-right font-medium dark:text-white">{{ $order->shipment->driver_name }}</span>
+                                </div>
+                            @endif
+                            @if ($order->shipment->driver_phone)
+                                <div class="flex justify-between gap-2">
+                                    <span class="shrink-0 text-zinc-500">Driver phone</span>
+                                    <a href="tel:{{ $order->shipment->driver_phone }}" class="text-right font-medium text-brand-500 hover:underline dark:text-white">{{ $order->shipment->driver_phone }}</a>
                                 </div>
                             @endif
                             @if ($order->shipment->estimated_delivery_at)
@@ -1170,6 +1002,12 @@ new #[Layout('layouts::app')] #[Title('Order | Admin')] class extends Component
 
             <flux:input wire:model="trackingNumber" label="Tracking number" placeholder="e.g. SHF-TRK-XXXX" />
 
+            {{-- Delivery driver — for own-fleet deliveries with no external waybill. --}}
+            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <flux:input wire:model="driverName" label="Driver name" placeholder="e.g. John Kamau" />
+                <flux:input wire:model="driverPhone" label="Driver phone" placeholder="e.g. 0712 345 678" />
+            </div>
+
             <flux:select wire:model="warehouseId" label="Pickup warehouse">
                 <flux:select.option :value="null">None — delivery to customer</flux:select.option>
                 @foreach ($this->warehouses as $wh)
@@ -1216,27 +1054,6 @@ new #[Layout('layouts::app')] #[Title('Order | Admin')] class extends Component
                 </flux:modal.close>
             </div>
         </form>
-    </flux:modal>
-
-    {{-- KRA Receipt Preview --}}
-    <flux:modal wire:model.self="showKraPreviewModal" class="w-full max-w-4xl" :dismissible="true">
-        <div class="flex items-center justify-between border-b border-zinc-200 pb-4 dark:border-zinc-700">
-            <div>
-                <flux:heading size="lg" class="uppercase tracking-wide">KRA Tax Receipt</flux:heading>
-                <flux:subheading>{{ $order->order_number }}</flux:subheading>
-            </div>
-            <flux:button size="sm" variant="ghost" icon="arrow-top-right-on-square"
-                :href="route('admin.orders.kra-receipt', $order)" target="_blank">
-                Open in new tab
-            </flux:button>
-        </div>
-        <div class="mt-4">
-            <iframe
-                src="{{ route('admin.orders.kra-receipt', $order) }}"
-                class="h-[75vh] w-full rounded border border-zinc-200 dark:border-zinc-700"
-                type="application/pdf">
-            </iframe>
-        </div>
     </flux:modal>
 
 </div>

@@ -16,7 +16,7 @@ new #[Layout('layouts::account')] #[Title('Order Tracking')] class extends Compo
         abort_unless($order->user_id === auth()->id(), 403);
         SEOMeta::setTitle('Tracking — ' . $order->order_number);
         SEOMeta::setRobots('noindex,follow');
-        $this->order = $order->load(['statusHistories', 'quote']);
+        $this->order = $order->load(['statusHistories', 'quote', 'shipment']);
     }
 }; ?>
 
@@ -69,6 +69,28 @@ new #[Layout('layouts::account')] #[Title('Order Tracking')] class extends Compo
                         </flux:callout.link>.
                     </flux:callout.text>
                 </flux:callout>
+            @endif
+
+            {{-- Delivery driver — shown once the order is on its way / delivered --}}
+            @if ($order->shipment?->hasDriver() && in_array($order->status->value, ['out_for_delivery', 'completed']))
+                <div class="mb-6 flex items-center gap-4 rounded-lg border border-brand-100 bg-brand-50 px-5 py-4">
+                    <div class="flex size-10 shrink-0 items-center justify-center rounded-full bg-brand-500 text-white">
+                        <flux:icon.truck variant="mini" class="size-5" />
+                    </div>
+                    <div class="min-w-0 flex-1">
+                        <p class="text-[10px] font-bold uppercase tracking-[0.15em] text-brand-500">Your delivery driver</p>
+                        @if ($order->shipment->driver_name)
+                            <p class="font-serif text-base font-black leading-tight text-ink break-words">{{ $order->shipment->driver_name }}</p>
+                        @endif
+                        @if ($order->shipment->driver_phone)
+                            <a href="tel:{{ $order->shipment->driver_phone }}"
+                                class="mt-0.5 inline-flex items-center gap-1 text-[13px] font-bold text-brand-500 hover:underline">
+                                <flux:icon.phone variant="micro" class="size-3.5" />
+                                {{ $order->shipment->driver_phone }}
+                            </a>
+                        @endif
+                    </div>
+                </div>
             @endif
 
             {{-- Timeline --}}

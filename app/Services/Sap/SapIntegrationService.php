@@ -11,6 +11,16 @@ use Illuminate\Support\Facades\Log;
 
 class SapIntegrationService
 {
+    /**
+     * Substrings in SAP's rejection message that mean the order was already
+     * invoiced on a previous attempt. Matched case-insensitively.
+     */
+    private const ALREADY_EXISTS_SIGNALS = [
+        'invoice already created',
+        'already invoiced',
+        'already exists',
+    ];
+
     public function __construct(private readonly SapClient $client) {}
 
     /**
@@ -33,19 +43,36 @@ class SapIntegrationService
         $docEntry = (string) ($data['docEntry'] ?? '');
         $docNumber = isset($data['docNumber']) ? (string) $data['docNumber'] : null;
 
+        // SAP rejects a re-send of an order it has already invoiced. That is not a
+        // failure — the invoice exists; we only need the CU number. Treat it as a
+        // benign, idempotent outcome instead of retrying and alerting staff.
+        $alreadyExists = ! $success && $this->indicatesInvoiceExists($data, $response->body());
+        $ok = $success || $alreadyExists;
+
         SapSyncLog::create([
             'order_id' => $order->id,
             'operation' => 'create_invoice',
-            'status' => $success ? 'success' : 'failed',
+            'status' => $ok ? 'success' : 'failed',
             'endpoint' => '/api/invoice/create',
             'http_method' => 'POST',
             'request_payload' => $this->redactPayload($payload),
             'response_payload' => $data,
             'http_status_code' => $response->status(),
-            'error_message' => $success ? null : ($data['message'] ?? $response->body()),
+            'error_message' => $ok ? null : ($data['message'] ?? $response->body()),
             'sap_document_number' => $success ? ($docEntry ?: null) : null,
             'duration_ms' => $durationMs,
         ]);
+
+        if ($alreadyExists) {
+            Log::info('SAP invoice already exists — treating as synced.', [
+                'order_id' => $order->id,
+                'order_number' => $order->order_number,
+                'doc_entry' => $docEntry ?: null,
+                'message' => $data['message'] ?? null,
+            ]);
+
+            return new SapSyncResult($docEntry, $docNumber, $data, alreadyExists: true);
+        }
 
         if (! $success) {
             $error = $data['message'] ?? "SAP returned HTTP {$response->status()}";
@@ -140,19 +167,45 @@ class SapIntegrationService
     }
 
     /**
-     * Mask card/payment tokens before persisting to sap_sync_logs.
-     * The audit trail needs to show the request happened, not store credentials.
+     * Does SAP's rejection mean the invoice already exists for this order? SAP
+     * answers HTTP 200 with success=false and a message like "Invoice already
+     * created" when we re-send an order it has already invoiced.
+     *
+     * @param  array<string, mixed>  $data
+     */
+    private function indicatesInvoiceExists(array $data, string $body): bool
+    {
+        $message = strtolower((string) ($data['message'] ?? $body));
+
+        foreach (self::ALREADY_EXISTS_SIGNALS as $signal) {
+            if (str_contains($message, $signal)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Mask only the genuinely sensitive payment fields before persisting to
+     * sap_sync_logs. The reusable card handle and national ID are secrets; the
+     * rest of the block — transaction references, card brand, the masked last-4,
+     * expiry, payment count — stays visible so the sync can actually be audited
+     * and the per-gateway mapping verified.
      *
      * @param  array<string, mixed>  $payload
      * @return array<string, mixed>
      */
     private function redactPayload(array $payload): array
     {
+        $sensitiveKeys = ['creditCardToken', 'personalId'];
+
         if (isset($payload['credit_guard_response'])) {
-            $payload['credit_guard_response'] = array_map(
-                fn ($v) => filled($v) ? '[redacted]' : $v,
-                $payload['credit_guard_response'],
-            );
+            foreach ($sensitiveKeys as $key) {
+                if (filled($payload['credit_guard_response'][$key] ?? null)) {
+                    $payload['credit_guard_response'][$key] = '[redacted]';
+                }
+            }
         }
 
         return $payload;

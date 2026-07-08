@@ -20,8 +20,9 @@ new #[Layout('layouts::account')] #[Title('Recently Viewed')] class extends Comp
         return auth()->user()
             ->recentlyViewed()
             ->with(['product' => fn ($q) => $q->with([
-                'images' => fn ($q) => $q->where('is_cover', true)->limit(1),
-                'brand',
+                'media',
+                'brand:id,name',
+                'taxClass:id,rate,is_inclusive',
             ])])
             ->limit(24)
             ->get()

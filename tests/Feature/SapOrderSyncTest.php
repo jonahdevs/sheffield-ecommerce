@@ -10,6 +10,7 @@ use App\Models\SapSyncLog;
 use App\Models\User;
 use App\Notifications\SapSyncFailedNotification;
 use App\Services\Sap\DTOs\SapOrderPayload;
+use App\Services\Sap\SapApiException;
 use App\Services\Sap\SapIntegrationService;
 use App\Services\Sap\SapWebhookHandler;
 use App\Services\Sap\ValueObjects\SapSyncResult;
@@ -357,7 +358,200 @@ it('builds the SAP payload with order items and customer details', function () {
         ->and($payload['customer']['note'])->toBe('ring bell')
         ->and($payload['credit_guard_response']['uid'])->toBe('MPE123456789')
         ->and($payload['order']['Orderid'])->toBe($order->id)
+        ->and($payload['order']['reference'])->toBe($order->order_number)
         ->and($payload['order']['payment_status'])->toBe('Paid');
+});
+
+it('fills card fields for a Paystack card payment', function () {
+    $order = Order::factory()->create();
+
+    Payment::factory()->paystack()->successful()->create([
+        'order_id' => $order->id,
+        'paystack_reference' => 'SHF-2026-00042-ABCDEFGH',
+        'authorization_code' => 'AUTH_abc123',
+        'card_brand' => 'visa',
+        'card_last4' => '4242',
+        'payload' => [
+            'id' => 987654321,
+            'authorization' => ['exp_month' => '9', 'exp_year' => '2029'],
+        ],
+    ]);
+
+    $block = SapOrderPayload::fromOrder($order)['credit_guard_response'];
+
+    expect($block['uid'])->toBe('SHF-2026-00042-ABCDEFGH')
+        ->and($block['cgUid'])->toBe('987654321')
+        ->and($block['cardBrand'])->toBe('visa')
+        ->and($block['cardNo'])->toBe('4242')
+        ->and($block['cardExpiration'])->toBe('0929')
+        ->and($block['creditCardToken'])->toBe('AUTH_abc123')
+        ->and($block['numberOfPayments'])->toBe('1');
+});
+
+it('leaves card fields empty for a Paystack mobile-money payment and uses the receipt as uid', function () {
+    $order = Order::factory()->create();
+
+    Payment::factory()->paystackMobileMoney()->successful()->create([
+        'order_id' => $order->id,
+        'mpesa_receipt' => 'QGH7XY8Z9A',
+        'paystack_reference' => 'SHF-2026-00099-ZZZZ',
+    ]);
+
+    $block = SapOrderPayload::fromOrder($order)['credit_guard_response'];
+
+    // Mobile money settles against the network receipt, not the gateway ref.
+    expect($block['uid'])->toBe('QGH7XY8Z9A')
+        ->and($block['cardBrand'])->toBe('')
+        ->and($block['cardNo'])->toBe('')
+        ->and($block['creditCardToken'])->toBe('')
+        ->and($block['numberOfPayments'])->toBe('1');
+});
+
+it('fills card fields for a Stripe payment', function () {
+    $order = Order::factory()->create();
+
+    Payment::factory()->stripe()->successful()->create([
+        'order_id' => $order->id,
+        'stripe_payment_intent_id' => 'pi_test_123',
+        'stripe_charge_id' => 'ch_test_456',
+        'card_brand' => 'mastercard',
+        'card_last4' => '4444',
+    ]);
+
+    $block = SapOrderPayload::fromOrder($order)['credit_guard_response'];
+
+    expect($block['uid'])->toBe('ch_test_456')
+        ->and($block['cgUid'])->toBe('ch_test_456')
+        ->and($block['cardBrand'])->toBe('mastercard')
+        ->and($block['cardNo'])->toBe('4444')
+        ->and($block['creditCardToken'])->toBe('pi_test_123');
+});
+
+it('returns an empty payment block when the order has no successful payment', function () {
+    $order = Order::factory()->create();
+
+    Payment::factory()->failed()->create(['order_id' => $order->id]);
+
+    $block = SapOrderPayload::fromOrder($order)['credit_guard_response'];
+
+    expect($block['uid'])->toBe('')
+        ->and($block['cardBrand'])->toBe('')
+        ->and($block['numberOfPayments'])->toBe('0');
+});
+
+it('logs the real payment details but masks only the card token in the audit log', function () {
+    Http::fake([
+        '*/api/invoice/create' => Http::response(['success' => true, 'docEntry' => '5001'], 200),
+    ]);
+
+    $order = Order::factory()->create();
+
+    Payment::factory()->paystack()->successful()->create([
+        'order_id' => $order->id,
+        'paystack_reference' => 'SHF-2026-00042-ABCDEFGH',
+        'authorization_code' => 'AUTH_secret123',
+        'card_brand' => 'visa',
+        'card_last4' => '4242',
+    ]);
+
+    app(SapIntegrationService::class)->syncOrder($order->fresh());
+
+    $logged = SapSyncLog::where('order_id', $order->id)
+        ->where('operation', 'create_invoice')
+        ->firstOrFail()
+        ->request_payload['credit_guard_response'];
+
+    // Secrets masked…
+    expect($logged['creditCardToken'])->toBe('[redacted]')
+        // …but the meaningful, non-sensitive details survive for verification.
+        ->and($logged['uid'])->toBe('SHF-2026-00042-ABCDEFGH')
+        ->and($logged['cardBrand'])->toBe('visa')
+        ->and($logged['cardNo'])->toBe('4242')
+        ->and($logged['numberOfPayments'])->toBe('1');
+
+    // And the request actually sent to SAP carries the unmasked token.
+    Http::assertSent(fn ($request) => $request['credit_guard_response']['creditCardToken'] === 'AUTH_secret123'
+        && $request['order']['Orderid'] === $order->id
+        && $request['order']['reference'] === $order->order_number);
+});
+
+// ==================================================
+// IDEMPOTENT "INVOICE ALREADY CREATED"
+// ==================================================
+
+it('treats an "invoice already created" response as an idempotent success', function () {
+    Http::fake([
+        '*/api/invoice/create' => Http::response(['success' => false, 'message' => 'Invoice already created'], 200),
+    ]);
+
+    $order = Order::factory()->create();
+    Payment::factory()->successful()->create(['order_id' => $order->id]);
+
+    $result = app(SapIntegrationService::class)->syncOrder($order->fresh());
+
+    expect($result->alreadyExists)->toBeTrue();
+
+    $log = SapSyncLog::where('order_id', $order->id)->where('operation', 'create_invoice')->firstOrFail();
+    expect($log->status)->toBe('success')
+        ->and($log->error_message)->toBeNull();
+});
+
+it('marks AWAITING_CU without failing or alerting when the invoice already exists', function () {
+    Notification::fake();
+    Queue::fake();
+
+    Http::fake([
+        '*/api/invoice/create' => Http::response(['success' => false, 'message' => 'Invoice already created'], 200),
+    ]);
+
+    $order = Order::factory()->create(['sap_sync_status' => SapSyncStatus::PENDING]);
+    Payment::factory()->successful()->create(['order_id' => $order->id]);
+
+    (new SyncOrderToSapJob($order))->handle(app(SapIntegrationService::class));
+
+    $order->refresh();
+    expect($order->sap_sync_status)->toBe(SapSyncStatus::AWAITING_CU)
+        ->and($order->sap_sync_error)->toBeNull();
+
+    Notification::assertNothingSent();
+    // No docEntry to validate, so the recovery poll is not queued — the webhook
+    // remains the path to the CU number.
+    Queue::assertNotPushed(RecoverSapInvoiceJob::class);
+});
+
+it('stores the docEntry and queues recovery when SAP echoes it on an already-exists response', function () {
+    Queue::fake();
+
+    Http::fake([
+        '*/api/invoice/create' => Http::response([
+            'success' => false,
+            'message' => 'Invoice already created',
+            'docEntry' => '23394',
+        ], 200),
+    ]);
+
+    $order = Order::factory()->create(['sap_sync_status' => SapSyncStatus::PENDING]);
+    Payment::factory()->successful()->create(['order_id' => $order->id]);
+
+    (new SyncOrderToSapJob($order))->handle(app(SapIntegrationService::class));
+
+    expect($order->fresh()->sap_doc_entry)->toBe('23394');
+    Queue::assertPushed(RecoverSapInvoiceJob::class);
+});
+
+it('still hard-fails on a genuine SAP error', function () {
+    Http::fake([
+        '*/api/invoice/create' => Http::response(['success' => false, 'message' => 'G/L account needs DR assignment'], 200),
+    ]);
+
+    $order = Order::factory()->create();
+    Payment::factory()->successful()->create(['order_id' => $order->id]);
+
+    expect(fn () => app(SapIntegrationService::class)->syncOrder($order->fresh()))
+        ->toThrow(SapApiException::class);
+
+    $log = SapSyncLog::where('order_id', $order->id)->where('operation', 'create_invoice')->firstOrFail();
+    expect($log->status)->toBe('failed');
 });
 
 // ==================================================

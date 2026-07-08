@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 #[Fillable([
     'order_id', 'shipping_method_id', 'carrier_id', 'warehouse_id',
     'tracking_number', 'tracking_url', 'status',
+    'driver_name', 'driver_phone',
     'carrier_booking_ref', 'carrier_payload',
     'estimated_delivery_at', 'booked_at', 'picked_up_at',
     'delivered_at', 'failed_at', 'notes',
@@ -79,6 +80,15 @@ class Shipment extends Model
     public function isPickup(): bool
     {
         return $this->warehouse_id !== null;
+    }
+
+    /**
+     * Has a human delivery driver been assigned? Own-fleet deliveries record the
+     * driver so staff and the customer can identify and contact them.
+     */
+    public function hasDriver(): bool
+    {
+        return filled($this->driver_name) || filled($this->driver_phone);
     }
 
     public function refreshFromCarrier(): TrackingResult

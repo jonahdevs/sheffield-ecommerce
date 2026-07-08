@@ -165,6 +165,12 @@ return new class extends Migration
             $table->string('tracking_url', 500)->nullable();
             $table->string('status')->default('pending');
 
+            // Human delivery driver — used for self-managed / own-fleet deliveries
+            // that have no external waybill. Lets staff and the customer identify
+            // and contact whoever is physically delivering the order.
+            $table->string('driver_name')->nullable();
+            $table->string('driver_phone')->nullable();
+
             $table->string('carrier_booking_ref')->nullable();
             $table->json('carrier_payload')->nullable();
 

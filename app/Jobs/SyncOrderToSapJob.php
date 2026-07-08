@@ -74,21 +74,33 @@ class SyncOrderToSapJob implements ShouldQueue
         }
 
         // Persist doc refs before dispatching recovery — guards against partial failures.
+        // On an "already exists" outcome SAP may not echo the docEntry, so keep any
+        // value we already had rather than blanking it.
         $order->update([
-            'sap_doc_entry' => $result->docEntry,
-            'sap_doc_number' => $result->docNumber,
+            'sap_doc_entry' => $result->docEntry ?: $order->sap_doc_entry,
+            'sap_doc_number' => $result->docNumber ?? $order->sap_doc_number,
             'sap_sync_status' => SapSyncStatus::AWAITING_CU,
             'sap_synced_at' => now(),
             'sap_sync_attempts' => $this->attempts(),
             'sap_sync_error' => null,
         ]);
-        SapSyncStatusUpdated::dispatch($order->fresh(), SapSyncStatus::AWAITING_CU);
+        $order = $order->fresh();
+        SapSyncStatusUpdated::dispatch($order, SapSyncStatus::AWAITING_CU);
 
         activity()->performedOn($order)
-            ->withProperties(['sap_doc_entry' => $result->docEntry, 'attempt' => $this->attempts()])
+            ->withProperties([
+                'sap_doc_entry' => $order->sap_doc_entry,
+                'attempt' => $this->attempts(),
+                'already_exists' => $result->alreadyExists,
+            ])
             ->log('sap_sync_completed');
 
-        RecoverSapInvoiceJob::dispatch($order->fresh());
+        // The recovery job polls the validate endpoint by docEntry — only useful
+        // when we actually have one. Without it (e.g. a duplicate SAP couldn't
+        // re-identify), the webhook remains the path to the CU number.
+        if ($order->sap_doc_entry) {
+            RecoverSapInvoiceJob::dispatch($order);
+        }
     }
 
     public function failed(\Throwable $exception): void

@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\Order;
 use App\Models\Shipment;
 use Illuminate\Support\Facades\URL;
 
@@ -31,6 +30,18 @@ test('confirm page renders for a valid signed url', function () {
         ->assertOk()
         ->assertSee($shipment->order->order_number)
         ->assertSee('Confirm your delivery');
+});
+
+test('confirm page shows the delivery driver when one is assigned', function () {
+    $shipment = Shipment::factory()->delivered()->withDriver()->create([
+        'driver_name' => 'John Kamau',
+        'driver_phone' => '0712345678',
+    ]);
+
+    $this->get(makeSignedConfirmUrl($shipment))
+        ->assertOk()
+        ->assertSee('John Kamau')
+        ->assertSee('0712345678');
 });
 
 test('confirm page shows dispute notice when already disputed', function () {

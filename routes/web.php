@@ -1,12 +1,13 @@
 <?php
 
+use App\Http\Controllers\DeliveryConfirmationController;
 use App\Http\Controllers\Dev\MailPreviewController;
 use App\Http\Controllers\NewsletterController;
 use App\Http\Controllers\Payments\MpesaCallbackController;
 use App\Http\Controllers\Payments\PaystackWebhookController;
 use App\Http\Controllers\Payments\StripeWebhookController;
-use App\Http\Controllers\DeliveryConfirmationController;
 use App\Http\Controllers\SocialAuthController;
+use App\Http\Controllers\Storefront\CategoryMenuController;
 use App\Models\Cart;
 use App\Support\StorefrontSession;
 use Illuminate\Support\Facades\Route;
@@ -44,6 +45,10 @@ Route::livewire('/quotes/{quote}/review', 'pages::storefront.quote-review')->nam
 Route::livewire('/checkout', 'pages::storefront.checkout')->name('checkout')->middleware(['auth', 'customer']);
 Route::livewire('/pay/{order}', 'pages::storefront.payment')->name('payment.page')->middleware(['auth', 'customer']);
 Route::livewire('/product/{product:slug}', 'pages::storefront.product')->name('product.show');
+
+// Mega-menu flyout body — fetched on hover by the category navigation.
+Route::get('/menu/{category:slug}/flyout', CategoryMenuController::class)
+    ->name('menu.flyout');
 
 // ---------------------------------------------------------------------------
 // Newsletter — confirm & unsubscribe (public, no auth)

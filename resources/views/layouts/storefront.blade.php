@@ -17,7 +17,9 @@
     // Shared by the desktop category bar (category-nav partial) and the mobile drawer.
     // 12 = max grid capacity (6 cols × 2 rows at lg).
     $navCategories = \App\Models\CategoryPlacement::query()
-        ->with('category')
+        // children_count decides whether a nav item is a mega-menu trigger or a plain
+        // link; the flyout children themselves are fetched lazily on hover (menu.flyout).
+        ->with(['category' => fn ($q) => $q->withCount('children')])
         ->where('location', \App\Enums\CategorySection::NAVBAR)
         ->where('status', \App\Enums\CategoryStatus::ACTIVE)
         ->orderBy('sort_order')
