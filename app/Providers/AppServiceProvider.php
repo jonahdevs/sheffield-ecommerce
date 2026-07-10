@@ -22,6 +22,7 @@ use App\Settings\LocalizationSettings;
 use App\Settings\SecuritySettings;
 use App\Support\ActivitySource;
 use App\Support\Money;
+use App\Support\TaxCalculator;
 use Carbon\CarbonImmutable;
 use Cog\Laravel\Ban\Events\ModelWasBanned;
 use Illuminate\Auth\Events\Login;
@@ -51,6 +52,11 @@ class AppServiceProvider extends ServiceProvider
             $app->make(PaymentCredentials::class)->mpesaConfig()
         ));
         $this->app->singleton(Money::class);
+
+        // Every product card resolves the calculator. Scoped (not singleton) keeps
+        // its default-tax-class lookup memoised for the request without leaking
+        // that state between requests on Octane's long-running workers.
+        $this->app->scoped(TaxCalculator::class);
 
         // Chatbot: resolve the AiChatProvider contract to whichever provider
         // config/ai.php selects (Groq by default). Flip AI_PROVIDER to switch.

@@ -67,6 +67,7 @@ document.addEventListener('alpine:init', () => {
         _cy: 0,
         _reqId: 0,
         _lastX: null,
+        _closeTimer: null,
 
         // Keep the latest pointer position (bound to the nav's mousemove) so
         // hover-intent can measure the cursor's speed.
@@ -81,6 +82,8 @@ document.addEventListener('alpine:init', () => {
         // passing the cursor through the bar never pops the menu open. Once the
         // menu is already open, switching between triggers stays instant.
         hover(event, id, url) {
+            this.cancelClose();
+
             if (this.isOpen) {
                 this._open(id, url, this._pointerX(event));
 
@@ -115,8 +118,47 @@ document.addEventListener('alpine:init', () => {
             }
         },
 
+        // Pointer entered a category with no sub-categories. It can't open a panel,
+        // so it should dismiss the one that's showing — but the trigger grid is two
+        // rows deep and the panel hangs below both, so reaching the panel from a
+        // top-row trigger means sweeping straight through the cell underneath it.
+        // Mirror hover-intent: only dismiss once the pointer actually settles here.
+        // Passing through on the way down leaves the panel alone.
+        closeIntent(event) {
+            this.cancelOpen();
+
+            if (! this.isOpen) {
+                return;
+            }
+
+            this._px = this._cx = event.clientX;
+            this._py = this._cy = event.clientY;
+
+            clearInterval(this._closeTimer);
+            this._closeTimer = setInterval(() => this._checkCloseIntent(), this.pollInterval);
+        },
+
+        _checkCloseIntent() {
+            const moved = Math.abs(this._px - this._cx) + Math.abs(this._py - this._cy);
+
+            if (moved < this.sensitivity) {
+                this.close();
+            } else {
+                // Still travelling — take a fresh sample and keep waiting.
+                this._cx = this._px;
+                this._cy = this._py;
+            }
+        },
+
+        // Left the plain link before it settled (into the panel, or back to a
+        // trigger) — the menu stays as it was.
+        cancelClose() {
+            clearInterval(this._closeTimer);
+        },
+
         // Keyboard focus is deliberate — open immediately, no dwell.
         focus(event, id, url) {
+            this.cancelClose();
             this._open(id, url, this._pointerX(event));
         },
 
@@ -243,6 +285,7 @@ document.addEventListener('alpine:init', () => {
         // Closing is instant — fired the moment the pointer leaves the whole menu.
         close() {
             this.cancelOpen();
+            this.cancelClose();
             this.isOpen = false;
         },
     }));

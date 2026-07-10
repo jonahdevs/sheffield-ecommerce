@@ -154,11 +154,11 @@ new #[Layout('layouts::app')] #[Title('Brands | Admin')] class extends Component
     <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
             @push('breadcrumbs')
-<flux:breadcrumbs>
-                <flux:breadcrumbs.item :href="route('dashboard')" wire:navigate>Dashboard</flux:breadcrumbs.item>
-                <flux:breadcrumbs.item>Brands</flux:breadcrumbs.item>
-            </flux:breadcrumbs>
-@endpush
+                <flux:breadcrumbs>
+                    <flux:breadcrumbs.item :href="route('dashboard')" wire:navigate>Dashboard</flux:breadcrumbs.item>
+                    <flux:breadcrumbs.item>Brands</flux:breadcrumbs.item>
+                </flux:breadcrumbs>
+            @endpush
             <flux:heading size="xl">Brands</flux:heading>
             <flux:subheading>Manufacturers and labels carried in your catalog.</flux:subheading>
         </div>
@@ -168,7 +168,8 @@ new #[Layout('layouts::app')] #[Title('Brands | Admin')] class extends Component
     <flux:card class="mt-6 p-0 overflow-hidden">
 
         {{-- Toolbar --}}
-        <div class="flex flex-col gap-3 border-b border-zinc-200 px-6 py-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4 dark:border-zinc-700">
+        <div
+            class="flex flex-col gap-3 border-b border-zinc-200 px-6 py-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4 dark:border-zinc-700">
             <flux:input wire:model.live.debounce.300ms="search" placeholder="Search brands…" icon="magnifying-glass"
                 clearable class="sm:max-w-xs" />
 
@@ -205,11 +206,14 @@ new #[Layout('layouts::app')] #[Title('Brands | Admin')] class extends Component
                     <flux:table.row :key="$brand->id">
                         <flux:table.cell>
                             <div class="flex items-center gap-3">
-                                <div class="size-8 shrink-0 overflow-hidden rounded border border-zinc-100 bg-zinc-50 p-0.5">
+                                <div
+                                    class="size-8 shrink-0 overflow-hidden rounded border border-zinc-100 bg-zinc-50 p-0.5">
                                     @if ($brand->logo_url)
-                                        <img src="{{ $brand->logo_url }}" alt="{{ $brand->name }}" class="size-full object-contain" />
+                                        <img src="{{ $brand->logo_url }}" alt="{{ $brand->name }}"
+                                            class="size-full object-contain" />
                                     @else
-                                        <flux:icon.building-storefront variant="outline" class="size-full text-zinc-300" />
+                                        <flux:icon.building-storefront variant="outline"
+                                            class="size-full text-zinc-300" />
                                     @endif
                                 </div>
                                 <span class="font-semibold text-zinc-800 dark:text-white">{{ $brand->name }}</span>
@@ -241,13 +245,12 @@ new #[Layout('layouts::app')] #[Title('Brands | Admin')] class extends Component
                         <flux:table.cell align="end">
                             <div class="flex items-center justify-end gap-1">
                                 <flux:tooltip content="Activity log">
-                                    <flux:button size="xs" variant="ghost" icon="clock" icon:variant="outline"
-                                        :href="route('admin.activity.item', ['brand', $brand->id])"
-                                        wire:navigate />
+                                    <flux:button size="xs" icon="clock" icon:variant="outline"
+                                        :href="route('admin.activity.item', ['brand', $brand->id])" wire:navigate />
                                 </flux:tooltip>
-                                <flux:button size="xs" variant="ghost" icon="pencil-square" icon:variant="outline"
+                                <flux:button size="xs" icon="pencil-square" icon:variant="outline"
                                     wire:click="openEdit({{ $brand->id }})" />
-                                <flux:button size="xs" variant="ghost" icon="trash-2" icon:variant="outline"
+                                <flux:button size="xs" icon="trash-2" icon:variant="outline"
                                     wire:click="delete({{ $brand->id }})"
                                     wire:confirm="Delete '{{ addslashes($brand->name) }}'?"
                                     class="text-red-500! hover:text-red-600!" />
@@ -272,7 +275,7 @@ new #[Layout('layouts::app')] #[Title('Brands | Admin')] class extends Component
     </flux:card>
 
     {{-- Modal --}}
-    <flux:modal wire:model.self="showModal" class="md:w-[520px]" :dismissible="false">
+    <flux:modal wire:model.self="showModal" class="md:w-130" :dismissible="false">
         <flux:heading class="uppercase tracking-wide">{{ $editingId ? 'Edit brand' : 'New brand' }}</flux:heading>
 
         <form wire:submit="save" class="mt-5 space-y-4">

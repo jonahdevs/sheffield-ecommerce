@@ -24,14 +24,22 @@
                     $isActive =
                         request()->routeIs('category.show') && request()->route('category')?->id === $category->id;
                 @endphp
-                {{-- Only categories with sub-categories are mega-menu triggers;
-                     the rest stay plain links (no empty flyout). --}}
+                {{-- Only categories with sub-categories are mega-menu triggers; the rest
+                     stay plain links (no empty flyout). Settling on — or tabbing to — a
+                     plain link dismisses an open panel, since the pointer never leaves the
+                     nav and so the nav-level mouseleave never fires. The dismissal waits
+                     for the pointer to settle so that sweeping down through a plain link,
+                     on the way from a top-row trigger to the panel, doesn't close it. --}}
                 <a href="{{ route('category.show', $category) }}" wire:navigate
                     @if ($category->children_count > 0)
                         @mouseenter="hover($event, {{ $category->id }}, '{{ route('menu.flyout', $category) }}')"
                         @mouseleave="cancelOpen()"
                         @focus="focus($event, {{ $category->id }}, '{{ route('menu.flyout', $category) }}')"
                         aria-haspopup="true" :aria-expanded="(active === {{ $category->id }} && isOpen).toString()"
+                    @else
+                        @mouseenter="closeIntent($event)"
+                        @mouseleave="cancelClose()"
+                        @focus="close()"
                     @endif
                     @class([
                         'flex items-center gap-2 px-3 py-2.5 text-sm transition',

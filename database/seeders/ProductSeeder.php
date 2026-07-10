@@ -165,6 +165,7 @@ class ProductSeeder extends Seeder
             'quotation_notes' => $data['quotation_notes'] ?? null,
             'min_order_quantity' => $data['min_order_quantity'] ?? null,
             'visibility' => ProductVisibility::VISIBLE,
+            'sort_order' => $data['sort_order'] ?? 0,
             'status' => $status,
         ]);
 

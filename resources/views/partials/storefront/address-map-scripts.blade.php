@@ -31,7 +31,9 @@ Alpine.data('addressMap', () => {
     let active = false;
     const provider   = @js($mapProvider);
     const googleKey  = @js($googleMapsKey);
+    const placesUrl  = @js(route('places.search'));
     const isGoogle   = provider === 'google';
+    const MIN_QUERY  = @js(\App\Services\PlaceSearch::MIN_QUERY_LENGTH);
 
     return {
         map: null,
@@ -39,10 +41,19 @@ Alpine.data('addressMap', () => {
         locating: false,
         step: 1,
 
+        query: '',
+        suggestions: [],
+        searching: false,
+        showSuggestions: false,
+        googleSessionToken: null,
+        // Guards against a slow request for an earlier keystroke landing last.
+        searchToken: 0,
+
         open() {
             if (active) return;
             active = true;
             this.step = 1;
+            this.resetSearch();
             this.$nextTick(() => this.initMap());
         },
 
@@ -171,6 +182,113 @@ Alpine.data('addressMap', () => {
             this.map = null;
             const container = document.getElementById('address-map-container');
             if (container) container.innerHTML = '';
+        },
+
+        // ==================================================
+        // ADDRESS SEARCH
+        // ==================================================
+
+        async searchPlaces() {
+            const query = this.query.trim();
+
+            if (query.length < MIN_QUERY) {
+                this.suggestions = [];
+                this.showSuggestions = false;
+                return;
+            }
+
+            const token = ++this.searchToken;
+            this.searching = true;
+
+            try {
+                const results = isGoogle
+                    ? await this.fetchGoogleSuggestions(query)
+                    : await this.fetchServerSuggestions(query);
+
+                if (token !== this.searchToken) return;
+                this.suggestions = results;
+            } catch (e) {
+                console.error(e);
+                if (token !== this.searchToken) return;
+                this.suggestions = [];
+            } finally {
+                if (token === this.searchToken) {
+                    this.searching = false;
+                    this.showSuggestions = true;
+                }
+            }
+        },
+
+        async fetchServerSuggestions(query) {
+            const response = await fetch(`${placesUrl}?q=${encodeURIComponent(query)}`, {
+                headers: { Accept: 'application/json' },
+            });
+
+            return response.ok ? await response.json() : [];
+        },
+
+        /**
+         * Google's Places autocomplete. Projects created after March 2025 only
+         * have the new AutocompleteSuggestion API, so an older key that lacks
+         * it falls back to the server geocoder rather than showing nothing.
+         */
+        async fetchGoogleSuggestions(query) {
+            const places = await google.maps.importLibrary('places');
+
+            if (! places.AutocompleteSuggestion) {
+                return this.fetchServerSuggestions(query);
+            }
+
+            this.googleSessionToken ??= new places.AutocompleteSessionToken();
+
+            const { suggestions } = await places.AutocompleteSuggestion.fetchAutocompleteSuggestions({
+                input: query,
+                sessionToken: this.googleSessionToken,
+                includedRegionCodes: ['ke'],
+            });
+
+            return suggestions.map((suggestion) => ({
+                label: suggestion.placePrediction.text.toString(),
+                prediction: suggestion.placePrediction,
+            }));
+        },
+
+        async chooseSuggestion(suggestion) {
+            let { label, latitude, longitude } = suggestion;
+
+            // Google only hands over coordinates once the place is fetched,
+            // which also closes out the billed autocomplete session.
+            if (suggestion.prediction) {
+                const place = suggestion.prediction.toPlace();
+                await place.fetchFields({ fields: ['location', 'formattedAddress'] });
+
+                latitude  = place.location.lat();
+                longitude = place.location.lng();
+                label     = place.formattedAddress ?? label;
+                this.googleSessionToken = null;
+            }
+
+            this.query = label;
+            this.closeSuggestions();
+
+            // Never clobber an address the customer typed, or one loaded for edit.
+            if (! this.$wire.line1) this.$wire.line1 = label;
+
+            this.placeMarker(latitude, longitude);
+            isGoogle ? this.map.setZoom(17) : this.map.setView([latitude, longitude], 17);
+        },
+
+        closeSuggestions() {
+            this.showSuggestions = false;
+        },
+
+        resetSearch() {
+            this.searchToken++;
+            this.query = '';
+            this.suggestions = [];
+            this.searching = false;
+            this.showSuggestions = false;
+            this.googleSessionToken = null;
         },
 
         // ==================================================

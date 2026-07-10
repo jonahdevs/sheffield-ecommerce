@@ -22,7 +22,7 @@ new #[Layout('layouts::account')] #[Title('Recently Viewed')] class extends Comp
             ->with(['product' => fn ($q) => $q->with([
                 'media',
                 'brand:id,name',
-                'taxClass:id,rate,is_inclusive',
+                'taxClass:id,rate',
             ])])
             ->limit(24)
             ->get()

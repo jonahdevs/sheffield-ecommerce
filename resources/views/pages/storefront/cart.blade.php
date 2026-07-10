@@ -86,7 +86,7 @@ new #[Layout('layouts::storefront')] #[Title('Cart')] class extends Component
         return Product::query()
             ->whereIn('id', $crossSellIds)
             ->where('visibility', 'visible')
-            ->with(['brand:id,name', 'taxClass:id,rate,is_inclusive', 'media'])
+            ->with(['brand:id,name', 'taxClass:id,rate', 'media'])
             ->get();
     }
 }; ?>

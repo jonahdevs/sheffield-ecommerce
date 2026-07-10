@@ -814,5 +814,13 @@
         "logo": "brands/henan.png",
         "website_url": null,
         "is_active": true
+    },
+    {
+        "slug": "goodwill",
+        "name": "GOODWILL",
+        "description": "Goodwill manufactures commercial catering and beverage equipment, including filter coffee brewers built for high-volume foodservice operations.",
+        "logo": null,
+        "website_url": null,
+        "is_active": true
     }
 ]

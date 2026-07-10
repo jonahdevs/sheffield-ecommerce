@@ -19,7 +19,11 @@
     $navCategories = \App\Models\CategoryPlacement::query()
         // children_count decides whether a nav item is a mega-menu trigger or a plain
         // link; the flyout children themselves are fetched lazily on hover (menu.flyout).
-        ->with(['category' => fn ($q) => $q->withCount('children')])
+        // Only active children count — otherwise a category whose sub-categories are all
+        // hidden would open a panel with nothing a shopper can click.
+        ->with(['category' => fn ($q) => $q->withCount([
+            'children' => fn ($c) => $c->where('status', \App\Enums\CategoryStatus::ACTIVE),
+        ])])
         ->where('location', \App\Enums\CategorySection::NAVBAR)
         ->where('status', \App\Enums\CategoryStatus::ACTIVE)
         ->orderBy('sort_order')

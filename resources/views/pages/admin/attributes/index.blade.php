@@ -31,11 +31,7 @@ new #[Layout('layouts::app')] #[Title('Attributes | Admin')] class extends Compo
     #[Computed]
     public function attributeList()
     {
-        return Attribute::withCount('values')
-            ->when($this->search, fn ($q) => $q->where('name', 'like', '%'.$this->search.'%'))
-            ->orderBy('sort_order')
-            ->orderBy('name')
-            ->paginate($this->perPage);
+        return Attribute::withCount('values')->when($this->search, fn($q) => $q->where('name', 'like', '%' . $this->search . '%'))->orderBy('sort_order')->orderBy('name')->paginate($this->perPage);
     }
 
     public function delete(int $id): void
@@ -66,9 +62,10 @@ new #[Layout('layouts::app')] #[Title('Attributes | Admin')] class extends Compo
     <flux:card class="mt-6 p-0 overflow-hidden">
 
         {{-- Toolbar --}}
-        <div class="flex flex-col gap-3 border-b border-zinc-200 px-6 py-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4 dark:border-zinc-700">
-            <flux:input wire:model.live.debounce.300ms="search" placeholder="Search attributes…"
-                icon="magnifying-glass" clearable class="sm:max-w-xs" />
+        <div
+            class="flex flex-col gap-3 border-b border-zinc-200 px-6 py-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4 dark:border-zinc-700">
+            <flux:input wire:model.live.debounce.300ms="search" placeholder="Search attributes…" icon="magnifying-glass"
+                clearable class="sm:max-w-xs" />
 
             <flux:select wire:model.live="perPage" class="w-28">
                 <flux:select.option value="10">10 / page</flux:select.option>
@@ -79,7 +76,8 @@ new #[Layout('layouts::app')] #[Title('Attributes | Admin')] class extends Compo
             </flux:select>
         </div>
 
-        <flux:table container:class="[&_th:first-child]:pl-6 [&_th:last-child]:pr-6 [&_td:first-child]:pl-6 [&_td:last-child]:pr-6">
+        <flux:table
+            container:class="[&_th:first-child]:pl-6 [&_th:last-child]:pr-6 [&_td:first-child]:pl-6 [&_td:last-child]:pr-6">
             <flux:table.columns class="bg-zinc-50 dark:bg-zinc-800/60">
                 <flux:table.column>Attribute</flux:table.column>
                 <flux:table.column>Type</flux:table.column>
@@ -93,7 +91,8 @@ new #[Layout('layouts::app')] #[Title('Attributes | Admin')] class extends Compo
                     <flux:table.row :key="$attribute->id">
                         <flux:table.cell variant="strong">
                             {{ $attribute->name }}
-                            <span class="block font-mono text-xs font-normal text-zinc-400">{{ $attribute->slug }}</span>
+                            <span
+                                class="block font-mono text-xs font-normal text-zinc-400">{{ $attribute->slug }}</span>
                         </flux:table.cell>
                         <flux:table.cell>
                             <flux:badge size="sm" color="zinc" inset="top bottom" class="capitalize">
@@ -104,17 +103,16 @@ new #[Layout('layouts::app')] #[Title('Attributes | Admin')] class extends Compo
                             {{ $attribute->values_count }}
                         </flux:table.cell>
                         <flux:table.cell>
-                            <flux:badge size="sm" inset="top bottom" :color="$attribute->is_active ? 'green' : 'zinc'">
+                            <flux:badge size="sm" inset="top bottom"
+                                :color="$attribute->is_active ? 'green' : 'zinc'">
                                 {{ $attribute->is_active ? 'Active' : 'Inactive' }}
                             </flux:badge>
                         </flux:table.cell>
                         <flux:table.cell align="end">
                             <div class="flex items-center justify-end gap-1">
-                                <flux:button size="xs" variant="ghost" icon="pencil-square"
-                                    :href="route('admin.attributes.edit', $attribute)"
-                                    wire:navigate />
-                                <flux:button size="xs" variant="ghost" icon="trash-2"
-                                    wire:click="delete({{ $attribute->id }})"
+                                <flux:button size="xs" icon="pencil-square"
+                                    :href="route('admin.attributes.edit', $attribute)" wire:navigate />
+                                <flux:button size="xs" icon="trash-2" wire:click="delete({{ $attribute->id }})"
                                     wire:confirm="Delete '{{ addslashes($attribute->name) }}' and all its values?"
                                     class="text-red-500! hover:text-red-600!" />
                             </div>

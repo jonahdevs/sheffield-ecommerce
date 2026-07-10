@@ -1,5 +1,77 @@
 [
     {
+        "name": "Coffee Machines",
+        "image": "categories/coffee-machines.webp",
+        "icon": "categories/coffee-machines-icon.png",
+        "description": "Professional espresso machines, automatic coffee makers, grinders, and accessories from leading brands including Rancilio, Simonelli, Kalerm, and Dr. Coffee — built for cafes, restaurants, hotels, and commercial kitchens across East Africa.",
+        "sort_order": 26,
+        "placements": [
+            "navbar"
+        ],
+        "children": [
+            {
+                "name": "Semi Automatic Coffee Machines",
+                "image": null,
+                "icon": null,
+                "description": "Commercial semi-automatic espresso and cappuccino machines from Rancilio, offering barista-controlled extraction in single, two, and three group configurations for cafes, restaurants, and hotels.",
+                "sort_order": 1,
+                "placements": [],
+                "children": [
+                    {
+                        "name": "Semi Automatic Coffee Machine Accessories",
+                        "image": null,
+                        "icon": null,
+                        "description": "Tampers, water softeners, and supporting accessories that keep semi-automatic espresso machines performing consistently and protected from hard water damage.",
+                        "sort_order": 1,
+                        "placements": []
+                    }
+                ]
+            },
+            {
+                "name": "Coffee Grinders",
+                "image": null,
+                "icon": null,
+                "description": "Professional espresso coffee grinders with flat steel burrs and precise micrometric adjustment, sized from compact countertop units to high-output on-demand grinders.",
+                "sort_order": 2,
+                "placements": []
+            },
+            {
+                "name": "Automatic Coffee Machines",
+                "image": null,
+                "icon": null,
+                "description": "Fully automatic bean-to-cup coffee machines that deliver espresso, cappuccino, and speciality drinks at the touch of a button for offices, hotels, and self-service settings.",
+                "sort_order": 3,
+                "placements": [],
+                "children": [
+                    {
+                        "name": "Automatic Coffee Machine Accessories",
+                        "image": null,
+                        "icon": null,
+                        "description": "Milk fridges and companion accessories designed to pair with fully automatic bean-to-cup coffee machines.",
+                        "sort_order": 1,
+                        "placements": []
+                    }
+                ]
+            },
+            {
+                "name": "Coffee Brewers",
+                "image": null,
+                "icon": null,
+                "description": "Commercial filter coffee brewers and decanters for high-volume batch brewing, available in single and double decanter configurations.",
+                "sort_order": 4,
+                "placements": []
+            },
+            {
+                "name": "Coffee Servery",
+                "image": null,
+                "icon": null,
+                "description": "Airpots, thermal serving stations, and coffee servery equipment that keep brewed coffee hot and presentable at buffets and service counters.",
+                "sort_order": 5,
+                "placements": []
+            }
+        ]
+    },
+    {
         "name": "Vegetable Processors",
         "image": "categories/vegetable-processors.webp",
         "icon": "categories/vegetable-processors-icon.png",
@@ -254,14 +326,6 @@
         "icon": "categories/kitchen-smalls-icon.png",
         "description": "Essential small kitchen tools and utensils including pots, pans, chopping boards, knives, and preparation accessories for everyday use in professional culinary environments.",
         "sort_order": 25,
-        "placements": []
-    },
-    {
-        "name": "Coffee Machines",
-        "image": "categories/coffee-machines.webp",
-        "icon": "categories/coffee-machines-icon.png",
-        "description": "Professional espresso machines, automatic coffee makers, grinders, and accessories from leading brands including Rancilio, Simonelli, Kalerm, and Dr. Coffee — built for cafes, restaurants, hotels, and commercial kitchens across East Africa.",
-        "sort_order": 26,
         "placements": []
     },
     {

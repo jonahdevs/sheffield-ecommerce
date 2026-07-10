@@ -12,8 +12,7 @@ use Livewire\Attributes\Locked;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
-new #[Layout('layouts::app')] #[Title('Edit Attribute | Admin')] class extends Component
-{
+new #[Layout('layouts::app')] #[Title('Edit Attribute | Admin')] class extends Component {
     #[Locked]
     public Attribute $attribute;
 
@@ -64,7 +63,7 @@ new #[Layout('layouts::app')] #[Title('Edit Attribute | Admin')] class extends C
 
     public function updatedName(): void
     {
-        if (! $this->slugManuallyEdited) {
+        if (!$this->slugManuallyEdited) {
             $this->slug = Str::slug($this->name);
         }
     }
@@ -92,7 +91,7 @@ new #[Layout('layouts::app')] #[Title('Edit Attribute | Admin')] class extends C
             'sort_order' => $this->sort_order,
         ]);
 
-        Flux::toast(heading: 'Attribute saved', text: $this->name.' has been updated.', variant: 'success');
+        Flux::toast(heading: 'Attribute saved', text: $this->name . ' has been updated.', variant: 'success');
     }
 
     #[Computed]
@@ -125,7 +124,7 @@ new #[Layout('layouts::app')] #[Title('Edit Attribute | Admin')] class extends C
         $this->resetValidation(['valueLabel', 'valueValue', 'valueColorCode', 'valueSortOrder']);
         $this->showAddValueModal = false;
         unset($this->values);
-        Flux::toast(heading: 'Value added', text: $this->valueLabel.' has been added.', variant: 'success');
+        Flux::toast(heading: 'Value added', text: $this->valueLabel . ' has been added.', variant: 'success');
     }
 
     public function openEditValue(int $valueId): void
@@ -159,13 +158,13 @@ new #[Layout('layouts::app')] #[Title('Edit Attribute | Admin')] class extends C
 
         $this->showEditValueModal = false;
         unset($this->values);
-        Flux::toast(heading: 'Value updated', text: $this->editValueLabel.' has been saved.', variant: 'success');
+        Flux::toast(heading: 'Value updated', text: $this->editValueLabel . ' has been saved.', variant: 'success');
     }
 
     public function toggleValueActive(int $valueId): void
     {
         $value = AttributeValue::findOrFail($valueId);
-        $value->update(['is_active' => ! $value->is_active]);
+        $value->update(['is_active' => !$value->is_active]);
         unset($this->values);
     }
 
@@ -198,12 +197,14 @@ new #[Layout('layouts::app')] #[Title('Edit Attribute | Admin')] class extends C
             <flux:card class="p-0 overflow-hidden">
                 <div class="flex items-center justify-between border-b border-zinc-200 px-6 py-3 dark:border-zinc-700">
                     <flux:heading size="base" class="uppercase tracking-wide">Values</flux:heading>
-                    <flux:button size="sm" icon="plus" wire:click="$set('showAddValueModal', true)">New value</flux:button>
+                    <flux:button size="sm" icon="plus" wire:click="$set('showAddValueModal', true)">New value
+                    </flux:button>
                 </div>
 
                 {{-- Existing values --}}
                 @if ($this->values->isNotEmpty())
-                    <flux:table container:class="[&_th:first-child]:pl-6 [&_th:last-child]:pr-6 [&_td:first-child]:pl-6 [&_td:last-child]:pr-6">
+                    <flux:table
+                        container:class="[&_th:first-child]:pl-6 [&_th:last-child]:pr-6 [&_td:first-child]:pl-6 [&_td:last-child]:pr-6">
                         <flux:table.columns class="bg-zinc-50 dark:bg-zinc-800/60">
                             <flux:table.column>Label</flux:table.column>
                             <flux:table.column>Value</flux:table.column>
@@ -219,33 +220,38 @@ new #[Layout('layouts::app')] #[Title('Edit Attribute | Admin')] class extends C
                             @foreach ($this->values as $value)
                                 <flux:table.row :key="$value->id">
                                     <flux:table.cell variant="strong">{{ $value->label }}</flux:table.cell>
-                                    <flux:table.cell class="font-mono text-xs text-zinc-500">{{ $value->value }}</flux:table.cell>
+                                    <flux:table.cell class="font-mono text-xs text-zinc-500">{{ $value->value }}
+                                    </flux:table.cell>
                                     @if ($type === 'color')
                                         <flux:table.cell>
                                             @if ($value->color_code)
                                                 <span class="inline-flex items-center gap-2">
-                                                    <span class="inline-block size-4 rounded-full border border-zinc-200 dark:border-zinc-700"
+                                                    <span
+                                                        class="inline-block size-4 rounded-full border border-zinc-200 dark:border-zinc-700"
                                                         style="background:{{ $value->color_code }}"></span>
-                                                    <span class="font-mono text-xs text-zinc-400">{{ $value->color_code }}</span>
+                                                    <span
+                                                        class="font-mono text-xs text-zinc-400">{{ $value->color_code }}</span>
                                                 </span>
                                             @else
                                                 <span class="text-zinc-400">—</span>
                                             @endif
                                         </flux:table.cell>
                                     @endif
-                                    <flux:table.cell class="tabular-nums text-zinc-500">{{ $value->sort_order }}</flux:table.cell>
+                                    <flux:table.cell class="tabular-nums text-zinc-500">{{ $value->sort_order }}
+                                    </flux:table.cell>
                                     <flux:table.cell>
                                         <button wire:click="toggleValueActive({{ $value->id }})">
-                                            <flux:badge size="sm" inset="top bottom" :color="$value->is_active ? 'green' : 'zinc'">
+                                            <flux:badge size="sm" inset="top bottom"
+                                                :color="$value->is_active ? 'green' : 'zinc'">
                                                 {{ $value->is_active ? 'Active' : 'Inactive' }}
                                             </flux:badge>
                                         </button>
                                     </flux:table.cell>
                                     <flux:table.cell align="end">
                                         <div class="flex items-center justify-end gap-1">
-                                            <flux:button size="xs" variant="ghost" icon="pencil-square"
+                                            <flux:button size="xs" icon="pencil-square"
                                                 wire:click="openEditValue({{ $value->id }})" />
-                                            <flux:button size="xs" variant="ghost" icon="trash-2"
+                                            <flux:button size="xs" icon="trash-2"
                                                 wire:click="deleteValue({{ $value->id }})"
                                                 wire:confirm="Delete '{{ addslashes($value->label) }}'?"
                                                 class="text-red-500! hover:text-red-600!" />
@@ -260,7 +266,8 @@ new #[Layout('layouts::app')] #[Title('Edit Attribute | Admin')] class extends C
                 @if ($this->values->isEmpty())
                     <div class="py-12 text-center text-zinc-400">
                         <flux:icon.tag class="mx-auto mb-3 size-8 opacity-40" />
-                        <flux:text size="sm">No values yet. Click <strong>New value</strong> to add one.</flux:text>
+                        <flux:text size="sm">No values yet. Click <strong>New value</strong> to add one.
+                        </flux:text>
                     </div>
                 @endif
             </flux:card>
@@ -279,7 +286,8 @@ new #[Layout('layouts::app')] #[Title('Edit Attribute | Admin')] class extends C
 
                     <flux:select wire:model="type" label="Type">
                         @foreach (AttributeType::cases() as $t)
-                            <flux:select.option :value="$t->value" class="capitalize">{{ ucfirst($t->value) }}</flux:select.option>
+                            <flux:select.option :value="$t->value" class="capitalize">{{ ucfirst($t->value) }}
+                            </flux:select.option>
                         @endforeach
                     </flux:select>
 
@@ -336,10 +344,8 @@ new #[Layout('layouts::app')] #[Title('Edit Attribute | Admin')] class extends C
 
         <form wire:submit="saveValue" class="mt-5 space-y-4">
             <div class="grid grid-cols-2 gap-4">
-                <flux:input wire:model="editValueLabel" label="Label"
-                    placeholder="e.g. Stainless Steel" required />
-                <flux:input wire:model="editValueValue" label="Value"
-                    placeholder="e.g. stainless-steel" required />
+                <flux:input wire:model="editValueLabel" label="Label" placeholder="e.g. Stainless Steel" required />
+                <flux:input wire:model="editValueValue" label="Value" placeholder="e.g. stainless-steel" required />
             </div>
 
             @if ($type === 'color')

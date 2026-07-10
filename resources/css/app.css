@@ -330,6 +330,13 @@ select:focus[data-flux-control] {
     padding: 0.4rem 0.65rem;
     vertical-align: top;
 }
+/* Zebra striping — spec tables run long, and banding keeps the eye on one row. */
+.pdp-rich-text table tbody tr:nth-child(even) {
+    background: #f7f9fc;
+}
+.pdp-rich-text table tbody tr:hover {
+    background: #eef2f9;
+}
 .pdp-rich-text img {
     max-width: 100%;
     height: auto;

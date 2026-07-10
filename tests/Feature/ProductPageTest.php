@@ -318,3 +318,33 @@ it('sums required components for a bundle with no parent price and ignores optio
     // 40000 × 2 required; the optional 99900 line is excluded.
     expect($instance->bundlePriceCents)->toBe(80000);
 });
+
+it('links the brand eyebrow to the brand website in a new tab', function () {
+    $this->brand->update(['website_url' => 'https://www.ranciliogroup.com']);
+    $product = makeProduct(['slug' => 'branded-wok']);
+
+    Livewire::test('pages::storefront.product', ['product' => $product])
+        ->assertSeeHtml('href="https://www.ranciliogroup.com"')
+        ->assertSeeHtml('target="_blank"')
+        ->assertSeeHtml('rel="noopener noreferrer"')
+        ->assertSee('TestBrand');
+});
+
+it('leaves the brand eyebrow as plain text when no website is defined', function () {
+    $product = makeProduct(['slug' => 'unbranded-wok']);
+
+    Livewire::test('pages::storefront.product', ['product' => $product])
+        ->assertSee('TestBrand')
+        ->assertDontSeeHtml('rel="noopener noreferrer"');
+});
+
+it('refuses to link a brand website that is not http or https', function () {
+    // The admin form's `url` rule admits other schemes; this lands in a public href.
+    $this->brand->update(['website_url' => 'javascript:alert(1)']);
+    $product = makeProduct(['slug' => 'nasty-wok']);
+
+    Livewire::test('pages::storefront.product', ['product' => $product])
+        ->assertSee('TestBrand')
+        ->assertDontSee('javascript:alert(1)', false)
+        ->assertDontSeeHtml('rel="noopener noreferrer"');
+});

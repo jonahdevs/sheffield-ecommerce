@@ -59,7 +59,7 @@ new #[Layout('layouts::storefront')] #[Title('Shop')] class extends Component
     public function products(): LengthAwarePaginator
     {
         $query = Product::query()
-            ->with(['brand:id,name', 'taxClass:id,rate,is_inclusive', 'media'])
+            ->with(['brand:id,name', 'taxClass:id,rate', 'media'])
             ->visibleInCatalog()
             ->published()
             ->honorStockVisibility();

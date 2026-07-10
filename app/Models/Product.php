@@ -44,20 +44,23 @@ class Product extends Model implements HasMedia
 
     public function registerMediaConversions(?Media $media = null): void
     {
-        // Fit::Fill centers the subject on a square canvas without cropping, so the
-        // whole product stays visible. Masters processed by `products:process-images`
-        // are already square + transparent WebP, so these are clean downscales.
+        // Fit::Max downscales to fit the box and never enlarges or pads. Fit::Fill
+        // would pad a smaller master onto the full canvas instead of enlarging it
+        // (it carries DoNotUpsize), which strands the subject in the middle of a
+        // mostly-empty image — a 225px master became 7% of a 600×600 card. Every
+        // frame that renders these already sets its own square via CSS aspect-ratio
+        // + object-contain, so the conversion never needs to pad one in.
         $this->addMediaConversion('thumb')
             ->performOnCollections('images')
-            ->fit(Fit::Fill, 120, 120);
+            ->fit(Fit::Max, 120, 120);
 
         $this->addMediaConversion('card')
             ->performOnCollections('images')
-            ->fit(Fit::Fill, 600, 600);
+            ->fit(Fit::Max, 600, 600);
 
         $this->addMediaConversion('card-webp')
             ->performOnCollections('images')
-            ->fit(Fit::Fill, 600, 600)
+            ->fit(Fit::Max, 600, 600)
             ->format('webp')
             ->quality(85);
 

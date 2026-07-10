@@ -9,7 +9,9 @@ use App\Http\Controllers\Payments\StripeWebhookController;
 use App\Http\Controllers\SocialAuthController;
 use App\Http\Controllers\Storefront\CategoryMenuController;
 use App\Models\Cart;
+use App\Services\PlaceSearch;
 use App\Support\StorefrontSession;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 // ---------------------------------------------------------------------------
@@ -49,6 +51,13 @@ Route::livewire('/product/{product:slug}', 'pages::storefront.product')->name('p
 // Mega-menu flyout body — fetched on hover by the category navigation.
 Route::get('/menu/{category:slug}/flyout', CategoryMenuController::class)
     ->name('menu.flyout');
+
+// Address-book search box. Proxies the geocoder server-side so the caching and
+// outbound identity stay ours. Public, because the quote form takes an address
+// from guests — throttled to keep it from being used as a free geocoding API.
+Route::get('/places/search', function (Request $request, PlaceSearch $places) {
+    return response()->json($places->search((string) $request->query('q', '')));
+})->name('places.search')->middleware('throttle:30,1');
 
 // ---------------------------------------------------------------------------
 // Newsletter — confirm & unsubscribe (public, no auth)

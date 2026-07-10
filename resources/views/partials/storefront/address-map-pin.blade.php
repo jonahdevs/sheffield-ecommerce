@@ -16,12 +16,14 @@
     </div>
 </div>
 
+@include('partials.storefront.address-search')
+
 <div id="address-map-container"
      class="h-72 w-full overflow-hidden rounded-md border border-zinc-200 bg-surface-sunken">
 </div>
 
 <flux:text size="sm" class="text-ink-4">
-    Click the map or use "Use my location" to drop a pin. Drag it to fine-tune.
+    Search, click the map, or use "Use my location" to drop a pin. Drag it to fine-tune.
 </flux:text>
 
 {{-- Live serviceability feedback for the dropped pin. --}}
