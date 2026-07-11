@@ -178,16 +178,16 @@
         @endif
     </div>
 
-    {{-- Info — purely informational, no buttons --}}
-    <a href="{{ route('product.show', $product) }}" wire:navigate
-        class="flex flex-1 flex-col px-3 py-3 sm:px-4 sm:py-3.5">
+    {{-- Info — only the product name links out; brand, SKU and price are plain text --}}
+    <div class="flex flex-1 flex-col px-3 py-3 sm:px-4 sm:py-3.5">
         @if ($brandName)
             <div class="text-[11px] font-bold tracking-[0.08em] text-brand-blue-600 uppercase">{{ $brandName }}
             </div>
         @endif
-        <div class="mt-1 line-clamp-2 min-h-9.5 text-[13.5px] font-medium leading-snug text-ink">
+        <a href="{{ route('product.show', $product) }}" wire:navigate
+            class="mt-1 line-clamp-2 min-h-9.5 text-[13.5px] font-medium leading-snug text-ink hover:text-brand-600">
             {{ $product->name }}
-        </div>
+        </a>
         <div class="mt-0.5 text-[11px] text-ink-4 tabular-nums">{{ $product->sku }}</div>
 
         <div class="mt-3">
@@ -196,6 +196,6 @@
             @endif
             <div class="text-[15px] font-bold text-ink tabular-nums whitespace-nowrap">{!! $priceLabel !!}</div>
         </div>
-    </a>
+    </div>
 
 </article>

@@ -1,13 +1,16 @@
 <?php
 
+use App\Enums\CategorySection;
 use App\Enums\CategoryStatus;
 use App\Enums\ProductStatus;
 use App\Enums\ProductVisibility;
 use App\Enums\StockStatus;
 use App\Models\Brand;
 use App\Models\Category;
+use App\Models\CategoryPlacement;
 use App\Models\Product;
 use App\Models\Review;
+use Illuminate\Support\Str;
 use Livewire\Livewire;
 
 it('renders the shop page', function () {
@@ -42,7 +45,7 @@ it('filters by selected brand', function () {
     Livewire::test('pages::storefront.catalog')
         ->assertSee('Apples')
         ->assertSee('Bananas')
-        ->set('selectedBrands', [$brandA->id])
+        ->set('selectedBrands', [$brandA->slug])
         ->assertSee('Apples')
         ->assertDontSee('Bananas');
 });
@@ -202,6 +205,24 @@ it('routes /shop/{category} to the category page', function () {
     $response->assertSee('Ranges');
 });
 
+it('marks the current category active in the navbar', function () {
+    // category.show is served by Livewire's page controller, so the route parameter the nav
+    // partial sees is the raw slug string, not a Category — reading ->id off it warned in
+    // tests and blew up as a 500 in the browser. Needs a NAVBAR placement, or the nav
+    // renders no categories at all and the active check never runs.
+    $cat = Category::create(['name' => 'Ranges', 'slug' => 'ranges', 'status' => CategoryStatus::ACTIVE, 'sort_order' => 1]);
+    CategoryPlacement::create([
+        'category_id' => $cat->id,
+        'location' => CategorySection::NAVBAR,
+        'status' => CategoryStatus::ACTIVE,
+        'sort_order' => 1,
+    ]);
+
+    $this->get(route('category.show', $cat).'?stock=true')
+        ->assertOk()
+        ->assertSee('bg-brand-blue-700 font-medium text-white', false);
+});
+
 it('rolls up products from child categories on a parent category page', function () {
     $parent = Category::create(['name' => 'Cold Room', 'slug' => 'cold-room', 'status' => CategoryStatus::ACTIVE, 'sort_order' => 1]);
     $child = Category::create(['name' => 'Mini Cold Rooms', 'slug' => 'mini-cold-rooms', 'parent_id' => $parent->id, 'status' => CategoryStatus::ACTIVE, 'sort_order' => 1]);
@@ -291,7 +312,46 @@ it('narrows the listing by a child-category filter', function () {
         ->assertSee('Category')           // the child-category filter facet renders
         ->assertSee('Test Washer')
         ->assertSee('Test Dryer')
-        ->set('selectedCategories', [$washers->id])
+        ->set('selectedCategories', [$washers->slug])
         ->assertSee('Test Washer')
         ->assertDontSee('Test Dryer');
+});
+
+it('reads and writes the category and brand facets as readable slugs in the query string', function () {
+    $brand = Brand::create(['name' => 'Rancilio', 'slug' => 'rancilio', 'is_active' => true, 'sort_order' => 1]);
+    $parent = Category::create(['name' => 'Coffee Machines', 'slug' => 'coffee-machines', 'status' => CategoryStatus::ACTIVE, 'sort_order' => 1]);
+    $grinders = Category::create(['name' => 'Coffee Grinders', 'slug' => 'coffee-grinders', 'parent_id' => $parent->id, 'status' => CategoryStatus::ACTIVE, 'sort_order' => 1]);
+    $brewers = Category::create(['name' => 'Coffee Brewers', 'slug' => 'coffee-brewers', 'parent_id' => $parent->id, 'status' => CategoryStatus::ACTIVE, 'sort_order' => 2]);
+
+    $make = fn (string $name, string $sku, Category $cat) => Product::create([
+        'name' => $name, 'slug' => Str::slug($name), 'sku' => $sku,
+        'brand_id' => $brand->id, 'primary_category_id' => $cat->id,
+        'type' => 'simple', 'price' => 100000, 'stock_status' => StockStatus::IN_STOCK->value,
+        'visibility' => ProductVisibility::VISIBLE->value, 'status' => ProductStatus::PUBLISHED->value,
+    ]);
+
+    $make('Test Grinder', 'CO-GRIND', $grinders);
+    $make('Test Brewer', 'CO-BREW', $brewers);
+
+    // ?cat=coffee-grinders hydrates the facet — no cat[0]=8 anywhere.
+    Livewire::withQueryParams(['cat' => 'coffee-grinders'])
+        ->test('pages::storefront.category', ['category' => $parent])
+        ->assertSet('selectedCategories', ['coffee-grinders'])
+        ->assertSee('Test Grinder')
+        ->assertDontSee('Test Brewer');
+
+    // Ticking a second box comma-joins the mirror that owns the query string.
+    Livewire::test('pages::storefront.category', ['category' => $parent])
+        ->set('selectedCategories', ['coffee-grinders', 'coffee-brewers'])
+        ->assertSet('categoryParam', 'coffee-grinders,coffee-brewers')
+        ->set('selectedCategories', [])
+        ->assertSet('categoryParam', '');
+
+    // The brand facet round-trips the same way, on the catalog.
+    Livewire::withQueryParams(['brand' => 'rancilio'])
+        ->test('pages::storefront.catalog')
+        ->assertSet('selectedBrands', ['rancilio'])
+        ->assertSee('Test Grinder')
+        ->call('removeBrand', 'rancilio')
+        ->assertSet('brandParam', '');
 });

@@ -10,7 +10,25 @@
         ],
         "children": [
             {
-                "name": "Semi Automatic Coffee Machines",
+                "name": "Automatic",
+                "image": null,
+                "icon": null,
+                "description": "Fully automatic bean-to-cup coffee machines that deliver espresso, cappuccino, and speciality drinks at the touch of a button for offices, hotels, and self-service settings.",
+                "sort_order": 3,
+                "placements": [],
+                "children": [
+                    {
+                        "name": "Automatic Accessories",
+                        "image": null,
+                        "icon": null,
+                        "description": "Milk fridges and companion accessories designed to pair with fully automatic bean-to-cup coffee machines.",
+                        "sort_order": 1,
+                        "placements": []
+                    }
+                ]
+            },
+            {
+                "name": "Semi Automatic",
                 "image": null,
                 "icon": null,
                 "description": "Commercial semi-automatic espresso and cappuccino machines from Rancilio, offering barista-controlled extraction in single, two, and three group configurations for cafes, restaurants, and hotels.",
@@ -18,7 +36,7 @@
                 "placements": [],
                 "children": [
                     {
-                        "name": "Semi Automatic Coffee Machine Accessories",
+                        "name": "Semi Automatic Accessories",
                         "image": null,
                         "icon": null,
                         "description": "Tampers, water softeners, and supporting accessories that keep semi-automatic espresso machines performing consistently and protected from hard water damage.",
@@ -34,24 +52,6 @@
                 "description": "Professional espresso coffee grinders with flat steel burrs and precise micrometric adjustment, sized from compact countertop units to high-output on-demand grinders.",
                 "sort_order": 2,
                 "placements": []
-            },
-            {
-                "name": "Automatic Coffee Machines",
-                "image": null,
-                "icon": null,
-                "description": "Fully automatic bean-to-cup coffee machines that deliver espresso, cappuccino, and speciality drinks at the touch of a button for offices, hotels, and self-service settings.",
-                "sort_order": 3,
-                "placements": [],
-                "children": [
-                    {
-                        "name": "Automatic Coffee Machine Accessories",
-                        "image": null,
-                        "icon": null,
-                        "description": "Milk fridges and companion accessories designed to pair with fully automatic bean-to-cup coffee machines.",
-                        "sort_order": 1,
-                        "placements": []
-                    }
-                ]
             },
             {
                 "name": "Coffee Brewers",
@@ -286,7 +286,17 @@
         "icon": "categories/hygiene-icon.png",
         "description": "Commercial hygiene equipment and consumables including hand wash stations, sanitiser dispensers, and cleaning systems to uphold health and safety standards in food environments.",
         "sort_order": 20,
-        "placements": []
+        "placements": [],
+        "children": [
+            {
+                "name": "Water Softeners",
+                "image": null,
+                "icon": null,
+                "description": "Water softening, filtration, and treatment systems that remove scale-forming minerals and impurities, protecting commercial coffee, beverage, and kitchen equipment from hard water damage.",
+                "sort_order": 1,
+                "placements": []
+            }
+        ]
     },
     {
         "name": "Rational Tablets",

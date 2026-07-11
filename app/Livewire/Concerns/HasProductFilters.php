@@ -27,17 +27,54 @@ trait HasProductFilters
     public bool $showFilters = false;
 
     /**
-     * Category facet selection. Catalog stores slugs (string); the category page
-     * stores child-category ids (int) — both round-trip fine as a URL array.
+     * Category facet selection, as slugs — the catalog matches them directly, the
+     * category page resolves them to child-category subtrees.
      *
-     * @var array<int, int|string>
+     * @var array<int, string>
      */
-    #[Url(as: 'cat', history: true)]
     public array $selectedCategories = [];
 
-    /** @var array<int, int> */
-    #[Url(as: 'brand', history: true)]
+    /** @var array<int, string> Brand facet selection, as slugs. */
     public array $selectedBrands = [];
+
+    /**
+     * The checkbox facets above are arrays, and Livewire serialises an array
+     * #[Url] property as `cat[0]=…&cat[1]=…`. These comma-joined mirrors own the
+     * query string instead, so a filtered listing shares as a URL a human can
+     * read: `?cat=coffee-grinders,coffee-brewers&brand=rancilio`.
+     *
+     * They are written from the arrays on every render, and read back into them
+     * once on mount. `except: ''` drops the parameter entirely once the facet is
+     * cleared, rather than leaving a dangling `?cat=`.
+     */
+    #[Url(as: 'cat', history: true, except: '')]
+    public string $categoryParam = '';
+
+    #[Url(as: 'brand', history: true, except: '')]
+    public string $brandParam = '';
+
+    public function mountHasProductFilters(): void
+    {
+        $this->selectedCategories = $this->splitParam($this->categoryParam);
+        $this->selectedBrands = $this->splitParam($this->brandParam);
+    }
+
+    /**
+     * Mirror the facet arrays back into the URL parameters. Done on render rather
+     * than in an `updated` hook so that every mutation path — checkbox, chip
+     * dismissal, "clear filters" — keeps the query string in step.
+     */
+    public function renderingHasProductFilters(): void
+    {
+        $this->categoryParam = implode(',', $this->selectedCategories);
+        $this->brandParam = implode(',', $this->selectedBrands);
+    }
+
+    /** @return array<int, string> */
+    private function splitParam(string $param): array
+    {
+        return array_values(array_filter(array_map('trim', explode(',', $param))));
+    }
 
     /** Price slider bounds in KES (whole units). DB stores cents. */
     #[Url(as: 'pmin', history: true)]
@@ -69,9 +106,9 @@ trait HasProductFilters
         unset($this->products);
     }
 
-    public function removeBrand(int $id): void
+    public function removeBrand(string $slug): void
     {
-        $this->selectedBrands = array_values(array_filter($this->selectedBrands, fn ($b) => $b !== $id));
+        $this->selectedBrands = array_values(array_filter($this->selectedBrands, fn ($b) => $b !== $slug));
     }
 
     /**
@@ -83,7 +120,7 @@ trait HasProductFilters
     protected function applySharedFilters(Builder $query): void
     {
         if ($this->selectedBrands) {
-            $query->whereIn('brand_id', $this->selectedBrands);
+            $query->whereHas('brand', fn (Builder $b) => $b->whereIn('slug', $this->selectedBrands));
         }
 
         if ($this->inStockOnly) {

@@ -1,6 +1,6 @@
 {{-- Category-page facet — the current category's immediate children, with a
      "show all" toggle once there are more than eight. Expects $this->childCategories
-     and a host $selectedCategories array of child ids. --}}
+     and a host $selectedCategories array of child slugs. --}}
 @if ($this->childCategories->isNotEmpty())
     <x-storefront.filter-section title="Category">
         <div x-data="{ openCats: false }">
@@ -8,7 +8,7 @@
                 x-bind:class="openCats ? 'max-h-64 overflow-y-auto pr-1' : ''">
                 @foreach ($this->childCategories as $i => $child)
                     <div @if ($i >= 8) x-show="openCats" x-cloak @endif>
-                        <flux:checkbox wire:model.live="selectedCategories" value="{{ $child->id }}"
+                        <flux:checkbox wire:model.live="selectedCategories" value="{{ $child->slug }}"
                             :label="$child->name" />
                     </div>
                 @endforeach

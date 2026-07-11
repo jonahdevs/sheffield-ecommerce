@@ -8,6 +8,7 @@ use App\Models\CategoryPlacement;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
+use RuntimeException;
 
 class CategorySeeder extends Seeder
 {
@@ -41,15 +42,51 @@ class CategorySeeder extends Seeder
     }
 
     /**
+     * Slugs are globally unique (the storefront routes /shop/{category:slug} without a
+     * parent segment), but child names are not — "Automatic" reads perfectly well under
+     * both Coffee Machines and Dishwashers. A child that would collide is therefore
+     * qualified with its parent: coffee-machines-automatic, dishwashers-automatic. The
+     * first one seeded keeps the bare slug, so existing URLs never shift underneath us.
+     * A category may also pin its own slug in categories.json to opt out entirely.
+     *
+     * Reads the categories already seeded, so it must be called as the tree is built.
+     */
+    public static function deriveSlug(string $name, ?string $parentName): string
+    {
+        $slug = Str::slug($name);
+
+        if (! Category::where('slug', $slug)->exists()) {
+            return $slug;
+        }
+
+        if ($parentName === null) {
+            throw new RuntimeException(sprintf('Duplicate top-level category "%s".', $name));
+        }
+
+        $qualified = Str::slug($parentName.' '.$name);
+
+        if (Category::where('slug', $qualified)->exists()) {
+            throw new RuntimeException(sprintf(
+                'Cannot derive a unique slug for "%s" under "%s" — "%s" is taken too.',
+                $name,
+                $parentName,
+                $qualified,
+            ));
+        }
+
+        return $qualified;
+    }
+
+    /**
      * @param  array<string, mixed>  $data
      * @param  array<string, int>  $placementOrders
      */
-    private function createCategory(array $data, ?int $parentId, array &$placementOrders): Category
+    private function createCategory(array $data, ?Category $parent, array &$placementOrders): Category
     {
         $category = Category::create([
             'name' => $data['name'],
-            'slug' => Str::slug($data['name']),
-            'parent_id' => $parentId,
+            'slug' => $data['slug'] ?? self::deriveSlug($data['name'], $parent?->name),
+            'parent_id' => $parent?->id,
             'description' => $data['description'] ?? null,
             'banner' => $data['banner'] ?? null,
             'image' => $data['image'] ?? null,
@@ -70,7 +107,7 @@ class CategorySeeder extends Seeder
         }
 
         foreach ($data['children'] ?? [] as $child) {
-            $this->createCategory($child, $category->id, $placementOrders);
+            $this->createCategory($child, $category, $placementOrders);
         }
 
         return $category;

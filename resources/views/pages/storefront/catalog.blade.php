@@ -81,10 +81,6 @@ new #[Layout('layouts::storefront')] #[Title('Shop')] class extends Component
             });
         }
 
-        if ($this->selectedBrands) {
-            $query->whereIn('brand_id', $this->selectedBrands);
-        }
-
         if ($this->selectedTag !== '') {
             $query->whereHas('tags', fn ($t) => $t->where('name->'.config('app.locale', 'en'), $this->selectedTag));
         }
@@ -124,7 +120,7 @@ new #[Layout('layouts::storefront')] #[Title('Shop')] class extends Component
             ->where('is_active', true)
             ->whereHas('products', fn ($p) => $p->published()->visibleInCatalog())
             ->orderBy('name')
-            ->get(['id', 'name']);
+            ->get(['id', 'name', 'slug']);
     }
 
     public function hasActiveFilters(): bool
@@ -281,10 +277,10 @@ new #[Layout('layouts::storefront')] #[Title('Shop')] class extends Component
                                 </button>
                             @endif
                         @endforeach
-                        @foreach ($selectedBrands as $id)
-                            @php $br = $this->brandsList->firstWhere('id', $id); @endphp
+                        @foreach ($selectedBrands as $brandSlug)
+                            @php $br = $this->brandsList->firstWhere('slug', $brandSlug); @endphp
                             @if ($br)
-                                <button type="button" wire:click="removeBrand({{ $id }})"
+                                <button type="button" wire:click="removeBrand('{{ $brandSlug }}')"
                                     class="inline-flex h-7 cursor-pointer items-center gap-1.5 rounded-full bg-surface-sunken px-3 text-[12.5px] font-medium text-ink-2 hover:bg-zinc-200">
                                     {{ $br->name }}
                                     <flux:icon.x variant="micro" class="size-3 text-ink-3" />

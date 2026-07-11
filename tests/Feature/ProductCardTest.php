@@ -34,6 +34,24 @@ it('routes unpriced products to the product page instead of quick-adding', funct
         ->assertDontSee("addToCart('{$product->slug}')", false);
 });
 
+it('links the image and the product name, but not the SKU or price', function () {
+    $product = Product::factory()->create(['price' => 150000, 'requires_quotation' => false]);
+
+    $html = (string) renderCard($product);
+    $href = preg_quote(route('product.show', $product), '/');
+
+    // Image area: a full-bleed anchor over the square.
+    expect($html)->toMatch('/<a href="'.$href.'"[^>]*class="absolute inset-0"/');
+
+    // Product name is its own anchor...
+    expect($html)->toMatch('/<a href="'.$href.'"[^>]*>\s*'.preg_quote($product->name, '/').'\s*<\/a>/');
+
+    // ...and the info block that holds the SKU and price is not a link.
+    $info = str($html)->after($product->name)->after('</a>')->toString();
+    expect($info)->toContain($product->sku)
+        ->and(str($info)->before($product->sku)->toString())->not->toContain('<a ');
+});
+
 it('routes variable and grouped products to the product page to choose options', function (ProductType $type) {
     $product = Product::factory()->create(['type' => $type, 'price' => 150000]);
 

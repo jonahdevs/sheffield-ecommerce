@@ -11,8 +11,9 @@ use Database\Seeders\ProductSeeder;
 
 /**
  * The coffee taxonomy mirrors the "Ecommerce Listing- Coffee Machines Final"
- * workbook: a Coffee Machines parent holding seven ordered child categories,
- * each product's sort_order encoding the sheet's ARRANGEMENT column.
+ * workbook: a Coffee Machines parent holding five ordered child categories — two of
+ * which carry an accessories child of their own — with each product's sort_order
+ * encoding the sheet's ARRANGEMENT column.
  *
  * Seeding the full catalogue is expensive, so this file asserts the whole
  * taxonomy from a single seed rather than one per case.
@@ -22,11 +23,12 @@ it('seeds the coffee taxonomy from the final e-commerce listing', function () {
 
     $parent = Category::whereNull('parent_id')->where('slug', 'coffee-machines')->sole();
 
-    // Children are nested under the parent, in the workbook's declared order.
+    // Children are nested under the parent, in the workbook's declared order. The machine
+    // types are named for the drill-down ("Semi Automatic"), not repeating the parent.
     expect($parent->children()->orderBy('sort_order')->pluck('name')->all())->toBe([
-        'Semi Automatic Coffee Machines',
+        'Semi Automatic',
         'Coffee Grinders',
-        'Automatic Coffee Machines',
+        'Automatic',
         'Coffee Brewers',
         'Coffee Servery',
     ]);
@@ -35,41 +37,41 @@ it('seeds the coffee taxonomy from the final e-commerce listing', function () {
 
     // Each accessories category hangs off the machine type it serves, so the tree
     // is three levels deep.
-    $semiMachines = Category::where('name', 'Semi Automatic Coffee Machines')->sole();
-    $autoMachines = Category::where('name', 'Automatic Coffee Machines')->sole();
+    $semiMachines = Category::where('name', 'Semi Automatic')->sole();
+    $autoMachines = Category::where('name', 'Automatic')->sole();
 
     expect($semiMachines->children()->pluck('name')->all())
-        ->toBe(['Semi Automatic Coffee Machine Accessories'])
+        ->toBe(['Semi Automatic Accessories'])
         ->and($autoMachines->children()->pluck('name')->all())
-        ->toBe(['Automatic Coffee Machine Accessories'])
+        ->toBe(['Automatic Accessories'])
         // Three levels: accessories → machine type → Coffee Machines.
         ->and($semiMachines->parent_id)->toBe($parent->id)
         ->and($autoMachines->parent_id)->toBe($parent->id);
 
     $countIn = fn (string $name) => Product::where('primary_category_id', $childId($name))->count();
 
-    expect($countIn('Semi Automatic Coffee Machines'))->toBe(7)
-        ->and($countIn('Coffee Grinders'))->toBe(3)
-        ->and($countIn('Semi Automatic Coffee Machine Accessories'))->toBe(3)
-        ->and($countIn('Automatic Coffee Machines'))->toBe(2)
-        ->and($countIn('Automatic Coffee Machine Accessories'))->toBe(1)
+    expect($countIn('Semi Automatic'))->toBe(7)
+        ->and($countIn('Coffee Grinders'))->toBe(4)
+        ->and($countIn('Semi Automatic Accessories'))->toBe(3)
+        ->and($countIn('Automatic'))->toBe(7)
+        ->and($countIn('Automatic Accessories'))->toBe(2)
         ->and($countIn('Coffee Brewers'))->toBe(10)
-        ->and($countIn('Coffee Servery'))->toBe(3);
+        ->and($countIn('Coffee Servery'))->toBe(4);
 
     // The workbook reuses one "COFFEE MACHINE ACCESSORIES" label twice; the block
     // is split by whichever machine type it follows.
     expect(
-        Product::where('primary_category_id', $childId('Semi Automatic Coffee Machine Accessories'))
+        Product::where('primary_category_id', $childId('Semi Automatic Accessories'))
             ->pluck('sku')->sort()->values()->all()
     )->toBe(['IMG/COF/00048', 'IMS/MEC/00303', 'IMS/MEC/00469'])
         ->and(
-            Product::where('primary_category_id', $childId('Automatic Coffee Machine Accessories'))
-                ->pluck('sku')->all()
-        )->toBe(['IMG/COF/00097']);
+            Product::where('primary_category_id', $childId('Automatic Accessories'))
+                ->pluck('sku')->sort()->values()->all()
+        )->toBe(['IMG/COF/00047', 'IMG/COF/00097']);
 
     // ARRANGEMENT: "Silvia, Group 1, 2, 3".
     expect(
-        Product::where('primary_category_id', $childId('Semi Automatic Coffee Machines'))
+        Product::where('primary_category_id', $childId('Semi Automatic'))
             ->orderBy('sort_order')->pluck('sku')->all()
     )->toBe([
         'IMG/COF/00041', // Silvia
@@ -121,11 +123,13 @@ it('seeds the coffee taxonomy from the final e-commerce listing', function () {
         ->and($waterUrn->brand->name)->toBe('BERJAYA')
         ->and($waterUrn->primaryCategory->name)->toBe('Beverage Equipment');
 
-    // Coffee products absent from the workbook stay on the parent, and the
-    // category page rolls the whole subtree up, so they remain listable.
-    expect(Product::where('primary_category_id', $parent->id)->count())->toBe(14);
+    // Every coffee product now drills into a machine type, grinder, brewer, servery or
+    // accessories child — nothing is left parked on the Coffee Machines parent itself.
+    expect(Product::where('primary_category_id', $parent->id)->count())->toBe(0);
 
-    // Coffee Machines leads the navbar, and its seven active children make it a
+    assertWaterTreatmentSitsUnderHygiene();
+
+    // Coffee Machines leads the navbar, and its five active children make it a
     // mega-menu trigger rather than a plain link.
     $navbar = CategoryPlacement::query()
         ->where('location', CategorySection::NAVBAR)
@@ -137,6 +141,34 @@ it('seeds the coffee taxonomy from the final e-commerce listing', function () {
 
     assertSpecificationsRenderAsTables();
 });
+
+/**
+ * The standalone water treatment units are sold as hygiene equipment rather than
+ * coffee gear, so they hang off a Water Softeners child of Hygiene. The Rancilio DP2
+ * is the exception: it ships as a semi-automatic machine accessory and stays there.
+ * Folded into the seeding test above because seeding the catalogue is slow.
+ */
+function assertWaterTreatmentSitsUnderHygiene(): void
+{
+    $hygiene = Category::whereNull('parent_id')->where('slug', 'hygiene')->sole();
+    $softeners = Category::where('slug', 'water-softeners')->sole();
+
+    expect($softeners->parent_id)->toBe($hygiene->id);
+
+    expect(
+        Product::where('primary_category_id', $softeners->id)->orderBy('sku')->pluck('name')->all()
+    )->toBe([
+        'Water Softeners HLT.12',
+        'Aq-Hc-Ro',
+        'GST-1V',
+        'AQ-RO-600 Watermark',
+        'Ultrafiltration System VZN-511V',
+        'Hrs Hardness Reduction System',
+    ]);
+
+    expect(Product::where('sku', 'IMG/COF/00048')->value('primary_category_id'))
+        ->toBe(Category::where('name', 'Semi Automatic Accessories')->value('id'));
+}
 
 /**
  * Workbook technical specifications render as a two-column label/value table.

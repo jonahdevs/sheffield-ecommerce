@@ -103,9 +103,14 @@ new #[Layout('layouts::storefront')] class extends Component
             return $this->fullSubtreeIds;
         }
 
-        $selected = collect($this->selectedCategories)->flatMap(fn ($id) => $this->subtreeIds((int) $id))->unique()->values()->all();
+        $selected = Category::whereIn('slug', $this->selectedCategories)
+            ->pluck('id')
+            ->flatMap(fn ($id) => $this->subtreeIds((int) $id))
+            ->unique()
+            ->values()
+            ->all();
 
-        // Guard against ids outside this category (e.g. a tampered URL).
+        // Guard against categories outside this one (e.g. a hand-edited ?cat=).
         return array_values(array_intersect($selected, $this->fullSubtreeIds));
     }
 

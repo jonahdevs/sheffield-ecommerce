@@ -11,7 +11,6 @@ use App\Models\Attribute;
 use App\Models\AttributeValue;
 use App\Models\Brand;
 use App\Models\BundleItem;
-use App\Models\Category;
 use App\Models\DownloadableFile;
 use App\Models\GroupedProductItem;
 use App\Models\Product;
@@ -32,8 +31,7 @@ class ProductSeeder extends Seeder
     /** @var array<string, int> brand name → brand id */
     private array $brandIdByName = [];
 
-    /** @var array<string, int> lowercased category name → category id */
-    private array $categoryIdByName = [];
+    private CategoryReferenceResolver $categories;
 
     /** @var array<string, int> attribute slug → attribute id */
     private array $attributeIdBySlug = [];
@@ -97,9 +95,7 @@ class ProductSeeder extends Seeder
     {
         $this->brandIdByName = Brand::pluck('id', 'name')->all();
 
-        $this->categoryIdByName = Category::all()
-            ->mapWithKeys(fn (Category $c) => [Str::lower($c->name) => $c->id])
-            ->all();
+        $this->categories = new CategoryReferenceResolver;
 
         $this->attributeIdBySlug = Attribute::pluck('id', 'slug')->all();
 
@@ -137,7 +133,7 @@ class ProductSeeder extends Seeder
 
         $primaryCategoryId = null;
         if (! empty($data['category'])) {
-            $primaryCategoryId = $this->categoryIdByName[Str::lower(trim($data['category']))] ?? null;
+            $primaryCategoryId = $this->categories->idFor($data['category']);
         }
 
         $product = Product::create([

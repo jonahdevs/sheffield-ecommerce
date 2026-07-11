@@ -10,6 +10,14 @@
      by partials/storefront/mega-menu-panel.blade.php — the category's image on the left,
      a grid of child categories on the right. See App\Http\Controllers\Storefront\
      CategoryMenuController for the (currently random) children source. --}}
+@php
+    // category.show is served by Livewire's generic page controller, whose signature has no
+    // Category to type-hint against, so implicit binding never substitutes and the route
+    // parameter stays the raw {category:slug} string. Normalise either shape to a slug.
+    $routeCategory = request()->routeIs('category.show') ? request()->route('category') : null;
+    $activeCategorySlug =
+        $routeCategory instanceof \App\Models\Category ? $routeCategory->slug : $routeCategory;
+@endphp
 <nav x-data="megaMenu" @mousemove="trackPointer($event)" @mouseleave="close()"
     @keydown.escape.window="close()" @scroll.window.passive="onScroll()"
     class="relative bg-brand-blue-500 text-[#f2ead9]">
@@ -20,10 +28,7 @@
         <div
             class="grid grid-cols-6 grid-rows-2 auto-rows-[0] gap-px overflow-hidden border-x border-white/20 bg-white/20">
             @foreach ($navCategories as $category)
-                @php
-                    $isActive =
-                        request()->routeIs('category.show') && request()->route('category')?->id === $category->id;
-                @endphp
+                @php $isActive = $activeCategorySlug === $category->slug; @endphp
                 {{-- Only categories with sub-categories are mega-menu triggers; the rest
                      stay plain links (no empty flyout). Settling on — or tabbing to — a
                      plain link dismisses an open panel, since the pointer never leaves the
@@ -115,10 +120,7 @@
         <div x-ref="scroller" @scroll="updateArrows()"
             class="flex w-full overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             @foreach ($navCategories as $category)
-                @php
-                    $isActive =
-                        request()->routeIs('category.show') && request()->route('category')?->id === $category->id;
-                @endphp
+                @php $isActive = $activeCategorySlug === $category->slug; @endphp
                 <a href="{{ route('category.show', $category) }}" wire:navigate @class([
                     'shrink-0 px-3 py-3 text-xs whitespace-nowrap transition sm:text-sm sm:px-4',
                     'font-medium text-white' => $isActive,
