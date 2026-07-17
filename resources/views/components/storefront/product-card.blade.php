@@ -25,7 +25,7 @@
     {{ $attributes->merge(['class' => 'group flex flex-col overflow-hidden rounded border border-zinc-200 bg-white transition hover:shadow-md']) }}>
 
     {{-- Image area --}}
-    <div class="relative aspect-square w-full overflow-hidden bg-surface-sunken">
+    <div class="relative aspect-square w-full overflow-hidden bg-white">
 
         {{-- Clickable image link fills the entire area --}}
         <a href="{{ route('product.show', $product) }}" wire:navigate class="absolute inset-0">

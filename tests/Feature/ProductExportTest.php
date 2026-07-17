@@ -2,6 +2,7 @@
 
 use App\Enums\ProductStatus;
 use App\Exports\ProductsExport;
+use App\Models\Category;
 use App\Models\Product;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -38,6 +39,23 @@ it('applies status filter to export', function () {
     Product::factory()->create(['status' => ProductStatus::DRAFT]);
 
     $this->get(route('admin.products.export', ['status' => ProductStatus::PUBLISHED->value]))->assertOk();
+
+    Excel::assertDownloaded('products.xlsx', function (ProductsExport $export) {
+        return $export->query()->count() === 2;
+    });
+});
+
+it('applies category filter to export, including child categories', function () {
+    Excel::fake();
+
+    $machines = Category::factory()->create(['name' => 'Coffee Machines']);
+    $automatic = Category::factory()->create(['name' => 'Automatic', 'parent_id' => $machines->id]);
+
+    Product::factory()->create(['primary_category_id' => $machines->id]);
+    Product::factory()->create(['primary_category_id' => $automatic->id]);
+    Product::factory()->create(['primary_category_id' => Category::factory()->create()->id]);
+
+    $this->get(route('admin.products.export', ['category' => $machines->id]))->assertOk();
 
     Excel::assertDownloaded('products.xlsx', function (ProductsExport $export) {
         return $export->query()->count() === 2;

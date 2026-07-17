@@ -40,6 +40,7 @@ class ProductExportController extends Controller
             ->when($request->string('status')->value(), fn ($q, $status) => $q->where('status', $status))
             ->when($request->string('visibility')->value(), fn ($q, $vis) => $q->where('visibility', $vis))
             ->when($request->string('stock')->value(), fn ($q, $stock) => $q->where('stock_status', $stock))
+            ->when($request->string('category')->value(), fn ($q, $category) => $q->inCategoryTree((int) $category))
             ->orderBy('name')
             ->get();
 
@@ -90,6 +91,7 @@ class ProductExportController extends Controller
             filterStatus: $request->string('status')->value(),
             filterVisibility: $request->string('visibility')->value(),
             filterStock: $request->string('stock')->value(),
+            filterCategory: $request->string('category')->value(),
         );
     }
 }

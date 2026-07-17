@@ -232,6 +232,13 @@ class Product extends Model implements HasMedia
         });
     }
 
+    /** Products whose primary category is the given category, or any category beneath it. */
+    #[Scope]
+    protected function inCategoryTree(Builder $query, int $categoryId): void
+    {
+        $query->whereIn('primary_category_id', Category::treeIds($categoryId));
+    }
+
     /** Products that appear in catalog/category listings (VISIBLE or CATALOG). */
     #[Scope]
     protected function visibleInCatalog(Builder $query): void

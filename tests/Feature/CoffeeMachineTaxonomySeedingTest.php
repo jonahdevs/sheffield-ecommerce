@@ -8,6 +8,7 @@ use App\Models\Product;
 use Database\Seeders\BrandSeeder;
 use Database\Seeders\CategorySeeder;
 use Database\Seeders\ProductSeeder;
+use Illuminate\Support\Str;
 
 /**
  * The coffee taxonomy mirrors the "Ecommerce Listing- Coffee Machines Final"
@@ -95,17 +96,22 @@ it('seeds the coffee taxonomy from the final e-commerce listing', function () {
         ->and($listed->every(fn (Product $p) => $p->status->value === 'published'))->toBeTrue()
         ->and($listed->every(fn (Product $p) => $p->price > 0))->toBeTrue();
 
-    // Unpriced workbook rows arrive as drafts, with GOODWILL resolved to a brand.
+    // The Goodwill brewers and the filter papers carry no delivery-inclusive e-commerce
+    // price in the workbook, only a SAP one. They are sold at that SAP price rather than
+    // held back as drafts, so they are published — the workbook's missing e-commerce
+    // column is not a bar to listing. GOODWILL still resolves to a brand.
     $goodwillId = Brand::where('name', 'GOODWILL')->value('id');
     $brewers = Product::whereIn('sku', ['IMG/COF/00139', 'IMG/COF/00140', 'IMG/COF/00141'])->get();
 
     expect($brewers)->toHaveCount(3)
-        ->and($brewers->every(fn (Product $p) => $p->status->value === 'draft'))->toBeTrue()
+        ->and($brewers->every(fn (Product $p) => $p->status->value === 'published'))->toBeTrue()
+        ->and($brewers->every(fn (Product $p) => $p->price > 0))->toBeTrue()
         ->and($brewers->every(fn (Product $p) => $p->brand_id === $goodwillId))->toBeTrue();
 
     $papers = Product::where('sku', 'IMS/FIT/00992')->sole();
 
-    expect($papers->status->value)->toBe('draft')
+    expect($papers->status->value)->toBe('published')
+        ->and($papers->price)->toBeGreaterThan(0)
         ->and($papers->primary_category_id)->toBe($childId('Coffee Brewers'));
 
     // The workbook mistypes the CREM decanter's item number as IMG/COF/00001; its
@@ -140,6 +146,8 @@ it('seeds the coffee taxonomy from the final e-commerce listing', function () {
         ->and($navbar->sort_order)->toBe(1);
 
     assertSpecificationsRenderAsTables();
+    assertCoffeeDescriptionsSplitFromSeoCopy();
+    assertCoffeeImagesFollowTheNamingConvention();
 });
 
 /**
@@ -232,4 +240,91 @@ function assertSpecificationsRenderAsTables(): void
     // Products outside the workbook keep the list format they already had.
     expect(Product::where('sku', 'IMG/COF/00054')->value('technical_specification'))
         ->toStartWith('<ul>');
+}
+
+/**
+ * The two description fields do different jobs, so the copy is split rather than shared:
+ * short_description is a neutral, scannable summary drawn from the product's own
+ * description, while the SEO-pattern copy (brand + model, use case, market framing)
+ * lives in meta_description where the search engines read it.
+ * Folded into the seeding test above because seeding the catalogue is slow.
+ */
+function assertCoffeeDescriptionsSplitFromSeoCopy(): void
+{
+    $coffee = Product::whereHas(
+        'primaryCategory',
+        fn ($query) => $query->whereIn('slug', [
+            'semi-automatic', 'semi-automatic-accessories', 'coffee-grinders',
+            'automatic', 'automatic-accessories', 'coffee-brewers', 'coffee-servery',
+        ])
+    )->get();
+
+    expect($coffee)->toHaveCount(37);
+
+    // Both fields are populated for every product, so no PDP or <meta> tag falls back.
+    expect($coffee->every(fn (Product $p) => filled($p->short_description)))->toBeTrue()
+        ->and($coffee->every(fn (Product $p) => filled($p->meta_description)))->toBeTrue();
+
+    // Anyone is welcome to buy, so the customer-facing summary never narrows the
+    // audience to a region — that framing belongs to the SEO copy alone.
+    $geographic = fn (?string $copy) => str_contains($copy ?? '', 'Kenya')
+        || str_contains($copy ?? '', 'East Africa');
+
+    expect($coffee->every(fn (Product $p) => ! $geographic($p->short_description)))->toBeTrue()
+        ->and($coffee->contains(fn (Product $p) => $geographic($p->meta_description)))->toBeTrue();
+
+    // The summary is scannable: a sentence or two, not the description's full lead
+    // paragraph repeated above the fold.
+    expect($coffee->every(fn (Product $p) => strlen($p->short_description) <= 220))->toBeTrue();
+
+    // Worked example — the Pradeep brewer. The summary states what the product is and
+    // its headline specs; the SEO copy keeps the brand/model and market framing.
+    $brewer = Product::where('sku', 'IMG/COF/00033')->sole();
+
+    expect($brewer->short_description)
+        ->toBe('Commercial filter brewer that delivers straight into a 3.0-litre insulated thermal server, keeping coffee hot without a warming plate. Stainless steel, countertop, and simple to run and clean.')
+        ->and($brewer->meta_description)
+        ->toBe('Pradeep 9230 commercial coffee brewer with filter for fresh-brewed drip coffee service at hotels, restaurants, and office canteens across Kenya.');
+}
+
+/**
+ * Product images are named <name-slug>-<sku-slug>.<ext>, which keeps a photo traceable
+ * to its SKU and survives a rename of the file on someone's desktop.
+ *
+ * This matters more than tidiness: ProductSeeder::createImages() silently skips an
+ * image path that is not on disk, so a typo costs the product its photo with no error
+ * anywhere. Asserting the media actually attached is what catches that.
+ * Folded into the seeding test above because seeding the catalogue is slow.
+ */
+function assertCoffeeImagesFollowTheNamingConvention(): void
+{
+    $coffee = Product::whereHas(
+        'primaryCategory',
+        fn ($query) => $query->whereIn('slug', [
+            'semi-automatic', 'semi-automatic-accessories', 'coffee-grinders',
+            'automatic', 'automatic-accessories', 'coffee-brewers', 'coffee-servery',
+        ])
+    )->with('media')->get();
+
+    // The Egro Zero milk fridge, Rocky Doser and DAC-05 cup dispenser have no photo
+    // anywhere yet; every other coffee product carries one.
+    $withoutImage = ['IMG/COF/00047', 'IMG/COF/00128', 'IMG/COF/00133'];
+    [$unphotographed, $photographed] = $coffee->partition(
+        fn (Product $p) => in_array($p->sku, $withoutImage, true)
+    );
+
+    expect($unphotographed)->toHaveCount(3)
+        ->and($photographed)->toHaveCount(34);
+
+    // Every referenced file resolved on disk and became media — no silent skips.
+    expect($photographed->every(fn (Product $p) => $p->media->isNotEmpty()))->toBeTrue();
+
+    // Each cover file is named for the product that owns it.
+    foreach ($photographed as $product) {
+        $cover = $product->media->first(fn ($media) => $media->getCustomProperty('is_cover') === true);
+        $expected = Str::slug($product->name).'-'.Str::slug($product->sku);
+
+        expect($cover)->not->toBeNull()
+            ->and(pathinfo($cover->file_name, PATHINFO_FILENAME))->toBe($expected);
+    }
 }

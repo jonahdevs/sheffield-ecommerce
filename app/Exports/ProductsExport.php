@@ -17,6 +17,7 @@ class ProductsExport implements FromQuery, WithColumnWidths, WithHeadings, WithM
         private readonly string $filterStatus = '',
         private readonly string $filterVisibility = '',
         private readonly string $filterStock = '',
+        private readonly string $filterCategory = '',
     ) {}
 
     public function query()
@@ -30,6 +31,7 @@ class ProductsExport implements FromQuery, WithColumnWidths, WithHeadings, WithM
             ->when($this->filterStatus, fn ($q) => $q->where('status', $this->filterStatus))
             ->when($this->filterVisibility, fn ($q) => $q->where('visibility', $this->filterVisibility))
             ->when($this->filterStock, fn ($q) => $q->where('stock_status', $this->filterStock))
+            ->when($this->filterCategory, fn ($q) => $q->inCategoryTree((int) $this->filterCategory))
             ->orderBy('name');
     }
 

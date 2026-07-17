@@ -146,6 +146,7 @@ class ProductSeeder extends Seeder
             'type' => $type,
             'short_description' => $data['short_description'] ?? null,
             'description' => $data['description'] ?? null,
+            'meta_description' => $data['meta_description'] ?? null,
             'technical_specification' => $data['technical_specification'] ?? null,
             'price' => $price,
             'sale_price' => $salePrice,

@@ -4,8 +4,10 @@ use App\Enums\ProductStatus;
 use App\Enums\ProductVisibility;
 use App\Enums\StockStatus;
 use App\Imports\ProductsImport;
+use App\Models\Category;
 use App\Models\Product;
 use Flux\Flux;
+use Illuminate\Database\Eloquent\Collection;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
@@ -49,6 +51,9 @@ new #[Layout('layouts::app')] #[Title('Products | Admin')] class extends Compone
     public string $filterStock = '';
 
     #[Url]
+    public string $filterCategory = '';
+
+    #[Url]
     public string $sortBy = 'updated_at';
 
     #[Url]
@@ -75,6 +80,12 @@ new #[Layout('layouts::app')] #[Title('Products | Admin')] class extends Compone
     }
 
     public function updatedFilterStock(): void
+    {
+        $this->resetPage();
+        $this->clearSelection();
+    }
+
+    public function updatedFilterCategory(): void
     {
         $this->resetPage();
         $this->clearSelection();
@@ -122,11 +133,29 @@ new #[Layout('layouts::app')] #[Title('Products | Admin')] class extends Compone
         ];
     }
 
+    /**
+     * Top-level categories with their children, so the filter select can show the
+     * tree the way the product form does.
+     */
+    #[Computed]
+    public function categoryOptions(): Collection
+    {
+        return Category::whereNull('parent_id')
+            ->with(['children' => fn ($q) => $q->select(['id', 'name', 'parent_id'])->orderBy('sort_order')->orderBy('name')])
+            ->orderBy('sort_order')
+            ->orderBy('name')
+            ->get(['id', 'name', 'parent_id']);
+    }
+
     #[Computed]
     public function products()
     {
         return Product::query()
             ->with(['brand:id,name', 'primaryCategory:id,name', 'media'])
+            // Only approved reviews count towards the average, matching the rating the
+            // storefront shows and the one on the product's own admin page.
+            ->withCount(['reviews as approved_reviews_count' => fn ($q) => $q->approved()])
+            ->withAvg(['reviews as approved_reviews_avg' => fn ($q) => $q->approved()], 'rating')
             ->when(
                 $this->search,
                 fn ($q) => $q->where(function ($q) {
@@ -136,6 +165,7 @@ new #[Layout('layouts::app')] #[Title('Products | Admin')] class extends Compone
             ->when($this->filterStatus, fn ($q) => $q->where('status', $this->filterStatus))
             ->when($this->filterVisibility, fn ($q) => $q->where('visibility', $this->filterVisibility))
             ->when($this->filterStock, fn ($q) => $q->where('stock_status', $this->filterStock))
+            ->when($this->filterCategory, fn ($q) => $q->inCategoryTree((int) $this->filterCategory))
             ->orderBy($this->sortBy, $this->sortDirection)
             ->paginate($this->perPage);
     }
@@ -344,15 +374,15 @@ new #[Layout('layouts::app')] #[Title('Products | Admin')] class extends Compone
                     <flux:button size="sm" icon="arrow-down-tray" icon-trailing="chevron-down">Export</flux:button>
                     <flux:menu>
                         <flux:menu.item icon="table-cells"
-                            href="{{ route('admin.products.export', array_filter(['format' => 'xlsx', 'q' => $search, 'status' => $filterStatus, 'visibility' => $filterVisibility, 'stock' => $filterStock])) }}">
+                            href="{{ route('admin.products.export', array_filter(['format' => 'xlsx', 'q' => $search, 'status' => $filterStatus, 'visibility' => $filterVisibility, 'stock' => $filterStock, 'category' => $filterCategory])) }}">
                             Excel (.xlsx)
                         </flux:menu.item>
                         <flux:menu.item icon="document-text"
-                            href="{{ route('admin.products.export', array_filter(['format' => 'csv', 'q' => $search, 'status' => $filterStatus, 'visibility' => $filterVisibility, 'stock' => $filterStock])) }}">
+                            href="{{ route('admin.products.export', array_filter(['format' => 'csv', 'q' => $search, 'status' => $filterStatus, 'visibility' => $filterVisibility, 'stock' => $filterStock, 'category' => $filterCategory])) }}">
                             CSV (.csv)
                         </flux:menu.item>
                         <flux:menu.item icon="document-chart-bar"
-                            href="{{ route('admin.products.pdf', array_filter(['q' => $search, 'status' => $filterStatus, 'visibility' => $filterVisibility, 'stock' => $filterStock])) }}">
+                            href="{{ route('admin.products.pdf', array_filter(['q' => $search, 'status' => $filterStatus, 'visibility' => $filterVisibility, 'stock' => $filterStock, 'category' => $filterCategory])) }}">
                             PDF catalog
                         </flux:menu.item>
                         <flux:menu.separator />
@@ -371,6 +401,17 @@ new #[Layout('layouts::app')] #[Title('Products | Admin')] class extends Compone
                 icon="magnifying-glass" clearable class="sm:max-w-xs" />
 
             <div class="flex flex-wrap items-center gap-2">
+                <flux:select wire:model.live="filterCategory" class="w-44">
+                    <flux:select.option value="">All categories</flux:select.option>
+                    @foreach ($this->categoryOptions as $category)
+                        <flux:select.option :value="$category->id">{{ $category->name }}</flux:select.option>
+                        @foreach ($category->children as $child)
+                            <flux:select.option :value="$child->id">&nbsp;&nbsp;&nbsp;{{ $child->name }}
+                            </flux:select.option>
+                        @endforeach
+                    @endforeach
+                </flux:select>
+
                 <flux:select wire:model.live="filterStatus" class="w-36">
                     <flux:select.option value="">All statuses</flux:select.option>
                     @foreach (ProductStatus::cases() as $s)
@@ -448,10 +489,12 @@ new #[Layout('layouts::app')] #[Title('Products | Admin')] class extends Compone
                 <flux:table.column class="w-14"></flux:table.column>
                 <flux:table.column sortable :sorted="$sortBy === 'name'" :direction="$sortDirection"
                     wire:click="sort('name')">Product</flux:table.column>
-                <flux:table.column>Brand / Category</flux:table.column>
+                <flux:table.column>Brand</flux:table.column>
+                <flux:table.column>Category</flux:table.column>
                 <flux:table.column sortable :sorted="$sortBy === 'price'" :direction="$sortDirection"
                     wire:click="sort('price')">Price</flux:table.column>
                 <flux:table.column>Stock</flux:table.column>
+                <flux:table.column>Reviews</flux:table.column>
                 <flux:table.column>Status</flux:table.column>
                 <flux:table.column align="end">Actions</flux:table.column>
             </flux:table.columns>
@@ -482,9 +525,18 @@ new #[Layout('layouts::app')] #[Title('Products | Admin')] class extends Compone
                         </flux:table.cell>
 
                         <flux:table.cell>
-                            <span class="text-zinc-700 dark:text-zinc-300">{{ $product->brand?->name ?? '—' }}</span>
+                            @if ($product->brand)
+                                <span class="text-zinc-700 dark:text-zinc-300">{{ $product->brand->name }}</span>
+                            @else
+                                <span class="text-zinc-400">—</span>
+                            @endif
+                        </flux:table.cell>
+
+                        <flux:table.cell>
                             @if ($product->primaryCategory)
-                                <span class="block text-xs text-zinc-400">{{ $product->primaryCategory->name }}</span>
+                                <span class="text-zinc-700 dark:text-zinc-300">{{ $product->primaryCategory->name }}</span>
+                            @else
+                                <span class="text-zinc-400">—</span>
                             @endif
                         </flux:table.cell>
 
@@ -501,19 +553,23 @@ new #[Layout('layouts::app')] #[Title('Products | Admin')] class extends Compone
                             @endif
                         </flux:table.cell>
 
-                        <flux:table.cell>
-                            @php
-                                $stockColor = match ($product->stock_status) {
-                                    StockStatus::IN_STOCK => 'green',
-                                    StockStatus::OUT_OF_STOCK => 'red',
-                                    StockStatus::BACKORDER => 'yellow',
-                                };
-                            @endphp
-                            <flux:badge size="sm" :color="$stockColor" inset="top bottom">
-                                {{ $product->stock_status->label() }}
-                            </flux:badge>
+                        <flux:table.cell class="tabular-nums">
                             @if ($product->stock_quantity !== null)
-                                <span class="ml-1 text-xs text-zinc-400">{{ $product->stock_quantity }}</span>
+                                <span class="text-zinc-700 dark:text-zinc-300">{{ $product->stock_quantity }}</span>
+                            @else
+                                <span class="text-zinc-400">—</span>
+                            @endif
+                        </flux:table.cell>
+
+                        <flux:table.cell class="tabular-nums">
+                            @if ($product->approved_reviews_count)
+                                <flux:icon.star variant="micro"
+                                    class="mr-0.5 inline size-3.5 text-amber-400" />
+                                <span
+                                    class="text-zinc-700 dark:text-zinc-300">{{ number_format($product->approved_reviews_avg, 1) }}</span>
+                                <span class="ml-1 text-xs text-zinc-400">({{ $product->approved_reviews_count }})</span>
+                            @else
+                                <span class="text-zinc-400">—</span>
                             @endif
                         </flux:table.cell>
 
@@ -568,8 +624,8 @@ new #[Layout('layouts::app')] #[Title('Products | Admin')] class extends Compone
                     </flux:table.row>
                 @empty
                     <flux:table.row>
-                        <flux:table.cell colspan="8" class="py-16 text-center text-zinc-400">
-                            @if ($search || $filterVisibility || $filterStock)
+                        <flux:table.cell colspan="10" class="py-16 text-center text-zinc-400">
+                            @if ($search || $filterStatus || $filterVisibility || $filterStock || $filterCategory)
                                 No products match your filters.
                             @else
                                 No products yet.

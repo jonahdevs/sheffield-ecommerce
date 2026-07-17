@@ -571,7 +571,7 @@ new #[Layout('layouts::storefront')] #[Title('Commercial Kitchen, Cold Room, Lau
                         @foreach ([...$this->brands->all(), ...$this->brands->all()] as $brand)
                             <a href="{{ $brand->website_url ?: '#' }}"
                                 @if ($brand->website_url) target="_blank" rel="noopener noreferrer" @endif
-                                class="flex w-36 shrink-0 flex-col items-center justify-center gap-2 self-stretch border-r border-zinc-200 px-4 py-4 text-center transition md:w-45 md:px-5 md:py-7">
+                                class="flex w-36 shrink-0 flex-col items-center justify-center gap-2 self-stretch border-r border-zinc-200 px-4 text-center transition md:w-45 md:px-5">
                                 @if ($brand->logo_url)
                                     <img src="{{ $brand->logo_url }}" alt="{{ $brand->name }}"
                                         class="h-14 w-full object-contain md:h-24" loading="lazy" />

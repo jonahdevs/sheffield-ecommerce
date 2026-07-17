@@ -123,6 +123,44 @@ class Category extends Model implements HasMedia
     }
 
     // ==================================================
+    // TREE
+    // ==================================================
+
+    /**
+     * IDs of the given category plus every category nested beneath it, at any depth.
+     * Filtering by a parent ("Coffee Machines") should also match products filed
+     * under its children, which is where most of the catalog actually sits.
+     *
+     * @return array<int, int>
+     */
+    public static function treeIds(int $categoryId): array
+    {
+        $childrenByParent = static::query()
+            ->whereNotNull('parent_id')
+            ->get(['id', 'parent_id'])
+            ->groupBy('parent_id');
+
+        $ids = [];
+        $queue = [$categoryId];
+
+        while ($queue !== []) {
+            $id = (int) array_pop($queue);
+
+            if (in_array($id, $ids, true)) {
+                continue;
+            }
+
+            $ids[] = $id;
+
+            foreach ($childrenByParent->get($id, []) as $child) {
+                $queue[] = $child->id;
+            }
+        }
+
+        return $ids;
+    }
+
+    // ==================================================
     // ACCESSORS
     // ==================================================
 
