@@ -293,7 +293,7 @@ new #[Layout('layouts::settings')] #[Title('Security')] class extends Component 
                 @if ($password)
                     @php $strength = $this->passwordStrength; @endphp
                     <div>
-                        <div class="h-[3px] w-full overflow-hidden rounded-full bg-zinc-200">
+                        <div class="h-0.75 w-full overflow-hidden rounded-full bg-zinc-200">
                             <div class="h-full rounded-full transition-all duration-300 {{ $strength['color'] }}"
                                  style="width: {{ $strength['strength'] }}%"></div>
                         </div>

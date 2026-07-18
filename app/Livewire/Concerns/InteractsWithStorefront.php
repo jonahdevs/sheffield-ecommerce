@@ -2,11 +2,15 @@
 
 namespace App\Livewire\Concerns;
 
+use App\Enums\ProductType;
 use App\Enums\StockStatus;
 use App\Models\Product;
+use App\Models\ProductVariant;
 use App\Support\StorefrontSession;
 use App\Support\TaxCalculator;
 use Flux\Flux;
+use Illuminate\Support\Collection;
+use Livewire\Attributes\Computed;
 
 /**
  * Mix into any Livewire page that renders <x-storefront.product-card> so
@@ -57,8 +61,22 @@ trait InteractsWithStorefront
             return;
         }
 
-        $this->skipRender();
+        if ($this->skipRenderAfterAddToCart()) {
+            $this->skipRender();
+        }
+
         Flux::toast(heading: 'Added to cart', text: 'Item has been added to your cart.', variant: 'success');
+    }
+
+    /**
+     * Card listings skip the re-render so morphing can't tear down JS-initialised
+     * DOM (the hero Swiper, carousels); the card reflects its new state client-side
+     * instead. Pages whose own markup depends on cart contents — the product page
+     * swaps its Add to cart button for a counter — must override this and render.
+     */
+    protected function skipRenderAfterAddToCart(): bool
+    {
+        return true;
     }
 
     /**
@@ -168,6 +186,202 @@ trait InteractsWithStorefront
         $this->accessoryParentName = '';
         $this->accessoryModalItems = [];
         $this->accessorySelections = [];
+    }
+
+    // ==================================================
+    // VARIATION PICKER
+    // ==================================================
+
+    public bool $showVariationModal = false;
+
+    /** Slug of the variable product whose variants the modal is showing. */
+    public string $variationProductSlug = '';
+
+    /** Open the variation picker for a variable product. */
+    public function openVariationModal(string $slug): void
+    {
+        $product = $this->resolveVariationProduct($slug);
+
+        if (! $product) {
+            return;
+        }
+
+        $this->variationProductSlug = $slug;
+        $this->showVariationModal = true;
+    }
+
+    public function closeVariationModal(): void
+    {
+        $this->showVariationModal = false;
+        $this->variationProductSlug = '';
+    }
+
+    /**
+     * The variable product the modal is showing, with everything its rows need.
+     * Resolved per request rather than held in state, so a tampered slug can only
+     * ever name a published, catalog-visible product.
+     */
+    protected function resolveVariationProduct(?string $slug = null): ?Product
+    {
+        $slug ??= $this->variationProductSlug;
+
+        // On the product page the modal is always about the page's own product, so
+        // no slug is set when opening it from there.
+        if ($slug === '' || $slug === null) {
+            $slug = (isset($this->product) && $this->product instanceof Product)
+                ? $this->product->slug
+                : null;
+        }
+
+        if ($slug === null) {
+            return null;
+        }
+
+        // The product page already holds the product; reuse it rather than re-query.
+        if (isset($this->product) && $this->product instanceof Product && $this->product->slug === $slug) {
+            $product = $this->product;
+        } else {
+            $product = Product::query()
+                ->visibleInCatalog()
+                ->published()
+                ->where('slug', $slug)
+                ->first();
+        }
+
+        if (! $product || $product->type !== ProductType::VARIABLE) {
+            return null;
+        }
+
+        if (! $product->relationLoaded('variants')) {
+            $product->load([
+                'variants' => fn ($q) => $q->where('is_active', true)->orderBy('sort_order'),
+                'variants.attributeValues.attribute',
+                'variants.media',
+            ]);
+        }
+
+        return $product;
+    }
+
+    /**
+     * Modal rows — one per variant, with the label, reference, price, stock and the
+     * quantity currently in the cart.
+     *
+     * @return Collection<int, array{id: int, reference: string, label: string, price_cents: int|null, in_stock: bool, backorder: bool, stock_quantity: int|null, image: string|null, qty: int}>
+     */
+    #[Computed]
+    public function variationRows(): Collection
+    {
+        $product = $this->resolveVariationProduct();
+
+        if (! $product) {
+            return collect();
+        }
+
+        $tax = app(TaxCalculator::class);
+
+        return $product->variants->map(function (ProductVariant $variant) use ($product, $tax) {
+            // Mirrors StorefrontSession's unit-price rule so the figure shown here
+            // is the figure charged.
+            $price = $variant->compare_at_price ?? $variant->price;
+
+            return [
+                'id' => $variant->id,
+                // Customers recognise the manufacturer's model number, not our
+                // internal SKU; fall back through the parent's before the SKU.
+                'reference' => $variant->model_number ?: ($product->model_number ?: $variant->sku),
+                'label' => $variant->attributeValues->map(fn ($value) => $value->label ?: $value->value)->join(' / '),
+                'price_cents' => $price ? $tax->displayPriceCents($product, (int) $price) : null,
+                'in_stock' => $variant->stock_status === StockStatus::IN_STOCK,
+                'backorder' => $variant->stock_status === StockStatus::BACKORDER,
+                // null means stock isn't tracked for this variant, which is not
+                // the same as zero — show nothing rather than "0 in stock".
+                'stock_quantity' => $variant->stock_quantity,
+                'image' => $variant->getFirstMediaUrl('image', 'thumb') ?: $product->cover_url,
+                // The stepper reads straight off the cart, so it shows 0 for a
+                // variant that isn't in it and reflects edits made elsewhere.
+                'qty' => StorefrontSession::cartQuantity(StorefrontSession::lineKey($product->slug, $variant->id)),
+            ];
+        })->values();
+    }
+
+    /**
+     * Put one more of this variant in the cart. The stepper edits the cart live,
+     * so there is nothing to confirm afterwards.
+     *
+     * addToCart() is deliberately not reused here: it calls skipRender(), which
+     * would leave the counter showing its old value.
+     */
+    public function incVariationQty(int $variantId): void
+    {
+        $product = $this->resolveVariationProduct();
+        $variant = $this->orderableVariant($product, $variantId);
+
+        if (! $variant) {
+            return;
+        }
+
+        StorefrontSession::addToCart($product->slug, 1, $variantId);
+        unset($this->variationRows);
+        $this->dispatch('cart-updated');
+
+        $label = $variant->attributeValues->map(fn ($value) => $value->label ?: $value->value)->join(' / ');
+
+        Flux::toast(
+            heading: 'Added to cart',
+            text: trim($product->name.' '.$label).' has been added to your cart.',
+            variant: 'success',
+        );
+    }
+
+    /** Take one of this variant out of the cart, dropping the line at zero. */
+    public function decVariationQty(int $variantId): void
+    {
+        $product = $this->resolveVariationProduct();
+        $variant = $this->orderableVariant($product, $variantId);
+
+        if (! $variant) {
+            return;
+        }
+
+        $key = StorefrontSession::lineKey($product->slug, $variantId);
+        $qty = StorefrontSession::cartQuantity($key);
+
+        // Nothing to take out — the stepper is already disabled at zero, so this
+        // can only be a stale click. Staying silent avoids a misleading toast.
+        if ($qty === 0) {
+            return;
+        }
+
+        if ($qty <= 1) {
+            StorefrontSession::removeFromCart($key);
+        } else {
+            StorefrontSession::setCartQty($key, $qty - 1);
+        }
+
+        unset($this->variationRows);
+        $this->dispatch('cart-updated');
+
+        $name = trim($product->name.' '.$variant->attributeValues->map(fn ($value) => $value->label ?: $value->value)->join(' / '));
+
+        Flux::toast(
+            heading: $qty <= 1 ? 'Item removed' : 'Cart updated',
+            text: $qty <= 1
+                ? $name.' has been removed from your cart.'
+                : $name.' reduced to '.($qty - 1).' in your cart.',
+            variant: 'warning',
+        );
+    }
+
+    /**
+     * The variant a shopper may actually order — the guard for variant ids arriving
+     * from the client, which could name any row in the table.
+     */
+    private function orderableVariant(?Product $product, int $variantId): ?ProductVariant
+    {
+        $variant = $product?->variants->firstWhere('id', $variantId);
+
+        return $variant && $variant->stock_status === StockStatus::IN_STOCK ? $variant : null;
     }
 
     public function decrementCart(string $slug): void

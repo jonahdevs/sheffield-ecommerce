@@ -57,7 +57,7 @@ new #[Layout('layouts::storefront')] #[Title('Wishlist')] class extends Componen
         $wishlistSlugs = StorefrontSession::wishlist();
 
         return Product::query()
-            ->with(['brand:id,name', 'taxClass:id,rate', 'media'])
+            ->forCard()
             ->visibleInCatalog()
             ->published()
             ->honorStockVisibility()
@@ -128,11 +128,11 @@ new #[Layout('layouts::storefront')] #[Title('Wishlist')] class extends Componen
             </div>
 
             {{-- Convert-to-quote band --}}
-            <div class="mt-8 grid grid-cols-1 items-center gap-6 rounded-md p-6 text-[#f3eadd] sm:grid-cols-[1fr_auto]"
+            <div class="mt-8 grid grid-cols-1 items-center gap-6 rounded-md p-6 text-olive-200 sm:grid-cols-[1fr_auto]"
                 style="background:#0c1421">
                 <div>
                     <div class="font-serif text-xl">Need a formal quote for this list?</div>
-                    <div class="mt-1 text-[13px] text-[#c9bea4]">
+                    <div class="mt-1 text-sm text-olive-400">
                         Convert your wishlist to a costed quotation with delivery, installation and lead times. Response
                         in 24 business hours.
                     </div>
@@ -149,9 +149,9 @@ new #[Layout('layouts::storefront')] #[Title('Wishlist')] class extends Componen
         @if ($this->recommendations->isNotEmpty())
             <section class="pt-20">
                 <div class="mb-4 flex items-baseline justify-between">
-                    <h2 class="text-[22px] font-semibold tracking-tight">You might also want</h2>
+                    <h2 class="text-2xl font-semibold tracking-tight">You might also want</h2>
                     <a href="{{ route('catalog') }}" wire:navigate
-                        class="text-[13px] font-medium text-brand-500 underline transition-colors hover:text-brand-600">
+                        class="text-sm font-medium text-brand-500 underline transition-colors hover:text-brand-600">
                         View all
                     </a>
                 </div>
@@ -201,4 +201,5 @@ new #[Layout('layouts::storefront')] #[Title('Wishlist')] class extends Componen
     </div>
 
     @include('partials.storefront.accessory-modal')
+    @include('partials.storefront.variation-modal')
 </div>

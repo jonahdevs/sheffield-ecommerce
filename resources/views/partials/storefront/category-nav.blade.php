@@ -20,7 +20,7 @@
 @endphp
 <nav x-data="megaMenu" @mousemove="trackPointer($event)" @mouseleave="close()"
     @keydown.escape.window="close()" @scroll.window.passive="onScroll()"
-    class="relative bg-brand-blue-500 text-[#f2ead9]">
+    class="relative bg-brand-blue-500 text-olive-200">
 
     {{-- Desktop (lg+) — trigger grid. grid-rows-2 + auto-rows-[0] caps visible content at
          exactly 2 rows; overflow rows collapse to 0 height and get clipped. --}}
@@ -49,7 +49,7 @@
                     @class([
                         'flex items-center gap-2 px-3 py-2.5 text-sm transition',
                         'bg-brand-blue-700 font-medium text-white' => $isActive,
-                        'bg-brand-blue-500 text-[#f2ead9] hover:bg-brand-blue-600 hover:text-white' => !$isActive,
+                        'bg-brand-blue-500 text-olive-200 hover:bg-brand-blue-600 hover:text-white' => !$isActive,
                     ])
                     :class="active === {{ $category->id }} && isOpen ? 'bg-brand-blue-600 text-white' : ''">
                     @if ($category->icon_svg)

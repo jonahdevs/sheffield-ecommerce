@@ -847,7 +847,7 @@ new #[Layout('layouts::app')] #[Title('Quote | Admin')] class extends Component 
     </form>
 
     {{-- Decline quote confirmation modal --}}
-    <flux:modal wire:model.self="showDeclineConfirmation" class="md:w-[480px]">
+    <flux:modal wire:model.self="showDeclineConfirmation" class="md:w-120">
         <div class="space-y-6">
             <div>
                 <flux:heading size="lg">Decline this quote?</flux:heading>
@@ -867,7 +867,7 @@ new #[Layout('layouts::app')] #[Title('Quote | Admin')] class extends Component 
     </flux:modal>
 
     {{-- Remove line item confirmation modal --}}
-    <flux:modal wire:model.self="showRemoveLineConfirmation" class="md:w-[480px]">
+    <flux:modal wire:model.self="showRemoveLineConfirmation" class="md:w-120">
         <div class="space-y-6">
             <div>
                 <flux:heading size="lg">Remove line item?</flux:heading>
@@ -887,7 +887,7 @@ new #[Layout('layouts::app')] #[Title('Quote | Admin')] class extends Component 
     </flux:modal>
 
     {{-- Incomplete quote confirmation modal --}}
-    <flux:modal wire:model.self="showSendConfirmation" class="md:w-[480px]">
+    <flux:modal wire:model.self="showSendConfirmation" class="md:w-120">
         <flux:heading class="uppercase tracking-wide">Send incomplete quote?</flux:heading>
         <flux:subheading>This quote has the following issues. Are you sure you want to send it to the customer now?
         </flux:subheading>

@@ -148,46 +148,46 @@
 
                     {{-- My Account --}}
                     <section class="border-b border-zinc-100">
-                        <p class="px-4 pb-2 pt-4 text-[11px] font-semibold uppercase tracking-wider text-ink-3">My Account</p>
+                        <p class="px-4 pb-2 pt-4 text-xs font-semibold uppercase tracking-wider text-ink-3">My Account</p>
                         @auth
                             <nav class="pb-2">
                                 <a href="{{ route('account.dashboard') }}" wire:navigate @click="drawerOpen = false"
-                                    class="flex items-center gap-3 px-4 py-2.5 text-[14px] text-ink transition hover:text-brand-500">
+                                    class="flex items-center gap-3 px-4 py-2.5 text-sm text-ink transition hover:text-brand-500">
                                     <flux:icon.squares-2x2 variant="outline" class="size-4 shrink-0 text-ink-3" /> Account dashboard
                                 </a>
                                 <a href="{{ route('account.orders.index') }}" wire:navigate @click="drawerOpen = false"
-                                    class="flex items-center gap-3 px-4 py-2.5 text-[14px] text-ink transition hover:text-brand-500">
+                                    class="flex items-center gap-3 px-4 py-2.5 text-sm text-ink transition hover:text-brand-500">
                                     <flux:icon.document-text variant="outline" class="size-4 shrink-0 text-ink-3" /> My Orders
                                 </a>
                                 <a href="{{ route('account.quotes.index') }}" wire:navigate @click="drawerOpen = false"
-                                    class="flex items-center gap-3 px-4 py-2.5 text-[14px] text-ink transition hover:text-brand-500">
+                                    class="flex items-center gap-3 px-4 py-2.5 text-sm text-ink transition hover:text-brand-500">
                                     <flux:icon.clipboard-document-list variant="outline" class="size-4 shrink-0 text-ink-3" /> My Quotes
                                 </a>
                                 <a href="{{ route('wishlist') }}" wire:navigate @click="drawerOpen = false"
-                                    class="flex items-center gap-3 px-4 py-2.5 text-[14px] text-ink transition hover:text-brand-500">
+                                    class="flex items-center gap-3 px-4 py-2.5 text-sm text-ink transition hover:text-brand-500">
                                     <flux:icon.heart variant="outline" class="size-4 shrink-0 text-ink-3" /> Wishlist
                                 </a>
                                 <a href="{{ route('compare') }}" wire:navigate @click="drawerOpen = false"
-                                    class="flex items-center gap-3 px-4 py-2.5 text-[14px] text-ink transition hover:text-brand-500">
+                                    class="flex items-center gap-3 px-4 py-2.5 text-sm text-ink transition hover:text-brand-500">
                                     <flux:icon.scale variant="outline" class="size-4 shrink-0 text-ink-3" /> Compare
                                 </a>
                             </nav>
                         @else
                             <nav class="pb-2">
                                 <a href="{{ route('login') }}" wire:navigate @click="drawerOpen = false"
-                                    class="flex items-center gap-3 px-4 py-2.5 text-[14px] text-ink transition hover:text-brand-500">
+                                    class="flex items-center gap-3 px-4 py-2.5 text-sm text-ink transition hover:text-brand-500">
                                     <flux:icon.user variant="outline" class="size-4 shrink-0 text-ink-3" /> Sign in
                                 </a>
                                 <a href="{{ route('register') }}" wire:navigate @click="drawerOpen = false"
-                                    class="flex items-center gap-3 px-4 py-2.5 text-[14px] text-ink transition hover:text-brand-500">
+                                    class="flex items-center gap-3 px-4 py-2.5 text-sm text-ink transition hover:text-brand-500">
                                     <flux:icon.user-plus variant="outline" class="size-4 shrink-0 text-ink-3" /> Create account
                                 </a>
                                 <a href="{{ route('wishlist') }}" wire:navigate @click="drawerOpen = false"
-                                    class="flex items-center gap-3 px-4 py-2.5 text-[14px] text-ink transition hover:text-brand-500">
+                                    class="flex items-center gap-3 px-4 py-2.5 text-sm text-ink transition hover:text-brand-500">
                                     <flux:icon.heart variant="outline" class="size-4 shrink-0 text-ink-3" /> Wishlist
                                 </a>
                                 <a href="{{ route('compare') }}" wire:navigate @click="drawerOpen = false"
-                                    class="flex items-center gap-3 px-4 py-2.5 text-[14px] text-ink transition hover:text-brand-500">
+                                    class="flex items-center gap-3 px-4 py-2.5 text-sm text-ink transition hover:text-brand-500">
                                     <flux:icon.scale variant="outline" class="size-4 shrink-0 text-ink-3" /> Compare
                                 </a>
                             </nav>
@@ -197,19 +197,19 @@
                     {{-- Our Categories --}}
                     <section class="border-b border-zinc-100">
                         <div class="flex items-center justify-between px-4 pb-2 pt-4">
-                            <p class="text-[11px] font-semibold uppercase tracking-wider text-ink-3">Our Categories</p>
+                            <p class="text-xs font-semibold uppercase tracking-wider text-ink-3">Our Categories</p>
                             <a href="{{ route('catalog') }}" wire:navigate @click="drawerOpen = false"
-                                class="text-[11px] font-medium text-brand-500 underline transition hover:text-brand-600">View all</a>
+                                class="text-xs font-medium text-brand-500 underline transition hover:text-brand-600">View all</a>
                         </div>
                         <nav class="pb-2">
                             <a href="{{ route('catalog') }}" wire:navigate @click="drawerOpen = false"
-                                class="flex items-center gap-3 px-4 py-2.5 text-[14px] font-medium text-ink transition hover:text-brand-500">
+                                class="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-ink transition hover:text-brand-500">
                                 <flux:icon.building-storefront variant="outline" class="size-4 shrink-0 text-ink-3" />
                                 Shop all products
                             </a>
                             @foreach ($navCategories as $category)
                                 <a href="{{ route('category.show', $category) }}" wire:navigate @click="drawerOpen = false"
-                                    class="flex items-center gap-3 px-4 py-2.5 text-[14px] text-ink transition hover:text-brand-500">
+                                    class="flex items-center gap-3 px-4 py-2.5 text-sm text-ink transition hover:text-brand-500">
                                     @if ($category->icon_svg)
                                         <span class="grid size-4 shrink-0 place-items-center text-ink-3 [&>svg]:size-full">
                                             {!! $category->icon_svg !!}
@@ -228,18 +228,18 @@
 
                     {{-- Help Centre --}}
                     <section>
-                        <p class="px-4 pb-1.5 pt-4 text-[11px] font-semibold uppercase tracking-wider text-ink-3">Help Centre</p>
+                        <p class="px-4 pb-1.5 pt-4 text-xs font-semibold uppercase tracking-wider text-ink-3">Help Centre</p>
                         <nav class="pb-4">
                             <a href="{{ route('contact') }}" wire:navigate @click="drawerOpen = false"
-                                class="flex items-center gap-3 px-4 py-2 text-[13px] text-ink transition hover:text-brand-500">
+                                class="flex items-center gap-3 px-4 py-2 text-sm text-ink transition hover:text-brand-500">
                                 <flux:icon.chat-bubble-left-right variant="outline" class="size-4 shrink-0 text-ink-3" /> Contact us
                             </a>
                             <a href="{{ route('quote.request') }}" wire:navigate @click="drawerOpen = false"
-                                class="flex items-center gap-3 px-4 py-2 text-[13px] text-ink transition hover:text-brand-500">
+                                class="flex items-center gap-3 px-4 py-2 text-sm text-ink transition hover:text-brand-500">
                                 <flux:icon.document-plus variant="outline" class="size-4 shrink-0 text-ink-3" /> Request a quote
                             </a>
                             <a href="tel:+254713777111"
-                                class="flex items-center gap-3 px-4 py-2 text-[13px] text-ink transition hover:text-brand-500">
+                                class="flex items-center gap-3 px-4 py-2 text-sm text-ink transition hover:text-brand-500">
                                 <flux:icon.phone variant="outline" class="size-4 shrink-0 text-ink-3" /> +254&nbsp;713&nbsp;777&nbsp;111
                             </a>
                         </nav>
@@ -255,9 +255,9 @@
     {{-- Demo-site notice — hazard-striped banner.
          Sits after the category bar at rest; on scroll it sticks just below the
          sticky logo/search header (offset measured into --sticky-header-h). --}}
-    <div class="sticky z-30 bg-[#f7d000] text-center" style="top: var(--sticky-header-h, 108px)">
+    <div class="sticky z-30 bg-amber-300 text-center" style="top: var(--sticky-header-h, 108px)">
         <div class="h-1" style="background-image: repeating-linear-gradient(-45deg, #1a1a1a 0, #1a1a1a 6px, #f7d000 6px, #f7d000 12px);"></div>
-        <p class="px-4 py-2 text-[13px] font-bold leading-snug tracking-wide text-zinc-900">
+        <p class="px-4 py-2 text-sm font-bold leading-snug tracking-wide text-zinc-900">
             This is a demo site - products, pricing and content are for demonstration purposes only.
         </p>
         <div class="h-1" style="background-image: repeating-linear-gradient(-45deg, #1a1a1a 0, #1a1a1a 6px, #f7d000 6px, #f7d000 12px);"></div>

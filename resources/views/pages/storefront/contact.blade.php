@@ -194,19 +194,19 @@ new #[Layout('layouts::storefront')] #[Title('Contact & Showrooms')] class exten
         <div class="grid grid-cols-1 gap-4.5 sm:grid-cols-2 lg:grid-cols-4">
             @foreach ($channels as $channel)
                 <flux:card class="flex flex-col rounded-lg p-5.5">
-                    <span class="flex size-11 items-center justify-center rounded-[11px] bg-surface-sunken text-brand-blue-600">
+                    <span class="flex size-11 items-center justify-center rounded-xl bg-surface-sunken text-brand-blue-600">
                         <flux:icon :icon="$channel['icon']" variant="outline" class="size-5.5" />
                     </span>
-                    <div class="mt-4 font-serif text-[19px] text-ink">{{ $channel['title'] }}</div>
-                    <p class="mt-1.5 mb-4 flex-1 text-[13px] leading-relaxed text-ink-3">{{ $channel['desc'] }}</p>
+                    <div class="mt-4 font-serif text-xl text-ink">{{ $channel['title'] }}</div>
+                    <p class="mt-1.5 mb-4 flex-1 text-sm leading-relaxed text-ink-3">{{ $channel['desc'] }}</p>
                     <div class="flex flex-col gap-1.5">
                         @foreach ($channel['lines'] as $line)
-                            <span class="inline-flex items-center gap-2 text-[13px] text-ink-2">
+                            <span class="inline-flex items-center gap-2 text-sm text-ink-2">
                                 <flux:icon :icon="$line['icon']" variant="micro" class="size-3.5 shrink-0 text-ink-4" /> {{ $line['label'] }}
                             </span>
                         @endforeach
                     </div>
-                    <div class="mt-3.5 inline-flex items-center gap-1.5 border-t border-line pt-3 text-[11.5px] font-semibold uppercase tracking-[0.04em] text-brand-blue-600">
+                    <div class="mt-3.5 inline-flex items-center gap-1.5 border-t border-line pt-3 text-xs font-semibold uppercase tracking-wider text-brand-blue-600">
                         <flux:icon.clock variant="micro" class="size-3.5" /> {{ $channel['sla'] }}
                     </div>
                 </flux:card>
@@ -218,7 +218,7 @@ new #[Layout('layouts::storefront')] #[Title('Contact & Showrooms')] class exten
     {{-- ───────── Form + sidebar ───────── --}}
     <section class="shell pt-3 pb-12 lg:pb-14" x-data="showroomMap({ initial: {{ $initialLocation ?? 'null' }}, locations: {{ \Illuminate\Support\Js::from($mapLocations) }} })">
         <h1 class="text-2xl font-semibold tracking-tight sm:text-3xl">Contact us</h1>
-        <p class="mt-2 text-[14.5px] text-ink-3">Our team would love to hear from you!</p>
+        <p class="mt-2 text-sm text-ink-3">Our team would love to hear from you!</p>
 
         <div class="mt-6 grid grid-cols-1 items-start gap-10 lg:grid-cols-[1.1fr_1fr]">
 
@@ -230,14 +230,14 @@ new #[Layout('layouts::storefront')] #[Title('Contact & Showrooms')] class exten
                             class="mx-auto mb-4.5 flex size-16 items-center justify-center rounded-full bg-green-100 text-green-700">
                             <flux:icon.check variant="outline" class="size-7.5" />
                         </div>
-                        <h2 class="font-serif text-[26px] text-ink">Message received</h2>
-                        <p class="mx-auto mt-3 max-w-md text-[15px] leading-relaxed text-ink-2">
+                        <h2 class="font-serif text-2xl text-ink">Message received</h2>
+                        <p class="mx-auto mt-3 max-w-md text-base leading-relaxed text-ink-2">
                             Thanks, {{ \Illuminate\Support\Str::of($name)->trim()->explode(' ')->first() ?: 'there' }}.
                             A Sheffield specialist will be in touch within
                             <strong class="text-ink">2 working hours</strong>. We've sent a copy to {{ $email }}.
                         </p>
                         <div
-                            class="mt-5 inline-flex items-center gap-2 rounded-full bg-surface-sunken px-3.5 py-2 text-[13px] text-ink-2">
+                            class="mt-5 inline-flex items-center gap-2 rounded-full bg-surface-sunken px-3.5 py-2 text-sm text-ink-2">
                             <span class="text-ink-3">Reference</span>
                             <strong class="font-mono tracking-wide">{{ $reference }}</strong>
                         </div>
@@ -252,12 +252,12 @@ new #[Layout('layouts::storefront')] #[Title('Contact & Showrooms')] class exten
                     <form x-data @submit.prevent="__rcSubmit('contact', $wire)">
                         {{-- Inquiry type chips --}}
                         <div class="mb-5.5">
-                            <span class="mb-2.5 block text-[13px] font-semibold text-ink-2">What's this about?</span>
+                            <span class="mb-2.5 block text-sm font-semibold text-ink-2">What's this about?</span>
                             <div class="flex flex-wrap gap-2">
                                 @foreach ($inquiryTypes as $type)
                                     <button type="button" wire:click="$set('inquiry', '{{ $type }}')"
                                         @class([
-                                            'h-9 rounded-full border px-3.5 text-[13px] font-medium transition',
+                                            'h-9 rounded-full border px-3.5 text-sm font-medium transition',
                                             'border-brand-500 bg-brand-500 text-white' => $inquiry === $type,
                                             'border-line-strong bg-surface text-ink-2 hover:border-ink-4' =>
                                                 $inquiry !== $type,
@@ -303,7 +303,7 @@ new #[Layout('layouts::storefront')] #[Title('Contact & Showrooms')] class exten
                         <label class="mt-4.5 flex cursor-pointer items-start gap-3">
                             <flux:checkbox wire:model="consent" class="mt-0.5" />
                             <span @class([
-                                'text-[13px] leading-relaxed',
+                                'text-sm leading-relaxed',
                                 'text-brand-500' => $errors->has('consent'),
                                 'text-ink-3' => !$errors->has('consent'),
                             ])>
@@ -341,21 +341,21 @@ new #[Layout('layouts::storefront')] #[Title('Contact & Showrooms')] class exten
             {{-- Intro --}}
             <div>
                 <h2 class="font-serif text-3xl font-normal text-ink lg:text-4xl">Visit Our Showrooms</h2>
-                <p class="mt-3 text-[15px] text-ink-3">Find us at these locations.</p>
+                <p class="mt-3 text-base text-ink-3">Find us at these locations.</p>
             </div>
 
             {{-- Locations — two columns for the four showrooms --}}
             <div class="grid grid-cols-1 gap-x-10 gap-y-9 sm:grid-cols-2">
                 @foreach ($this->showrooms as $loc)
                     <div>
-                        <div class="flex items-center gap-2 text-[17px] font-bold text-ink">
+                        <div class="flex items-center gap-2 text-lg font-bold text-ink">
                             {{ $loc->city }}
                             @if ($loc->is_hq)
                                 <span
-                                    class="rounded-sm bg-surface-sunken px-1.5 py-px text-[9px] font-bold tracking-[0.06em] text-brand-blue-600">HQ</span>
+                                    class="rounded-sm bg-surface-sunken px-1.5 py-px text-xs font-bold tracking-wider text-brand-blue-600">HQ</span>
                             @endif
                         </div>
-                        <div class="mt-1.5 space-y-1.5 text-[13.5px] leading-relaxed text-ink-3">
+                        <div class="mt-1.5 space-y-1.5 text-sm leading-relaxed text-ink-3">
                             {{-- Address --}}
                             <div class="flex items-start gap-2">
                                 <flux:icon.map-pin variant="outline" class="mt-0.5 size-4 shrink-0 text-ink-3" />
@@ -405,8 +405,8 @@ new #[Layout('layouts::storefront')] #[Title('Contact & Showrooms')] class exten
                 <div class="flex items-center gap-3.5 rounded-lg border border-line bg-surface px-5 py-5">
                     <flux:icon :icon="$feature['icon']" variant="outline" class="size-8 shrink-0 text-brand-500" />
                     <div>
-                        <div class="text-[15px] font-bold text-ink">{{ $feature['title'] }}</div>
-                        <div class="mt-0.5 text-[12.5px] text-ink-3">{{ $feature['sub'] }}</div>
+                        <div class="text-base font-bold text-ink">{{ $feature['title'] }}</div>
+                        <div class="mt-0.5 text-xs text-ink-3">{{ $feature['sub'] }}</div>
                     </div>
                 </div>
             @endforeach

@@ -86,7 +86,7 @@ new #[Layout('layouts::storefront')] #[Title('Cart')] class extends Component
         return Product::query()
             ->whereIn('id', $crossSellIds)
             ->where('visibility', 'visible')
-            ->with(['brand:id,name', 'taxClass:id,rate', 'media'])
+            ->forCard()
             ->get();
     }
 }; ?>
@@ -152,9 +152,9 @@ new #[Layout('layouts::storefront')] #[Title('Cart')] class extends Component
                 {{-- ================================================== --}}
                 <div class="flex-1 min-w-0">
                     <div class="overflow-x-auto rounded-md border border-zinc-200">
-                    <table class="w-full min-w-[600px] bg-white lg:min-w-0">
+                    <table class="w-full min-w-150 bg-white lg:min-w-0">
                         <thead>
-                            <tr class="bg-zinc-50 text-[11px] font-bold tracking-widest text-ink-3 uppercase">
+                            <tr class="bg-zinc-50 text-xs font-bold tracking-widest text-ink-3 uppercase">
                                 <th class="px-4 py-3 xl:px-6 text-left border-b border-zinc-200">Product</th>
                                 <th class="px-4 py-3 xl:px-6 text-center border-b border-zinc-200">Price</th>
                                 <th class="px-4 py-3 xl:px-6 text-center border-b border-zinc-200">Quantity</th>
@@ -183,20 +183,27 @@ new #[Layout('layouts::storefront')] #[Title('Cart')] class extends Component
                                         </a>
                                         <div class="min-w-0">
                                             @if ($product->brand)
-                                                <div class="text-[10.5px] font-bold tracking-[0.08em] text-brand-blue-600 uppercase">{{ $product->brand->name }}</div>
+                                                <div class="text-xs font-bold tracking-widest text-brand-blue-600 uppercase">{{ $product->brand->name }}</div>
                                             @endif
                                             <a href="{{ route('product.show', $product) }}" wire:navigate
-                                               class="mt-0.5 block text-[14px] font-semibold leading-snug text-ink hover:text-brand-500">
+                                               class="mt-0.5 block text-sm font-semibold leading-snug text-ink hover:text-brand-500">
                                                 {{ $product->name }}
                                             </a>
                                             @if ($line['label'])
-                                                <div class="mt-0.5 text-[11.5px] text-ink-3">{{ $line['label'] }}</div>
+                                                <div class="mt-0.5 text-xs text-ink-3">{{ $line['label'] }}</div>
                                             @endif
-                                            <div class="mt-2 flex items-center gap-3 text-[11.5px] text-ink-4">
+                                            <div class="mt-2 flex items-center gap-3 text-xs text-ink-4">
+                                                {{-- toggleWishlist() calls skipRender(), so Alpine owns this button's
+                                                     state client-side — same pattern as the product card. --}}
                                                 <button type="button" wire:click="toggleWishlist('{{ $product->slug }}')"
+                                                        x-data="{ wished: @js($isWished) }"
+                                                        @wishlist-updated.window="if ($event.detail?.slug === '{{ $product->slug }}') wished = $event.detail.wished"
+                                                        @click="wished = !wished"
                                                         class="inline-flex cursor-pointer items-center gap-1 transition hover:text-brand-500">
-                                                    <flux:icon.heart variant="micro" class="size-3.5 {{ $isWished ? 'text-brand-500' : '' }}" />
-                                                    {{ $isWished ? 'Saved' : 'Save for later' }}
+                                                    <span class="inline-flex" :class="wished ? 'text-brand-500' : ''">
+                                                        <flux:icon.heart variant="micro" class="size-3.5" />
+                                                    </span>
+                                                    <span x-text="wished ? 'Saved' : 'Save for later'">{{ $isWished ? 'Saved' : 'Save for later' }}</span>
                                                 </button>
                                                 <span class="text-zinc-300">|</span>
                                                 <button type="button" wire:click="remove('{{ $line['key'] }}')"
@@ -210,7 +217,7 @@ new #[Layout('layouts::storefront')] #[Title('Cart')] class extends Component
                                 </td>
 
                                 {{-- Unit price --}}
-                                <td class="px-4 py-5 xl:px-6 text-center text-[14px] font-medium text-ink tabular-nums whitespace-nowrap">
+                                <td class="px-4 py-5 xl:px-6 text-center text-sm font-medium text-ink tabular-nums whitespace-nowrap">
                                     {!! money($unitPrice) !!}
                                 </td>
 
@@ -230,7 +237,7 @@ new #[Layout('layouts::storefront')] #[Title('Cart')] class extends Component
                                 </td>
 
                                 {{-- Line total --}}
-                                <td class="px-4 py-5 xl:px-6 text-right text-[14px] font-semibold text-ink tabular-nums whitespace-nowrap">
+                                <td class="px-4 py-5 xl:px-6 text-right text-sm font-semibold text-ink tabular-nums whitespace-nowrap">
                                     {!! money($lineTotal) !!}
                                 </td>
                             </tr>
@@ -279,7 +286,7 @@ new #[Layout('layouts::storefront')] #[Title('Cart')] class extends Component
                         <div class="my-5 h-px bg-zinc-100"></div>
 
                         <div class="flex items-center justify-between">
-                            <span class="text-[13px] font-bold tracking-wide uppercase">Total</span>
+                            <span class="text-sm font-bold tracking-wide uppercase">Total</span>
                             <span class="text-2xl font-bold text-brand-500 tabular-nums">{!! money($totalCents) !!}</span>
                         </div>
 
@@ -287,17 +294,17 @@ new #[Layout('layouts::storefront')] #[Title('Cart')] class extends Component
                             Proceed to checkout
                         </flux:button>
 
-                        <div class="mt-3 flex items-center justify-center gap-1.5 text-[11px] text-ink-4">
+                        <div class="mt-3 flex items-center justify-center gap-1.5 text-xs text-ink-4">
                             <flux:icon.shield-check variant="micro" class="size-3.5" />
                             SSL encrypted &amp; secure
                         </div>
 
                         {{-- Payment methods --}}
                         <div class="mt-5">
-                            <div class="mb-2 text-[10.5px] font-bold tracking-widest text-ink-4 uppercase">We accept</div>
+                            <div class="mb-2 text-xs font-bold tracking-widest text-ink-4 uppercase">We accept</div>
                             <div class="flex flex-wrap gap-1.5">
                                 @foreach (['Visa', 'M-Pesa', 'Mastercard', 'Bank transfer'] as $method)
-                                    <span class="rounded border border-zinc-200 px-2.5 py-1 text-[10.5px] font-semibold text-ink-3 uppercase tracking-wide">
+                                    <span class="rounded border border-zinc-200 px-2.5 py-1 text-xs font-semibold text-ink-3 uppercase tracking-wide">
                                         {{ $method }}
                                     </span>
                                 @endforeach
@@ -305,7 +312,7 @@ new #[Layout('layouts::storefront')] #[Title('Cart')] class extends Component
                         </div>
 
                         {{-- Trust signals --}}
-                        <div class="mt-5 flex flex-col gap-2 text-[12px] text-ink-3">
+                        <div class="mt-5 flex flex-col gap-2 text-xs text-ink-3">
                             <span class="flex items-center gap-2">
                                 <flux:icon.arrow-path variant="micro" class="size-3.5 text-brand-500" />
                                 30-day returns policy
@@ -323,8 +330,8 @@ new #[Layout('layouts::storefront')] #[Title('Cart')] class extends Component
         @if ($this->crossSells->isNotEmpty())
             <div class="mt-16">
                 <div class="mb-4">
-                    <h2 class="text-[22px] font-semibold tracking-tight">Customers Also Buy</h2>
-                    <p class="mt-1 text-[13px] text-ink-3">Frequently purchased alongside items in your cart.</p>
+                    <h2 class="text-2xl font-semibold tracking-tight">Customers Also Buy</h2>
+                    <p class="mt-1 text-sm text-ink-3">Frequently purchased alongside items in your cart.</p>
                 </div>
                 <div class="grid grid-cols-2 gap-3.5 lg:grid-cols-4">
                     @foreach ($this->crossSells as $cs)
@@ -338,6 +345,7 @@ new #[Layout('layouts::storefront')] #[Title('Cart')] class extends Component
     </div>
 
     @include('partials.storefront.accessory-modal')
+    @include('partials.storefront.variation-modal')
 
     {{-- Clear cart confirmation --}}
     <flux:modal name="confirm-clear-cart" class="max-w-sm">

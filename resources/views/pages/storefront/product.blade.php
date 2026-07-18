@@ -71,6 +71,7 @@ new #[Layout('layouts::storefront')] class extends Component {
             $this->product->load([
                 'variants' => fn($q) => $q->where('is_active', true)->orderBy('sort_order'),
                 'variants.attributeValues.attribute',
+                'variants.media',
             ]);
             $this->preselectDefaultVariant();
         }
@@ -183,6 +184,59 @@ new #[Layout('layouts::storefront')] class extends Component {
     {
         $this->selectedOptions[$attributeSlug] = $valueSlug;
         $this->resetErrorBag('variant');
+
+        // The computed is cached per request and the selection just changed.
+        unset($this->selectedVariant);
+
+        // Bring the chosen variant's own photo up as the active slide.
+        $index = $this->selectedVariant ? $this->galleryIndexForVariant($this->selectedVariant) : null;
+
+        if ($index !== null) {
+            $this->galleryIdx = $index;
+        }
+    }
+
+    /**
+     * Gallery media: the product's own images, then one image per variant that has
+     * one, so a variant photo is a real slide the selector can jump to.
+     *
+     * @return \Illuminate\Support\Collection<int, \Spatie\MediaLibrary\MediaCollections\Models\Media>
+     */
+    #[Computed]
+    public function galleryMedia(): \Illuminate\Support\Collection
+    {
+        $images = $this->product->images->take(6)->values()->collect();
+
+        if ($this->product->type !== ProductType::VARIABLE) {
+            return $images;
+        }
+
+        $seen = $images->pluck('id')->all();
+
+        foreach ($this->product->variants as $variant) {
+            $media = $variant->getFirstMedia('image');
+
+            if ($media && !in_array($media->id, $seen, true)) {
+                $images->push($media);
+                $seen[] = $media->id;
+            }
+        }
+
+        return $images->values();
+    }
+
+    /** Where a variant's image sits in the gallery, or null when it has none. */
+    private function galleryIndexForVariant(ProductVariant $variant): ?int
+    {
+        $media = $variant->getFirstMedia('image');
+
+        if (!$media) {
+            return null;
+        }
+
+        $index = $this->galleryMedia->search(fn($item) => $item->id === $media->id);
+
+        return $index === false ? null : (int) $index;
     }
 
     /**
@@ -302,6 +356,78 @@ new #[Layout('layouts::storefront')] class extends Component {
         $this->qty = max(1, $this->qty - 1);
     }
 
+    /**
+     * The page swaps its Add to cart button for a cart counter, so it has to
+     * re-render after an add rather than skipping it the way listings do.
+     */
+    protected function skipRenderAfterAddToCart(): bool
+    {
+        return false;
+    }
+
+    /**
+     * How many of this product are already in the cart, as its own line. Variable
+     * products are counted per variant in the variation modal instead.
+     */
+    #[Computed]
+    public function cartQty(): int
+    {
+        if ($this->product->type === ProductType::VARIABLE) {
+            return 0;
+        }
+
+        return StorefrontSession::cartQuantity(StorefrontSession::lineKey($this->product->slug));
+    }
+
+    /**
+     * Add one more of a product that is already in the cart. Unlike the first add
+     * this does not re-open the accessory prompt — the customer has answered it —
+     * and it avoids the trait's addToCart(), whose skipRender() would leave the
+     * counter showing its old value.
+     */
+    public function incCartQty(): void
+    {
+        StorefrontSession::addToCart($this->product->slug, 1);
+        $this->afterCartQtyChange();
+
+        Flux::toast(
+            heading: 'Added to cart',
+            text: $this->product->name.' has been added to your cart.',
+            variant: 'success',
+        );
+    }
+
+    /** Take one out of the cart, dropping the line entirely at zero. */
+    public function decCartQty(): void
+    {
+        $key = StorefrontSession::lineKey($this->product->slug);
+        $current = StorefrontSession::cartQuantity($key);
+
+        if ($current <= 1) {
+            StorefrontSession::removeFromCart($key);
+        } else {
+            StorefrontSession::setCartQty($key, $current - 1);
+        }
+
+        $this->afterCartQtyChange();
+
+        Flux::toast(
+            heading: $current <= 1 ? 'Item removed' : 'Cart updated',
+            text: $current <= 1
+                ? $this->product->name.' has been removed from your cart.'
+                : $this->product->name.' reduced to '.($current - 1).' in your cart.',
+            variant: 'warning',
+        );
+    }
+
+    private function afterCartQtyChange(): void
+    {
+        unset($this->cartQty);
+
+        $this->dispatch('cart-updated');
+        $this->dispatch('cart-qty-changed', slug: $this->product->slug, qty: $this->cartQty);
+    }
+
     public function incGroupedQty(string $slug): void
     {
         $this->groupedQty[$slug] = min(99, ($this->groupedQty[$slug] ?? 0) + 1);
@@ -318,22 +444,10 @@ new #[Layout('layouts::storefront')] class extends Component {
      */
     public function addThisToCart(): void
     {
+        // Variable products open a modal whose per-variant steppers edit the cart
+        // directly, so several sizes can be adjusted without leaving the page.
         if ($this->product->type === ProductType::VARIABLE) {
-            $variant = $this->selectedVariant;
-
-            if (!$variant) {
-                $this->addError('variant', 'Please select ' . $this->variationAttributes->pluck('name')->join(' and ') . '.');
-
-                return;
-            }
-
-            if ($variant->stock_status !== StockStatus::IN_STOCK) {
-                $this->addError('variant', 'Sorry, that combination is out of stock.');
-
-                return;
-            }
-
-            $this->addToCart($this->product->slug, $this->qty, $variant->id);
+            $this->openVariationModal($this->product->slug);
 
             return;
         }
@@ -346,6 +460,36 @@ new #[Layout('layouts::storefront')] class extends Component {
 
         $this->addToCart($this->product->slug, $this->qty);
     }
+
+    /**
+     * Cheapest and dearest variant prices, in display cents. A variable product
+     * shows this range rather than one variant's price, so the headline doesn't
+     * imply that whichever variant happens to be preselected is the price.
+     *
+     * @return array{min: int, max: int}|null null when nothing is priced
+     */
+    #[Computed]
+    public function variantPriceRange(): ?array
+    {
+        if ($this->product->type !== ProductType::VARIABLE) {
+            return null;
+        }
+
+        $tax = app(\App\Support\TaxCalculator::class);
+
+        $prices = $this->product->variants
+            // Mirrors the unit-price rule used by the cart and the modal rows.
+            ->map(fn(ProductVariant $variant) => $variant->compare_at_price ?? $variant->price)
+            ->filter()
+            ->map(fn(int $price) => $tax->displayPriceCents($this->product, $price));
+
+        if ($prices->isEmpty()) {
+            return null;
+        }
+
+        return ['min' => (int) $prices->min(), 'max' => (int) $prices->max()];
+    }
+
 
     /** Add the bundle to the cart as a single SKU. */
     public function addBundleToCart(): void
@@ -394,7 +538,7 @@ new #[Layout('layouts::storefront')] class extends Component {
         }
 
         return Product::query()
-            ->with(['brand:id,name', 'taxClass:id,rate', 'media'])
+            ->forCard()
             ->whereIn('id', $this->relatedIds)
             ->get()
             ->sortBy(fn(Product $product) => array_search($product->id, $this->relatedIds, true))
@@ -409,7 +553,7 @@ new #[Layout('layouts::storefront')] class extends Component {
         }
 
         return Product::query()
-            ->with(['brand:id,name', 'taxClass:id,rate', 'media'])
+            ->forCard()
             ->whereIn('id', $this->brandProductIds)
             ->get()
             ->sortBy(fn(Product $p) => array_search($p->id, $this->brandProductIds, true))
@@ -424,7 +568,7 @@ new #[Layout('layouts::storefront')] class extends Component {
         }
 
         return Product::query()
-            ->with(['brand:id,name', 'taxClass:id,rate', 'media'])
+            ->forCard()
             ->whereIn('id', $this->alsoViewedIds)
             ->where('visibility', 'visible')
             ->get()
@@ -440,7 +584,7 @@ new #[Layout('layouts::storefront')] class extends Component {
         }
 
         return Product::query()
-            ->with(['brand:id,name', 'taxClass:id,rate', 'media'])
+            ->forCard()
             ->whereIn('id', $this->recentlyViewedIds)
             ->get()
             ->sortBy(fn(Product $p) => array_search($p->id, $this->recentlyViewedIds, true))
@@ -480,13 +624,23 @@ new #[Layout('layouts::storefront')] class extends Component {
         // relationship, surfacing hidden/unpublished accessories after a tab click.
         // brand + taxClass are what a product card reads; without them each card
         // lazy-loads its own and the tab becomes an N+1.
-        return $this->product->accessories()->visibleInCatalog()->published()->with(['brand:id,name', 'taxClass:id,rate', 'media'])->get();
+        return $this->product
+            ->accessories()
+            ->visibleInCatalog()
+            ->published()
+            ->forCard()
+            ->get();
     }
 
     #[Computed]
     public function filteredSpareParts(): Collection
     {
-        return $this->product->spareParts()->visibleInCatalog()->published()->with(['brand:id,name', 'taxClass:id,rate', 'media'])->get();
+        return $this->product
+            ->spareParts()
+            ->visibleInCatalog()
+            ->published()
+            ->forCard()
+            ->get();
     }
 
     #[Computed]
@@ -614,34 +768,51 @@ $displayPrice = $price !== null ? $tax->displayPriceCents($product, (int) $price
 $displayCompareAt = $compareAt !== null ? $tax->displayPriceCents($product, (int) $compareAt) : null;
 $isOnSale = $compareAt !== null;
 
-$isWished = StorefrontSession::isWishlisted($product->slug);
-$isCompared = StorefrontSession::isCompared($product->slug);
+// A variable product's headline is the span across its variants, not whichever
+    // one happens to be preselected — showing a single figure reads as "the" price.
+    $variantRange = $this->variantPriceRange;
+    if ($variantRange) {
+        $displayPrice = null;
+        $displayCompareAt = null;
+        $isOnSale = false;
+    }
 
-// Explicit stock states used for CTA and chips
-$isBackorder = $variant
-    ? $variant->stock_status === \App\Enums\StockStatus::BACKORDER
-    : $product->stock_status === \App\Enums\StockStatus::BACKORDER;
-$isOutOfStock = !$inStock && !$isBackorder;
+    $isWished = StorefrontSession::isWishlisted($product->slug);
+    $isCompared = StorefrontSession::isCompared($product->slug);
 
-$gallery = $product->images->take(6); // cap thumbnails
+    // Explicit stock states used for CTA and chips
+    $isBackorder = $variant
+        ? $variant->stock_status === \App\Enums\StockStatus::BACKORDER
+        : $product->stock_status === \App\Enums\StockStatus::BACKORDER;
+    $isOutOfStock = !$inStock && !$isBackorder;
 
-// Grouped products have no parent price; surface the cheapest child as a "from" price.
-$groupedFromCents = null;
-if ($product->type === \App\Enums\ProductType::GROUPED && $displayPrice === null) {
-    $groupedFromCents = $product->groupedItems
-        ->map(fn($child) => $child->sale_price ?? $child->price)
+    // Product images (capped) plus any variant images, so picking a variant can make
+    // its own photo the active slide.
+    $gallery = $this->galleryMedia;
+
+    // Variant media declares only a `thumb` conversion, and getUrl() throws on a
+    // conversion the model never registered — so check before asking for one.
+    $mediaUrl = fn ($media, string $conversion) => $media->hasGeneratedConversion($conversion)
+        ? $media->getUrl($conversion)
+        : $media->getUrl();
+
+    // Grouped products have no parent price; surface the cheapest child as a "from" price.
+    $groupedFromCents = null;
+    if ($product->type === \App\Enums\ProductType::GROUPED && $displayPrice === null) {
+        $groupedFromCents = $product->groupedItems
+            ->map(fn($child) => $child->sale_price ?? $child->price)
+            ->filter()
+            ->min();
+    }
+
+    $dimensionStr = collect([
+        $product->width ? rtrim(rtrim((string) $product->width, '0'), '.') : null,
+        $product->length ? rtrim(rtrim((string) $product->length, '0'), '.') : null,
+        $product->height ? rtrim(rtrim((string) $product->height, '0'), '.') : null,
+    ])
         ->filter()
-        ->min();
-}
-
-$dimensionStr = collect([
-    $product->width ? rtrim(rtrim((string) $product->width, '0'), '.') : null,
-    $product->length ? rtrim(rtrim((string) $product->length, '0'), '.') : null,
-    $product->height ? rtrim(rtrim((string) $product->height, '0'), '.') : null,
-])
-    ->filter()
-    ->implode(' × ');
-$dimensionStr = $dimensionStr !== '' ? $dimensionStr . ' ' . ($product->dimension_unit ?? 'cm') : null;
+        ->implode(' × ');
+    $dimensionStr = $dimensionStr !== '' ? $dimensionStr . ' ' . ($product->dimension_unit ?? 'cm') : null;
 @endphp
 
 <div class="page-fade">
@@ -673,9 +844,9 @@ $dimensionStr = $dimensionStr !== '' ? $dimensionStr . ' ' . ($product->dimensio
                 gallery: @js(
     $gallery->values()->map(
         fn($img) => [
-            'url' => $img->getUrl('card') ?: $img->getUrl(),
-            'zoom' => $img->getUrl('zoom') ?: $img->getUrl(),
-            'thumb' => $img->getUrl('thumb') ?: $img->getUrl(),
+            'url' => $mediaUrl($img, 'card'),
+            'zoom' => $mediaUrl($img, 'zoom'),
+            'thumb' => $mediaUrl($img, 'thumb'),
             'alt' => $img->getCustomProperty('alt', '') ?: $product->name,
             'label' => $img->getCustomProperty('alt', '') ?: '',
         ],
@@ -695,13 +866,13 @@ $dimensionStr = $dimensionStr !== '' ? $dimensionStr . ' ' . ($product->dimensio
                             @foreach ($gallery as $i => $img)
                                 <button type="button" wire:click="$set('galleryIdx', {{ $i }})"
                                     x-on:click="lbIdx = {{ $i }}" @class([
-                                        'aspect-square size-16 shrink-0 cursor-pointer overflow-hidden rounded bg-white transition md:size-[72px]',
+                                        'aspect-square size-16 shrink-0 cursor-pointer overflow-hidden rounded bg-white transition md:size-18',
                                         'border-2 border-brand-500' => $i === $galleryIdx,
                                         'border border-zinc-200 hover:border-zinc-400' => $i !== $galleryIdx,
                                     ])>
                                     {{-- contain, not cover: thumbs are no longer padded to a square
                                          by the conversion, so cover would crop the product. --}}
-                                    <img src="{{ $img->getUrl('thumb') ?: $img->getUrl() }}"
+                                    <img src="{{ $mediaUrl($img, 'thumb') }}"
                                         alt="{{ $img->getCustomProperty('alt', '') }}" class="size-full object-contain"
                                         loading="lazy" />
                                 </button>
@@ -713,10 +884,11 @@ $dimensionStr = $dimensionStr !== '' ? $dimensionStr . ' ' . ($product->dimensio
                     <div class="group relative min-w-0 flex-1 cursor-zoom-in overflow-hidden rounded-md border border-zinc-200 bg-white"
                         style="aspect-ratio: 1; max-height: 520px;"
                         @mousemove="const r = $el.getBoundingClientRect(); lens = { x: Math.max(0,Math.min(100,(($event.clientX-r.left)/r.width)*100)), y: Math.max(0,Math.min(100,(($event.clientY-r.top)/r.height)*100)) }"
-                        @mouseleave="lens = null" @click="$flux.modal('product-gallery').show()">
+                        @mouseleave="lens = null"
+                        @click="lbIdx = {{ $galleryIdx }}; $flux.modal('product-gallery').show()">
                         @if ($isOnSale)
                             <span
-                                class="absolute top-4 left-4 z-10 inline-flex items-center gap-0.5 text-[11px] font-bold tracking-[0.08em] text-brand-500 uppercase">
+                                class="absolute top-4 left-4 z-10 inline-flex items-center gap-0.5 text-xs font-bold tracking-widest text-brand-500 uppercase">
                                 <flux:icon.dot class="size-4 -ml-1" />Sale
                             </span>
                         @endif
@@ -724,23 +896,27 @@ $dimensionStr = $dimensionStr !== '' ? $dimensionStr . ' ' . ($product->dimensio
                         <div class="absolute top-4 right-4 z-10 flex gap-1.5" @click.stop>
                             <flux:tooltip :content="$isWished ? 'Remove from wishlist' : 'Save to wishlist'">
                                 <button type="button" wire:click="toggleWishlist('{{ $product->slug }}')"
-                                    aria-label="{{ $isWished ? 'Remove from wishlist' : 'Save to wishlist' }}"
-                                    @class([
-                                        'inline-flex size-9 cursor-pointer items-center justify-center rounded-full border bg-white text-ink transition',
-                                        'bg-brand-500! border-brand-500! text-white!' => $isWished,
-                                        'border-zinc-200 hover:bg-surface-sunken' => !$isWished,
-                                    ])>
+                                    x-data="{ wished: @js($isWished) }"
+                                    @wishlist-updated.window="if ($event.detail?.slug === '{{ $product->slug }}') wished = $event.detail.wished"
+                                    @click="wished = !wished"
+                                    :aria-label="wished ? 'Remove from wishlist' : 'Save to wishlist'"
+                                    class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full border bg-white text-ink transition"
+                                    :class="wished
+                                        ? 'bg-brand-500! border-brand-500! text-white!'
+                                        : 'border-zinc-200 hover:bg-surface-sunken'">
                                     <flux:icon.heart variant="micro" class="size-4" />
                                 </button>
                             </flux:tooltip>
                             <flux:tooltip :content="$isCompared ? 'Remove from compare' : 'Add to compare'">
                                 <button type="button" wire:click="toggleCompare('{{ $product->slug }}')"
-                                    aria-label="{{ $isCompared ? 'Remove from compare' : 'Add to compare' }}"
-                                    @class([
-                                        'inline-flex size-9 cursor-pointer items-center justify-center rounded-full border bg-white text-ink transition',
-                                        'bg-ink! border-ink! text-white!' => $isCompared,
-                                        'border-zinc-200 hover:bg-surface-sunken' => !$isCompared,
-                                    ])>
+                                    x-data="{ compared: @js($isCompared) }"
+                                    @compare-updated.window="if ($event.detail?.slug === '{{ $product->slug }}') compared = $event.detail.compared"
+                                    @click="compared = !compared"
+                                    :aria-label="compared ? 'Remove from compare' : 'Add to compare'"
+                                    class="inline-flex size-9 cursor-pointer items-center justify-center rounded-full border bg-white text-ink transition"
+                                    :class="compared
+                                        ? 'bg-ink! border-ink! text-white!'
+                                        : 'border-zinc-200 hover:bg-surface-sunken'">
                                     <flux:icon.scale variant="micro" class="size-4" />
                                 </button>
                             </flux:tooltip>
@@ -748,7 +924,7 @@ $dimensionStr = $dimensionStr !== '' ? $dimensionStr . ' ' . ($product->dimensio
 
                         @php $shown = $gallery->values()->get($galleryIdx); @endphp
                         @if ($shown)
-                            <img src="{{ $shown->getUrl('card') ?: $shown->getUrl() }}"
+                            <img src="{{ $mediaUrl($shown, 'card') }}"
                                 alt="{{ $shown->getCustomProperty('alt', '') ?: $product->name }}"
                                 class="size-full object-contain transition-transform duration-75 will-change-transform"
                                 fetchpriority="high" decoding="async"
@@ -763,7 +939,7 @@ $dimensionStr = $dimensionStr !== '' ? $dimensionStr . ' ' . ($product->dimensio
                         {{-- Hover hint --}}
                         @if ($gallery->isNotEmpty())
                             <div
-                                class="pointer-events-none absolute bottom-4 left-1/2 -translate-x-1/2 inline-flex items-center gap-1.5 rounded-full bg-[rgba(12,20,33,0.62)] px-3 py-1.5 text-[10.5px] tracking-[0.02em] text-white opacity-0 backdrop-blur-sm transition-opacity duration-150 group-hover:opacity-100">
+                                class="pointer-events-none absolute bottom-4 left-1/2 -translate-x-1/2 inline-flex items-center gap-1.5 rounded-full bg-[rgba(12,20,33,0.62)] px-3 py-1.5 text-xs tracking-wide text-white opacity-0 backdrop-blur-sm transition-opacity duration-150 group-hover:opacity-100">
                                 <flux:icon.magnifying-glass variant="micro" class="size-3.5" />
                                 Hover to zoom · click to expand
                             </div>
@@ -771,7 +947,7 @@ $dimensionStr = $dimensionStr !== '' ? $dimensionStr . ' ' . ($product->dimensio
 
                         {{-- Counter --}}
                         @if ($gallery->count() > 1)
-                            <div class="absolute right-3 bottom-3 font-mono text-[11px] text-ink-4 tabular-nums">
+                            <div class="absolute right-3 bottom-3 font-mono text-xs text-ink-4 tabular-nums">
                                 {{ $galleryIdx + 1 }} / {{ $gallery->count() }}
                             </div>
                         @endif
@@ -839,7 +1015,7 @@ $dimensionStr = $dimensionStr !== '' ? $dimensionStr . ' ' . ($product->dimensio
                                 ? $brandSite
                                 : null;
                     @endphp
-                    <div class="text-[11.5px] font-bold tracking-[0.12em] text-brand-blue-500 uppercase">
+                    <div class="text-xs font-bold tracking-widest text-brand-blue-500 uppercase">
                         @if ($brandSite)
                             <a href="{{ $brandSite }}" target="_blank" rel="noopener noreferrer"
                                 class="inline-flex items-center gap-1 underline-offset-2 transition hover:underline"
@@ -858,7 +1034,7 @@ $dimensionStr = $dimensionStr !== '' ? $dimensionStr . ' ' . ($product->dimensio
                 @if ($this->reviewsEnabled && $this->approvedReviews->isNotEmpty())
                     <button type="button" wire:click="$set('activeTab', 'reviews')"
                         onclick="document.getElementById('product-tabs')?.scrollIntoView({ behavior: 'smooth' })"
-                        class="mt-3 inline-flex cursor-pointer items-center gap-2 text-[13px] text-ink-3 transition hover:text-ink">
+                        class="mt-3 inline-flex cursor-pointer items-center gap-2 text-sm text-ink-3 transition hover:text-ink">
                         <span class="flex items-center gap-0.5">
                             @for ($s = 1; $s <= 5; $s++)
                                 <flux:icon.star :variant="$s <= round($this->averageRating) ? 'solid' : 'outline'"
@@ -870,11 +1046,16 @@ $dimensionStr = $dimensionStr !== '' ? $dimensionStr . ' ' . ($product->dimensio
                             {{ \Illuminate\Support\Str::plural('review', $this->approvedReviews->count()) }}</span>
                     </button>
                 @endif
-                @if ($product->short_description)
-                    <div class="pdp-rich-text mt-3 text-[15px] leading-relaxed text-ink-2">{!! $product->short_description !!}</div>
+                {{-- A variant's own description supersedes the product summary once
+                     one is selected: it describes the exact thing being bought.
+                     It comes from a plain textarea, so it is escaped, not raw. --}}
+                @if ($variant?->description)
+                    <div class="mt-3 text-base leading-relaxed text-ink-2">{{ $variant->description }}</div>
+                @elseif ($product->short_description)
+                    <div class="pdp-rich-text mt-3 text-base leading-relaxed text-ink-2">{!! $product->short_description !!}</div>
                 @endif
 
-                <div class="mt-5 flex items-center gap-4 text-[13px] text-ink-3">
+                <div class="mt-5 flex items-center gap-4 text-sm text-ink-3">
                     @if ($skuDisplay)
                         <span>SKU: <span class="text-ink-2 tabular-nums">{{ $skuDisplay }}</span></span>
                     @endif
@@ -893,9 +1074,9 @@ $dimensionStr = $dimensionStr !== '' ? $dimensionStr . ' ' . ($product->dimensio
                 @endphp
                 @if ($keySpecs->isNotEmpty())
                     <div class="mt-6 border-t border-zinc-200 pt-5">
-                        <div class="mb-3 text-[12px] font-bold tracking-[0.08em] text-ink-2 uppercase">Key
+                        <div class="mb-3 text-xs font-bold tracking-widest text-ink-2 uppercase">Key
                             specifications</div>
-                        <ul class="space-y-2 text-[13.5px] text-ink-2">
+                        <ul class="space-y-2 text-sm text-ink-2">
                             @foreach ($keySpecs as $pa)
                                 <li class="flex gap-2">
                                     <flux:icon.check variant="micro"
@@ -917,14 +1098,21 @@ $dimensionStr = $dimensionStr !== '' ? $dimensionStr . ' ' . ($product->dimensio
                         <span class="font-serif text-4xl tabular-nums">
                             @if ($displayPrice)
                                 {{ money($displayPrice) }}
+                            @elseif ($variantRange)
+                                @if ($variantRange['min'] === $variantRange['max'])
+                                    {{ money($variantRange['min']) }}
+                                @else
+                                    {{ money($variantRange['min']) }}<span class="text-2xl text-ink-3"> –
+                                    </span>{{ money($variantRange['max']) }}
+                                @endif
                             @elseif ($groupedFromCents)
                                 <span class="text-base text-ink-3">From</span> {{ money($groupedFromCents) }}
                             @else
                                 <span class="text-base text-ink-3">Quote on request</span>
                             @endif
                         </span>
-                        @if ($displayPrice && $tax->priceDisplaySuffix())
-                            <span class="text-[12.5px] text-ink-3">{{ $tax->priceDisplaySuffix() }}</span>
+                        @if (($displayPrice || $variantRange) && $tax->priceDisplaySuffix())
+                            <span class="text-xs text-ink-3">{{ $tax->priceDisplaySuffix() }}</span>
                         @endif
                     </div>
 
@@ -939,7 +1127,7 @@ $dimensionStr = $dimensionStr !== '' ? $dimensionStr . ' ' . ($product->dimensio
                             default => 'Out of stock at present',
                         };
                     @endphp
-                    <div class="mt-3 flex flex-wrap items-center gap-3 text-[13px] text-ink-2">
+                    <div class="mt-3 flex flex-wrap items-center gap-3 text-sm text-ink-2">
                         <span class="inline-flex items-center gap-1.5">
                             <span @class([
                                 'size-2 rounded-full',
@@ -985,7 +1173,7 @@ $dimensionStr = $dimensionStr !== '' ? $dimensionStr . ' ' . ($product->dimensio
                         <div class="mt-3 flex flex-wrap gap-2">
                             @foreach ($chips as $chip)
                                 <span @class([
-                                    'inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1.5 text-[12px] font-semibold',
+                                    'inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1.5 text-xs font-semibold',
                                     'border-brand-300 bg-brand-50 text-brand-600' => $chip['tone'] === 'sale',
                                     'border-emerald-200 bg-emerald-50 text-emerald-700' =>
                                         $chip['tone'] === 'good',
@@ -1004,86 +1192,10 @@ $dimensionStr = $dimensionStr !== '' ? $dimensionStr . ' ' . ($product->dimensio
 
                 {{-- Variation selector --}}
                 @if ($product->type === \App\Enums\ProductType::VARIABLE && $this->variationAttributes->isNotEmpty())
-                    <div class="mt-6 space-y-4">
-                        @foreach ($this->variationAttributes as $attr)
-                            @php $chosen = $selectedOptions[$attr['slug']] ?? null; @endphp
-                            <div wire:key="attr-{{ $attr['slug'] }}">
-                                <div class="mb-2 text-[12px] font-semibold text-ink-2">
-                                    {{ $attr['name'] }}
-                                    @if ($chosen)
-                                        <span class="font-normal text-ink-3">·
-                                            {{ optional($attr['values']->firstWhere('slug', $chosen))->label ?: $chosen }}</span>
-                                    @endif
-                                </div>
-                                <div class="flex flex-wrap gap-2">
-                                    @foreach ($attr['values'] as $val)
-                                        @php
-                                            $isSel = $chosen === $val->slug;
-                                            $avail = $this->isOptionAvailable($attr['slug'], $val->slug);
-                                        @endphp
-                                        @if ($val->color_code)
-                                            <button type="button"
-                                                wire:click="selectOption('{{ $attr['slug'] }}', '{{ $val->slug }}')"
-                                                @disabled(!$avail)
-                                                title="{{ $val->label ?: $val->value }}{{ $avail ? '' : ' — out of stock' }}"
-                                                @class([
-                                                    'size-9 rounded-full border-2 transition',
-                                                    'border-ink ring-1 ring-ink ring-offset-1' => $isSel,
-                                                    'border-zinc-200' => !$isSel,
-                                                    'cursor-pointer hover:border-zinc-400' => $avail,
-                                                    'cursor-not-allowed opacity-30' => !$avail,
-                                                ])
-                                                style="background-color: {{ $val->color_code }}">
-                                                <span class="sr-only">{{ $val->label ?: $val->value }}</span>
-                                            </button>
-                                        @else
-                                            <button type="button"
-                                                wire:click="selectOption('{{ $attr['slug'] }}', '{{ $val->slug }}')"
-                                                @disabled(!$avail) @class([
-                                                    'min-w-11 rounded border px-3 py-2 text-[13px] font-medium transition',
-                                                    'border-ink bg-ink text-white' => $isSel,
-                                                    'border-zinc-200 text-ink hover:border-zinc-400 cursor-pointer' =>
-                                                        !$isSel && $avail,
-                                                    'cursor-not-allowed text-ink-4 line-through opacity-50' => !$avail,
-                                                ])>
-                                                {{ $val->label ?: $val->value }}
-                                            </button>
-                                        @endif
-                                    @endforeach
-                                </div>
-                            </div>
-                        @endforeach
-                        <flux:error name="variant" />
-
-                        {{-- Variant summary bar — shown once a full combination is selected --}}
-                        @if ($variant)
-                            @php
-                                $vPrice = $variant->compare_at_price ?? $variant->price;
-                                $vDisplay = $vPrice ? $tax->displayPriceCents($product, (int) $vPrice) : null;
-                                $vInStock = $variant->stock_status === \App\Enums\StockStatus::IN_STOCK;
-                                $vBack = $variant->stock_status === \App\Enums\StockStatus::BACKORDER;
-                            @endphp
-                            <div
-                                class="mt-3 flex flex-wrap items-center gap-x-2.5 gap-y-1 rounded-lg bg-surface-sunken px-3 py-2.5 text-[12.5px] text-ink-3">
-                                <flux:icon.cube variant="micro" class="size-3.5 shrink-0 text-ink-4" />
-                                <span>Selected: <b class="font-mono text-ink">{{ $variant->sku }}</b></span>
-                                @if ($vDisplay)
-                                    <span>·</span>
-                                    <span class="font-semibold text-ink">{{ money($vDisplay) }}</span>
-                                @endif
-                                <span>·</span>
-                                <span class="inline-flex items-center gap-1.5">
-                                    <span @class([
-                                        'size-2 rounded-full',
-                                        'bg-emerald-500' => $vInStock,
-                                        'bg-amber-500' => $vBack,
-                                        'bg-red-500' => !$vInStock && !$vBack,
-                                    ])></span>
-                                    {{ $vInStock ? 'In stock' : ($vBack ? 'On backorder' : 'Out of stock') }}
-                                </span>
-                            </div>
-                        @endif
-                    </div>
+                    @include('partials.storefront.variation-selector', [
+                        'keyPrefix' => 'attr',
+                        'wrapperClass' => 'mt-2 space-y-4',
+                    ])
                 @endif
 
                 {{-- Qty + CTAs --}}
@@ -1150,30 +1262,65 @@ $dimensionStr = $dimensionStr !== '' ? $dimensionStr . ' ' . ($product->dimensio
                             </flux:tooltip>
                         </div>
                     @else
-                        {{-- Quantity counter --}}
-                        @unless ($isGrouped || $isVariable)
+                        @php $inCart = $this->cartQty; @endphp
+
+                        {{-- Already in the cart: the counter edits the cart directly, so
+                             an Add to cart button would be a second way to do the same
+                             thing. Variable and grouped products keep their own flows. --}}
+                        @if ($inCart > 0 && !$isGrouped && !$isVariable)
+                            {{-- Same stepper shape as the pre-add one above, so swapping
+                                 between them doesn't shift the layout. --}}
                             <div class="mt-6">
-                                <p class="mb-2 text-[13px] font-semibold text-ink-2">Quantity</p>
+                                <p class="mb-2 flex items-center gap-1.5 text-sm font-semibold text-ink-2">
+                                    <flux:icon.check-circle variant="micro" class="size-4 text-emerald-600" />
+                                    In your cart
+                                </p>
                                 <div class="flex items-center gap-1.5">
-                                    <button type="button" wire:click="decQty" aria-label="Decrease quantity"
+                                    <button type="button" wire:click="decCartQty"
+                                        aria-label="{{ $inCart <= 1 ? 'Remove from cart' : 'Decrease quantity' }}"
                                         class="flex size-9 cursor-pointer items-center justify-center rounded border border-zinc-300 text-ink-2 transition hover:bg-surface-sunken">
-                                        <flux:icon.minus class="size-3.5" />
+                                        @if ($inCart <= 1)
+                                            <flux:icon.trash-2 class="size-3.5" />
+                                        @else
+                                            <flux:icon.minus class="size-3.5" />
+                                        @endif
                                     </button>
                                     <span
-                                        class="w-10 text-center text-[14px] font-semibold tabular-nums text-ink">{{ $qty }}</span>
-                                    <button type="button" wire:click="incQty" aria-label="Increase quantity"
+                                        class="w-10 text-center text-sm font-semibold tabular-nums text-ink">{{ $inCart }}</span>
+                                    <button type="button" wire:click="incCartQty" aria-label="Increase quantity"
                                         class="flex size-9 cursor-pointer items-center justify-center rounded border border-zinc-300 text-ink-2 transition hover:bg-surface-sunken">
                                         <flux:icon.plus class="size-3.5" />
                                     </button>
                                 </div>
                             </div>
-                        @endunless
+                        @else
+                            {{-- Quantity counter --}}
+                            @unless ($isGrouped || $isVariable)
+                                <div class="mt-6">
+                                    <p class="mb-2 text-sm font-semibold text-ink-2">Quantity</p>
+                                    <div class="flex items-center gap-1.5">
+                                        <button type="button" wire:click="decQty" aria-label="Decrease quantity"
+                                            class="flex size-9 cursor-pointer items-center justify-center rounded border border-zinc-300 text-ink-2 transition hover:bg-surface-sunken">
+                                            <flux:icon.minus class="size-3.5" />
+                                        </button>
+                                        <span
+                                            class="w-10 text-center text-sm font-semibold tabular-nums text-ink">{{ $qty }}</span>
+                                        <button type="button" wire:click="incQty" aria-label="Increase quantity"
+                                            class="flex size-9 cursor-pointer items-center justify-center rounded border border-zinc-300 text-ink-2 transition hover:bg-surface-sunken">
+                                            <flux:icon.plus class="size-3.5" />
+                                        </button>
+                                    </div>
+                                </div>
+                            @endunless
+                        @endif
 
                         {{-- Primary actions --}}
                         <div class="mt-5 flex flex-wrap items-center gap-3">
-                            <flux:button variant="customer-primary" size="customer-lg" wire:click="addThisToCart">
-                                {{ $addToCartLabel }}
-                            </flux:button>
+                            @if ($inCart === 0 || $isGrouped || $isVariable)
+                                <flux:button variant="customer-primary" size="customer-lg" wire:click="addThisToCart">
+                                    {{ $addToCartLabel }}
+                                </flux:button>
+                            @endif
 
                             @if ($this->quotesEnabled && !$isGrouped)
                                 <flux:button variant="customer-outline" size="customer-lg"
@@ -1189,7 +1336,7 @@ $dimensionStr = $dimensionStr !== '' ? $dimensionStr . ' ' . ($product->dimensio
 
                         {{-- Min order quantity note --}}
                         @if (($product->min_order_quantity ?? 1) > 1)
-                            <div class="mt-3 flex items-center gap-2 text-[12.5px] text-ink-3">
+                            <div class="mt-3 flex items-center gap-2 text-xs text-ink-3">
                                 <flux:icon.information-circle variant="micro" class="size-4 shrink-0 text-ink-4" />
                                 Minimum order quantity is {{ $product->min_order_quantity }} units.
                             </div>
@@ -1200,11 +1347,15 @@ $dimensionStr = $dimensionStr !== '' ? $dimensionStr . ' ' . ($product->dimensio
                 {{-- Order via WhatsApp --}}
                 @if ($whatsappOrderEnabled)
                     @php
-                        $waPrice = $displayPrice
-                            ? strip_tags(money($displayPrice))
-                            : ($groupedFromCents
-                                ? 'From ' . strip_tags(money($groupedFromCents))
-                                : 'Quote on request');
+                        $waPrice = match (true) {
+                            (bool) $displayPrice => strip_tags(money($displayPrice)),
+                            (bool) $variantRange => strip_tags(money($variantRange['min'])) .
+                                ($variantRange['min'] === $variantRange['max']
+                                    ? ''
+                                    : ' - ' . strip_tags(money($variantRange['max']))),
+                            (bool) $groupedFromCents => 'From ' . strip_tags(money($groupedFromCents)),
+                            default => 'Quote on request',
+                        };
                         $waText =
                             "Hello, I want to buy\n\n*{$product->name}*\n*Price:* {$waPrice}\n*URL:* " .
                             url()->current();
@@ -1212,7 +1363,7 @@ $dimensionStr = $dimensionStr !== '' ? $dimensionStr . ' ' . ($product->dimensio
                     @endphp
                     <div class="mt-4">
                         <a href="{{ $waUrl }}" target="_blank" rel="noopener"
-                            class="inline-flex items-center gap-2 bg-[#25D366] px-6 py-2.5 font-serif text-[13px] font-extrabold uppercase tracking-wider text-white transition hover:bg-[#20bd5a]">
+                            class="inline-flex items-center gap-2 bg-green-400 px-6 py-2.5 font-serif text-sm font-extrabold uppercase tracking-wider text-white transition hover:bg-green-500">
                             <svg viewBox="0 0 24 24" fill="currentColor" class="size-4" aria-hidden="true">
                                 <path
                                     d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51l-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.71.306 1.263.489 1.694.625.712.227 1.36.195 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
@@ -1228,7 +1379,7 @@ $dimensionStr = $dimensionStr !== '' ? $dimensionStr . ' ' . ($product->dimensio
                 <flux:card>
 
                     {{-- Trust signals --}}
-                    <div class="flex flex-col gap-3 text-[12.5px]">
+                    <div class="flex flex-col gap-3 text-xs">
                         @if ($product->brand)
                             <div class="flex items-start gap-2.5">
                                 <flux:icon.check-badge variant="outline" class="size-4 shrink-0 text-brand-500" />
@@ -1271,7 +1422,7 @@ $dimensionStr = $dimensionStr !== '' ? $dimensionStr . ' ' . ($product->dimensio
 
                     {{-- Policy quick-links --}}
                     <div
-                        class="mt-4 flex flex-col divide-y divide-zinc-100 border-t border-zinc-200 pt-4 text-[13.5px]">
+                        class="mt-4 flex flex-col divide-y divide-zinc-100 border-t border-zinc-200 pt-4 text-sm">
                         <a href="{{ route('page.show', ['page' => 'returns-policy']) }}" wire:navigate
                             class="group flex items-center justify-between gap-3 py-2.5">
                             <span class="flex items-center gap-2.5 text-ink-2">
@@ -1296,25 +1447,25 @@ $dimensionStr = $dimensionStr !== '' ? $dimensionStr . ' ' . ($product->dimensio
                     {{-- Secure payments --}}
                     <div class="mt-4 border-t border-zinc-200 pt-4">
                         <div class="flex flex-wrap items-center gap-x-2.5 gap-y-1.5">
-                            <span class="flex items-center gap-1.5 text-[13px] font-semibold text-ink">
+                            <span class="flex items-center gap-1.5 text-sm font-semibold text-ink">
                                 <flux:icon.shield-check variant="micro" class="size-4 text-emerald-600" />
                                 Secure payments
                             </span>
                             <div class="flex items-center gap-1">
                                 @foreach (['Visa', 'Mastercard', 'M-Pesa'] as $method)
                                     <span
-                                        class="rounded border border-zinc-200 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide text-ink-3">{{ $method }}</span>
+                                        class="rounded border border-zinc-200 px-1.5 py-0.5 text-xs font-bold uppercase tracking-wide text-ink-3">{{ $method }}</span>
                                 @endforeach
                             </div>
                         </div>
-                        <p class="mt-2 text-[12px] leading-relaxed text-ink-3">
+                        <p class="mt-2 text-xs leading-relaxed text-ink-3">
                             Every payment is protected with SSL encryption and trusted M-Pesa &amp; card processing.
                         </p>
                     </div>
 
                     {{-- Talk to sales --}}
                     <a href="{{ route('contact') }}" wire:navigate
-                        class="mt-4 flex items-center gap-1.5 border-t border-zinc-200 pt-4 text-[12.5px] font-semibold text-brand-500 underline-offset-2 hover:underline">
+                        class="mt-4 flex items-center gap-1.5 border-t border-zinc-200 pt-4 text-xs font-semibold text-brand-500 underline-offset-2 hover:underline">
                         <flux:icon.chat-bubble-left-right variant="micro" class="size-4" />
                         Questions? Talk to sales
                     </a>
@@ -1340,23 +1491,23 @@ $dimensionStr = $dimensionStr !== '' ? $dimensionStr . ' ' . ($product->dimensio
                 <div class="flex border-b border-zinc-200">
                     @if ($hasAccessories)
                         <button type="button" wire:click="setAddonTab('accessories')" @class([
-                            '-mb-px border-b-2 px-5 py-3.5 text-[14px] transition',
+                            '-mb-px border-b-2 px-5 py-3.5 text-sm transition',
                             'border-brand-500 font-semibold text-ink' => $addonTab === 'accessories',
                             'border-transparent text-ink-3 hover:text-ink' =>
                                 $addonTab !== 'accessories',
                         ])>
                             Accessories
-                            <span class="ml-1 text-[11px] text-ink-4">{{ $this->filteredAccessories->count() }}</span>
+                            <span class="ml-1 text-xs text-ink-4">{{ $this->filteredAccessories->count() }}</span>
                         </button>
                     @endif
                     @if ($hasSpareParts)
                         <button type="button" wire:click="setAddonTab('spares')" @class([
-                            '-mb-px border-b-2 px-5 py-3.5 text-[14px] transition',
+                            '-mb-px border-b-2 px-5 py-3.5 text-sm transition',
                             'border-brand-500 font-semibold text-ink' => $addonTab === 'spares',
                             'border-transparent text-ink-3 hover:text-ink' => $addonTab !== 'spares',
                         ])>
                             Spare parts
-                            <span class="ml-1 text-[11px] text-ink-4">{{ $this->filteredSpareParts->count() }}</span>
+                            <span class="ml-1 text-xs text-ink-4">{{ $this->filteredSpareParts->count() }}</span>
                         </button>
                     @endif
                 </div>
@@ -1365,7 +1516,7 @@ $dimensionStr = $dimensionStr !== '' ? $dimensionStr . ' ' . ($product->dimensio
                 @php $addonItems = $addonTab === 'spares' ? $this->filteredSpareParts : $this->filteredAccessories; @endphp
                 <div class="relative mt-5" data-addon-carousel>
                     <button type="button"
-                        class="addon-prev absolute -left-4 top-[40%] z-10 -translate-y-1/2 hidden size-9 items-center justify-center rounded-full border border-zinc-200 bg-white shadow-sm text-ink-2 transition hover:bg-surface-sunken sm:inline-flex disabled:opacity-30">
+                        class="addon-prev absolute -left-4 top-2/5 z-10 -translate-y-1/2 hidden size-9 items-center justify-center rounded-full border border-zinc-200 bg-white shadow-sm text-ink-2 transition hover:bg-surface-sunken sm:inline-flex disabled:opacity-30">
                         <flux:icon.chevron-left variant="micro" class="size-4" />
                     </button>
 
@@ -1379,7 +1530,7 @@ $dimensionStr = $dimensionStr !== '' ? $dimensionStr . ' ' . ($product->dimensio
                     </div>
 
                     <button type="button"
-                        class="addon-next absolute -right-4 top-[40%] z-10 -translate-y-1/2 hidden size-9 items-center justify-center rounded-full border border-zinc-200 bg-white shadow-sm text-ink-2 transition hover:bg-surface-sunken sm:inline-flex disabled:opacity-30">
+                        class="addon-next absolute -right-4 top-2/5 z-10 -translate-y-1/2 hidden size-9 items-center justify-center rounded-full border border-zinc-200 bg-white shadow-sm text-ink-2 transition hover:bg-surface-sunken sm:inline-flex disabled:opacity-30">
                         <flux:icon.chevron-right variant="micro" class="size-4" />
                     </button>
                 </div>
@@ -1471,14 +1622,14 @@ $dimensionStr = $dimensionStr !== '' ? $dimensionStr . ' ' . ($product->dimensio
                 @foreach ($productTabs as $tab)
                     <button type="button" wire:click="$set('activeTab', '{{ $tab['id'] }}')"
                         @class([
-                            '-mb-px cursor-pointer border-b-2 px-5 py-3.5 text-[14px] transition whitespace-nowrap',
+                            '-mb-px cursor-pointer border-b-2 px-5 py-3.5 text-sm transition whitespace-nowrap',
                             'border-brand-500 font-semibold text-ink' => $activeTab === $tab['id'],
                             'border-transparent text-ink-3 hover:text-ink' => $activeTab !== $tab['id'],
                         ])>
                         {{ $tab['label'] }}
                         @if ($tab['count'])
                             <span
-                                class="ml-1 text-[11px] {{ $activeTab === $tab['id'] ? 'text-ink-4' : 'text-ink-4' }}">{{ $tab['count'] }}</span>
+                                class="ml-1 text-xs {{ $activeTab === $tab['id'] ? 'text-ink-4' : 'text-ink-4' }}">{{ $tab['count'] }}</span>
                         @endif
                     </button>
                 @endforeach
@@ -1488,11 +1639,11 @@ $dimensionStr = $dimensionStr !== '' ? $dimensionStr . ' ' . ($product->dimensio
                 {{-- Specs --}}
                 @if ($activeTab === 'specs')
                     @if (filled($product->technical_specification))
-                        <div class="max-w-5xl pdp-rich-text text-[14px] leading-relaxed text-ink-2">
+                        <div class="max-w-5xl pdp-rich-text text-sm leading-relaxed text-ink-2">
                             {!! $product->technical_specification !!}
                         </div>
                     @else
-                        <div class="max-w-5xl text-[14px] text-ink-3">No specifications listed for this product yet.
+                        <div class="max-w-5xl text-sm text-ink-3">No specifications listed for this product yet.
                         </div>
                     @endif
                 @endif
@@ -1500,11 +1651,11 @@ $dimensionStr = $dimensionStr !== '' ? $dimensionStr . ' ' . ($product->dimensio
                 {{-- Overview --}}
                 @if ($activeTab === 'overview')
                     @if (filled($product->description))
-                        <div class="max-w-5xl pdp-rich-text text-[14.5px] leading-relaxed text-ink-2">
+                        <div class="max-w-5xl pdp-rich-text text-sm leading-relaxed text-ink-2">
                             {!! $product->description !!}
                         </div>
                     @else
-                        <div class="max-w-5xl text-[14px] text-ink-3">No overview available for this product yet.</div>
+                        <div class="max-w-5xl text-sm text-ink-3">No overview available for this product yet.</div>
                     @endif
                 @endif
 
@@ -1517,21 +1668,21 @@ $dimensionStr = $dimensionStr !== '' ? $dimensionStr . ' ' . ($product->dimensio
                                 class="grid grid-cols-[auto_1fr_auto_auto] items-center gap-3.5 rounded border border-zinc-200 bg-white px-5 py-4 transition hover:border-zinc-400">
                                 <flux:icon.document variant="outline" class="size-5 text-brand-500" />
                                 <div>
-                                    <div class="text-[14px] font-medium">{{ $file->name }}</div>
+                                    <div class="text-sm font-medium">{{ $file->name }}</div>
                                     @if ($file->file_size)
-                                        <div class="text-[12px] text-ink-3">
+                                        <div class="text-xs text-ink-3">
                                             {{ number_format($file->file_size / 1024, 0) }} KB</div>
                                     @endif
                                 </div>
                                 <span
-                                    class="text-[12px] text-ink-3 uppercase">{{ pathinfo($file->file_name, PATHINFO_EXTENSION) ?: 'PDF' }}</span>
+                                    class="text-xs text-ink-3 uppercase">{{ pathinfo($file->file_name, PATHINFO_EXTENSION) ?: 'PDF' }}</span>
                                 <flux:icon.arrow-down-tray variant="micro" class="size-4 text-ink-2" />
                             </a>
                         @empty
                             <div class="rounded-md bg-surface-sunken p-10 text-center text-ink-3">
                                 <flux:icon.document variant="outline" class="mx-auto size-7" />
-                                <div class="mt-2 text-[14px]">No downloadable documents for this product yet.</div>
-                                <div class="mt-1 text-[12.5px]">Request the spec sheet — we'll email it to you.</div>
+                                <div class="mt-2 text-sm">No downloadable documents for this product yet.</div>
+                                <div class="mt-1 text-xs">Request the spec sheet — we'll email it to you.</div>
                             </div>
                         @endforelse
                     </div>
@@ -1555,7 +1706,7 @@ $dimensionStr = $dimensionStr !== '' ? $dimensionStr . ' ' . ($product->dimensio
                                                     class="size-4 text-amber-500" />
                                             @endfor
                                         </div>
-                                        <div class="mt-1 text-[13px] text-ink-3">
+                                        <div class="mt-1 text-sm text-ink-3">
                                             Based on {{ $this->approvedReviews->count() }}
                                             review{{ $this->approvedReviews->count() === 1 ? '' : 's' }}
                                         </div>
@@ -1575,15 +1726,15 @@ $dimensionStr = $dimensionStr !== '' ? $dimensionStr . ' ' . ($product->dimensio
                                             @if ($review->title)
                                                 <div class="mt-2 font-semibold text-ink">{{ $review->title }}</div>
                                             @endif
-                                            <p class="mt-1.5 text-[14px] leading-relaxed text-ink-2">
+                                            <p class="mt-1.5 text-sm leading-relaxed text-ink-2">
                                                 {{ $review->body }}</p>
                                             <div
-                                                class="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-[12.5px] text-ink-3">
+                                                class="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-ink-3">
                                                 <span>{{ $review->author_name }} ·
                                                     {{ $review->created_at->format('d M Y') }}</span>
                                                 @if ($review->verified_purchase)
                                                     <span
-                                                        class="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-[11px] font-medium text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400">
+                                                        class="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-medium text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400">
                                                         <svg class="size-3" fill="currentColor" viewBox="0 0 20 20">
                                                             <path fill-rule="evenodd"
                                                                 d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z"
@@ -1600,7 +1751,7 @@ $dimensionStr = $dimensionStr !== '' ? $dimensionStr . ' ' . ($product->dimensio
                                 <div class="rounded-md bg-surface-sunken p-10 text-center">
                                     <flux:icon.star variant="outline" class="mx-auto size-7 text-ink-4" />
                                     <div class="mt-3 font-serif text-xl">No reviews yet.</div>
-                                    <p class="mt-1.5 text-[13.5px] text-ink-3">Be the first to share your experience
+                                    <p class="mt-1.5 text-sm text-ink-3">Be the first to share your experience
                                         after you've installed and used the unit.</p>
                                 </div>
                             @endif
@@ -1636,9 +1787,11 @@ $dimensionStr = $dimensionStr !== '' ? $dimensionStr . ' ' . ($product->dimensio
 
         @include('partials.storefront.accessory-modal')
 
+        @include('partials.storefront.variation-modal')
+
         {{-- Bundle / grouped add-to-cart modal --}}
         @if (in_array($product->type, [\App\Enums\ProductType::BUNDLE, \App\Enums\ProductType::GROUPED], true))
-            <flux:modal wire:model.self="showBundleModal" class="md:w-[560px]">
+            <flux:modal wire:model.self="showBundleModal" class="md:w-140">
                 @if ($product->type === \App\Enums\ProductType::BUNDLE)
                     <flux:heading class="uppercase">What's in this bundle</flux:heading>
                     <flux:subheading>{{ $product->name }} ships as a single package made up of the components below.
@@ -1664,9 +1817,9 @@ $dimensionStr = $dimensionStr !== '' ? $dimensionStr . ' ' . ($product->dimensio
                                     @endif
                                 </div>
                                 <div class="min-w-0 flex-1">
-                                    <div class="truncate text-[13px] font-semibold text-ink">
+                                    <div class="truncate text-sm font-semibold text-ink">
                                         {{ $child?->name ?? 'Component unavailable' }}</div>
-                                    <div class="mt-0.5 flex items-center gap-2 text-[12px] text-ink-3">
+                                    <div class="mt-0.5 flex items-center gap-2 text-xs text-ink-3">
                                         <span class="tabular-nums">Qty {{ $item->quantity }}</span>
                                         @if ($item->is_optional)
                                             <flux:badge size="sm" color="zinc" inset="top bottom">Optional
@@ -1674,7 +1827,7 @@ $dimensionStr = $dimensionStr !== '' ? $dimensionStr . ' ' . ($product->dimensio
                                         @endif
                                     </div>
                                 </div>
-                                <div class="text-[12.5px] font-semibold tabular-nums text-ink">{!! $lineCents ? money($lineCents) : '—' !!}
+                                <div class="text-xs font-semibold tabular-nums text-ink">{!! $lineCents ? money($lineCents) : '—' !!}
                                 </div>
                             </div>
                         @endforeach
@@ -1682,7 +1835,7 @@ $dimensionStr = $dimensionStr !== '' ? $dimensionStr . ' ' . ($product->dimensio
 
                     <div class="mt-5 flex items-center justify-between border-t border-zinc-200 pt-4">
                         <div>
-                            <div class="text-[11px] font-bold uppercase tracking-wide text-ink-3">Bundle price</div>
+                            <div class="text-xs font-bold uppercase tracking-wide text-ink-3">Bundle price</div>
                             <div class="font-serif text-2xl tabular-nums">{!! $this->bundlePriceCents ? money($this->bundlePriceCents) : 'Quote on request' !!}</div>
                         </div>
                         <flux:button variant="primary" icon="shopping-cart" wire:click="addBundleToCart">Add to cart
@@ -1709,8 +1862,8 @@ $dimensionStr = $dimensionStr !== '' ? $dimensionStr . ' ' . ($product->dimensio
                                     @endif
                                 </div>
                                 <div class="min-w-0 flex-1">
-                                    <div class="truncate text-[13px] font-semibold text-ink">{{ $child->name }}</div>
-                                    <div class="text-[12px] text-ink-3 tabular-nums">{!! $childPrice ? money($childPrice) : 'POA' !!}</div>
+                                    <div class="truncate text-sm font-semibold text-ink">{{ $child->name }}</div>
+                                    <div class="text-xs text-ink-3 tabular-nums">{!! $childPrice ? money($childPrice) : 'POA' !!}</div>
                                 </div>
                                 <div
                                     class="inline-flex h-9 shrink-0 items-stretch overflow-hidden rounded border border-zinc-200">
@@ -1720,7 +1873,7 @@ $dimensionStr = $dimensionStr !== '' ? $dimensionStr . ' ' . ($product->dimensio
                                         <flux:icon.minus variant="micro" class="size-3.5" />
                                     </button>
                                     <div
-                                        class="grid w-9 place-items-center border-x border-zinc-200 text-[13px] font-semibold tabular-nums">
+                                        class="grid w-9 place-items-center border-x border-zinc-200 text-sm font-semibold tabular-nums">
                                         {{ $groupedQty[$child->slug] ?? 0 }}
                                     </div>
                                     <button type="button" wire:click="incGroupedQty('{{ $child->slug }}')"

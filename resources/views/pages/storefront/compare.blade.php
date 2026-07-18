@@ -138,11 +138,11 @@ new #[Layout('layouts::storefront')] #[Title('Compare')] class extends Component
     @else
         {{-- Comparison table --}}
         <div class="scrollbar-thin mt-7 overflow-x-auto rounded-md border border-zinc-200 bg-white">
-            <table class="w-full min-w-[600px] table-auto border-collapse text-left lg:min-w-0 lg:table-fixed">
+            <table class="w-full min-w-150 table-auto border-collapse text-left lg:min-w-0 lg:table-fixed">
                 <thead>
                     <tr>
                         {{-- Sticky header corner --}}
-                        <th class="sticky left-0 z-10 w-36 border-b border-zinc-200 bg-white px-4 py-4 text-center text-[11.5px] font-bold tracking-[0.08em] text-ink-2 uppercase lg:w-50">
+                        <th class="sticky left-0 z-10 w-36 border-b border-zinc-200 bg-white px-4 py-4 text-center text-xs font-bold tracking-widest text-ink-2 uppercase lg:w-50">
                             Product
                         </th>
 
@@ -173,7 +173,7 @@ new #[Layout('layouts::storefront')] #[Title('Compare')] class extends Component
                                 <a href="{{ route('catalog') }}" wire:navigate
                                     class="mx-auto flex h-44 w-44 flex-col items-center justify-center gap-2 rounded border-2 border-dashed border-zinc-300 text-ink-3 transition hover:border-ink-3 hover:text-ink">
                                     <flux:icon.plus variant="micro" class="size-5" />
-                                    <span class="text-[12.5px]">Add product</span>
+                                    <span class="text-xs">Add product</span>
                                 </a>
                             </th>
                         @endfor
@@ -235,7 +235,7 @@ new #[Layout('layouts::storefront')] #[Title('Compare')] class extends Component
 
                     {{-- Actions: add to cart, then remove --}}
                     <tr>
-                        <td class="sticky left-0 z-10 w-36 border-b border-zinc-200 bg-white px-4 py-3 text-center align-top text-[13px] font-semibold text-ink-2 lg:w-50">
+                        <td class="sticky left-0 z-10 w-36 border-b border-zinc-200 bg-white px-4 py-3 text-center align-top text-sm font-semibold text-ink-2 lg:w-50">
                             Buy Now
                         </td>
                         @foreach ($this->products as $product)
@@ -251,7 +251,7 @@ new #[Layout('layouts::storefront')] #[Title('Compare')] class extends Component
                         @endfor
                     </tr>
                     <tr>
-                        <td class="sticky left-0 z-10 w-36 bg-white px-4 py-3 text-center align-top text-[13px] font-semibold text-ink-2 lg:w-50">
+                        <td class="sticky left-0 z-10 w-36 bg-white px-4 py-3 text-center align-top text-sm font-semibold text-ink-2 lg:w-50">
                             Remove
                         </td>
                         @foreach ($this->products as $product)
@@ -270,5 +270,6 @@ new #[Layout('layouts::storefront')] #[Title('Compare')] class extends Component
     @endif
 
     @include('partials.storefront.accessory-modal')
+    @include('partials.storefront.variation-modal')
     </div>
 </div>

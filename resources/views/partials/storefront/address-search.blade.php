@@ -20,14 +20,14 @@
          class="absolute z-[1001] mt-1 w-full overflow-hidden rounded-md border border-zinc-200 bg-white shadow-lg">
         <template x-for="(suggestion, index) in suggestions" :key="index">
             <button type="button" x-on:click="chooseSuggestion(suggestion)"
-                    class="block w-full border-b border-zinc-100 px-3 py-2 text-left text-[13px] text-ink-2 last:border-0 hover:bg-surface-sunken">
+                    class="block w-full border-b border-zinc-100 px-3 py-2 text-left text-sm text-ink-2 last:border-0 hover:bg-surface-sunken">
                 <span x-text="suggestion.label"></span>
             </button>
         </template>
     </div>
 
     <div x-show="showSuggestions && ! suggestions.length && ! searching" x-cloak
-         class="absolute z-[1001] mt-1 w-full rounded-md border border-zinc-200 bg-white px-3 py-2 text-[12.5px] text-ink-4 shadow-lg">
+         class="absolute z-[1001] mt-1 w-full rounded-md border border-zinc-200 bg-white px-3 py-2 text-xs text-ink-4 shadow-lg">
         No matches. Drop the pin on the map instead.
     </div>
 </div>

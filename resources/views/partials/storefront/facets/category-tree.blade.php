@@ -15,7 +15,7 @@
             </div>
             @if ($this->childCategories->count() > 8)
                 <button type="button" x-on:click="openCats = !openCats"
-                    class="mt-2 cursor-pointer text-[12.5px] text-brand-500 hover:underline">
+                    class="mt-2 cursor-pointer text-xs text-brand-500 hover:underline">
                     <span x-show="!openCats" class="inline-flex items-center gap-1">
                         Show all {{ $this->childCategories->count() }} categories
                         <flux:icon.arrow-right variant="micro" class="size-3.5" />

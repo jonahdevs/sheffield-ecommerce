@@ -5,7 +5,7 @@
     addressMap() Alpine component (two-step map → details flow). The host page
     is responsible for the surrounding x-data="addressMap()" wrapper.
 --}}
-<flux:modal wire:model.self="showAddressModal" class="md:w-[640px] md:max-w-none" :dismissible="false">
+<flux:modal wire:model.self="showAddressModal" class="md:w-160 md:max-w-none" :dismissible="false">
     @if ($addressModalMode === 'select')
         <flux:heading class="uppercase tracking-wide">Choose a delivery address</flux:heading>
         <flux:subheading>Select where you'd like this order delivered.</flux:subheading>
@@ -16,15 +16,15 @@
                     wire:click="selectAddress({{ $address->id }})"
                     class="block w-full rounded-md border p-4 text-left transition {{ $this->selectedAddressId === $address->id ? 'border-brand-500 ring-1 ring-brand-500' : 'border-zinc-200 hover:border-zinc-300' }}">
                     <div class="flex items-center justify-between">
-                        <span class="text-[10.5px] font-bold tracking-widest text-ink-3 uppercase">{{ $address->label }}</span>
+                        <span class="text-xs font-bold tracking-widest text-ink-3 uppercase">{{ $address->label }}</span>
                         @if ($address->is_default)
-                            <span class="rounded-full bg-brand-500/10 px-2 py-0.5 text-[9.5px] font-bold tracking-wide text-brand-500 uppercase">Default</span>
+                            <span class="rounded-full bg-brand-500/10 px-2 py-0.5 text-xs font-bold tracking-wide text-brand-500 uppercase">Default</span>
                         @endif
                     </div>
-                    <div class="mt-1 text-[13.5px] font-semibold text-ink">{{ $address->fullName() }}</div>
-                    <div class="mt-1 text-[12.5px] leading-relaxed text-ink-2">{{ $address->oneLiner() }}</div>
+                    <div class="mt-1 text-sm font-semibold text-ink">{{ $address->fullName() }}</div>
+                    <div class="mt-1 text-xs leading-relaxed text-ink-2">{{ $address->oneLiner() }}</div>
                     @if ($address->phone)
-                        <div class="mt-1 text-[12px] text-ink-3">{{ $address->phone }}</div>
+                        <div class="mt-1 text-xs text-ink-3">{{ $address->phone }}</div>
                     @endif
                 </button>
             @endforeach

@@ -252,7 +252,7 @@ new #[Layout('layouts::app')] #[Title('Reviews | Admin')] class extends Componen
     </flux:card>
 
     {{-- View modal --}}
-    <flux:modal wire:model.self="showModal" class="md:w-[520px]">
+    <flux:modal wire:model.self="showModal" class="md:w-130">
         @if ($this->viewing)
             <flux:heading>{{ $this->viewing->title ?: 'Review' }}</flux:heading>
             <flux:subheading>{{ $this->viewing->product?->name }}</flux:subheading>

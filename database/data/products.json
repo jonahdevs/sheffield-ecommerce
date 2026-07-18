@@ -3755,7 +3755,7 @@
   {
     "sku": "IMG/OVE/00217",
     "name": "Conveyor Pizza Oven-Digital",
-    "brand": "HKITCHEN",
+    "brand": "H-KITCHEN",
     "model_number": "HX-1SA",
     "category": "Ovens",
     "price": 390000,
@@ -3823,7 +3823,7 @@
   {
     "sku": "IMG/OVE/00213",
     "name": "Gas Convection Oven FTG 480",
-    "brand": "GPANIZ",
+    "brand": "G PANIZ",
     "model_number": "FTE 480",
     "category": "Ovens",
     "price": 1900000,
@@ -7647,8 +7647,10 @@
     "price": 20193.89,
     "quantity": 14,
     "image": "products/rational-care-rinse-detergent-imghys00033.jpg",
-    "short_description": "Genuine Rational care rinse detergent for thorough cleaning and hygiene maintenance of Rational combi ovens and SelfCooking Center units in commercial kitchens across Kenya.",
-    "description": null,
+    "short_description": "Ready-to-use liquid rinse agent for RATIONAL combi ovens, supplied in a 10-litre blue container for use with CleanJet-equipped units or manual cleaning cycles.",
+    "description": "<p>RATIONAL Care Rinse Detergent is a ready-to-use liquid rinse agent formulated for the automatic CleanJet cleaning system built into RATIONAL combi ovens, and for manual cleaning where required.</p><p>It is used by kitchen staff during the oven's cleaning cycle to rinse away cleaning chemical residue from the cooking cabinet, leaving the interior ready for the next service without extra manual wiping.</p><h3>Key Features</h3><ul><li>Ready-to-use liquid formula, no dilution required</li><li>Supplied in a 10 litre container</li><li>Blue-coloured liquid for easy identification</li><li>Compatible with RATIONAL CPC201G and CPC202G units fitted with CleanJet</li><li>Can also be used for manual rinsing/cleaning</li></ul>",
+    "meta_description": "Genuine RATIONAL liquid rinse agent for combi oven CleanJet cleaning systems, keeping commercial kitchens across Kenya running hygienically clean.",
+    "technical_specification": "<table><tbody><tr><td><strong>Brand</strong></td><td>RATIONAL</td></tr><tr><td><strong>Article Number</strong></td><td>9006.0137</td></tr><tr><td><strong>Product Type</strong></td><td>liquid rinse aid</td></tr><tr><td><strong>Colour</strong></td><td>blue</td></tr><tr><td><strong>Container Size</strong></td><td>10 liters (2.65 gal)</td></tr><tr><td><strong>Compatible Units</strong></td><td>RATIONAL CPC units with CleanJet (e.g. CPC201G, CPC202G) and for manual cleaning</td></tr></tbody></table>",
     "status": "archived"
   },
   {
@@ -7660,9 +7662,10 @@
     "price": 25600,
     "quantity": 124,
     "image": "products/rational-care-tablets-5600562-imghys00034.jpg",
-    "short_description": "Genuine Rational care tablets (box pack) for automated cleaning of Rational combi ovens and SelfCooking Center units in commercial kitchens across Kenya.",
-    "description": "<p>Rational Care Tabs for Combi Ovens with Care Controls&nbsp;- 150 per Case </p><p>Extend the life of your combi oven with Care Controls by using these Rational care tabs. </p><p>These tabs are developed with special scale-dissolving ingredients to prevent limescale build-up and guarantee maximum operational reliability at all times without a water softener and time-consuming descaling.</p>",
-    "technical_specification": "<ul><li>CITRIC ACID\t20 - 50 %</li><li>DL MALIC ACID 20 - 50 %</li><li>ADIPIC ACID\t5 - 15 %</li></ul>",
+    "short_description": "Descaling care tablets for RATIONAL combi ovens with CareControl, supplied 150 per bucket, formulated with scale-dissolving ingredients to prevent limescale build-up.",
+    "description": "<p>RATIONAL Care Tabs 56.00.562 are descaling tablets designed for the automated CareControl cleaning system fitted to RATIONAL SelfCookingCenter, iCombi Pro, and iCombi Classic combi ovens.</p><p>Kitchens use them as part of the oven's regular automatic cleaning cycle to keep the cooking chamber and internal components free of limescale, helping maintain consistent cooking performance without needing a separate water softener.</p><h3>Key Features</h3><ul><li>150 tablets supplied per bucket</li><li>For SelfCookingCenter units with CareControl, iCombi Pro and iCombi Classic</li><li>Special scale-dissolving formula prevents limescale build-up</li><li>Removes the need for a water softener or manual descaling</li><li>Contains citric acid, malic acid and adipic acid</li><li>Used as part of the automated cleaning cycle</li></ul>",
+    "meta_description": "Genuine RATIONAL Care Tabs (150/bucket) that descale CareControl combi ovens automatically, trusted by commercial kitchens and caterers across Kenya.",
+    "technical_specification": "<table><tbody><tr><td><strong>Brand</strong></td><td>RATIONAL</td></tr><tr><td><strong>Article Number</strong></td><td>56.00.562</td></tr><tr><td><strong>Product Type</strong></td><td>descaling care tablet, scale-dissolving formula</td></tr><tr><td><strong>Pack Quantity</strong></td><td>150 tablets per bucket</td></tr><tr><td><strong>Compatible Units</strong></td><td>All SelfCookingCenter units from 10/2008 with CareControl (Serial SG/SH/SI series); iCombi Pro/Classic</td></tr><tr><td><strong>Composition</strong></td><td>CITRIC ACID 20 - 50 %; DL MALIC ACID 20 - 50 %; ADIPIC ACID 5 - 15 %</td></tr></tbody></table>",
     "status": "published"
   },
   {
@@ -7674,8 +7677,10 @@
     "price": 320.75,
     "quantity": 240,
     "image": "products/rational-care-tabs-loose-imghys00035.jpg",
-    "short_description": "Genuine Rational care tabs sold individually per tablet for flexible restocking of Rational combi oven cleaning supplies in commercial kitchens across Kenya.",
-    "description": "<p>Rational Care Tabs for Combi Ovens with Care Controls&nbsp;- 150 per Case </p><p>Extend the life of your combi oven with Care Controls by using these Rational care tabs. </p><p>These tabs are developed with special scale-dissolving ingredients to prevent limescale build-up and guarantee maximum operational reliability at all times without a water softener and time-consuming descaling.</p>",
+    "short_description": "Descaling care tablet for RATIONAL combi ovens with CareControl, sold individually, formulated with scale-dissolving ingredients to prevent limescale build-up without a water softener.",
+    "description": "<p>Rational Care Tabs Loose is the individual-tablet version of the RATIONAL Care Tabs 56.00.562, sold per tablet rather than as a full bucket for kitchens that want to restock in smaller quantities.</p><p>Each tablet is used in the automated CareControl cleaning cycle of RATIONAL SelfCookingCenter, iCombi Pro and iCombi Classic combi ovens, dissolving limescale and helping maintain reliable oven performance.</p><h3>Key Features</h3><ul><li>Sold as a single loose tablet (full bucket contains 150)</li><li>For SelfCookingCenter units with CareControl, iCombi Pro and iCombi Classic</li><li>Special scale-dissolving formula prevents limescale build-up</li><li>Removes the need for a water softener or manual descaling</li><li>Contains citric acid, malic acid and adipic acid</li></ul>",
+    "meta_description": "Genuine RATIONAL Care Tabs sold loose per tablet for flexible restocking, descaling CareControl combi ovens in commercial kitchens across Kenya.",
+    "technical_specification": "<table><tbody><tr><td><strong>Brand</strong></td><td>RATIONAL</td></tr><tr><td><strong>Article Number</strong></td><td>56.00.562</td></tr><tr><td><strong>Product Type</strong></td><td>descaling care tablet, scale-dissolving formula</td></tr><tr><td><strong>Pack Quantity</strong></td><td>150 tablets per bucket</td></tr><tr><td><strong>Compatible Units</strong></td><td>All SelfCookingCenter units from 10/2008 with CareControl (Serial SG/SH/SI series); iCombi Pro/Classic</td></tr></tbody></table>",
     "status": "archived"
   },
   {
@@ -7687,8 +7692,10 @@
     "price": 316,
     "quantity": 110,
     "image": "products/rational-cleaner-tabs-loose-imghys00038.jpg",
-    "short_description": "Genuine Rational cleaner tabs sold loose per tablet for effective degreasing and cleaning of Rational combi oven interiors in commercial kitchens across Kenya.",
-    "description": "<ul><li>KEEPS OUR OVEN USER FRIENDLY</li><li>CAN PERFORM AN ULTRA FAST INTERIM CLEAN&nbsp;</li><li>IT IS USED IN SELF COOKING CENTRE &amp; COMBI MASTER PLUS UNITS</li></ul>",
+    "short_description": "Cleaning tablet for RATIONAL combi ovens, sold individually, a phosphate-free concentrated formula used in automatic cooking-chamber cleaning cycles without manual scrubbing.",
+    "description": "<p>Rational Cleaner Tabs Loose is an individual cleaning tablet for RATIONAL SelfCookingCenter and CombiMaster Plus combi ovens, sold per tablet rather than as a full bucket.</p><p>Kitchen staff load the tablet into the oven's automatic cleaning programme to degrease and clean the cooking chamber, removing the need for manual scrubbing between services.</p><h3>Key Features</h3><ul><li>Sold as a single loose tablet (full bucket contains 100)</li><li>For SelfCookingCenter and CombiMaster Plus units with automatic cleaning</li><li>Phosphate-free, concentrated cleaning formula</li><li>Used in the oven's automatic cleaning cycle, no manual scrubbing required</li></ul>",
+    "meta_description": "Genuine RATIONAL cleaner tabs sold loose per tablet, for automatic degreasing of combi oven interiors in busy commercial kitchens across Kenya.",
+    "technical_specification": "<table><tbody><tr><td><strong>Brand</strong></td><td>RATIONAL</td></tr><tr><td><strong>Article Number</strong></td><td>56.00.210</td></tr><tr><td><strong>Pack Quantity</strong></td><td>100 tablets per bucket (widely corroborated for the 56.00.210 / 56.00.210A family)</td></tr><tr><td><strong>Compatible Units</strong></td><td>All SelfCookingCenter units since 2004 &amp; CombiMaster Plus units with automatic cleaning</td></tr></tbody></table>",
     "status": "archived"
   },
   {
@@ -7700,9 +7707,10 @@
     "price": 0,
     "quantity": 10,
     "image": "products/rational-descaler-imghys00039.jpg",
-    "short_description": "Genuine Rational descaler for removing limescale and mineral deposits from Rational combi oven steam generators and water systems in commercial kitchens across Kenya.",
-    "description": "<ul><li>It descales the steam generator</li><li>Increases life time of steam generator</li></ul>",
-    "technical_specification": "<ul><li>Sulphamic acid\t≥2.5-&lt;10%</li><li>Phosphoric Acid\t≥3-&lt;10%</li></ul>",
+    "short_description": "Liquid descaling agent for RATIONAL CombiMaster and ClimaPlus combi ovens, supplied in a 10-litre jerrycan, used to remove limescale from the steam generator.",
+    "description": "<p>RATIONAL Descaler is a liquid descaling agent developed for RATIONAL CombiMaster and ClimaPlus combi ovens, supplied in a 10 litre plastic jerrycan.</p><p>It is used by kitchen and maintenance staff to descale the oven's steam generator and water system, clearing limescale and mineral deposits that build up with regular use and helping extend the working life of the steam generator.</p><h3>Key Features</h3><ul><li>Supplied in a 10 litre plastic jerrycan</li><li>For RATIONAL CombiMaster and ClimaPlus combi ovens</li><li>Descales the steam generator and water system</li><li>Contains phosphoric acid and sulphamic acid</li><li>Classified as a corrosive liquid (UN3264) for professional use</li></ul>",
+    "meta_description": "Genuine RATIONAL liquid descaler that clears limescale from combi oven steam generators, keeping equipment reliable in kitchens across Kenya and beyond.",
+    "technical_specification": "<table><tbody><tr><td><strong>Brand</strong></td><td>RATIONAL</td></tr><tr><td><strong>Article Number</strong></td><td>6006.011</td></tr><tr><td><strong>Container Size</strong></td><td>10 litre plastic jerrycan (UK listing, article RAT-6006.011); US market sells as 6006.0110US, 4x1 gallon bottles per case</td></tr><tr><td><strong>Compatible Units</strong></td><td>CombiMaster and ClimaPlus Combi ovens; used for descaling SelfCookingCenter/iCombi units</td></tr><tr><td><strong>Composition</strong></td><td>phosphoric acid and sulphamic acid (corrosive; UN3264, Hazard Class 8)</td></tr><tr><td><strong>Composition</strong></td><td>Sulphamic acid ≥2.5-&lt;10%; Phosphoric Acid ≥3-&lt;10%</td></tr></tbody></table>",
     "status": "archived"
   },
   {
@@ -7714,9 +7722,10 @@
     "price": 28149.93,
     "quantity": 39,
     "image": "products/rational-rinse-aid-tablets-imghys00040.jpg",
-    "short_description": "Genuine Rational rinse aid tablets for streak-free, spot-free finishing of Rational combi oven interiors after cleaning cycles in commercial kitchens across Kenya.",
-    "description": "<ul><li>Rinse aid tablets safely neutralize remaining cleaner and leave the cabinet shiny and spot free.</li><li>Rinse tablets go up to 100 % further than liquid rinse</li><li>For SelfCooking Center® and CombiMaster Plus</li></ul>",
-    "technical_specification": "<ul><li>CITRIC ACID 20 - 50 %</li><li>ALCOHOLS, C 12-15 BRANCHED &amp; LINEAR, ETHOXYLATED PROPOXYLATED\t1 - 5 %</li></ul>",
+    "short_description": "Rinse aid tablets for RATIONAL combi ovens without CareControl, supplied 50 per bucket, a concentrated formula that neutralises cleaner residue after washing.",
+    "description": "<p>RATIONAL Rinse Aid Tablets 56.00.211 are rinse tablets made for RATIONAL SelfCookingCenter units without Efficient CareControl and for CombiMaster Plus ovens.</p><p>Kitchen staff use them at the end of the cleaning cycle to neutralise any remaining cleaning chemical and leave the cooking chamber shiny and spot-free, ready for the next service.</p><h3>Key Features</h3><ul><li>50 tablets supplied per bucket</li><li>For SelfCookingCenter units without CareControl, and CombiMaster Plus</li><li>Not for use with units fitted with CareControl</li><li>Concentrated formula, goes further than an equivalent liquid rinse</li><li>Neutralises cleaner residue, leaving the cabinet shiny and spot-free</li><li>Contains citric acid and ethoxylated/propoxylated alcohols</li></ul>",
+    "meta_description": "Genuine RATIONAL rinse aid tablets for spot-free, streak-free combi oven interiors, used daily by commercial kitchens and caterers right across Kenya.",
+    "technical_specification": "<table><tbody><tr><td><strong>Brand</strong></td><td>RATIONAL</td></tr><tr><td><strong>Article Number</strong></td><td>56.00.211</td></tr><tr><td><strong>Product Type</strong></td><td>rinse aid tablet, protects interior from cooking build-up</td></tr><tr><td><strong>Pack Quantity</strong></td><td>50 tablets per bucket</td></tr><tr><td><strong>Compatible Units</strong></td><td>SelfCookingCenter units WITHOUT Efficient CareControl (SE series 4/2004-9/2008); CombiMaster Plus (article BXXXXXX or Serial MI series since 4/2017). NOT for use with units that have CareControl.</td></tr><tr><td><strong>Composition</strong></td><td>CITRIC ACID 20 - 50 %; ALCOHOLS, C 12-15 BRANCHED &amp; LINEAR, ETHOXYLATED PROPOXYLATED 1 - 5 %</td></tr></tbody></table>",
     "status": "archived"
   },
   {
@@ -7728,9 +7737,10 @@
     "price": 24000,
     "quantity": 91,
     "image": "products/rational-active-green-cleaner-tabs-imghys00085.jpg",
-    "short_description": "Genuine Rational Active Green cleaner tablets — eco-friendly, biodegradable cleaning tabs for Rational combi ovens in environmentally conscious commercial kitchens across Kenya.",
-    "description": "<ul><li>Rational Active Green Tabs (Green) for iCombi Pro &amp; iCombi Classic - 120/Case with special airfreight packing; </li><li>Thanks to the new formula the number of cleaner tabs can be reduced by up to 50 % depending on the cleaning operation. </li><li>Keeps both the cooking system and the environment clean: </li><li>The cleaner tab with its new formula is phosphate and phosphorous-free and reduces the quantity of cleaner by up to 50 %*. </li><li>Without compromising on cleaning power and hygiene. </li><li>Can perform an ultra-fast interim clean of the iCombi Pro in approx. 12 minutes</li></ul>",
-    "technical_specification": "<ul><li>SODIUM CARBONATE\t20 - 50 %</li><li>SILICIC ACID, SODIUM SALT\t20 - 30 %</li><li>ALCOHOLS C 16 - 18, ETHOXYLATED\t1 - 5 %</li><li>DISODIUM METASILICATE\t1 - &lt;3 %</li></ul>",
+    "short_description": "Phosphate-free cleaning tablets for RATIONAL combi ovens, reducing the amount of cleaning chemical needed by up to 50% versus standard cleaner tabs, without losing cleaning power.",
+    "description": "<p>RATIONAL Active Green Cleaner Tabs are phosphate- and phosphorus-free cleaning tablets for RATIONAL iHexagon, iCombi Pro, iCombi Classic, SelfCookingCenter with Efficient CareControl, and CombiMaster Plus ovens with automatic cleaning.</p><p>Kitchen staff use them in the oven's automatic cleaning programme; the reformulated tab cuts the quantity of cleaning chemical needed by up to half compared with earlier tabs, and supports an ultra-fast interim clean of the iCombi Pro in around 12 minutes.</p><h3>Key Features</h3><ul><li>Phosphate- and phosphorus-free formula</li><li>Reduces cleaning chemical quantity needed by up to 50%</li><li>Supports an ultra-fast interim clean cycle (approx. 12 minutes on iCombi Pro)</li><li>For iHexagon, iCombi Pro, iCombi Classic, SelfCookingCenter with Efficient CareControl, and CombiMaster Plus with automatic cleaning</li></ul>",
+    "meta_description": "Genuine RATIONAL Active Green cleaner tabs, a phosphate-free formula for eco-conscious combi oven cleaning in commercial kitchens across Kenya.",
+    "technical_specification": "<table><tbody><tr><td><strong>Brand</strong></td><td>RATIONAL</td></tr><tr><td><strong>Article Number</strong></td><td>56.01.628</td></tr><tr><td><strong>Product Type</strong></td><td>phosphate- and phosphorus-free alkaline cleaner tablet; reduces cleaning chemical quantity by up to 50%</td></tr><tr><td><strong>Pack Quantity</strong></td><td>150-count buckets confirmed for sibling article 56.01.535; pack size specific to 56.01.628 not separately confirmed</td></tr><tr><td><strong>Compatible Units</strong></td><td>iHexagon, iCombi Pro, iCombi Classic, SelfCookingCenter with Efficient CareControl, CombiMaster Plus with automatic cleaning</td></tr><tr><td><strong>Composition</strong></td><td>SODIUM CARBONATE 20 - 50 %; SILICIC ACID, SODIUM SALT 20 - 30 %; ALCOHOLS C 16 - 18, ETHOXYLATED 1 - 5 %; DISODIUM METASILICATE 1 - &lt;3 %</td></tr></tbody></table>",
     "status": "published"
   },
   {
@@ -7742,8 +7752,10 @@
     "price": 251.38,
     "quantity": 131,
     "image": null,
-    "short_description": "Genuine Rational Active Green cleaner tabs sold loose per tablet for flexible eco-friendly combi oven cleaning in commercial kitchens across Kenya.",
-    "description": null,
+    "short_description": "Phosphate-free cleaning tablet for RATIONAL iCombi Pro and iCombi Classic ovens, sold individually, reducing cleaning chemical use by up to 50% per cycle.",
+    "description": "<p>Rational Active Green Cleaner Tabs Loose is the individual-tablet version of RATIONAL's Active Green cleaner tab, sold per tablet for RATIONAL iCombi Pro and iCombi Classic ovens rather than as a full 150-tablet bucket.</p><p>Kitchen staff load a tablet into the oven's automatic cleaning programme; the phosphate-free formula cuts the quantity of cleaning chemical needed by up to half compared with earlier tabs, while keeping the cooking chamber hygienically clean.</p><h3>Key Features</h3><ul><li>Sold as a single loose tablet (full bucket contains 150)</li><li>For RATIONAL iCombi Pro and iCombi Classic ovens</li><li>Phosphate- and phosphorus-free formula</li><li>Reduces cleaning chemical quantity needed by up to 50%</li></ul>",
+    "meta_description": "Genuine RATIONAL Active Green cleaner tabs sold loose per tablet, for flexible, eco-conscious combi oven cleaning in kitchens right across Kenya.",
+    "technical_specification": "<table><tbody><tr><td><strong>Brand</strong></td><td>RATIONAL</td></tr><tr><td><strong>Article Number</strong></td><td>56.01.535</td></tr><tr><td><strong>Product Type</strong></td><td>phosphate- and phosphorus-free alkaline cleaner tablet, reduces cleaning chemical usage by up to 50%</td></tr><tr><td><strong>Pack Quantity</strong></td><td>150 tablets per bucket</td></tr><tr><td><strong>Compatible Units</strong></td><td>iCombi Pro and iCombi Classic (per official RATIONAL product page); also listed for SelfCookingCenter with Efficient CareControl and CombiMaster Plus with automatic cleaning per SDS</td></tr></tbody></table>",
     "status": "archived"
   },
   {
@@ -7768,8 +7780,10 @@
     "price": 37800,
     "quantity": 76,
     "image": null,
-    "short_description": "Genuine Rational Active Green cartridge for use in Rational iCombi Pro ovens with integrated cartridge cleaning systems in commercial kitchens across Kenya.",
-    "description": null,
+    "short_description": "Sensor-dosed alkaline cleaning cartridge for RATIONAL iCombi Pro ovens with the iCareSystem AutoDose option, supplied 6 per case, each lasting about 100 cleans.",
+    "description": "<p>RATIONAL Active Green Cartridge is a solid alkaline cleaning cartridge for RATIONAL iCombi Pro table-top combi ovens fitted with the iCareSystem AutoDose option.</p><p>The cartridge fits into the oven's AutoDose system, which uses sensors to detect and dispense exactly the amount of cleaning chemical each cycle needs, giving kitchens automatic, hands-free cleaning without decanting or spilling loose tablets.</p><h3>Key Features</h3><ul><li>6 cartridges supplied per case</li><li>Each cartridge is good for approximately 100 cleaning cycles</li><li>For iCombi Pro table-top units with the iCareSystem AutoDose option</li><li>Sensor-controlled dosing, no manual decanting or spillage</li><li>Cartridge body made from 100% recyclable polypropylene</li><li>Roughly 50% less plastic waste and 80% less packaging volume than tablet buckets</li></ul>",
+    "meta_description": "Genuine RATIONAL Active Green AutoDose cartridges for automatic, sensor-dosed combi oven cleaning in commercial kitchens across Kenya and the region.",
+    "technical_specification": "<table><tbody><tr><td><strong>Brand</strong></td><td>RATIONAL</td></tr><tr><td><strong>Article Number</strong></td><td>56.01.912</td></tr><tr><td><strong>Product Type</strong></td><td>solid alkaline cleaning cartridge, sealed sensor-dosed system; ~50% less plastic waste and ~80% less packaging volume than tablet buckets</td></tr><tr><td><strong>Material</strong></td><td>cartridge body 100% recyclable PP (polypropylene)</td></tr><tr><td><strong>Pack Quantity</strong></td><td>6 cartridges per box/case</td></tr><tr><td><strong>Weight</strong></td><td>0.9 kg (1.98 lb) per cartridge, per one distributor listing (not independently cross-checked against a second source)</td></tr><tr><td><strong>Compatible Units</strong></td><td>RATIONAL iCombi Pro table-top units (6-1/1, 10-1/1, 6-2/1, 10-2/1) fitted with the iCareSystem AutoDose option</td></tr></tbody></table>",
     "status": "draft"
   },
   {
@@ -7781,35 +7795,75 @@
     "price": 36000,
     "quantity": 81,
     "image": null,
-    "short_description": "Genuine Rational Care cartridge for integrated automatic care and rinse functions in Rational iCombi Pro ovens in commercial kitchens across Kenya.",
-    "description": null,
+    "short_description": "Solid descaling cartridge for RATIONAL iCombi Pro ovens with the iCareSystem AutoDose option, supplied 6 per case, with each cartridge lasting about 3 months.",
+    "description": "<p>RATIONAL Care Cartridge is a solid scale-inhibiting and descaling cartridge for RATIONAL iCombi Pro table-top combi ovens fitted with the iCareSystem AutoDose option.</p><p>Fitted into the oven's AutoDose system alongside the cleaner cartridge, it automatically doses care chemical into the oven's cleaning cycle to keep the steam system free of limescale, with each cartridge covering roughly three months of use before it needs replacing.</p><h3>Key Features</h3><ul><li>6 cartridges supplied per case</li><li>Each cartridge lasts approximately 3 months in normal use</li><li>For iCombi Pro table-top units with the iCareSystem AutoDose option</li><li>Solid, sensor-dosed cartridge, no manual decanting of liquid or tablets</li><li>Roughly 50% less plastic waste and 80% less packaging volume than tablet buckets</li></ul>",
+    "meta_description": "Genuine RATIONAL Care cartridges for automatic descaling in iCombi Pro AutoDose ovens, supporting commercial kitchens across Kenya and beyond.",
+    "technical_specification": "<table><tbody><tr><td><strong>Brand</strong></td><td>RATIONAL</td></tr><tr><td><strong>Article Number</strong></td><td>56.01.914</td></tr><tr><td><strong>Product Type</strong></td><td>solid scale-inhibiting/descaling cartridge; one cartridge lasts approx. 3 months per one distributor&#039;s description; ~50% less plastic waste and ~80% less packaging volume than tablet buckets</td></tr><tr><td><strong>Pack Quantity</strong></td><td>6 cartridges per case</td></tr><tr><td><strong>Weight</strong></td><td>13 lb per case of 6 (WebstaurantStore); a second distributor (Russell Hendrix) instead lists &#039;1.18 lb (6-pack)&#039; as net product weight</td></tr><tr><td><strong>Compatible Units</strong></td><td>RATIONAL iCombi Pro table-top units fitted with the AutoDose option</td></tr></tbody></table>",
     "status": "draft"
   },
   {
-    "name": "Chicken Super Spike 8 Birds",
-    "sku": "IMG/OVE/00021",
+    "name": "Chicken Super Spike",
+    "sku": "GROUP/CHICKEN-SUPER-SPIKE",
     "brand": "RATIONAL",
-    "model_number": "6035.1006",
+    "model_number": null,
     "category": "Rational Accessories",
-    "price": 16523,
-    "quantity": 3,
-    "image": "products/chicken-super-spike-8-birds-imgove00021.jpg",
-    "short_description": "RATIONAL Chicken Super Spike for 8 birds — purpose-built combi oven accessory for perfectly roasted whole chickens in commercial kitchens across Kenya.",
-    "description": null,
-    "status": "published"
-  },
-  {
-    "name": "Chicken Super Spike 10 Birds",
-    "sku": "IMG/OVE/00022",
-    "brand": "RATIONAL",
-    "model_number": "6035.101",
-    "category": "Rational Accessories",
-    "price": 19800,
-    "quantity": 14,
+    "type": "variable",
     "image": "products/chicken-super-spike-10-birds-imgove00022.jpg",
-    "short_description": "RATIONAL Chicken Super Spike for 10 birds — high-capacity combi oven poultry accessory for large-scale commercial roasting operations in Kenya.",
-    "description": null,
-    "status": "published"
+    "short_description": "Vertical poultry rack for RATIONAL combi ovens that stands whole birds upright in a 1/1 GN footprint, creating a chimney effect that shortens cooking and browns evenly all round, available holding 8 or 10 birds.",
+    "description": "<p>The RATIONAL Chicken Super Spike is a vertical roasting rack that holds whole chickens upright inside a combi oven, creating a chimney effect that speeds up cooking.</p><p>Standing the birds rather than laying them flat gives commercial kitchens faster, more consistent results across a batch, with juicy breast meat and uniformly browned skin. Both sizes share the same 1/1 GN footprint and trade bird size against bird count: 8 birds at up to 2.9 lbs each, or 10 birds at up to 2 lbs each.</p><h3>Key Features</h3><ul><li>Holds whole birds upright for all-round browning</li><li>Vertical &ldquo;chimney effect&rdquo; design shortens cooking time</li><li>Promotes juicy breast meat and uniformly browned skin</li><li>Fits a 1/1 GN cavity (12 3/4&quot; x 20 7/8&quot;)</li><li>Available holding 8 birds (up to 2.9 lbs each) or 10 birds (up to 2 lbs each)</li><li>Compatible with RATIONAL iHexagon combi ovens</li></ul>",
+    "meta_description": "RATIONAL's Chicken Super Spike roasts 8 or 10 whole birds upright for faster, evenly browned results — a high-throughput combi oven rack for Kenyan commercial kitchens.",
+    "technical_specification": "<table><tbody><tr><td><strong>Brand</strong></td><td>RATIONAL</td></tr><tr><td><strong>Range</strong></td><td>Chicken Super Spike vertical poultry rack</td></tr><tr><td><strong>GN Size</strong></td><td>1/1 GN (12 3/4&quot; x 20 7/8&quot;)</td></tr><tr><td><strong>Design</strong></td><td>Vertical chimney effect for even all-round browning</td></tr><tr><td><strong>Compatible Units</strong></td><td>RATIONAL iHexagon combi ovens</td></tr><tr><td><strong>Capacity</strong></td><td>8 birds, 10 birds</td></tr></tbody></table>",
+    "price": 16523,
+    "quantity": 17,
+    "status": "published",
+    "attributes": [
+      {
+        "slug": "capacity",
+        "values": [
+          "8-birds",
+          "10-birds"
+        ],
+        "is_variation_attribute": true,
+        "is_visible": true
+      }
+    ],
+    "variants": [
+      {
+        "sku": "IMG/OVE/00021",
+        "model_number": "6035.1006",
+        "image": "products/chicken-super-spike-8-birds-imgove00021.jpg",
+        "price": 16523,
+        "stock_quantity": 3,
+        "length": null,
+        "width": null,
+        "height": null,
+        "description": "Holds 8 whole birds at up to 2.9 lbs each — fewer spikes, so each bird can be larger. Weighs 1.54 kg. Article number 6035.1006.",
+        "attribute_values": [
+          {
+            "attribute": "capacity",
+            "value": "8-birds"
+          }
+        ]
+      },
+      {
+        "sku": "IMG/OVE/00022",
+        "model_number": "6035.1010",
+        "image": "products/chicken-super-spike-10-birds-imgove00022.jpg",
+        "price": 19800,
+        "stock_quantity": 14,
+        "length": null,
+        "width": null,
+        "height": null,
+        "description": "Holds 10 whole birds at up to 2 lbs each — the higher-throughput rack, for smaller birds in bigger batches. Measures 20 3/4 × 11 1/4 × 5 3/4 in. Article number 6035.1010.",
+        "is_default": true,
+        "attribute_values": [
+          {
+            "attribute": "capacity",
+            "value": "10-birds"
+          }
+        ]
+      }
+    ]
   },
   {
     "name": "Chicken Super Spike 4 Bird ½ GN",
@@ -7820,35 +7874,75 @@
     "price": 0,
     "quantity": 9,
     "image": "products/chicken-super-spike-4-bird-gn-imgove00023.jpg",
-    "short_description": "RATIONAL Chicken Super Spike 4-Bird in ½ GN format — compact combi oven poultry roasting accessory ideal for smaller batch production in commercial kitchens.",
-    "description": null,
+    "short_description": "A vertical poultry rack for RATIONAL combi ovens sized to a 1/2 GN footprint (12 3/4 x 10 3/8 in), holding 4 whole birds up to 2.9 lbs each upright for faster, even roasting.",
+    "description": "<p>The RATIONAL Chicken Super Spike (4 Bird, 1/2 GN) is a compact vertical roasting rack that holds whole chickens upright inside a combi oven, creating a chimney effect that speeds up cooking.</p><p>It is used by commercial kitchens that need smaller-batch poultry roasting, fitting into a half-size gastronorm cavity rather than a full 1/1 GN slot.</p><h3>Key Features</h3><ul><li>Holds 4 whole birds per rack</li><li>Maximum weight of 2.9 lbs per bird</li><li>Fits a 1/2 GN cavity (12 3/4\" x 10 3/8\")</li><li>Vertical \"chimney effect\" design shortens cooking time</li><li>Promotes juicy breast meat and uniformly browned skin</li><li>Compatible with RATIONAL iHexagon combi ovens</li></ul>",
+    "meta_description": "RATIONAL's compact 4-bird Chicken Super Spike roasts whole chickens upright in a 1/2 GN slot — ideal for smaller batches in Kenyan commercial kitchens.",
+    "technical_specification": "<table><tbody><tr><td><strong>Brand</strong></td><td>RATIONAL</td></tr><tr><td><strong>Article Number</strong></td><td>6035.1015</td></tr><tr><td><strong>GN Size</strong></td><td>1/2 GN (12 3/4&quot; x 10 3/8&quot;)</td></tr><tr><td><strong>Capacity</strong></td><td>4 birds</td></tr><tr><td><strong>Max Load</strong></td><td>2.9 lbs</td></tr></tbody></table>",
     "status": "archived"
   },
   {
-    "name": "Combi Fry 1/1",
-    "sku": "IMG/OVE/00024",
+    "name": "Combi Fry",
+    "sku": "GROUP/COMBI-FRY",
     "brand": "RATIONAL",
-    "model_number": "6019.115",
+    "model_number": null,
     "category": "Rational Accessories",
-    "price": 16523,
-    "quantity": 26,
+    "type": "variable",
     "image": "products/combi-fry-11-imgove00024.jpg",
-    "short_description": "RATIONAL Combi Fry 1/1 GN — professional combi oven frying accessory for oil-free, healthier frying results in full gastronorm format for commercial kitchens in Kenya.",
-    "description": null,
-    "status": "published"
-  },
-  {
-    "name": "Combi Fry 2/3",
-    "sku": "IMG/OVE/00025",
-    "brand": "RATIONAL",
-    "model_number": "60.73.619",
-    "category": "Rational Accessories",
-    "price": 19827,
-    "quantity": 36,
-    "image": "products/combi-fry-23-imgove00025.jpg",
-    "short_description": "RATIONAL Combi Fry 2/3 GN — compact combi oven frying tray for healthier, oil-reduced frying in commercial kitchens. Ideal for smaller batch production in Kenya.",
-    "description": null,
-    "status": "published"
+    "short_description": "Perforated basket for RATIONAL combi ovens that finishes pre-fried foods such as chips, onion rings and vegetables, crisping them with the oil already in them rather than adding more, available in 2/3 and 1/1 GN sizes.",
+    "description": "<p>The RATIONAL Combi Fry is a perforated tray for finishing foods that have already been pre-fried.</p><p>The perforations let heat circulate right around the food, so chips, onion rings and vegetables crisp and brown evenly using the oil already in them &mdash; cutting the fats and oils a deep fryer would need for the same result. Choose 2/3 GN for smaller batches, or 1/1 GN to fill a standard shelf.</p><h3>Key Features</h3><ul><li>Perforated construction for even air circulation and browning</li><li>Finishes pre-fried food without adding oil</li><li>Available in 2/3 GN and 1/1 GN sizes</li><li>Integrated carrying handles on the 1/1 size</li><li>Compatible with iCombi Classic, iCombi Pro and other RATIONAL combi ovens</li></ul>",
+    "meta_description": "RATIONAL's Combi Fry crisps chips, onion rings and vegetables with less oil, in 2/3 and 1/1 GN — a practical combi oven accessory for Kenyan commercial kitchens.",
+    "technical_specification": "<table><tbody><tr><td><strong>Brand</strong></td><td>RATIONAL</td></tr><tr><td><strong>Range</strong></td><td>Combi Fry finishing basket</td></tr><tr><td><strong>Construction</strong></td><td>Perforated mesh basket</td></tr><tr><td><strong>Use</strong></td><td>Finishing pre-fried foods without added oil</td></tr><tr><td><strong>Compatible Units</strong></td><td>RATIONAL iCombi Classic, iCombi Pro and other combi ovens</td></tr><tr><td><strong>GN Size</strong></td><td>2/3 GN, 1/1 GN</td></tr></tbody></table>",
+    "price": 16523,
+    "quantity": 62,
+    "status": "published",
+    "attributes": [
+      {
+        "slug": "gn-size",
+        "values": [
+          "23-gn",
+          "11-gn"
+        ],
+        "is_variation_attribute": true,
+        "is_visible": true
+      }
+    ],
+    "variants": [
+      {
+        "sku": "IMG/OVE/00025",
+        "model_number": "60.73.619",
+        "image": "products/combi-fry-23-imgove00025.jpg",
+        "price": 19827,
+        "stock_quantity": 36,
+        "length": null,
+        "width": null,
+        "height": null,
+        "description": "The two-thirds size basket, 12 3/4 × 14 in., perforated so heat circulates right around smaller batches of chips and vegetables. Described by the supplier as aluminium. Article number 60.73.619.",
+        "attribute_values": [
+          {
+            "attribute": "gn-size",
+            "value": "23-gn"
+          }
+        ]
+      },
+      {
+        "sku": "IMG/OVE/00024",
+        "model_number": "6019.1150",
+        "image": "products/combi-fry-11-imgove00024.jpg",
+        "price": 16523,
+        "stock_quantity": 26,
+        "length": null,
+        "width": null,
+        "height": null,
+        "description": "The full-size basket, 20 × 12 in., in perforated stainless steel mesh with integrated carrying handles — for crisping large batches of chips and onion rings in one pass. Article number 6019.1150.",
+        "is_default": true,
+        "attribute_values": [
+          {
+            "attribute": "gn-size",
+            "value": "11-gn"
+          }
+        ]
+      }
+    ]
   },
   {
     "name": "Combi Grill 1/1",
@@ -7859,11 +7953,12 @@
     "price": 32400,
     "quantity": 37,
     "image": "products/combi-grill-11-imgove00026.jpg",
-    "short_description": "RATIONAL Combi Grill 1/1 GN — full gastronorm combi oven grilling accessory for authentic grill marks and professional grilling results in commercial kitchens across Kenya.",
-    "description": "<ul><li>FOR PREPARATION OF LARGE BATCHES OF GRILLED PRODUCTS</li><li>NO PREHEATING IS REQUIRED</li><li>DIMENSION IS 325 * 530 MM</li></ul><p><br></p>",
+    "short_description": "A non-stick grill tray for RATIONAL combi ovens with a ridged 1/1 GN surface (325 x 530 mm), coated in three-layer TriLax, used to mark steaks, chops and pan-fried foods without preheating.",
+    "description": "<p>The RATIONAL Combi Grill (1/1 GN) is a ridged grill tray coated with a three-layer TriLax non-stick finish, designed to put grill marks on food cooked inside a combi oven.</p><p>Kitchen staff use it to grill steaks, chops and other pan-fried foods to order, sliding the tray in and out of the oven without any preheating step.</p><h3>Key Features</h3><ul><li>Fits a 1/1 GN cavity, measuring 325 x 530 mm</li><li>Three-layer TriLax non-stick coating aids browning</li><li>No preheating required</li><li>Produces authentic grill marks on steaks, chops and pan-fried foods</li><li>Slides in and out easily for quick loading and unloading</li><li>Compatible with iCombi Classic and iCombi Pro combi oven models</li></ul>",
+    "meta_description": "The RATIONAL Combi Grill tray puts real grill marks on steaks and chops straight from a combi oven — no preheating needed — for commercial kitchens in Kenya.",
     "length": 530,
     "height": 325,
-    "technical_specification": "<ul><li>DIMENSION IS 325 * 530 MM</li></ul><p><br></p>",
+    "technical_specification": "<table><tbody><tr><td><strong>Brand</strong></td><td>RATIONAL</td></tr><tr><td><strong>Article Number</strong></td><td>6035.1017</td></tr><tr><td><strong>GN Size</strong></td><td>1/1 GN (325 x 530 mm)</td></tr><tr><td><strong>Coating</strong></td><td>three-layer TriLax non-stick coating</td></tr><tr><td><strong>Max Temperature</strong></td><td>up to 300°C</td></tr><tr><td><strong>Notes</strong></td><td>no</td></tr></tbody></table>",
     "status": "published"
   },
   {
@@ -7880,70 +7975,191 @@
     "status": "published"
   },
   {
-    "name": "Cross N Stripe Grill 2/3 GN",
-    "sku": "IMG/OVE/00028",
+    "name": "Cross N Stripe Grill",
+    "sku": "GROUP/CROSS-N-STRIPE-GRILL",
     "brand": "RATIONAL",
-    "model_number": "60.73.801",
+    "model_number": null,
     "category": "Rational Accessories",
-    "price": 24233,
-    "quantity": 9,
-    "image": "products/cross-n-stripe-grill-23-gn-imgove00028.jpg",
-    "short_description": "RATIONAL Cross N Stripe Grill 2/3 GN — specialist combi oven grilling accessory for professional crosshatch grill marks in commercial kitchens across Kenya.",
-    "description": "<ul><li>THE ORIGINAL AMERICAN STEAKHOUSE PATTERN ON THE OTHER</li><li>EXTREMELY ROBUST AND DURABLE, NO PREHEATING IS REQUIRED</li><li>DIMENSION IS 325 * 354 MM</li></ul><p><br></p>",
-    "length": 354,
-    "height": 325,
-    "technical_specification": "<ul><li>DIMENSION IS 325 * 354 MM</li></ul><p><br></p>",
-    "status": "published"
-  },
-  {
-    "name": "Cross N Stripe Grill 1/1 GN",
-    "sku": "IMG/OVE/00029",
-    "brand": "RATIONAL",
-    "model_number": "60.73.314",
-    "category": "Rational Accessories",
-    "price": 39600,
-    "quantity": 32,
+    "type": "variable",
     "image": "products/cross-n-stripe-grill-11-gn-imgove00029.jpg",
-    "short_description": "RATIONAL Cross N Stripe Grill 1/1 GN — full gastronorm crosshatch grilling accessory for large-scale, professional grill mark presentation in commercial kitchens in Kenya.",
-    "description": "<ul><li>THE ORIGINAL AMERICAN STEAKHOUSE PATTERN ON THE OTHER</li><li>EXTREMELY ROBUST AND DURABLE, NO PREHEATING IS REQUIRED</li><li>DIMENSION IS 325 * 530 MM</li></ul><p><br></p>",
-    "length": 530,
-    "height": 325,
-    "technical_specification": "<ul><li>DIMENSION IS 325 * 530 MM</li></ul><p><br></p>",
-    "status": "published"
+    "short_description": "Reversible grill grate for RATIONAL combi ovens with classic grill stripes on one side and an American steakhouse cross pattern on the other, TriLax non-stick coated and rated to 300°C, available in 2/3 and 1/1 gastronorm sizes.",
+    "description": "<p>The RATIONAL Cross N Stripe Grill is a reversible grill grate with a TriLax non-stick finish, used to mark food cooked inside a combi oven.</p><p>Kitchen staff flip it between two patterns depending on the dish: classic grill stripes on one side, and an American steakhouse cross pattern on the other. Neither side needs preheating. Choose 2/3 GN for smaller batches, or 1/1 GN to fill a standard shelf and mark up to 160 rump steaks in 15 minutes.</p><h3>Key Features</h3><ul><li>Reversible: classic grill stripes one side, steakhouse cross pattern the other</li><li>TriLax non-stick coating</li><li>Rated for use up to 300&deg;C (572&deg;F)</li><li>No preheating required</li><li>Available in 2/3 GN and 1/1 GN sizes</li><li>Compatible with RATIONAL iHexagon combi ovens</li></ul>",
+    "meta_description": "The RATIONAL Cross N Stripe Grill gives two grill patterns in one non-stick grate, in 2/3 and 1/1 GN — a fast, reversible combi oven accessory for commercial kitchens across Kenya.",
+    "technical_specification": "<table><tbody><tr><td><strong>Brand</strong></td><td>RATIONAL</td></tr><tr><td><strong>Range</strong></td><td>Cross N Stripe reversible grill grate</td></tr><tr><td><strong>Coating</strong></td><td>TriLax non-stick</td></tr><tr><td><strong>Max Temperature</strong></td><td>up to 300&deg;C (572&deg;F)</td></tr><tr><td><strong>Notes</strong></td><td>reversible - one side classic grill stripes, other side American steakhouse cross pattern; no preheating required</td></tr><tr><td><strong>Compatible Units</strong></td><td>RATIONAL iHexagon and combi ovens</td></tr><tr><td><strong>GN Size</strong></td><td>2/3 GN, 1/1 GN</td></tr></tbody></table>",
+    "price": 24233,
+    "quantity": 41,
+    "status": "published",
+    "attributes": [
+      {
+        "slug": "gn-size",
+        "values": [
+          "23-gn",
+          "11-gn"
+        ],
+        "is_variation_attribute": true,
+        "is_visible": true
+      }
+    ],
+    "variants": [
+      {
+        "sku": "IMG/OVE/00028",
+        "model_number": "60.73.801",
+        "image": "products/cross-n-stripe-grill-23-gn-imgove00028.jpg",
+        "price": 24233,
+        "stock_quantity": 9,
+        "length": 354,
+        "width": null,
+        "height": 325,
+        "description": "The two-thirds size grate, 325 × 354 mm, for smaller batches or for running two patterns side by side on a full shelf. TriLax non-stick coating, rated to 300°C. Article number 60.73.801.",
+        "attribute_values": [
+          {
+            "attribute": "gn-size",
+            "value": "23-gn"
+          }
+        ]
+      },
+      {
+        "sku": "IMG/OVE/00029",
+        "model_number": "60.73.314",
+        "image": "products/cross-n-stripe-grill-11-gn-imgove00029.jpg",
+        "price": 39600,
+        "stock_quantity": 32,
+        "length": 530,
+        "width": null,
+        "height": 325,
+        "description": "The full-size grate, 325 × 530 mm and 1.96 kg, filling a standard shelf — it marks up to 160 rump steaks in 15 minutes. TriLax non-stick coating, rated to 300°C. Article number 60.73.314.",
+        "is_default": true,
+        "attribute_values": [
+          {
+            "attribute": "gn-size",
+            "value": "11-gn"
+          }
+        ]
+      }
+    ]
   },
   {
-    "name": "GRANITE-ENAMELED 1/1 20 mm",
-    "sku": "IMG/OVE/00031",
+    "name": "Granite-Enameled Container",
+    "sku": "GROUP/GRANITE-ENAMELED",
     "brand": "RATIONAL",
-    "model_number": "6014.1102",
+    "model_number": null,
     "category": "Rational Accessories",
-    "price": 25200,
-    "quantity": 39,
+    "type": "variable",
     "image": "products/granite-enameled-11-20-mm-imgove00031.jpg",
-    "short_description": "RATIONAL Granite-Enameled Tray 1/1 GN 20mm — professional shallow enamel gastronorm tray for roasting, baking, and braising in RATIONAL combi ovens in Kenya.",
-    "description": "<ul><li>WITH FULLY CONTOURED CORNERS SO NO PORTION OF ANY BAKE IS LOST</li><li>VERY GOOD HEAT CONDUCTIVITY, IT IS IDEAL FOR ROASTING, BRAISING, PAN - FRYING &amp; BAKING</li><li>DIMENSION IS 325 * 530 MM &amp; 20 MM DEEP</li></ul><p><br></p>",
-    "length": 530,
-    "width": 20,
-    "height": 325,
-    "technical_specification": "<ul><li>DIMENSION IS 325 * 530 MM &amp; 20 MM DEEP</li></ul><p><br></p>",
-    "status": "published"
-  },
-  {
-    "name": "GRANITE-ENAMELED 1/1 60 mm",
-    "sku": "IMG/OVE/00032",
-    "brand": "RATIONAL",
-    "model_number": "6014.1106",
-    "category": "Rational Accessories",
-    "price": 30600,
-    "quantity": 22,
-    "image": "products/granite-enameled-11-60-mm-imgove00032.jpg",
-    "short_description": "RATIONAL Granite-Enameled Tray 1/1 GN 60mm — deep enamel gastronorm tray for braising, stewing, and roasting large volumes in RATIONAL combi ovens across Kenya.",
-    "description": "<ul><li>WITH FULLY CONTOURED CORNERS SO NO PORTION OF ANY BAKE IS LOST</li><li>VERY GOOD HEAT CONDUCTIVITY, IT IS IDEAL FOR ROASTING, BRAISING, PAN - FRYING &amp; BAKING</li><li>DIMENSION IS 325 * 530 MM &amp; 60 MM DEEP</li></ul><p><br></p>",
-    "length": 530,
-    "width": 60,
-    "height": 325,
-    "technical_specification": "<ul><li>DIMENSION IS 325 * 530 MM &amp; 60 MM DEEP</li></ul><p><br></p>",
-    "status": "published"
+    "short_description": "Gastronorm container for RATIONAL combi ovens finished in non-stick granite enamel with fully contoured corners, available in 2/3 and 1/1 GN at 20 mm for roasting and baking or 60 mm for braising and stewing.",
+    "description": "<p>The RATIONAL Granite-Enameled Container is a gastronorm tray finished in a non-stick granite enamel coating, with fully contoured corners so no part of a bake or roast is left uncooked in the corners.</p><p>Pick the footprint and the depth to match the job: 2/3 GN for smaller batches or 1/1 GN to fill a standard shelf, at 20 mm for dry roasting, baking and pan-frying, or 60 mm where sauce and juices need to stay in the tray for braising and stewing.</p><h3>Key Features</h3><ul><li>Granite enamel finish with a non-stick surface and even heat conductivity</li><li>Fully contoured corners</li><li>Available in 2/3 GN and 1/1 GN footprints</li><li>Available at 20 mm (shallow) and 60 mm (deep)</li><li>Suited to roasting, baking, braising, stewing and pan-frying</li><li>Suitable for RATIONAL iHexagon and combi ovens</li></ul>",
+    "meta_description": "RATIONAL's granite-enameled gastronorm containers in 2/3 and 1/1 GN, shallow or deep — non-stick combi oven trays for roasting, baking and braising in Kenyan commercial kitchens.",
+    "technical_specification": "<table><tbody><tr><td><strong>Brand</strong></td><td>RATIONAL</td></tr><tr><td><strong>Range</strong></td><td>Granite-enameled gastronorm container</td></tr><tr><td><strong>Material</strong></td><td>Granite enamel, non-stick</td></tr><tr><td><strong>Corners</strong></td><td>Fully contoured</td></tr><tr><td><strong>Compatible Units</strong></td><td>RATIONAL iHexagon and combi ovens</td></tr><tr><td><strong>GN Size</strong></td><td>2/3 GN, 1/1 GN</td></tr><tr><td><strong>Depth</strong></td><td>20 mm, 60 mm</td></tr></tbody></table>",
+    "price": 24233,
+    "quantity": 89,
+    "status": "published",
+    "attributes": [
+      {
+        "slug": "gn-size",
+        "values": [
+          "23-gn",
+          "11-gn"
+        ],
+        "is_variation_attribute": true,
+        "is_visible": true
+      },
+      {
+        "slug": "depth",
+        "values": [
+          "20-mm",
+          "60-mm"
+        ],
+        "is_variation_attribute": true,
+        "is_visible": true
+      }
+    ],
+    "variants": [
+      {
+        "sku": "IMG/OVE/00034",
+        "model_number": "6014.2302",
+        "image": "products/granite-enameled-23gn-20mm-imgove00034.jpg",
+        "price": 24233,
+        "stock_quantity": 9,
+        "length": 354,
+        "width": 20,
+        "height": 325,
+        "description": "The two-thirds footprint at 20 mm, 12 3/4 × 13 7/8 in. Shallow and compact, for roasting, baking and pan-frying smaller batches. Article number 6014.2302.",
+        "attribute_values": [
+          {
+            "attribute": "gn-size",
+            "value": "23-gn"
+          },
+          {
+            "attribute": "depth",
+            "value": "20-mm"
+          }
+        ]
+      },
+      {
+        "sku": "IMG/OVE/00035",
+        "model_number": "6014.2306",
+        "image": "products/granite-enameled-23gn-60mm-imgove00035.jpg",
+        "price": 24233,
+        "stock_quantity": 19,
+        "length": 354,
+        "width": 60,
+        "height": 325,
+        "description": "The two-thirds footprint at 60 mm, 12 3/4 × 13 7/8 in. The added depth holds sauce and juices alongside the food, for braising and stewing in smaller batches. Article number 6014.2306.",
+        "attribute_values": [
+          {
+            "attribute": "gn-size",
+            "value": "23-gn"
+          },
+          {
+            "attribute": "depth",
+            "value": "60-mm"
+          }
+        ]
+      },
+      {
+        "sku": "IMG/OVE/00031",
+        "model_number": "6014.1102",
+        "image": "products/granite-enameled-11-20-mm-imgove00031.jpg",
+        "price": 25200,
+        "stock_quantity": 39,
+        "length": 530,
+        "width": 20,
+        "height": 325,
+        "description": "The full-size footprint at 20 mm, 12 3/4 × 20 3/4 in. and 19 mm deep in practice. The everyday shallow tray for roasting and baking across a whole shelf. Article number 6014.1102.",
+        "is_default": true,
+        "attribute_values": [
+          {
+            "attribute": "gn-size",
+            "value": "11-gn"
+          },
+          {
+            "attribute": "depth",
+            "value": "20-mm"
+          }
+        ]
+      },
+      {
+        "sku": "IMG/OVE/00032",
+        "model_number": "6014.1106",
+        "image": "products/granite-enameled-11-60-mm-imgove00032.jpg",
+        "price": 30600,
+        "stock_quantity": 22,
+        "length": 530,
+        "width": 60,
+        "height": 325,
+        "description": "The full-size footprint at 60 mm, 12 3/4 × 20 3/4 in. Deep enough for braising and stewing at full-shelf volume without switching pans. Article number 6014.1106.",
+        "attribute_values": [
+          {
+            "attribute": "gn-size",
+            "value": "11-gn"
+          },
+          {
+            "attribute": "depth",
+            "value": "60-mm"
+          }
+        ]
+      }
+    ]
   },
   {
     "name": "GRANITE-ENAMELED 2/1GN 60mm",
@@ -7954,47 +8170,14 @@
     "price": 0,
     "quantity": 1,
     "image": "products/granite-enameled-21gn-60mm-imgove00033.jpg",
-    "short_description": "RATIONAL Granite-Enameled Tray 2/1 GN 60mm — extra-large deep enamel gastronorm tray for maximum-volume cooking in RATIONAL combi ovens for large commercial kitchens in Kenya.",
-    "description": "<ul><li>WITH FULLY CONTOURED CORNERS SO NO PORTION OF ANY BAKE IS LOST</li><li>VERY GOOD HEAT CONDUCTIVITY, IT IS IDEAL FOR ROASTING, BRAISING, PAN - FRYING &amp; BAKING</li><li>DIMENSION IS 650 * 530 MM &amp; 60 MM DEEP</li></ul><p><br></p>",
+    "short_description": "Extra-large 2/1 GN gastronorm container in granite enamel, 60 mm deep, with contoured corners and even heat conductivity for roasting, braising and baking in RATIONAL combi ovens.",
+    "description": "<p>The Granite-Enameled 2/1 GN Container, 60 mm Deep is a full-size gastronorm tray finished in granite enamel, built for use in RATIONAL combi ovens including the iHexagon range.</p><p>Kitchen teams use it for high-volume roasting, braising, pan-frying and baking, giving one tray that handles both wet and dry cooking without switching pans.</p><h3>Key Features</h3><ul><li>2/1 GN size, 25 1/2\" x 20 3/4\" footprint</li><li>60 mm (2 1/4\") deep, suited to larger batches and liquid-bearing dishes</li><li>Granite-enamel finish for good heat conductivity and non-stick release</li><li>Fully contoured corners so no portion of the bake is lost</li><li>Suitable for iHexagon combi ovens</li></ul>",
+    "meta_description": "RATIONAL's 2/1 GN granite-enameled tray, 60 mm deep, gives Kenyan kitchens a durable, non-stick gastronorm container for high-volume roasting and braising.",
     "length": 650,
     "width": 60,
     "height": 530,
-    "technical_specification": "<ul><li>DIMENSION IS 650 * 530 MM &amp; 60 MM DEEP</li></ul><p><br></p>",
+    "technical_specification": "<table><tbody><tr><td><strong>Brand</strong></td><td>RATIONAL</td></tr><tr><td><strong>Article Number</strong></td><td>6014.2106</td></tr><tr><td><strong>GN Size</strong></td><td>2/1 GN</td></tr><tr><td><strong>Dimensions</strong></td><td>~650 x 527 mm (converted from inches, not stated directly in mm by source)</td></tr><tr><td><strong>Dimensions (imperial)</strong></td><td>25 1/2&quot; x 20 3/4&quot;</td></tr><tr><td><strong>Depth (imperial)</strong></td><td>2 1/4&quot; deep</td></tr><tr><td><strong>Material</strong></td><td>Granite-enameled (per product family name)</td></tr><tr><td><strong>Compatible Units</strong></td><td>Suitable for iHexagon</td></tr></tbody></table>",
     "status": "archived"
-  },
-  {
-    "name": "GRANITE-ENAMELED 2/3GN 20mm",
-    "sku": "IMG/OVE/00034",
-    "brand": "RATIONAL",
-    "model_number": "6014.2302",
-    "category": "Rational Accessories",
-    "price": 24233,
-    "quantity": 9,
-    "image": "products/granite-enameled-23gn-20mm-imgove00034.jpg",
-    "short_description": "RATIONAL Granite-Enameled Tray 2/3 GN 20mm — compact shallow enamel gastronorm tray for baking and roasting in RATIONAL combi ovens across commercial kitchens in Kenya.",
-    "description": "<ul><li>WITH FULLY CONTOURED CORNERS SO NO PORTION OF ANY BAKE IS LOST</li><li>VERY GOOD HEAT CONDUCTIVITY, IT IS IDEAL FOR ROASTING, BRAISING, PAN - FRYING &amp; BAKING</li><li>DIMENSION IS 325 * 354 MM &amp; 20 MM DEEP</li></ul><p><br></p>",
-    "length": 354,
-    "width": 20,
-    "height": 325,
-    "technical_specification": "<ul><li>DIMENSION IS 325 * 354 MM &amp; 20 MM DEEP</li></ul><p><br></p>",
-    "status": "published"
-  },
-  {
-    "name": "GRANITE-ENAMELED 2/3GN 60mm",
-    "sku": "IMG/OVE/00035",
-    "brand": "RATIONAL",
-    "model_number": "6014.2306",
-    "category": "Rational Accessories",
-    "price": 24233,
-    "quantity": 19,
-    "image": "products/granite-enameled-23gn-60mm-imgove00035.jpg",
-    "short_description": "RATIONAL Granite-Enameled Tray 2/3 GN 60mm — compact deep enamel gastronorm tray for braising and roasting in RATIONAL combi ovens across commercial kitchens in Kenya.",
-    "description": "<ul><li>WITH FULLY CONTOURED CORNERS SO NO PORTION OF ANY BAKE IS LOST</li><li>VERY GOOD HEAT CONDUCTIVITY, IT IS IDEAL FOR ROASTING, BRAISING, PAN - FRYING &amp; BAKING</li><li>DIMENSION IS 325 * 354 MM &amp; 60 MM DEEP</li></ul><p><br></p>",
-    "length": 354,
-    "width": 60,
-    "height": 325,
-    "technical_specification": "<ul><li>DIMENSION IS 325 * 354 MM &amp; 60 MM DEEP</li></ul><p><br></p>",
-    "status": "published"
   },
   {
     "name": "Grill and Tandoori Skewer Frame 1/1GN",
@@ -8005,8 +8188,10 @@
     "price": 19827,
     "quantity": 10,
     "image": "products/grill-and-tandoori-skewer-frame-11gn-imgove00036.jpg",
-    "short_description": "RATIONAL Grill and Tandoori Skewer Frame 1/1 GN — specialist combi oven skewer accessory for authentic tandoori and grilled skewer dishes in commercial kitchens across Kenya.",
-    "description": null,
+    "short_description": "1/1 GN stainless steel frame holding three skewers up to 20 3/4 in long, for cooking tandoori-style and grilled skewered meat or fish in a RATIONAL combi oven.",
+    "description": "<p>The Grill and Tandoori Skewer Frame, 1/1 GN is a rack that holds skewers upright inside a RATIONAL combi oven, letting food cook evenly on all sides without resting on a tray.</p><p>It is used for tandoori-style and grilled skewer dishes, giving kitchens a way to produce kebabs and satay-style items at volume without a dedicated tandoor.</p><h3>Key Features</h3><ul><li>1/1 GN frame size, holds 3 skewers per frame</li><li>Skewers available in round, square or flat fish-style profiles</li><li>Skewer length of 20 3/4\" to span the full GN frame</li><li>Skewers sold separately from the frame on some listings</li><li>Stainless steel construction</li></ul>",
+    "meta_description": "RATIONAL's 1/1 GN tandoori skewer frame lets Kenyan commercial kitchens cook grilled kebabs and tandoori-style skewers evenly inside a combi oven.",
+    "technical_specification": "<table><tbody><tr><td><strong>Brand</strong></td><td>RATIONAL</td></tr><tr><td><strong>Article Number</strong></td><td>60.72.224</td></tr><tr><td><strong>GN Size</strong></td><td>1/1 GN</td></tr><tr><td><strong>Dimensions (imperial)</strong></td><td>20 7/8&quot; x 12 13/16&quot; (per webstaurantstore listing quoting this article number)</td></tr><tr><td><strong>Material</strong></td><td>Stainless steel frame and skewers (per distributor listings; not explicitly stated on official page fetched)</td></tr><tr><td><strong>Notes</strong></td><td>Skewers sold separately per some distributor listings</td></tr></tbody></table>",
     "status": "published"
   },
   {
@@ -8018,11 +8203,12 @@
     "price": 41400,
     "quantity": 31,
     "image": "products/grilling-and-pizza-tray-11gn-imgove00038.jpg",
-    "short_description": "RATIONAL Grilling and Pizza Tray 1/1 GN — professional multi-purpose combi oven tray for authentic pizza baking and grilling in commercial kitchens across Kenya.",
-    "description": "<ul><li>FOR FRESH OR CONVENIENCE PIZZA, QUINCHES AND FLATBREADS</li><li>GRILLING SIDE FOR VEGETABLES, FISH AND MEAT</li><li>DIMENSION IS 325 * 530 MM</li></ul><p><br></p>",
+    "short_description": "1/1 GN cast aluminum tray with a TriLax non-stick coating, one side for pizza, quiches and flatbreads and the reverse side for grilling vegetables, fish or meat.",
+    "description": "<p>The Grilling and Pizza Tray, 1/1 GN is a double-sided cast aluminum tray with a TriLax non-stick coating, built to fit RATIONAL combi ovens including the iHexagon range.</p><p>One side is suited to baking fresh or convenience pizza, quiches and flatbreads, while the reverse side is used for grilling vegetables, fish and meat, giving one tray two distinct cooking functions.</p><h3>Key Features</h3><ul><li>1/1 GN size, 12 3/4\" x 20 3/4\" footprint</li><li>Cast aluminum body with TriLax non-stick coating</li><li>Two-sided design: flat side for pizza and flatbreads, ridged side for grilling</li><li>Suitable for iHexagon combi ovens</li></ul>",
+    "meta_description": "RATIONAL's double-sided 1/1 GN grilling and pizza tray bakes flatbreads on one side and grills meat, fish or vegetables on the other for Kenyan kitchens.",
     "length": 530,
     "height": 325,
-    "technical_specification": "<ul><li>DIMENSION IS 325 * 530 MM</li></ul><p><br></p>",
+    "technical_specification": "<table><tbody><tr><td><strong>Brand</strong></td><td>RATIONAL</td></tr><tr><td><strong>Article Number</strong></td><td>60.70.943</td></tr><tr><td><strong>GN Size</strong></td><td>1/1 GN</td></tr><tr><td><strong>Dimensions (imperial)</strong></td><td>12 3/4&quot; x 20 3/4&quot;</td></tr><tr><td><strong>Material</strong></td><td>Cast aluminum with TriLax non-stick coating (per distributor listings)</td></tr><tr><td><strong>Compatible Units</strong></td><td>Suitable for iHexagon</td></tr></tbody></table>",
     "status": "published"
   },
   {
@@ -8034,11 +8220,12 @@
     "price": 30842,
     "quantity": 20,
     "image": "products/grilling-and-pizza-tray-23-gn-imgove00039.jpg",
-    "short_description": "RATIONAL Grilling and Pizza Tray 2/3 GN — compact combi oven pizza and grilling tray for smaller batch production in commercial kitchens across Kenya.",
-    "description": "<ul><li>FOR FRESH OR CONVENIENCE PIZZA, QUINCHES AND FLATBREADS</li><li>GRILLING SIDE FOR VEGETABLES, FISH AND MEAT</li><li>DIMENSION IS 325 * 354 MM</li></ul><p><br></p>",
+    "short_description": "2/3 GN cast aluminum tray with a TriLax non-stick coating, one side for pizza, quiches and flatbreads and the reverse side for grilling vegetables, fish or meat.",
+    "description": "<p>The Grilling and Pizza Tray, 2/3 GN is a compact double-sided cast aluminum tray with a TriLax non-stick coating, sized to fit RATIONAL combi ovens including the iHexagon range.</p><p>It gives smaller kitchens or lower-volume services the same two-sided function as the full-size version: one side for pizza, quiches and flatbreads, the other for grilling vegetables, fish and meat.</p><h3>Key Features</h3><ul><li>2/3 GN size, 12 3/4\" x 13 7/8\" footprint</li><li>Cast aluminum body with TriLax non-stick coating</li><li>Two-sided design: flat side for pizza and flatbreads, ridged side for grilling</li><li>Suitable for iHexagon combi ovens</li></ul>",
+    "meta_description": "A compact 2/3 GN double-sided pizza and grilling tray from RATIONAL, built for smaller-batch a la carte service in Kenyan commercial kitchens.",
     "length": 354,
     "height": 325,
-    "technical_specification": "<ul><li>DIMENSION IS 325 * 354 MM</li></ul>",
+    "technical_specification": "<table><tbody><tr><td><strong>Brand</strong></td><td>RATIONAL</td></tr><tr><td><strong>Article Number</strong></td><td>60.73.798</td></tr><tr><td><strong>GN Size</strong></td><td>2/3 GN</td></tr><tr><td><strong>Dimensions (imperial)</strong></td><td>12 3/4&quot; x 13 7/8&quot;</td></tr><tr><td><strong>Material</strong></td><td>Cast aluminum with TriLax non-stick coating (per distributor listings)</td></tr><tr><td><strong>Compatible Units</strong></td><td>Suitable for iHexagon</td></tr></tbody></table>",
     "status": "published"
   },
   {
@@ -8050,11 +8237,12 @@
     "price": 35248,
     "quantity": 7,
     "image": "products/grilling-and-roasting-platter-11-gn-imgove00040.jpg",
-    "short_description": "RATIONAL Grilling and Roasting Platter 1/1 GN — premium combi oven platter for high-quality grilling and roasting with superior browning in commercial kitchens in Kenya.",
-    "description": "<ul><li>FOR JUICY GRILLED MEAT, FISH OR VEGETABLES</li><li>THIS IS A ADDITION TO YOU’RE A LA CARTE SERVICE</li><li>DIMENSION IS 530 * 325 MM</li></ul><p><br></p>",
+    "short_description": "1/1 GN grilling and searing plate with a non-stick coating and a raised rear lip that catches fat and juices while grilling meat, fish or vegetables to order.",
+    "description": "<p>The Grilling and Roasting Platter, 1/1 GN is a searing plate sized to fit RATIONAL combi ovens including the iHexagon range, finished with a non-stick coating for release and cleanup.</p><p>It is used for grilling meat, fish and vegetables to order, with a continuous lip along the back edge that holds released fat and liquid so it doesn't run off the plate during service.</p><h3>Key Features</h3><ul><li>1/1 GN size, 12 3/4\" x 20 3/4\" footprint</li><li>Non-stick TriLax-type coated surface</li><li>Continuous rear lip to contain fat and liquid runoff</li><li>Suitable for iHexagon combi ovens</li></ul>",
+    "meta_description": "RATIONAL's 1/1 GN grilling and searing plate catches fat and juices while grilling to order, a practical a la carte tool for Kenyan commercial kitchens.",
     "length": 530,
     "height": 325,
-    "technical_specification": "<ul><li>DIMENSION IS 530 * 325 MM</li></ul><p><br></p>",
+    "technical_specification": "<table><tbody><tr><td><strong>Brand</strong></td><td>RATIONAL</td></tr><tr><td><strong>Article Number</strong></td><td>60.71.617</td></tr><tr><td><strong>GN Size</strong></td><td>1/1 GN</td></tr><tr><td><strong>Dimensions (imperial)</strong></td><td>12 3/4&quot; x 20 3/4&quot;</td></tr><tr><td><strong>Material</strong></td><td>TriLax coated (per distributor listings)</td></tr><tr><td><strong>Compatible Units</strong></td><td>Suitable for iHexagon</td></tr><tr><td><strong>Notes</strong></td><td>Continuous lip at back for roasting foods that release fat/liquid (per distributor listings)</td></tr></tbody></table>",
     "status": "published"
   },
   {
@@ -8066,8 +8254,10 @@
     "price": 13218,
     "quantity": 18,
     "image": "products/high-grade-grid-23-gn-imgove00041.jpg",
-    "short_description": "RATIONAL High Grade Grid 2/3 GN — stainless steel wire rack for optimal airflow and even cooking in RATIONAL combi ovens. Essential accessory for commercial kitchens in Kenya.",
-    "description": null,
+    "short_description": "2/3 GN wire grid made from high-grade, rust-free stainless steel, sitting inside a RATIONAL combi oven to lift food for even airflow and all-round cooking.",
+    "description": "<p>The High Grade Grid, 2/3 GN is a stainless steel wire rack sized to fit RATIONAL combi ovens including the iHexagon range.</p><p>It raises food above the base of a gastronorm pan so hot air and steam can circulate underneath as well as over the top, giving more even cooking than a solid tray for items like vegetables, pastries or grilled foods.</p><h3>Key Features</h3><ul><li>2/3 GN size, 12 3/4\" x 13 7/8\" footprint</li><li>High-grade, rust-free stainless steel construction</li><li>Open wire design for airflow on all sides of the food</li><li>Suitable for iHexagon combi ovens</li></ul>",
+    "meta_description": "A rust-free stainless steel 2/3 GN grid from RATIONAL, lifting food for even all-round cooking in combi ovens across Kenyan commercial kitchens.",
+    "technical_specification": "<table><tbody><tr><td><strong>Brand</strong></td><td>RATIONAL</td></tr><tr><td><strong>Article Number</strong></td><td>6010.2301</td></tr><tr><td><strong>GN Size</strong></td><td>2/3 GN</td></tr><tr><td><strong>Dimensions</strong></td><td>325 x 354 mm (stated verbatim by Parts Town UK distributor listing quoting this article number)</td></tr><tr><td><strong>Dimensions (imperial)</strong></td><td>12 3/4&quot; x 13 7/8&quot;</td></tr><tr><td><strong>Material</strong></td><td>High-grade rust-free stainless steel</td></tr></tbody></table>",
     "status": "published"
   },
   {
@@ -8079,8 +8269,10 @@
     "price": 321250,
     "quantity": 1,
     "image": null,
-    "short_description": "RATIONAL Transport Trolley for Mobile Oven Rack — heavy-duty stainless steel kitchen trolley for safe transport and loading of RATIONAL mobile oven racks in commercial kitchens in Kenya.",
-    "description": null,
+    "short_description": "Mobile oven rack integrated with its own transport cart, holding 20 gastronorm pans for wheeling loaded trays into and out of RATIONAL SCC 202 / CMP 202 combi ovens.",
+    "description": "<p>The Transport Trolley for Mobile Oven Rack is a rolling rack built for RATIONAL's SCC 202 and CMP 202 combi oven series, combining a pan rack with its own wheeled transport cart in one unit.</p><p>Kitchen staff load pans onto the rack away from the oven, then wheel the whole trolley to the oven and run it directly into the cooking chamber, cutting down on manual lifting and speeding up service during high-volume periods.</p><h3>Key Features</h3><ul><li>Holds 20 gastronorm pans</li><li>Rack integrated with a mobile transport cart</li><li>Built for RATIONAL SCC 202 / CMP 202 series combi ovens</li><li>Grid shelves for the pans are sold separately</li></ul>",
+    "meta_description": "A mobile 20-pan transport trolley for RATIONAL SCC 202/CMP 202 combi ovens, still available to Kenyan kitchens still running this legacy oven series.",
+    "technical_specification": "<table><tbody><tr><td><strong>Brand</strong></td><td>RATIONAL</td></tr><tr><td><strong>Article Number</strong></td><td>60.22.086</td></tr><tr><td><strong>Capacity</strong></td><td>Holds (20) pans</td></tr><tr><td><strong>Compatible Units</strong></td><td>For SCC 202/CMP 202 series</td></tr></tbody></table>",
     "status": "draft"
   },
   {
@@ -8092,72 +8284,109 @@
     "price": 16523,
     "quantity": 1,
     "image": null,
-    "short_description": "RATIONAL Mobile Plate Rack — professional stainless steel mobile rack for plate warming and service logistics in large-scale commercial kitchens in Kenya.",
-    "description": null,
+    "short_description": "Mobile floor-standing rack holding up to 20 plates of 12 1/4 in, used with a transport cart and run-in rail to load plated food into RATIONAL SCC 61 / CMP 61 combi ovens.",
+    "description": "<p>The Mobile Plate Rack is a wheeled, floor-standing rack built for RATIONAL's SCC 61 and CMP 61 combi oven series, designed to hold plated food for warming or finishing.</p><p>It is used together with a matching transport cart and run-in rail so a full rack of plated meals can be wheeled straight into the oven and back out again, useful for banqueting and large-scale plated service.</p><h3>Key Features</h3><ul><li>Holds up to 20 plates, 12 1/4\" diameter</li><li>Maximum plate height of 1\" and maximum meal height of 2\"</li><li>Floor-standing, mobile design</li><li>Used with transport cart and run-in rail 60.61.226</li><li>Built for RATIONAL SCC 61 / CMP 61 series combi ovens</li></ul>",
+    "meta_description": "A mobile 20-plate rack for RATIONAL SCC 61/CMP 61 combi ovens, supporting banqueting and plated service in Kenyan kitchens still running this legacy series.",
+    "technical_specification": "<table><tbody><tr><td><strong>Brand</strong></td><td>RATIONAL</td></tr><tr><td><strong>Article Number</strong></td><td>60.61.047</td></tr><tr><td><strong>Dimensions (imperial)</strong></td><td>16.13 in W x 17.88 in H x 24.75 in D (stated by kitchenrestock.com listing, could not directly verify via WebFetch due to 403 block -- corroborated by search-result snippet only)</td></tr><tr><td><strong>Capacity</strong></td><td>Holds up to 20 plates, 12 1/4&quot; size</td></tr><tr><td><strong>Max Plate Height</strong></td><td>1 in</td></tr><tr><td><strong>Max Meal Height</strong></td><td>2 in</td></tr><tr><td><strong>Compatible Units</strong></td><td>For SCC 61/CMP 61 series, used with transport cart and run-in rail 60.61.226</td></tr></tbody></table>",
     "status": "draft"
   },
   {
-    "name": "Multibaker 1/1GN",
-    "sku": "IMG/OVE/00047",
+    "name": "Multibaker",
+    "sku": "GROUP/MULTIBAKER",
     "brand": "RATIONAL",
-    "model_number": "60.71.157",
+    "model_number": null,
     "category": "Rational Accessories",
-    "price": 28800,
-    "quantity": 21,
+    "type": "variable",
     "image": "products/multibaker-11gn-imgove00047.jpg",
-    "short_description": "RATIONAL Multibaker 1/1 GN — full gastronorm multi-portion baking mold for producing uniform baked goods and individual portions in RATIONAL combi ovens in commercial kitchens across Kenya.",
-    "description": "<ul><li>OPTIMAL PORTIONING</li><li>CONSISTANT PRODUCT SIZES FOR FRIED EGG, OMLETTES, HASH BROWNS AND TORTILLAS</li><li>DIMENSION IS 325 * 530 MM</li></ul><p><br></p>",
-    "length": 530,
-    "height": 325,
-    "technical_specification": "<ul><li>DIMENSION IS 325 * 530 MM</li></ul><p><br></p>",
-    "status": "published"
-  },
-  {
-    "name": "Multibaker 2/3 GN",
-    "sku": "IMG/OVE/00048",
-    "brand": "RATIONAL",
-    "model_number": "60.73.646",
-    "category": "Rational Accessories",
-    "price": 24233,
-    "quantity": 15,
-    "image": "products/multibaker-23-gn-imgove00048.jpg",
-    "short_description": "RATIONAL Multibaker 2/3 GN — compact multi-portion baking mold for uniform individual baked goods production in RATIONAL combi ovens in commercial kitchens across Kenya.",
-    "description": "<ul><li>OPTIMAL PORTIONING</li><li>CONSISTANT PRODUCT SIZES FOR FRIED EGG, OMLETTES, HASH BROWNS AND TORTILLAS</li><li>DIMENSION IS 325 * 354 MM</li></ul><p><br></p>",
-    "length": 354,
-    "height": 325,
-    "technical_specification": "<ul><li>DIMENSION IS 325 * 354 MM</li></ul><p><br></p>",
-    "status": "published"
-  },
-  {
-    "name": "Multibaker 1/3 GN",
-    "sku": "IMG/OVE/00049",
-    "brand": "RATIONAL",
-    "model_number": "60.73.764",
-    "category": "Rational Accessories",
+    "short_description": "Molded gastronorm tray for RATIONAL combi ovens with individual cups that bake uniform portions of eggs, omelettes, hash browns and tortillas, available in 1/3, 2/3 and 1/1 GN holding 2, 5 or 8 molds.",
+    "description": "<p>The RATIONAL Multibaker is a molded gastronorm tray whose individual cups portion food for you, so every piece comes out of the oven the same size and shape.</p><p>Kitchens use it for high-volume breakfast and snack service &mdash; fried eggs, omelettes, hash browns and tortillas &mdash; without hand-shaping each portion or filling individual pans. Choose the gastronorm size to match your output: 1/3 GN with 2 molds for small batches, 2/3 GN with 5 for steady service, or 1/1 GN with 8 for maximum throughput per shelf.</p><h3>Key Features</h3><ul><li>Individual molds for consistently portioned results</li><li>TriLax non-stick coating for clean release</li><li>Available in 1/3 GN (2 molds), 2/3 GN (5 molds) and 1/1 GN (8 molds)</li><li>Rated for oven temperatures up to 300&deg;C</li><li>Suitable for RATIONAL iHexagon and combi ovens</li></ul>",
+    "meta_description": "RATIONAL's Multibaker trays bake 2, 5 or 8 uniform portions at once in 1/3, 2/3 and 1/1 GN &mdash; non-stick combi oven molds for commercial kitchens across Kenya.",
+    "technical_specification": "<table><tbody><tr><td><strong>Brand</strong></td><td>RATIONAL</td></tr><tr><td><strong>Range</strong></td><td>Multibaker portioning tray</td></tr><tr><td><strong>Material</strong></td><td>Aluminium</td></tr><tr><td><strong>Coating</strong></td><td>TriLax non-stick</td></tr><tr><td><strong>Max Temperature</strong></td><td>300&deg;C</td></tr><tr><td><strong>Compatible Units</strong></td><td>RATIONAL iHexagon and combi ovens</td></tr><tr><td><strong>GN Size</strong></td><td>1/3 GN, 2/3 GN, 1/1 GN</td></tr></tbody></table>",
     "price": 19827,
-    "quantity": 1,
-    "image": "products/multibaker-13-gn-imgove00049.jpg",
-    "short_description": "RATIONAL Multibaker 1/3 GN — smallest multi-portion baking mold for individual portions and specialty baked goods production in RATIONAL combi ovens across Kenya.",
-    "description": "<ul><li>OPTIMAL PORTIONING</li><li>CONSISTANT PRODUCT SIZES FOR FRIED EGG, OMLETTES, HASH BROWNS AND TORTILLAS</li><li>DIMENSION IS 325 * 265 MM</li></ul><p><br></p>",
-    "length": 325,
-    "height": 625,
-    "technical_specification": "<ul><li>DIMENSION IS 325 * 265 MM</li></ul><p><br></p>",
-    "status": "published"
+    "quantity": 37,
+    "status": "published",
+    "attributes": [
+      {
+        "slug": "gn-size",
+        "values": [
+          "13-gn",
+          "23-gn",
+          "11-gn"
+        ],
+        "is_variation_attribute": true,
+        "is_visible": true
+      }
+    ],
+    "variants": [
+      {
+        "sku": "IMG/OVE/00049",
+        "model_number": "60.73.764",
+        "image": "products/multibaker-13-gn-imgove00049.jpg",
+        "price": 19827,
+        "stock_quantity": 1,
+        "length": 325,
+        "width": null,
+        "height": 625,
+        "description": "The smallest Multibaker, 1/3 GN at 12 x 7 in., with 2 individual molds. It suits small-batch service where a full tray would sit half empty. TriLax non-stick coating, rated to 300°C. Article number 60.73.764.",
+        "attribute_values": [
+          {
+            "attribute": "gn-size",
+            "value": "13-gn"
+          }
+        ]
+      },
+      {
+        "sku": "IMG/OVE/00048",
+        "model_number": "60.73.646",
+        "image": "products/multibaker-23-gn-imgove00048.jpg",
+        "price": 24233,
+        "stock_quantity": 15,
+        "length": 354,
+        "width": null,
+        "height": 325,
+        "description": "The two-thirds size, 325 × 354 mm, with 5 individual molds — enough for steady breakfast service without committing a full shelf. Aluminium with TriLax non-stick coating, rated to 300°C. Article number 60.73.646.",
+        "attribute_values": [
+          {
+            "attribute": "gn-size",
+            "value": "23-gn"
+          }
+        ]
+      },
+      {
+        "sku": "IMG/OVE/00047",
+        "model_number": "60.71.157",
+        "image": "products/multibaker-11gn-imgove00047.jpg",
+        "price": 28800,
+        "stock_quantity": 21,
+        "length": 530,
+        "width": null,
+        "height": 325,
+        "description": "The full-size Multibaker, 12 3/4 × 20 3/4 in., with 8 individual molds — the most portions per shelf, for volume breakfast service. TriLax non-stick coating. Article number 60.71.157.",
+        "is_default": true,
+        "attribute_values": [
+          {
+            "attribute": "gn-size",
+            "value": "11-gn"
+          }
+        ]
+      }
+    ]
   },
   {
     "name": "Perforated Baking Trays Baking STD",
     "sku": "IMG/OVE/00050",
     "brand": "RATIONAL",
-    "model_number": "6015.1",
+    "model_number": "6015.1000",
     "category": "Rational Accessories",
     "price": 16442,
     "quantity": 2,
     "image": "products/perforated-baking-trays-baking-std-imgove00050.jpg",
-    "short_description": "RATIONAL Perforated Baking Tray Standard — professional perforated combi oven tray for optimal air circulation and crispy baking results in commercial kitchens across Kenya.",
-    "description": "<ul><li>VERSATILE, ROBUST AND DURABLE ACCESSORY FOR STEAMING VEGETABLES OR YOUR BUFFET</li><li>IN THIS COLOR AND NUTRIENTS ARE RETAINED</li><li>DIMENSION IS 400 * 600 MM</li></ul><p><br></p>",
+    "short_description": "Perforated tray in Bakery standard size (400 x 600 mm) for RATIONAL combi ovens, with perforations that allow steam and hot air to circulate for even cooking and moisture drainage.",
+    "description": "<p>The Perforated Baking Tray (Bakery standard) is a 400 x 600 mm tray for RATIONAL combi ovens, punched with perforations that let steam and hot air pass through the food.</p><p>It is used for steaming vegetables and buffet items, and for baking or finishing foods where even air circulation and moisture drainage help retain colour, texture and nutrients.</p><h3>Key Features</h3><ul><li>Bakery standard size, 400 x 600 mm</li><li>Full article number 6015.1000</li><li>Perforated surface for steam and air circulation</li><li>Suitable for steaming vegetables and buffet service</li><li>Part of RATIONAL's gastronorm and bakery-standard tray range</li></ul>",
+    "meta_description": "RATIONAL Perforated Baking Tray, Bakery standard 400 x 600 mm — for even steaming and baking results in commercial kitchens across Kenya, East Africa.",
     "length": 600,
     "height": 400,
-    "technical_specification": "<ul><li>DIMENSION IS 400 * 600 MM</li></ul><p><br></p>",
+    "technical_specification": "<table><tbody><tr><td><strong>Brand</strong></td><td>RATIONAL</td></tr><tr><td><strong>Article Number</strong></td><td>6015.1</td></tr><tr><td><strong>GN Size</strong></td><td>Bakery standard</td></tr><tr><td><strong>Dimensions</strong></td><td>400 x 600 mm</td></tr></tbody></table>",
     "status": "published"
   },
   {
@@ -8169,11 +8398,12 @@
     "price": 19827,
     "quantity": 8,
     "image": "products/perforated-baking-tray-11-gn-imgove00051.jpg",
-    "short_description": "RATIONAL Perforated Baking Tray 1/1 GN — full gastronorm perforated combi oven tray for crispy, evenly baked goods production in commercial kitchens across Kenya.",
-    "description": "<ul><li>VERSATILE, ROBUST AND DURABLE ACCESSORY FOR STEAMING VEGETABLES OR YOUR BUFFET</li><li>IN THIS COLOR AND NUTRIENTS ARE RETAINED</li><li>DIMENSUION 530 * 325 MM</li></ul><p><br></p>",
+    "short_description": "Perforated baking tray in 1/1 GN size (325 x 530 mm), made from aluminum with TriLax non-stick coating, punched with holes for steam and hot air circulation during baking and steaming.",
+    "description": "<p>The Perforated Baking Tray 1/1 GN is a full gastronorm tray for RATIONAL combi ovens, made from aluminum with TriLax non-stick coating and punched with perforations across its surface.</p><p>It is used for steaming vegetables and buffet dishes, and for baking items where circulating steam and hot air improve moisture drainage and colour, retaining more nutrients than a solid tray.</p><h3>Key Features</h3><ul><li>1/1 GN size, 325 x 530 mm</li><li>Aluminum construction with TriLax non-stick coating</li><li>Rated for oven temperatures up to 300&deg;C</li><li>Perforated surface for steam and air circulation</li><li>Suitable for steaming vegetables and buffet service</li></ul>",
+    "meta_description": "RATIONAL Perforated Baking Tray 1/1 GN — a non-stick perforated tray for even steaming and baking results in commercial kitchens across Kenya.",
     "length": 530,
     "height": 325,
-    "technical_specification": "<ul><li>DIMENSUION 530 * 325 MM</li></ul><p><br></p>",
+    "technical_specification": "<table><tbody><tr><td><strong>Brand</strong></td><td>RATIONAL</td></tr><tr><td><strong>Article Number</strong></td><td>6015.1103</td></tr><tr><td><strong>GN Size</strong></td><td>1/1 GN</td></tr><tr><td><strong>Dimensions</strong></td><td>325 x 530 mm</td></tr><tr><td><strong>Material</strong></td><td>aluminum with TriLax non-stick coating (per multiple distributors)</td></tr><tr><td><strong>Max Temperature</strong></td><td>300 C</td></tr></tbody></table>",
     "status": "published"
   },
   {
@@ -8184,9 +8414,11 @@
     "category": "Rational Accessories",
     "price": 30842,
     "quantity": 7,
-    "image": "products/potato-baker-11gn-imgove00054.jpg",
-    "short_description": "RATIONAL Potato Baker 1/1 GN — specialist combi oven potato baking accessory for perfectly baked jacket potatoes and wedges in commercial kitchens across Kenya.",
-    "description": null,
+    "image": "products/potato-baker-11gn-imgove00054.png",
+    "short_description": "Potato baker tray in 1/1 GN size (12¾ x 20⅛ in.) fitted with 28 stainless steel spikes that hold whole potatoes upright in RATIONAL combi ovens for even baking.",
+    "description": "<p>The Potato Baker 1/1 GN is a specialist RATIONAL combi oven accessory fitted with 28 stainless steel spikes that each hold one whole potato upright during cooking.</p><p>It is used in commercial kitchens to bake jacket potatoes and similar whole vegetables evenly on all sides without turning, speeding up prep for high-volume potato service.</p><h3>Key Features</h3><ul><li>1/1 GN size, 12&frac34; x 20&#8541; in.</li><li>28 spikes, one whole potato per spike</li><li>Stainless steel construction</li><li>Approx. 3.56 lb (1.6 kg) tray weight</li><li>Suitable for iHexagon ovens</li></ul>",
+    "meta_description": "RATIONAL Potato Baker 1/1 GN — a 28-spike stainless steel tray that produces evenly baked jacket potatoes in commercial kitchens across Kenya and East Africa.",
+    "technical_specification": "<table><tbody><tr><td><strong>Brand</strong></td><td>RATIONAL</td></tr><tr><td><strong>Article Number</strong></td><td>6035.1019</td></tr><tr><td><strong>GN Size</strong></td><td>1/1 GN</td></tr><tr><td><strong>Dimensions (imperial)</strong></td><td>12 3/4&quot; x 20 7/8&quot;</td></tr><tr><td><strong>Material</strong></td><td>stainless steel (per restaurantsupply.com)</td></tr><tr><td><strong>Capacity</strong></td><td>28 spikes (per webstaurantstore.com)</td></tr><tr><td><strong>Weight</strong></td><td>approx 3.56 lbs (per general search summary sourcing webstaurantstore.com)</td></tr><tr><td><strong>Compatible Units</strong></td><td>iHexagon (per official page)</td></tr></tbody></table>",
     "status": "published"
   },
   {
@@ -8198,57 +8430,93 @@
     "price": 30842,
     "quantity": 5,
     "image": "products/rib-grid-11gn-imgove00055.jpg",
-    "short_description": "RATIONAL Rib Grid 1/1 GN — specialist combi oven rack for cooking full racks of ribs with perfect caramelization and tenderness in commercial kitchens across Kenya.",
-    "description": null,
+    "short_description": "Rib rack in 1/1 GN size (325 x 530 mm) for RATIONAL combi ovens, holding up to 3.5 kg of ribs per rack in an aluminum-silicon coated frame that allows fat to drain away during cooking.",
+    "description": "<p>The Rib Grid 1/1 GN is a rack designed for RATIONAL combi ovens that holds full racks of ribs upright during cooking, in an aluminum-silicon coated frame sized to fit a 1/1 gastronorm space.</p><p>It is used in commercial kitchens to cook ribs evenly while letting rendered fat drip away from the meat, supporting batch cooking of up to 3.5 kg of ribs per rack.</p><h3>Key Features</h3><ul><li>1/1 GN size, 325 x 530 mm</li><li>Holds up to 3.5 kg of ribs per rack</li><li>Aluminum-silicon coated frame</li><li>Suitable for iHexagon ovens</li></ul>",
+    "meta_description": "RATIONAL Rib Grid 1/1 GN — a rack that cooks up to 3.5 kg of ribs evenly while draining fat, built for commercial kitchens across Kenya and East Africa.",
+    "technical_specification": "<table><tbody><tr><td><strong>Brand</strong></td><td>RATIONAL</td></tr><tr><td><strong>Article Number</strong></td><td>6035.1018</td></tr><tr><td><strong>GN Size</strong></td><td>1/1 GN</td></tr><tr><td><strong>Dimensions</strong></td><td>325 x 530 mm</td></tr><tr><td><strong>Material</strong></td><td>aluminum silicon coated (per distributor summary)</td></tr><tr><td><strong>Max Load</strong></td><td>up to 3.5 kg of ribs per rack (per webstaurantstore.com / general distributor summary)</td></tr><tr><td><strong>Compatible Units</strong></td><td>iHexagon (per official page)</td></tr></tbody></table>",
     "status": "published"
   },
   {
-    "name": "Roasting and Baking Tray 1/1 GN",
-    "sku": "IMG/OVE/00058",
+    "name": "Roasting and Baking Tray",
+    "sku": "GROUP/ROASTING-BAKING-TRAY",
     "brand": "RATIONAL",
-    "model_number": "6013.1103",
+    "model_number": null,
     "category": "Rational Accessories",
-    "price": 25200,
-    "quantity": 80,
-    "image": "products/roasting-and-baking-tray-11-gn-imgove00058.jpg",
-    "short_description": "RATIONAL Roasting and Baking Tray 1/1 GN — versatile full gastronorm stainless steel tray for everyday roasting, baking, and cooking in RATIONAL combi ovens across Kenya.",
-    "description": "<ul><li>BEST FOR BAKING: BREAD ROLLS, CROISSANTS, DANISH PASTRIES</li><li>GIVES A UNIFORM, BROWNING, CRISPY CRUSTS AND FLUFFY INTERIOR</li><li>DIMENSION IS 325 * 530 MM</li></ul><p><br></p>",
-    "length": 530,
-    "height": 325,
-    "technical_specification": "<ul><li>DIMENSION IS 325 * 530 MM</li></ul><p><br></p>",
-    "status": "published"
-  },
-  {
-    "name": "Roasting and Baking Tray Baking 2/1GN",
-    "sku": "IMG/OVE/00059",
-    "brand": "RATIONAL",
-    "model_number": "6013.1003",
-    "category": "Rational Accessories",
-    "price": 24233,
-    "quantity": 3,
-    "image": "products/roasting-and-baking-tray-baking-21gn-imgove00059.jpg",
-    "short_description": "RATIONAL Roasting and Baking Tray 2/1 GN — extra-large double gastronorm stainless steel tray for maximum-volume roasting and baking in RATIONAL combi ovens across Kenya.",
-    "description": "<ul><li>BEST FOR BAKING: BREAD ROLLS, CROISSANTS, DANISH PASTRIES</li><li>GIVES A UNIFORM, BROWNING, CRISPY CRUSTS AND FLUFFY INTERIOR</li><li>DIMENSION IS 650 * 530 MM</li></ul><p><br></p>",
-    "length": 650,
-    "height": 530,
-    "technical_specification": "<ul><li>DIMENSION IS 650 * 530 MM</li></ul><p><br></p>",
-    "status": "published"
-  },
-  {
-    "name": "Roasting and Baking Tray 2/3GN",
-    "sku": "IMG/OVE/00060",
-    "brand": "RATIONAL",
-    "model_number": "60.73.671",
-    "category": "Rational Accessories",
+    "type": "variable",
+    "image": "products/roasting-and-baking-tray-11-gn-imgove00058.png",
+    "short_description": "Unperforated aluminium roasting and baking tray for RATIONAL combi ovens, finished with a three-layer TriLax non-stick coating and available in 2/3, 1/1 and 2/1 gastronorm sizes, rated to 300°C.",
+    "description": "<p>The RATIONAL Roasting and Baking Tray is a solid, unperforated gastronorm tray for RATIONAL combi ovens, made from aluminium with a three-layer TriLax non-stick coating for even browning and easy release.</p><p>Choose the gastronorm size to match your batch: 2/3 GN for smaller loads, 1/1 GN for standard service, or 2/1 GN for maximum-volume roasting and baking. Each size is suited to bread rolls, pastries, roast potatoes, meat and fish.</p><h3>Key Features</h3><ul><li>Aluminium body with 3-layer TriLax non-stick coating</li><li>Unperforated — holds juices and light batters</li><li>Rated for oven temperatures up to 300°C</li><li>Available in 2/3 GN, 1/1 GN and 2/1 GN sizes</li><li>For RATIONAL iCombi Pro and iCombi Classic combi ovens</li></ul>",
+    "meta_description": "RATIONAL's TriLax aluminium roasting and baking trays in 2/3, 1/1 and 2/1 GN sizes — durable non-stick combi oven trays for commercial kitchens across Kenya.",
+    "technical_specification": "<table><tbody><tr><td><strong>Brand</strong></td><td>RATIONAL</td></tr><tr><td><strong>Range</strong></td><td>Roasting and baking tray (unperforated)</td></tr><tr><td><strong>Material</strong></td><td>Aluminium</td></tr><tr><td><strong>Coating</strong></td><td>3-layer TriLax non-stick</td></tr><tr><td><strong>Max Temperature</strong></td><td>300°C</td></tr><tr><td><strong>Compatible Units</strong></td><td>RATIONAL iCombi Pro and iCombi Classic combi ovens</td></tr><tr><td><strong>GN Size</strong></td><td>2/3 GN, 1/1 GN, 2/1 GN</td></tr></tbody></table>",
     "price": 16523,
-    "quantity": 12,
-    "image": "products/roasting-and-baking-tray-23gn-imgove00060.jpg",
-    "short_description": "RATIONAL Roasting and Baking Tray 2/3 GN — compact stainless steel gastronorm tray for roasting, baking, and everyday cooking in RATIONAL combi ovens across Kenya.",
-    "description": "<ul><li>BEST FOR BAKING: BREAD ROLLS, CROISSANTS, DANISH PASTRIES</li><li>GIVES A UNIFORM, BROWNING, CRISPY CRUSTS AND FLUFFY INTERIOR</li><li>DIMENSION IS 325 * 354 MM</li></ul><p><br></p>",
-    "length": 354,
-    "height": 325,
-    "technical_specification": "<ul><li>DIMENSION IS 325 * 354 MM</li></ul><p><br></p>",
-    "status": "published"
+    "quantity": 95,
+    "status": "published",
+    "attributes": [
+      {
+        "slug": "gn-size",
+        "values": [
+          "23-gn",
+          "11-gn",
+          "21-gn"
+        ],
+        "is_variation_attribute": true,
+        "is_visible": true
+      }
+    ],
+    "variants": [
+      {
+        "sku": "IMG/OVE/00060",
+        "model_number": "60.73.671",
+        "image": "products/roasting-and-baking-tray-23gn-imgove00060.png",
+        "price": 16523,
+        "stock_quantity": 12,
+        "length": 354,
+        "width": null,
+        "height": 325,
+        "description": "The two-thirds size tray, 354 × 325 mm. It suits smaller batches, or running two trays side by side on a full-size shelf. Cast in aluminium with RATIONAL's 3-layer TriLax non-stick coating, rated to 300°C. Article number 60.73.671.",
+        "attribute_values": [
+          {
+            "attribute": "gn-size",
+            "value": "23-gn"
+          }
+        ]
+      },
+      {
+        "sku": "IMG/OVE/00058",
+        "model_number": "6013.1103",
+        "image": "products/roasting-and-baking-tray-11-gn-imgove00058.png",
+        "price": 25200,
+        "stock_quantity": 80,
+        "length": 530,
+        "width": null,
+        "height": 325,
+        "description": "The full-size tray, 530 × 325 mm, filling a standard gastronorm shelf end to end — the everyday choice for roasting and baking. Cast in aluminium with RATIONAL's 3-layer TriLax non-stick coating, rated to 300°C. Article number 6013.1103.",
+        "is_default": true,
+        "attribute_values": [
+          {
+            "attribute": "gn-size",
+            "value": "11-gn"
+          }
+        ]
+      },
+      {
+        "sku": "IMG/OVE/00059",
+        "model_number": "6013.2103",
+        "image": "products/roasting-and-baking-tray-baking-21gn-imgove00059.png",
+        "price": 24233,
+        "stock_quantity": 3,
+        "length": 650,
+        "width": null,
+        "height": 530,
+        "description": "The double-width tray, 650 × 530 mm, for the larger combi ovens whose shelves span two gastronorm widths. Cast in aluminium with RATIONAL's 3-layer TriLax non-stick coating, rated to 300°C. Article number 6013.2103.",
+        "attribute_values": [
+          {
+            "attribute": "gn-size",
+            "value": "21-gn"
+          }
+        ]
+      }
+    ]
   },
   {
     "name": "Rational SS Grid 1/1GN",
@@ -8259,8 +8527,10 @@
     "price": 11015,
     "quantity": 11,
     "image": "products/rational-ss-grid-11gn-imgove00064.jpg",
-    "short_description": "RATIONAL Stainless Steel Grid 1/1 GN — standard full gastronorm wire rack for optimal airflow and all-around cooking in RATIONAL combi ovens across commercial kitchens in Kenya.",
-    "description": null,
+    "short_description": "Stainless steel wire grid in 1/1 GN size (325 x 530 mm) for RATIONAL combi ovens, allowing hot air to circulate beneath food for even cooking on all sides.",
+    "description": "<p>The Stainless Steel Grid 1/1 GN is a wire rack made from stainless steel, sized to fit a 1/1 gastronorm space in RATIONAL combi ovens.</p><p>It is used to elevate food above the tray surface so hot air can circulate underneath as well as around it, giving more even cooking and browning than a solid tray, and doubles as a cooling or resting rack.</p><h3>Key Features</h3><ul><li>1/1 GN size, 325 x 530 mm</li><li>Stainless steel construction</li><li>Open grid design for all-round air circulation</li><li>Suitable for iHexagon ovens</li></ul>",
+    "meta_description": "RATIONAL Stainless Steel Grid 1/1 GN — a wire rack for even air circulation and cooking results in commercial kitchens across Kenya and East Africa.",
+    "technical_specification": "<table><tbody><tr><td><strong>Brand</strong></td><td>RATIONAL</td></tr><tr><td><strong>Article Number</strong></td><td>6010.1101</td></tr><tr><td><strong>GN Size</strong></td><td>1/1 GN</td></tr><tr><td><strong>Dimensions</strong></td><td>325 x 530 mm</td></tr><tr><td><strong>Material</strong></td><td>stainless steel</td></tr><tr><td><strong>Compatible Units</strong></td><td>iHexagon (per official page)</td></tr></tbody></table>",
     "status": "published"
   },
   {
@@ -8272,8 +8542,10 @@
     "price": 18358.83,
     "quantity": 3,
     "image": "products/perforated-container-11-gn-55mm-imgove00108.jpg",
-    "short_description": "RATIONAL Perforated Container 1/1 GN 55mm — deep perforated gastronorm container for steaming, blanching, and draining in RATIONAL combi ovens across commercial kitchens in Kenya.",
-    "description": null,
+    "short_description": "Perforated stainless steel container in 1/1 GN size (12¾ x 20⅛ in.), 55 mm deep, with 0.8 mm wall thickness, for steaming, blanching and draining in RATIONAL combi ovens.",
+    "description": "<p>The Perforated Container 1/1 GN 55mm is a deep stainless steel container for RATIONAL combi ovens, punched with perforations across its base and sides and made from 0.8 mm gauge steel.</p><p>It is used for steaming, blanching and draining foods such as vegetables and pasta, letting liquid and steam pass through while holding a larger volume than a shallow tray thanks to its 55 mm depth.</p><h3>Key Features</h3><ul><li>1/1 GN size, 12&frac34; x 20&#8541; in.</li><li>55 mm (2&#8539; in.) depth</li><li>Stainless steel, 0.8 mm wall thickness</li><li>Perforated for steaming, blanching and draining</li></ul>",
+    "meta_description": "RATIONAL Perforated Container 1/1 GN 55mm — a deep stainless steel container for steaming and draining foods in commercial kitchens across Kenya.",
+    "technical_specification": "<table><tbody><tr><td><strong>Brand</strong></td><td>RATIONAL</td></tr><tr><td><strong>Article Number</strong></td><td>6015.1165</td></tr><tr><td><strong>GN Size</strong></td><td>1/1 GN</td></tr><tr><td><strong>Dimensions (imperial)</strong></td><td>12 3/4&quot; x 20 7/8&quot;</td></tr><tr><td><strong>Depth (imperial)</strong></td><td>2 1/8&quot; (approx 55 mm - matches the &#039;55mm&#039; in the input name)</td></tr><tr><td><strong>Material</strong></td><td>stainless steel</td></tr><tr><td><strong>Material Thickness</strong></td><td>0.8 mm (per intergastro.com)</td></tr></tbody></table>",
     "status": "archived"
   },
   {
@@ -10398,7 +10670,7 @@
   {
     "sku": "IMG/DWW/00151",
     "name": "Under Counter Dishwasher Hattons",
-    "brand": "HATTONS",
+    "brand": "Hatton",
     "model_number": "HT-T2",
     "category": "Dishwashers",
     "price": 475000,
@@ -10735,7 +11007,7 @@
   {
     "sku": "IMG/DWW/00149",
     "name": "Hood Type Dishwasher",
-    "brand": "HATTON",
+    "brand": "Hatton",
     "model_number": "HT-Z1",
     "category": "Dishwashers",
     "price": 550000,

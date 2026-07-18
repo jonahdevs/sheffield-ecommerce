@@ -61,7 +61,7 @@
     {{-- SHIP TO --}}
     <div class="mt-5">
         <div class="text-[10px] font-bold uppercase tracking-widest text-zinc-700 mb-1.5">Ship to:</div>
-        <div class="inline-block border border-zinc-900 px-4 py-2.5 text-[11.5px] leading-snug min-w-[14rem]"
+        <div class="inline-block border border-zinc-900 px-4 py-2.5 text-[11.5px] leading-snug min-w-56"
              style="box-shadow: 3px 3px 0 rgba(0,0,0,0.75);">
             <div class="font-bold uppercase text-zinc-900">{{ $customer?->name ?? $order->shipping_name }}</div>
             @if ($customer?->email)
@@ -146,7 +146,7 @@
 
     {{-- PREPARED BY --}}
     <div class="mt-8 border-t border-zinc-300 pt-4 text-[10.5px] text-zinc-500">
-        Prepared by: <span class="inline-block border-b border-zinc-400 min-w-[160px] ml-1">&nbsp;</span>
+        Prepared by: <span class="inline-block border-b border-zinc-400 min-w-40 ml-1">&nbsp;</span>
     </div>
 
 </div>

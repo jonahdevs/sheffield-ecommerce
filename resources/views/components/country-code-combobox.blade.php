@@ -61,12 +61,12 @@
         x-on:click="open ? (open = false) : openPanel()"
         x-bind:aria-expanded="open"
         aria-haspopup="listbox"
-        class="flex h-10 w-[7.5rem] items-center gap-1.5 rounded-lg border border-zinc-200 border-b-zinc-300/80 bg-white px-3 text-base shadow-xs sm:text-sm dark:border-white/10 dark:bg-white/10"
+        class="flex h-10 w-30 items-center gap-1.5 rounded-lg border border-zinc-200 border-b-zinc-300/80 bg-white px-3 text-base shadow-xs sm:text-sm dark:border-white/10 dark:bg-white/10"
     >
         <img
             x-bind:src="'https://flagcdn.com/' + current.code.toLowerCase() + '.svg'"
             x-bind:alt="current.name"
-            class="h-3.5 w-5 shrink-0 rounded-[2px] object-cover"
+            class="h-3.5 w-5 shrink-0 rounded-xs object-cover"
         />
         <span class="font-medium text-zinc-700 dark:text-zinc-300" x-text="current.dial"></span>
         <svg class="ms-auto size-4 shrink-0 text-zinc-400 dark:text-white/60" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -114,7 +114,7 @@
                         x-bind:src="'https://flagcdn.com/' + country.code.toLowerCase() + '.svg'"
                         x-bind:alt="country.name"
                         loading="lazy"
-                        class="h-3.5 w-5 shrink-0 rounded-[2px] object-cover"
+                        class="h-3.5 w-5 shrink-0 rounded-xs object-cover"
                     />
                     <span class="flex-1 truncate" x-text="country.name"></span>
                     <span class="text-xs text-zinc-400 dark:text-white/60" x-text="country.dial"></span>

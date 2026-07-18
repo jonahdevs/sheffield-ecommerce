@@ -55,7 +55,7 @@
     ];
 @endphp
 
-<footer class="mt-5 bg-brand-blue-500 pt-10 pb-8 text-[#e6ddc8] md:mt-10 md:pt-16">
+<footer class="mt-5 bg-brand-blue-500 pt-10 pb-8 text-olive-300 md:mt-10 md:pt-16">
     <div class="shell">
         <div class="grid grid-cols-2 gap-6 sm:grid-cols-3 md:grid-cols-12">
             <div class="col-span-2 sm:col-span-3 md:col-span-4">
@@ -63,10 +63,10 @@
                     aria-label="{{ $storeName }} — Home">
                     <img src="/logo-inverse.png" alt="{{ $storeName }}" class="h-9 w-auto" />
                 </a>
-                <p class="mt-4 max-w-xs text-sm leading-relaxed text-[#c9bea4]">
+                <p class="mt-4 max-w-xs text-sm leading-relaxed text-olive-400">
                     {{ $tagline }}
                 </p>
-                <div class="mt-5 flex flex-col gap-2 text-[13.5px] text-[#c9bea4]">
+                <div class="mt-5 flex flex-col gap-2 text-sm text-olive-400">
                     <a href="mailto:{{ $contactEmail }}" class="inline-flex items-center gap-2 hover:text-white">
                         <flux:icon.envelope variant="micro" class="size-3.5" /> {{ $contactEmail }}
                     </a>
@@ -80,7 +80,7 @@
                         @foreach ($socialLinks as $label => $url)
                             <a href="{{ $url }}" target="_blank" rel="noopener noreferrer"
                                 aria-label="{{ $label }}" title="{{ $label }}"
-                                class="flex size-9 items-center justify-center rounded-full border border-white/15 bg-white/5 text-[#e6ddc8] transition hover:bg-white hover:text-brand-blue-600">
+                                class="flex size-9 items-center justify-center rounded-full border border-white/15 bg-white/5 text-olive-300 transition hover:bg-white hover:text-brand-blue-600">
                                 <svg viewBox="0 0 24 24" fill="currentColor" class="size-4" aria-hidden="true">
                                     <path d="{{ $socialIcons[$label] }}" />
                                 </svg>
@@ -91,25 +91,25 @@
             </div>
 
             <div class="col-span-2 sm:col-span-3 md:col-span-4">
-                <h3 class="mb-4 text-xs font-bold tracking-widest text-[#d8c79d] uppercase">Showrooms</h3>
+                <h3 class="mb-4 text-xs font-bold tracking-widest text-taupe-300 uppercase">Showrooms</h3>
                 <div class="grid grid-cols-1 gap-x-6 gap-y-5 min-[420px]:grid-cols-2">
                     @foreach ($showrooms as $loc)
                         <div>
-                            <div class="inline-flex items-center gap-2 text-[13px] font-semibold text-[#f3eadd]">
+                            <div class="inline-flex items-center gap-2 text-sm font-semibold text-olive-200">
                                 {{ $loc->city }}
                                 @if ($loc->is_hq)
                                     <span
-                                        class="rounded-sm bg-brand-500 px-1.5 py-px text-[9px] tracking-wider text-white">HQ</span>
+                                        class="rounded-sm bg-brand-500 px-1.5 py-px text-xs tracking-wider text-white">HQ</span>
                                 @endif
                             </div>
-                            <div class="mt-1 text-[12px] leading-snug text-[#c9bea4]">
+                            <div class="mt-1 text-xs leading-snug text-olive-400">
                                 {{ $loc->address }}@empty($loc->pobox), {{ $loc->country }}@endempty
                                 @if (!empty($loc->pobox))
                                     <br>{{ $loc->pobox }}
                                 @endif
                             </div>
                             <div class="mt-1.5 flex flex-col gap-0.5">
-                                <div class="text-[12px] text-[#d8c79d]">
+                                <div class="text-xs text-taupe-300">
                                     @foreach ($loc->phones as $i => $phone)
                                         @if ($i > 0)
                                             <span class="opacity-50">/</span>
@@ -120,7 +120,7 @@
                                 </div>
                                 @if ($loc->email)
                                     <a href="mailto:{{ $loc->email }}"
-                                        class="text-[12px] text-[#d8c79d] hover:text-white">{{ $loc->email }}</a>
+                                        class="text-xs text-taupe-300 hover:text-white">{{ $loc->email }}</a>
                                 @endif
                             </div>
                         </div>
@@ -129,8 +129,8 @@
             </div>
 
             <div class="col-span-2 min-[420px]:col-span-1 md:col-span-2">
-                <h3 class="mb-4 text-xs font-bold tracking-widest text-[#d8c79d] uppercase">Business</h3>
-                <ul class="space-y-2.5 text-[13.5px] text-[#c9bea4]">
+                <h3 class="mb-4 text-xs font-bold tracking-widest text-taupe-300 uppercase">Business</h3>
+                <ul class="space-y-2.5 text-sm text-olive-400">
                     <li><a href="{{ route('categories.index') }}" class="hover:text-white" wire:navigate>All
                             categories</a></li>
                     <li><a href="{{ route('quote.request') }}" class="hover:text-white" wire:navigate>Request a
@@ -139,8 +139,8 @@
             </div>
 
             <div class="col-span-2 min-[420px]:col-span-1 md:col-span-2">
-                <h3 class="mb-4 text-xs font-bold tracking-widest text-[#d8c79d] uppercase">Shop</h3>
-                <ul class="space-y-2.5 text-[13.5px] text-[#c9bea4]">
+                <h3 class="mb-4 text-xs font-bold tracking-widest text-taupe-300 uppercase">Shop</h3>
+                <ul class="space-y-2.5 text-sm text-olive-400">
                     @foreach ($footerCategories as $category)
                         <li><a href="{{ route('category.show', $category) }}" class="hover:text-white"
                                 wire:navigate>{{ $category->name }}</a></li>
@@ -150,7 +150,7 @@
         </div>
 
         <div
-            class="mt-14 flex flex-wrap items-center justify-between gap-4 border-t border-[#e6ddc8]/15 pt-6 text-[12.5px] text-[#9c927c]">
+            class="mt-14 flex flex-wrap items-center justify-between gap-4 border-t border-olive-300/15 pt-6 text-xs text-stone-400">
             <div class="flex items-center gap-4">
                 <span>&copy; {{ date('Y') }} {{ $legalName }}.</span>
                 <a href="{{ route('page.show', 'terms-and-conditions') }}" class="hover:text-white"
@@ -179,8 +179,8 @@
             </div>
             <div class="flex items-center gap-4">
                 <span>Authorised distributor</span>
-                <span class="h-4 w-px bg-[#e6ddc8]/20"></span>
-                <span class="font-serif text-sm text-[#d8c79d]">NSF · CE · KEBS</span>
+                <span class="h-4 w-px bg-olive-300/20"></span>
+                <span class="font-serif text-sm text-taupe-300">NSF · CE · KEBS</span>
             </div>
         </div>
     </div>

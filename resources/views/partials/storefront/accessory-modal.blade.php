@@ -1,7 +1,7 @@
 {{-- "Complete your purchase" accessory prompt. Rendered inside any Livewire
      page that uses the InteractsWithStorefront trait; opens after a product
      with accessory links is added to the cart. --}}
-<flux:modal wire:model.self="showAccessoryModal" class="md:w-[560px]">
+<flux:modal wire:model.self="showAccessoryModal" class="md:w-140">
     <flux:heading class="uppercase">Complete your purchase</flux:heading>
     <flux:subheading>
         @if ($accessoryParentName !== '')
@@ -26,8 +26,8 @@
                 @endif
 
                 <div class="min-w-0 flex-1">
-                    <div class="truncate text-[13px] font-semibold text-ink">{{ $item['name'] }}</div>
-                    <div class="mt-0.5 flex items-center gap-2 text-[12px] text-ink-3">
+                    <div class="truncate text-sm font-semibold text-ink">{{ $item['name'] }}</div>
+                    <div class="mt-0.5 flex items-center gap-2 text-xs text-ink-3">
                         <span class="tabular-nums">{!! $item['price_cents'] ? money($item['price_cents']) : 'POA' !!}</span>
                         @if ($item['is_required'])
                             <flux:badge size="sm" color="amber" inset="top bottom">Recommended</flux:badge>
@@ -46,7 +46,7 @@
                         class="grid w-8 cursor-pointer place-items-center text-ink-2 transition hover:bg-surface-sunken">
                         <flux:icon.minus variant="micro" class="size-3.5" />
                     </button>
-                    <div class="grid w-9 place-items-center border-x border-zinc-200 text-[13px] font-semibold tabular-nums">
+                    <div class="grid w-9 place-items-center border-x border-zinc-200 text-sm font-semibold tabular-nums">
                         {{ $sel['qty'] ?? 1 }}
                     </div>
                     <button type="button" wire:click="incAccessoryQty('{{ $item['slug'] }}')" aria-label="Increase quantity"

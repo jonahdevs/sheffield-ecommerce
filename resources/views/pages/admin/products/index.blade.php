@@ -674,7 +674,7 @@ new #[Layout('layouts::app')] #[Title('Products | Admin')] class extends Compone
     {{-- ================================================== --}}
     {{-- IMPORT MODAL --}}
     {{-- ================================================== --}}
-    <flux:modal wire:model.self="showImportModal" class="md:w-[560px]" :dismissible="false">
+    <flux:modal wire:model.self="showImportModal" class="md:w-140" :dismissible="false">
         <div class="space-y-6">
 
             @if ($importResults !== null)

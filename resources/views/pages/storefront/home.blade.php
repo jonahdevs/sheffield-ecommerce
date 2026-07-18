@@ -100,7 +100,7 @@ new #[Layout('layouts::storefront')] #[Title('Commercial Kitchen, Cold Room, Lau
     {
         // Curated: products staff have tagged "Featured", ordered by sort_order.
         $featured = Product::query()
-            ->with(['brand:id,name', 'taxClass:id,rate', 'media'])
+            ->forCard()
             ->visibleInCatalog()
             ->published()
             ->where('stock_status', StockStatus::IN_STOCK)
@@ -117,7 +117,7 @@ new #[Layout('layouts::storefront')] #[Title('Commercial Kitchen, Cold Room, Lau
 
         // Fallback: nothing curated yet — show the locked random pool from mount().
         return Product::query()
-            ->with(['brand:id,name', 'taxClass:id,rate', 'media'])
+            ->forCard()
             ->whereIn('id', $this->featuredProductIds)
             ->get()
             ->sortBy(fn($p) => array_search($p->id, $this->featuredProductIds))
@@ -128,7 +128,7 @@ new #[Layout('layouts::storefront')] #[Title('Commercial Kitchen, Cold Room, Lau
     public function newArrivals(): Collection
     {
         $base = Product::query()
-            ->with(['brand:id,name', 'taxClass:id,rate', 'media'])
+            ->forCard()
             ->visibleInCatalog()
             ->published()
             ->where('stock_status', StockStatus::IN_STOCK)
@@ -362,7 +362,7 @@ new #[Layout('layouts::storefront')] #[Title('Commercial Kitchen, Cold Room, Lau
                                     {{-- Glassmorphism card (commented out — kept for easy switch-back)
                                     <div class="absolute inset-x-4 bottom-4 md:inset-x-auto md:bottom-auto md:top-1/2 md:left-10 md:max-w-sm md:-translate-y-1/2">
                                         <div class="rounded-xl border border-white/20 bg-white/10 p-5 shadow-xl backdrop-blur-md md:p-7">
-                                            <h2 class="font-serif text-xl font-semibold leading-tight text-white md:text-[38px]">{{ $slide['headline'] }}</h2>
+                                            <h2 class="font-serif text-xl font-semibold leading-tight text-white md:text-4xl">{{ $slide['headline'] }}</h2>
                                             <p class="mt-2 max-w-[30ch] text-xs text-white/80 md:mt-3 md:text-sm">{{ $slide['sub'] }}</p>
                                             <span aria-hidden class="mt-3 inline-flex w-fit items-center gap-1.5 rounded-full bg-white px-4 py-2 text-xs font-semibold text-ink shadow-lg md:mt-4 md:text-sm">
                                                 {{ $slide['cta'] }}
@@ -390,7 +390,7 @@ new #[Layout('layouts::storefront')] #[Title('Commercial Kitchen, Cold Room, Lau
 
                     {{-- Slide counter --}}
                     <div
-                        class="absolute top-2 right-2 z-10 flex items-center gap-1 rounded-full bg-black/35 px-2 py-0.5 text-[10px] tracking-wider text-white tabular-nums backdrop-blur-sm md:top-3.5 md:right-3.5 md:gap-1.5 md:px-2.5 md:py-1 md:text-[11px]">
+                        class="absolute top-2 right-2 z-10 flex items-center gap-1 rounded-full bg-black/35 px-2 py-0.5 text-xs tracking-wider text-white tabular-nums backdrop-blur-sm md:top-3.5 md:right-3.5 md:gap-1.5 md:px-2.5 md:py-1">
                         <span class="font-semibold" x-text="String(current).padStart(2, '0')"></span>
                         <span class="opacity-60">/ {{ str_pad(count($heroSlides), 2, '0', STR_PAD_LEFT) }}</span>
                         <span class="opacity-70" x-show="paused" x-cloak>· paused</span>
@@ -422,9 +422,9 @@ new #[Layout('layouts::storefront')] #[Title('Commercial Kitchen, Cold Room, Lau
                     <flux:icon name="{{ $u['icon'] }}" variant="outline"
                         class="size-6 shrink-0 text-brand-500 sm:size-9" />
                     <div>
-                        <div class="text-[10px] font-bold tracking-widest text-ink uppercase sm:text-[11px]">
+                        <div class="text-xs font-bold tracking-widest text-ink uppercase">
                             {{ $u['title'] }}</div>
-                        <div class="mt-0.5 text-[10px] text-ink-3 sm:text-[11px]">{{ $u['sub'] }}</div>
+                        <div class="mt-0.5 text-xs text-ink-3">{{ $u['sub'] }}</div>
                     </div>
                 </div>
             @endforeach
@@ -437,7 +437,7 @@ new #[Layout('layouts::storefront')] #[Title('Commercial Kitchen, Cold Room, Lau
     {{--
     @if ($this->divisions->isNotEmpty())
         <section class="shell pt-14">
-            <h2 class="mb-4 text-[22px] font-semibold tracking-tight">Shop by department</h2>
+            <h2 class="mb-4 text-2xl font-semibold tracking-tight">Shop by department</h2>
 
             <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
                 @foreach ($this->divisions as $division)
@@ -450,7 +450,7 @@ new #[Layout('layouts::storefront')] #[Title('Commercial Kitchen, Cold Room, Lau
                             : array_fill(0, 4, ['span' => '', 'aspect' => 'aspect-square']);
                     @endphp
                     <div class="flex flex-col rounded-md border border-zinc-200 bg-white p-5">
-                        <h3 class="text-[15px] font-semibold tracking-tight text-ink">{{ $division->name }}</h3>
+                        <h3 class="text-base font-semibold tracking-tight text-ink">{{ $division->name }}</h3>
 
                         @if ($tiles->isNotEmpty())
                             <!-- Product-image collage (padded to keep the shape) -->
@@ -471,7 +471,7 @@ new #[Layout('layouts::storefront')] #[Title('Commercial Kitchen, Cold Room, Lau
                                             @endif
                                         </div>
                                         @if ($product)
-                                            <div class="mt-1.5 truncate text-[11px] text-ink-3">{{ $product->name }}</div>
+                                            <div class="mt-1.5 truncate text-xs text-ink-3">{{ $product->name }}</div>
                                         @endif
                                     </a>
                                 @endforeach
@@ -489,7 +489,7 @@ new #[Layout('layouts::storefront')] #[Title('Commercial Kitchen, Cold Room, Lau
                         @endif
 
                         <a href="{{ route('category.show', $division) }}" wire:navigate
-                            class="group mt-4 inline-flex items-center gap-1.5 text-[13px] font-semibold text-brand-blue-500 transition-colors hover:text-brand-blue-600">
+                            class="group mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-brand-blue-500 transition-colors hover:text-brand-blue-600">
                             Shop {{ $division->name }}
                             <flux:icon.arrow-right variant="micro"
                                 class="size-3.5 transition-transform duration-200 group-hover:translate-x-0.5" />
@@ -504,9 +504,9 @@ new #[Layout('layouts::storefront')] #[Title('Commercial Kitchen, Cold Room, Lau
     {{-- Categories — dense Workshop grid (12 chips, square aspect, ink underline) --}}
     <section class="shell pt-8 md:pt-14 @container">
         <div class="mb-4 flex items-baseline justify-between">
-            <h2 class="text-[17px] font-semibold tracking-tight @md:text-[22px]">Shop by category</h2>
+            <h2 class="text-lg font-semibold tracking-tight @md:text-2xl">Shop by category</h2>
             <a href="{{ route('categories.index') }}" wire:navigate
-                class="text-[13px] font-medium text-brand-500 underline transition-colors hover:text-brand-600">
+                class="text-sm font-medium text-brand-500 underline transition-colors hover:text-brand-600">
                 View all
             </a>
         </div>
@@ -530,16 +530,16 @@ new #[Layout('layouts::storefront')] #[Title('Commercial Kitchen, Cold Room, Lau
                                 <img src="{{ $category->image_url }}" alt="" loading="lazy"
                                     x-data="{ loaded: false }" x-init="loaded = $el.complete" x-on:load="loaded = true"
                                     x-bind:class="loaded ? 'opacity-100' : 'opacity-0'"
-                                    class="relative block size-full object-cover transition duration-500 group-hover:scale-[1.04]" />
+                                    class="relative block size-full object-cover transition duration-500 group-hover:scale-105" />
                             </picture>
                         @endif
                     </div>
                     <div class="flex items-baseline justify-between gap-2 pt-2.5">
                         <div
-                            class="text-[11.5px] leading-tight font-semibold tracking-[0.06em] text-ink uppercase transition-colors group-hover:text-brand-500">
+                            class="text-xs leading-tight font-semibold tracking-wider text-ink uppercase transition-colors group-hover:text-brand-500">
                             {{ $category->name }}
                         </div>
-                        <div class="shrink-0 text-[11px] text-ink-3 tabular-nums">
+                        <div class="shrink-0 text-xs text-ink-3 tabular-nums">
                             {{ $category->products_count ?? $category->products()->count() }}
                         </div>
                     </div>
@@ -555,7 +555,7 @@ new #[Layout('layouts::storefront')] #[Title('Commercial Kitchen, Cold Room, Lau
                 {{-- Title panel — hidden below md so the marquee runs edge to edge on phones --}}
                 <div
                     class="relative z-10 hidden min-w-60 flex-col justify-center border-r border-zinc-200 bg-white px-8 py-8 md:flex">
-                    <h2 class="font-serif text-[22px] leading-tight font-semibold uppercase">The
+                    <h2 class="font-serif text-2xl leading-tight font-semibold uppercase">The
                         brands<br>professionals
                         trust.</h2>
                 </div>
@@ -594,7 +594,7 @@ new #[Layout('layouts::storefront')] #[Title('Commercial Kitchen, Cold Room, Lau
                 <div
                     class="flex flex-col justify-center border-b border-white/10 px-6 pt-8 pb-4 lg:col-span-1 lg:border-b-0 lg:border-r lg:border-white/10 lg:py-8">
                     <div class="font-serif text-4xl leading-none text-white">New arrivals</div>
-                    <div class="mt-3 text-[13px] leading-relaxed text-white/75">Discover what's just dropped</div>
+                    <div class="mt-3 text-sm leading-relaxed text-white/75">Discover what's just dropped</div>
                     <flux:button href="{{ route('catalog') }}?arrivals=1" wire:navigate class="mt-5 w-fit">
                         View All
                     </flux:button>
@@ -648,9 +648,9 @@ new #[Layout('layouts::storefront')] #[Title('Commercial Kitchen, Cold Room, Lau
     {{-- Featured products --}}
     <section class="shell pt-8 md:pt-14 @container">
         <div class="mb-4 flex items-baseline justify-between">
-            <h2 class="text-[17px] font-semibold tracking-tight @md:text-[22px]">Featured equipment</h2>
+            <h2 class="text-lg font-semibold tracking-tight @md:text-2xl">Featured equipment</h2>
             <a href="{{ route('catalog') }}?tag=Featured" wire:navigate
-                class="text-[13px] font-medium text-brand-500 underline transition-colors hover:text-brand-600">
+                class="text-sm font-medium text-brand-500 underline transition-colors hover:text-brand-600">
                 View all
             </a>
         </div>
@@ -668,11 +668,11 @@ new #[Layout('layouts::storefront')] #[Title('Commercial Kitchen, Cold Room, Lau
         <div class="grid grid-cols-1 items-center gap-6 rounded-md bg-ink p-9 text-white lg:grid-cols-[1fr_auto]"
             style="background: #0c1421">
             <div>
-                <div class="text-[11.5px] font-bold tracking-[0.12em] text-brand-500 uppercase">For procurement</div>
-                <div class="mt-2 font-serif text-[32px] leading-[1.1] font-normal">
+                <div class="text-xs font-bold tracking-widest text-brand-500 uppercase">For procurement</div>
+                <div class="mt-2 font-serif text-3xl leading-none font-normal">
                     Upload your tender or BOQ — formal quote in 24 hours.
                 </div>
-                <div class="mt-2 text-[14px] text-[#c9bea4]">
+                <div class="mt-2 text-sm text-olive-400">
                     Upload PDF or Excel · We respond in business hours · No account required.
                 </div>
             </div>
@@ -685,4 +685,5 @@ new #[Layout('layouts::storefront')] #[Title('Commercial Kitchen, Cold Room, Lau
     </section> --}}
 
     @include('partials.storefront.accessory-modal')
+    @include('partials.storefront.variation-modal')
 </div>

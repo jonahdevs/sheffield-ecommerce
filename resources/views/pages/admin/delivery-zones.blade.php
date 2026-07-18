@@ -321,7 +321,7 @@ new #[Layout('layouts::app')] #[Title('Delivery zones | Admin')] class extends C
     {{-- ================================================== --}}
     {{-- ZONE MODAL --}}
     {{-- ================================================== --}}
-    <flux:modal wire:model.self="showZoneModal" class="md:w-[820px] lg:w-[920px] md:max-w-none" :dismissible="false">
+    <flux:modal wire:model.self="showZoneModal" class="md:w-205 lg:w-230 md:max-w-none" :dismissible="false">
         <div>
             <flux:heading class="uppercase tracking-wide">{{ $editingZoneId ? 'Edit zone' : 'New delivery zone' }}</flux:heading>
             <flux:subheading x-show="currentStep === 1">Click the map to draw the zone boundary. Drag a point to adjust it, double-click to remove it.</flux:subheading>
@@ -332,7 +332,7 @@ new #[Layout('layouts::app')] #[Title('Delivery zones | Admin')] class extends C
 
             {{-- Step 1: Map --}}
             <div x-show="currentStep === 1" class="space-y-3">
-                <div id="zone-map-container" class="h-72 w-full overflow-hidden rounded-md border border-zinc-200 bg-zinc-100 sm:h-96 md:h-[480px] dark:border-zinc-700"></div>
+                <div id="zone-map-container" class="h-72 w-full overflow-hidden rounded-md border border-zinc-200 bg-zinc-100 sm:h-96 md:h-120 dark:border-zinc-700"></div>
 
                 <div class="flex items-center justify-between">
                     <flux:text size="sm" class="text-zinc-500">

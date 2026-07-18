@@ -44,7 +44,7 @@
                         @endif
                     </div>
                     <div
-                        class="truncate px-1.5 py-1.5 text-center text-[10.5px] font-semibold uppercase tracking-[0.04em] text-ink underline-offset-2 group-hover:underline">
+                        class="truncate px-1.5 py-1.5 text-center text-xs font-semibold uppercase tracking-wider text-ink underline-offset-2 group-hover:underline">
                         {{ $child->name }}
                     </div>
                 </a>

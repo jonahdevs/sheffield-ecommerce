@@ -5,11 +5,16 @@ use App\Enums\CategoryStatus;
 use App\Enums\ProductStatus;
 use App\Enums\ProductVisibility;
 use App\Enums\StockStatus;
+use App\Models\Attribute;
+use App\Models\AttributeValue;
 use App\Models\Brand;
 use App\Models\Category;
 use App\Models\CategoryPlacement;
 use App\Models\Product;
+use App\Models\ProductAttribute;
+use App\Models\ProductVariant;
 use App\Models\Review;
+use App\Support\StorefrontSession;
 use Illuminate\Support\Str;
 use Livewire\Livewire;
 
@@ -354,4 +359,53 @@ it('reads and writes the category and brand facets as readable slugs in the quer
         ->assertSee('Test Grinder')
         ->call('removeBrand', 'rancilio')
         ->assertSet('brandParam', '');
+});
+
+it('opens the variation picker from a catalog card and edits the cart from it', function () {
+    $brand = Brand::create(['name' => 'VarBrand', 'slug' => 'var-brand', 'is_active' => true, 'sort_order' => 1]);
+    $cat = Category::create(['name' => 'VarCat', 'slug' => 'var-cat', 'status' => CategoryStatus::ACTIVE, 'sort_order' => 1]);
+
+    $product = Product::create([
+        'name' => 'Baking Tray', 'slug' => 'baking-tray', 'sku' => 'BT-1',
+        'brand_id' => $brand->id, 'primary_category_id' => $cat->id,
+        'type' => 'variable', 'price' => 100000, 'stock_status' => StockStatus::IN_STOCK->value,
+        'visibility' => ProductVisibility::VISIBLE->value, 'status' => ProductStatus::PUBLISHED->value,
+    ]);
+
+    $attribute = Attribute::create(['name' => 'GN Size', 'slug' => 'gn-size', 'type' => 'select', 'is_active' => true, 'sort_order' => 1]);
+    $full = AttributeValue::create(['attribute_id' => $attribute->id, 'value' => '1/1 GN', 'label' => '1/1 GN', 'slug' => '11-gn', 'sort_order' => 1, 'is_active' => true]);
+    ProductAttribute::create([
+        'product_id' => $product->id, 'attribute_id' => $attribute->id,
+        'values' => ['11-gn'], 'is_variation_attribute' => true, 'is_visible' => true, 'sort_order' => 1,
+    ]);
+
+    $variant = ProductVariant::create([
+        'product_id' => $product->id, 'sku' => 'BT-11', 'price' => 120000,
+        'stock_status' => StockStatus::IN_STOCK->value, 'is_active' => true, 'sort_order' => 1,
+    ]);
+    $variant->attributeValues()->attach($full->id);
+
+    Livewire::test('pages::storefront.catalog')
+        ->assertSet('showVariationModal', false)
+        ->call('openVariationModal', 'baking-tray')
+        ->assertSet('showVariationModal', true)
+        ->assertSee('1/1 GN')
+        // The stepper edits the cart straight from the listing page.
+        ->call('incVariationQty', $variant->id);
+
+    expect(StorefrontSession::cart())->toBe(['baking-tray|'.$variant->id => 1]);
+});
+
+it('will not open the variation picker for a product that is not variable', function () {
+    $cat = Category::create(['name' => 'PlainCat', 'slug' => 'plain-cat', 'status' => CategoryStatus::ACTIVE, 'sort_order' => 1]);
+    Product::create([
+        'name' => 'Plain Pan', 'slug' => 'plain-pan', 'sku' => 'PP-1',
+        'primary_category_id' => $cat->id, 'type' => 'simple', 'price' => 100000,
+        'stock_status' => StockStatus::IN_STOCK->value,
+        'visibility' => ProductVisibility::VISIBLE->value, 'status' => ProductStatus::PUBLISHED->value,
+    ]);
+
+    Livewire::test('pages::storefront.catalog')
+        ->call('openVariationModal', 'plain-pan')
+        ->assertSet('showVariationModal', false);
 });

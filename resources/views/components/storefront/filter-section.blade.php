@@ -8,13 +8,14 @@
 
 <div class="px-5 py-4" x-data="{ open: @js($open) }">
     <button type="button" x-on:click="open = !open"
-        class="flex w-full cursor-pointer items-center justify-between text-[12px] font-bold uppercase tracking-[0.08em] text-ink-2">
+        class="flex w-full cursor-pointer items-center justify-between text-xs font-bold uppercase tracking-widest text-ink-2">
         <span>{{ $title }}</span>
         <span class="flex transition-transform duration-200" x-bind:class="open ? 'rotate-0' : '-rotate-90'">
             <flux:icon.chevron-down variant="micro" class="size-3.5 text-zinc-400" />
         </span>
     </button>
-    <div x-show="open" @unless($open) x-cloak @endunless class="mt-3">
+    <div x-show="open" @unless ($open) x-cloak @endunless
+        class="mt-3 [&_ui-label]:text-sm [&_ui-label]:font-normal">
         {{ $slot }}
     </div>
 </div>

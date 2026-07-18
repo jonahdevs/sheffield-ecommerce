@@ -280,7 +280,7 @@ new #[Layout('layouts::app')] #[Title('Coupons | Admin')] class extends Componen
     </flux:card>
 
     {{-- Create / Edit modal --}}
-    <flux:modal wire:model.self="showModal" class="md:w-[540px]" :dismissible="false">
+    <flux:modal wire:model.self="showModal" class="md:w-135" :dismissible="false">
         <flux:heading class="uppercase tracking-wide">{{ $editingId ? 'Edit coupon' : 'New coupon' }}</flux:heading>
 
         <form wire:submit="save" class="mt-5 space-y-4">

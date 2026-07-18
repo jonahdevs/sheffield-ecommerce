@@ -65,7 +65,7 @@
     <div class="mt-5 flex items-start gap-4">
         <div>
             <div class="text-[10px] font-bold uppercase tracking-widest text-zinc-700 mb-1.5">Deliver to:</div>
-            <div class="inline-block border border-zinc-900 px-4 py-2.5 text-[11.5px] leading-snug min-w-[14rem]"
+            <div class="inline-block border border-zinc-900 px-4 py-2.5 text-[11.5px] leading-snug min-w-56"
                  style="box-shadow: 3px 3px 0 rgba(0,0,0,0.75);">
                 <div class="font-bold uppercase text-zinc-900">{{ $customer?->name ?? $order->shipping_name }}</div>
                 @if ($customer?->email)
@@ -92,7 +92,7 @@
         </div>
         <div>
             <div class="text-[10px] font-bold uppercase tracking-widest text-zinc-700 mb-1.5">Dispatched from:</div>
-            <div class="inline-block border border-zinc-900 px-4 py-2.5 text-[11.5px] leading-snug min-w-[14rem]"
+            <div class="inline-block border border-zinc-900 px-4 py-2.5 text-[11.5px] leading-snug min-w-56"
                  style="box-shadow: 3px 3px 0 rgba(0,0,0,0.75);">
                 <div class="font-bold uppercase text-zinc-900">{{ $storeName }}</div>
                 @if ($hqShowroom)

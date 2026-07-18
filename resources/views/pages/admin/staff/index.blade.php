@@ -236,7 +236,7 @@ new #[Layout('layouts::app')] #[Title('Staff | Admin')] class extends Component 
     </flux:card>
 
     {{-- Modal --}}
-    <flux:modal wire:model.self="showModal" class="md:w-[480px]" :dismissible="false">
+    <flux:modal wire:model.self="showModal" class="md:w-120" :dismissible="false">
         <flux:heading>{{ $editingId ? 'Edit staff member' : 'Invite staff member' }}</flux:heading>
         <flux:subheading>
             {{ $editingId ? 'Update this member\'s details and role.' : 'Add a new member to the admin panel.' }}

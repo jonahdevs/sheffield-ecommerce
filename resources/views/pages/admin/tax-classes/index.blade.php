@@ -238,7 +238,7 @@ new #[Layout('layouts::app')] #[Title('Tax classes | Admin')] class extends Comp
     </flux:card>
 
     {{-- Modal --}}
-    <flux:modal wire:model.self="showModal" class="md:w-[480px]" :dismissible="false">
+    <flux:modal wire:model.self="showModal" class="md:w-120" :dismissible="false">
         <flux:heading class="uppercase tracking-wide">{{ $editingId ? 'Edit tax class' : 'New tax class' }}</flux:heading>
 
         <form wire:submit="save" class="mt-5 space-y-4">

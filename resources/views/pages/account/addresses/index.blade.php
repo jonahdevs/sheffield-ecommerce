@@ -228,7 +228,7 @@ new #[Layout('layouts::account')] #[Title('Addresses')] class extends Component
     </div>
 
     {{-- Create / Edit modal --}}
-    <flux:modal wire:model.self="showModal" class="md:w-[640px] md:max-w-none" :dismissible="false">
+    <flux:modal wire:model.self="showModal" class="md:w-160 md:max-w-none" :dismissible="false">
         <flux:heading class="uppercase tracking-wide">{{ $editingId ? 'Edit address' : 'New address' }}</flux:heading>
         <flux:subheading>
             <span x-show="step === 1">{{ $editingId ? 'Update where this address is located.' : 'Pin where you’d like your deliveries to arrive.' }}</span>

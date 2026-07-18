@@ -168,7 +168,7 @@ new #[Layout('layouts::storefront')] class extends Component
     public function products(): LengthAwarePaginator
     {
         $query = Product::query()
-            ->with(['brand:id,name', 'taxClass:id,rate', 'media'])
+            ->forCard()
             ->visibleInCatalog()
             ->published()
             ->honorStockVisibility()
@@ -249,7 +249,7 @@ new #[Layout('layouts::storefront')] class extends Component
                 {{ $category->name }}
             </h1>
             @if ($category->description)
-                <p class="mt-2 max-w-xl text-[14px] {{ $banner ? 'text-white/75' : 'text-ink-3' }}">
+                <p class="mt-2 max-w-xl text-sm {{ $banner ? 'text-white/75' : 'text-ink-3' }}">
                     {{ $category->description }}
                 </p>
             @endif
@@ -279,11 +279,11 @@ new #[Layout('layouts::storefront')] class extends Component
                     {{-- Drawer header --}}
                     <div
                         class="sticky top-0 z-10 flex items-center justify-between border-b border-zinc-200 bg-white px-5 py-3.5">
-                        <span class="text-[13px] font-bold uppercase tracking-[0.08em] text-ink">Filters</span>
+                        <span class="text-sm font-bold uppercase tracking-widest text-ink">Filters</span>
                         <div class="flex items-center gap-3">
                             @if ($this->hasActiveFilters())
                                 <button type="button" wire:click="clearFilters"
-                                    class="cursor-pointer text-[12px] font-medium text-brand-500 hover:underline">
+                                    class="cursor-pointer text-xs font-medium text-brand-500 hover:underline">
                                     Clear all
                                 </button>
                             @endif
@@ -334,12 +334,12 @@ new #[Layout('layouts::storefront')] class extends Component
                             @endif
                         </flux:button>
 
-                        <div class="text-[13.5px] text-ink-3">
+                        <div class="text-sm text-ink-3">
                             Showing <span class="font-semibold text-ink">{{ $this->products->total() }}</span>
                             {{ \Illuminate\Support\Str::plural('product', $this->products->total()) }}
                             @if ($this->hasActiveFilters())
                                 <button type="button" wire:click="clearFilters"
-                                    class="ml-2.5 cursor-pointer text-[13px] text-brand-500 underline-offset-2 hover:underline">
+                                    class="ml-2.5 cursor-pointer text-sm text-brand-500 underline-offset-2 hover:underline">
                                     Clear filters
                                 </button>
                             @endif
@@ -347,7 +347,7 @@ new #[Layout('layouts::storefront')] class extends Component
                     </div>
                     <div class="flex items-center gap-2.5">
                         <select wire:model.live="sort"
-                            class="h-9 rounded border border-zinc-200 bg-white px-2.5 text-[13px] focus:border-brand-500 focus:ring-0 focus:outline-none">
+                            class="h-9 rounded border border-zinc-200 bg-white px-2.5 text-sm focus:border-brand-500 focus:ring-0 focus:outline-none">
                             <option value="popularity">Most popular</option>
                             <option value="newest">Newest</option>
                             <option value="name-asc">Name (A–Z)</option>
@@ -392,4 +392,5 @@ new #[Layout('layouts::storefront')] class extends Component
     </div>
 
     @include('partials.storefront.accessory-modal')
+    @include('partials.storefront.variation-modal')
 </div>

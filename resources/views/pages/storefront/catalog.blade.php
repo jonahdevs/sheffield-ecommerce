@@ -59,7 +59,7 @@ new #[Layout('layouts::storefront')] #[Title('Shop')] class extends Component
     public function products(): LengthAwarePaginator
     {
         $query = Product::query()
-            ->with(['brand:id,name', 'taxClass:id,rate', 'media'])
+            ->forCard()
             ->visibleInCatalog()
             ->published()
             ->honorStockVisibility();
@@ -163,11 +163,11 @@ new #[Layout('layouts::storefront')] #[Title('Shop')] class extends Component
                     {{-- Drawer header --}}
                     <div
                         class="sticky top-0 z-10 flex items-center justify-between border-b border-zinc-200 bg-white px-5 py-3.5">
-                        <span class="text-[13px] font-bold uppercase tracking-[0.08em] text-ink">Filters</span>
+                        <span class="text-sm font-bold uppercase tracking-widest text-ink">Filters</span>
                         <div class="flex items-center gap-3">
                             @if ($this->hasActiveFilters())
                                 <button type="button" wire:click="clearFilters"
-                                    class="cursor-pointer text-[12px] font-medium text-brand-500 hover:underline">
+                                    class="cursor-pointer text-xs font-medium text-brand-500 hover:underline">
                                     Clear all
                                 </button>
                             @endif
@@ -219,12 +219,12 @@ new #[Layout('layouts::storefront')] #[Title('Shop')] class extends Component
                             @endif
                         </flux:button>
 
-                        <div class="text-[13.5px] text-ink-3">
+                        <div class="text-sm text-ink-3">
                             Showing <span class="font-semibold text-ink">{{ $this->products->total() }}</span>
                             {{ \Illuminate\Support\Str::plural('product', $this->products->total()) }}
                             @if ($this->hasActiveFilters())
                                 <button type="button" wire:click="clearFilters"
-                                    class="ml-2.5 cursor-pointer text-[13px] text-brand-500 underline-offset-2 hover:underline">
+                                    class="ml-2.5 cursor-pointer text-sm text-brand-500 underline-offset-2 hover:underline">
                                     Clear filters
                                 </button>
                             @endif
@@ -232,7 +232,7 @@ new #[Layout('layouts::storefront')] #[Title('Shop')] class extends Component
                     </div>
                     <div class="flex items-center gap-2.5">
                         <select wire:model.live="sort"
-                            class="h-9 rounded border border-zinc-200 bg-white px-2.5 text-[13px] focus:border-brand-500 focus:ring-0 focus:outline-none">
+                            class="h-9 rounded border border-zinc-200 bg-white px-2.5 text-sm focus:border-brand-500 focus:ring-0 focus:outline-none">
                             <option value="popularity">Most popular</option>
                             <option value="newest">Newest</option>
                             <option value="name-asc">Name (A–Z)</option>
@@ -247,7 +247,7 @@ new #[Layout('layouts::storefront')] #[Title('Shop')] class extends Component
                     <div class="mb-5 flex flex-wrap gap-2">
                         @if (trim($q) !== '')
                             <button type="button" wire:click="$set('q', '')"
-                                class="inline-flex h-7 cursor-pointer items-center gap-1.5 rounded-full bg-surface-sunken px-3 text-[12.5px] font-medium text-ink-2 hover:bg-zinc-200">
+                                class="inline-flex h-7 cursor-pointer items-center gap-1.5 rounded-full bg-surface-sunken px-3 text-xs font-medium text-ink-2 hover:bg-zinc-200">
                                 <flux:icon.magnifying-glass variant="micro" class="size-3 text-ink-3" />
                                 "{{ $q }}"
                                 <flux:icon.x variant="micro" class="size-3 text-ink-3" />
@@ -255,14 +255,14 @@ new #[Layout('layouts::storefront')] #[Title('Shop')] class extends Component
                         @endif
                         @if ($selectedTag !== '')
                             <button type="button" wire:click="$set('selectedTag', '')"
-                                class="inline-flex h-7 cursor-pointer items-center gap-1.5 rounded-full bg-surface-sunken px-3 text-[12.5px] font-medium text-ink-2 hover:bg-zinc-200">
+                                class="inline-flex h-7 cursor-pointer items-center gap-1.5 rounded-full bg-surface-sunken px-3 text-xs font-medium text-ink-2 hover:bg-zinc-200">
                                 {{ $selectedTag }}
                                 <flux:icon.x variant="micro" class="size-3 text-ink-3" />
                             </button>
                         @endif
                         @if ($newArrivalsOnly)
                             <button type="button" wire:click="$set('newArrivalsOnly', false)"
-                                class="inline-flex h-7 cursor-pointer items-center gap-1.5 rounded-full bg-surface-sunken px-3 text-[12.5px] font-medium text-ink-2 hover:bg-zinc-200">
+                                class="inline-flex h-7 cursor-pointer items-center gap-1.5 rounded-full bg-surface-sunken px-3 text-xs font-medium text-ink-2 hover:bg-zinc-200">
                                 New Arrivals
                                 <flux:icon.x variant="micro" class="size-3 text-ink-3" />
                             </button>
@@ -271,7 +271,7 @@ new #[Layout('layouts::storefront')] #[Title('Shop')] class extends Component
                             @php $cat = $this->categoriesList->firstWhere('slug', $slug); @endphp
                             @if ($cat)
                                 <button type="button" wire:click="removeCategory('{{ $slug }}')"
-                                    class="inline-flex h-7 cursor-pointer items-center gap-1.5 rounded-full bg-surface-sunken px-3 text-[12.5px] font-medium text-ink-2 hover:bg-zinc-200">
+                                    class="inline-flex h-7 cursor-pointer items-center gap-1.5 rounded-full bg-surface-sunken px-3 text-xs font-medium text-ink-2 hover:bg-zinc-200">
                                     {{ $cat->name }}
                                     <flux:icon.x variant="micro" class="size-3 text-ink-3" />
                                 </button>
@@ -281,7 +281,7 @@ new #[Layout('layouts::storefront')] #[Title('Shop')] class extends Component
                             @php $br = $this->brandsList->firstWhere('slug', $brandSlug); @endphp
                             @if ($br)
                                 <button type="button" wire:click="removeBrand('{{ $brandSlug }}')"
-                                    class="inline-flex h-7 cursor-pointer items-center gap-1.5 rounded-full bg-surface-sunken px-3 text-[12.5px] font-medium text-ink-2 hover:bg-zinc-200">
+                                    class="inline-flex h-7 cursor-pointer items-center gap-1.5 rounded-full bg-surface-sunken px-3 text-xs font-medium text-ink-2 hover:bg-zinc-200">
                                     {{ $br->name }}
                                     <flux:icon.x variant="micro" class="size-3 text-ink-3" />
                                 </button>
@@ -289,14 +289,14 @@ new #[Layout('layouts::storefront')] #[Title('Shop')] class extends Component
                         @endforeach
                         @if ($inStockOnly)
                             <button type="button" wire:click="$toggle('inStockOnly')"
-                                class="inline-flex h-7 cursor-pointer items-center gap-1.5 rounded-full bg-surface-sunken px-3 text-[12.5px] font-medium text-ink-2 hover:bg-zinc-200">
+                                class="inline-flex h-7 cursor-pointer items-center gap-1.5 rounded-full bg-surface-sunken px-3 text-xs font-medium text-ink-2 hover:bg-zinc-200">
                                 In stock only
                                 <flux:icon.x variant="micro" class="size-3 text-ink-3" />
                             </button>
                         @endif
                         @if ($priceMin > 0 || $priceMax < 6000000)
                             <button type="button" wire:click="$set('priceMin', 0); $set('priceMax', 6000000)"
-                                class="inline-flex h-7 cursor-pointer items-center gap-1.5 rounded-full bg-surface-sunken px-3 text-[12.5px] font-medium text-ink-2 hover:bg-zinc-200">
+                                class="inline-flex h-7 cursor-pointer items-center gap-1.5 rounded-full bg-surface-sunken px-3 text-xs font-medium text-ink-2 hover:bg-zinc-200">
                                 @if ($priceMin > 0 && $priceMax < 6000000)
                                     {{ money($priceMin * 100) }} – {{ money($priceMax * 100) }}
                                 @elseif ($priceMin > 0)
@@ -309,7 +309,7 @@ new #[Layout('layouts::storefront')] #[Title('Shop')] class extends Component
                         @endif
                         @if ($minRating > 0)
                             <button type="button" wire:click="$set('minRating', 0)"
-                                class="inline-flex h-7 cursor-pointer items-center gap-1.5 rounded-full bg-surface-sunken px-3 text-[12.5px] font-medium text-ink-2 hover:bg-zinc-200">
+                                class="inline-flex h-7 cursor-pointer items-center gap-1.5 rounded-full bg-surface-sunken px-3 text-xs font-medium text-ink-2 hover:bg-zinc-200">
                                 <span class="inline-flex items-center gap-0.5">{{ $minRating }}
                                     <flux:icon.star variant="micro" class="size-3 text-amber-500" /> &amp; up
                                 </span>
@@ -351,4 +351,5 @@ new #[Layout('layouts::storefront')] #[Title('Shop')] class extends Component
     </div>
 
     @include('partials.storefront.accessory-modal')
+    @include('partials.storefront.variation-modal')
 </div>

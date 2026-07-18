@@ -87,7 +87,7 @@
     {{-- ================================================== --}}
     <div class="px-8 mt-5">
         <div class="text-[10px] font-bold uppercase tracking-widest text-zinc-700 mb-1.5">Quotation to:</div>
-        <div class="inline-block border border-zinc-900 px-4 py-2.5 text-[11.5px] leading-snug min-w-[14rem]"
+        <div class="inline-block border border-zinc-900 px-4 py-2.5 text-[11.5px] leading-snug min-w-56"
              style="box-shadow: 3px 3px 0 rgba(0,0,0,0.75);">
             @if ($contactName)
                 <div class="font-bold uppercase text-zinc-900">{{ $contactName }}</div>
@@ -114,7 +114,7 @@
     {{-- ================================================== --}}
     <div class="px-8 mt-6">
         <div class="overflow-x-auto">
-        <table class="w-full min-w-[640px] text-[12px] sm:min-w-0" style="border-collapse: collapse;">
+        <table class="w-full min-w-160 text-[12px] sm:min-w-0" style="border-collapse: collapse;">
             <thead>
                 <tr>
                     <th class="border border-zinc-300 bg-zinc-100 px-2 py-2 font-bold text-zinc-900 text-left w-8">#</th>

@@ -5,6 +5,7 @@ use App\Models\Brand;
 use App\Models\Category;
 use App\Models\CategoryPlacement;
 use App\Models\Product;
+use App\Models\ProductVariant;
 use Database\Seeders\BrandSeeder;
 use Database\Seeders\CategorySeeder;
 use Database\Seeders\ProductSeeder;
@@ -148,7 +149,70 @@ it('seeds the coffee taxonomy from the final e-commerce listing', function () {
     assertSpecificationsRenderAsTables();
     assertCoffeeDescriptionsSplitFromSeoCopy();
     assertCoffeeImagesFollowTheNamingConvention();
+    assertRoastingTraysAreGroupedByGnSize();
 });
+
+/**
+ * The three separate Roasting and Baking Tray listings (1/1, 2/1, 2/3 GN) are the
+ * same aluminium/TriLax tray in different gastronorm sizes, so they collapse into one
+ * variable product with a GN Size variation.
+ *
+ * SAP does NOT group these — it tracks each size as its own item under its IMG/OVE
+ * code — so the grouping is storefront-only. Each size therefore keeps its IMG/OVE SKU
+ * as the VARIANT sku (which is what SAP sync matches on), while the parent carries a
+ * synthetic SKU that SAP never sends, so its Product row cannot shadow a variant during
+ * sync (ProcessSapProductSync matches Product SKUs before variant SKUs).
+ * Folded into the seeding test above because seeding the catalogue is slow.
+ */
+function assertRoastingTraysAreGroupedByGnSize(): void
+{
+    $tray = Product::where('name', 'Roasting and Baking Tray')
+        ->where('sku', 'GROUP/ROASTING-BAKING-TRAY')
+        ->sole();
+
+    expect($tray->type->value)->toBe('variable');
+
+    // The SAP item codes must NOT exist as standalone products any more — otherwise the
+    // Product-first SAP lookup would update the parent/a product instead of the variant.
+    expect(Product::whereIn('sku', ['IMG/OVE/00058', 'IMG/OVE/00059', 'IMG/OVE/00060'])->count())->toBe(0);
+
+    // One visible variation attribute: GN Size.
+    $variationAttr = $tray->productAttributes()
+        ->where('is_variation_attribute', true)
+        ->with('attribute')
+        ->get();
+
+    expect($variationAttr)->toHaveCount(1)
+        ->and($variationAttr->first()->attribute->slug)->toBe('gn-size');
+
+    // Three variants keyed by the SAP item codes, small → large, each with its price,
+    // stock and per-size dimensions.
+    $variants = $tray->variants()->orderBy('sort_order')->get();
+
+    expect($variants)->toHaveCount(3)
+        ->and($variants->pluck('sku')->all())->toBe(['IMG/OVE/00060', 'IMG/OVE/00058', 'IMG/OVE/00059']);
+
+    // Every SAP key resolves through the variant table (the sync path SAP relies on).
+    foreach (['IMG/OVE/00058', 'IMG/OVE/00059', 'IMG/OVE/00060'] as $sapKey) {
+        expect(ProductVariant::where('sku', $sapKey)->exists())->toBeTrue();
+    }
+
+    // The 2/1 GN tray (SAP code IMG/OVE/00059). Prices are stored in minor units, so
+    // 24,233 KES → 2,423,300.
+    $twoOne = $variants->firstWhere('sku', 'IMG/OVE/00059');
+
+    expect($twoOne->price)->toBe(2423300)
+        ->and($twoOne->stock_quantity)->toBe(3)
+        ->and($twoOne->length)->toBe(650)
+        ->and($twoOne->height)->toBe(530);
+
+    // Each variant resolves to exactly one GN Size value.
+    $sizes = $variants->map(
+        fn ($v) => $v->attributeValues->firstWhere('attribute.slug', 'gn-size')?->value
+    )->all();
+
+    expect($sizes)->toBe(['2/3 GN', '1/1 GN', '2/1 GN']);
+}
 
 /**
  * The standalone water treatment units are sold as hygiene equipment rather than

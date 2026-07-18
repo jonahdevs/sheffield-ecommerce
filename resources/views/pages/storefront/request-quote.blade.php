@@ -344,7 +344,7 @@ new #[Layout('layouts::storefront')] #[Title('Request a quote')] class extends C
             <div class="flex-1 min-w-0">
                 <section>
                     @guest
-                        <p class="mb-5 text-[12.5px] text-ink-3">
+                        <p class="mb-5 text-xs text-ink-3">
                             Already have an account?
                             <a href="{{ route('login') }}" wire:navigate
                                 class="font-semibold text-brand-500 hover:text-brand-600">Log in</a>
@@ -384,7 +384,7 @@ new #[Layout('layouts::storefront')] #[Title('Request a quote')] class extends C
                         </div>
                         {{-- Delivery --}}
                         <div class="space-y-2">
-                            <div class="text-[11px] font-bold tracking-widest text-ink-3 uppercase">Delivery</div>
+                            <div class="text-xs font-bold tracking-widest text-ink-3 uppercase">Delivery</div>
                             <div class="grid gap-2 sm:grid-cols-2">
                                 <button type="button" wire:click="$set('needs_delivery', false)"
                                     class="flex items-start gap-3 rounded-md border p-4 text-left transition {{ !$needs_delivery ? 'border-brand-500 ring-1 ring-brand-500' : 'border-zinc-200 hover:border-zinc-300' }}">
@@ -395,8 +395,8 @@ new #[Layout('layouts::storefront')] #[Title('Request a quote')] class extends C
                                         @endif
                                     </span>
                                     <div>
-                                        <div class="text-[13.5px] font-semibold text-ink">Collect from Sheffield</div>
-                                        <div class="mt-0.5 text-[12px] text-ink-3">Pick up from our Nairobi showroom —
+                                        <div class="text-sm font-semibold text-ink">Collect from Sheffield</div>
+                                        <div class="mt-0.5 text-xs text-ink-3">Pick up from our Nairobi showroom —
                                             free.</div>
                                     </div>
                                 </button>
@@ -410,8 +410,8 @@ new #[Layout('layouts::storefront')] #[Title('Request a quote')] class extends C
                                         @endif
                                     </span>
                                     <div>
-                                        <div class="text-[13.5px] font-semibold text-ink">Deliver to my location</div>
-                                        <div class="mt-0.5 text-[12px] text-ink-3">We'll include delivery in your quote.
+                                        <div class="text-sm font-semibold text-ink">Deliver to my location</div>
+                                        <div class="mt-0.5 text-xs text-ink-3">We'll include delivery in your quote.
                                         </div>
                                     </div>
                                 </button>
@@ -421,7 +421,7 @@ new #[Layout('layouts::storefront')] #[Title('Request a quote')] class extends C
                                 <div class="rounded-md border border-zinc-200 bg-white">
                                     <div class="flex items-center justify-between border-b border-zinc-200 px-5 py-3.5">
                                         <span
-                                            class="text-[11px] font-bold tracking-widest text-ink-3 uppercase">Delivery
+                                            class="text-xs font-bold tracking-widest text-ink-3 uppercase">Delivery
                                             address</span>
                                         @auth
                                             @if ($this->addresses->isNotEmpty())
@@ -440,30 +440,30 @@ new #[Layout('layouts::storefront')] #[Title('Request a quote')] class extends C
                                                 @php $addr = $this->selectedAddress; @endphp
                                                 <div class="flex items-center gap-2">
                                                     <span
-                                                        class="text-[10.5px] font-bold tracking-widest text-ink-3 uppercase">{{ $addr->label }}</span>
+                                                        class="text-xs font-bold tracking-widest text-ink-3 uppercase">{{ $addr->label }}</span>
                                                     @if ($addr->is_default)
                                                         <span
-                                                            class="rounded-full bg-brand-500/10 px-2 py-0.5 text-[9.5px] font-bold tracking-wide text-brand-500 uppercase">Default</span>
+                                                            class="rounded-full bg-brand-500/10 px-2 py-0.5 text-xs font-bold tracking-wide text-brand-500 uppercase">Default</span>
                                                     @endif
                                                 </div>
-                                                <div class="mt-1 text-[14px] font-semibold text-ink">{{ $addr->fullName() }}
+                                                <div class="mt-1 text-sm font-semibold text-ink">{{ $addr->fullName() }}
                                                 </div>
-                                                <div class="mt-1 text-[13px] text-ink-2">{{ $addr->oneLiner() }}</div>
+                                                <div class="mt-1 text-sm text-ink-2">{{ $addr->oneLiner() }}</div>
                                             @elseif ($this->addresses->isNotEmpty())
-                                                <p class="text-[13px] text-ink-3">Select a delivery address to continue.</p>
+                                                <p class="text-sm text-ink-3">Select a delivery address to continue.</p>
                                             @else
                                                 <div
                                                     class="rounded-md border border-dashed border-zinc-300 p-5 text-center">
                                                     <flux:icon.map-pin variant="outline"
                                                         class="mx-auto size-6 text-ink-4" />
-                                                    <p class="mt-2 text-[12.5px] text-ink-3">No saved addresses yet.</p>
+                                                    <p class="mt-2 text-xs text-ink-3">No saved addresses yet.</p>
                                                     <flux:button type="button" variant="customer-primary" size="customer"
                                                         icon="plus" wire:click="openAddressModal('create')"
                                                         class="mt-3">Add an address</flux:button>
                                                 </div>
                                             @endif
                                             @error('selectedAddressId')
-                                                <p class="mt-2 text-[12.5px] text-red-500">{{ $message }}</p>
+                                                <p class="mt-2 text-xs text-red-500">{{ $message }}</p>
                                             @enderror
                                         @endauth
                                         @guest
@@ -496,7 +496,7 @@ new #[Layout('layouts::storefront')] #[Title('Request a quote')] class extends C
             <aside class="w-full shrink-0 lg:sticky lg:top-44 lg:w-96">
                 <div class="rounded-md border border-zinc-200 bg-white">
                     <div class="flex items-center justify-between border-b border-zinc-200 px-6 py-3">
-                        <h2 class="text-[11px] font-bold tracking-[0.14em] text-ink uppercase">
+                        <h2 class="text-xs font-bold tracking-widest text-ink uppercase">
                             Items <span class="ml-0.5 text-ink-4">({{ $this->lines->count() }})</span>
                         </h2>
                         <flux:button type="button" variant="customer-outline" size="customer" icon="plus"
@@ -510,7 +510,7 @@ new #[Layout('layouts::storefront')] #[Title('Request a quote')] class extends C
                         @if ($this->lines->isEmpty())
                             <div class="rounded-md border border-dashed border-zinc-300 p-6 text-center">
                                 <flux:icon.document-text variant="outline" class="mx-auto size-7 text-ink-4" />
-                                <p class="mt-2 text-[12.5px] text-ink-3">No items yet. Add products, or just describe
+                                <p class="mt-2 text-xs text-ink-3">No items yet. Add products, or just describe
                                     what you need in the notes.</p>
                             </div>
                         @else
@@ -531,10 +531,10 @@ new #[Layout('layouts::storefront')] #[Title('Request a quote')] class extends C
                                             @endif
                                         </div>
                                         <div class="min-w-0 flex-1">
-                                            <div class="truncate text-[12.5px] font-semibold leading-snug text-ink">
+                                            <div class="truncate text-xs font-semibold leading-snug text-ink">
                                                 {{ $line['product']->name }}</div>
                                             @if ($line['label'])
-                                                <div class="truncate text-[11px] text-ink-3">{{ $line['label'] }}
+                                                <div class="truncate text-xs text-ink-3">{{ $line['label'] }}
                                                 </div>
                                             @endif
                                             <div class="mt-1 flex items-center justify-between gap-2">
@@ -545,7 +545,7 @@ new #[Layout('layouts::storefront')] #[Title('Request a quote')] class extends C
                                                         <span class="text-sm leading-none">−</span>
                                                     </button>
                                                     <span
-                                                        class="min-w-7 text-center text-[12.5px] font-semibold tabular-nums">{{ $line['qty'] }}</span>
+                                                        class="min-w-7 text-center text-xs font-semibold tabular-nums">{{ $line['qty'] }}</span>
                                                     <button type="button"
                                                         wire:click="incrementItem('{{ $line['key'] }}')"
                                                         class="flex size-7 cursor-pointer items-center justify-center text-ink-3 transition hover:bg-surface-sunken hover:text-ink">
@@ -571,7 +571,7 @@ new #[Layout('layouts::storefront')] #[Title('Request a quote')] class extends C
                             Submit request
                         </flux:button>
 
-                        <div class="mt-4 flex flex-col gap-2 text-[12px] text-ink-3">
+                        <div class="mt-4 flex flex-col gap-2 text-xs text-ink-3">
                             <span class="flex items-center gap-2">
                                 <flux:icon.clock variant="micro" class="size-3.5 text-brand-500" />
                                 Typical response within 1 business day
@@ -597,7 +597,7 @@ new #[Layout('layouts::storefront')] #[Title('Request a quote')] class extends C
                 spellcheck="false" autofocus icon="magnifying-glass" clearable
                 placeholder="Search products by name, brand or SKU…" />
 
-            <div class="mt-4 mb-1 text-[10.5px] font-bold tracking-widest text-ink-4 uppercase">
+            <div class="mt-4 mb-1 text-xs font-bold tracking-widest text-ink-4 uppercase">
                 {{ strlen(trim($itemSearch)) >= 2 ? 'Results' : 'Browse the catalog' }}
             </div>
 
@@ -605,12 +605,12 @@ new #[Layout('layouts::storefront')] #[Title('Request a quote')] class extends C
                 @if ($this->searchResults->isEmpty())
                     <div class="py-12 text-center">
                         @if (strlen(trim($itemSearch)) >= 2)
-                            <p class="text-[13.5px] font-medium text-ink-2">No matches for "{{ $itemSearch }}"</p>
-                            <p class="mt-1 text-[12px] text-ink-4">Try a brand, category or SKU. Already-added items
+                            <p class="text-sm font-medium text-ink-2">No matches for "{{ $itemSearch }}"</p>
+                            <p class="mt-1 text-xs text-ink-4">Try a brand, category or SKU. Already-added items
                                 are hidden.</p>
                         @else
                             <flux:icon.cube variant="outline" class="mx-auto size-7 text-ink-4" />
-                            <p class="mt-2 text-[13px] text-ink-3">No more products to add.</p>
+                            <p class="mt-2 text-sm text-ink-3">No more products to add.</p>
                         @endif
                     </div>
                 @else
@@ -645,14 +645,14 @@ new #[Layout('layouts::storefront')] #[Title('Request a quote')] class extends C
                                 <div class="flex flex-1 flex-col px-3 py-2.5">
                                     @if ($product->brand)
                                         <div
-                                            class="truncate text-[9.5px] font-bold tracking-[0.08em] text-brand-blue-600 uppercase">
+                                            class="truncate text-xs font-bold tracking-widest text-brand-blue-600 uppercase">
                                             {{ $product->brand->name }}</div>
                                     @endif
                                     <div
-                                        class="mt-0.5 line-clamp-2 min-h-8 text-[12px] font-medium leading-snug text-ink">
+                                        class="mt-0.5 line-clamp-2 min-h-8 text-xs font-medium leading-snug text-ink">
                                         {{ $product->name }}</div>
                                     @if ($product->sku)
-                                        <div class="mt-1.5 font-mono text-[10.5px] text-ink-4">{{ $product->sku }}
+                                        <div class="mt-1.5 font-mono text-xs text-ink-4">{{ $product->sku }}
                                         </div>
                                     @endif
                                 </div>
@@ -669,7 +669,7 @@ new #[Layout('layouts::storefront')] #[Title('Request a quote')] class extends C
             </div>
 
             <div class="mt-5 flex items-center justify-between border-t border-zinc-100 pt-4">
-                <span class="text-[12.5px] text-ink-3">{{ $this->lines->count() }}
+                <span class="text-xs text-ink-3">{{ $this->lines->count() }}
                     item{{ $this->lines->count() === 1 ? '' : 's' }} in quote</span>
                 <flux:button type="button" variant="customer-primary" size="customer"
                     x-on:click="$flux.modals().close()">Done</flux:button>

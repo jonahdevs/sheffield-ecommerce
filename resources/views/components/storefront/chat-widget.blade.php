@@ -104,7 +104,7 @@ new class extends Component {
 
     {{-- Panel --}}
     <div x-show="open" x-cloak x-transition.origin.bottom.right
-        class="flex h-[32rem] w-[22rem] max-w-[calc(100vw-2rem)] flex-col overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-2xl">
+        class="flex h-128 w-88 max-w-[calc(100vw-2rem)] flex-col overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-2xl">
 
         {{-- Header --}}
         <div class="flex items-center justify-between bg-brand-blue-500 px-4 py-3 text-white">
@@ -121,17 +121,17 @@ new class extends Component {
         {{-- Message log --}}
         <div x-ref="log" class="scrollbar-thin flex-1 space-y-3 overflow-y-auto bg-surface-sunken p-4">
             @if (empty($messages))
-                <div class="text-[13px] text-ink-3">
+                <div class="text-sm text-ink-3">
                     <p class="mb-3">{{ $greeting }}</p>
                     <div class="flex flex-wrap gap-2">
                         <button type="button" wire:click="ask('Help me choose the right equipment for my kitchen.')"
-                            class="cursor-pointer rounded-full border border-line bg-white px-3 py-1.5 text-[12.5px] font-medium text-ink-2 transition hover:border-brand-blue-500 hover:text-brand-blue-500">Find
+                            class="cursor-pointer rounded-full border border-line bg-white px-3 py-1.5 text-xs font-medium text-ink-2 transition hover:border-brand-blue-500 hover:text-brand-blue-500">Find
                             equipment</button>
                         <button type="button" wire:click="ask('How do delivery and installation work?')"
-                            class="cursor-pointer rounded-full border border-line bg-white px-3 py-1.5 text-[12.5px] font-medium text-ink-2 transition hover:border-brand-blue-500 hover:text-brand-blue-500">Delivery
+                            class="cursor-pointer rounded-full border border-line bg-white px-3 py-1.5 text-xs font-medium text-ink-2 transition hover:border-brand-blue-500 hover:text-brand-blue-500">Delivery
                             &amp; install</button>
                         <a href="{{ route('quote.request') }}" wire:navigate
-                            class="rounded-full border border-line bg-white px-3 py-1.5 text-[12.5px] font-medium text-ink-2 transition hover:border-brand-blue-500 hover:text-brand-blue-500">Request
+                            class="rounded-full border border-line bg-white px-3 py-1.5 text-xs font-medium text-ink-2 transition hover:border-brand-blue-500 hover:text-brand-blue-500">Request
                             a quote</a>
                     </div>
                 </div>
@@ -144,7 +144,7 @@ new class extends Component {
                     'justify-start' => $message['role'] !== 'user',
                 ])>
                     <div @class([
-                        'max-w-[85%] rounded-2xl px-3.5 py-2 text-[13px] leading-relaxed whitespace-pre-line',
+                        'max-w-[85%] rounded-2xl px-3.5 py-2 text-sm leading-relaxed whitespace-pre-line',
                         'bg-brand-blue-500 text-white' => $message['role'] === 'user',
                         'bg-white text-ink border border-line' => $message['role'] !== 'user',
                     ])>{{ $message['content'] }}</div>
@@ -165,7 +165,7 @@ new class extends Component {
         <form wire:submit="send" class="flex items-center gap-2 border-t border-zinc-200 bg-white p-3">
             <input type="text" wire:model="draft" wire:loading.attr="disabled" placeholder="Type your message…"
                 autocomplete="off"
-                class="min-w-0 flex-1 rounded-full border border-line bg-surface-sunken px-3.5 py-2 text-[13px] text-ink placeholder:text-ink-4 focus:border-brand-blue-500 focus:outline-none" />
+                class="min-w-0 flex-1 rounded-full border border-line bg-surface-sunken px-3.5 py-2 text-sm text-ink placeholder:text-ink-4 focus:border-brand-blue-500 focus:outline-none" />
             <button type="submit" wire:loading.attr="disabled" aria-label="Send message"
                 class="inline-flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-full bg-brand-blue-500 text-white transition hover:bg-brand-blue-600 disabled:opacity-50">
                 <flux:icon.paper-airplane variant="micro" class="size-4" />

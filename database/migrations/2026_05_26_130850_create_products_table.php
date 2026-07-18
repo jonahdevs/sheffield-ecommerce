@@ -181,6 +181,10 @@ return new class extends Migration
             $table->string('sku')->unique();
             $table->string('barcode')->nullable();
 
+            // Manufacturer article number. Shown to customers in place of the SKU,
+            // which is internal; null falls back to the parent product's.
+            $table->string('model_number')->nullable();
+
             // Price override (null = inherit from parent product)
             $table->unsignedBigInteger('price')->nullable();
             $table->unsignedBigInteger('compare_at_price')->nullable();

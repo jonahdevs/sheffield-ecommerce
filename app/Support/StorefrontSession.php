@@ -319,7 +319,7 @@ final class StorefrontSession
         }
 
         $products = Product::query()
-            ->with(['brand', 'media'])
+            ->forCard()
             ->whereIn('slug', $slugs)
             ->where('visibility', 'visible')
             ->get()

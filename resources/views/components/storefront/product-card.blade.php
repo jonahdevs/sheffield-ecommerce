@@ -13,9 +13,31 @@
     $isCompared = \App\Support\StorefrontSession::isCompared($product->slug);
     $cartQty = \App\Support\StorefrontSession::cartQuantity($product->slug);
     $discount = $compareAt && $price && $compareAt > $price ? (int) round((1 - $price / $compareAt) * 100) : null;
-    // Variable + grouped products need a choice made on the product page, so they
-    // link there instead of quick-adding the parent from the card.
-    $needsOptions = in_array($product->type, [\App\Enums\ProductType::VARIABLE, \App\Enums\ProductType::GROUPED], true);
+
+    // A variable product is priced by its variants, not the parent row: show the
+    // span across them so the card doesn't imply a single price, and drop the
+    // sale/discount treatment which is meaningless against a range. Mirrors the PDP.
+    $isPriceRange = false;
+    if ($product->type === \App\Enums\ProductType::VARIABLE) {
+        $variantPrices = $product->variants
+            ->map(fn($variant) => $variant->compare_at_price ?? $variant->price)
+            ->filter()
+            ->map(fn($cents) => $tax->displayPriceCents($product, (int) $cents));
+
+        if ($variantPrices->isNotEmpty()) {
+            $min = (int) $variantPrices->min();
+            $max = (int) $variantPrices->max();
+            $isPriceRange = $min !== $max;
+            $priceLabel = $isPriceRange ? money($min) . ' – ' . money($max) : money($min);
+            $compareLabel = null;
+            $discount = null;
+        }
+    }
+    // Variable products pick a variant in a modal opened from the card itself.
+    $isVariable = $product->type === \App\Enums\ProductType::VARIABLE;
+    // Grouped products still need the product page: their children are configured
+    // there, not chosen from a variant list.
+    $needsOptions = $product->type === \App\Enums\ProductType::GROUPED;
     // Quote-only and unpriced products can't be quick-added (there's no price to
     // charge); they route to the product page where the quote flow lives.
     $isQuoteOnly = $product->requires_quotation || ($product->sale_price ?? $product->price) === null;
@@ -53,7 +75,7 @@
         {{-- Discount badge --}}
         @if ($discount)
             <span
-                class="absolute top-2.5 left-0 z-10 inline-flex h-5 items-center rounded-r bg-brand-500 px-2 text-[10.5px] font-bold tracking-wider text-white">
+                class="absolute top-2.5 left-0 z-10 inline-flex h-5 items-center rounded-r bg-brand-500 px-2 text-xs font-bold tracking-wider text-white">
                 −{{ $discount }}%
             </span>
         @endif
@@ -61,7 +83,7 @@
         {{-- Optional caller badge (e.g. required-accessory quantity) — sits below the discount badge if both show --}}
         @if ($badge)
             <span @class([
-                'absolute left-0 z-10 inline-flex h-5 items-center rounded-r bg-rose-500 px-2 text-[10.5px] font-bold tracking-wide text-white',
+                'absolute left-0 z-10 inline-flex h-5 items-center rounded-r bg-rose-500 px-2 text-xs font-bold tracking-wide text-white',
                 'top-9' => $discount,
                 'top-2.5' => !$discount,
             ])>
@@ -103,17 +125,25 @@
             </flux:tooltip>
         </div>
 
-        {{-- Variable / grouped: route to the product page to choose options --}}
-        @if ($needsOptions)
+        {{-- Variable: same round cart button as a simple product, but it opens the
+             variation picker instead of adding the parent, which has no price. --}}
+        @if ($isVariable)
+            <button type="button" wire:click="openVariationModal('{{ $product->slug }}')"
+                aria-label="Choose a variation of {{ $product->name }}"
+                class="absolute right-2.5 bottom-2.5 z-10 inline-flex size-9 cursor-pointer items-center justify-center rounded-full bg-brand-500 text-white shadow-md transition hover:bg-brand-600">
+                <flux:icon.shopping-cart variant="micro" class="size-3.5" />
+            </button>
+            {{-- Grouped: route to the product page to configure the set --}}
+        @elseif ($needsOptions)
             <a href="{{ route('product.show', $product) }}" wire:navigate aria-label="Select options"
-                class="absolute right-2.5 bottom-2.5 z-10 inline-flex h-9 items-center gap-1.5 rounded-full bg-brand-500 px-3.5 text-[12px] font-semibold text-white shadow-md transition hover:bg-brand-600">
+                class="absolute right-2.5 bottom-2.5 z-10 inline-flex h-9 items-center gap-1.5 rounded-full bg-brand-500 px-3.5 text-xs font-semibold text-white shadow-md transition hover:bg-brand-600">
                 <flux:icon.adjustments-horizontal variant="micro" class="size-3.5" />
                 Options
             </a>
             {{-- Quote-only / unpriced: no quick-add — route to the product page --}}
         @elseif ($isQuoteOnly)
             <a href="{{ route('product.show', $product) }}" wire:navigate aria-label="Request a quote"
-                class="absolute right-2.5 bottom-2.5 z-10 inline-flex h-9 items-center gap-1.5 rounded-full bg-brand-500 px-3.5 text-[12px] font-semibold text-white shadow-md transition hover:bg-brand-600">
+                class="absolute right-2.5 bottom-2.5 z-10 inline-flex h-9 items-center gap-1.5 rounded-full bg-brand-500 px-3.5 text-xs font-semibold text-white shadow-md transition hover:bg-brand-600">
                 <flux:icon.document-text variant="micro" class="size-3.5" />
                 Quote
             </a>
@@ -149,7 +179,7 @@
 
                 {{-- Badge visible when collapsed + in cart --}}
                 <span x-show="qty > 0 && !expanded" x-cloak x-text="qty"
-                    class="absolute -top-1 -right-1 z-10 flex size-4 items-center justify-center rounded-full bg-white text-[10px] font-bold text-brand-500 shadow-sm">
+                    class="absolute -top-1 -right-1 z-10 flex size-4 items-center justify-center rounded-full bg-white text-xs font-bold text-brand-500 shadow-sm">
                 </span>
 
                 {{-- Single pill — right edge is fixed, expands leftward --}}
@@ -164,7 +194,7 @@
                             <flux:icon.trash-2 variant="micro" class="size-3.5" x-show="qty <= 1" />
                             <flux:icon.minus variant="micro" class="size-3.5" x-show="qty > 1" x-cloak />
                         </button>
-                        <span x-text="qty" class="flex-1 text-center text-[13px] font-bold tabular-nums"></span>
+                        <span x-text="qty" class="flex-1 text-center text-sm font-bold tabular-nums"></span>
                     </div>
 
                     {{-- Right zone: cart icon or plus — always pinned to right edge --}}
@@ -178,23 +208,28 @@
         @endif
     </div>
 
-    {{-- Info — only the product name links out; brand, SKU and price are plain text --}}
+    {{-- Info — only the product name links out; brand and price are plain text --}}
     <div class="flex flex-1 flex-col px-3 py-3 sm:px-4 sm:py-3.5">
         @if ($brandName)
-            <div class="text-[11px] font-bold tracking-[0.08em] text-brand-blue-600 uppercase">{{ $brandName }}
+            <div class="text-xs font-bold tracking-widest text-brand-blue-600 uppercase">{{ $brandName }}
             </div>
         @endif
         <a href="{{ route('product.show', $product) }}" wire:navigate
-            class="mt-1 line-clamp-2 min-h-9.5 text-[13.5px] font-medium leading-snug text-ink hover:text-brand-600">
+            class="mt-1 line-clamp-2 min-h-9.5 text-sm font-medium leading-snug text-ink hover:text-brand-600">
             {{ $product->name }}
         </a>
-        <div class="mt-0.5 text-[11px] text-ink-4 tabular-nums">{{ $product->sku }}</div>
 
         <div class="mt-3">
             @if ($compareLabel)
-                <div class="text-[11.5px] text-ink-4 line-through">{!! $compareLabel !!}</div>
+                <div class="text-xs text-ink-4 line-through">{!! $compareLabel !!}</div>
             @endif
-            <div class="text-[15px] font-bold text-ink tabular-nums whitespace-nowrap">{!! $priceLabel !!}</div>
+            {{-- A range is roughly twice as wide as a single figure, so it wraps
+                 rather than overflowing the card. --}}
+            <div @class([
+                'font-bold text-ink tabular-nums',
+                'text-base whitespace-nowrap' => !$isPriceRange,
+                'text-sm leading-snug' => $isPriceRange,
+            ])>{!! $priceLabel !!}</div>
         </div>
     </div>
 

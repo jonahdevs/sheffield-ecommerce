@@ -6,10 +6,10 @@
 
 <div class="mt-16">
     <div class="mb-4 flex items-baseline justify-between">
-        <h2 class="text-[22px] font-semibold tracking-tight">{{ $title }}</h2>
+        <h2 class="text-2xl font-semibold tracking-tight">{{ $title }}</h2>
         @if ($viewAllUrl)
             <a href="{{ $viewAllUrl }}" wire:navigate
-                class="text-[13px] font-medium text-brand-500 underline transition-colors hover:text-brand-600">
+                class="text-sm font-medium text-brand-500 underline transition-colors hover:text-brand-600">
                 View all
             </a>
         @endif

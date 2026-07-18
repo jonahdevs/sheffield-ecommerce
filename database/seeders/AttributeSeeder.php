@@ -36,6 +36,45 @@ class AttributeSeeder extends Seeder
                     ['value' => 'l', 'label' => 'Large'],
                 ],
             ],
+            [
+                // Gastronorm size — the variation axis for combi-oven trays, containers,
+                // grids and similar accessories that ship in the standard GN footprints.
+                'name' => 'GN Size',
+                'slug' => 'gn-size',
+                'type' => AttributeType::SELECT,
+                'values' => [
+                    ['value' => '1/3 GN', 'label' => '1/3 GN'],
+                    ['value' => '2/3 GN', 'label' => '2/3 GN'],
+                    ['value' => '1/1 GN', 'label' => '1/1 GN'],
+                    ['value' => '2/1 GN', 'label' => '2/1 GN'],
+                ],
+            ],
+            [
+                // Container depth — pairs with GN Size for gastronorm containers, which
+                // come in the same footprint at more than one depth. Shallow suits dry
+                // roasting and baking; deep holds sauce for braising and stewing.
+                'name' => 'Depth',
+                'slug' => 'depth',
+                'type' => AttributeType::SELECT,
+                'values' => [
+                    ['value' => '20 mm', 'label' => '20 mm'],
+                    ['value' => '60 mm', 'label' => '60 mm'],
+                    ['value' => '100 mm', 'label' => '100 mm'],
+                ],
+            ],
+            [
+                // How much a rack holds. Some accessories share a footprint but differ
+                // in what they carry — the poultry spikes are all 1/1 GN, and vary only
+                // in how many birds fit (and therefore how large each bird may be).
+                'name' => 'Capacity',
+                'slug' => 'capacity',
+                'type' => AttributeType::SELECT,
+                'values' => [
+                    ['value' => '4 birds', 'label' => '4 birds'],
+                    ['value' => '8 birds', 'label' => '8 birds'],
+                    ['value' => '10 birds', 'label' => '10 birds'],
+                ],
+            ],
         ];
 
         foreach ($attributes as $attrIndex => $attr) {

@@ -27,7 +27,7 @@ new class extends Component
         class="relative inline-flex size-10 cursor-pointer items-center justify-center rounded-md text-ink-2 transition hover:bg-surface-sunken hover:text-ink">
         <flux:icon.shopping-cart variant="micro" class="size-5" />
         @if ($cartCount > 0)
-            <span class="absolute top-1 right-1 inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-brand-500 px-1 text-[10px] font-bold text-white tabular-nums">{{ $cartCount }}</span>
+            <span class="absolute top-1 right-1 inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-brand-500 px-1 text-xs font-bold text-white tabular-nums">{{ $cartCount }}</span>
         @endif
     </button>
 
@@ -37,8 +37,8 @@ new class extends Component
         @if ($lines->isEmpty())
             <div class="px-5 py-8 text-center">
                 <flux:icon.shopping-cart variant="outline" class="mx-auto size-8 text-ink-4" />
-                <div class="mt-3 text-[14px] font-medium text-ink">Your cart is empty</div>
-                <p class="mt-1 text-[12.5px] text-ink-3">Browse equipment and add items to get started.</p>
+                <div class="mt-3 text-sm font-medium text-ink">Your cart is empty</div>
+                <p class="mt-1 text-xs text-ink-3">Browse equipment and add items to get started.</p>
                 <flux:button variant="customer-primary" size="customer" :href="route('catalog')" wire:navigate class="mt-4">
                     Shop the catalog
                 </flux:button>
@@ -56,10 +56,10 @@ new class extends Component
                         @endif
                         <div class="min-w-0 flex-1">
                             <a href="{{ route('product.show', $product) }}" wire:navigate
-                               class="line-clamp-2 text-[13px] font-semibold leading-snug text-ink hover:text-brand-500">
+                               class="line-clamp-2 text-sm font-semibold leading-snug text-ink hover:text-brand-500">
                                 {{ $product->name }}
                             </a>
-                            <div class="mt-0.5 text-[12px] text-brand-500 tabular-nums">
+                            <div class="mt-0.5 text-xs text-brand-500 tabular-nums">
                                 {{ $line['qty'] }} × {!! money($product->sale_price ?? $product->price ?? 0) !!}
                             </div>
                         </div>
@@ -75,8 +75,8 @@ new class extends Component
             {{-- Total + actions --}}
             <div class="border-t border-zinc-100 px-4 py-4">
                 <div class="flex items-center justify-between">
-                    <span class="text-[13px] font-semibold text-ink">Total</span>
-                    <span class="text-[13px] font-bold text-brand-500 tabular-nums">{!! money($totalCents) !!}</span>
+                    <span class="text-sm font-semibold text-ink">Total</span>
+                    <span class="text-sm font-bold text-brand-500 tabular-nums">{!! money($totalCents) !!}</span>
                 </div>
                 <div class="mt-3 flex gap-2">
                     <flux:button variant="customer-outline" size="customer" :href="route('cart')" wire:navigate class="flex-1!">View cart</flux:button>

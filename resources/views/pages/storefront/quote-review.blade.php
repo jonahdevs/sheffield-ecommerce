@@ -124,8 +124,8 @@ new #[Layout('layouts::storefront')] #[Title('Review Your Quote')] class extends
     @if ($quote->isApprovable())
         <div class="mb-6 flex flex-wrap items-center justify-between gap-4 rounded-md border border-brand-200 bg-brand-50 px-5 py-4">
             <div>
-                <p class="text-[14px] font-semibold text-brand-800">Your quotation is ready for review</p>
-                <p class="mt-0.5 text-[13px] text-brand-600">Review the details below. Approving will ask you to create an account so you can pay online and track your order.</p>
+                <p class="text-sm font-semibold text-brand-800">Your quotation is ready for review</p>
+                <p class="mt-0.5 text-sm text-brand-600">Review the details below. Approving will ask you to create an account so you can pay online and track your order.</p>
             </div>
             <div class="flex items-center gap-3">
                 <flux:button variant="ghost" size="sm" wire:click="decline">Decline</flux:button>
@@ -139,14 +139,14 @@ new #[Layout('layouts::storefront')] #[Title('Review Your Quote')] class extends
     {{-- Post-decision banners --}}
     @if ($quote->status === QuoteStatus::APPROVED)
         <div class="mb-6 rounded-md border border-emerald-200 bg-emerald-50 px-5 py-4">
-            <p class="text-[14px] font-semibold text-emerald-800">Quote approved — thank you</p>
-            <p class="mt-0.5 text-[13px] text-emerald-600">Our team will be in touch shortly to arrange payment and next steps.</p>
+            <p class="text-sm font-semibold text-emerald-800">Quote approved — thank you</p>
+            <p class="mt-0.5 text-sm text-emerald-600">Our team will be in touch shortly to arrange payment and next steps.</p>
         </div>
     @elseif ($quote->status === QuoteStatus::DECLINED)
         <div class="mb-6 flex flex-wrap items-center justify-between gap-3 rounded-md border border-zinc-200 bg-zinc-50 px-5 py-4">
             <div>
-                <p class="text-[14px] font-semibold text-ink">Quote declined</p>
-                <p class="mt-0.5 text-[13px] text-ink-3">Changed your mind? You can start a fresh request any time.</p>
+                <p class="text-sm font-semibold text-ink">Quote declined</p>
+                <p class="mt-0.5 text-sm text-ink-3">Changed your mind? You can start a fresh request any time.</p>
             </div>
             <flux:button variant="customer-outline" size="customer" icon="arrow-path" :href="route('quote.request')" wire:navigate>
                 Request a new quote
@@ -155,8 +155,8 @@ new #[Layout('layouts::storefront')] #[Title('Review Your Quote')] class extends
     @elseif ($quote->hasExpired())
         <div class="mb-6 flex flex-wrap items-center justify-between gap-3 rounded-md border border-red-200 bg-red-50 px-5 py-4">
             <div>
-                <p class="text-[14px] font-semibold text-red-800">This quote has expired</p>
-                <p class="mt-0.5 text-[13px] text-red-600">Its validity period has ended — request an updated quotation to proceed.</p>
+                <p class="text-sm font-semibold text-red-800">This quote has expired</p>
+                <p class="mt-0.5 text-sm text-red-600">Its validity period has ended — request an updated quotation to proceed.</p>
             </div>
             <flux:button variant="customer-primary" size="customer" icon="arrow-path" :href="route('quote.request')" wire:navigate>
                 Request a fresh quote
@@ -188,7 +188,7 @@ new #[Layout('layouts::storefront')] #[Title('Review Your Quote')] class extends
                             @foreach ($quote->items as $item)
                                 <flux:table.row wire:key="item-{{ $item->id }}">
                                     <flux:table.cell>
-                                        <span class="text-[13.5px] font-semibold leading-snug text-ink">{{ $item->product_name }}</span>
+                                        <span class="text-sm font-semibold leading-snug text-ink">{{ $item->product_name }}</span>
                                     </flux:table.cell>
                                     <flux:table.cell class="hidden sm:table-cell">
                                         <span class="font-mono text-xs text-ink-4">{{ $item->product_sku ?: '—' }}</span>
@@ -211,7 +211,7 @@ new #[Layout('layouts::storefront')] #[Title('Review Your Quote')] class extends
                 @if ($quote->terms)
                     <flux:card>
                         <flux:heading size="sm" class="uppercase tracking-widest text-ink-3">Terms & conditions</flux:heading>
-                        <p class="mt-3 whitespace-pre-line text-[13px] leading-relaxed text-ink-3">{{ $quote->terms }}</p>
+                        <p class="mt-3 whitespace-pre-line text-sm leading-relaxed text-ink-3">{{ $quote->terms }}</p>
                     </flux:card>
                 @endif
 
@@ -249,7 +249,7 @@ new #[Layout('layouts::storefront')] #[Title('Review Your Quote')] class extends
                     </div>
                     <flux:separator />
                     <div class="flex items-baseline justify-between px-5 py-4">
-                        <flux:text class="text-[12px] font-bold uppercase tracking-wide">Total</flux:text>
+                        <flux:text class="text-xs font-bold uppercase tracking-wide">Total</flux:text>
                         <span class="font-serif text-2xl text-brand-500 tabular-nums">{!! money($quote->total_cents) !!}</span>
                     </div>
                 </flux:card>
@@ -271,12 +271,12 @@ new #[Layout('layouts::storefront')] #[Title('Review Your Quote')] class extends
                 @foreach ($quote->items as $item)
                     <div class="flex items-center justify-between px-6 py-3">
                         <div>
-                            <p class="text-[13.5px] font-medium text-ink">{{ $item->product_name }}</p>
+                            <p class="text-sm font-medium text-ink">{{ $item->product_name }}</p>
                             @if ($item->product_sku)
-                                <p class="text-[11.5px] font-mono text-ink-4">{{ $item->product_sku }}</p>
+                                <p class="text-xs font-mono text-ink-4">{{ $item->product_sku }}</p>
                             @endif
                         </div>
-                        <span class="text-[13px] text-ink-3">× {{ $item->quantity }}</span>
+                        <span class="text-sm text-ink-3">× {{ $item->quantity }}</span>
                     </div>
                 @endforeach
             </div>

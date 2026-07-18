@@ -3,7 +3,7 @@
      (0 = any). Structure mirrors the legacy storefront's radio.group. --}}
 <div class="{{ ($hideHeading ?? false) ? '' : 'px-5 py-4' }}">
     @unless($hideHeading ?? false)
-        <div class="mb-3 text-[12px] font-bold uppercase tracking-[0.08em] text-ink-2">Rating</div>
+        <div class="mb-3 text-xs font-bold uppercase tracking-widest text-ink-2">Rating</div>
     @endunless
     <flux:radio.group wire:model.live="minRating">
         @for ($rating = 4; $rating >= 1; $rating--)
@@ -14,7 +14,7 @@
                         <flux:icon.star variant="solid"
                             class="size-4 {{ $i <= $rating ? 'text-amber-500' : 'text-zinc-300' }}" />
                     @endfor
-                    <span class="ms-1 text-[12.5px] font-normal">&amp; up</span>
+                    <span class="ms-1 text-xs font-normal">&amp; up</span>
                 </flux:label>
             </flux:field>
         @endfor

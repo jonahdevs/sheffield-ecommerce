@@ -42,14 +42,14 @@
 ">
     <div class="{{ ($hideHeading ?? false) ? 'mb-3 flex justify-end' : 'mb-3 flex items-center justify-between' }}">
         @unless($hideHeading ?? false)
-            <div class="text-[12px] font-bold uppercase tracking-[0.08em] text-ink-2">Price</div>
+            <div class="text-xs font-bold uppercase tracking-widest text-ink-2">Price</div>
         @endunless
         <button type="button" x-show="dirty" x-cloak @click="reset()"
-            class="cursor-pointer text-[11.5px] font-medium text-brand-500 hover:underline">Reset</button>
+            class="cursor-pointer text-xs font-medium text-brand-500 hover:underline">Reset</button>
     </div>
 
     {{-- Readout --}}
-    <div class="mb-3 flex justify-between text-[12.5px] text-ink-3">
+    <div class="mb-3 flex justify-between text-xs text-ink-3">
         <span x-text="fmt(min)"></span>
         <span class="font-semibold text-ink" x-text="fmt(max)"></span>
     </div>
@@ -72,17 +72,17 @@
     {{-- Number inputs --}}
     <div class="mt-4 flex items-end gap-2">
         <div class="flex-1">
-            <label class="mb-1 block text-[11px] text-ink-4">Min</label>
+            <label class="mb-1 block text-xs text-ink-4">Min</label>
             <input type="number" inputmode="numeric" :min="absMin" :max="absMax" :step="step"
                 x-model.number="min" @change="commit()"
-                class="w-full rounded border border-zinc-300 px-2 py-1.5 text-[13px] tabular-nums focus:border-brand-500 focus:ring-0 focus:outline-none" />
+                class="w-full rounded border border-zinc-300 px-2 py-1.5 text-sm tabular-nums focus:border-brand-500 focus:ring-0 focus:outline-none" />
         </div>
         <span class="pb-2 text-ink-4">—</span>
         <div class="flex-1">
-            <label class="mb-1 block text-[11px] text-ink-4">Max</label>
+            <label class="mb-1 block text-xs text-ink-4">Max</label>
             <input type="number" inputmode="numeric" :min="absMin" :max="absMax" :step="step"
                 x-model.number="max" @change="commit()"
-                class="w-full rounded border border-zinc-300 px-2 py-1.5 text-[13px] tabular-nums focus:border-brand-500 focus:ring-0 focus:outline-none" />
+                class="w-full rounded border border-zinc-300 px-2 py-1.5 text-sm tabular-nums focus:border-brand-500 focus:ring-0 focus:outline-none" />
         </div>
     </div>
 

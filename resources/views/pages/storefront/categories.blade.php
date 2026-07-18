@@ -54,7 +54,7 @@ new #[Layout('layouts::storefront')] #[Title('All Categories')] class extends Co
         {{-- Header --}}
         <div class="mb-8">
             <h1 class="text-3xl font-semibold tracking-tight">All Categories</h1>
-            <p class="mt-1 text-[14px] text-ink-3">Browse our full range of commercial equipment.</p>
+            <p class="mt-1 text-sm text-ink-3">Browse our full range of commercial equipment.</p>
         </div>
 
         {{-- Grid --}}
@@ -77,7 +77,7 @@ new #[Layout('layouts::storefront')] #[Title('All Categories')] class extends Co
                                     <img src="{{ $category->image_url }}" alt="{{ $category->name }}" loading="lazy"
                                         x-data="{ loaded: false }" x-init="loaded = $el.complete" x-on:load="loaded = true"
                                         x-bind:class="loaded ? 'opacity-100' : 'opacity-0'"
-                                        class="relative block size-full object-cover transition duration-500 group-hover:scale-[1.04]" />
+                                        class="relative block size-full object-cover transition duration-500 group-hover:scale-105" />
                                 </picture>
                             @else
                                 <div class="flex size-full items-center justify-center bg-surface-sunken">
@@ -87,10 +87,10 @@ new #[Layout('layouts::storefront')] #[Title('All Categories')] class extends Co
                         </div>
                         <div class="flex items-baseline justify-between gap-2 pt-2.5">
                             <div
-                                class="text-[11.5px] leading-tight font-semibold tracking-[0.06em] text-ink uppercase transition-colors group-hover:text-brand-500">
+                                class="text-xs leading-tight font-semibold tracking-wider text-ink uppercase transition-colors group-hover:text-brand-500">
                                 {{ $category->name }}
                             </div>
-                            <div class="shrink-0 text-[11px] text-ink-3 tabular-nums">
+                            <div class="shrink-0 text-xs text-ink-3 tabular-nums">
                                 {{ $category->products_count }}
                             </div>
                         </div>

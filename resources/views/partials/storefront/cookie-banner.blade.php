@@ -52,7 +52,7 @@
 
     {{-- Description --}}
     <div class="px-5 py-4">
-        <p class="text-[13px] leading-relaxed text-zinc-500 dark:text-zinc-400">
+        <p class="text-sm leading-relaxed text-zinc-500 dark:text-zinc-400">
             We use cookies to ensure that we give you the best experience on our website. For more information, please read our
             <a href="{{ route('page.show', 'cookie-policy') }}"
                class="text-brand-500 underline underline-offset-2 hover:text-brand-600"

@@ -394,7 +394,7 @@ new #[Layout('layouts::app')] #[Title('Edit Customer | Admin')] class extends Co
     </form>
 
     {{-- Ban modal --}}
-    <flux:modal wire:model.self="showBanModal" class="md:w-[420px]" :dismissible="false">
+    <flux:modal wire:model.self="showBanModal" class="md:w-105" :dismissible="false">
         <flux:heading>Ban {{ $customer->name }}</flux:heading>
         <flux:subheading class="mt-1">They will lose access to the store immediately.</flux:subheading>
 

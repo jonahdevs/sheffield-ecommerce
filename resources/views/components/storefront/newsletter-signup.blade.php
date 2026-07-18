@@ -56,10 +56,10 @@ new class extends Component
 
             {{-- Left: copy --}}
             <div class="flex flex-col justify-center">
-                <h2 class="font-serif text-3xl font-normal leading-snug text-[#f6ecd9]">
+                <h2 class="font-serif text-3xl font-normal leading-snug text-orange-100">
                     Catalog drops and project stories.
                 </h2>
-                <ul class="mt-5 flex flex-wrap gap-x-5 gap-y-2 text-[12.5px] text-[#c9bea4]">
+                <ul class="mt-5 flex flex-wrap gap-x-5 gap-y-2 text-xs text-olive-400">
                     <li class="flex items-center gap-1.5">
                         <flux:icon.check-circle variant="micro" class="size-3.5 text-brand-500" /> No spam
                     </li>
@@ -80,9 +80,9 @@ new class extends Component
                             <flux:icon.check variant="micro" class="size-5" />
                         </div>
                         <div>
-                            <div class="font-serif text-xl text-[#f6ecd9]">You're on the list.</div>
-                            <div class="mt-1 text-[13px] text-[#c9bea4]">
-                                Confirmation sent to <strong class="text-[#f6ecd9]">{{ $email }}</strong>.
+                            <div class="font-serif text-xl text-orange-100">You're on the list.</div>
+                            <div class="mt-1 text-sm text-olive-400">
+                                Confirmation sent to <strong class="text-orange-100">{{ $email }}</strong>.
                                 Issue 13 lands in early September.
                             </div>
                         </div>
@@ -93,7 +93,7 @@ new class extends Component
                             <div class="flex-1">
                                 <flux:input wire:model="email" type="email" placeholder="you@kitchen.co.ke" />
                                 @error('email')
-                                    <p class="mt-1 text-[12px] text-[#d8c79d]">{{ $message }}</p>
+                                    <p class="mt-1 text-xs text-taupe-300">{{ $message }}</p>
                                 @enderror
                             </div>
                             <flux:button type="submit" variant="primary"
@@ -104,9 +104,9 @@ new class extends Component
                             </flux:button>
                         </div>
 
-                        <p class="mt-4 text-[11px] text-[#9c927c]">
+                        <p class="mt-4 text-xs text-stone-400">
                             By subscribing you agree to our
-                            <a href="#" class="text-[#c9bea4] underline-offset-2 hover:text-white hover:underline">Privacy Policy</a>.
+                            <a href="#" class="text-olive-400 underline-offset-2 hover:text-white hover:underline">Privacy Policy</a>.
                             One-click unsubscribe in every issue.
                         </p>
                     </form>

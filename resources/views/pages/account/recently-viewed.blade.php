@@ -1,5 +1,6 @@
 <?php
 
+use App\Livewire\Concerns\InteractsWithStorefront;
 use App\Models\RecentlyViewed;
 use Illuminate\Support\Collection;
 use Livewire\Attributes\Computed;
@@ -9,6 +10,8 @@ use Livewire\Component;
 
 new #[Layout('layouts::account')] #[Title('Recently Viewed')] class extends Component
 {
+    use InteractsWithStorefront;
+
     public function mount(): void
     {
         \Artesaos\SEOTools\Facades\SEOMeta::setRobots('noindex,follow');
@@ -19,11 +22,7 @@ new #[Layout('layouts::account')] #[Title('Recently Viewed')] class extends Comp
     {
         return auth()->user()
             ->recentlyViewed()
-            ->with(['product' => fn ($q) => $q->with([
-                'media',
-                'brand:id,name',
-                'taxClass:id,rate',
-            ])])
+            ->with(['product' => fn ($q) => $q->forCard()])
             ->limit(24)
             ->get()
             ->pluck('product')
@@ -59,5 +58,8 @@ new #[Layout('layouts::account')] #[Title('Recently Viewed')] class extends Comp
             @endforeach
         </div>
     @endif
+
+    @include('partials.storefront.accessory-modal')
+    @include('partials.storefront.variation-modal')
 
 </div>

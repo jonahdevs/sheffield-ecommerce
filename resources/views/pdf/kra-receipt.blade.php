@@ -98,7 +98,7 @@
     {{-- ======================================================= --}}
     <div class="px-8 mt-5">
         <div class="text-[10px] font-bold uppercase tracking-widest text-zinc-700 mb-1.5">Billed to:</div>
-        <div class="inline-block border border-zinc-900 px-4 py-2.5 text-[11px] leading-snug min-w-[14rem]"
+        <div class="inline-block border border-zinc-900 px-4 py-2.5 text-[11px] leading-snug min-w-56"
              style="box-shadow: 3px 3px 0 rgba(0,0,0,0.75);">
             @if ($customer?->name || $order->shipping_name)
                 <div class="font-bold uppercase text-zinc-900">{{ $customer?->name ?? $order->shipping_name }}</div>

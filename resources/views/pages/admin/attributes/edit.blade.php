@@ -306,7 +306,7 @@ new #[Layout('layouts::app')] #[Title('Edit Attribute | Admin')] class extends C
     </div>
 
     {{-- Add value modal --}}
-    <flux:modal wire:model.self="showAddValueModal" class="md:w-[480px]" :dismissible="false">
+    <flux:modal wire:model.self="showAddValueModal" class="md:w-120" :dismissible="false">
         <flux:heading>New value</flux:heading>
 
         <form wire:submit="addValue" class="mt-5 space-y-4">
@@ -339,7 +339,7 @@ new #[Layout('layouts::app')] #[Title('Edit Attribute | Admin')] class extends C
     </flux:modal>
 
     {{-- Edit value modal --}}
-    <flux:modal wire:model.self="showEditValueModal" class="md:w-[480px]" :dismissible="false">
+    <flux:modal wire:model.self="showEditValueModal" class="md:w-120" :dismissible="false">
         <flux:heading>Edit value</flux:heading>
 
         <form wire:submit="saveValue" class="mt-5 space-y-4">

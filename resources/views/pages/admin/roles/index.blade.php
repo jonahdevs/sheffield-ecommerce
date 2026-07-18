@@ -344,7 +344,7 @@ new #[Layout('layouts::app')] #[Title('Roles | Admin')] class extends Component 
     </flux:card>
 
     {{-- Ban user modal --}}
-    <flux:modal wire:model.self="showBanModal" class="md:w-[440px]">
+    <flux:modal wire:model.self="showBanModal" class="md:w-110">
         <form wire:submit="ban" class="space-y-5">
             <div>
                 <flux:heading size="lg" class="uppercase tracking-wide">Ban user</flux:heading>

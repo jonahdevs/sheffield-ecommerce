@@ -1,6 +1,6 @@
 {{-- TODO: wire to a setting (spatie/laravel-settings) so admins can edit/hide --}}
-<div class="bg-brand-blue-500 text-[#f2ead9]">
-    <div class="shell flex h-9 items-center justify-between gap-4 text-[12.5px]">
+<div class="bg-brand-blue-500 text-olive-200">
+    <div class="shell flex h-9 items-center justify-between gap-4 text-xs">
         <div class="flex items-center gap-7 overflow-hidden">
             <span class="flex items-center gap-1.5">
                 <flux:icon.truck variant="micro" class="size-3.5" />
@@ -17,7 +17,7 @@
                 +254&nbsp;713&nbsp;777&nbsp;111
             </a>
         </div>
-        <div class="flex items-center gap-3 text-[#d8c79d]">
+        <div class="flex items-center gap-3 text-taupe-300">
             <a href="{{ route('login') }}" class="hidden hover:text-white sm:inline" wire:navigate>Sign in</a>
             <span class="hidden opacity-50 sm:inline">·</span>
             <a href="#" class="hover:text-white">KES</a>

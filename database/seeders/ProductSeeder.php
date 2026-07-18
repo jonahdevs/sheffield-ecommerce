@@ -39,6 +39,9 @@ class ProductSeeder extends Seeder
     /** @var array<string, array<string, int>> attribute slug → (value slug → attribute_value id) */
     private array $attributeValueIds = [];
 
+    /** @var array<string, array<string, string>> attribute slug → (lowercased label or value → value slug) */
+    private array $attributeValueSlugByAlias = [];
+
     public function run(): void
     {
         $jsonPath = database_path('data/products.json');
@@ -103,8 +106,44 @@ class ProductSeeder extends Seeder
             $slug = array_search($value->attribute_id, $this->attributeIdBySlug, true);
             if ($slug !== false) {
                 $this->attributeValueIds[$slug][$value->slug] = $value->id;
+
+                // The workbook writes an attribute's option list as human labels
+                // ("2/3 GN") but its variant rows as value slugs ("23-gn"), so keep
+                // a label lookup to normalise the former (see resolveValueSlugs).
+                foreach ([$value->label, $value->value] as $alias) {
+                    if ($alias !== null && $alias !== '') {
+                        $this->attributeValueSlugByAlias[$slug][mb_strtolower($alias)] = $value->slug;
+                    }
+                }
             }
         }
+    }
+
+    /**
+     * Normalise a product's attribute option list to value slugs, accepting either
+     * slugs or the human labels the source workbook uses. Unknown entries are
+     * dropped: they would render as an option no variant can satisfy.
+     *
+     * @param  array<int, string>  $values
+     * @return array<int, string>
+     */
+    private function resolveValueSlugs(string $attributeSlug, array $values): array
+    {
+        $known = $this->attributeValueIds[$attributeSlug] ?? [];
+        $byAlias = $this->attributeValueSlugByAlias[$attributeSlug] ?? [];
+
+        return collect($values)
+            ->map(function (string $value) use ($known, $byAlias): ?string {
+                if (isset($known[$value])) {
+                    return $value;
+                }
+
+                return $byAlias[mb_strtolower($value)] ?? null;
+            })
+            ->filter()
+            ->unique()
+            ->values()
+            ->all();
     }
 
     /**
@@ -290,7 +329,7 @@ class ProductSeeder extends Seeder
             ProductAttribute::create([
                 'product_id' => $product->id,
                 'attribute_id' => $attributeId,
-                'values' => $attr['values'] ?? [],
+                'values' => $this->resolveValueSlugs($attr['slug'], $attr['values'] ?? []),
                 'is_variation_attribute' => $attr['is_variation_attribute'] ?? false,
                 'is_visible' => $attr['is_visible'] ?? true,
                 'sort_order' => $index + 1,
@@ -303,16 +342,28 @@ class ProductSeeder extends Seeder
      */
     private function createVariants(Product $product, array $variants): void
     {
+        $created = [];
+        $flaggedDefault = null;
+
         foreach ($variants as $index => $variantData) {
             $quantity = $variantData['stock_quantity'] ?? null;
 
             $variant = ProductVariant::create([
                 'product_id' => $product->id,
                 'sku' => $variantData['sku'],
+                'model_number' => $variantData['model_number'] ?? null,
                 'price' => $this->toMinorUnits($variantData['price'] ?? null),
                 'compare_at_price' => $this->toMinorUnits($variantData['sale_price'] ?? null),
+                'cost_price' => $this->toMinorUnits($variantData['cost_price'] ?? null),
                 'stock_status' => $this->resolveStockStatus($variantData, $quantity),
                 'stock_quantity' => $quantity,
+                // Per-variant physical attributes: a size variant (e.g. a GN tray) differs
+                // from its siblings mainly in dimensions and weight, so carry them through.
+                'weight' => $variantData['weight'] ?? null,
+                'length' => $variantData['length'] ?? null,
+                'width' => $variantData['width'] ?? null,
+                'height' => $variantData['height'] ?? null,
+                'description' => $variantData['description'] ?? null,
                 'is_active' => true,
                 'sort_order' => $index + 1,
             ]);
@@ -328,7 +379,57 @@ class ProductSeeder extends Seeder
             if ($valueIds !== []) {
                 $variant->attributeValues()->attach($valueIds);
             }
+
+            $this->createVariantImage($variant, $variantData['image'] ?? null);
+
+            $created[] = $variant;
+
+            if (($variantData['is_default'] ?? false) === true) {
+                $flaggedDefault ??= $variant;
+            }
         }
+
+        $default = $flaggedDefault ?? $this->pickDefaultVariant($created);
+
+        if ($default) {
+            $product->update(['default_variant_id' => $default->id]);
+        }
+    }
+
+    /**
+     * Attach a variant's own photo. Sizes of the same product look different, so
+     * each variant carries its own image; the storefront gallery picks it up as a
+     * slide the variation selector can jump to.
+     */
+    private function createVariantImage(ProductVariant $variant, ?string $path): void
+    {
+        if (! $path || ! Storage::disk('public')->exists($path)) {
+            return;
+        }
+
+        // Same reasoning as createImages(): keep conversions off the seeder's path.
+        $previousQueue = config('queue.default');
+        config(['queue.default' => 'null']);
+
+        try {
+            $variant->addMediaFromDisk($path, 'public')
+                ->preservingOriginal()
+                ->toMediaCollection('image');
+        } finally {
+            config(['queue.default' => $previousQueue]);
+        }
+    }
+
+    /**
+     * The variant a product opens on when none is flagged in the source data:
+     * the first in-stock one, so the page doesn't land on something unbuyable.
+     *
+     * @param  array<int, ProductVariant>  $variants
+     */
+    private function pickDefaultVariant(array $variants): ?ProductVariant
+    {
+        return collect($variants)->first(fn (ProductVariant $variant) => $variant->stock_status === StockStatus::IN_STOCK)
+            ?? collect($variants)->first();
     }
 
     /**

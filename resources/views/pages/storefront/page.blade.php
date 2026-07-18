@@ -39,7 +39,7 @@ new #[Layout('layouts::storefront')] class extends Component
     <div class="shell pt-3 pb-8">
         <h1 class="text-3xl font-semibold tracking-tight">{{ $page->title }}</h1>
 
-        <div class="mt-6 max-w-3xl space-y-4 text-[14.5px] leading-relaxed text-ink-2
+        <div class="mt-6 max-w-3xl space-y-4 text-sm leading-relaxed text-ink-2
                     [&_a]:text-brand-500 [&_a]:underline
                     [&_h2]:mt-8 [&_h2]:font-serif [&_h2]:text-2xl [&_h2]:text-ink
                     [&_h3]:mt-6 [&_h3]:font-semibold [&_h3]:text-ink

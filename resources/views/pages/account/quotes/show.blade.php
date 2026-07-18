@@ -433,7 +433,7 @@ new #[Layout('layouts::account')] #[Title('Quote')] class extends Component {
                             @if (!$isLast || $injectTerminal)
                                 @php $nextReached = ($index + 1) <= $maxReachedIndex; @endphp
                                 <div @class([
-                                    'absolute left-[17px] top-9 bottom-0 w-0.5 z-0',
+                                    'absolute left-4.25 top-9 bottom-0 w-0.5 z-0',
                                     'bg-brand-500' => $nextReached || $injectTerminal,
                                     'bg-zinc-100' => !$nextReached && !$injectTerminal,
                                 ])></div>

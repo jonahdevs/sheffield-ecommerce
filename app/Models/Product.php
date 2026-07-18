@@ -232,6 +232,26 @@ class Product extends Model implements HasMedia
         });
     }
 
+    /**
+     * Everything an <x-storefront.product-card> reads: brand and tax class for the
+     * price line, media for the image, and active variants for a variable product's
+     * price range. Without this each rendered card lazy-loads its own and a listing
+     * becomes an N+1.
+     */
+    #[Scope]
+    protected function forCard(Builder $query): void
+    {
+        $query->with([
+            'brand:id,name',
+            'taxClass:id,rate',
+            'media',
+            'variants' => fn (HasMany $variants) => $variants
+                ->select(['id', 'product_id', 'price', 'compare_at_price', 'stock_status', 'sort_order'])
+                ->where('is_active', true)
+                ->orderBy('sort_order'),
+        ]);
+    }
+
     /** Products whose primary category is the given category, or any category beneath it. */
     #[Scope]
     protected function inCategoryTree(Builder $query, int $categoryId): void

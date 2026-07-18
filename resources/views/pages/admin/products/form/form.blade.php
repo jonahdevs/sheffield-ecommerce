@@ -618,6 +618,10 @@
                                                                             wire:model="variants.{{ $i }}.sku"
                                                                             label="SKU"
                                                                             placeholder="Leave blank to auto-generate" />
+                                                                        <flux:input
+                                                                            wire:model="variants.{{ $i }}.model_number"
+                                                                            label="Model Number"
+                                                                            placeholder="Shown to customers" />
                                                                     </div>
 
                                                                     {{-- Checkboxes --}}
@@ -765,7 +769,7 @@
                                         </div>
 
                                         {{-- Bulk edit modal --}}
-                                        <flux:modal name="bulk-variant-edit" class="md:w-[420px]"
+                                        <flux:modal name="bulk-variant-edit" class="md:w-105"
                                             :dismissible="false">
                                             @php
                                                 $bulkFieldLabels = [

@@ -353,6 +353,7 @@ new #[Layout('layouts::app')] class extends Component
             ->map(fn ($v) => [
                 'id' => $v->id,
                 'sku' => (string) $v->sku,
+                'model_number' => (string) $v->model_number,
                 'price' => $v->price ? round($v->price / 100, 2) : null,
                 'compare_at_price' => $v->compare_at_price ? round($v->compare_at_price / 100, 2) : null,
                 'cost_price' => $v->cost_price ? round($v->cost_price / 100, 2) : null,
@@ -582,6 +583,7 @@ new #[Layout('layouts::app')] class extends Component
             $this->variants[] = [
                 'id' => null,
                 'sku' => '',
+                'model_number' => '',
                 'price' => null,
                 'compare_at_price' => null,
                 'cost_price' => null,
@@ -621,6 +623,7 @@ new #[Layout('layouts::app')] class extends Component
         $this->variants[] = [
             'id' => null,
             'sku' => '',
+            'model_number' => '',
             'price' => null,
             'compare_at_price' => null,
             'cost_price' => null,
@@ -1148,6 +1151,7 @@ new #[Layout('layouts::app')] class extends Component
         foreach ($this->variants as $i => $v) {
             $variantData = [
                 'sku' => $v['sku'] ?: Str::upper(Str::random(8)),
+                'model_number' => ($v['model_number'] ?? '') ?: null,
                 'price' => $v['price'] !== null ? (int) round((float) $v['price'] * 100) : null,
                 'compare_at_price' => $v['compare_at_price'] !== null ? (int) round((float) $v['compare_at_price'] * 100) : null,
                 'cost_price' => $v['cost_price'] !== null ? (int) round((float) $v['cost_price'] * 100) : null,

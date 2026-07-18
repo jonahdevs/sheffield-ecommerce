@@ -762,7 +762,7 @@ new #[Layout('layouts::app')] #[Title('Dashboard | Admin')] class extends Compon
                 <flux:heading size="sm" class="uppercase tracking-wide">Top products</flux:heading>
             </div>
             <div wire:ignore>
-                <div x-ref="topProducts" class="h-[300px]"></div>
+                <div x-ref="topProducts" class="h-75"></div>
             </div>
         </flux:card>
     </div>
@@ -784,7 +784,7 @@ new #[Layout('layouts::app')] #[Title('Dashboard | Admin')] class extends Compon
                 <flux:heading size="sm" class="uppercase tracking-wide">Sales by county</flux:heading>
             </div>
             <div class="p-4">
-                <div wire:ignore x-ref="countyMap" class="h-[300px] w-full rounded-md"></div>
+                <div wire:ignore x-ref="countyMap" class="h-75 w-full rounded-md"></div>
             </div>
         </flux:card>
     </div>

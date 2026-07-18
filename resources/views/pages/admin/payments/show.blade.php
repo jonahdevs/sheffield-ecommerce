@@ -221,7 +221,7 @@ new #[Layout('layouts::app')] #[Title('Payment | Admin')] class extends Componen
     </div>
 
     {{-- Refund modal --}}
-    <flux:modal wire:model.self="showRefundModal" class="md:w-[440px]">
+    <flux:modal wire:model.self="showRefundModal" class="md:w-110">
         <form wire:submit="refund" class="space-y-5">
             <div>
                 <flux:heading size="lg" class="uppercase tracking-wide">Issue a refund</flux:heading>

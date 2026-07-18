@@ -390,34 +390,34 @@ new #[Layout('layouts::storefront')] #[Title('Checkout')] class extends Componen
 
                     <div class="p-6">
                         @if ($this->deliveryMethod === 'pickup')
-                            <p class="text-[13px] text-ink-3">Collecting from our Nairobi showroom — no delivery address
+                            <p class="text-sm text-ink-3">Collecting from our Nairobi showroom — no delivery address
                                 required.</p>
                         @elseif ($this->selectedAddress)
                             @php $address = $this->selectedAddress; @endphp
                             <div class="flex items-center gap-2">
                                 <span
-                                    class="text-[10.5px] font-bold tracking-widest text-ink-3 uppercase">{{ $address->label }}</span>
+                                    class="text-xs font-bold tracking-widest text-ink-3 uppercase">{{ $address->label }}</span>
                                 @if ($address->is_default)
                                     <flux:badge color="lime" size="sm">Default</flux:badge>
                                 @endif
                             </div>
-                            <div class="mt-1 text-[14px] font-semibold text-ink">{{ $address->fullName() }}</div>
-                            <div class="mt-1 text-[13px] leading-relaxed text-ink-2">{{ $address->oneLiner() }}</div>
+                            <div class="mt-1 text-sm font-semibold text-ink">{{ $address->fullName() }}</div>
+                            <div class="mt-1 text-sm leading-relaxed text-ink-2">{{ $address->oneLiner() }}</div>
                             @if ($address->phone)
-                                <div class="mt-1 text-[12.5px] text-ink-3">{{ $address->phone }}</div>
+                                <div class="mt-1 text-xs text-ink-3">{{ $address->phone }}</div>
                             @endif
                         @elseif ($this->addresses->isNotEmpty())
-                            <p class="text-[13px] text-ink-3">Select a delivery address to continue.</p>
+                            <p class="text-sm text-ink-3">Select a delivery address to continue.</p>
                         @else
                             <div class="rounded-md border border-dashed border-zinc-300 p-6 text-center">
                                 <flux:icon.map-pin variant="outline" class="mx-auto size-7 text-ink-4" />
-                                <p class="mt-2 text-[13px] text-ink-3">No saved addresses yet.</p>
+                                <p class="mt-2 text-sm text-ink-3">No saved addresses yet.</p>
                                 <flux:button type="button" variant="customer-primary" size="customer" icon="plus"
                                     wire:click="openAddressModal('create')" class="mt-3">Add an address</flux:button>
                             </div>
                         @endif
                         @error('selectedAddressId')
-                            <p class="mt-2 text-[12.5px] text-red-500">{{ $message }}</p>
+                            <p class="mt-2 text-xs text-red-500">{{ $message }}</p>
                         @enderror
                     </div>
                 </section>
@@ -438,19 +438,19 @@ new #[Layout('layouts::storefront')] #[Title('Checkout')] class extends Componen
                         <flux:icon :name="$this->deliveryMethod === 'pickup' ? 'building-storefront' : 'truck'"
                             variant="micro" class="mt-0.5 size-4 text-brand-500" />
                         <div>
-                            <div class="text-[13.5px] font-semibold text-ink">
+                            <div class="text-sm font-semibold text-ink">
                                 {{ $deliveryLabels[$this->deliveryMethod] }}</div>
                             @if ($this->deliveryMethod === 'pickup')
-                                <div class="mt-0.5 text-[12.5px] text-ink-3">Collect from our Nairobi showroom — free.
+                                <div class="mt-0.5 text-xs text-ink-3">Collect from our Nairobi showroom — free.
                                 </div>
                             @elseif (!$this->selectedAddress)
-                                <div class="mt-0.5 text-[12.5px] text-ink-3">Add a delivery address to see availability
+                                <div class="mt-0.5 text-xs text-ink-3">Add a delivery address to see availability
                                     and cost.</div>
                             @elseif ($unserviceable)
-                                <div class="mt-0.5 text-[12.5px] text-red-500">We don't deliver to this location yet.
+                                <div class="mt-0.5 text-xs text-red-500">We don't deliver to this location yet.
                                     Choose pickup or request a quote.</div>
                             @else
-                                <div class="mt-0.5 text-[12.5px] text-ink-3">
+                                <div class="mt-0.5 text-xs text-ink-3">
                                     {{ $quote->zone?->name }}{{ $quote->etaLabel ? ' · ' . $quote->etaLabel : '' }} —
                                     @if ($quote->isFree)
                                         <span
@@ -481,14 +481,14 @@ new #[Layout('layouts::storefront')] #[Title('Checkout')] class extends Componen
                                 <div class="flex items-center gap-2">
                                     <flux:icon.ticket variant="micro" class="size-4 text-emerald-600" />
                                     <span
-                                        class="font-mono text-[12px] font-semibold text-emerald-700">{{ $this->appliedCouponCode }}</span>
+                                        class="font-mono text-xs font-semibold text-emerald-700">{{ $this->appliedCouponCode }}</span>
                                 </div>
                                 <button type="button" wire:click="removeCoupon"
-                                    class="text-[11px] text-emerald-600 hover:text-red-500">Remove</button>
+                                    class="text-xs text-emerald-600 hover:text-red-500">Remove</button>
                             </div>
                         @else
                             <flux:input.group>
-                                <flux:input wire:model="couponInput" placeholder="Coupon code" class="text-[13px]!"
+                                <flux:input wire:model="couponInput" placeholder="Coupon code" class="text-sm!"
                                     wire:keydown.enter.prevent="applyCoupon" />
                                 <flux:button type="button" variant="primary" wire:click="applyCoupon"
                                     wire:loading.attr="disabled" wire:target="applyCoupon">
@@ -496,7 +496,7 @@ new #[Layout('layouts::storefront')] #[Title('Checkout')] class extends Componen
                                 </flux:button>
                             </flux:input.group>
                             @error('couponInput')
-                                <p class="mt-1 text-[11.5px] text-red-500">{{ $message }}</p>
+                                <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
                             @enderror
                         @endif
                     </div>
@@ -541,7 +541,7 @@ new #[Layout('layouts::storefront')] #[Title('Checkout')] class extends Componen
                         <div class="my-5 h-px bg-zinc-100"></div>
 
                         <div class="flex items-center justify-between">
-                            <span class="text-[13px] font-bold tracking-wide uppercase">Total</span>
+                            <span class="text-sm font-bold tracking-wide uppercase">Total</span>
                             <span class="text-2xl font-bold text-brand-500 tabular-nums">{!! money($totalCents) !!}</span>
                         </div>
 
@@ -551,12 +551,12 @@ new #[Layout('layouts::storefront')] #[Title('Checkout')] class extends Componen
                             Continue to payment
                         </flux:button>
 
-                        <div class="mt-3 flex items-center justify-center gap-1.5 text-[11px] text-ink-4">
+                        <div class="mt-3 flex items-center justify-center gap-1.5 text-xs text-ink-4">
                             <flux:icon.shield-check variant="micro" class="size-3.5" />
                             SSL encrypted &amp; secure
                         </div>
 
-                        <div class="mt-4 border-t border-zinc-100 pt-4 text-center text-[12px] text-ink-3">
+                        <div class="mt-4 border-t border-zinc-100 pt-4 text-center text-xs text-ink-3">
                             Need a formal quote for a tender?
                             <a href="{{ route('quote.request') }}" wire:navigate
                                 class="font-semibold text-brand-500 hover:text-brand-600">Request a quote</a>
@@ -571,7 +571,7 @@ new #[Layout('layouts::storefront')] #[Title('Checkout')] class extends Componen
     @include('partials.storefront.address-modal')
 
     {{-- Delivery method modal --}}
-    <flux:modal wire:model.self="showDeliveryModal" class="md:w-[520px]">
+    <flux:modal wire:model.self="showDeliveryModal" class="md:w-130">
         <flux:heading class="uppercase tracking-wide">Delivery method</flux:heading>
         <flux:subheading>How would you like to receive your order?</flux:subheading>
 
@@ -582,8 +582,8 @@ new #[Layout('layouts::storefront')] #[Title('Checkout')] class extends Componen
                     <flux:icon :name="$value === 'pickup' ? 'building-storefront' : 'truck'" variant="micro"
                         class="mt-0.5 size-4 {{ $this->deliveryMethod === $value ? 'text-brand-500' : 'text-ink-4' }}" />
                     <div>
-                        <div class="text-[13.5px] font-semibold text-ink">{{ $title }}</div>
-                        <div class="mt-0.5 text-[12px] text-ink-3">
+                        <div class="text-sm font-semibold text-ink">{{ $title }}</div>
+                        <div class="mt-0.5 text-xs text-ink-3">
                             {{ $value === 'pickup' ? 'Collect from our Nairobi showroom — free.' : 'Delivery across Nairobi & nearby areas — free for launch.' }}
                         </div>
                     </div>

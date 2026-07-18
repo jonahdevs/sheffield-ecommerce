@@ -95,7 +95,7 @@ new #[Layout('layouts::storefront')] #[Title('Payment')] class extends Component
                 @paystack-open.window="open($event.detail.accessCode)">
 
                 @error('payment')
-                    <div class="rounded-md border border-red-200 bg-red-50 px-4 py-3 text-[13px] text-red-600">
+                    <div class="rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
                         {{ $message }}</div>
                 @enderror
 
@@ -105,7 +105,7 @@ new #[Layout('layouts::storefront')] #[Title('Payment')] class extends Component
                             <flux:icon.lock-closed variant="micro" class="mt-0.5 size-5 text-brand-500" />
                             <div>
                                 <flux:heading size="sm">Pay securely with Paystack</flux:heading>
-                                <p class="mt-1 text-[13px] text-ink-3">
+                                <p class="mt-1 text-sm text-ink-3">
                                     Click pay to choose your method — card, M-Pesa, Airtel Money or bank transfer —
                                     in Paystack's secure window. You'll stay on this page.
                                 </p>
@@ -120,13 +120,13 @@ new #[Layout('layouts::storefront')] #[Title('Payment')] class extends Component
                             <span x-show="processing" x-cloak>Confirming…</span>
                         </flux:button>
 
-                        <p class="mt-3 flex items-center justify-center gap-1.5 text-[11px] text-ink-4">
+                        <p class="mt-3 flex items-center justify-center gap-1.5 text-xs text-ink-4">
                             <flux:icon.shield-check variant="micro" class="size-3" />
                             Payments are processed securely by Paystack.
                         </p>
                     </div>
                 @else
-                    <div class="rounded-md border border-amber-200 bg-amber-50 px-4 py-3 text-[13px] text-amber-700">
+                    <div class="rounded-md border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-700">
                         No online payment methods are currently available. Please contact us to complete your order.
                     </div>
                 @endif
@@ -157,11 +157,11 @@ new #[Layout('layouts::storefront')] #[Title('Payment')] class extends Component
                                         </div>
                                     @endif
                                     <div class="min-w-0 flex-1">
-                                        <div class="truncate text-[12.5px] font-semibold text-ink">
+                                        <div class="truncate text-xs font-semibold text-ink">
                                             {{ $item->product_name }}</div>
-                                        <div class="text-[11.5px] text-ink-4">Qty {{ $item->quantity }}</div>
+                                        <div class="text-xs text-ink-4">Qty {{ $item->quantity }}</div>
                                     </div>
-                                    <div class="text-[12.5px] font-semibold text-ink tabular-nums whitespace-nowrap">
+                                    <div class="text-xs font-semibold text-ink tabular-nums whitespace-nowrap">
                                         {!! money($item->line_total_cents) !!}</div>
                                 </div>
                             @endforeach
@@ -190,16 +190,16 @@ new #[Layout('layouts::storefront')] #[Title('Payment')] class extends Component
                         <div class="my-5 h-px bg-zinc-100"></div>
 
                         <div class="flex items-center justify-between">
-                            <span class="text-[13px] font-bold tracking-wide uppercase">Total</span>
+                            <span class="text-sm font-bold tracking-wide uppercase">Total</span>
                             <span class="text-2xl font-bold text-brand-500 tabular-nums">{!! money($order->total_cents) !!}</span>
                         </div>
 
-                        <div class="mt-5 flex items-center justify-center gap-1.5 text-[11px] text-ink-4">
+                        <div class="mt-5 flex items-center justify-center gap-1.5 text-xs text-ink-4">
                             <flux:icon.shield-check variant="micro" class="size-3.5" />
                             SSL encrypted &amp; secure
                         </div>
 
-                        <div class="mt-4 border-t border-zinc-100 pt-4 text-center text-[12px] text-ink-3">
+                        <div class="mt-4 border-t border-zinc-100 pt-4 text-center text-xs text-ink-3">
                             Need a formal quote for a tender?
                             <a href="{{ route('quote.request') }}" wire:navigate
                                 class="font-semibold text-brand-500 hover:text-brand-600">Request a quote</a>
