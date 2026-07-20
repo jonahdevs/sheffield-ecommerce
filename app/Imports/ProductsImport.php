@@ -28,8 +28,10 @@ class ProductsImport implements SkipsOnError, SkipsOnFailure, ToModel, WithHeadi
 
     public function model(array $row): ?Product
     {
+        // Spreadsheets come in with the brand however the supplier wrote it, so match
+        // case-insensitively rather than dropping the brand on a casing mismatch.
         $brandId = ! empty($row['brand'])
-            ? Brand::where('name', $row['brand'])->value('id')
+            ? Brand::whereRaw('LOWER(name) = ?', [mb_strtolower(trim((string) $row['brand']))])->value('id')
             : null;
 
         $categoryId = ! empty($row['primary_category'])

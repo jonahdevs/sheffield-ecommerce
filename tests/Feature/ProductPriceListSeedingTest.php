@@ -3,6 +3,7 @@
 use App\Enums\ProductStatus;
 use App\Enums\ProductType;
 use App\Enums\StockStatus;
+use App\Models\Brand;
 use App\Models\Product;
 use Database\Seeders\AttributeSeeder;
 use Database\Seeders\BrandSeeder;
@@ -45,6 +46,14 @@ it('seeds each product with the status, price and default variant from products.
         ->and(Product::where('status', ProductStatus::PUBLISHED)->count())->toBeGreaterThan(0)
         ->and(Product::where('status', ProductStatus::DRAFT)->count())->toBeGreaterThan(0);
 
+    // brands.json holds the display casing ("Rational") while products.json still
+    // carries the supplier's ("RATIONAL"), so the seeder matches on a lowercased
+    // name. Comparing verbatim would leave brand_id null right across the catalogue.
+    $rational = Brand::where('slug', 'rational')->sole();
+
+    expect($rational->name)->toBe('Rational')
+        ->and(Product::where('brand_id', $rational->id)->count())->toBeGreaterThan(0);
+
     // Every variable product opens on a concrete variant rather than falling back
     // at render time, and that variant is one of its own and in stock.
     $variableProducts = Product::where('type', ProductType::VARIABLE)->with('variants')->get();
@@ -67,9 +76,21 @@ it('seeds each product with the status, price and default variant from products.
         'GROUP/ROASTING-BAKING-TRAY' => ['IMG/OVE/00060' => '23-gn', 'IMG/OVE/00058' => '11-gn', 'IMG/OVE/00059' => '21-gn'],
         'GROUP/MULTIBAKER' => ['IMG/OVE/00049' => '13-gn', 'IMG/OVE/00048' => '23-gn', 'IMG/OVE/00047' => '11-gn'],
         'GROUP/CROSS-N-STRIPE-GRILL' => ['IMG/OVE/00028' => '23-gn', 'IMG/OVE/00029' => '11-gn'],
+        // Bakery standard is not a GN fraction, but it shares the size axis because
+        // it is the other footprint this tray is sold in.
+        'GROUP/PERFORATED-BAKING-TRAY' => ['IMG/OVE/00051' => '11-gn', 'IMG/OVE/00050' => 'bakery-standard'],
         'GROUP/COMBI-FRY' => ['IMG/OVE/00025' => '23-gn', 'IMG/OVE/00024' => '11-gn'],
+        'GROUP/GRILLING-PIZZA-TRAY' => ['IMG/OVE/00039' => '23-gn', 'IMG/OVE/00038' => '11-gn'],
         // Both spikes are 1/1 GN; they vary by how many birds they hold, not footprint.
         'GROUP/CHICKEN-SUPER-SPIKE' => ['IMG/OVE/00021' => '8-birds', 'IMG/OVE/00022' => '10-birds'],
+        // The LAR tabletop blenders vary by cup volume. The 25 L is deliberately not
+        // here: it is floor-standing with a tilting cup, not a bigger tabletop unit.
+        'GROUP/BLENDER-KITCHEN-SS' => [
+            'IMG/FPR/00033' => '3-litres',
+            'IMG/FPR/00034' => '4-litres',
+            'IMG/FPR/00036' => '8-litres',
+            'IMG/FPR/00037' => '10-litres',
+        ],
     ];
 
     foreach ($ranges as $parentSku => $expectedSizes) {

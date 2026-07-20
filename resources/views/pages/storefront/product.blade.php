@@ -127,7 +127,7 @@ new #[Layout('layouts::storefront')] class extends Component {
             return [];
         }
 
-        return Product::query()->where('visibility', 'visible')->where('stock_status', StockStatus::IN_STOCK)->whereNotNull('price')->where('price', '>', 0)->where('id', '!=', $this->product->id)->where('primary_category_id', $categoryId)->inRandomOrder()->take(12)->pluck('id')->all();
+        return Product::query()->published()->where('visibility', 'visible')->where('stock_status', StockStatus::IN_STOCK)->whereNotNull('price')->where('price', '>', 0)->where('id', '!=', $this->product->id)->where('primary_category_id', $categoryId)->inRandomOrder()->take(12)->pluck('id')->all();
     }
 
     private function pickBrandProductIds(): array
@@ -136,7 +136,7 @@ new #[Layout('layouts::storefront')] class extends Component {
             return [];
         }
 
-        return Product::query()->where('visibility', 'visible')->where('stock_status', StockStatus::IN_STOCK)->whereNotNull('price')->where('price', '>', 0)->where('id', '!=', $this->product->id)->where('brand_id', $this->product->brand_id)->inRandomOrder()->take(12)->pluck('id')->all();
+        return Product::query()->published()->where('visibility', 'visible')->where('stock_status', StockStatus::IN_STOCK)->whereNotNull('price')->where('price', '>', 0)->where('id', '!=', $this->product->id)->where('brand_id', $this->product->brand_id)->inRandomOrder()->take(12)->pluck('id')->all();
     }
 
     private function pickAlsoViewedIds(): array
@@ -537,8 +537,11 @@ new #[Layout('layouts::storefront')] class extends Component {
             return new Collection();
         }
 
+        // Re-checked at render, not just at mount: the ids were picked when the page
+        // loaded and a product can be unpublished while it is still open.
         return Product::query()
             ->forCard()
+            ->published()
             ->whereIn('id', $this->relatedIds)
             ->get()
             ->sortBy(fn(Product $product) => array_search($product->id, $this->relatedIds, true))
@@ -554,6 +557,7 @@ new #[Layout('layouts::storefront')] class extends Component {
 
         return Product::query()
             ->forCard()
+            ->published()
             ->whereIn('id', $this->brandProductIds)
             ->get()
             ->sortBy(fn(Product $p) => array_search($p->id, $this->brandProductIds, true))
@@ -567,8 +571,11 @@ new #[Layout('layouts::storefront')] class extends Component {
             return new Collection();
         }
 
+        // The ids come straight from recently_viewed, which records what was looked at
+        // and knows nothing about whether it is still on sale.
         return Product::query()
             ->forCard()
+            ->published()
             ->whereIn('id', $this->alsoViewedIds)
             ->where('visibility', 'visible')
             ->get()
@@ -583,8 +590,11 @@ new #[Layout('layouts::storefront')] class extends Component {
             return new Collection();
         }
 
+        // Same here: a product the customer viewed last week may since have been
+        // archived, and their history must not keep it on sale.
         return Product::query()
             ->forCard()
+            ->published()
             ->whereIn('id', $this->recentlyViewedIds)
             ->get()
             ->sortBy(fn(Product $p) => array_search($p->id, $this->recentlyViewedIds, true))

@@ -130,6 +130,60 @@ it('includes products in child categories when filtering by a parent category', 
     expect($products->pluck('name')->sort()->values()->all())->toBe(['Machine FAB 100', 'Machine Silvia']);
 });
 
+it('filters products by brand', function () {
+    $rational = Brand::create(['name' => 'Rational', 'slug' => 'rational']);
+    $skymsen = Brand::create(['name' => 'Skymsen', 'slug' => 'skymsen']);
+
+    Product::factory()->create(['name' => 'Combi Oven iCombi', 'brand_id' => $rational->id]);
+    Product::factory()->create(['name' => 'Vegetable Processor PA7', 'brand_id' => $skymsen->id]);
+    Product::factory()->create(['name' => 'Unbranded Trolley', 'brand_id' => null]);
+
+    $products = Livewire::test('pages::admin.products.index')
+        ->set('filterBrand', (string) $skymsen->id)
+        ->get('products');
+
+    expect($products->pluck('name')->all())->toBe(['Vegetable Processor PA7']);
+});
+
+it('combines the brand filter with the other filters rather than replacing them', function () {
+    $brand = Brand::create(['name' => 'Skymsen', 'slug' => 'skymsen']);
+    $other = Brand::create(['name' => 'Rational', 'slug' => 'rational']);
+
+    Product::factory()->create(['name' => 'Wanted', 'brand_id' => $brand->id, 'status' => ProductStatus::PUBLISHED]);
+    Product::factory()->create(['name' => 'Right brand, wrong status', 'brand_id' => $brand->id, 'status' => ProductStatus::DRAFT]);
+    Product::factory()->create(['name' => 'Right status, wrong brand', 'brand_id' => $other->id, 'status' => ProductStatus::PUBLISHED]);
+
+    $products = Livewire::test('pages::admin.products.index')
+        ->set('filterBrand', (string) $brand->id)
+        ->set('filterStatus', ProductStatus::PUBLISHED->value)
+        ->get('products');
+
+    expect($products->pluck('name')->all())->toBe(['Wanted']);
+});
+
+it('only offers brands that have products in the filter select', function () {
+    $used = Brand::create(['name' => 'Skymsen', 'slug' => 'skymsen']);
+    Brand::create(['name' => 'Empty Brand', 'slug' => 'empty-brand']);
+
+    Product::factory()->create(['brand_id' => $used->id]);
+
+    $options = Livewire::test('pages::admin.products.index')->get('brandOptions');
+
+    expect($options->pluck('name')->all())->toBe(['Skymsen']);
+});
+
+it('resets the page and selection when the brand filter changes', function () {
+    $brand = Brand::create(['name' => 'Skymsen', 'slug' => 'skymsen']);
+    Product::factory()->count(3)->create(['brand_id' => $brand->id]);
+
+    Livewire::test('pages::admin.products.index')
+        ->set('selectAll', true)
+        ->assertCount('selected', 3)
+        ->set('filterBrand', (string) $brand->id)
+        ->assertCount('selected', 0)
+        ->assertSet('paginators.page', 1);
+});
+
 it('resets the page and selection when the category filter changes', function () {
     $category = Category::factory()->create();
     Product::factory()->count(3)->create(['primary_category_id' => $category->id]);

@@ -15,6 +15,8 @@ use App\Models\Product;
 use App\Models\ProductAttribute;
 use App\Models\ProductLink;
 use App\Models\ProductVariant;
+use App\Models\RecentlyViewed;
+use App\Models\User;
 use App\Settings\QuotationSettings;
 use App\Support\StorefrontSession;
 use Illuminate\Http\UploadedFile;
@@ -25,6 +27,9 @@ beforeEach(function () {
     $this->cat = Category::create(['name' => 'TestCat', 'slug' => 'test-cat', 'status' => CategoryStatus::ACTIVE, 'sort_order' => 1]);
 });
 
+// Defaults to a live product: the storefront hides anything not published, so a
+// draft default would make most assertions here pass for the wrong reason. Tests
+// that care about status pass their own.
 function makeProduct(array $attrs = []): Product
 {
     return Product::create(array_merge([
@@ -32,6 +37,7 @@ function makeProduct(array $attrs = []): Product
         'brand_id' => test()->brand->id, 'primary_category_id' => test()->cat->id,
         'type' => 'simple', 'price' => 150000, 'stock_status' => StockStatus::IN_STOCK->value,
         'visibility' => ProductVisibility::VISIBLE->value,
+        'status' => ProductStatus::PUBLISHED->value, 'published_at' => now(),
     ], $attrs));
 }
 
@@ -546,6 +552,70 @@ it('excludes self, out-of-stock, price-less and hidden products from related', f
         ->not->toContain($outOfStock->id)
         ->not->toContain($priceless->id)
         ->not->toContain($hidden->id);
+});
+
+// A draft product was never released and an archived one was deliberately withdrawn
+// (ProductObserver clears published_at on archive). Either one reaching a carousel
+// puts a card on the page whose link then 404s, because the product page itself does
+// enforce published().
+it('keeps unpublished products out of the related and same-brand carousels', function () {
+    $product = makeProduct(['slug' => 'carousel-main']);
+    $live = makeProduct(['slug' => 'carousel-live']);
+    $draft = makeProduct(['slug' => 'carousel-draft', 'status' => ProductStatus::DRAFT->value]);
+    $archived = makeProduct([
+        'slug' => 'carousel-archived',
+        'status' => ProductStatus::ARCHIVED->value,
+        'published_at' => null,
+    ]);
+    $futureScheduled = makeProduct([
+        'slug' => 'carousel-scheduled',
+        'status' => ProductStatus::SCHEDULED->value,
+        'published_at' => now()->addWeek(),
+    ]);
+
+    $component = Livewire::test('pages::storefront.product', ['product' => $product]);
+
+    foreach (['relatedIds', 'brandProductIds'] as $property) {
+        expect($component->get($property))->toContain($live->id)
+            ->not->toContain($draft->id)
+            ->not->toContain($archived->id)
+            ->not->toContain($futureScheduled->id);
+    }
+
+    // The rendered collections re-check, so a product archived while the page is
+    // open drops out rather than lingering until the next mount.
+    $live->update(['status' => ProductStatus::ARCHIVED->value, 'published_at' => null]);
+
+    $rendered = Livewire::test('pages::storefront.product', ['product' => $product]);
+
+    expect($rendered->instance()->related->pluck('id'))->not->toContain($live->id)
+        ->and($rendered->instance()->brandProducts->pluck('id'))->not->toContain($live->id);
+});
+
+it('keeps unpublished products out of the recently viewed carousel', function () {
+    $user = User::factory()->create();
+    $product = makeProduct(['slug' => 'history-main']);
+    $live = makeProduct(['slug' => 'history-live']);
+    $archived = makeProduct([
+        'slug' => 'history-archived',
+        'status' => ProductStatus::ARCHIVED->value,
+        'published_at' => null,
+    ]);
+
+    foreach ([$live, $archived] as $viewed) {
+        RecentlyViewed::create([
+            'user_id' => $user->id,
+            'product_id' => $viewed->id,
+            'viewed_at' => now(),
+        ]);
+    }
+
+    $this->actingAs($user);
+
+    $shown = Livewire::test('pages::storefront.product', ['product' => $product])
+        ->instance()->recentlyViewedProducts->pluck('id');
+
+    expect($shown)->toContain($live->id)->not->toContain($archived->id);
 });
 
 it('uses the parent bundle price when one is set', function () {

@@ -96,7 +96,12 @@ class ProductSeeder extends Seeder
 
     private function primeLookups(): void
     {
-        $this->brandIdByName = Brand::pluck('id', 'name')->all();
+        // Keyed on the lowercased name: products.json still carries the brand in the
+        // supplier's shouty casing ("RATIONAL") while brands.json holds the display
+        // casing ("Rational"). Matching exactly would silently leave brand_id null.
+        $this->brandIdByName = Brand::pluck('id', 'name')
+            ->mapWithKeys(fn (int $id, string $name) => [mb_strtolower($name) => $id])
+            ->all();
 
         $this->categories = new CategoryReferenceResolver;
 
@@ -167,7 +172,7 @@ class ProductSeeder extends Seeder
 
         $brandId = null;
         if (! empty($data['brand'])) {
-            $brandId = $this->brandIdByName[trim($data['brand'])] ?? null;
+            $brandId = $this->brandIdByName[mb_strtolower(trim($data['brand']))] ?? null;
         }
 
         $primaryCategoryId = null;

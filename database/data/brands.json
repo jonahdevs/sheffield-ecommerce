@@ -1,7 +1,7 @@
 [
   {
     "slug": "tecnodom",
-    "name": "TECNODOM",
+    "name": "Tecnodom",
     "description": "Tecnodom specializes in commercial kitchen and catering equipment manufacturing. The company provides innovative solutions for professional kitchens with a focus on quality and efficiency.",
     "logo": "brands/tecnodom.jpg",
     "website_url": "https://technodom.com",
@@ -9,7 +9,7 @@
   },
   {
     "slug": "blueline",
-    "name": "BLUELINE",
+    "name": "Blueline",
     "description": "BlueLine produces high-quality commercial refrigeration and kitchen equipment. Known for their energy-efficient solutions and reliable performance in professional kitchen environments.",
     "logo": "brands/blueline.png",
     "website_url": "https://sheffieldafrica.com/brands/blueline",
@@ -17,7 +17,7 @@
   },
   {
     "slug": "comenda",
-    "name": "COMENDA",
+    "name": "Comenda",
     "description": "Comenda is a leading manufacturer of professional warewashing solutions. Since 1963, they have specialized in commercial dishwashers and washing systems for hospitality and food service industries.",
     "logo": "brands/comenda.jpg",
     "website_url": "https://www.comenda.eu",
@@ -25,7 +25,7 @@
   },
   {
     "slug": "dr-coffee",
-    "name": "DR. COFFEE",
+    "name": "Dr. Coffee",
     "description": "Dr. Coffee specializes in professional coffee equipment manufacturing, offering innovative coffee machines and solutions for commercial use. They focus on combining technology with exceptional coffee brewing capabilities.",
     "logo": "brands/dr-coffee.jpg",
     "website_url": "https://www.drcoffee.com",
@@ -33,7 +33,7 @@
   },
   {
     "slug": "hk-redline",
-    "name": "HK-REDLINE",
+    "name": "HK-Redline",
     "description": "H-Kitchen manufactures professional kitchen equipment and solutions for commercial food service operations. They specialize in durable, efficient kitchen equipment for restaurants and institutions.",
     "logo": "brands/hk-redline.jpg",
     "website_url": null,
@@ -41,7 +41,7 @@
   },
   {
     "slug": "rancilio",
-    "name": "RANCILIO",
+    "name": "Rancilio",
     "description": "Rancilio Group is a premier manufacturer of professional espresso machines and coffee equipment. Founded in 1927, they combine Italian craftsmanship with innovative technology to deliver high-quality coffee solutions.",
     "logo": "brands/rancilio.jpg",
     "website_url": "https://www.ranciliogroup.com",
@@ -49,7 +49,7 @@
   },
   {
     "slug": "rational",
-    "name": "RATIONAL",
+    "name": "Rational",
     "description": "RATIONAL is a global leader in commercial kitchen equipment, specializing in combi-steamers and cooking systems. Their innovative iCombi Pro and iVario cooking systems revolutionize professional kitchen operations.",
     "logo": "brands/rational.jpg",
     "website_url": "https://www.rational-online.com",
@@ -57,7 +57,7 @@
   },
   {
     "slug": "santos",
-    "name": "SANTOS",
+    "name": "Santos",
     "description": "Santos is a French manufacturer of commercial food preparation equipment. Since 1954, they have specialized in professional juicers, drink mixers, coffee grinders, and food preparation equipment.",
     "logo": "brands/santos.jpg",
     "website_url": "https://www.santos.fr",
@@ -65,7 +65,7 @@
   },
   {
     "slug": "tecnoeka",
-    "name": "TECNOEKA",
+    "name": "Tecnoeka",
     "description": "Tecnoeka produces professional ovens and cooking equipment for commercial kitchens. They are known for their reliable and innovative cooking solutions, particularly in convection and combination ovens.",
     "logo": "brands/tecnoeka.jpg",
     "website_url": "https://www.tecnoeka.com",
@@ -73,7 +73,7 @@
   },
   {
     "slug": "fagor",
-    "name": "FAGOR",
+    "name": "Fagor",
     "description": "Fagor Professional is a leading manufacturer of commercial kitchen equipment. They offer a comprehensive range of professional cooking, refrigeration, and warewashing solutions for the foodservice industry.",
     "logo": "brands/fagor.jpg",
     "website_url": "https://www.fagorprofessional.com",
@@ -81,7 +81,7 @@
   },
   {
     "slug": "osion",
-    "name": "OSION",
+    "name": "Osion",
     "description": "OSION specializes in commercial refrigeration equipment and solutions. Their products are known for reliability and energy efficiency in professional kitchen environments.",
     "logo": "brands/osion.jpg",
     "website_url": "https://www.osion.com",
@@ -89,7 +89,7 @@
   },
   {
     "slug": "brema",
-    "name": "BREMA",
+    "name": "Brema",
     "description": "BREMA is a leading manufacturer of ice makers and ice machines for commercial use. Founded in Italy, they provide innovative ice-making solutions for hospitality and food service industries.",
     "logo": "brands/brema.jpg",
     "website_url": "https://www.bremaice.it",
@@ -97,7 +97,7 @@
   },
   {
     "slug": "carpigiani",
-    "name": "CARPIGIANI",
+    "name": "Carpigiani",
     "description": "Carpigiani is a world leader in ice cream machines and gelato equipment manufacturing. Since 1946, they have been producing high-quality equipment for artisanal gelato, soft serve, and frozen desserts.",
     "logo": "brands/carpigiani.jpg",
     "website_url": "https://www.carpigiani.com",
@@ -105,7 +105,7 @@
   },
   {
     "slug": "pasmo",
-    "name": "PASMO",
+    "name": "Pasmo",
     "description": "PASMO manufactures professional kitchen equipment with a focus on cooking and food preparation solutions. Their products are designed for durability and efficiency in commercial kitchens.",
     "logo": "brands/pasmo.jpg",
     "website_url": null,
@@ -113,7 +113,7 @@
   },
   {
     "slug": "ramtons",
-    "name": "RAMTONS",
+    "name": "Ramtons",
     "description": "Ramtons is a manufacturer of home and commercial appliances, offering a wide range of kitchen and food service equipment. They focus on providing reliable and cost-effective solutions.",
     "logo": "brands/ramtons.jpg",
     "website_url": "https://www.ramtons.com",
@@ -121,7 +121,7 @@
   },
   {
     "slug": "huebsch",
-    "name": "HUEBSCH",
+    "name": "Huebsch",
     "description": "Huebsch is a leading manufacturer of commercial laundry equipment. With over 100 years of experience, they provide innovative and efficient washers, dryers, and laundry solutions for various industries.",
     "logo": "brands/huebsch.jpg",
     "website_url": "https://www.huebsch.com",
@@ -129,7 +129,7 @@
   },
   {
     "slug": "sheffield-fabrications",
-    "name": "SHEFFIELD FABRICATIONS",
+    "name": "Sheffield Fabrications",
     "description": "Sheffield Fabrications specializes in custom stainless steel fabrication for commercial kitchens and food service industries. They provide high-quality, bespoke solutions for professional kitchen environments.",
     "logo": "brands/sheffield-fabrications.jpg",
     "website_url": "https://www.sheffieldafrica.com",
@@ -137,7 +137,7 @@
   },
   {
     "slug": "ghidini",
-    "name": "GHIDINI",
+    "name": "Ghidini",
     "description": "Ghidini is an Italian manufacturer specializing in professional cookware and kitchen equipment. They are known for their high-quality stainless steel products and innovative cooking solutions.",
     "logo": "brands/ghidini.jpg",
     "website_url": "https://www.ghidini.it",
@@ -153,7 +153,7 @@
   },
   {
     "slug": "union",
-    "name": "UNION",
+    "name": "Union",
     "description": "Union Equipment specializes in commercial kitchen and food service equipment. They provide reliable solutions for professional kitchen operations and food preparation.",
     "logo": "brands/union.jpg",
     "website_url": null,
@@ -161,7 +161,7 @@
   },
   {
     "slug": "softwash",
-    "name": "SOFTWASH",
+    "name": "Softwash",
     "description": "Softwash specializes in commercial laundry and cleaning equipment. They provide efficient washing solutions for industrial and commercial applications.",
     "logo": "brands/softwash.jpg",
     "website_url": null,
@@ -169,7 +169,7 @@
   },
   {
     "slug": "berjaya",
-    "name": "BERJAYA",
+    "name": "Berjaya",
     "description": "Berjaya is a leading manufacturer of food service equipment and commercial kitchen solutions. They specialize in cooking equipment, refrigeration, and food preparation machinery.",
     "logo": "brands/berjaya.jpg",
     "website_url": "https://www.berjayasteel.com",
@@ -177,7 +177,7 @@
   },
   {
     "slug": "pradeep",
-    "name": "PRADEEP",
+    "name": "Pradeep",
     "description": "Pradeep manufactures commercial kitchen equipment and solutions. They focus on providing quality stainless steel equipment for professional kitchens.",
     "logo": null,
     "website_url": null,
@@ -185,7 +185,7 @@
   },
   {
     "slug": "franke",
-    "name": "FRANKE",
+    "name": "Franke",
     "description": "Franke is a global provider of kitchen systems and equipment. They offer comprehensive solutions for commercial kitchens, including professional cooking equipment, ventilation, and washing systems.",
     "logo": null,
     "website_url": "https://www.franke.com",
@@ -193,7 +193,7 @@
   },
   {
     "slug": "perfect",
-    "name": "PERFECT",
+    "name": "Perfect",
     "description": "Perfect specializes in commercial kitchen equipment manufacturing. Their product range includes cooking equipment and food preparation solutions.",
     "logo": null,
     "website_url": null,
@@ -201,7 +201,7 @@
   },
   {
     "slug": "perpetual",
-    "name": "PERPETUAL",
+    "name": "Perpetual",
     "description": "Perpetual manufactures durable commercial kitchen and food service equipment. They focus on providing reliable solutions for professional kitchen operations.",
     "logo": null,
     "website_url": null,
@@ -209,7 +209,7 @@
   },
   {
     "slug": "empero",
-    "name": "EMPERO",
+    "name": "Empero",
     "description": "Empero is a manufacturer of professional kitchen equipment and solutions. They produce a wide range of cooking, preparation, and storage equipment for commercial kitchens.",
     "logo": null,
     "website_url": "https://www.empero.com",
@@ -217,7 +217,7 @@
   },
   {
     "slug": "skymsen",
-    "name": "SKYMSEN",
+    "name": "Skymsen",
     "description": "Skymsen is a leading manufacturer of food preparation equipment. They specialize in commercial food processors, mixers, and other kitchen preparation equipment.",
     "logo": "brands/skymsen.png",
     "website_url": "https://www.skymsen.com",
@@ -225,7 +225,7 @@
   },
   {
     "slug": "sirman",
-    "name": "SIRMAN",
+    "name": "Sirman",
     "description": "Sirman is an Italian manufacturer of professional food preparation equipment. They produce high-quality food processors, slicers, and kitchen machinery for commercial use.",
     "logo": null,
     "website_url": "https://www.sirman.com",
@@ -233,7 +233,7 @@
   },
   {
     "slug": "astar",
-    "name": "ASTAR",
+    "name": "Astar",
     "description": "Astar manufactures commercial kitchen and refrigeration equipment. Their product line includes cooling systems and kitchen appliances for professional use.",
     "logo": null,
     "website_url": null,
@@ -241,7 +241,7 @@
   },
   {
     "slug": "sammic",
-    "name": "SAMMIC",
+    "name": "Sammic",
     "description": "Sammic is a leading manufacturer of food service equipment. Founded in 1961, they specialize in food preparation equipment, dishwashing, and food preservation solutions for professional kitchens.",
     "logo": null,
     "website_url": "https://www.sammic.com",
@@ -249,7 +249,7 @@
   },
   {
     "slug": "systematic",
-    "name": "SYSTEMATIC",
+    "name": "Systematic",
     "description": "Systematic provides commercial kitchen organization and storage solutions. They specialize in shelving systems and kitchen storage equipment for professional environments.",
     "logo": null,
     "website_url": null,
@@ -257,7 +257,7 @@
   },
   {
     "slug": "rosseto",
-    "name": "ROSSETO",
+    "name": "Rosseto",
     "description": "Rosseto Serving Solutions specializes in modern food display and dispensing systems. They provide innovative buffet equipment and food presentation solutions for hospitality industry.",
     "logo": null,
     "website_url": "https://www.rosseto.com",
@@ -265,7 +265,7 @@
   },
   {
     "slug": "kitchenware",
-    "name": "KITCHENWARE",
+    "name": "Kitchenware",
     "description": "Wanhui manufactures commercial kitchen equipment and appliances. They focus on providing efficient cooking and food preparation solutions for professional kitchens.",
     "logo": null,
     "website_url": null,
@@ -273,7 +273,7 @@
   },
   {
     "slug": "eurotec-riga",
-    "name": "EUROTEC RIGA",
+    "name": "Eurotec Riga",
     "description": "Eurotec Riga specializes in commercial refrigeration and kitchen equipment. They provide comprehensive solutions for professional kitchen cooling and storage needs.",
     "logo": null,
     "website_url": null,
@@ -281,7 +281,7 @@
   },
   {
     "slug": "bilge",
-    "name": "BILGE",
+    "name": "Bilge",
     "description": "Bilge manufactures professional kitchen equipment and solutions. They provide a range of cooking, preparation, and storage equipment for commercial kitchens.",
     "logo": null,
     "website_url": null,
@@ -289,7 +289,7 @@
   },
   {
     "slug": "cambro",
-    "name": "CAMBRO",
+    "name": "Cambro",
     "description": "Cambro Manufacturing is a leading producer of food service equipment. They specialize in food storage, serving equipment, and shelving solutions for the foodservice industry.",
     "logo": null,
     "website_url": "https://www.cambro.com",
@@ -297,7 +297,7 @@
   },
   {
     "slug": "ceasefire",
-    "name": "CEASEFIRE",
+    "name": "Ceasefire",
     "description": "Ceasefire specializes in fire safety equipment and solutions. They provide comprehensive fire protection systems for commercial kitchens and industrial facilities.",
     "logo": null,
     "website_url": "https://www.ceasefire.com",
@@ -313,7 +313,7 @@
   },
   {
     "slug": "oem-sheffield",
-    "name": "OEM SHEFFIELD",
+    "name": "OEM Sheffield",
     "description": "Guangzhou produces commercial kitchen equipment and appliances. They offer a wide range of food service equipment for professional kitchen applications.",
     "logo": null,
     "website_url": null,
@@ -321,7 +321,7 @@
   },
   {
     "slug": "kusina",
-    "name": "KUSINA",
+    "name": "Kusina",
     "description": "Kusina specializes in commercial kitchen equipment and supplies. They provide comprehensive solutions for professional kitchen setups and food service operations.",
     "logo": null,
     "website_url": null,
@@ -337,7 +337,7 @@
   },
   {
     "slug": "baron",
-    "name": "BARON",
+    "name": "Baron",
     "description": "Baron is a premium manufacturer of professional cooking equipment. They provide high-quality cooking ranges, ovens, and kitchen systems for professional kitchens.",
     "logo": null,
     "website_url": "https://www.baronprofessional.com",
@@ -345,7 +345,7 @@
   },
   {
     "slug": "bertos",
-    "name": "BERTOS",
+    "name": "Bertos",
     "description": "Bertos produces professional cooking equipment and kitchen systems. Since 1973, they have specialized in high-quality cooking ranges and professional kitchen solutions.",
     "logo": "brands/bertos.svg",
     "website_url": "https://www.bertos.com/en",
@@ -353,7 +353,7 @@
   },
   {
     "slug": "elaboratex",
-    "name": "ELABORATEX",
+    "name": "Elaboratex",
     "description": "Elaboratex specializes in textile solutions for the hospitality industry, including commercial laundry and linen products.",
     "logo": "brands/elaboratex.png",
     "website_url": "https://www.oemkitchen.com/",
@@ -369,7 +369,7 @@
   },
   {
     "slug": "broaster",
-    "name": "BROASTER",
+    "name": "Broaster",
     "description": "Broaster Company is a leading manufacturer of pressure fryers and foodservice equipment. They are known for their innovative cooking systems and food programs.",
     "logo": "brands/broaster.png",
     "website_url": "https://www.broaster.com",
@@ -377,7 +377,7 @@
   },
   {
     "slug": "menumaster",
-    "name": "MENUMASTER",
+    "name": "Menumaster",
     "description": "Menumaster is a brand of commercial microwave ovens and cooking equipment. They provide reliable solutions for quick-service restaurants and food service operations.",
     "logo": "brands/menumaster.jpg",
     "website_url": "https://www.menumaster.com/",
@@ -385,7 +385,7 @@
   },
   {
     "slug": "g-paniz",
-    "name": "G PANIZ",
+    "name": "G Paniz",
     "description": "G Paniz manufactures bakery and food service equipment. They specialize in ovens, mixers, and other equipment for commercial bakeries and food preparation.",
     "logo": "brands/g-paniz.svg",
     "website_url": "https://www.gpaniz.com.br",
@@ -393,7 +393,7 @@
   },
   {
     "slug": "kassidy",
-    "name": "KASSIDY",
+    "name": "Kassidy",
     "description": "Kassidy produces commercial kitchen equipment and supplies. They focus on providing quality solutions for food service operations.",
     "logo": null,
     "website_url": null,
@@ -401,7 +401,7 @@
   },
   {
     "slug": "roller-grill",
-    "name": "ROLLER GRILL",
+    "name": "Roller Grill",
     "description": "Roller Grill is a French manufacturer of professional catering equipment. They specialize in cooking and warming equipment for restaurants and food service operations.",
     "logo": "brands/roller-grill.webp",
     "website_url": "https://www.rollergrill-international.com/en/",
@@ -409,7 +409,7 @@
   },
   {
     "slug": "waring",
-    "name": "WARING",
+    "name": "Waring",
     "description": "Waring is a leading manufacturer of professional kitchen appliances and equipment. Known for their high-performance blenders and food processors for commercial use.",
     "logo": "brands/waring.png",
     "website_url": "https://www.waring.com/",
@@ -417,7 +417,7 @@
   },
   {
     "slug": "ningbo",
-    "name": "NINGBO",
+    "name": "Ningbo",
     "description": "Ningbo produces commercial kitchen equipment and supplies. They manufacture a wide range of food service equipment for professional kitchens.",
     "logo": "brands/ningbo.png",
     "website_url": "https://www.nbhaichu.com/",
@@ -425,7 +425,7 @@
   },
   {
     "slug": "cancan",
-    "name": "CANCAN",
+    "name": "Cancan",
     "description": "CanCan specializes in food processing and preparation equipment. They provide solutions for commercial food processing operations.",
     "logo": "brands/cancan.png",
     "website_url": "https://cancan.com.tr/en/",
@@ -433,7 +433,7 @@
   },
   {
     "slug": "zummo",
-    "name": "ZUMMO",
+    "name": "Zummo",
     "description": "Zummo is a leading manufacturer of automatic citrus juicers. They specialize in professional juicing equipment for the food service industry.",
     "logo": "brands/zummo.svg",
     "website_url": "https://www.zummocorp.com",
@@ -441,7 +441,7 @@
   },
   {
     "slug": "nemco",
-    "name": "NEMCO",
+    "name": "Nemco",
     "description": "Nemco Food Equipment is a manufacturer of commercial food preparation equipment. They specialize in countertop cooking equipment and food prep solutions.",
     "logo": "brands/nemco.png",
     "website_url": "https://www.nemcofoodequip.com",
@@ -449,7 +449,7 @@
   },
   {
     "slug": "prisma",
-    "name": "PRISMA",
+    "name": "Prisma",
     "description": "Prisma manufactures commercial food service and refrigeration equipment. They provide innovative solutions for professional kitchen cooling and storage needs.",
     "logo": "brands/prisma.png",
     "website_url": "https://www.prismaitalia.com/en/products/refrigeration/",
@@ -457,7 +457,7 @@
   },
   {
     "slug": "aerotherm",
-    "name": "AEROTHERM",
+    "name": "Aerotherm",
     "description": "Aerotherm specializes in commercial kitchen ventilation and air handling systems. They provide solutions for professional kitchen air management and temperature control.",
     "logo": "brands/aerotherm.jpeg",
     "website_url": "https://www.csaerotherm.com/",
@@ -465,7 +465,7 @@
   },
   {
     "slug": "macpan",
-    "name": "MACPAN",
+    "name": "Macpan",
     "description": "Macpan produces bakery and pastry equipment. They specialize in machinery for commercial bakeries and pastry production.",
     "logo": "brands/macpan.svg",
     "website_url": "https://macpan.com/en/",
@@ -473,7 +473,7 @@
   },
   {
     "slug": "crem",
-    "name": "CREM",
+    "name": "Crem",
     "description": "Crem International is a leading manufacturer of professional coffee machines. They provide innovative coffee solutions for the commercial and hospitality sectors.",
     "logo": "brands/crem.svg",
     "website_url": "https://www.crem.coffee/",
@@ -481,7 +481,7 @@
   },
   {
     "slug": "simonelli",
-    "name": "SIMONELLI",
+    "name": "Simonelli",
     "description": "Nuova Simonelli is a world-renowned manufacturer of professional espresso machines. They produce high-end coffee equipment for commercial use with cutting-edge technology.",
     "logo": "brands/simonelli.png",
     "website_url": "https://simonelligroup.com/",
@@ -489,7 +489,7 @@
   },
   {
     "slug": "prisma-food",
-    "name": "PRISMA FOOD",
+    "name": "Prisma Food",
     "description": "Prisma Food specializes in professional food processing equipment. They manufacture high-quality machinery for commercial food preparation and processing.",
     "logo": "brands/prisma-food.svg",
     "website_url": "https://www.prismafood.com",
@@ -497,7 +497,7 @@
   },
   {
     "slug": "forma",
-    "name": "FORMA",
+    "name": "Forma",
     "description": "Forma produces professional kitchen and food service equipment. They specialize in commercial kitchen solutions and food preparation equipment.",
     "logo": "brands/forma.jpg",
     "website_url": "https://formadesigns.co/",
@@ -505,7 +505,7 @@
   },
   {
     "slug": "ansun",
-    "name": "ANSUN",
+    "name": "Ansun",
     "description": "Ansun manufactures commercial kitchen and refrigeration equipment. They provide comprehensive solutions for professional kitchen operations.",
     "logo": "brands/ansun.png",
     "website_url": null,
@@ -513,7 +513,7 @@
   },
   {
     "slug": "herbish",
-    "name": "HERBISH",
+    "name": "Herbish",
     "description": "Herbish specializes in commercial kitchen equipment and supplies. They offer a range of food service solutions for professional kitchens.",
     "logo": null,
     "website_url": null,
@@ -521,7 +521,7 @@
   },
   {
     "slug": "macadams",
-    "name": "MACADAMS",
+    "name": "Macadams",
     "description": "Macadams is a manufacturer of bakery equipment and food processing machinery. They provide innovative solutions for commercial bakeries and food production.",
     "logo": "brands/macadams.svg",
     "website_url": "https://www.macadams.co.za",
@@ -529,7 +529,7 @@
   },
   {
     "slug": "arthur-krupp",
-    "name": "ARTHUR KRUPP",
+    "name": "Arthur Krupp",
     "description": "Arthur Krupp produces high-quality professional kitchen equipment and tableware. They specialize in premium hospitality supplies and kitchen solutions.",
     "logo": "brands/arthur-krupp.png",
     "website_url": "https://www.arthurkrupp.com",
@@ -537,7 +537,7 @@
   },
   {
     "slug": "silikomatt",
-    "name": "SILIKOMATT",
+    "name": "Silikomatt",
     "description": "Silikomatt specializes in silicone-based products for commercial kitchens. They provide innovative baking and cooking solutions using silicone technology.",
     "logo": "brands/silikomatt.jpg",
     "website_url": null,
@@ -545,7 +545,7 @@
   },
   {
     "slug": "redline",
-    "name": "REDLINE",
+    "name": "Redline",
     "description": "Redline manufactures commercial kitchen and food service equipment. They focus on providing reliable and efficient solutions for professional kitchens.",
     "logo": "brands/redline.png",
     "website_url": "https://sheffieldafrica.com/brands/redline",
@@ -553,7 +553,7 @@
   },
   {
     "slug": "sv-blueline",
-    "name": "SV-BLUELINE",
+    "name": "SV-Blueline",
     "description": "Snow Village specializes in ice making and refrigeration equipment. They provide commercial ice machines and cooling solutions for hospitality businesses.",
     "logo": "brands/sv-blueline.png",
     "website_url": null,
@@ -561,7 +561,7 @@
   },
   {
     "slug": "rimpar",
-    "name": "RIMPAR",
+    "name": "Rimpar",
     "description": "Rimpar offers design and production solutions in industrial cleaning machines. They specialize in professional cleaning equipment that meets customer expectations and requirements.",
     "logo": "brands/rimpar.webp",
     "website_url": "https://www.rimpar.com",
@@ -569,7 +569,7 @@
   },
   {
     "slug": "robot-coupe",
-    "name": "ROBOT COUPE",
+    "name": "Robot Coupe",
     "description": "Robot Coupe is a world leader in commercial food processors and preparation equipment. Since 1961, they have been innovating professional kitchen equipment.",
     "logo": "brands/robot-coupe.png",
     "website_url": "https://www.robot-coupe.com",
@@ -577,7 +577,7 @@
   },
   {
     "slug": "easyline",
-    "name": "EASYLINE",
+    "name": "Easyline",
     "description": "Easyline produces commercial kitchen equipment with a focus on simplicity and efficiency. They offer practical solutions for professional kitchen operations.",
     "logo": "brands/easyline.png",
     "website_url": null,
@@ -585,7 +585,7 @@
   },
   {
     "slug": "steelology",
-    "name": "STEELOLOGY",
+    "name": "Steelology",
     "description": "Steelology specializes in stainless steel kitchen equipment and custom fabrication. They provide high-quality stainless steel solutions for commercial kitchens.",
     "logo": "brands/steelology.png",
     "website_url": null,
@@ -593,7 +593,7 @@
   },
   {
     "slug": "sulte",
-    "name": "SULTE",
+    "name": "Sulte",
     "description": "Sulte manufactures commercial kitchen and food service equipment. They focus on providing reliable solutions for professional kitchen environments.",
     "logo": "brands/sulte.png",
     "website_url": null,
@@ -601,7 +601,7 @@
   },
   {
     "slug": "diqian",
-    "name": "DIQIAN",
+    "name": "Diqian",
     "description": "Diqian produces commercial kitchen equipment and supplies. They specialize in food service equipment for professional kitchens.",
     "logo": "brands/diqian.png",
     "website_url": null,
@@ -609,7 +609,7 @@
   },
   {
     "slug": "mazzoni",
-    "name": "MAZZONI",
+    "name": "Mazzoni",
     "description": "Mazzoni is an Italian manufacturer of professional kitchen equipment. They specialize in cooking equipment and food preparation solutions.",
     "logo": "brands/mazzoni.png",
     "website_url": "https://www.mazzonigroup.com",
@@ -617,7 +617,7 @@
   },
   {
     "slug": "beffe-italia",
-    "name": "BEFFE ITALIA",
+    "name": "Beffe Italia",
     "description": "Beffe Italia manufactures professional kitchen and food service equipment. They provide Italian-designed solutions for commercial kitchens.",
     "logo": "brands/beffe-italia.png",
     "website_url": null,
@@ -633,7 +633,7 @@
   },
   {
     "slug": "celme",
-    "name": "CELME",
+    "name": "Celme",
     "description": "Celme produces food processing and preparation equipment. They specialize in machinery for commercial food production and processing.",
     "logo": "brands/celme.webp",
     "website_url": "https://www.celme.com/en/",
@@ -641,7 +641,7 @@
   },
   {
     "slug": "rotobake",
-    "name": "ROTOBAKE",
+    "name": "Rotobake",
     "description": "Rotobake manufactures commercial bakery equipment. They provide specialized solutions for professional bakeries and food production facilities.",
     "logo": "brands/rotobake.jpeg",
     "website_url": "https://rotobake.com/",
@@ -657,7 +657,7 @@
   },
   {
     "slug": "cool-head",
-    "name": "COOL HEAD",
+    "name": "Cool Head",
     "description": "Cool Head specializes in commercial refrigeration equipment. They provide cooling solutions for professional kitchen and food service operations.",
     "logo": "brands/cool-head.png",
     "website_url": "https://www.coolheadeurope.com/en/",
@@ -665,7 +665,7 @@
   },
   {
     "slug": "blodgett",
-    "name": "BLODGETT",
+    "name": "Blodgett",
     "description": "Blodgett is a leading manufacturer of commercial ovens and cooking equipment. Founded in 1848, they provide innovative cooking solutions for professional kitchens.",
     "logo": "brands/blodgett.png",
     "website_url": "https://www.blodgett.com",
@@ -673,7 +673,7 @@
   },
   {
     "slug": "sheffield",
-    "name": "SHEFFIELD",
+    "name": "Sheffield",
     "description": "Sheffield provides comprehensive kitchen solutions and equipment. They specialize in commercial kitchen installations and equipment supply.",
     "logo": "brands/sheffield.png",
     "website_url": "https://www.sheffieldafrica.com/",
@@ -681,7 +681,7 @@
   },
   {
     "slug": "mercatus",
-    "name": "MERCATUS",
+    "name": "Mercatus",
     "description": "Mercatus is a manufacturer of commercial refrigeration equipment. They provide innovative cooling solutions for professional kitchens and food service operations.",
     "logo": "brands/mercatus.png",
     "website_url": "https://www.mercatus.pt",
@@ -689,7 +689,7 @@
   },
   {
     "slug": "tungsten",
-    "name": "TUNGSTEN",
+    "name": "Tungsten",
     "description": "Tungsten offers premium food processing equipment: commercial blenders, potato peelers, meat slicers, and hot dog stuffers. Our stainless steel machines deliver reliable performance for commercial kitchens, restaurants, and food manufacturers.",
     "logo": "brands/tungsten.png",
     "website_url": "https://sheffieldafrica.com/brands/tungsten",
@@ -697,7 +697,7 @@
   },
   {
     "slug": "speed-queen",
-    "name": "SPEED QUEEN",
+    "name": "Speed Queen",
     "description": "Speed Queen Specializes in Washing Machines and Other Laundry Products",
     "logo": "brands/speed-queen.png",
     "website_url": "https://speedqueen.com/",
@@ -705,7 +705,7 @@
   },
   {
     "slug": "tefcold",
-    "name": "TEFCOLD",
+    "name": "Tefcold",
     "description": "Experts in Commercial Refrigeration for Over 30 Years",
     "logo": "brands/tefcold.png",
     "website_url": "https://www.tefcold.com/",
@@ -721,7 +721,7 @@
   },
   {
     "slug": "avatherm",
-    "name": "AVATHERM",
+    "name": "Avatherm",
     "description": "AVATHERM is successfully in the market for now more than 20 years and is the first source of call when it comes to high quality insulated transportation boxes.",
     "logo": "brands/avatherm.png",
     "website_url": "http://en.avatherm.com.tr/",
@@ -729,7 +729,7 @@
   },
   {
     "slug": "infrico",
-    "name": "INFRICO",
+    "name": "Infrico",
     "description": "INFRICO",
     "logo": "brands/infrico.jpg",
     "website_url": null,
@@ -737,7 +737,7 @@
   },
   {
     "slug": "antunes",
-    "name": "ANTUNES",
+    "name": "Antunes",
     "description": "ANTUNES",
     "logo": "brands/antunes.png",
     "website_url": null,
@@ -745,7 +745,7 @@
   },
   {
     "slug": "lincar-memme",
-    "name": "LINCAR MEMME",
+    "name": "Lincar Memme",
     "description": "LINCAR MEMME",
     "logo": "brands/lincar-memme.png",
     "website_url": null,
@@ -753,7 +753,7 @@
   },
   {
     "slug": "tecnoroast",
-    "name": "TECNOROAST",
+    "name": "Tecnoroast",
     "description": "TECNOROAST",
     "logo": "brands/tecnoroast.png",
     "website_url": null,
@@ -761,7 +761,7 @@
   },
   {
     "slug": "kalerm",
-    "name": "KALERM",
+    "name": "Kalerm",
     "description": "KALERM",
     "logo": "brands/kalerm.jpg",
     "website_url": null,
@@ -769,7 +769,7 @@
   },
   {
     "slug": "icemake",
-    "name": "ICEMAKE",
+    "name": "Icemake",
     "description": "ICEMAKE",
     "logo": "brands/icemake.png",
     "website_url": null,
@@ -777,7 +777,7 @@
   },
   {
     "slug": "iberna",
-    "name": "IBERNA",
+    "name": "Iberna",
     "description": "IBERNA",
     "logo": "brands/iberna.png",
     "website_url": null,
@@ -785,7 +785,7 @@
   },
   {
     "slug": "sunnylux",
-    "name": "SUNNYLUX",
+    "name": "Sunnylux",
     "description": "SUNNYLUX",
     "logo": "brands/sunnylux.jpg",
     "website_url": null,
@@ -793,7 +793,7 @@
   },
   {
     "slug": "winners",
-    "name": "WINNERS",
+    "name": "Winners",
     "description": "WINNERS",
     "logo": "brands/winners.jpg",
     "website_url": null,
@@ -801,7 +801,7 @@
   },
   {
     "slug": "maxi-laundry",
-    "name": "MAXI LAUNDRY",
+    "name": "Maxi Laundry",
     "description": "MAXI LAUNDRY",
     "logo": "brands/maxi-laundry.jfif",
     "website_url": null,
@@ -809,7 +809,7 @@
   },
   {
     "slug": "henan",
-    "name": "HENAN",
+    "name": "Henan",
     "description": "HENAN",
     "logo": "brands/henan.png",
     "website_url": null,
@@ -817,7 +817,7 @@
   },
   {
     "slug": "goodwill",
-    "name": "GOODWILL",
+    "name": "Goodwill",
     "description": "Goodwill manufactures commercial catering and beverage equipment, including filter coffee brewers built for high-volume foodservice operations.",
     "logo": null,
     "website_url": null,
@@ -825,7 +825,7 @@
   },
   {
     "slug": "h-kitchen",
-    "name": "H-KITCHEN",
+    "name": "H-Kitchen",
     "description": null,
     "logo": null,
     "website_url": null,

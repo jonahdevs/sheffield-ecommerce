@@ -6,6 +6,7 @@ use App\Models\Category;
 use App\Models\CategoryPlacement;
 use App\Models\Product;
 use App\Models\ProductVariant;
+use Database\Seeders\AttributeSeeder;
 use Database\Seeders\BrandSeeder;
 use Database\Seeders\CategorySeeder;
 use Database\Seeders\ProductSeeder;
@@ -21,7 +22,10 @@ use Illuminate\Support\Str;
  * taxonomy from a single seed rather than one per case.
  */
 it('seeds the coffee taxonomy from the final e-commerce listing', function () {
-    $this->seed([BrandSeeder::class, CategorySeeder::class, ProductSeeder::class]);
+    // AttributeSeeder must run before ProductSeeder: it skips any attribute that does
+    // not exist yet, so without it the grouped trays seed with no variation axis and
+    // assertRoastingTraysAreGroupedByGnSize below finds nothing.
+    $this->seed([BrandSeeder::class, CategorySeeder::class, AttributeSeeder::class, ProductSeeder::class]);
 
     $parent = Category::whereNull('parent_id')->where('slug', 'coffee-machines')->sole();
 
@@ -100,9 +104,13 @@ it('seeds the coffee taxonomy from the final e-commerce listing', function () {
     // The Goodwill brewers and the filter papers carry no delivery-inclusive e-commerce
     // price in the workbook, only a SAP one. They are sold at that SAP price rather than
     // held back as drafts, so they are published — the workbook's missing e-commerce
-    // column is not a bar to listing. GOODWILL still resolves to a brand.
-    $goodwillId = Brand::where('name', 'GOODWILL')->value('id');
+    // column is not a bar to listing. The products.json "GOODWILL" still resolves to a
+    // brand, which now carries the display casing "Goodwill".
+    $goodwillId = Brand::where('slug', 'goodwill')->value('id');
     $brewers = Product::whereIn('sku', ['IMG/COF/00139', 'IMG/COF/00140', 'IMG/COF/00141'])->get();
+
+    // Without this the brand_id check below passes vacuously when both sides are null.
+    expect($goodwillId)->not->toBeNull();
 
     expect($brewers)->toHaveCount(3)
         ->and($brewers->every(fn (Product $p) => $p->status->value === 'published'))->toBeTrue()
@@ -121,13 +129,13 @@ it('seeds the coffee taxonomy from the final e-commerce listing', function () {
     $decanter = Product::where('sku', 'IMG/COF/00008')->sole();
 
     expect($decanter->name)->toBe('Decanter 1.8 Litres CREM')
-        ->and($decanter->brand->name)->toBe('CREM')
+        ->and($decanter->brand->name)->toBe('Crem')
         ->and($decanter->primary_category_id)->toBe($childId('Coffee Brewers'));
 
     $waterUrn = Product::where('sku', 'IMG/COF/00001')->sole();
 
     expect($waterUrn->name)->toContain('Heated Water Urn')
-        ->and($waterUrn->brand->name)->toBe('BERJAYA')
+        ->and($waterUrn->brand->name)->toBe('Berjaya')
         ->and($waterUrn->primaryCategory->name)->toBe('Beverage Equipment');
 
     // Every coffee product now drills into a machine type, grinder, brewer, servery or

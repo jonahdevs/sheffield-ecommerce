@@ -572,7 +572,7 @@
                                                                                 <div
                                                                                     class="group relative h-24 w-24 overflow-hidden rounded-md border border-zinc-200 dark:border-zinc-700">
                                                                                     <img src="{{ $pendingVariantImages[$i]->temporaryUrl() }}"
-                                                                                        class="h-full w-full object-cover"
+                                                                                        class="h-full w-full bg-white object-contain"
                                                                                         alt="Preview" />
                                                                                     <button type="button"
                                                                                         wire:click="removeVariantImage({{ $i }})"
@@ -586,7 +586,7 @@
                                                                                 <div
                                                                                     class="group relative h-24 w-24 overflow-hidden rounded-md border border-zinc-200 dark:border-zinc-700">
                                                                                     <img src="{{ $variant['image_url'] }}"
-                                                                                        class="h-full w-full object-cover"
+                                                                                        class="h-full w-full bg-white object-contain"
                                                                                         alt="" />
                                                                                     <button type="button"
                                                                                         wire:click="removeVariantImage({{ $i }})"
@@ -1289,9 +1289,9 @@
                         <div class="p-6">
                             @if ($pendingCoverImage)
                                 <div
-                                    class="group relative overflow-hidden rounded-md border border-zinc-200 dark:border-zinc-700">
+                                    class="group relative w-40 overflow-hidden rounded-md border border-zinc-200 dark:border-zinc-700">
                                     <img src="{{ $pendingCoverImage->temporaryUrl() }}"
-                                        class="h-48 w-full object-cover" alt="Preview" />
+                                        class="aspect-square w-full bg-white object-contain" alt="Preview" />
                                     <button type="button" wire:click="removeCoverImage"
                                         class="absolute right-2 top-2 rounded-full bg-white/90 p-1 shadow hover:bg-white dark:bg-zinc-900/90">
                                         <flux:icon.x-mark variant="micro" class="size-4 text-zinc-600" />
@@ -1299,8 +1299,8 @@
                                 </div>
                             @elseif ($coverImage)
                                 <div
-                                    class="group relative overflow-hidden rounded-md border border-zinc-200 dark:border-zinc-700">
-                                    <img src="{{ $coverImage['url'] }}" class="h-48 w-full object-cover"
+                                    class="group relative w-40 overflow-hidden rounded-md border border-zinc-200 dark:border-zinc-700">
+                                    <img src="{{ $coverImage['url'] }}" class="aspect-square w-full bg-white object-contain"
                                         alt="{{ $coverImage['alt'] }}" />
                                     <button type="button" wire:click="removeCoverImage"
                                         class="absolute right-2 top-2 rounded-full bg-white/90 p-1 shadow hover:bg-white dark:bg-zinc-900/90">
@@ -1342,7 +1342,7 @@
                                     @foreach ($galleryImages as $i => $img)
                                         <div
                                             class="group relative overflow-hidden rounded-md border border-zinc-200 dark:border-zinc-700">
-                                            <img src="{{ $img['url'] }}" class="h-20 w-full object-cover"
+                                            <img src="{{ $img['url'] }}" class="aspect-square w-full bg-white object-contain"
                                                 alt="{{ $img['alt'] }}" />
                                             <button type="button"
                                                 wire:click="removeGalleryImage({{ $i }})"
@@ -1355,7 +1355,7 @@
                                     @foreach ($pendingGalleryImages as $img)
                                         <div
                                             class="relative overflow-hidden rounded-md border border-zinc-200 dark:border-zinc-700">
-                                            <img src="{{ $img->temporaryUrl() }}" class="h-20 w-full object-cover"
+                                            <img src="{{ $img->temporaryUrl() }}" class="aspect-square w-full bg-white object-contain"
                                                 alt="Preview" />
                                         </div>
                                     @endforeach
