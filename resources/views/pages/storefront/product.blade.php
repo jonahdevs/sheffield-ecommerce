@@ -865,7 +865,6 @@ $isOnSale = $compareAt !== null;
                 {{-- The lightbox runs its own Swiper. rewind keeps the wrap-around the arrows had
                      before without loop mode's duplicated slides, which would have made activeIndex
                      lie about which image is showing. --}}
-                lbSwiper: null,
                 openLightbox() {
                     this.lbIdx = this.mainIdx;
                     this.$flux.modal('product-gallery').show();
@@ -874,7 +873,14 @@ $isOnSale = $compareAt !== null;
                          would measure zero width. Build it on first open, and re-measure on every
                          open in case the viewport changed while it was closed. --}}
                     requestAnimationFrame(() => {
-                        this.lbSwiper ??= new Swiper(this.$refs.lbSwiper, {
+                        {{-- <flux:modal> renders its own x-data (fluxModal), so the x-ref inside it
+                             registers to THAT component, not this gallery — $refs.lbSwiper reads
+                             back undefined here and Swiper builds on nothing, leaving the slides
+                             stuck at the FOUC rule's display:none (blank lightbox). Reach the node
+                             through the gallery root instead, and stash the Swiper on it so we
+                             don't rebuild on every open. --}}
+                        const el = this.$root.querySelector('[x-ref=lbSwiper]');
+                        el._swiper ??= new Swiper(el, {
                             speed: 350,
                             rewind: true,
                             initialSlide: this.mainIdx,
@@ -883,12 +889,13 @@ $isOnSale = $compareAt !== null;
                             },
                         });
 
-                        this.lbSwiper.update();
-                        this.lbSwiper.slideTo(this.mainIdx, 0);
+                        el._swiper.update();
+                        el._swiper.slideTo(this.mainIdx, 0);
                     });
                 },
-                prevLb() { this.lbSwiper?.slidePrev(); },
-                nextLb() { this.lbSwiper?.slideNext(); },
+                prevLb() { this.$root.querySelector('[x-ref=lbSwiper]')._swiper?.slidePrev(); },
+                nextLb() { this.$root.querySelector('[x-ref=lbSwiper]')._swiper?.slideNext(); },
+                goLb(i) { this.$root.querySelector('[x-ref=lbSwiper]')._swiper?.slideTo(i); },
 
                 {{-- Swiper owns the main image transition. Hand-rolling it meant tracking the
                      in-flight slide by hand, and clicking again before it landed raced the timers.
@@ -1080,7 +1087,7 @@ $isOnSale = $compareAt !== null;
                         <template x-if="gallery.length > 1">
                             <div class="flex flex-wrap justify-center gap-2.5">
                                 <template x-for="(img, i) in gallery" :key="i">
-                                    <button type="button" @click="lbSwiper?.slideTo(i)"
+                                    <button type="button" @click="goLb(i)"
                                         class="size-14 cursor-pointer overflow-hidden rounded border-2 bg-white transition"
                                         :class="i === lbIdx ? 'border-brand-500' : 'border-zinc-200 hover:border-zinc-400'">
                                         <img :src="img.thumb" :alt="img.alt"
