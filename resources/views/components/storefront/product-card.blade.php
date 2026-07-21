@@ -63,8 +63,22 @@
                     <img src="{{ $product->cover_url }}" alt="{{ $product->name }}" loading="lazy"
                         x-data="{ loaded: false }" x-init="loaded = $el.complete" x-on:load="loaded = true"
                         x-bind:class="loaded ? 'opacity-100' : 'opacity-0'"
-                        class="relative size-full object-contain object-center transition duration-500" />
+                        @class([
+                            'relative size-full object-contain object-center transition duration-500',
+                            'group-hover:opacity-0' => $product->secondary_url,
+                        ]) />
                 </picture>
+
+                {{-- Second gallery image, crossfaded in on hover as a quick alternate-angle preview --}}
+                @if ($product->secondary_url)
+                    <picture class="contents">
+                        @if ($product->secondary_webp_url)
+                            <source srcset="{{ $product->secondary_webp_url }}" type="image/webp" />
+                        @endif
+                        <img src="{{ $product->secondary_url }}" alt="" aria-hidden="true" loading="lazy"
+                            class="absolute inset-0 size-full object-contain object-center opacity-0 transition duration-500 group-hover:opacity-100" />
+                    </picture>
+                @endif
             @else
                 <div class="flex size-full items-center justify-center text-ink-4">
                     <flux:icon.photo class="size-12" />

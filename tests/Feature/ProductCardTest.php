@@ -3,6 +3,7 @@
 use App\Enums\ProductType;
 use App\Models\Product;
 use App\Models\ProductVariant;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Testing\TestView;
 
@@ -135,4 +136,33 @@ it('still routes grouped products to the product page', function () {
     renderCard($product)
         ->assertSee('Select options')
         ->assertDontSee('openVariationModal', false);
+});
+
+it('does not render a hover-swap image when the product has only a cover image', function () {
+    $product = Product::factory()->create(['price' => 150000]);
+    $product->addMedia(UploadedFile::fake()->image('cover.jpg'))
+        ->withCustomProperties(['is_cover' => true])
+        ->toMediaCollection('images');
+
+    // The hover-swap <img> is the only element pairing these two attributes; the
+    // wishlist/compare buttons also use group-hover:opacity-100, so that class alone
+    // isn't a safe marker here.
+    expect((string) renderCard($product->fresh()))->not->toContain('aria-hidden="true" loading="lazy"');
+});
+
+it('shows the first gallery image as a hover swap over the cover', function () {
+    $product = Product::factory()->create(['price' => 150000]);
+    $product->addMedia(UploadedFile::fake()->image('cover.jpg'))
+        ->withCustomProperties(['is_cover' => true])
+        ->toMediaCollection('images');
+    $product->addMedia(UploadedFile::fake()->image('gallery-1.jpg'))
+        ->withCustomProperties(['is_cover' => false])
+        ->toMediaCollection('images');
+
+    $product = $product->fresh();
+    $html = (string) renderCard($product);
+
+    expect($html)
+        ->toContain('group-hover:opacity-100')
+        ->toContain($product->secondary_url);
 });

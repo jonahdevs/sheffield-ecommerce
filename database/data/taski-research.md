@@ -308,7 +308,8 @@ interchangeable.** 8504410 is ergodisc; 7510829 is swingo. The catalogue previou
 ## 8. Unidentified parts
 
 Three catalogue entries have **no part number** (blank or `-`) and were not researched.
-Likely matches from adjacent-SKU listings, **not confirmed**:
+Likely matches from adjacent-SKU listings — **all three since confirmed during the July 2026
+image-sourcing pass, see §10.1**:
 
 | SKU | Catalogue name | Likely part | Basis |
 |---|---|---|---|
@@ -376,6 +377,123 @@ Ranked:
 
 Loose product JPGs also sit under `taski.com/wp-content/uploads/2020/12/`, including
 `Aero_Group-image-scaled.jpg` and the `TASKI_AERO_BP_E.jpg` series.
+
+### 10.1 Accessory image URLs — verified July 2026
+
+The 35 accessory/consumable SKUs shipped without images. Per-part sources below; every
+direct URL returned HTTP 200 when checked.
+
+**Correction to §1:** `taski.com/?s=<partnumber>` does **not** work for most accessories —
+site search returns 0 results for them. Only some accessories have `/product/` pages
+(found by guessing the slug or via web search). Official imagery for the rest lives on the
+regional `eshop.diversey.*` shops, which are 403 to automation but fine in a browser.
+
+**Part numbers confirmed for all three §8 unidentified parts:** 8504780 (abrasive brush,
+via Suvacor + Solenis slug + the single-disc accessory chart), 8505500 (44T filter cloth,
+via Altruan MPN + Diversey UK slug, EAN 7615400501854), 8505140 (aquamat 10.1 set — official
+name is "Spray extraction with hose", required for aquamat 10/10.1).
+
+**Direct downloads — official taski.com** (all white-background studio shots):
+
+| SKU | Part | Image URL |
+|---|---|---|
+| IMG/HYS/00100 | 7524288 | <https://taski.com/wp-content/uploads/2021/01/AERO-ACC-7524288_WH-1.jpg> |
+| IMG/HYS/00101 | 7524289 | <https://taski.com/wp-content/uploads/2021/01/7524289-TASKI-AERO-8_15-filter-paper-bags-10pc.jpg> |
+| IMG/HYS/00107 | 7524191 | <https://taski.com/wp-content/uploads/2021/01/7524191_TASKI-go-Papiersack-10-Stuck.jpg> |
+| IMG/HYS/00108 | 7524189 | <https://taski.com/wp-content/uploads/2021/01/7524189-TASKI-go-standard-accessory-set-32-mm.jpg> |
+| IMG/HYS/00113 | 7524500 | <https://taski.com/wp-content/uploads/2021/01/7524500-TASKI-AERO-BP-Disposable-Fleece-Bags-10pc-CMYK-20x20cm.jpg> |
+| IMG/HYS/00119 | 8504480 | <https://taski.com/wp-content/uploads/2021/01/8504480-Set-wet-vacuum-cleaning-Premium.jpg> |
+| IMG/HYS/00120 | 8504940 | <https://taski.com/wp-content/uploads/2021/01/8504940-Pa-of-10-double-filter-bags.jpg> |
+| IMG/HYS/00121 | 4091150 | <https://taski.com/wp-content/uploads/2021/01/4091150-30014-61-Filter-Disc-Set-10-Parts-1.jpg> |
+| IMG/HYS/00172 | 8505160 | <https://taski.com/wp-content/uploads/2021/01/8505160-Accessories-set-aquamat-20.jpg> |
+| IMG/HYS/00218 | 8504930 | <https://taski.com/wp-content/uploads/2021/01/8504930-Kit-dry-vacuum-cleaning-vacumat-22.jpg> |
+| IMG/HYS/00230 | 8505140 | <https://taski.com/wp-content/uploads/2021/01/8505140-Spray-extraction-with-hose.jpg> |
+| IMG/HYS/00240 | 8504500 | <https://taski.com/wp-content/uploads/2021/01/8504500-Kit-dry-vacuum-cleaning-vacumat-12.jpg> |
+| IMG/HYS/00254 | 7520152 | <https://taski.com/wp-content/uploads/2021/02/Gel-batteries.png> — generic gel-battery family shot, not block-specific |
+
+**Direct downloads — distributor-hosted** (white background; Dobmeier files are official
+Diversey press shots, pattern `dobmeierjanitorialsupplies.com/assets/product-images/Diversey-TASKI-<part>.jpg`):
+
+| SKU | Part | Image URL |
+|---|---|---|
+| IMG/HYS/00111 | 7524295 | <https://www.galgormgroup.com/images/XL/7524295XLG.jpg> |
+| IMG/HYS/00124 | 8505420 | <https://www.dobmeierjanitorialsupplies.com/assets/product-images/Diversey-TASKI-8505420.jpg> |
+| IMG/HYS/00133 | 8504410 | <https://suvacor.com/wp-content/uploads/2024/02/8504410.jpg> — Suvacor is a **Kenyan** distributor |
+| IMG/HYS/00134 | 8504750 | <https://www.dobmeierjanitorialsupplies.com/assets/product-images/Diversey-TASKI-8504750.jpg> — use this file; the Dobmeier *page* displays neighbouring SKU 8504770's photo |
+| IMG/HYS/00141 | 8504830 | <https://www.dobmeierjanitorialsupplies.com/assets/product-images/Diversey-TASKI-8504830.jpg> |
+| IMG/HYS/00143 | 8505010 | <https://www.dobmeierjanitorialsupplies.com/assets/product-images/Diversey-TASKI-8505010.jpg> |
+| IMG/HYS/00152 | 7510030 | <https://www.dobmeierjanitorialsupplies.com/assets/product-images/Diversey-TASKI-7510030.jpg> |
+| IMG/HYS/00160 | 7510829 | <https://www.dobmeierjanitorialsupplies.com/assets/product-images/Diversey-TASKI-7510829.jpg> — filename-verified as the swingo part, not ergodisc 8504410 |
+| IMG/HYS/00226 | 8504780 | <https://suvacor.com/wp-content/uploads/2025/06/8504780-1000x1000.jpeg> (alt: Dobmeier `Diversey-TASKI-8504780.jpg`) |
+| IMG/HYS/00229 | 8505500 | <https://altruan.com/cdn/shop/files/8505500-Filtertuch-VAC44.jpg?width=1946> |
+| IMG/HYS/00249 | 7510634 | <https://www.dobmeierjanitorialsupplies.com/assets/product-images/Diversey-TASKI-7510634.jpg> |
+| IMG/HYS/00250 | 7519395 | <https://www.dobmeierjanitorialsupplies.com/assets/product-images/Diversey-TASKI-7519395.jpg> |
+| IMG/HYS/00251 | 7514962 | <https://www.carellurvink.nl/cdn-cgi/imagedelivery/X8zbrVPx1obdJ5NOL9jYkg/product/7514962.jpg/h=420> — raise `h=` for higher res |
+| IMG/HYS/00256 | 7524910 | <https://altruan.com/cdn/shop/files/Seitenbesen-Balimat3300_Ersatz-SeitenbesenfuerdenBalimat3300.jpg?width=1946> |
+| IMG/HYS/00260 | 7524892 | <https://www.pamark.fi/media/catalog/product/cache/4be342ae2419566741c46cd39a82cceb/8/5/850a9d53510e27703ccc61b65f0687b533c3f1f1_7524892_1.jpg> |
+
+**Needs a human browser** (listings confirmed to exist but 403 to automation, or no clean
+photo found — grab from these pages):
+
+| SKU | Part | Where |
+|---|---|---|
+| IMG/HYS/00112 | 7524502 suction hose | <https://eshop.diversey.co.uk/floor-care-machines/vacuum-cleaners/vacuum-cleaner-accessories/taski-aero-bp-suction-hose-1pc-150-cm-7524502> — do **not** use Dobmeier's image; it is a generic `TASKI-Parts.jpg` placeholder |
+| IMG/HYS/00114 | 7524501 motor foam filter | <https://products.solenis.com/de/product/taski-aero-bp-motor-filter-5x-staubfilter-auf-schaumstoffbasis-fur-den-taski-aero-bp-7524501> — same Dobmeier-placeholder warning |
+| IMG/HYS/00142 | 8504860 wet shampoo brush | No fetchable distributor photo anywhere. Extract the white-bg thumbnail from page 1 of <https://nam.taski.com/wp-content/uploads/2023/05/Accessory-list.pdf>, or browser-grab <https://eshop.diversey.fr/en-GB/product/taski-brush-wet-shampooing-1pc-17-43-cm-8504860> |
+| IMG/HYS/00255 | 7524909 centre broom | <https://eshop.diversey.be/fr-BE/product/center-broom-b3300-1pc-7524909> — **Altruan's 7524909 image is wrong** (it reuses the side-broom disc photo; the centre broom is a 500 mm roller) |
+| IMG/HYS/00257 | 7524893 brushes 225 mm | <https://shop.usaclean.com/standard-brush-pkg-of-2-292-5807/> or eshop.diversey.swiss |
+| IMG/HYS/00258 | 7524894 pad drives 225 mm | <https://shop.usaclean.com/pad-driver-pkg-of-2-292-5809/> |
+| IMG/HYS/00259 | 7524891 NX battery | <https://eshop.diversey.co.uk/product/nx-li-ion-battery-37v-8100m-81ah-1pc-7524891> — beware: Pamark's page slugged "…7524891" actually shows the **charger** |
+
+Also surfaced: the NAM accessory-list PDF (<https://nam.taski.com/wp-content/uploads/2023/05/Accessory-list.pdf>)
+carries white-bg thumbnails + official names for the whole single-disc tool range, and
+Astral Hygiene's Balimat 3300 accessory table is off by one row (it pairs 7524910 with
+"Center broom" — 7524911 is actually the balimat 6500 machine SKU; trust the Diversey eshops).
+
+### 10.2 Accessory product pages — for manual verification
+
+Same 35 SKUs, as clickable product pages rather than direct image links — for checking specs,
+compatibility, and part-name wording against the catalogue by hand, same as the machine
+reference in §6. `eshop.diversey.*` and `products.solenis.com` links 403 to automated fetches
+but load fine in a browser.
+
+| SKU | Catalogue name | Part | Product page(s) |
+|---|---|---|---|
+| IMG/HYS/00100 | Taski Aero 8/15 Disp. Fleece Bags 10PC | 7524288 | [taski.com](https://taski.com/product/7524288-taski-aero-8-15-disp-fleece-bags-10pc/) |
+| IMG/HYS/00101 | Taski Aero 8/15 Filter Paper Bags 10PC | 7524289 | [taski.com](https://taski.com/product/7524289-taski-aero-8-15-filter-paper-bags-10pc/) |
+| IMG/HYS/00107 | Taski Go Filter Paper Bags 10PC | 7524191 | [taski.com](https://taski.com/product/7524191-taski-go-paper-bag-10-pc/) |
+| IMG/HYS/00108 | Taski Go Basic Accessory Set 32MM | 7524189 | [taski.com](https://taski.com/product/7524189-taski-go-standard-accessory-set-32-mm/) |
+| IMG/HYS/00111 | Taski Aero Telescopic Tube 32MM | 7524295 | not on taski.com — [Galgorm Group](https://www.galgormgroup.com/item/7524295/Taski-Aero-Telescopic-Tube-32mm/FP), [Bunzl CHS](https://www.bunzlchs.com/Cleaning-Machinery/Vacuum-Cleaners-and-Accessories/Vacuum-Cleaner-Accessories/TASKI-AERO-Telescopic-Tube-32MM~p~177012), [Solenis](https://products.solenis.com/product/taski-aero-telescoping-metal-wand-1ea-1ct-D7524295) |
+| IMG/HYS/00112 | Taski Aero BP Suction Hose 1.5M | 7524502 | not on taski.com — [Diversey CH](https://eshop.diversey.swiss/en-GB/product/taski-aero-bp-suction-hose-1pc-150-cm-7524502), [Diversey UK](https://eshop.diversey.co.uk/floor-care-machines/vacuum-cleaners/vacuum-cleaner-accessories/taski-aero-bp-suction-hose-1pc-150-cm-7524502) |
+| IMG/HYS/00113 | Taski Aero BP Disp. Fleece Bags 10PC | 7524500 | [taski.com](https://taski.com/product/7524500-taski-aero-bp-disposable-fleece-bags-10pc/), [Almec](https://almec.com/taski-aero-bp-dust-bag-TSK0014/) |
+| IMG/HYS/00114 | Taski Aero BP Motor Foam Filter | 7524501 | not on taski.com — [Solenis DE](https://products.solenis.com/de/product/taski-aero-bp-motor-filter-5x-staubfilter-auf-schaumstoffbasis-fur-den-taski-aero-bp-7524501) |
+| IMG/HYS/00119 | Set Wet Vacuum Cleaning Premium | 8504480 | [taski.com](https://taski.com/product/8504480-set-wet-vacuum-cleaning-premium/) |
+| IMG/HYS/00120 | Pa of 10 Double Filter Bags | 8504940 | [taski.com](https://taski.com/product/8504940-pa-of-10-double-filter-bags/) |
+| IMG/HYS/00121 | 30014-61 Filter (10 Parts) | 4091150 | [taski.com](https://taski.com/product/4091150-30014-61-filter-disc-set-10-parts-2/) |
+| IMG/HYS/00124 | Fixomat for Vacumat 44T | 8505420 | not on taski.com — [Dobmeier](https://www.dobmeierjanitorialsupplies.com/TASKI-Fixomat-Front-Mount-Squeegee-For-vacumat-44T-SKU-TASKI-8505420), [Hill & Markes](https://www.hillnmarkes.com/2415893/product/diversey-div8505420) |
+| IMG/HYS/00133 | Driving Disc Ergodisc D43 | 8504410 | not on taski.com — [Suvacor](https://www.suvacor.com/shop/driving-disc-ergodisc-d43/) (Kenyan distributor), [Solenis UK](https://products.solenis.com/en-GB/product/taski-ergodisc-driving-disc-low-speed-1pc-17-43-cm-pad-drive-standard-speed-8504410), [Diversey UK](https://eshop.diversey.co.uk/product/taski-ergodisc-driving-disc-low-speed-1pc-17-43-cm-pad-drive-standard-speed-8504410) |
+| IMG/HYS/00134 | Scrubbing Brush Uni 43 | 8504750 | not on taski.com — [Dobmeier](https://www.dobmeierjanitorialsupplies.com/TASKI-17in-Hard-Scrubbing-Brush-SKU-TASKI-8504-750), [Suvacor](https://www.suvacor.com/shop/scrubbing-brush-43/) |
+| IMG/HYS/00141 | Shampooing Brush Dry D43 | 8504830 | not on taski.com — [Dobmeier](https://www.dobmeierjanitorialsupplies.com/TASKI-17in-Dry-Shampooing-Brush-SKU-TASKI-8504-830), [Diversey UK](https://eshop.diversey.co.uk/product/taski-brush-dry-shampooing-1pc-17-43-cm-8504830) |
+| IMG/HYS/00142 | Shampooing Brush Wet D43 | 8504860 | not on taski.com — [Diversey FR](https://eshop.diversey.fr/en-GB/product/taski-brush-wet-shampooing-1pc-17-43-cm-8504860), [USA-Clean](https://shop.usaclean.com/wet-shampoo-brush-192-9451/), [Southeastern Equipment](https://www.southeasternequipment.net/product-p/tkd8504860.htm), [Suvacor](https://www.suvacor.com/shop/shampooing-brush-wet-d43/) |
+| IMG/HYS/00143 | Hand Shampooing Set | 8505010 | not on taski.com — [Dobmeier](https://www.dobmeierjanitorialsupplies.com/TASKI-Hand-Brush-Set-SKU-TASKI-8505-010), [Solenis](https://products.solenis.com/product/taski-carpet-care-hand-shampooing-set-1pc-8505010) |
+| IMG/HYS/00152 | High-Speed Driving Disc 43/01 | 7510030 | not on taski.com — [Dobmeier](https://www.dobmeierjanitorialsupplies.com/TASKI-17in-Pad-Driver-Disc-For-ergodisc-200-SKU-TASKI-7510030), [Solenis IE](https://products.solenis.com/en-IE/product/taski-ergodisc-driving-disc-low-speed-1pc-17-43-cm-highspeed-taski-ergodisc-duo-400-7510030) |
+| IMG/HYS/00160 | Pad Driver 43CM | 7510829 | not on taski.com — [Dobmeier](https://www.dobmeierjanitorialsupplies.com/TASKI-Pad-Holder-For-750B-%26-750E-SKU-TASKI-7510829) ("fits swingo 750B/750E and swingo 455"), [Diversey UK](https://eshop.diversey.co.uk/product/pad-driver-1pc-17-43-cm-for-taski-swingo-455-755-7510829) — **swingo part, not ergodisc** |
+| IMG/HYS/00172 | Accessories Set Aquamat 20/PROCARPET | 8505160 | [taski.com](https://taski.com/product/8505160-accessories-set-aquamat-20/) |
+| IMG/HYS/00218 | Kit Dry Vacuum Cleaning Vacuum 22 | 8504930 | [taski.com](https://taski.com/product/8504930-kit-dry-vacuum-cleaning-vacumat-22/) |
+| IMG/HYS/00226 | Scrubbing Brush Abrasive 43 | 8504780 *(recovered, see §8)* | not on taski.com — [Suvacor](https://www.suvacor.com/shop/scrubbing-brush-abrasive-43/), [Solenis](https://products.solenis.com/product/taski-scrubbing-brush-abrasive-1pc-1ct-17-43-cm-D8504780) |
+| IMG/HYS/00229 | Filter Cloth with Ring for Vacumat 44T | 8505500 *(recovered, see §8)* | not on taski.com — [Altruan](https://altruan.com/products/filter-cloth-with-ring-for-vacumat-44t-to-dry-eyes-with-taski-vacumat-44-t-pack-1-piece) (EAN 7615400501854), [Diversey UK](https://eshop.diversey.co.uk/product/filtercloth-with-ring-for-vacumat-44t-1pc-8505500) |
+| IMG/HYS/00230 | Accessories Set for Aquamat 10.1 | 8505140 *(recovered, see §8)* | [taski.com](https://taski.com/product/8505140-spray-extraction-with-hose/) — official name is "Spray extraction with hose" |
+| IMG/HYS/00240 | Set of Dry Vacuums Taski Vacumat 12 | 8504500 | [taski.com](https://taski.com/product/8504500-kit-dry-vacuum-cleaning-vacumat-12/) |
+| IMG/HYS/00249 | Pad Driver 28CM | 7510634 | not on taski.com — [Dobmeier](https://www.dobmeierjanitorialsupplies.com/TASKI-11in-Pad-Drive-Disc-For-swingo-1255-B-SKU-TASKI-7510634), [Diversey UK](https://eshop.diversey.co.uk/product/pad-driver-1pc-11-28-cm-for-taski-swingo-955-1255-2100-5000-7510634) |
+| IMG/HYS/00250 | Scrubbing Brush 28 | 7519395 | not on taski.com — [Dobmeier](https://www.dobmeierjanitorialsupplies.com/TASKI-11in-Hard-Nylon-Scrubbing-Brush-for-swingo-1250-1255-SKU-TASKI-7519395), [Monster Janitorial](https://shop.monsterjanitorial.com/taski-7519395-11-inch-hard-nylon-scrubbing-brush-white-192-9431/), [Diversey DE](https://eshop.diversey.de/en-GB/product/taski-scrubbing-brush-standard-1x1pc-11-28-cm-taski-swingo-955-1255-2100-5000-7519395) |
+| IMG/HYS/00251 | BATTERY TRACTION 6V, 180Ah/5 | 7514962 | not on taski.com — [Carel Lurvink](https://www.carellurvink.nl/p/7514962/7514962-taski-batterij-t-b-v-swingo-machines) |
+| IMG/HYS/00254 | BATTERY TRACTION BLOCK 12V 76Ah/5 | 7520152 | [taski.com](https://taski.com/product/gelbattery-traction-block-12v-76ah/), [Droppe](https://droppe.com/de-en/product/div-7520152+diversey-traction-battery-block-12v-76ah) |
+| IMG/HYS/00255 | Center Broom B3300 | 7524909 | not on taski.com — [Diversey BE](https://eshop.diversey.be/fr-BE/product/center-broom-b3300-1pc-7524909), [Altruan](https://altruan.com/products/main-brush-balimat-3300-substitute-for-the-balimat-3300-pack-1-piece) — **Altruan's photo is wrong, see §10.1** |
+| IMG/HYS/00256 | Side Broom B3300 | 7524910 | not on taski.com — [Altruan](https://altruan.com/products/side-broom-balimat-3300-replacement-side-broom-for-the-balimat-3300-pack-1-piece) |
+| IMG/HYS/00257 | Brush 225MM 2PC | 7524893 | not on taski.com — [Diversey CH](https://eshop.diversey.swiss/product/scheuerburste-2x1stk-scheuerburste-225mm-fur-taski-swingo-250-7524893), [Solenis DK](https://products.solenis.com/da/product/taski-swingo-250-vaskeborste-2x1stk-7524893), [USA-Clean](https://shop.usaclean.com/standard-brush-pkg-of-2-292-5807/) |
+| IMG/HYS/00258 | Disc Drive 225MM 2PC | 7524894 | not on taski.com — [USA-Clean](https://shop.usaclean.com/pad-driver-pkg-of-2-292-5809/) |
+| IMG/HYS/00259 | NX LI-ON BATTERY 37V 8100M 8.1 Ah | 7524891 | not on taski.com — [Diversey DE](https://eshop.diversey.de/de-de/nx-li-ion-battery-37v-8100m-8-1ah-1stk-7524891), [Diversey UK](https://eshop.diversey.co.uk/product/nx-li-ion-battery-37v-8100m-81ah-1pc-7524891), [Diversey FI](https://eshop.diversey.fi/en-GB/product/nx-li-ion-battery-37v-8100m-81ah-1pc-7524891), [USA-Clean](https://shop.usaclean.com/nx-battery-292-5805/) |
+| IMG/HYS/00260 | NX Charger 100-240V/50/60HZ | 7524892 | not on taski.com — [Pamark](https://www.pamark.fi/siivous/siivouskoneet-ja-vaunut/yhdistelmakoneet/yhdistelmakoneiden-varusteet/taski-nx-latauslaite-li-ion-akulle-7524891) (page slugged "7524891" but content is the charger), [Diversey DE](https://eshop.diversey.de/product/nx-ladegerat-1stk-7524892), [USA-Clean](https://shop.usaclean.com/nx-charger-292-5806/) |
 
 ---
 

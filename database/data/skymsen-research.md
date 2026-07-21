@@ -231,7 +231,83 @@ Confirmed dead at time of writing (both 404, in EN and ES):
 
 ---
 
-## 7. Range gaps
+## 7. Accessory disc images — PA-7 cutting discs (July 2026)
+
+The 7 archived `IMS/MEC/*` discs/blades noted in §"Covers" above as line items were
+subsequently researched for images. **They are not on the current PA-7 PRO product page**
+(704270) — that page lists a different/updated accessory set (KC5V, GC10 PRO, W3, KC8),
+so these 7 codes likely belong to an older PA-7 generation or a standalone accessory
+catalogue. The authoritative source turned out to be **skyfood.us** (Skymsen's US export
+brand, same manufacturer photography) — `skyfood.us/products.php?familia=5` lists all
+seven.
+
+**Correction:** H3/EH3 is a **julienne** disc (3×3 mm strips), not a grater as the code
+naming suggests.
+
+| SKU | Catalogue name | Code | Identification | Product page(s) | Image URL |
+|---|---|---|---|---|---|
+| IMS/MEC/00270 | Disc Cube | GC16 | Dicing disc, 16 mm cube grid | [Restaurant Stock](https://restaurantstock.com/products/skyfood-gc16-5-8-16-mm-dicing), [Kitchenall](https://www.kitchenall.com/skyfood-gc16-dicing-disc-5-8-16-mm.html), [JES](https://www.jesrestaurantequipment.com/Skyfood-GC16--Dicing-Disc-1116in-for-Skymsen-MASTER-models_p_53075.html) | <https://restaurantstock.com/cdn/shop/products/0_252F4_252F7_252F2_252F04726f437e0c20a7bbe098319208d30160f62ccc_GC16_1024x.jpg> |
+| IMS/MEC/00271 | Disc Z8 | Z8 | Grater/shredding disc, 8 mm | [skyfood.us](https://www.skyfood.us/products.php?familia=5), [Kitchenall](https://www.kitchenall.com/skyfood-z8-shredding-disc-5-16-8-mm.html) | <https://www.skyfood.us/photos/PC0720.JPG> |
+| IMS/MEC/00272 | Disc Z5 | Z5 | Grater/shredding disc, 5 mm | [skyfood.us](https://www.skyfood.us/products.php?familia=5), [Kitchenall](https://www.kitchenall.com/skyfood-z5-shredding-disc-3-16-5-mm.html) | <https://www.skyfood.us/photos/PC0721.JPG> |
+| IMS/MEC/00273 | Disc W4 | W4 | Wave/scallop-cut slicing disc, 4 mm | [Restaurant Stock](https://restaurantstock.com/products/skyfood-w4-5-32-4-mm-scallop-cut), [Kitchenall](https://www.kitchenall.com/skyfood-w4-scallop-cut-5-32-4-mm.html), [Culinary Depot](https://www.culinarydepotinc.com/skyfood-w4-0-16-scallop-cut-for-use-with-master-sky/) | <https://restaurantstock.com/cdn/shop/products/6_252Ff_252F8_252Fd_252F6f8d4511a85fbca2218ef8b989527e08df301938_W4_616d89a3-782a-4a63-a6a0-25fc2858e08f_1024x.jpg> |
+| IMS/MEC/00274 | Disc H3 | H3/EH3 | **Julienne** disc, 3×3 mm (not a grater) | [skyfood.us](https://www.skyfood.us/products.php?familia=5), [KaTom](https://www.katom.com/248-H3.html) | <https://www.skyfood.us/photos/PC0725.JPG> |
+| IMS/MEC/02131 | Disc -E3 | E3 | Slicing disc, 3 mm | [skyfood.us](https://www.skyfood.us/products.php?familia=5), [KaTom](https://www.katom.com/248-E3.html), [JES](https://www.jesrestaurantequipment.com/skyfood-e3.html) | <https://www.skyfood.us/photos/PC0730.JPG> |
+| IMS/MEC/02319 | Slicer Disc - 14MM | 14MM (mfr code **E14**) | Slicer disc, 14 mm | [skyfood.us](https://www.skyfood.us/products.php?familia=5), [GoFoodservice](https://www.gofoodservice.com/p/skyfood-e14) | <https://www.skyfood.us/photos/PC0709.JPG> |
+
+Notes: the `skyfood.us/photos/PC0xxx.JPG` files are manufacturer studio photos, white
+background, verified live. GC16 and W4 aren't hosted on skyfood.us directly — their
+images come from Restaurant Stock's Shopify CDN (`_1024x.jpg` variants available),
+same product, but check for reseller branding/watermarks before use. Several reseller
+product-detail pages (katom.com, jesrestaurantequipment.com, gofoodservice.com individual
+listings) 403 to automated fetching — fine in a browser if higher-res or alternate angles
+are needed.
+
+### 7.1 Full descriptions and technical specs (July 2026)
+
+Following the image pass, all 7 discs were researched to the same depth as the machine
+records — description, meta_description and technical_specification — and written into
+`products.json`, matching the catalogue's established content pattern (prose + `Key
+Features` list + HTML spec table).
+
+Confirmed/sourced per disc:
+
+| SKU | Code | Cut type & size | Disc diameter | Weight | Compatible machines (as sourced) |
+|---|---|---|---|---|---|
+| IMS/MEC/00270 | GC16 | Cube dicing grid, 16×16 mm | — | ~0.51 kg | **Unresolved — see caveat below** |
+| IMS/MEC/00271 | Z8 | Grating, 8 mm | ~204 mm | 0.70 kg net / 0.80 kg gross | Skymsen PA-7 / PA7 PRO |
+| IMS/MEC/00272 | Z5 | Grating, 5 mm | ~205 mm | 0.68 kg net / 0.75 kg gross | Skymsen PA-7 / PA7 PRO |
+| IMS/MEC/00273 | W4 | Scallop (wave) slicing, 4 mm | ~205 mm | 0.86 kg net / 0.93 kg gross | PA-7, PA-7SE-N, PA-7LE-N, PAIE-N, PAIE-S-N |
+| IMS/MEC/00274 | H3/EH3 | Julienne, 3×3 mm | 203 mm | 0.85 kg net / 0.95 kg gross | Skymsen PA-7 / PA7 PRO |
+| IMS/MEC/02131 | E3 | Slicing, 3 mm, non-stick coated | ~204 mm | 0.80 kg net / 0.90 kg gross | Skymsen PA-7 / PA7 PRO |
+| IMS/MEC/02319 | 14MM (mfr code **E14**) | Slicing, 14 mm; pairs with a 14×14mm cube grid | ~203–205 mm | ~0.89–0.90 kg (sources disagree slightly) | PA-7, PA-7 PRO, PAIE-N, PAIE-S-N |
+
+Sources for the spec pass, beyond the image sources above: `skymsen.com` official part
+pages (094340 for H3 — directly fetched, confirms "DIÂMETRO 203mm" and "Corte Julienne de
+3mm"; 096130 for Z8; others via search-engine cache when direct fetch was blocked —
+096121 Z5, 096091 W4, `loja.skymsen.com/produto/096059` E3, `loja.skymsen.com/produto/676470`
+E14), `maquinbal.com.br` (E14 material + compatibility).
+
+**Open flag — GC16 (IMS/MEC/00270):** every independent English-language source found
+(Kitchenall, JES Restaurant Equipment, RestaurantStock) ties the code "GC16" to the
+Skymsen/Skyfood **MASTER series**, not the PA-7 — no source names GC16 and PA-7 together.
+The nearest official match on skymsen.com is "GC16-S," tied to the **PAIE-S-N** machine,
+and even that listing disagrees with a reseller on cube size (16 mm vs 12×12 mm). The
+description written avoids naming a specific machine to not overstate confidence. **This
+SKU may be miscoded in the catalogue** — worth a second look, since the PA-7's own record
+lists IMS/MEC/00270 in its `accessories` array.
+
+**Open flag — PA-7's own copy vs. its actual disc set:** the PA-7 record's existing
+description/technical_specification (written earlier, unrelated to this pass) says the
+included set is "slicers 1 and 3 mm, graters 3, 5 and 8 mm, fine grater, 7×7 mm julienne."
+The 7 SKUs actually linked in its `accessories` array are GC16 (16 mm cube), Z8 (8 mm
+grate), Z5 (5 mm grate), W4 (4 mm scallop-slice), H3 (3×3 mm julienne), E3 (3 mm slice),
+and 14MM/E14 (14 mm slice) — a different set (no 1 mm slicer, no 7×7 julienne, has a cube
+grid and a 4 mm scallop disc instead). Not corrected here since it touches the PA-7's own
+record, not just the discs — flagging for a decision on which description is accurate.
+
+---
+
+## 8. Range gaps
 
 Models found during research that are not currently in the catalogue, if the range is
 worth filling:

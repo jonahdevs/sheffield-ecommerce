@@ -323,6 +323,48 @@ class Product extends Model implements HasMedia
         });
     }
 
+    /**
+     * Second gallery image URL, shown on hover over a product card as an alternate-angle
+     * preview. Null when the product has no images beyond the cover.
+     */
+    protected function secondaryUrl(): Attribute
+    {
+        return Attribute::get(function () {
+            $secondary = $this->secondaryMedia();
+
+            if (! $secondary) {
+                return null;
+            }
+
+            return $secondary->hasGeneratedConversion('card')
+                ? $secondary->getUrl('card')
+                : $secondary->getUrl();
+        });
+    }
+
+    /** WebP version of the hover-swap secondary image; null until the conversion has been generated. */
+    protected function secondaryWebpUrl(): Attribute
+    {
+        return Attribute::get(function () {
+            $secondary = $this->secondaryMedia();
+
+            return ($secondary && $secondary->hasGeneratedConversion('card-webp'))
+                ? $secondary->getUrl('card-webp')
+                : null;
+        });
+    }
+
+    /** First gallery image after the cover, i.e. the one shown on card hover. */
+    private function secondaryMedia(): ?Media
+    {
+        $cover = $this->getFirstMedia('images', ['is_cover' => true])
+            ?? $this->getFirstMedia('images');
+
+        return $this->getMedia('images')
+            ->reject(fn (Media $media) => $cover && $media->id === $cover->id)
+            ->first();
+    }
+
     /** Small 120×120 thumbnail of the cover image; used in admin lists and line-item previews. */
     protected function thumbUrl(): Attribute
     {

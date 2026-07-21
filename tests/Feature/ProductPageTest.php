@@ -263,6 +263,89 @@ it('renders the seeded specification as a single table', function () {
         ->and(substr_count($html, '<table>'))->toBe(1);
 });
 
+it('slides the main gallery image client-side while still rendering it server-side for LCP', function () {
+    ['product' => $product] = makeVariableProduct();
+
+    $upload = UploadedFile::fake()->image('main.jpg', 800, 800);
+    $product->addMedia($upload->getRealPath())
+        ->usingFileName('main.jpg')
+        ->toMediaCollection('images');
+
+    $html = Livewire::test('pages::storefront.product', ['product' => $product->fresh()])->html();
+
+    expect($html)
+        // Swiper drives the transition, so a click mid-slide re-targets rather than racing.
+        ->toContain('new Swiper(this.$refs.mainSwiper')
+        ->toContain('class="swiper-slide"')
+        // Livewire must not morph the track out from under Swiper mid-transition.
+        ->toContain('wire:ignore x-ref="mainSwiper"')
+        // A variant selection made server-side moves the same Swiper.
+        ->toContain("\$watch('\$wire.galleryIdx', (i) => this.showImage(i))")
+        // Every image ships in the HTML, and the first stays the eager LCP candidate.
+        ->toContain('swiper-eager')
+        ->toContain('fetchpriority="high"')
+        ->toMatch('/<img src="[^"]*main[^"]*"/');
+});
+
+it('switches gallery images without a server round-trip', function () {
+    ['product' => $product] = makeVariableProduct();
+
+    // Held in variables: the fake upload's temp file is removed once it is collected.
+    $first = UploadedFile::fake()->image('a.jpg', 800, 800);
+    $second = UploadedFile::fake()->image('b.jpg', 800, 800);
+    $product->addMedia($first->getRealPath())->usingFileName('a.jpg')->toMediaCollection('images');
+    $product->addMedia($second->getRealPath())->usingFileName('b.jpg')->toMediaCollection('images');
+
+    $html = Livewire::test('pages::storefront.product', ['product' => $product->fresh()])->html();
+
+    // A round-trip here re-rendered the component mid-transition, which snapped the
+    // slide back and made the first click look like it had been ignored.
+    expect($html)
+        ->not->toContain("\$set('galleryIdx'")
+        ->toContain('x-on:click="lbIdx = 1; showImage(1)"');
+});
+
+it('drives the lightbox with its own swiper, built once the dialog is visible', function () {
+    ['product' => $product] = makeVariableProduct();
+
+    $upload = UploadedFile::fake()->image('zoomed.jpg', 800, 800);
+    $product->addMedia($upload->getRealPath())
+        ->usingFileName('zoomed.jpg')->toMediaCollection('images');
+
+    $html = Livewire::test('pages::storefront.product', ['product' => $product->fresh()])->html();
+
+    expect($html)
+        ->toContain('new Swiper(this.$refs.lbSwiper')
+        ->toContain('x-ref="lbSwiper"')
+        // A <dialog> has no width until it opens, so the build is deferred to that point.
+        ->toContain('this.$flux.modal(\'product-gallery\').show();')
+        // Arrows and thumbnails both move the Swiper rather than a separate index.
+        ->toContain('prevLb() { this.lbSwiper?.slidePrev(); }')
+        ->toContain('@click="lbSwiper?.slideTo(i)"')
+        // rewind keeps the wrap-around without loop mode's duplicate slides.
+        ->toContain('rewind: true');
+});
+
+it('does not pull a second copy of swiper from the cdn', function () {
+    ['product' => $product] = makeVariableProduct();
+
+    // Swiper ships in app.js/app.css already; a CDN copy reassigns window.Swiper.
+    expect(Livewire::test('pages::storefront.product', ['product' => $product])->html())
+        ->not->toContain('cdn.jsdelivr.net/npm/swiper');
+});
+
+it('binds arrow keys to the gallery modal so it can be stepped through from the keyboard', function () {
+    ['product' => $product] = makeVariableProduct();
+
+    $html = Livewire::test('pages::storefront.product', ['product' => $product])->html();
+
+    // Flux splits a modal's attributes internally, so assert the handlers actually
+    // survive onto the rendered element rather than trusting they were passed.
+    expect($html)
+        ->toContain('x-on:keydown.left.prevent="prevLb()"')
+        ->toContain('x-on:keydown.right.prevent="nextLb()"');
+});
+
 it('leaves the gallery alone for a variant with no image', function () {
     ['product' => $product] = makeVariableProduct();
 

@@ -862,9 +862,61 @@ $isOnSale = $compareAt !== null;
         ],
     ),
 ),
-                prevLb() { this.lbIdx = (this.lbIdx - 1 + this.gallery.length) % this.gallery.length; },
-                nextLb() { this.lbIdx = (this.lbIdx + 1) % this.gallery.length; },
-            }">
+                {{-- The lightbox runs its own Swiper. rewind keeps the wrap-around the arrows had
+                     before without loop mode's duplicated slides, which would have made activeIndex
+                     lie about which image is showing. --}}
+                lbSwiper: null,
+                openLightbox() {
+                    this.lbIdx = this.mainIdx;
+                    this.$flux.modal('product-gallery').show();
+
+                    {{-- A Flux modal is a <dialog>, so it is display:none until it opens and Swiper
+                         would measure zero width. Build it on first open, and re-measure on every
+                         open in case the viewport changed while it was closed. --}}
+                    requestAnimationFrame(() => {
+                        this.lbSwiper ??= new Swiper(this.$refs.lbSwiper, {
+                            speed: 350,
+                            rewind: true,
+                            initialSlide: this.mainIdx,
+                            on: {
+                                slideChange: (s) => { this.lbIdx = s.activeIndex; },
+                            },
+                        });
+
+                        this.lbSwiper.update();
+                        this.lbSwiper.slideTo(this.mainIdx, 0);
+                    });
+                },
+                prevLb() { this.lbSwiper?.slidePrev(); },
+                nextLb() { this.lbSwiper?.slideNext(); },
+
+                {{-- Swiper owns the main image transition. Hand-rolling it meant tracking the
+                     in-flight slide by hand, and clicking again before it landed raced the timers.
+                     Swiper re-targets a running transition instead, so rapid clicks just work. --}}
+                mainSwiper: null,
+                mainIdx: {{ $galleryIdx }},
+                initGallery() {
+                    this.mainSwiper = new Swiper(this.$refs.mainSwiper, {
+                        speed: 350,
+                        initialSlide: this.mainIdx,
+                        {{-- No observer/observeParents: the slide list is fixed, and watching parents
+                             meant any unrelated Livewire re-render (add to cart, tab switch) fired
+                             update() — which re-snaps a transition that is still running. --}}
+                        on: {
+                            slideChange: (s) => { this.mainIdx = s.activeIndex; },
+                        },
+                    });
+
+                    {{-- selectOption() moves galleryIdx server-side when a variant has its own
+                         photo; drive the same transition from it rather than a second code path. --}}
+                    this.$watch('$wire.galleryIdx', (i) => this.showImage(i));
+                },
+                showImage(i) {
+                    if (!this.gallery[i]) return;
+                    this.mainSwiper?.slideTo(i);
+                },
+            }"
+                x-init="initGallery()">
                 {{-- Gallery: thumbnails scroll horizontally below the image on mobile,
                  and sit as a vertical strip on the left at md+. --}}
                 <div class="flex flex-col-reverse gap-2.5 md:flex-row">
@@ -874,12 +926,14 @@ $isOnSale = $compareAt !== null;
                         <div class="flex gap-2 overflow-x-auto md:max-h-130 md:flex-col md:overflow-x-visible md:overflow-y-auto"
                             style="scrollbar-width: none;">
                             @foreach ($gallery as $i => $img)
-                                <button type="button" wire:click="$set('galleryIdx', {{ $i }})"
-                                    x-on:click="lbIdx = {{ $i }}" @class([
-                                        'aspect-square size-16 shrink-0 cursor-pointer overflow-hidden rounded bg-white transition md:size-18',
-                                        'border-2 border-brand-500' => $i === $galleryIdx,
-                                        'border border-zinc-200 hover:border-zinc-400' => $i !== $galleryIdx,
-                                    ])>
+                                {{-- Deliberately no wire:click. Nothing server-side reads galleryIdx
+                                     (selectOption sets it itself), so a round-trip here bought nothing
+                                     and re-rendered the component mid-transition, which snapped the
+                                     slide — and the ring with it — back to where it started. --}}
+                                <button type="button"
+                                    x-on:click="lbIdx = {{ $i }}; showImage({{ $i }})"
+                                    class="aspect-square size-16 shrink-0 cursor-pointer overflow-hidden rounded bg-white transition md:size-18"
+                                    :class="mainIdx === {{ $i }} ? 'border-2 border-brand-500' : 'border border-zinc-200 hover:border-zinc-400'">
                                     {{-- contain, not cover: thumbs are no longer padded to a square
                                          by the conversion, so cover would crop the product. --}}
                                     <img src="{{ $mediaUrl($img, 'thumb') }}"
@@ -895,7 +949,7 @@ $isOnSale = $compareAt !== null;
                         style="aspect-ratio: 1; max-height: 520px;"
                         @mousemove="const r = $el.getBoundingClientRect(); lens = { x: Math.max(0,Math.min(100,(($event.clientX-r.left)/r.width)*100)), y: Math.max(0,Math.min(100,(($event.clientY-r.top)/r.height)*100)) }"
                         @mouseleave="lens = null"
-                        @click="lbIdx = {{ $galleryIdx }}; $flux.modal('product-gallery').show()">
+                        @click="openLightbox()">
                         @if ($isOnSale)
                             <span
                                 class="absolute top-4 left-4 z-10 inline-flex items-center gap-0.5 text-xs font-bold tracking-widest text-brand-500 uppercase">
@@ -932,14 +986,28 @@ $isOnSale = $compareAt !== null;
                             </flux:tooltip>
                         </div>
 
-                        @php $shown = $gallery->values()->get($galleryIdx); @endphp
-                        @if ($shown)
-                            <img src="{{ $mediaUrl($shown, 'card') }}"
-                                alt="{{ $shown->getCustomProperty('alt', '') ?: $product->name }}"
-                                class="size-full object-contain transition-transform duration-75 will-change-transform"
-                                fetchpriority="high" decoding="async"
-                                :style="lens ? `transform:scale(2.3);transform-origin:${lens.x}% ${lens.y}%` : ''"
-                                draggable="false" />
+                        @if ($gallery->isNotEmpty())
+                            {{-- wire:ignore: the slide list never changes (galleryMedia is the product's
+                                 own images plus every variant's, regardless of selection), and letting
+                                 Livewire morph this subtree mid-transition swapped the visible image
+                                 out from under Swiper. swiper-eager opts out of the global FOUC rule
+                                 that hides slides pre-init, which would otherwise delay the LCP image. --}}
+                            <div wire:ignore x-ref="mainSwiper" class="swiper swiper-eager absolute inset-0">
+                                <div class="swiper-wrapper">
+                                    @foreach ($gallery as $i => $img)
+                                        <div class="swiper-slide">
+                                            <img src="{{ $mediaUrl($img, 'card') }}"
+                                                alt="{{ $img->getCustomProperty('alt', '') ?: $product->name }}"
+                                                class="size-full object-contain"
+                                                @if ($i === 0) fetchpriority="high" @else loading="lazy" @endif
+                                                decoding="async"
+                                                :style="'transition:transform 75ms linear;' +
+                                                    (lens ? `transform:scale(2.3);transform-origin:${lens.x}% ${lens.y}%;` : '')"
+                                                draggable="false" />
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
                         @else
                             <div class="grid size-full place-items-center text-ink-4">
                                 <flux:icon.photo variant="outline" class="size-12" />
@@ -958,15 +1026,19 @@ $isOnSale = $compareAt !== null;
                         {{-- Counter --}}
                         @if ($gallery->count() > 1)
                             <div class="absolute right-3 bottom-3 font-mono text-xs text-ink-4 tabular-nums">
-                                {{ $galleryIdx + 1 }} / {{ $gallery->count() }}
+                                <span x-text="mainIdx + 1">{{ $galleryIdx + 1 }}</span> / {{ $gallery->count() }}
                             </div>
                         @endif
                     </div>
 
                 </div>{{-- end gallery flex row --}}
 
-                {{-- Image modal (Flux) — opened via $flux.modal('product-gallery').show() on the main image --}}
-                <flux:modal name="product-gallery" class="w-full max-w-xl">
+                {{-- Image modal (Flux) — opened via $flux.modal('product-gallery').show() on the main image.
+                     Arrow keys step through the gallery: the listener sits on the modal wrapper so it
+                     catches keys from anywhere inside the dialog (including Flux's own close button)
+                     while staying inert once the dialog is closed. Escape is handled by Flux itself. --}}
+                <flux:modal name="product-gallery" class="w-full max-w-xl"
+                    x-on:keydown.left.prevent="prevLb()" x-on:keydown.right.prevent="nextLb()">
                     <div class="flex flex-col gap-4">
                         <flux:heading size="lg" class="uppercase">Product Images</flux:heading>
 
@@ -980,8 +1052,21 @@ $isOnSale = $compareAt !== null;
                                 </button>
                             </template>
 
-                            <img :src="gallery[lbIdx]?.zoom" :alt="gallery[lbIdx]?.alt"
-                                class="size-full select-none object-contain" draggable="false" />
+                            {{-- No swiper-eager here, unlike the main gallery: these aren't the LCP
+                                 image, so letting the global FOUC rule hold the slides back until
+                                 Swiper is built gives a clean fade-in instead of a stacked flash. --}}
+                            <div wire:ignore x-ref="lbSwiper" class="swiper absolute inset-0">
+                                <div class="swiper-wrapper">
+                                    @foreach ($gallery as $img)
+                                        <div class="swiper-slide">
+                                            <img src="{{ $mediaUrl($img, 'zoom') }}"
+                                                alt="{{ $img->getCustomProperty('alt', '') ?: $product->name }}"
+                                                class="size-full select-none object-contain" loading="lazy"
+                                                draggable="false" />
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
 
                             <template x-if="gallery.length > 1">
                                 <button type="button" @click="nextLb()" aria-label="Next image"
@@ -995,7 +1080,7 @@ $isOnSale = $compareAt !== null;
                         <template x-if="gallery.length > 1">
                             <div class="flex flex-wrap justify-center gap-2.5">
                                 <template x-for="(img, i) in gallery" :key="i">
-                                    <button type="button" @click="lbIdx = i"
+                                    <button type="button" @click="lbSwiper?.slideTo(i)"
                                         class="size-14 cursor-pointer overflow-hidden rounded border-2 bg-white transition"
                                         :class="i === lbIdx ? 'border-brand-500' : 'border-zinc-200 hover:border-zinc-400'">
                                         <img :src="img.thumb" :alt="img.alt"
@@ -1547,10 +1632,8 @@ $isOnSale = $compareAt !== null;
             </div>
         @endif
 
-        @assets
-            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@12/swiper-bundle.min.css">
-            <script src="https://cdn.jsdelivr.net/npm/swiper@12/swiper-bundle.min.js"></script>
-        @endassets
+        {{-- Swiper is bundled in app.js/app.css (see partials/head), so it is already on the page.
+             Pulling it from the CDN here loaded a second copy and reassigned window.Swiper. --}}
 
         @script
             <script>

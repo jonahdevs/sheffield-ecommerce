@@ -343,16 +343,23 @@ select:focus[data-flux-control] {
     border-radius: 6px;
 }
 
-/* Prevent Swiper FOUC — hide slides until Swiper adds .swiper-initialized */
+/* Prevent Swiper FOUC — hide slides until Swiper adds .swiper-initialized.
+   .swiper-eager opts out: the PDP main image is the LCP element, so it has to
+   paint from the server HTML rather than wait on Swiper booting. */
 .swiper:not(.swiper-initialized) {
     overflow: hidden;
 }
-.swiper:not(.swiper-initialized) .swiper-slide {
+.swiper:not(.swiper-initialized):not(.swiper-eager) .swiper-slide {
     display: none;
 }
-.swiper.swiper-initialized {
+.swiper.swiper-initialized:not(.swiper-eager) {
     opacity: 0;
     animation: swiper-fade-in 0.2s ease forwards;
+}
+/* Until Swiper lays the track out, keep the first slide alone in the frame so the
+   eager gallery shows one image instead of stacking every slide on top of it. */
+.swiper-eager:not(.swiper-initialized) .swiper-slide:not(:first-child) {
+    display: none;
 }
 @keyframes swiper-fade-in {
     to {
