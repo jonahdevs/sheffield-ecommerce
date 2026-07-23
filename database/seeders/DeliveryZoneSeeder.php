@@ -31,29 +31,29 @@ class DeliveryZoneSeeder extends Seeder
                 'sort_order' => 0,
                 'priority' => 10,
                 'polygon' => [
-                    // NW — Kikuyu / Limuru Road boundary
+                    // NW - Kikuyu / Limuru Road boundary
                     ['lat' => -1.250, 'lng' => 36.580],
-                    // N — Ruaka / Two Rivers (Limuru Rd corridor)
+                    // N - Ruaka / Two Rivers (Limuru Rd corridor)
                     ['lat' => -1.165, 'lng' => 36.760],
-                    // N — Ruiru / Kiambu corridor
+                    // N - Ruiru / Kiambu corridor
                     ['lat' => -1.000, 'lng' => 36.930],
-                    // NE — Tatu City / Jomoko / Ngoigwa (northern limit ~lat -1.00)
+                    // NE - Tatu City / Jomoko / Ngoigwa (northern limit ~lat -1.00)
                     ['lat' => -1.000, 'lng' => 37.070],
-                    // E — Kamakis / Eastern Bypass junction
+                    // E - Kamakis / Eastern Bypass junction
                     ['lat' => -1.200, 'lng' => 37.050],
-                    // SE — Mlolongo / Syokimau
+                    // SE - Mlolongo / Syokimau
                     ['lat' => -1.380, 'lng' => 37.030],
-                    // SE — Athi River / Mavoko
+                    // SE - Athi River / Mavoko
                     ['lat' => -1.510, 'lng' => 37.030],
-                    // S — Kitengela south boundary
+                    // S - Kitengela south boundary
                     ['lat' => -1.555, 'lng' => 36.960],
-                    // SW — Kitengela west boundary
+                    // SW - Kitengela west boundary
                     ['lat' => -1.510, 'lng' => 36.820],
-                    // W — Rongai
+                    // W - Rongai
                     ['lat' => -1.430, 'lng' => 36.695],
-                    // W — Ngong
+                    // W - Ngong
                     ['lat' => -1.380, 'lng' => 36.615],
-                    // NW — Ngong Hills / closing back
+                    // NW - Ngong Hills / closing back
                     ['lat' => -1.310, 'lng' => 36.580],
                 ],
             ],
@@ -63,7 +63,7 @@ class DeliveryZoneSeeder extends Seeder
         // UPCOUNTRY
         // ==================================================
         // Covers all of Kenya outside the Nairobi metro area.
-        // Priority 0 means the Nairobi zone (priority 10) always wins on overlap —
+        // Priority 0 means the Nairobi zone (priority 10) always wins on overlap -
         // only addresses that fall outside the Nairobi polygon reach this zone.
         // Polygon sourced from johan/world.geo.json (simplified official boundary).
         DeliveryZone::updateOrCreate(

@@ -39,7 +39,7 @@ final readonly class SapOrderPayload
      * gateway actually settled the payment. Card fields are only filled for card
      * channels (Paystack `card` / Stripe); every method fills `uid` with the
      * settlement reference SAP reconciles the receipt against. Unknown fields are
-     * left empty — SAP middleware accepts partial data.
+     * left empty - SAP middleware accepts partial data.
      *
      * @return array<string, string>
      */

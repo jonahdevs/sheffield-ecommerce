@@ -80,7 +80,7 @@ new #[Layout('layouts::app')] #[Title('App settings | Admin')] class extends Com
     public string $whatsapp_business_account_id = '';
 
     // ==================================================
-    // CUSTOMER NOTIFICATIONS — PER CHANNEL
+    // CUSTOMER NOTIFICATIONS - PER CHANNEL
     // ==================================================
     public bool $customer_order_confirmation_email = true;
     public bool $customer_order_confirmation_inapp = true;
@@ -102,7 +102,7 @@ new #[Layout('layouts::app')] #[Title('App settings | Admin')] class extends Com
     public bool $customer_account_security_whatsapp = false;
 
     // ==================================================
-    // STAFF NOTIFICATIONS — PER CHANNEL
+    // STAFF NOTIFICATIONS - PER CHANNEL
     // ==================================================
     public bool $staff_new_order_email = true;
     public bool $staff_new_order_inapp = true;
@@ -658,7 +658,7 @@ new #[Layout('layouts::app')] #[Title('App settings | Admin')] class extends Com
                             @if ($staff_email_routing === 'central' && filled($staff_central_email))
                                 Sending to central inbox: <span class="font-medium text-zinc-700 dark:text-zinc-300">{{ $staff_central_email }}</span>
                             @elseif ($staff_email_routing === 'central')
-                                Central inbox selected — configure an email address.
+                                Central inbox selected - configure an email address.
                             @else
                                 Each qualifying staff member receives their own copy.
                             @endif

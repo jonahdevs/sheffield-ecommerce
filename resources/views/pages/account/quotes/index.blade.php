@@ -115,7 +115,7 @@ new #[Layout('layouts::account')] #[Title('Quotes')] class extends Component {
                                         {{ $quote->expires_at->isPast() ? 'Expired' : $quote->expires_at->diffForHumans() }}
                                     </flux:text>
                                 @else
-                                    <flux:text size="sm" class="text-ink-4">—</flux:text>
+                                    <flux:text size="sm" class="text-ink-4">-</flux:text>
                                 @endif
                             </flux:table.cell>
                             <flux:table.cell>

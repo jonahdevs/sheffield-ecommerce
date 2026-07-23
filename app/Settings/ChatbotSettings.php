@@ -6,7 +6,7 @@ use Spatie\LaravelSettings\Settings;
 
 class ChatbotSettings extends Settings
 {
-    /** Master switch — when false the storefront chat widget is not rendered. */
+    /** Master switch - when false the storefront chat widget is not rendered. */
     public bool $enabled = true;
 
     /** Active AI provider key (must exist in config/ai.php providers). */

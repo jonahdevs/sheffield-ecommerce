@@ -150,7 +150,7 @@ new #[Layout('layouts::app')] #[Title('Quote | Admin')] class extends Component 
     {
         $afterDiscount = $this->subtotalCents - $this->discountCents;
 
-        // When prices include tax, VAT is already inside the subtotal — don't add it again.
+        // When prices include tax, VAT is already inside the subtotal - don't add it again.
         $vatAddition = $this->taxInclusive ? 0 : $this->vatCents;
 
         return max(0, $afterDiscount + $vatAddition + $this->shippingCents);
@@ -163,7 +163,7 @@ new #[Layout('layouts::app')] #[Title('Quote | Admin')] class extends Component 
         $warnings = [];
 
         if ($this->totalCents === 0) {
-            $warnings[] = 'No pricing has been added — the quote total is zero.';
+            $warnings[] = 'No pricing has been added - the quote total is zero.';
         } elseif (collect($this->lineItems)->some(fn($item) => (float) $item['unit_price'] == 0)) {
             $warnings[] = 'One or more line items have no unit price set.';
         }
@@ -237,7 +237,7 @@ new #[Layout('layouts::app')] #[Title('Quote | Admin')] class extends Component 
      * The unit-price inputs are comma-masked for display, so the property holds
      * strings like "1,234.56" while editing. Strip the separators in one pass
      * before validation and persistence keep the stored value numeric. Doing
-     * this here — rather than in an updated() hook — leaves the masked value
+     * this here - rather than in an updated() hook - leaves the masked value
      * untouched between renders so the input formatting survives a blur.
      */
     private function normalizePrices(): void
@@ -581,7 +581,7 @@ new #[Layout('layouts::app')] #[Title('Quote | Admin')] class extends Component 
                                     </flux:table.cell>
                                     <flux:table.cell>
                                         <span
-                                            class="font-mono text-xs text-zinc-400">{{ $item['product_sku'] ?: '—' }}</span>
+                                            class="font-mono text-xs text-zinc-400">{{ $item['product_sku'] ?: '-' }}</span>
                                     </flux:table.cell>
                                     <flux:table.cell align="end">
                                         <flux:input size="sm"
@@ -708,7 +708,7 @@ new #[Layout('layouts::app')] #[Title('Quote | Admin')] class extends Component 
 
                         {{-- Internal notes --}}
                         <flux:textarea wire:model="internalNotes" label="Internal notes"
-                            description="Admin only — never shown to the customer." rows="3"
+                            description="Admin only - never shown to the customer." rows="3"
                             placeholder="Private pricing notes, sourcing details, follow-up reminders…" />
                     </div>
                 </flux:card>
@@ -809,7 +809,7 @@ new #[Layout('layouts::app')] #[Title('Quote | Admin')] class extends Component 
                             <div class="flex items-center gap-2.5">
                                 <flux:icon.building-storefront variant="micro"
                                     class="size-4 shrink-0 text-zinc-400" />
-                                <flux:text size="sm" class="text-zinc-500">No delivery — collection only
+                                <flux:text size="sm" class="text-zinc-500">No delivery - collection only
                                 </flux:text>
                             </div>
                         @endif

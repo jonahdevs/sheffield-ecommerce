@@ -14,8 +14,8 @@ use Illuminate\Support\Str;
 
 /**
  * The coffee taxonomy mirrors the "Ecommerce Listing- Coffee Machines Final"
- * workbook: a Coffee Machines parent holding five ordered child categories — two of
- * which carry an accessories child of their own — with each product's sort_order
+ * workbook: a Coffee Machines parent holding five ordered child categories - two of
+ * which carry an accessories child of their own - with each product's sort_order
  * encoding the sheet's ARRANGEMENT column.
  *
  * Seeding the full catalogue is expensive, so this file asserts the whole
@@ -103,7 +103,7 @@ it('seeds the coffee taxonomy from the final e-commerce listing', function () {
 
     // The Goodwill brewers and the filter papers carry no delivery-inclusive e-commerce
     // price in the workbook, only a SAP one. They are sold at that SAP price rather than
-    // held back as drafts, so they are published — the workbook's missing e-commerce
+    // held back as drafts, so they are published - the workbook's missing e-commerce
     // column is not a bar to listing. The products.json "GOODWILL" still resolves to a
     // brand, which now carries the display casing "Goodwill".
     $goodwillId = Brand::where('slug', 'goodwill')->value('id');
@@ -139,7 +139,7 @@ it('seeds the coffee taxonomy from the final e-commerce listing', function () {
         ->and($waterUrn->primaryCategory->name)->toBe('Beverage Equipment');
 
     // Every coffee product now drills into a machine type, grinder, brewer, servery or
-    // accessories child — nothing is left parked on the Coffee Machines parent itself.
+    // accessories child - nothing is left parked on the Coffee Machines parent itself.
     expect(Product::where('primary_category_id', $parent->id)->count())->toBe(0);
 
     assertWaterTreatmentSitsUnderHygiene();
@@ -165,8 +165,8 @@ it('seeds the coffee taxonomy from the final e-commerce listing', function () {
  * same aluminium/TriLax tray in different gastronorm sizes, so they collapse into one
  * variable product with a GN Size variation.
  *
- * SAP does NOT group these — it tracks each size as its own item under its IMG/OVE
- * code — so the grouping is storefront-only. Each size therefore keeps its IMG/OVE SKU
+ * SAP does NOT group these - it tracks each size as its own item under its IMG/OVE
+ * code - so the grouping is storefront-only. Each size therefore keeps its IMG/OVE SKU
  * as the VARIANT sku (which is what SAP sync matches on), while the parent carries a
  * synthetic SKU that SAP never sends, so its Product row cannot shadow a variant during
  * sync (ProcessSapProductSync matches Product SKUs before variant SKUs).
@@ -180,7 +180,7 @@ function assertRoastingTraysAreGroupedByGnSize(): void
 
     expect($tray->type->value)->toBe('variable');
 
-    // The SAP item codes must NOT exist as standalone products any more — otherwise the
+    // The SAP item codes must NOT exist as standalone products any more - otherwise the
     // Product-first SAP lookup would update the parent/a product instead of the variant.
     expect(Product::whereIn('sku', ['IMG/OVE/00058', 'IMG/OVE/00059', 'IMG/OVE/00060'])->count())->toBe(0);
 
@@ -268,7 +268,7 @@ function assertSpecificationsRenderAsTables(): void
         ->not->toContain('<strong>Width</strong>')
         ->not->toContain('<strong>Height</strong>');
 
-    // Every workbook row resolves to a label/value pair — no dangling full-width
+    // Every workbook row resolves to a label/value pair - no dangling full-width
     // cells, including the strays that used tabs or lost their colon.
     $workbook = Product::whereIn('sku', [
         'IMG/COF/00035', 'IMG/COF/00036', 'IMG/COF/00104', 'IMG/COF/00139',
@@ -338,7 +338,7 @@ function assertCoffeeDescriptionsSplitFromSeoCopy(): void
         ->and($coffee->every(fn (Product $p) => filled($p->meta_description)))->toBeTrue();
 
     // Anyone is welcome to buy, so the customer-facing summary never narrows the
-    // audience to a region — that framing belongs to the SEO copy alone.
+    // audience to a region - that framing belongs to the SEO copy alone.
     $geographic = fn (?string $copy) => str_contains($copy ?? '', 'Kenya')
         || str_contains($copy ?? '', 'East Africa');
 
@@ -349,7 +349,7 @@ function assertCoffeeDescriptionsSplitFromSeoCopy(): void
     // paragraph repeated above the fold.
     expect($coffee->every(fn (Product $p) => strlen($p->short_description) <= 220))->toBeTrue();
 
-    // Worked example — the Pradeep brewer. The summary states what the product is and
+    // Worked example - the Pradeep brewer. The summary states what the product is and
     // its headline specs; the SEO copy keeps the brand/model and market framing.
     $brewer = Product::where('sku', 'IMG/COF/00033')->sole();
 
@@ -388,7 +388,7 @@ function assertCoffeeImagesFollowTheNamingConvention(): void
     expect($unphotographed)->toHaveCount(3)
         ->and($photographed)->toHaveCount(34);
 
-    // Every referenced file resolved on disk and became media — no silent skips.
+    // Every referenced file resolved on disk and became media - no silent skips.
     expect($photographed->every(fn (Product $p) => $p->media->isNotEmpty()))->toBeTrue();
 
     // Each cover file is named for the product that owns it.

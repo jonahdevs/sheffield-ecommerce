@@ -210,7 +210,7 @@ new #[Layout('layouts::app')] #[Title('Product analytics | Admin')] class extend
     }
 
     /**
-     * Inventory snapshot plus "days of cover" — how long current stock lasts at
+     * Inventory snapshot plus "days of cover" - how long current stock lasts at
      * the recent average daily sales rate. Null cover when nothing is selling.
      */
     #[Computed]
@@ -308,7 +308,7 @@ new #[Layout('layouts::app')] #[Title('Product analytics | Admin')] class extend
                         </div>
                         <div class="text-center">
                             <div class="text-base font-semibold dark:text-white">{{ $product->name }}</div>
-                            <div class="mt-0.5 font-mono text-xs text-zinc-400">{{ $product->sku ?: '—' }}</div>
+                            <div class="mt-0.5 font-mono text-xs text-zinc-400">{{ $product->sku ?: '-' }}</div>
                         </div>
                     </div>
 
@@ -343,11 +343,11 @@ new #[Layout('layouts::app')] #[Title('Product analytics | Admin')] class extend
                     <div class="space-y-1.5 border-t border-zinc-100 pt-4 text-sm dark:border-zinc-700">
                         <div class="flex items-center justify-between">
                             <span class="text-zinc-500">Brand</span>
-                            <span class="dark:text-zinc-300">{{ $product->brand?->name ?? '—' }}</span>
+                            <span class="dark:text-zinc-300">{{ $product->brand?->name ?? '-' }}</span>
                         </div>
                         <div class="flex items-center justify-between">
                             <span class="text-zinc-500">Category</span>
-                            <span class="dark:text-zinc-300">{{ $product->primaryCategory?->name ?? '—' }}</span>
+                            <span class="dark:text-zinc-300">{{ $product->primaryCategory?->name ?? '-' }}</span>
                         </div>
                     </div>
                 </div>
@@ -401,9 +401,9 @@ new #[Layout('layouts::app')] #[Title('Product analytics | Admin')] class extend
                     </div>
                     @if ($m['has_cost'])
                         <div class="text-2xl font-semibold tabular-nums dark:text-white">{!! money($m['margin_cents']) !!}</div>
-                        <div class="text-xs text-zinc-400">{{ $m['margin_pct'] !== null ? $m['margin_pct'] . '% margin' : '—' }}</div>
+                        <div class="text-xs text-zinc-400">{{ $m['margin_pct'] !== null ? $m['margin_pct'] . '% margin' : '-' }}</div>
                     @else
-                        <div class="text-2xl font-semibold text-zinc-300">—</div>
+                        <div class="text-2xl font-semibold text-zinc-300">-</div>
                         <div class="text-xs text-amber-500">Set a cost price</div>
                     @endif
                 </flux:card>
@@ -412,7 +412,7 @@ new #[Layout('layouts::app')] #[Title('Product analytics | Admin')] class extend
             {{-- Conversion strip --}}
             <flux:card class="flex flex-wrap items-center justify-around gap-4 py-4">
                 <div class="text-center">
-                    <div class="text-xl font-semibold tabular-nums dark:text-white">{{ $m['conversion_pct'] !== null ? $m['conversion_pct'] . '%' : '—' }}</div>
+                    <div class="text-xl font-semibold tabular-nums dark:text-white">{{ $m['conversion_pct'] !== null ? $m['conversion_pct'] . '%' : '-' }}</div>
                     <flux:text size="sm">View → purchase</flux:text>
                 </div>
                 <div class="h-8 w-px bg-zinc-200 dark:bg-zinc-700"></div>
@@ -427,7 +427,7 @@ new #[Layout('layouts::app')] #[Title('Product analytics | Admin')] class extend
                 </div>
                 <div class="h-8 w-px bg-zinc-200 dark:bg-zinc-700"></div>
                 <div class="text-center">
-                    <div class="text-xl font-semibold tabular-nums dark:text-white">{{ $rev['average'] ?? '—' }}</div>
+                    <div class="text-xl font-semibold tabular-nums dark:text-white">{{ $rev['average'] ?? '-' }}</div>
                     <flux:text size="sm">Avg rating ({{ $rev['total'] }})</flux:text>
                 </div>
             </flux:card>
@@ -450,11 +450,11 @@ new #[Layout('layouts::app')] #[Title('Product analytics | Admin')] class extend
                     </div>
                     <div class="grid grid-cols-2 gap-4 p-6 sm:grid-cols-4">
                         <div>
-                            <div class="text-2xl font-semibold tabular-nums dark:text-white">{{ $inv['stock_quantity'] ?? '—' }}</div>
+                            <div class="text-2xl font-semibold tabular-nums dark:text-white">{{ $inv['stock_quantity'] ?? '-' }}</div>
                             <flux:text size="sm">In stock</flux:text>
                         </div>
                         <div>
-                            <div class="text-2xl font-semibold tabular-nums dark:text-white">{{ $inv['low_stock_threshold'] ?? '—' }}</div>
+                            <div class="text-2xl font-semibold tabular-nums dark:text-white">{{ $inv['low_stock_threshold'] ?? '-' }}</div>
                             <flux:text size="sm">Low threshold</flux:text>
                         </div>
                         <div>
@@ -518,7 +518,7 @@ new #[Layout('layouts::app')] #[Title('Product analytics | Admin')] class extend
                         @forelse ($this->orderItems as $item)
                             <flux:table.row :key="$item->id">
                                 <flux:table.cell variant="strong"><span class="font-mono">{{ $item->order->order_number }}</span></flux:table.cell>
-                                <flux:table.cell class="text-zinc-600 dark:text-zinc-300">{{ $item->order->user?->name ?? '—' }}</flux:table.cell>
+                                <flux:table.cell class="text-zinc-600 dark:text-zinc-300">{{ $item->order->user?->name ?? '-' }}</flux:table.cell>
                                 <flux:table.cell align="end" class="tabular-nums text-zinc-500">{{ $item->quantity }}</flux:table.cell>
                                 <flux:table.cell align="end" class="font-medium tabular-nums">{!! money($item->line_total_cents) !!}</flux:table.cell>
                                 <flux:table.cell>
@@ -564,7 +564,7 @@ new #[Layout('layouts::app')] #[Title('Product analytics | Admin')] class extend
                         mode: 'range',
                         dateFormat: 'M j, Y',
                         // Pass Date objects (not Y-m-d strings) so flatpickr doesn't try to
-                        // parse them with the display dateFormat above — otherwise the input
+                        // parse them with the display dateFormat above - otherwise the input
                         // renders empty and the active default range isn't shown.
                         defaultDate: [new Date(from + 'T00:00:00'), new Date(to + 'T00:00:00')],
                         maxDate: 'today',

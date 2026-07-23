@@ -38,7 +38,7 @@ class LowStockAlert extends Notification implements ShouldQueue
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-            ->subject('Low stock alert — '.$this->product->name)
+            ->subject('Low stock alert - '.$this->product->name)
             ->markdown('mails.staff.low-stock', [
                 'productName' => $this->product->name,
                 'currentQuantity' => $this->currentQuantity,

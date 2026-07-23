@@ -1,11 +1,11 @@
 /**
- * Sheffield Steel Systems — service worker.
+ * Sheffield Steel Systems - service worker.
  *
  * Strategy (deliberately conservative for an app with an authenticated admin area):
  *   - Static assets (build output, images, fonts): stale-while-revalidate.
  *   - Page navigations: network-first, falling back to /offline.html when offline.
  *   - Authenticated / dynamic areas (admin, account, auth, livewire, checkout) are
- *     never cached — they always go straight to the network so stale or private
+ *     never cached - they always go straight to the network so stale or private
  *     content can't be served from cache.
  *
  * Bump CACHE_VERSION whenever this file or the precache list changes so old
@@ -25,7 +25,7 @@ const PRECACHE_URLS = [
     '/site.webmanifest',
 ];
 
-// Never intercept/cache these — always hit the network.
+// Never intercept/cache these - always hit the network.
 const BYPASS_PREFIXES = ['/admin', '/account', '/livewire', '/login', '/register', '/checkout', '/telescope'];
 
 self.addEventListener('install', (event) => {

@@ -18,7 +18,7 @@ new #[Layout('layouts::app')] #[Title('Maintenance | Admin')] class extends Comp
     #[Url]
     public string $section = 'banned-ips';
 
-    // Banned IPs — add
+    // Banned IPs - add
     public bool $showBanIpModal = false;
 
     public string $banIp = '';
@@ -27,7 +27,7 @@ new #[Layout('layouts::app')] #[Title('Maintenance | Admin')] class extends Comp
 
     public string $banExpiresAt = '';
 
-    // Banned IPs — edit
+    // Banned IPs - edit
     public bool $showEditBanModal = false;
 
     public ?int $editingBanId = null;

@@ -325,7 +325,7 @@ new #[Layout('layouts::app')] #[Title('Coupons | Admin')] class extends Componen
             </div>
 
             <flux:textarea wire:model="description" label="Internal note" rows="2"
-                placeholder="e.g. Launch promo — June 2026" />
+                placeholder="e.g. Launch promo - June 2026" />
 
             <div class="flex justify-end gap-3 pt-2">
                 <flux:modal.close>

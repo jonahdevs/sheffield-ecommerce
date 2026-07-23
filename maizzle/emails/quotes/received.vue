@@ -1,7 +1,7 @@
 <template>
   <Layout body-class="bg-[#eef1f6] font-sans">
     <BrandStyle />
-    <Preheader><Raw>We've received your quote request {{ $quote->quote_number }} — our team is on it.</Raw></Preheader>
+    <Preheader><Raw>We've received your quote request {{ $quote->quote_number }} - our team is on it.</Raw></Preheader>
 
     <Container class="mx-auto w-full max-w-[600px] px-3 py-7">
       <Section class="overflow-hidden bg-white">
@@ -97,7 +97,7 @@
                 <td class="w-8 align-top"><div class="h-7 w-7 rounded-[9999px] bg-navy text-center text-sm font-bold leading-7 text-white">2</div></td>
                 <td class="pb-4 pl-3 align-top">
                   <p class="m-0 text-sm font-semibold text-slate-800">You receive your priced quotation</p>
-                  <p class="m-0 mt-1 text-[13px] text-slate-500">Within 1 business day you'll get a formal quote @if ($isPickup)with item pricing — no shipping charges, since you'll collect from us.@else including item pricing and delivery costs.@endif</p>
+                  <p class="m-0 mt-1 text-[13px] text-slate-500">Within 1 business day you'll get a formal quote @if ($isPickup)with item pricing - no shipping charges, since you'll collect from us.@else including item pricing and delivery costs.@endif</p>
                 </td>
               </tr>
               <tr>

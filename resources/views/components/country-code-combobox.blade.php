@@ -53,7 +53,7 @@
     @click.outside="open = false"
     class="relative shrink-0"
 >
-    {{-- Trigger — matches a Flux select/input control --}}
+    {{-- Trigger - matches a Flux select/input control --}}
     <button
         type="button"
         data-flux-control
@@ -74,7 +74,7 @@
         </svg>
     </button>
 
-    {{-- Popover — matches a Flux dropdown menu --}}
+    {{-- Popover - matches a Flux dropdown menu --}}
     <div
         x-show="open"
         x-cloak

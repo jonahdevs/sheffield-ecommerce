@@ -21,7 +21,7 @@
 <body>
     <div class="wrap">
         <h1>Email template previews</h1>
-        <p class="sub"><strong>Invoice&nbsp;Pro</strong> is the live default · <strong>Classic</strong> = the previous navy/red design, kept for reference. Sample rows are rolled back — nothing is saved.</p>
+        <p class="sub"><strong>Invoice&nbsp;Pro</strong> is the live default · <strong>Classic</strong> = the previous navy/red design, kept for reference. Sample rows are rolled back - nothing is saved.</p>
         @foreach ($links as $link)
             <div class="row">
                 <span class="name">{{ $link['label'] }}</span>

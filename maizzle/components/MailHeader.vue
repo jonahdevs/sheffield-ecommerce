@@ -4,14 +4,14 @@
   title, a greeting row with a reference pill, a divider, then the intro.
 
   Slots (Blade echoes in any slot must be wrapped in a Raw tag by the caller):
-    icon     — inline SVG, white stroke, sits in the outlined circle
-    title    — white headline
-    greeting — bold white line + muted sub-line (an account avatar sits opposite)
-    intro    — white paragraph
+    icon     - inline SVG, white stroke, sits in the outlined circle
+    title    - white headline
+    greeting - bold white line + muted sub-line (an account avatar sits opposite)
+    intro    - white paragraph
 
   Logo: reversed white logo bare on navy via $emailLogoInverseUrl; a custom
   merchant logo (no reversed variant) falls back to the colour logo on a white
-  pill. NB: never write a literal Raw open tag in a comment in this file — the
+  pill. NB: never write a literal Raw open tag in a comment in this file - the
   rawExtract plugin would pair it with a real closing tag and corrupt the build.
 -->
 <template>

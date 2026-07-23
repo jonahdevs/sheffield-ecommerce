@@ -4,7 +4,7 @@
   Two stacked table-fixed tables share the same 3-up geometry: the circles row
   insets each circle to 1/6 · 1/2 · 5/6 via leading/trailing spacer cells, and
   each connector is a SINGLE cell (never two half-lines meeting) so there is no
-  sub-pixel seam — the near-white "Accepted" line stays unbroken on hi-DPI
+  sub-pixel seam - the near-white "Accepted" line stays unbroken on hi-DPI
   screens. The labels table uses three equal columns so labels centre on the
   same 1/6 · 1/2 · 5/6 points, directly under each circle.
 -->

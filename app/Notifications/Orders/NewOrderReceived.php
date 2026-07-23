@@ -37,7 +37,7 @@ class NewOrderReceived extends Notification implements ShouldQueue
         $customer = $this->order->user?->name ?? 'A customer';
 
         return (new MailMessage)
-            ->subject('New order '.$this->order->order_number.' — '.money($this->order->total_cents))
+            ->subject('New order '.$this->order->order_number.' - '.money($this->order->total_cents))
             ->markdown('mails.staff.new-order', [
                 'customer' => $customer,
                 'orderNumber' => $this->order->order_number,

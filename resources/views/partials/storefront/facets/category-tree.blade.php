@@ -1,4 +1,4 @@
-{{-- Category-page facet — the current category's immediate children, with a
+{{-- Category-page facet - the current category's immediate children, with a
      "show all" toggle once there are more than eight. Expects $this->childCategories
      and a host $selectedCategories array of child slugs. --}}
 @if ($this->childCategories->isNotEmpty())

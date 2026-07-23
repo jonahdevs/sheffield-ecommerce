@@ -41,7 +41,7 @@ new #[Layout('layouts::storefront')] #[Title('Contact & Showrooms')] class exten
 
     public function mount(): void
     {
-        SEOMeta::setDescription('Talk to a Sheffield equipment specialist — commercial kitchens, cold rooms, laundry and healthcare. Sales, service, trade accounts and project consultation by phone, WhatsApp, the form, or any of our four showrooms.');
+        SEOMeta::setDescription('Talk to a Sheffield equipment specialist - commercial kitchens, cold rooms, laundry and healthcare. Sales, service, trade accounts and project consultation by phone, WhatsApp, the form, or any of our four showrooms.');
 
         $requested = (string) request('inquiry');
         if (in_array($requested, $this->inquiryTypes, true)) {
@@ -295,7 +295,7 @@ new #[Layout('layouts::storefront')] #[Title('Contact & Showrooms')] class exten
                             <flux:field>
                                 <flux:label>How can we help? <span class="ms-1 text-brand-500">*</span></flux:label>
                                 <flux:textarea wire:model="message" rows="5" required
-                                    placeholder="Tell us about the equipment or project — quantities, timelines and any constraints." />
+                                    placeholder="Tell us about the equipment or project - quantities, timelines and any constraints." />
                                 <flux:error name="message" />
                             </flux:field>
                         </div>
@@ -325,7 +325,7 @@ new #[Layout('layouts::storefront')] #[Title('Contact & Showrooms')] class exten
                 @endif
             </div>
 
-            {{-- Sidebar — showroom locations map, side by side with the form --}}
+            {{-- Sidebar - showroom locations map, side by side with the form --}}
             <flux:card class="overflow-hidden rounded-md p-0">
                 <div class="relative h-80 lg:h-full lg:min-h-110">
                     <div x-ref="map" class="shf-map"></div>
@@ -344,7 +344,7 @@ new #[Layout('layouts::storefront')] #[Title('Contact & Showrooms')] class exten
                 <p class="mt-3 text-base text-ink-3">Find us at these locations.</p>
             </div>
 
-            {{-- Locations — two columns for the four showrooms --}}
+            {{-- Locations - two columns for the four showrooms --}}
             <div class="grid grid-cols-1 gap-x-10 gap-y-9 sm:grid-cols-2">
                 @foreach ($this->showrooms as $loc)
                     <div>
@@ -367,7 +367,7 @@ new #[Layout('layouts::storefront')] #[Title('Contact & Showrooms')] class exten
                                 </span>
                             </div>
 
-                            {{-- Phones — multiple numbers separated by a slash --}}
+                            {{-- Phones - multiple numbers separated by a slash --}}
                             @if (!empty($loc->phones))
                                 <div class="flex items-center gap-2">
                                     <flux:icon.phone variant="outline" class="size-4 shrink-0 text-ink-3" />

@@ -71,8 +71,8 @@ trait InteractsWithStorefront
     /**
      * Card listings skip the re-render so morphing can't tear down JS-initialised
      * DOM (the hero Swiper, carousels); the card reflects its new state client-side
-     * instead. Pages whose own markup depends on cart contents — the product page
-     * swaps its Add to cart button for a counter — must override this and render.
+     * instead. Pages whose own markup depends on cart contents - the product page
+     * swaps its Add to cart button for a counter - must override this and render.
      */
     protected function skipRenderAfterAddToCart(): bool
     {
@@ -264,7 +264,7 @@ trait InteractsWithStorefront
     }
 
     /**
-     * Modal rows — one per variant, with the label, reference, price, stock and the
+     * Modal rows - one per variant, with the label, reference, price, stock and the
      * quantity currently in the cart.
      *
      * @return Collection<int, array{id: int, reference: string, label: string, price_cents: int|null, in_stock: bool, backorder: bool, stock_quantity: int|null, image: string|null, qty: int}>
@@ -295,7 +295,7 @@ trait InteractsWithStorefront
                 'in_stock' => $variant->stock_status === StockStatus::IN_STOCK,
                 'backorder' => $variant->stock_status === StockStatus::BACKORDER,
                 // null means stock isn't tracked for this variant, which is not
-                // the same as zero — show nothing rather than "0 in stock".
+                // the same as zero - show nothing rather than "0 in stock".
                 'stock_quantity' => $variant->stock_quantity,
                 'image' => $variant->getFirstMediaUrl('image', 'thumb') ?: $product->cover_url,
                 // The stepper reads straight off the cart, so it shows 0 for a
@@ -347,7 +347,7 @@ trait InteractsWithStorefront
         $key = StorefrontSession::lineKey($product->slug, $variantId);
         $qty = StorefrontSession::cartQuantity($key);
 
-        // Nothing to take out — the stepper is already disabled at zero, so this
+        // Nothing to take out - the stepper is already disabled at zero, so this
         // can only be a stale click. Staying silent avoids a misleading toast.
         if ($qty === 0) {
             return;
@@ -374,7 +374,7 @@ trait InteractsWithStorefront
     }
 
     /**
-     * The variant a shopper may actually order — the guard for variant ids arriving
+     * The variant a shopper may actually order - the guard for variant ids arriving
      * from the client, which could name any row in the table.
      */
     private function orderableVariant(?Product $product, int $variantId): ?ProductVariant

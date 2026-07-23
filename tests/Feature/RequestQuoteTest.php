@@ -120,7 +120,7 @@ it('submits a quote tied to the authenticated user', function () {
         ->and($quote->items)->toHaveCount(1);
 });
 
-it('stores no pricing on a request — staff price it later', function () {
+it('stores no pricing on a request - staff price it later', function () {
     $this->actingAs($this->user);
     StorefrontSession::addToCart('wok-range', 2);
 

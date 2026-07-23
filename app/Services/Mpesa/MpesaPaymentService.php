@@ -96,7 +96,7 @@ class MpesaPaymentService
 
         $response = $this->daraja->stkQuery($payment->checkout_request_id);
 
-        // Still awaiting the customer — Daraja returns this until they act.
+        // Still awaiting the customer - Daraja returns this until they act.
         if (Arr::get($response, 'errorCode') === '500.001.1001') {
             return PaymentStatus::PENDING;
         }
@@ -173,7 +173,7 @@ class MpesaPaymentService
             $expectedAmount = (int) round($payment->amount_cents / 100);
 
             if ($paidAmount !== $expectedAmount) {
-                Log::critical('M-Pesa callback amount mismatch — payment rejected.', [
+                Log::critical('M-Pesa callback amount mismatch - payment rejected.', [
                     'payment_id' => $payment->id,
                     'order_id' => $payment->order_id,
                     'expected_kes' => $expectedAmount,

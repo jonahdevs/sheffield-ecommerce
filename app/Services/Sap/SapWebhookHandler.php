@@ -21,7 +21,7 @@ class SapWebhookHandler
         $payload = $request->json()->all();
 
         if (! $this->validateSignature($request)) {
-            Log::warning('SAP webhook rejected — invalid secret.', ['ip' => $request->ip()]);
+            Log::warning('SAP webhook rejected - invalid secret.', ['ip' => $request->ip()]);
             abort(401, 'Unauthorized.');
         }
 
@@ -80,7 +80,7 @@ class SapWebhookHandler
         $validStates = [SapSyncStatus::SYNCING, SapSyncStatus::AWAITING_CU, SapSyncStatus::FAILED];
 
         if (! in_array($order->sap_sync_status, $validStates)) {
-            Log::warning('SAP webhook: CU number ignored — order not in a syncable state.', [
+            Log::warning('SAP webhook: CU number ignored - order not in a syncable state.', [
                 'order_id' => $order->id,
                 'sap_sync_status' => $order->sap_sync_status->value,
             ]);
@@ -88,7 +88,7 @@ class SapWebhookHandler
             return;
         }
 
-        // Idempotency — skip duplicate delivery
+        // Idempotency - skip duplicate delivery
         if ($order->cu_number === $cuNumber) {
             Log::info('SAP webhook: duplicate CU number ignored.', [
                 'order_id' => $order->id,
@@ -127,7 +127,7 @@ class SapWebhookHandler
         // the polling path in RecoverSapInvoiceJob.
         SapSyncStatusUpdated::dispatch($order->fresh(), SapSyncStatus::COMPLETED);
 
-        // Receipt failure must never cause a 500 — SAP would keep retrying the webhook.
+        // Receipt failure must never cause a 500 - SAP would keep retrying the webhook.
         $this->receipts->generate($order);
     }
 
@@ -136,7 +136,7 @@ class SapWebhookHandler
         $validStates = [SapSyncStatus::AWAITING_CU, SapSyncStatus::COMPLETED];
 
         if (! in_array($order->sap_sync_status, $validStates)) {
-            Log::warning('SAP webhook: RETURNED event ignored — invalid state.', [
+            Log::warning('SAP webhook: RETURNED event ignored - invalid state.', [
                 'order_id' => $order->id,
                 'sap_sync_status' => $order->sap_sync_status->value,
             ]);

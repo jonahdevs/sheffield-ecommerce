@@ -40,7 +40,7 @@
         \Artesaos\SEOTools\Facades\TwitterCard::setSite('@'.ltrim($social->twitter_handle, '@'));
     }
 
-    // Always add an absolute fallback OG image — the admin-set default, else the
+    // Always add an absolute fallback OG image - the admin-set default, else the
     // bundled asset. Pages that set their own (in mount()) are listed first.
     $__ogImage = $social->og_image_path
         ? \Illuminate\Support\Facades\Storage::disk('public')->url($social->og_image_path)

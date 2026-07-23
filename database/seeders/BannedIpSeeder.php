@@ -30,7 +30,7 @@ class BannedIpSeeder extends Seeder
             ],
             [
                 'ip_address' => '198.51.100.12',
-                'comment' => 'Temporary block — suspicious activity',
+                'comment' => 'Temporary block - suspicious activity',
                 'expires_at' => now()->subDay(),
             ],
         ];

@@ -117,7 +117,7 @@
           </div>
           <!--[if mso]></td></tr></table><![endif]-->
           <!--[if mso]><table role="none" cellpadding="0" cellspacing="0" style="width: 100%"><tr><td style="padding: 16px 32px 36px"><![endif]-->
-          <div style="padding: 16px 32px 36px; text-align: center;"><p style="margin: 0; font-size: 14px; line-height: 20px; color: #64748b;">If you have any questions about this refund, just reply to this email — our team is happy to help.</p></div>
+          <div style="padding: 16px 32px 36px; text-align: center;"><p style="margin: 0; font-size: 14px; line-height: 20px; color: #64748b;">If you have any questions about this refund, just reply to this email - our team is happy to help.</p></div>
           <!--[if mso]></td></tr></table><![endif]-->
         </div>
         <!--[if mso]></td></tr></table><![endif]-->

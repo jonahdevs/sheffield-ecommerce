@@ -190,7 +190,7 @@ new #[Layout('layouts::account')] #[Title('Addresses')] class extends Component
                             @endif
                         </div>
 
-                        {{-- Details — grows so every card's footer sits on the same baseline --}}
+                        {{-- Details - grows so every card's footer sits on the same baseline --}}
                         <div class="flex-1 px-5 py-4">
                             <div class="font-semibold text-ink">{{ $address->fullName() }}</div>
                             <div class="mt-2 space-y-0.5 text-[13px] leading-relaxed text-ink-2">
@@ -237,7 +237,7 @@ new #[Layout('layouts::account')] #[Title('Addresses')] class extends Component
 
         <form wire:submit="save" class="mt-6">
 
-            {{-- Step 1 — pin the location on the map --}}
+            {{-- Step 1 - pin the location on the map --}}
             <div x-show="step === 1" class="space-y-3">
                 @include('partials.storefront.address-map-pin')
 
@@ -247,7 +247,7 @@ new #[Layout('layouts::account')] #[Title('Addresses')] class extends Component
                 </div>
             </div>
 
-            {{-- Step 2 — address details --}}
+            {{-- Step 2 - address details --}}
             <div x-show="step === 2" x-cloak class="space-y-4">
                 @include('partials.storefront.address-fields')
 

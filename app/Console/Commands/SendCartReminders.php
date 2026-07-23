@@ -29,7 +29,7 @@ class SendCartReminders extends Command
 
         // Marketing must be allowed at the store level for any reminder to send.
         if (! app(NotificationSettings::class)->customer_marketing_email) {
-            $this->info('Marketing email is disabled — no cart reminders sent.');
+            $this->info('Marketing email is disabled - no cart reminders sent.');
 
             return self::SUCCESS;
         }
@@ -72,7 +72,7 @@ class SendCartReminders extends Command
             $user = $cart->user;
 
             // Opt-IN marketing: skip (without consuming a stage) until the
-            // customer enables marketing email — they may opt in later.
+            // customer enables marketing email - they may opt in later.
             if (! $user || ($user->notification_preferences['marketing'] ?? false) !== true) {
                 continue;
             }

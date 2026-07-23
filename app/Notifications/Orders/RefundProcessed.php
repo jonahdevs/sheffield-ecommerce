@@ -15,7 +15,7 @@ use Illuminate\Notifications\Notification;
  * refunded amount and reason. Gated under the customer's order-updates
  * preference.
  *
- * Note: not yet dispatched anywhere — there is no refund flow in the app today.
+ * Note: not yet dispatched anywhere - there is no refund flow in the app today.
  * The class and its template are ready for when one is built.
  */
 class RefundProcessed extends Notification implements ShouldQueue
@@ -39,7 +39,7 @@ class RefundProcessed extends Notification implements ShouldQueue
         $order = $this->order;
 
         return (new MailMessage)
-            ->subject('Refund processed — '.$order->order_number)
+            ->subject('Refund processed - '.$order->order_number)
             ->view('mails.orders.refund-processed', [
                 'order' => $order,
                 'customerName' => $order->user?->name ?? 'there',

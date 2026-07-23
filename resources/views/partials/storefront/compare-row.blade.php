@@ -1,4 +1,4 @@
-{{-- props: $label, $cells (collection|array of strings), $emptyCount (int — number of trailing empty cells) --}}
+{{-- props: $label, $cells (collection|array of strings), $emptyCount (int - number of trailing empty cells) --}}
 <tr>
     <td class="sticky left-0 z-10 w-36 border-b border-zinc-200 bg-white px-4 py-3 text-center align-top text-sm font-semibold text-ink-2 lg:w-50">
         {{ $label }}

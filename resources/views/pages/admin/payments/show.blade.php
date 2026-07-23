@@ -42,11 +42,11 @@ new #[Layout('layouts::app')] #[Title('Payment | Admin')] class extends Componen
     /**
      * Strip the display-only thousand separators and normalise the decimal
      * separator to a dot so the masked input (which follows the store currency
-     * format) casts to a float correctly — regardless of the configured format.
+     * format) casts to a float correctly - regardless of the configured format.
      */
     private function normalizeMoneyInput(string $value): string
     {
-        // The input mask groups thousands with commas — strip them so the value
+        // The input mask groups thousands with commas - strip them so the value
         // casts to a float correctly.
         return str_replace(',', '', trim($value));
     }
@@ -233,7 +233,7 @@ new #[Layout('layouts::app')] #[Title('Payment | Admin')] class extends Componen
                     @elseif ($payment->provider === 'stripe')
                         This reverses the charge through Stripe immediately.
                     @else
-                        This records the refund and notifies the customer — reverse the M-Pesa transaction manually via Safaricom.
+                        This records the refund and notifies the customer - reverse the M-Pesa transaction manually via Safaricom.
                     @endif
                 </flux:subheading>
             </div>

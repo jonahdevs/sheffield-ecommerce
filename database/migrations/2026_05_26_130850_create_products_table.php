@@ -26,7 +26,7 @@ return new class extends Migration
     public function up(): void
     {
         // ----------------------------------------------------------------
-        // PRODUCTS  (core table — all types share this)
+        // PRODUCTS  (core table - all types share this)
         // ----------------------------------------------------------------
         Schema::create('products', function (Blueprint $table) {
             $table->id();
@@ -56,7 +56,7 @@ return new class extends Migration
             $table->unsignedBigInteger('sale_price')->nullable();
             $table->unsignedBigInteger('cost_price')->nullable();
 
-            // Tax — references tax_classes table
+            // Tax - references tax_classes table
             $table->boolean('is_taxable')->default(true);
             $table->foreignId('tax_class_id')->nullable()->constrained('tax_classes')->nullOnDelete();
 
@@ -129,7 +129,7 @@ return new class extends Migration
         // ----------------------------------------------------------------
         // PRODUCT LINKS  (curated product → product recommendations)
         //
-        // One typed table for all "soft" relationships — upsells, cross-sells,
+        // One typed table for all "soft" relationships - upsells, cross-sells,
         // accessories, spare parts. They share the same shape (a directed,
         // ordered pointer to another product) and differ only by `type`.
         // Hard composition (grouped/bundle) lives in its own tables because it
@@ -285,7 +285,7 @@ return new class extends Migration
         // ----------------------------------------------------------------
         // GROUPED PRODUCT ITEMS
         // A grouped product (type=grouped) links to independent child
-        // products. Each child is purchased separately at its own price —
+        // products. Each child is purchased separately at its own price -
         // the group is purely a display/discovery container.
         //
         // Rules enforced at app layer:

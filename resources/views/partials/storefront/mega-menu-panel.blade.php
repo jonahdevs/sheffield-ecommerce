@@ -2,7 +2,7 @@
      Left: the hovered category's own image. Right: a grid of child categories
      as home-style bordered image cards (image + centered name, no count).
 
-     No Alpine directives here — this markup is injected via x-html, which does
+     No Alpine directives here - this markup is injected via x-html, which does
      not initialise nested Alpine components. --}}
 @php
     $blurb =
@@ -10,7 +10,7 @@
         'Explore our full ' . $category->name . ' range.';
 @endphp
 <div class="grid gap-6 p-6 lg:grid-cols-9">
-    {{-- Promo (left) — category image --}}
+    {{-- Promo (left) - category image --}}
     <a href="{{ route('category.show', $category) }}" wire:navigate
         class="group relative col-span-2 flex min-h-48 flex-col justify-end overflow-hidden rounded-md bg-brand-blue-700 p-5 text-white">
         @if ($category->banner_url ?: $category->image_url)

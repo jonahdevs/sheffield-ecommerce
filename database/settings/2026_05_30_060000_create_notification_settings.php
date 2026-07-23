@@ -23,7 +23,7 @@ return new class extends SettingsMigration
         $this->migrator->add('notifications.whatsapp_business_account_id', null);
 
         // ==================================================
-        // CUSTOMER — ORDERS & SHIPPING
+        // CUSTOMER - ORDERS & SHIPPING
         // ==================================================
         $this->migrator->add('notifications.customer_order_confirmation_email', true);
         $this->migrator->add('notifications.customer_order_confirmation_inapp', true);
@@ -34,7 +34,7 @@ return new class extends SettingsMigration
         $this->migrator->add('notifications.customer_order_updates_whatsapp', false);
 
         // ==================================================
-        // CUSTOMER — QUOTATIONS
+        // CUSTOMER - QUOTATIONS
         // ==================================================
         $this->migrator->add('notifications.customer_quote_received_email', true);
         $this->migrator->add('notifications.customer_quote_received_inapp', true);
@@ -45,7 +45,7 @@ return new class extends SettingsMigration
         $this->migrator->add('notifications.customer_quote_updates_whatsapp', false);
 
         // ==================================================
-        // CUSTOMER — MARKETING & ACCOUNT
+        // CUSTOMER - MARKETING & ACCOUNT
         // ==================================================
         $this->migrator->add('notifications.customer_marketing_email', true);
         $this->migrator->add('notifications.customer_marketing_inapp', false);
@@ -56,28 +56,28 @@ return new class extends SettingsMigration
         $this->migrator->add('notifications.customer_account_security_whatsapp', false);
 
         // ==================================================
-        // STAFF — ORDERS & PAYMENTS
+        // STAFF - ORDERS & PAYMENTS
         // ==================================================
         $this->migrator->add('notifications.staff_new_order_email', true);
         $this->migrator->add('notifications.staff_new_order_inapp', true);
         $this->migrator->add('notifications.staff_new_order_whatsapp', false);
 
         // ==================================================
-        // STAFF — CUSTOMERS & REVIEWS
+        // STAFF - CUSTOMERS & REVIEWS
         // ==================================================
         $this->migrator->add('notifications.staff_new_review_email', true);
         $this->migrator->add('notifications.staff_new_review_inapp', true);
         $this->migrator->add('notifications.staff_new_review_whatsapp', false);
 
         // ==================================================
-        // STAFF — INVENTORY
+        // STAFF - INVENTORY
         // ==================================================
         $this->migrator->add('notifications.staff_low_stock_email', true);
         $this->migrator->add('notifications.staff_low_stock_inapp', true);
         $this->migrator->add('notifications.staff_low_stock_whatsapp', false);
 
         // ==================================================
-        // STAFF — QUOTATIONS
+        // STAFF - QUOTATIONS
         // ==================================================
         $this->migrator->add('notifications.staff_new_quote_email', true);
         $this->migrator->add('notifications.staff_new_quote_inapp', true);

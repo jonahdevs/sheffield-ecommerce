@@ -15,11 +15,11 @@ class QuoteConversionService
 
     /**
      * Convert a quote into a pending order, link the order back to the quote,
-     * and return the new order. Does not change the quote's status — callers
+     * and return the new order. Does not change the quote's status - callers
      * are responsible for that.
      *
      * Idempotent: the quote row is locked and re-read inside the transaction,
-     * so concurrent or repeated accepts can never produce a second order — once
+     * so concurrent or repeated accepts can never produce a second order - once
      * `order_id` is set the existing order is returned instead.
      */
     public function convert(Quote $quote): Order

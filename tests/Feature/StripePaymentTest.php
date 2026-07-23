@@ -80,7 +80,7 @@ it('checkout creates the order and redirects to the payment page', function () {
     expect(StorefrontSession::cart())->not->toBeEmpty();
 });
 
-// The storefront payment page now runs on Paystack — its page-level flow
+// The storefront payment page now runs on Paystack - its page-level flow
 // (method choice → initialize → verify → redirect) is covered by
 // PaystackPaymentTest. The Stripe service remains a dormant fallback, so its
 // server-side finalize and webhook behaviour is still exercised directly below.

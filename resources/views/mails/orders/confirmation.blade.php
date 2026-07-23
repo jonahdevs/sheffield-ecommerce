@@ -55,7 +55,7 @@
   </head>
   <body xml:lang="en" style="margin: 0; width: 100%; height: 100%; background-color: #eef1f6; padding: 0; font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Noto Sans', Ubuntu, Cantarell, 'Helvetica Neue', sans-serif; word-break: break-word;">
     <div style="display:none;">
-      Your order is confirmed — thank you for your purchase. ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏
+      Your order is confirmed - thank you for your purchase. ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏
        ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  ﻿͏  
     </div>
     <span style="display:none;">
@@ -114,7 +114,7 @@
               </tr>
             </table>
             <div class="bg-white-20" style="margin-top: 18px; margin-bottom: 18px; height: 1px; background-color: rgba(255, 255, 254, .2);"></div>
-            <p class="text-white-80" style="margin: 0; font-size: 13.5px; line-height: 21px; color: rgba(255, 255, 254, .8);">Thank you for shopping with us — we've received your order and it's being prepared. Below are the details of your purchase.</p>
+            <p class="text-white-80" style="margin: 0; font-size: 13.5px; line-height: 21px; color: rgba(255, 255, 254, .8);">Thank you for shopping with us - we've received your order and it's being prepared. Below are the details of your purchase.</p>
           </div>
           <!--[if mso]></td></tr></table><![endif]-->
           <!--[if mso]><table role="none" cellpadding="0" cellspacing="0" style="width: 100%"><tr><td style="background-color: #fffffe; padding: 24px 36px 4px"><![endif]-->

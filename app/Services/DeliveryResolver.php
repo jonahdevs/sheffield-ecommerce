@@ -11,15 +11,15 @@ use Illuminate\Support\Collection;
  * Single source of truth for delivery serviceability and pricing.
  *
  * Flow:
- *   1. resolveZone()   — point-in-polygon check across all active zones.
+ *   1. resolveZone()   - point-in-polygon check across all active zones.
  *                        The highest-priority (then first) matching zone wins.
- *   2. quote()         — given a zone, find the highest-priority carrier covering
+ *   2. quote()         - given a zone, find the highest-priority carrier covering
  *                        it, then resolve the rate for the requested method via
  *                        carrier_rates. Promotions are applied on top.
- *   3. quoteForPin()   — convenience wrapper: resolve + quote in one call.
+ *   3. quoteForPin()   - convenience wrapper: resolve + quote in one call.
  *
  * When no zone contains the address the result is unserviceable (delivery).
- * Pickup is always available regardless of zone — handled by the checkout layer.
+ * Pickup is always available regardless of zone - handled by the checkout layer.
  */
 class DeliveryResolver
 {

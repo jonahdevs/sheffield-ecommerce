@@ -205,7 +205,7 @@ new #[Layout('layouts::app')] #[Title('Edit Customer | Admin')] class extends Co
     @endpush
 
     <flux:heading size="xl">Edit Customer</flux:heading>
-    <flux:subheading>{{ $customer->name }} &mdash; {{ $customer->email }}</flux:subheading>
+    <flux:subheading>{{ $customer->name }} - {{ $customer->email }}</flux:subheading>
 
     <form wire:submit="save" class="mt-6 grid grid-cols-1 gap-5 lg:grid-cols-4 lg:items-start">
 
@@ -261,7 +261,7 @@ new #[Layout('layouts::app')] #[Title('Edit Customer | Admin')] class extends Co
                             <p class="mt-2 text-center text-xs text-red-500">{{ $message }}</p>
                         @enderror
                         <p class="mt-3 max-w-40 text-center text-xs text-zinc-400">
-                            Allowed *.jpeg, *.jpg, *.png, *.gif — max 3 MB
+                            Allowed *.jpeg, *.jpg, *.png, *.gif - max 3 MB
                         </p>
                     </div>
 

@@ -139,7 +139,7 @@
                 @foreach ($order->items as $index => $item)
                     @php
                         $snapshot = $item->product_snapshot ?? [];
-                        $itemName = $snapshot['name'] ?? $item->product_snapshot['name'] ?? '—';
+                        $itemName = $snapshot['name'] ?? $item->product_snapshot['name'] ?? '-';
                         $itemSku  = $snapshot['sku'] ?? null;
                     @endphp
                     <tr>
@@ -218,7 +218,7 @@
             <p class="mt-3">Best regards,<br><strong>{{ $storeName }}</strong></p>
         </div>
 
-        {{-- QR code + CU number — centered --}}
+        {{-- QR code + CU number - centered --}}
         @if ($qrSvg)
             <div class="mt-6 flex flex-col items-center text-center">
                 <div class="inline-block">

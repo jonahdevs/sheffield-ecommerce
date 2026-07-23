@@ -1,4 +1,4 @@
-{{-- Rating filter — filters products by average approved-review rating.
+{{-- Rating filter - filters products by average approved-review rating.
      Expects the host Livewire component to expose an int $minRating property
      (0 = any). Structure mirrors the legacy storefront's radio.group. --}}
 <div class="{{ ($hideHeading ?? false) ? '' : 'px-5 py-4' }}">

@@ -46,7 +46,7 @@ class SyncOrderToSapJob implements ShouldQueue
 
         // Create already succeeded on a previous attempt but the dispatch was lost.
         if ($order->sap_doc_entry && $order->sap_sync_status === SapSyncStatus::AWAITING_CU) {
-            Log::info('SAP: create already done — re-dispatching recovery job.', [
+            Log::info('SAP: create already done - re-dispatching recovery job.', [
                 'order_id' => $order->id,
                 'sap_doc_entry' => $order->sap_doc_entry,
             ]);
@@ -73,7 +73,7 @@ class SyncOrderToSapJob implements ShouldQueue
             throw $e;
         }
 
-        // Persist doc refs before dispatching recovery — guards against partial failures.
+        // Persist doc refs before dispatching recovery - guards against partial failures.
         // On an "already exists" outcome SAP may not echo the docEntry, so keep any
         // value we already had rather than blanking it.
         $order->update([
@@ -95,7 +95,7 @@ class SyncOrderToSapJob implements ShouldQueue
             ])
             ->log('sap_sync_completed');
 
-        // The recovery job polls the validate endpoint by docEntry — only useful
+        // The recovery job polls the validate endpoint by docEntry - only useful
         // when we actually have one. Without it (e.g. a duplicate SAP couldn't
         // re-identify), the webhook remains the path to the CU number.
         if ($order->sap_doc_entry) {
@@ -111,11 +111,11 @@ class SyncOrderToSapJob implements ShouldQueue
             return;
         }
 
-        // Phase 1 already succeeded on SAP's side — sap_doc_entry is persisted and
+        // Phase 1 already succeeded on SAP's side - sap_doc_entry is persisted and
         // RecoverSapInvoiceJob is queued to run Phase 2 (validate + CU number).
         // Don't mark FAILED here; let RecoverSapInvoiceJob own the final outcome.
         if ($order->sap_doc_entry) {
-            Log::warning('SAP: SyncOrderToSapJob failed after invoice was created — RecoverSapInvoiceJob will complete Phase 2.', [
+            Log::warning('SAP: SyncOrderToSapJob failed after invoice was created - RecoverSapInvoiceJob will complete Phase 2.', [
                 'order_id' => $order->id,
                 'order_number' => $order->order_number,
                 'sap_doc_entry' => $order->sap_doc_entry,

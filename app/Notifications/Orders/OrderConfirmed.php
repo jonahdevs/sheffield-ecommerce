@@ -31,7 +31,7 @@ class OrderConfirmed extends Notification implements ShouldQueue
         $order = $this->order;
 
         return (new MailMessage)
-            ->subject('Order confirmed — '.$order->order_number)
+            ->subject('Order confirmed - '.$order->order_number)
             ->view('mails.orders.confirmation', [
                 'order' => $order,
                 'customerName' => $order->user?->name ?? 'there',

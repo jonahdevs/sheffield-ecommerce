@@ -179,7 +179,7 @@ it('drives the payment flow from the pay button to confirmation on the payment p
         ->and($payment->status)->toBe(PaymentStatus::PENDING)
         ->and($order->fresh()->payment_method)->toBe('paystack');
 
-    // No channel restriction sent — the popup offers all enabled methods.
+    // No channel restriction sent - the popup offers all enabled methods.
     Http::assertSent(fn ($request) => str_contains($request->url(), '/transaction/initialize')
         && ! array_key_exists('channels', $request->data()));
 
@@ -245,7 +245,7 @@ it('opens the Paystack popup straight from checkout and reuses the order on re-c
         ->and($order->payment_method)->toBe('paystack')
         ->and(Payment::where('order_id', $order->id)->count())->toBe(1);
 
-    // Re-clicking after dismissing the popup reuses the same order — no duplicate.
+    // Re-clicking after dismissing the popup reuses the same order - no duplicate.
     $component->call('placeOrder')->assertDispatched('paystack-open');
 
     expect(Order::count())->toBe(1)

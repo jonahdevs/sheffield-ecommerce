@@ -73,7 +73,7 @@ it('filters the catalog by the nav search handoff (?q=)', function () {
         'visibility' => ProductVisibility::VISIBLE->value, 'status' => ProductStatus::PUBLISHED->value,
     ]);
 
-    // The nav search hands off via /catalog?q=… — the page must pick it up from the URL.
+    // The nav search hands off via /catalog?q=… - the page must pick it up from the URL.
     Livewire::withQueryParams(['q' => 'Combi'])
         ->test('pages::storefront.catalog')
         ->assertSet('q', 'Combi')
@@ -212,7 +212,7 @@ it('routes /shop/{category} to the category page', function () {
 
 it('marks the current category active in the navbar', function () {
     // category.show is served by Livewire's page controller, so the route parameter the nav
-    // partial sees is the raw slug string, not a Category — reading ->id off it warned in
+    // partial sees is the raw slug string, not a Category - reading ->id off it warned in
     // tests and blew up as a 500 in the browser. Needs a NAVBAR placement, or the nav
     // renders no categories at all and the active check never runs.
     $cat = Category::create(['name' => 'Ranges', 'slug' => 'ranges', 'status' => CategoryStatus::ACTIVE, 'sort_order' => 1]);
@@ -338,7 +338,7 @@ it('reads and writes the category and brand facets as readable slugs in the quer
     $make('Test Grinder', 'CO-GRIND', $grinders);
     $make('Test Brewer', 'CO-BREW', $brewers);
 
-    // ?cat=coffee-grinders hydrates the facet — no cat[0]=8 anywhere.
+    // ?cat=coffee-grinders hydrates the facet - no cat[0]=8 anywhere.
     Livewire::withQueryParams(['cat' => 'coffee-grinders'])
         ->test('pages::storefront.category', ['category' => $parent])
         ->assertSet('selectedCategories', ['coffee-grinders'])

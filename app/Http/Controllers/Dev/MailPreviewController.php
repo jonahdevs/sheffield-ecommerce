@@ -35,7 +35,7 @@ class MailPreviewController extends Controller
     {
         return [
             'auth-verify-email' => [
-                'label' => 'Auth — Verify email',
+                'label' => 'Auth - Verify email',
                 'build' => function (): array {
                     $user = User::factory()->create();
 
@@ -47,7 +47,7 @@ class MailPreviewController extends Controller
                 },
             ],
             'order-confirmation' => [
-                'label' => 'Order — Confirmation',
+                'label' => 'Order - Confirmation',
                 'build' => function (): array {
                     [$user, $order] = $this->order(OrderStatus::PROCESSING, ['payment_method' => 'mpesa']);
                     OrderItem::factory()->count(3)->create(['order_id' => $order->id]);
@@ -61,7 +61,7 @@ class MailPreviewController extends Controller
                 },
             ],
             'order-status-update' => [
-                'label' => 'Order — Status update',
+                'label' => 'Order - Status update',
                 'build' => function (): array {
                     [$user, $order] = $this->order(OrderStatus::OUT_FOR_DELIVERY);
                     OrderItem::factory()->count(2)->create(['order_id' => $order->id]);
@@ -74,7 +74,7 @@ class MailPreviewController extends Controller
                 },
             ],
             'order-refund-processed' => [
-                'label' => 'Order — Refund processed',
+                'label' => 'Order - Refund processed',
                 'build' => function (): array {
                     [$user, $order] = $this->order(OrderStatus::REFUNDED);
 
@@ -88,7 +88,7 @@ class MailPreviewController extends Controller
                 },
             ],
             'order-kra-invoice' => [
-                'label' => 'Order — KRA tax invoice',
+                'label' => 'Order - KRA tax invoice',
                 'build' => function (): array {
                     [$user, $order] = $this->order(OrderStatus::COMPLETED, ['cu_number' => 'KRACU0123456789']);
 
@@ -100,7 +100,7 @@ class MailPreviewController extends Controller
                 },
             ],
             'quote-received' => [
-                'label' => 'Quote — Request received',
+                'label' => 'Quote - Request received',
                 'build' => function (): array {
                     [$user, $quote] = $this->quote(QuoteStatus::DRAFT, [
                         'delivery_required' => true,
@@ -116,7 +116,7 @@ class MailPreviewController extends Controller
                 },
             ],
             'quote-sent' => [
-                'label' => 'Quote — Ready for review',
+                'label' => 'Quote - Ready for review',
                 'build' => function (): array {
                     [$user, $quote] = $this->quote(QuoteStatus::AWAITING_APPROVAL, ['total_cents' => 500000]);
                     QuoteItem::factory()->count(3)->create(['quote_id' => $quote->id]);
@@ -129,7 +129,7 @@ class MailPreviewController extends Controller
                 },
             ],
             'quote-expiring' => [
-                'label' => 'Quote — Expiring soon',
+                'label' => 'Quote - Expiring soon',
                 'build' => function (): array {
                     [$user, $quote] = $this->quote(QuoteStatus::AWAITING_APPROVAL, [
                         'total_cents' => 500000,

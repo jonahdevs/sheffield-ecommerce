@@ -24,7 +24,7 @@ use Illuminate\Support\Facades\Queue;
 use function Pest\Laravel\postJson;
 
 // ==================================================
-// WEBHOOK — CU NUMBER DELIVERY
+// WEBHOOK - CU NUMBER DELIVERY
 // ==================================================
 
 it('stores the CU number and marks the order completed when the webhook fires', function () {
@@ -124,7 +124,7 @@ it('handles the legacy flat payload shape (cu_number at root)', function () {
 });
 
 // ==================================================
-// WEBHOOK — RETURNED STATUS
+// WEBHOOK - RETURNED STATUS
 // ==================================================
 
 it('marks order as RETURNED when a return webhook arrives in a valid state', function () {
@@ -170,7 +170,7 @@ it('ignores a RETURNED webhook for orders not in a valid state', function () {
 });
 
 // ==================================================
-// WEBHOOK — CONTROLLER + AUTH
+// WEBHOOK - CONTROLLER + AUTH
 // ==================================================
 
 it('returns 401 when the SAP webhook secret is wrong', function () {
@@ -514,7 +514,7 @@ it('marks AWAITING_CU without failing or alerting when the invoice already exist
         ->and($order->sap_sync_error)->toBeNull();
 
     Notification::assertNothingSent();
-    // No docEntry to validate, so the recovery poll is not queued — the webhook
+    // No docEntry to validate, so the recovery poll is not queued - the webhook
     // remains the path to the CU number.
     Queue::assertNotPushed(RecoverSapInvoiceJob::class);
 });

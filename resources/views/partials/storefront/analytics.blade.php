@@ -10,7 +10,7 @@
 @endphp
 
 @if (filled($analytics->gtm_id) || filled($analytics->ga4_id))
-    {{-- Google Consent Mode v2 — must run before any GTM/GA4 script. Storage is
+    {{-- Google Consent Mode v2 - must run before any GTM/GA4 script. Storage is
          denied by default and granted either server-side (returning visitor with
          a consent cookie) or client-side via window.grantCookieConsent(). --}}
     <script>
@@ -52,7 +52,7 @@
 @endif
 
 @if (filled($analytics->meta_pixel_id))
-    {{-- Meta (Facebook) Pixel — unlike Google tags it has no consent mode, so the
+    {{-- Meta (Facebook) Pixel - unlike Google tags it has no consent mode, so the
          script itself only loads once consent is granted. PageView fires on
          livewire:navigated (initial load + every wire:navigate visit) rather than
          at init, since wire:navigate swaps pages without a full reload. --}}

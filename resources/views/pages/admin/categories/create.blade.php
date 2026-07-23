@@ -257,7 +257,7 @@ new #[Layout('layouts::app')] #[Title('New Category | Admin')] class extends Com
                     </div>
                 </flux:card>
 
-                {{-- Image (primary square image — grid tiles & menus) --}}
+                {{-- Image (primary square image - grid tiles & menus) --}}
                 <flux:card x-data="{ open: true }" class="overflow-hidden p-0">
                     <button type="button" x-on:click="open = !open"
                         class="flex w-full items-center justify-between px-6 py-3"

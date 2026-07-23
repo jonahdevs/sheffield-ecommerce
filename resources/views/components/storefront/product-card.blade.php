@@ -94,7 +94,7 @@
             </span>
         @endif
 
-        {{-- Optional caller badge (e.g. required-accessory quantity) — sits below the discount badge if both show --}}
+        {{-- Optional caller badge (e.g. required-accessory quantity) - sits below the discount badge if both show --}}
         @if ($badge)
             <span @class([
                 'absolute left-0 z-10 inline-flex h-5 items-center rounded-r bg-rose-500 px-2 text-xs font-bold tracking-wide text-white',
@@ -105,7 +105,7 @@
             </span>
         @endif
 
-        {{-- Wishlist + compare — top right, hover-reveal --}}
+        {{-- Wishlist + compare - top right, hover-reveal --}}
         {{-- Alpine holds each button's state locally so the colour flips instantly,
              even inside a wire:ignore carousel where Livewire can't re-render the card.
              It seeds from the server value and re-syncs from the slug-tagged events. --}}
@@ -154,7 +154,7 @@
                 <flux:icon.adjustments-horizontal variant="micro" class="size-3.5" />
                 Options
             </a>
-            {{-- Quote-only / unpriced: no quick-add — route to the product page --}}
+            {{-- Quote-only / unpriced: no quick-add - route to the product page --}}
         @elseif ($isQuoteOnly)
             <a href="{{ route('product.show', $product) }}" wire:navigate aria-label="Request a quote"
                 class="absolute right-2.5 bottom-2.5 z-10 inline-flex h-9 items-center gap-1.5 rounded-full bg-brand-500 px-3.5 text-xs font-semibold text-white shadow-md transition hover:bg-brand-600">
@@ -162,7 +162,7 @@
                 Quote
             </a>
         @else
-            {{-- Add to cart stepper — single expanding pill, no element swapping --}}
+            {{-- Add to cart stepper - single expanding pill, no element swapping --}}
             <div wire:key="cart-{{ $product->slug }}" x-data="{
                 qty: 0,
                 expanded: false,
@@ -196,11 +196,11 @@
                     class="absolute -top-1 -right-1 z-10 flex size-4 items-center justify-center rounded-full bg-white text-xs font-bold text-brand-500 shadow-sm">
                 </span>
 
-                {{-- Single pill — right edge is fixed, expands leftward --}}
+                {{-- Single pill - right edge is fixed, expands leftward --}}
                 <div class="relative h-9 overflow-hidden rounded-full bg-brand-500 text-white shadow-md transition-[width] duration-200"
                     :class="expanded ? 'w-25' : 'w-9'">
 
-                    {{-- Left zone: decrement + count — hidden until pill expands --}}
+                    {{-- Left zone: decrement + count - hidden until pill expands --}}
                     <div class="absolute inset-y-0 left-0 right-9 flex items-center transition-opacity duration-150"
                         :class="expanded ? 'opacity-100' : 'opacity-0 pointer-events-none'">
                         <button type="button" aria-label="Remove one" @click="removeOne()"
@@ -211,7 +211,7 @@
                         <span x-text="qty" class="flex-1 text-center text-sm font-bold tabular-nums"></span>
                     </div>
 
-                    {{-- Right zone: cart icon or plus — always pinned to right edge --}}
+                    {{-- Right zone: cart icon or plus - always pinned to right edge --}}
                     <button type="button" aria-label="Add to cart" @click="addOne()"
                         class="absolute right-0 flex size-9 cursor-pointer items-center justify-center rounded-full transition hover:bg-brand-600">
                         <flux:icon.shopping-cart variant="micro" class="size-3.5" x-show="!expanded" />
@@ -222,7 +222,7 @@
         @endif
     </div>
 
-    {{-- Info — only the product name links out; brand and price are plain text --}}
+    {{-- Info - only the product name links out; brand and price are plain text --}}
     <div class="flex flex-1 flex-col px-3 py-3 sm:px-4 sm:py-3.5">
         @if ($brandName)
             <div class="text-xs font-bold tracking-widest text-brand-blue-600 uppercase">{{ $brandName }}

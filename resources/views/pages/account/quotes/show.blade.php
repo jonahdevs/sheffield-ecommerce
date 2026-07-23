@@ -95,7 +95,7 @@ new #[Layout('layouts::account')] #[Title('Quote')] class extends Component {
     }
 
     /**
-     * Re-open payment for an approved quote whose order is still unpaid — the
+     * Re-open payment for an approved quote whose order is still unpaid - the
      * Paystack popup keeps the customer here, falling back to the payment page.
      */
     public function completePayment(): void
@@ -156,7 +156,7 @@ new #[Layout('layouts::account')] #[Title('Quote')] class extends Component {
                         </p>
                     @endif
                 @else
-                    <p class="text-[13px] font-medium text-amber-600">Pricing pending — our team is preparing your
+                    <p class="text-[13px] font-medium text-amber-600">Pricing pending - our team is preparing your
                         quotation.</p>
                 @endif
             </div>
@@ -184,7 +184,7 @@ new #[Layout('layouts::account')] #[Title('Quote')] class extends Component {
                 </flux:callout>
             @elseif ($quote->status === QuoteStatus::APPROVED && $this->isPaid)
                 <flux:callout icon="check-circle" color="green">
-                    <flux:callout.heading>Payment received — order placed</flux:callout.heading>
+                    <flux:callout.heading>Payment received - order placed</flux:callout.heading>
                     <flux:callout.text>
                         Your payment was successful and your order is being prepared.
                         @if ($quote->order)
@@ -399,7 +399,7 @@ new #[Layout('layouts::account')] #[Title('Quote')] class extends Component {
 
                     $histories = $quote->statusHistories->keyBy('to_status');
 
-                    // Draft is always implicit — the quote exists so it was submitted
+                    // Draft is always implicit - the quote exists so it was submitted
                     if (!$histories->has('draft')) {
                         $histories->put('draft', (object) ['created_at' => $quote->created_at, 'note' => null]);
                     }

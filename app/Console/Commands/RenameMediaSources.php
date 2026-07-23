@@ -21,7 +21,7 @@ use Illuminate\Support\Str;
  *
  * Safe by default: runs as a DRY RUN unless --execute is passed. Source files
  * shared by more than one row are COPIED (never moved) so nothing is left without
- * an image. Idempotent — re-running after a successful pass is a no-op.
+ * an image. Idempotent - re-running after a successful pass is a no-op.
  */
 #[Signature('media:rename-sources
     {--target=all : Which source set to rename: products, categories, brands, or all}
@@ -57,7 +57,7 @@ class RenameMediaSources extends Command
 
         $this->newLine();
         if (! $execute) {
-            $this->warn('DRY RUN — nothing was changed. Re-run with --execute to apply.');
+            $this->warn('DRY RUN - nothing was changed. Re-run with --execute to apply.');
         } else {
             $this->info('Done. Re-seed (migrate:fresh --seed) so stored media adopts the new names.');
         }
@@ -207,7 +207,7 @@ class RenameMediaSources extends Command
             return $newPath;
         }
 
-        // Two different rows resolving to the same target — guard against silent
+        // Two different rows resolving to the same target - guard against silent
         // overwrites (shouldn't happen: sku/slug are unique).
         if (isset($claimed[$newPath]) && $claimed[$newPath] !== $old) {
             $this->error("  Target collision: {$newPath} wanted by both {$claimed[$newPath]} and {$old}");

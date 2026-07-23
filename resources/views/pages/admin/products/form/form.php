@@ -374,7 +374,7 @@ new #[Layout('layouts::app')] class extends Component
                 'collapsed' => true,
             ])->all();
 
-        // Default form values — one entry per variation attribute, initialised to empty
+        // Default form values - one entry per variation attribute, initialised to empty
         $this->defaultVariantFormValues = collect($this->selectedAttributes)
             ->filter(fn ($a) => $a['is_variation_attribute'])
             ->mapWithKeys(fn ($a) => [$a['name'] => ''])
@@ -1442,7 +1442,7 @@ new #[Layout('layouts::app')] class extends Component
 
     public function getTitle(): string
     {
-        return $this->productId ? 'Edit product — Admin' : 'New product — Admin';
+        return $this->productId ? 'Edit product - Admin' : 'New product - Admin';
     }
 
     public function render(): View

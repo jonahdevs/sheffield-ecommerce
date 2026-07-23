@@ -66,17 +66,17 @@
                         <td class="border border-zinc-300 px-2 py-2 align-top text-zinc-500 text-center">{{ $loop->iteration }}</td>
                         <td class="border border-zinc-300 px-2 py-2 align-top font-mono font-semibold text-zinc-900">{{ $quote->quote_number }}</td>
                         <td class="border border-zinc-300 px-2 py-2 align-top">
-                            <div class="font-semibold text-zinc-900">{{ $quote->user?->name ?? $quote->contact_name ?? '—' }}</div>
+                            <div class="font-semibold text-zinc-900">{{ $quote->user?->name ?? $quote->contact_name ?? '-' }}</div>
                             <div class="text-[10px] text-zinc-400 mt-0.5">{{ $quote->user?->email ?? $quote->contact_email }}</div>
                         </td>
-                        <td class="border border-zinc-300 px-2 py-2 align-top text-zinc-600">{{ $quote->contact_company ?? '—' }}</td>
+                        <td class="border border-zinc-300 px-2 py-2 align-top text-zinc-600">{{ $quote->contact_company ?? '-' }}</td>
                         <td class="border border-zinc-300 px-2 py-2 align-top text-center tabular-nums text-zinc-700">{{ $quote->items_count }}</td>
                         <td class="border border-zinc-300 px-2 py-2 align-top text-right tabular-nums font-semibold text-zinc-900">
-                            {!! $quote->total_cents ? money($quote->total_cents) : '<span class="text-zinc-400 font-normal">—</span>' !!}
+                            {!! $quote->total_cents ? money($quote->total_cents) : '<span class="text-zinc-400 font-normal">-</span>' !!}
                         </td>
                         <td class="border border-zinc-300 px-2 py-2 align-top text-center text-zinc-700">{{ $quote->status->label() }}</td>
                         <td class="border border-zinc-300 px-2 py-2 align-top text-center text-zinc-600">
-                            {{ $quote->expires_at?->format('d M Y') ?? '—' }}
+                            {{ $quote->expires_at?->format('d M Y') ?? '-' }}
                         </td>
                         <td class="border border-zinc-300 px-2 py-2 align-top text-center text-zinc-600">{{ $quote->created_at->format('d M Y') }}</td>
                     </tr>

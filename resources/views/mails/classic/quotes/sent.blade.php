@@ -70,7 +70,7 @@
           <!--[if mso]><table role="none" cellpadding="0" cellspacing="0" style="width: 100%"><tr><td style="padding: 28px 32px 0"><![endif]-->
           <div style="padding: 28px 32px 0;">
             <p style="margin: 0; font-size: 16px; line-height: 24px; font-weight: 700; color: #0f172a;">Hi {{ $customerName }}, your quotation is ready.</p>
-            <p style="margin: 8px 0 0; font-size: 14px; line-height: 20px; line-height: 24px; color: #64748b;">Thank you for your interest — here's a summary of your formal quotation for review and approval.</p>
+            <p style="margin: 8px 0 0; font-size: 14px; line-height: 20px; line-height: 24px; color: #64748b;">Thank you for your interest - here's a summary of your formal quotation for review and approval.</p>
           </div>
           <!--[if mso]></td></tr></table><![endif]-->
           <!--[if mso]><table role="none" cellpadding="0" cellspacing="0" style="width: 100%"><tr><td style="padding: 28px 32px 0"><![endif]-->
@@ -174,7 +174,7 @@
           </div>
           <!--[if mso]></td></tr></table><![endif]-->
           <!--[if mso]><table role="none" cellpadding="0" cellspacing="0" style="width: 100%"><tr><td style="padding: 16px 32px 36px"><![endif]-->
-          <div style="padding: 16px 32px 36px; text-align: center;"><p style="margin: 0; font-size: 14px; line-height: 20px; color: #64748b;">Have questions or need adjustments before accepting? Just reply to this email — we're happy to help.</p></div>
+          <div style="padding: 16px 32px 36px; text-align: center;"><p style="margin: 0; font-size: 14px; line-height: 20px; color: #64748b;">Have questions or need adjustments before accepting? Just reply to this email - we're happy to help.</p></div>
           <!--[if mso]></td></tr></table><![endif]-->
         </div>
         <!--[if mso]></td></tr></table><![endif]-->

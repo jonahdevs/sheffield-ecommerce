@@ -337,7 +337,7 @@ new #[Layout('layouts::app')] #[Title('Products | Admin')] class extends Compone
                 </flux:breadcrumbs>
             @endpush
             <flux:heading size="xl">Products</flux:heading>
-            <flux:subheading>Manage your catalog — pricing, stock and visibility.</flux:subheading>
+            <flux:subheading>Manage your catalog - pricing, stock and visibility.</flux:subheading>
         </div>
         <flux:button variant="primary" icon="plus" :href="route('admin.products.create')" wire:navigate>
             Add product
@@ -546,14 +546,14 @@ new #[Layout('layouts::app')] #[Title('Products | Admin')] class extends Compone
                             <a href="{{ route('admin.products.edit', $product) }}" wire:navigate
                                 class="hover:text-brand-500">{{ $product->name }}</a>
                             <span
-                                class="block font-mono text-xs font-normal text-zinc-400">{{ $product->sku ?: '—' }}</span>
+                                class="block font-mono text-xs font-normal text-zinc-400">{{ $product->sku ?: '-' }}</span>
                         </flux:table.cell>
 
                         <flux:table.cell>
                             @if ($product->brand)
                                 <span class="text-zinc-700 dark:text-zinc-300">{{ $product->brand->name }}</span>
                             @else
-                                <span class="text-zinc-400">—</span>
+                                <span class="text-zinc-400">-</span>
                             @endif
                         </flux:table.cell>
 
@@ -561,7 +561,7 @@ new #[Layout('layouts::app')] #[Title('Products | Admin')] class extends Compone
                             @if ($product->primaryCategory)
                                 <span class="text-zinc-700 dark:text-zinc-300">{{ $product->primaryCategory->name }}</span>
                             @else
-                                <span class="text-zinc-400">—</span>
+                                <span class="text-zinc-400">-</span>
                             @endif
                         </flux:table.cell>
 
@@ -574,7 +574,7 @@ new #[Layout('layouts::app')] #[Title('Products | Admin')] class extends Compone
                                     </span>
                                 @endif
                             @else
-                                <span class="font-normal text-zinc-400">—</span>
+                                <span class="font-normal text-zinc-400">-</span>
                             @endif
                         </flux:table.cell>
 
@@ -582,7 +582,7 @@ new #[Layout('layouts::app')] #[Title('Products | Admin')] class extends Compone
                             @if ($product->stock_quantity !== null)
                                 <span class="text-zinc-700 dark:text-zinc-300">{{ $product->stock_quantity }}</span>
                             @else
-                                <span class="text-zinc-400">—</span>
+                                <span class="text-zinc-400">-</span>
                             @endif
                         </flux:table.cell>
 
@@ -594,7 +594,7 @@ new #[Layout('layouts::app')] #[Title('Products | Admin')] class extends Compone
                                     class="text-zinc-700 dark:text-zinc-300">{{ number_format($product->approved_reviews_avg, 1) }}</span>
                                 <span class="ml-1 text-xs text-zinc-400">({{ $product->approved_reviews_count }})</span>
                             @else
-                                <span class="text-zinc-400">—</span>
+                                <span class="text-zinc-400">-</span>
                             @endif
                         </flux:table.cell>
 
@@ -749,7 +749,7 @@ new #[Layout('layouts::app')] #[Title('Products | Admin')] class extends Compone
                 <div>
                     <flux:heading class="uppercase">Import Products</flux:heading>
                     <flux:subheading>Upload a spreadsheet to bulk-create or update products. Products are matched by SKU
-                        — existing SKUs are updated, new ones are created.</flux:subheading>
+                        - existing SKUs are updated, new ones are created.</flux:subheading>
                 </div>
 
                 {{-- Drop zone --}}

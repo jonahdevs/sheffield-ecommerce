@@ -284,12 +284,12 @@ new #[Layout('layouts::app')] #[Title('Roles | Admin')] class extends Component 
                             </div>
                         </flux:table.cell>
                         <flux:table.cell class="text-zinc-500">{{ $user->email }}</flux:table.cell>
-                        <flux:table.cell class="text-zinc-500 tabular-nums">{{ $phone ?: '—' }}</flux:table.cell>
+                        <flux:table.cell class="text-zinc-500 tabular-nums">{{ $phone ?: '-' }}</flux:table.cell>
                         <flux:table.cell>
                             @if ($roleName)
                                 <flux:badge size="sm" inset="top bottom" :color="$roleColor($roleName)">{{ Str::headline($roleName) }}</flux:badge>
                             @else
-                                <span class="text-zinc-400">—</span>
+                                <span class="text-zinc-400">-</span>
                             @endif
                         </flux:table.cell>
                         <flux:table.cell>

@@ -20,8 +20,8 @@ use Livewire\Livewire;
 /**
  * The product page renders the product, its accessories and spare parts, its
  * reviews, and four carousels. An N+1 shows up as a query count that grows with
- * the number of rows, so each case renders the page twice — once with a small
- * collection, once with a large one — and asserts the counts match.
+ * the number of rows, so each case renders the page twice - once with a small
+ * collection, once with a large one - and asserts the counts match.
  */
 beforeEach(function () {
     $this->taxClass = TaxClass::create(['name' => 'Standard', 'slug' => 'standard', 'rate' => 16, 'is_active' => true]);
@@ -152,7 +152,7 @@ it('does not issue more queries as the related and same-brand carousels fill up'
 
 /**
  * Guards the `taxClass:id,rate` style eager loads. Column-constrained eager loads
- * name columns as strings, so a typo is invisible until runtime — and invisible
+ * name columns as strings, so a typo is invisible until runtime - and invisible
  * even then on SQLite, which quietly reads an unknown double-quoted identifier as
  * a string literal. MySQL throws. This asserts every named column really exists.
  */
@@ -179,7 +179,7 @@ it('only names real columns in constrained eager loads', function () {
 
             foreach (explode(',', $columns) as $column) {
                 if (! Schema::hasColumn($table, $column)) {
-                    $problems[] = "{$file->getFilename()}: {$whole} — {$table}.{$column} does not exist";
+                    $problems[] = "{$file->getFilename()}: {$whole} - {$table}.{$column} does not exist";
                 }
             }
         }

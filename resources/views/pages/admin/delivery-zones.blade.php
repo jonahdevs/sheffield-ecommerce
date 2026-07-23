@@ -336,7 +336,7 @@ new #[Layout('layouts::app')] #[Title('Delivery zones | Admin')] class extends C
 
                 <div class="flex items-center justify-between">
                     <flux:text size="sm" class="text-zinc-500">
-                        <span x-text="$wire.polygon.length"></span> point(s) — click map to add, double-click a point to remove
+                        <span x-text="$wire.polygon.length"></span> point(s) - click map to add, double-click a point to remove
                     </flux:text>
                     <div class="flex items-center gap-2">
                         <flux:button size="xs" variant="ghost" x-on:click="undoLast" x-bind:disabled="!$wire.polygon.length">Undo</flux:button>

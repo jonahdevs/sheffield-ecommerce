@@ -339,7 +339,7 @@ new #[Layout('layouts::app')] #[Title('Edit Category | Admin')] class extends Co
                     </div>
                 </flux:card>
 
-                {{-- Image (primary square image — grid tiles & menus) --}}
+                {{-- Image (primary square image - grid tiles & menus) --}}
                 <flux:card x-data="{ open: {{ $category->hasMedia('square') ? 'true' : 'false' }} }" class="overflow-hidden p-0">
                     <button type="button" x-on:click="open = !open"
                         class="flex w-full items-center justify-between px-6 py-3"

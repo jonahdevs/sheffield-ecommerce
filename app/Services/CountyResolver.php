@@ -5,7 +5,7 @@ namespace App\Services;
 /**
  * Resolves a coordinate to its Kenyan county entirely offline, by testing the
  * point against the ADM1 county boundaries in public/maps/kenya-counties.geojson
- * (geoBoundaries, 47 counties). No external geocoding API — deterministic, free,
+ * (geoBoundaries, 47 counties). No external geocoding API - deterministic, free,
  * and the same dataset powers the choropleth map. The parsed boundaries are
  * memoised per process.
  */
@@ -59,7 +59,7 @@ class CountyResolver
                 continue;
             }
 
-            // Outer rings only — county boundaries don't have meaningful holes,
+            // Outer rings only - county boundaries don't have meaningful holes,
             // and a MultiPolygon's islands each contribute their own outer ring.
             $rings = match ($geometry['type'] ?? '') {
                 'Polygon' => [$geometry['coordinates'][0]],

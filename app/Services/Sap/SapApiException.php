@@ -20,7 +20,7 @@ class SapApiException extends RuntimeException
 
     /**
      * Retryable errors: rate-limit, all 5xx, and connection failures (status 0).
-     * Non-retryable: client errors (4xx except 429) — retrying won't change the outcome.
+     * Non-retryable: client errors (4xx except 429) - retrying won't change the outcome.
      */
     public function isRetryable(): bool
     {

@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Storage;
 
 // ---------------------------------------------------------------------------
 // Customer self-service (authenticated + verified). The `customer` middleware
-// keeps staff out — they are redirected to the admin dashboard.
+// keeps staff out - they are redirected to the admin dashboard.
 // ---------------------------------------------------------------------------
 Route::middleware(['auth', 'verified', 'customer'])->group(function () {
     Route::livewire('account', 'pages::account.dashboard')->name('account.dashboard');
@@ -42,7 +42,7 @@ Route::middleware(['auth', 'verified', 'customer'])->group(function () {
 });
 
 // ---------------------------------------------------------------------------
-// Settings — URLs live under /account/settings/* but route names are kept
+// Settings - URLs live under /account/settings/* but route names are kept
 // short (profile.edit / security.edit) so existing layout and component
 // references don't need to change. Appearance/dark-mode is staff-only and is
 // intentionally not exposed to customers here.

@@ -167,7 +167,7 @@ class Order extends Model
     /**
      * Confirm a paid order: move it into processing and notify the customer and
      * the operations team. Uses an atomic conditional UPDATE so concurrent webhook
-     * retries can never double-fire — only the worker that actually flips the row
+     * retries can never double-fire - only the worker that actually flips the row
      * from PENDING→PROCESSING continues; all others get 0 affected rows and return.
      */
     public function markConfirmed(): void
@@ -201,7 +201,7 @@ class Order extends Model
 
     /**
      * Atomically deduct stock using a raw UPDATE so the floor stays at 0 even
-     * under concurrent orders — unlike decrement() with a stale min() cap, which
+     * under concurrent orders - unlike decrement() with a stale min() cap, which
      * races and can drive stock negative. Items are sorted by product_id so all
      * concurrent transactions acquire row locks in the same order, eliminating
      * the lock-inversion cycle that causes deadlocks.
@@ -272,7 +272,7 @@ class Order extends Model
      * Falls back to "VAT (mixed rates)" when items carry different rates.
      */
     /**
-     * HTML label for web views — "(incl.)" is rendered smaller.
+     * HTML label for web views - "(incl.)" is rendered smaller.
      * Use vatLabelText() for plain-text contexts like emails.
      */
     public function vatLabel(): string

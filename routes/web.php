@@ -48,19 +48,19 @@ Route::livewire('/checkout', 'pages::storefront.checkout')->name('checkout')->mi
 Route::livewire('/pay/{order}', 'pages::storefront.payment')->name('payment.page')->middleware(['auth', 'customer']);
 Route::livewire('/product/{product:slug}', 'pages::storefront.product')->name('product.show');
 
-// Mega-menu flyout body — fetched on hover by the category navigation.
+// Mega-menu flyout body - fetched on hover by the category navigation.
 Route::get('/menu/{category:slug}/flyout', CategoryMenuController::class)
     ->name('menu.flyout');
 
 // Address-book search box. Proxies the geocoder server-side so the caching and
 // outbound identity stay ours. Public, because the quote form takes an address
-// from guests — throttled to keep it from being used as a free geocoding API.
+// from guests - throttled to keep it from being used as a free geocoding API.
 Route::get('/places/search', function (Request $request, PlaceSearch $places) {
     return response()->json($places->search((string) $request->query('q', '')));
 })->name('places.search')->middleware('throttle:30,1');
 
 // ---------------------------------------------------------------------------
-// Newsletter — confirm & unsubscribe (public, no auth)
+// Newsletter - confirm & unsubscribe (public, no auth)
 // ---------------------------------------------------------------------------
 Route::controller(NewsletterController::class)
     ->prefix('newsletter')
@@ -71,7 +71,7 @@ Route::controller(NewsletterController::class)
     });
 
 // ---------------------------------------------------------------------------
-// Social auth — Google
+// Social auth - Google
 // ---------------------------------------------------------------------------
 Route::middleware('guest')
     ->controller(SocialAuthController::class)
@@ -83,7 +83,7 @@ Route::middleware('guest')
     });
 
 // ---------------------------------------------------------------------------
-// Social auth — Facebook
+// Social auth - Facebook
 // ---------------------------------------------------------------------------
 Route::middleware('guest')
     ->controller(SocialAuthController::class)
@@ -95,7 +95,7 @@ Route::middleware('guest')
     });
 
 // ---------------------------------------------------------------------------
-// Post-login landing — branches by role.
+// Post-login landing - branches by role.
 // Customers go to their account dashboard; admins are bounced to /admin.
 // TODO: swap the hasRole check for spatie/laravel-permission once installed.
 // ---------------------------------------------------------------------------
@@ -110,7 +110,7 @@ Route::middleware(['auth', 'verified'])->get('/dashboard', function () {
 })->name('dashboard');
 
 // ---------------------------------------------------------------------------
-// Delivery confirmation — public signed URLs (no auth required)
+// Delivery confirmation - public signed URLs (no auth required)
 // Customers confirm receipt or raise a dispute after receiving their order.
 // ---------------------------------------------------------------------------
 Route::controller(DeliveryConfirmationController::class)
@@ -127,7 +127,7 @@ require __DIR__.'/account.php';
 require __DIR__.'/admin.php';
 
 // ---------------------------------------------------------------------------
-// Local-only email template previews — render the mail Blade views with sample
+// Local-only email template previews - render the mail Blade views with sample
 // data so the real, data-filled result is visible in the browser (Maizzle's
 // preview can only show un-rendered Blade). Never registered outside local.
 // ---------------------------------------------------------------------------
@@ -141,13 +141,13 @@ if (app()->environment('local')) {
 }
 
 // ---------------------------------------------------------------------------
-// CMS pages — registered LAST so every explicit route above wins. Single-segment
+// CMS pages - registered LAST so every explicit route above wins. Single-segment
 // slugs only; the component 404s on unpublished/unknown pages.
 // ---------------------------------------------------------------------------
 Route::livewire('/{page:slug}', 'pages::storefront.page')->name('page.show');
 
 // ---------------------------------------------------------------------------
-// Catch-all 404 — runs inside the web middleware group so the session/auth are
+// Catch-all 404 - runs inside the web middleware group so the session/auth are
 // started before the error view renders. This lets admin error pages show the
 // signed-in user's permitted navigation and account menu (an unmatched route
 // otherwise skips session middleware, leaving auth()->user() null).

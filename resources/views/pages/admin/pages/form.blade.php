@@ -113,7 +113,7 @@ new #[Layout('layouts::app')] #[Title('Page | Admin')] class extends Component {
                     <flux:input wire:model.blur="slug" label="Slug"
                         description="Auto-generated from the title. Used in the page URL." />
                     <flux:textarea wire:model="body" label="Content" rows="20"
-                        description="Markdown supported — headings, lists, links." />
+                        description="Markdown supported - headings, lists, links." />
                 </flux:card>
             </div>
 

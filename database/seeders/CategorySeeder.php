@@ -43,7 +43,7 @@ class CategorySeeder extends Seeder
 
     /**
      * Slugs are globally unique (the storefront routes /shop/{category:slug} without a
-     * parent segment), but child names are not — "Automatic" reads perfectly well under
+     * parent segment), but child names are not - "Automatic" reads perfectly well under
      * both Coffee Machines and Dishwashers. A child that would collide is therefore
      * qualified with its parent: coffee-machines-automatic, dishwashers-automatic. The
      * first one seeded keeps the bare slug, so existing URLs never shift underneath us.
@@ -67,7 +67,7 @@ class CategorySeeder extends Seeder
 
         if (Category::where('slug', $qualified)->exists()) {
             throw new RuntimeException(sprintf(
-                'Cannot derive a unique slug for "%s" under "%s" — "%s" is taken too.',
+                'Cannot derive a unique slug for "%s" under "%s" - "%s" is taken too.',
                 $name,
                 $parentName,
                 $qualified,

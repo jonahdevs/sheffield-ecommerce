@@ -1,6 +1,6 @@
 <template>
   <Layout class="bg-gray-50 dark:bg-gray-950">
-    <Preheader>Your order is confirmed — thank you for your purchase.</Preheader>
+    <Preheader>Your order is confirmed - thank you for your purchase.</Preheader>
 
     <Container class="max-w-xl p-0 py-10 sm:p-6">
       <Section class="rounded-t-lg bg-gray-900 px-6 pt-6 pb-11">

@@ -22,7 +22,7 @@ return new class extends Migration
 
             // M-Pesa fields
             $table->string('merchant_request_id')->nullable()->index();
-            // Unique: provider-issued IDs are used for idempotency on callbacks —
+            // Unique: provider-issued IDs are used for idempotency on callbacks -
             // duplicates here would allow a callback to be double-processed.
             $table->string('checkout_request_id')->nullable()->unique();
             $table->string('mpesa_receipt')->nullable();
@@ -30,7 +30,7 @@ return new class extends Migration
             $table->string('result_desc')->nullable();
 
             // Stripe fields
-            // Note: stripe_client_secret is intentionally omitted — it is a
+            // Note: stripe_client_secret is intentionally omitted - it is a
             // short-lived credential that must be held in memory only, never persisted.
             $table->string('stripe_payment_intent_id')->nullable()->unique();
             $table->string('stripe_charge_id')->nullable();
@@ -49,7 +49,7 @@ return new class extends Migration
             $table->timestamp('refunded_at')->nullable();
 
             // Raw webhook/callback body for audit and replay purposes. Encrypted
-            // at rest (it holds PII) so the type is longText, not json — the
+            // at rest (it holds PII) so the type is longText, not json - the
             // ciphertext is an opaque string, not queryable JSON. Pruned after
             // the statutory retention window by `payments:prune-payloads`.
             $table->longText('payload')->nullable();

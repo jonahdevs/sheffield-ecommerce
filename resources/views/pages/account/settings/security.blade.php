@@ -466,7 +466,7 @@ new #[Layout('layouts::settings')] #[Title('Security')] class extends Component 
         @if ($this->sessions->count() > 1)
             <div class="border-t border-zinc-200 bg-zinc-50/60 px-5 py-4">
                 <p class="mb-3 text-[12px] text-ink-3">
-                    To revoke all other sessions, confirm your password below — you'll stay signed in on this device.
+                    To revoke all other sessions, confirm your password below - you'll stay signed in on this device.
                 </p>
                 <form wire:submit="logoutOtherDevices" class="flex flex-col gap-2 sm:flex-row sm:items-start">
                     <div class="flex-1">

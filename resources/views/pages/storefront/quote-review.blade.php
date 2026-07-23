@@ -31,7 +31,7 @@ new #[Layout('layouts::storefront')] #[Title('Review Your Quote')] class extends
     {
         abort_unless($this->quote->isApprovable(), 403);
 
-        // Already authenticated — link the quote and go straight to payment.
+        // Already authenticated - link the quote and go straight to payment.
         if (auth()->check()) {
             // Lock and re-check inside the transaction so a double-submit or
             // concurrent accept can't spawn a second order for the same quote.
@@ -70,7 +70,7 @@ new #[Layout('layouts::storefront')] #[Title('Review Your Quote')] class extends
             return;
         }
 
-        // Guest — store pending quote and prompt to create an account.
+        // Guest - store pending quote and prompt to create an account.
         session(['quote_approval_pending' => $this->quote->id]);
 
         $this->redirect('/register', navigate: true);
@@ -139,7 +139,7 @@ new #[Layout('layouts::storefront')] #[Title('Review Your Quote')] class extends
     {{-- Post-decision banners --}}
     @if ($quote->status === QuoteStatus::APPROVED)
         <div class="mb-6 rounded-md border border-emerald-200 bg-emerald-50 px-5 py-4">
-            <p class="text-sm font-semibold text-emerald-800">Quote approved — thank you</p>
+            <p class="text-sm font-semibold text-emerald-800">Quote approved - thank you</p>
             <p class="mt-0.5 text-sm text-emerald-600">Our team will be in touch shortly to arrange payment and next steps.</p>
         </div>
     @elseif ($quote->status === QuoteStatus::DECLINED)
@@ -156,7 +156,7 @@ new #[Layout('layouts::storefront')] #[Title('Review Your Quote')] class extends
         <div class="mb-6 flex flex-wrap items-center justify-between gap-3 rounded-md border border-red-200 bg-red-50 px-5 py-4">
             <div>
                 <p class="text-sm font-semibold text-red-800">This quote has expired</p>
-                <p class="mt-0.5 text-sm text-red-600">Its validity period has ended — request an updated quotation to proceed.</p>
+                <p class="mt-0.5 text-sm text-red-600">Its validity period has ended - request an updated quotation to proceed.</p>
             </div>
             <flux:button variant="customer-primary" size="customer" icon="arrow-path" :href="route('quote.request')" wire:navigate>
                 Request a fresh quote
@@ -191,7 +191,7 @@ new #[Layout('layouts::storefront')] #[Title('Review Your Quote')] class extends
                                         <span class="text-sm font-semibold leading-snug text-ink">{{ $item->product_name }}</span>
                                     </flux:table.cell>
                                     <flux:table.cell class="hidden sm:table-cell">
-                                        <span class="font-mono text-xs text-ink-4">{{ $item->product_sku ?: '—' }}</span>
+                                        <span class="font-mono text-xs text-ink-4">{{ $item->product_sku ?: '-' }}</span>
                                     </flux:table.cell>
                                     <flux:table.cell class="hidden sm:table-cell" align="end">
                                         <span class="tabular-nums text-sm text-ink-2">{!! money($item->unit_price_cents) !!}</span>

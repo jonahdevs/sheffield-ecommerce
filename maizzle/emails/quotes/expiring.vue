@@ -1,7 +1,7 @@
 <template>
   <Layout body-class="bg-[#eef1f6] font-sans">
     <BrandStyle />
-    <Preheader><Raw>Your quotation {{ $quote->quote_number }} is expiring soon — act now.</Raw></Preheader>
+    <Preheader><Raw>Your quotation {{ $quote->quote_number }} is expiring soon - act now.</Raw></Preheader>
 
     <Container class="mx-auto w-full max-w-[600px] px-3 py-7">
       <Section class="overflow-hidden bg-white">
@@ -13,10 +13,10 @@
           <template #title>Your quote expires in <Raw>{{ $daysLeft }}</Raw> days</template>
           <template #greeting>
             <p class="m-0 text-[15px] font-bold text-white">Hi <Raw>{{ $customerName }}</Raw>,</p>
-            <p class="m-0 mt-1 text-[13px] text-white/70">Quote <Raw>{{ $quote->quote_number }}</Raw> — act soon.</p>
+            <p class="m-0 mt-1 text-[13px] text-white/70">Quote <Raw>{{ $quote->quote_number }}</Raw> - act soon.</p>
           </template>
           <template #intro>
-            <p class="m-0 text-[13.5px] leading-[21px] text-white/80">Just a quick reminder that the pricing we've prepared for you is still available — but not for long.</p>
+            <p class="m-0 text-[13.5px] leading-[21px] text-white/80">Just a quick reminder that the pricing we've prepared for you is still available - but not for long.</p>
           </template>
         </MailHeader>
 
@@ -61,7 +61,7 @@
                     </table>
                   </td>
                   <td class="border-b border-slate-100 py-3 text-center align-middle text-[13px] text-slate-600">{{ $item->quantity }}</td>
-                  <td class="whitespace-nowrap border-b border-slate-100 py-3 pl-3 text-right align-middle text-sm font-bold text-slate-900">{{ $item->line_total_cents > 0 ? money($item->line_total_cents) : '—' }}</td>
+                  <td class="whitespace-nowrap border-b border-slate-100 py-3 pl-3 text-right align-middle text-sm font-bold text-slate-900">{{ $item->line_total_cents > 0 ? money($item->line_total_cents) : '-' }}</td>
                 </tr>
               @endforeach
             </table>
@@ -115,7 +115,7 @@
         <!-- CLOSING -->
         <Section class="bg-white px-9 pt-6 pb-10">
           <Raw>
-            <p class="m-0 text-[13px] leading-5 text-slate-500">Need adjustments before the offer expires? Just reply to this email — we're happy to help.</p>
+            <p class="m-0 text-[13px] leading-5 text-slate-500">Need adjustments before the offer expires? Just reply to this email - we're happy to help.</p>
             <p class="m-0 mt-3.5 text-[13px] text-slate-600">Warm regards,<br /><span class="font-bold text-slate-900">The {{ config('app.name') }} Team</span></p>
           </Raw>
         </Section>

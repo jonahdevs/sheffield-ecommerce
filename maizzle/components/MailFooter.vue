@@ -1,5 +1,5 @@
 <!--
-  Invoice-Pro footer — a navy bar that closes the card. Optional white social
+  Invoice-Pro footer - a navy bar that closes the card. Optional white social
   icons (only those configured in SocialSettings), then copyright on the left
   and contact / website on the right. Pulls live values from SocialSettings /
   BusinessSettings. Transactional: no unsubscribe.

@@ -1,4 +1,4 @@
-{{-- Address suggestion box — picking a result drops the pin and prefills line1. Requires the addressMap() Alpine scope. --}}
+{{-- Address suggestion box - picking a result drops the pin and prefills line1. Requires the addressMap() Alpine scope. --}}
 <div class="relative" x-on:click.outside="closeSuggestions()">
     <flux:input
         type="search"

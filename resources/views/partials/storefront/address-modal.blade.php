@@ -44,7 +44,7 @@
 
         <form wire:submit="saveAddress" class="mt-6">
 
-            {{-- Step 1 — pin the location on the map --}}
+            {{-- Step 1 - pin the location on the map --}}
             <div x-show="step === 1" class="space-y-3">
                 @include('partials.storefront.address-map-pin')
 
@@ -60,7 +60,7 @@
                 </div>
             </div>
 
-            {{-- Step 2 — address details --}}
+            {{-- Step 2 - address details --}}
             <div x-show="step === 2" x-cloak class="space-y-4">
                 @include('partials.storefront.address-fields')
 

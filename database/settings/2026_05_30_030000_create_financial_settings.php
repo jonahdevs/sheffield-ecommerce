@@ -14,7 +14,7 @@ return new class extends SettingsMigration
         $this->migrator->add('payments.mpesa_type', 'paybill');
         $this->migrator->add('payments.airtel_money_enabled', false);
         $this->migrator->add('payments.card_enabled', true);
-        // Paystack is the active gateway — it fronts cards, M-Pesa, Airtel Money,
+        // Paystack is the active gateway - it fronts cards, M-Pesa, Airtel Money,
         // and bank transfers through a single integration.
         $this->migrator->add('payments.card_provider', 'paystack');
         $this->migrator->add('payments.paystack_enabled', true);

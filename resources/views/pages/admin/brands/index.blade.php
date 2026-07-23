@@ -228,7 +228,7 @@ new #[Layout('layouts::app')] #[Title('Brands | Admin')] class extends Component
                                     <flux:icon.arrow-top-right-on-square variant="micro" class="size-3" />
                                 </a>
                             @else
-                                —
+                                -
                             @endif
                         </flux:table.cell>
                         <flux:table.cell class="tabular-nums">

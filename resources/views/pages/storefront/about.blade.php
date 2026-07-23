@@ -11,7 +11,7 @@ new #[Layout('layouts::storefront')] #[Title('About')] class extends Component
 {
     public function mount(): void
     {
-        $description = 'Sheffield has supplied commercial kitchens across East Africa since 2003 — restaurants, hotels and caterers in Kenya, Uganda, Tanzania and Rwanda. Authorised distributor with regional install and service teams.';
+        $description = 'Sheffield has supplied commercial kitchens across East Africa since 2003 - restaurants, hotels and caterers in Kenya, Uganda, Tanzania and Rwanda. Authorised distributor with regional install and service teams.';
 
         SEOMeta::setDescription($description);
         OpenGraph::setDescription($description)->setType('website');

@@ -119,7 +119,7 @@ class StripePaymentService
 
         $payment = $payment->fresh();
 
-        // Only treat the payment as confirmed when it actually succeeded — a
+        // Only treat the payment as confirmed when it actually succeeded - a
         // rejected (amount/currency mismatch) finalize leaves it FAILED, and the
         // caller must not advance the order in that case.
         return $payment->status === PaymentStatus::SUCCESS ? $payment : null;
@@ -151,7 +151,7 @@ class StripePaymentService
             return;
         }
 
-        // Re-fetch with charge expansion — webhook payloads don't expand nested objects.
+        // Re-fetch with charge expansion - webhook payloads don't expand nested objects.
         $expanded = PaymentIntent::retrieve($intent->id, [
             'expand' => ['latest_charge'],
         ]);
@@ -161,12 +161,12 @@ class StripePaymentService
 
     private function finalize(Payment $payment, PaymentIntent $intent): void
     {
-        // The PaymentIntent is authoritative — confirm it charged the exact amount
+        // The PaymentIntent is authoritative - confirm it charged the exact amount
         // and currency we created the intent with before advancing the order. This
         // guards against a tampered/replayed confirmation or a mismatched intent.
         if ($intent->amount !== $payment->amount_cents
             || strtolower((string) $intent->currency) !== strtolower($payment->currency)) {
-            Log::critical('Stripe amount/currency mismatch — payment rejected.', [
+            Log::critical('Stripe amount/currency mismatch - payment rejected.', [
                 'payment_id' => $payment->id,
                 'order_id' => $payment->order_id,
                 'expected_cents' => $payment->amount_cents,

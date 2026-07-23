@@ -43,7 +43,7 @@ new #[Layout('layouts::app')] #[Title('Financial settings | Admin')] class exten
 
     public bool $showPaymentModal = false;
 
-    // API credentials — null means "use .env value"
+    // API credentials - null means "use .env value"
     public ?string $mpesa_env = null;
 
     public ?string $mpesa_consumer_key = null;
@@ -281,7 +281,7 @@ new #[Layout('layouts::app')] #[Title('Financial settings | Admin')] class exten
                         'key'          => 'paystack',
                         'name'         => 'Paystack',
                         'logo'         => 'paystack',
-                        'description'  => 'Your payment gateway. Customers can pay with whatever channels you have enabled in your Paystack dashboard — cards, M-Pesa, Airtel Money, bank transfer and more.',
+                        'description'  => 'Your payment gateway. Customers can pay with whatever channels you have enabled in your Paystack dashboard - cards, M-Pesa, Airtel Money, bank transfer and more.',
                         'enabled'      => $paystack_enabled,
                         'configurable' => true,
                         'connected'    => $paystackConnected,

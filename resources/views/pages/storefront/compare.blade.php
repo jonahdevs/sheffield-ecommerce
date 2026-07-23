@@ -17,7 +17,7 @@ new #[Layout('layouts::storefront')] #[Title('Compare')] class extends Component
     {
         // Session-driven page: keep it out of search indexes.
         SEOMeta::setRobots('noindex,follow')
-            ->setDescription('Compare commercial kitchen equipment side-by-side — specs, dimensions, lead times.');
+            ->setDescription('Compare commercial kitchen equipment side-by-side - specs, dimensions, lead times.');
     }
 
     public function remove(string $slug): void
@@ -66,7 +66,7 @@ new #[Layout('layouts::storefront')] #[Title('Compare')] class extends Component
 
 @php
 
-    // Find a productAttribute by attribute name; returns a presentable string or '—'.
+    // Find a productAttribute by attribute name; returns a presentable string or '-'.
     $specFor = function ($product, string $label): string {
         foreach ($product->productAttributes as $pa) {
             if ($pa->attribute?->name === $label) {
@@ -75,17 +75,17 @@ new #[Layout('layouts::storefront')] #[Title('Compare')] class extends Component
                     return implode(', ', $values);
                 }
 
-                return (string) ($values ?? '—');
+                return (string) ($values ?? '-');
             }
         }
 
-        return '—';
+        return '-';
     };
 
     $dimensions = function ($product): string {
         $parts = array_filter([$product->width, $product->depth ?? $product->length, $product->height]);
         if (count($parts) < 2) {
-            return '—';
+            return '-';
         }
 
         $unit = $product->dimension_unit ?? 'cm';
@@ -183,7 +183,7 @@ new #[Layout('layouts::storefront')] #[Title('Compare')] class extends Component
                 <tbody class="[&_tr:last-child>td]:border-b-0">
                     @include('partials.storefront.compare-row', [
                         'label' => 'Brand',
-                        'cells' => $this->products->map(fn ($p) => $p->brand?->name ?? '—'),
+                        'cells' => $this->products->map(fn ($p) => $p->brand?->name ?? '-'),
                         'emptyCount' => $emptySlots,
                     ])
                     @include('partials.storefront.compare-row', [
@@ -193,17 +193,17 @@ new #[Layout('layouts::storefront')] #[Title('Compare')] class extends Component
                     ])
                     @include('partials.storefront.compare-row', [
                         'label' => 'SKU',
-                        'cells' => $this->products->map(fn ($p) => $p->sku ?? '—'),
+                        'cells' => $this->products->map(fn ($p) => $p->sku ?? '-'),
                         'emptyCount' => $emptySlots,
                     ])
                     @include('partials.storefront.compare-row', [
                         'label' => 'Model',
-                        'cells' => $this->products->map(fn ($p) => $p->model_number ?? '—'),
+                        'cells' => $this->products->map(fn ($p) => $p->model_number ?? '-'),
                         'emptyCount' => $emptySlots,
                     ])
                     @include('partials.storefront.compare-row', [
                         'label' => 'Category',
-                        'cells' => $this->products->map(fn ($p) => $p->primaryCategory?->name ?? '—'),
+                        'cells' => $this->products->map(fn ($p) => $p->primaryCategory?->name ?? '-'),
                         'emptyCount' => $emptySlots,
                     ])
                     @include('partials.storefront.compare-row', [
@@ -214,7 +214,7 @@ new #[Layout('layouts::storefront')] #[Title('Compare')] class extends Component
 
                     @include('partials.storefront.compare-row', [
                         'label' => 'Weight',
-                        'cells' => $this->products->map(fn ($p) => $p->weight ? rtrim(rtrim((string) $p->weight, '0'), '.').' '.($p->weight_unit ?? 'kg') : '—'),
+                        'cells' => $this->products->map(fn ($p) => $p->weight ? rtrim(rtrim((string) $p->weight, '0'), '.').' '.($p->weight_unit ?? 'kg') : '-'),
                         'emptyCount' => $emptySlots,
                     ])
                     @include('partials.storefront.compare-row', [

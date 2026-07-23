@@ -55,7 +55,7 @@
         <!-- CLOSING -->
         <Section class="bg-white px-9 pt-6 pb-10">
           <Raw>
-            <p class="m-0 text-[13px] leading-5 text-slate-500">If you have any questions about this refund, just reply to this email — our team is happy to help.</p>
+            <p class="m-0 text-[13px] leading-5 text-slate-500">If you have any questions about this refund, just reply to this email - our team is happy to help.</p>
             <p class="m-0 mt-3.5 text-[13px] text-slate-600">Best regards,<br /><span class="font-bold text-slate-900">{{ config('app.name') }} Support Team</span></p>
           </Raw>
         </Section>

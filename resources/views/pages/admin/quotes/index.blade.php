@@ -260,7 +260,7 @@ new #[Layout('layouts::app')] #[Title('Quotes | Admin')] class extends Component
                             <span class="font-mono">{{ $quote->quote_number }}</span>
                         </flux:table.cell>
                         <flux:table.cell class="text-sm text-zinc-500">
-                            {{ $quote->user?->email ?? $quote->contact_email ?? '—' }}
+                            {{ $quote->user?->email ?? $quote->contact_email ?? '-' }}
                         </flux:table.cell>
                         <flux:table.cell class="tabular-nums text-zinc-500">{{ $quote->items_count }}</flux:table.cell>
                         <flux:table.cell class="font-medium tabular-nums">{!! money($quote->total_cents) !!}</flux:table.cell>
@@ -275,7 +275,7 @@ new #[Layout('layouts::app')] #[Title('Quotes | Admin')] class extends Component
                                     {{ $quote->expires_at->format('M j, Y') }}
                                 </span>
                             @else
-                                <span class="text-zinc-400">—</span>
+                                <span class="text-zinc-400">-</span>
                             @endif
                         </flux:table.cell>
                         <flux:table.cell align="end">

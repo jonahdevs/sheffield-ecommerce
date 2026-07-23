@@ -141,7 +141,7 @@
           <!--[if mso]><table role="none" cellpadding="0" cellspacing="0" style="width: 100%"><tr><td style="background-color: #fffffe; padding: 20px 36px 4px"><![endif]-->
           <div style="background-color: #fffffe; padding: 20px 36px 4px;">
             <div style="border-radius: 6px; background-color: #f8fafc; border: 1px solid #e2e8f0; padding: 14px 16px;">
-              <p style="margin: 0; font-size: 12.5px; line-height: 19px; color: #64748b;">This link expires in {{ $expiresMinutes }} minutes. If you didn&rsquo;t create an account, you can safely ignore this email &mdash; no account will be activated.</p>
+              <p style="margin: 0; font-size: 12.5px; line-height: 19px; color: #64748b;">This link expires in {{ $expiresMinutes }} minutes. If you didn&rsquo;t create an account, you can safely ignore this email - no account will be activated.</p>
             </div>
           </div>
           <!--[if mso]></td></tr></table><![endif]-->

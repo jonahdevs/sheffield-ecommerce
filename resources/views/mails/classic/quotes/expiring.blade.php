@@ -67,7 +67,7 @@
           <!--[if mso]><table role="none" cellpadding="0" cellspacing="0" style="width: 100%"><tr><td style="padding: 28px 32px 0"><![endif]-->
           <div style="padding: 28px 32px 0;">
             <p style="margin: 0; font-size: 16px; line-height: 24px; font-weight: 700; color: #0f172a;">Hi {{ $customerName }}, don't miss out.</p>
-            <p style="margin: 8px 0 0; font-size: 14px; line-height: 20px; line-height: 24px; color: #64748b;">Just a quick reminder that the pricing we've prepared for you is still available — but not for long.</p>
+            <p style="margin: 8px 0 0; font-size: 14px; line-height: 20px; line-height: 24px; color: #64748b;">Just a quick reminder that the pricing we've prepared for you is still available - but not for long.</p>
           </div>
           <!--[if mso]></td></tr></table><![endif]-->
           <!--[if mso]><table role="none" cellpadding="0" cellspacing="0" style="width: 100%"><tr><td style="padding: 28px 32px 4px"><![endif]-->
@@ -119,7 +119,7 @@
                   <p style="margin: 4px 0 0; font-size: 12px; line-height: 16px; color: #94a3b8;">@if ($subtitle){{ $subtitle }} · @endif Qty {{ $item->quantity }}</p>
                 </td>
                 <td style="border-bottom: 1px solid; border-color: #f1f5f9; padding-top: 16px; padding-bottom: 16px; padding-left: 12px; text-align: right; vertical-align: middle; white-space: nowrap;">
-                  <p style="margin: 0; font-size: 14px; line-height: 20px; font-weight: 700; color: #1e293b;">{{ $item->line_total_cents > 0 ? money($item->line_total_cents) : '—' }}</p>
+                  <p style="margin: 0; font-size: 14px; line-height: 20px; font-weight: 700; color: #1e293b;">{{ $item->line_total_cents > 0 ? money($item->line_total_cents) : '-' }}</p>
                 </td>
               </tr>
               @endforeach
@@ -180,7 +180,7 @@
           </div>
           <!--[if mso]></td></tr></table><![endif]-->
           <!--[if mso]><table role="none" cellpadding="0" cellspacing="0" style="width: 100%"><tr><td style="padding: 16px 32px 36px"><![endif]-->
-          <div style="padding: 16px 32px 36px; text-align: center;"><p style="margin: 0; font-size: 14px; line-height: 20px; color: #64748b;">Need adjustments before the offer expires? Just reply to this email — we're happy to help.</p></div>
+          <div style="padding: 16px 32px 36px; text-align: center;"><p style="margin: 0; font-size: 14px; line-height: 20px; color: #64748b;">Need adjustments before the offer expires? Just reply to this email - we're happy to help.</p></div>
           <!--[if mso]></td></tr></table><![endif]-->
         </div>
         <!--[if mso]></td></tr></table><![endif]-->

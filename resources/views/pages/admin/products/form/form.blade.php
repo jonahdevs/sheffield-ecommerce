@@ -105,7 +105,7 @@
                                     </flux:select.option>
                                 @endforeach
                             </flux:select>
-                            {{-- Fulfilment flags — only meaningful for simple & variable products --}}
+                            {{-- Fulfilment flags - only meaningful for simple & variable products --}}
                             <div class="flex items-center gap-3" x-show="['simple','variable'].includes($wire.type)"
                                 x-cloak>
                                 <label
@@ -217,7 +217,7 @@
                                     </div>
                                     <div x-show="$wire.type === 'grouped'"
                                         class="py-4 text-center text-sm text-zinc-400">
-                                        Grouped products have no direct price — customers purchase each item
+                                        Grouped products have no direct price - customers purchase each item
                                         individually.
                                     </div>
                                 </div>
@@ -407,7 +407,7 @@
                                                         <flux:select
                                                             wire:model="defaultVariantFormValues.{{ $attr['name'] }}"
                                                             size="sm" class="w-auto">
-                                                            <flux:select.option value="">— {{ $attr['name'] }} —
+                                                            <flux:select.option value="">- {{ $attr['name'] }} -
                                                             </flux:select.option>
                                                             @foreach ($attrValues as $val)
                                                                 <flux:select.option :value="$val">
@@ -655,7 +655,7 @@
                                                                             <div x-show="!editing"
                                                                                 class="flex items-center justify-between rounded-md border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm dark:border-zinc-700 dark:bg-zinc-800">
                                                                                 <span
-                                                                                    class="dark:text-white">{{ $variant['label'] ?: '—' }}</span>
+                                                                                    class="dark:text-white">{{ $variant['label'] ?: '-' }}</span>
                                                                                 <button type="button"
                                                                                     x-on:click="editing = true"
                                                                                     class="ml-2 shrink-0 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200">
@@ -729,7 +729,7 @@
                                                                             type="number" min="0"
                                                                             step="0.001" placeholder="0.000" />
                                                                         <div>
-                                                                            <flux:label>Dimensions — L × W × H
+                                                                            <flux:label>Dimensions - L × W × H
                                                                                 ({{ $dimension_unit }})
                                                                             </flux:label>
                                                                             <div class="mt-1 grid grid-cols-3 gap-2">
@@ -814,7 +814,7 @@
                                                 @elseif ($bulkEditField === 'stock_status')
                                                     <flux:select wire:model="bulkEditSelectValue"
                                                         label="Stock Status">
-                                                        <flux:select.option value="">— Select —
+                                                        <flux:select.option value="">- Select -
                                                         </flux:select.option>
                                                         @foreach (StockStatus::cases() as $s)
                                                             <flux:select.option :value="$s->value">
@@ -1196,7 +1196,7 @@
                             <x-admin.rich-editor wire:model="description" label="Full description"
                                 placeholder="Detailed product description…" rows="lg" />
                             <x-admin.rich-editor wire:model="technical_specification" label="Technical specification"
-                                placeholder="Add a table with specs — dimensions, voltage, capacity, certifications…"
+                                placeholder="Add a table with specs - dimensions, voltage, capacity, certifications…"
                                 rows="md" :with-table="true" />
                         </div>
                     </div>

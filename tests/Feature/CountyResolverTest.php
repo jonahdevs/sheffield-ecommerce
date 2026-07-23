@@ -13,7 +13,7 @@ it('resolves Mombasa for a Mombasa coordinate', function () {
 });
 
 it('returns null for a coordinate outside Kenya', function () {
-    // Gulf of Guinea (0,0) — not in any county polygon.
+    // Gulf of Guinea (0,0) - not in any county polygon.
     expect(app(CountyResolver::class)->countyFor(0.0, 0.0))->toBeNull();
 });
 

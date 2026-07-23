@@ -105,7 +105,7 @@ new #[Layout('layouts::account')] #[Title('Pending Reviews')] class extends Comp
                                 </div>
                             </flux:table.cell>
                             <flux:table.cell class="hidden sm:table-cell">
-                                <flux:text size="sm">{{ $row['delivered_at']?->format('d M Y') ?? '—' }}</flux:text>
+                                <flux:text size="sm">{{ $row['delivered_at']?->format('d M Y') ?? '-' }}</flux:text>
                             </flux:table.cell>
                             <flux:table.cell class="hidden md:table-cell">
                                 @if ($hasReview)
@@ -116,7 +116,7 @@ new #[Layout('layouts::account')] #[Title('Pending Reviews')] class extends Comp
                                         @endfor
                                     </div>
                                 @else
-                                    <flux:text size="sm" class="text-ink-4">—</flux:text>
+                                    <flux:text size="sm" class="text-ink-4">-</flux:text>
                                 @endif
                             </flux:table.cell>
                             <flux:table.cell>

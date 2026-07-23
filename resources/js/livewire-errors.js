@@ -5,7 +5,7 @@
  * When a 500/503 is thrown inside a Livewire action (e.g. a wire:click),
  * Livewire intercepts the HTML error response and shows it in an overlay
  * modal. Instead we take over the document so the user sees the proper
- * error page — with the same storefront/admin chrome they were already in,
+ * error page - with the same storefront/admin chrome they were already in,
  * which the server-rendered error view resolves from the request referer.
  *
  * Validation (422) and "page expired" (419) keep Livewire's default handling.

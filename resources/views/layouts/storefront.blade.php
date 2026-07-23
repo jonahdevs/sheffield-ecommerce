@@ -19,7 +19,7 @@
     $navCategories = \App\Models\CategoryPlacement::query()
         // children_count decides whether a nav item is a mega-menu trigger or a plain
         // link; the flyout children themselves are fetched lazily on hover (menu.flyout).
-        // Only active children count — otherwise a category whose sub-categories are all
+        // Only active children count - otherwise a category whose sub-categories are all
         // hidden would open a panel with nothing a shopper can click.
         ->with(['category' => fn ($q) => $q->withCount([
             'children' => fn ($c) => $c->where('status', \App\Enums\CategoryStatus::ACTIVE),
@@ -44,7 +44,7 @@
 <head>
     @include('partials.head')
 
-    {{-- Analytics (GA4 / GTM / Meta Pixel) — storefront only, so admin, auth and
+    {{-- Analytics (GA4 / GTM / Meta Pixel) - storefront only, so admin, auth and
          print pages never send internal traffic to Google/Meta. --}}
     @include('partials.storefront.analytics')
 </head>
@@ -59,26 +59,26 @@
     <div class="sticky top-0 z-40 bg-white" x-data="{ drawerOpen: false }"
         x-effect="document.body.style.overflow = drawerOpen ? 'hidden' : ''"
         x-init="$nextTick(() => { const sync = () => document.documentElement.style.setProperty('--sticky-header-h', $el.offsetHeight + 'px'); sync(); window.addEventListener('resize', sync); new ResizeObserver(sync).observe($el); })">
-        {{-- Row 1 — Promo banner --}}
+        {{-- Row 1 - Promo banner --}}
         @include('partials.storefront.promo-banner')
 
-        {{-- Row 2 — Logo + search + nav + actions.
+        {{-- Row 2 - Logo + search + nav + actions.
              Mobile: single line (logo bar). Search collapses behind a toggle icon and only
              expands to its own full-width line when searchOpen is true.
              lg+: single row with search always inline (logo · search · nav · actions). --}}
         <header style="background-image: url('/images/navbar-bg.webp'); background-size: cover; background-position: center;">
             <div class="shell relative flex flex-wrap items-center gap-x-4 gap-y-3 py-3 lg:h-18 lg:flex-nowrap lg:gap-6 lg:py-0">
-                {{-- Hamburger — mobile/tablet only --}}
+                {{-- Hamburger - mobile/tablet only --}}
                 <button type="button" @click="drawerOpen = true" aria-label="Open menu"
                     class="order-1 inline-flex size-11 shrink-0 items-center justify-center rounded-md text-zinc-900 transition hover:bg-black/5 lg:hidden">
                     <flux:icon.bars-3 variant="outline" class="size-6" />
                 </button>
 
-                <a href="{{ route('home') }}" class="order-2 flex shrink-0 items-center lg:order-1" wire:navigate aria-label="{{ $storeName }} — Home">
+                <a href="{{ route('home') }}" class="order-2 flex shrink-0 items-center lg:order-1" wire:navigate aria-label="{{ $storeName }} - Home">
                     <img src="{{ $headerLogo }}" alt="{{ $storeName }}" class="h-10 w-auto sm:h-12" />
                 </a>
 
-                {{-- Search — desktop only (inline flex-1); mobile opens a full-screen overlay
+                {{-- Search - desktop only (inline flex-1); mobile opens a full-screen overlay
                      via the toggle button below, handled inside the search-dropdown component. --}}
                 <div class="hidden lg:order-2 lg:flex lg:flex-1 lg:max-w-xl">
                     <livewire:storefront.search-dropdown />
@@ -98,7 +98,7 @@
                 </nav>
 
                 <div class="order-3 ml-auto flex items-center gap-1 lg:order-4">
-                    {{-- Search toggle — mobile/tablet only. Opens the full-screen overlay inside search-dropdown. --}}
+                    {{-- Search toggle - mobile/tablet only. Opens the full-screen overlay inside search-dropdown. --}}
                     <button type="button" aria-label="Search" @click="$dispatch('open-mobile-search')"
                         class="inline-flex size-11 shrink-0 items-center justify-center rounded-md text-zinc-900 transition hover:bg-black/5 lg:hidden">
                         <flux:icon.magnifying-glass variant="outline" class="size-6" />
@@ -249,10 +249,10 @@
         </div>
     </div>
 
-    {{-- Row 3 — Category navigation --}}
+    {{-- Row 3 - Category navigation --}}
     @include('partials.storefront.category-nav')
 
-    {{-- Demo-site notice — hazard-striped banner.
+    {{-- Demo-site notice - hazard-striped banner.
          Sits after the category bar at rest; on scroll it sticks just below the
          sticky logo/search header (offset measured into --sticky-header-h). --}}
     <div class="sticky z-30 bg-amber-300 text-center" style="top: var(--sticky-header-h, 108px)">

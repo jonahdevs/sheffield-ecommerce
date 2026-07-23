@@ -11,7 +11,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media as BaseMedia;
  */
 class Media extends BaseMedia
 {
-    /** Backward-compatible $media->url accessor — returns the original file URL. */
+    /** Backward-compatible $media->url accessor - returns the original file URL. */
     protected function url(): Attribute
     {
         return Attribute::get(fn () => $this->getUrl());

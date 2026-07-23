@@ -194,7 +194,7 @@ new #[Layout('layouts::storefront')] #[Title('Cart')] class extends Component
                                             @endif
                                             <div class="mt-2 flex items-center gap-3 text-xs text-ink-4">
                                                 {{-- toggleWishlist() calls skipRender(), so Alpine owns this button's
-                                                     state client-side — same pattern as the product card. --}}
+                                                     state client-side - same pattern as the product card. --}}
                                                 <button type="button" wire:click="toggleWishlist('{{ $product->slug }}')"
                                                         x-data="{ wished: @js($isWished) }"
                                                         @wishlist-updated.window="if ($event.detail?.slug === '{{ $product->slug }}') wished = $event.detail.wished"

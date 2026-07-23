@@ -69,7 +69,7 @@ new #[Layout('layouts::app')] #[Title('Pages | Admin')] class extends Component 
             </flux:breadcrumbs>
 @endpush
             <flux:heading size="xl">Pages</flux:heading>
-            <flux:subheading>Content pages — legal policies and other static pages linked in the footer.</flux:subheading>
+            <flux:subheading>Content pages - legal policies and other static pages linked in the footer.</flux:subheading>
         </div>
         <flux:button variant="primary" icon="plus" :href="route('admin.pages.create')" wire:navigate>Add page</flux:button>
     </div>

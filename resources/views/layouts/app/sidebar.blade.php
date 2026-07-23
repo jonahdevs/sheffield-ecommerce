@@ -15,7 +15,7 @@
 <body class="min-h-screen bg-zinc-100 dark:bg-zinc-900">
     @include('partials.admin.sidebar')
 
-    {{-- Top navbar — always visible, contains toolbar actions --}}
+    {{-- Top navbar - always visible, contains toolbar actions --}}
     <flux:header class="border-b border-zinc-200 bg-white dark:border-zinc-700 dark:bg-zinc-900 print:hidden">
         <flux:sidebar.toggle class="lg:hidden" icon="bars-2" inset="left" />
 
@@ -41,7 +41,7 @@
             </flux:button>
         </flux:tooltip>
 
-        {{-- Account dropdown — only when signed in (e.g. an expired session landing
+        {{-- Account dropdown - only when signed in (e.g. an expired session landing
              on an error page has no user, so fall back to a sign-in link). A left
              border divides it from the appearance toggle. --}}
         <div class="ml-1 flex items-center border-l border-zinc-200 pl-3 dark:border-zinc-700">

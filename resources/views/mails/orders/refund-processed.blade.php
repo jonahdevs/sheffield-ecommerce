@@ -159,7 +159,7 @@
           <!--[if mso]></td></tr></table><![endif]-->
           <!--[if mso]><table role="none" cellpadding="0" cellspacing="0" style="width: 100%"><tr><td style="background-color: #fffffe; padding: 24px 36px 40px"><![endif]-->
           <div style="background-color: #fffffe; padding: 24px 36px 40px;">
-            <p style="margin: 0; font-size: 13px; line-height: 20px; color: #64748b;">If you have any questions about this refund, just reply to this email — our team is happy to help.</p>
+            <p style="margin: 0; font-size: 13px; line-height: 20px; color: #64748b;">If you have any questions about this refund, just reply to this email - our team is happy to help.</p>
             <p style="margin: 14px 0 0; font-size: 13px; color: #475569;">
               Best regards,
               <br>

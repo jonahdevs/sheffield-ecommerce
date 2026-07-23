@@ -69,7 +69,7 @@ new #[Layout('layouts::app')] #[Title('Carriers | Admin')] class extends Compone
     <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
             <flux:heading size="xl">Carriers</flux:heading>
-            <flux:subheading>Logistics companies that fulfil deliveries. Invisible to customers — they see method names only.</flux:subheading>
+            <flux:subheading>Logistics companies that fulfil deliveries. Invisible to customers - they see method names only.</flux:subheading>
         </div>
         <flux:button variant="primary" icon="plus" :href="route('admin.shipping.carriers.create')" wire:navigate>
             Add carrier

@@ -20,8 +20,8 @@ class PermissionSeeder extends Seeder
      * Full set of admin-panel permissions grouped by resource segment.
      *
      * Naming: <resource>.<action>
-     *   .view   — read-only access (list + show)
-     *   .manage — full CRUD
+     *   .view   - read-only access (list + show)
+     *   .manage - full CRUD
      *
      * @var list<string>
      */
@@ -61,7 +61,7 @@ class PermissionSeeder extends Seeder
         // Staff
         'staff.manage',
 
-        // Roles & permissions — super-admin only
+        // Roles & permissions - super-admin only
         'roles.manage',
 
         // System
@@ -120,17 +120,17 @@ class PermissionSeeder extends Seeder
             Permission::firstOrCreate(['name' => $name, 'guard_name' => 'web']);
         }
 
-        // super-admin — no explicit permissions needed; Gate::before() in
+        // super-admin - no explicit permissions needed; Gate::before() in
         // AppServiceProvider bypasses all permission checks for this role.
         Role::firstOrCreate(['name' => 'super-admin', 'guard_name' => 'web'])
             ->syncPermissions([]);
 
-        // admin — all operational + management permissions, but NOT roles.manage.
+        // admin - all operational + management permissions, but NOT roles.manage.
         // Use can('roles.manage') anywhere in the codebase; only super-admin passes.
         $admin = Role::firstOrCreate(['name' => 'admin', 'guard_name' => 'web']);
         $admin->syncPermissions(self::ADMIN_PERMISSIONS);
 
-        // staff — operational access only.
+        // staff - operational access only.
         $staff = Role::firstOrCreate(['name' => 'staff', 'guard_name' => 'web']);
         $staff->syncPermissions(self::STAFF_PERMISSIONS);
     }

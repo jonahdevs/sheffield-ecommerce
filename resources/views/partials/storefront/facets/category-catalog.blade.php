@@ -1,4 +1,4 @@
-{{-- Catalog category facet — a flat list of every catalog category with its
+{{-- Catalog category facet - a flat list of every catalog category with its
      product count. Expects $this->categoriesList and a host $selectedCategories
      array of slugs. --}}
 <x-storefront.filter-section title="Category">

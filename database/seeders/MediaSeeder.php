@@ -11,13 +11,13 @@ use Illuminate\Support\Facades\Config;
  * the other seeders attached with the conversion queue disabled for speed.
  *
  * Runs LAST in DatabaseSeeder so a single `migrate:fresh --seed` leaves every
- * product and category image fully converted — no manual `media-library:regenerate`
+ * product and category image fully converted - no manual `media-library:regenerate`
  * follow-up, and the storefront LQIP blur-up works immediately.
  *
  * Conversions are forced to run inline on the `sync` connection so their results
  * are persisted to media.generated_conversions. Media Library dispatches its jobs
  * onto `media-library.queue_connection_name` (not `queue.default`), so that is the
- * key that must be overridden — otherwise the jobs are merely parked in the
+ * key that must be overridden - otherwise the jobs are merely parked in the
  * `database` queue and never run.
  */
 class MediaSeeder extends Seeder

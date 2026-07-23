@@ -38,7 +38,7 @@ class SelfManagedDriver implements LogisticsDriver
 
     public function book(Order $order): BookingResult
     {
-        // Self-managed bookings are internal — no external API call.
+        // Self-managed bookings are internal - no external API call.
         // The shipment is created and assigned to an internal dispatcher.
         return new BookingResult(
             success: true,

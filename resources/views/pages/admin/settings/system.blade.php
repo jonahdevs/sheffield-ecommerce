@@ -817,8 +817,8 @@ new #[Layout('layouts::app')] #[Title('System settings | Admin')] class extends 
             <flux:heading>Google Maps</flux:heading>
             <div class="mt-5 space-y-4">
                 <flux:select wire:model.live="map_provider" label="Map provider">
-                    <flux:select.option value="leaflet">OpenStreetMap (Leaflet) — free, no key needed</flux:select.option>
-                    <flux:select.option value="google">Google Maps — better local data for East Africa</flux:select.option>
+                    <flux:select.option value="leaflet">OpenStreetMap (Leaflet) - free, no key needed</flux:select.option>
+                    <flux:select.option value="google">Google Maps - better local data for East Africa</flux:select.option>
                 </flux:select>
                 @if ($map_provider === 'google')
                     <flux:input wire:model="google_maps_api_key" label="API key" placeholder="AIza…" />

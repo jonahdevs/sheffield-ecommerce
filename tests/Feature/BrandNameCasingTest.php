@@ -4,7 +4,7 @@ use App\Models\Brand;
 use Database\Seeders\BrandSeeder;
 use Illuminate\Support\Facades\File;
 
-// Brand names are rendered raw into sentence-like copy — the "More from <brand>"
+// Brand names are rendered raw into sentence-like copy - the "More from <brand>"
 // carousel heading, the "Authorised distributor" panel, the home page brand cards.
 // Stored in the supplier's shouty casing they read as SHOUTING there, so the
 // display casing lives in brands.json rather than being patched per view. The
@@ -48,7 +48,7 @@ it('still matches products.json brand references that differ only in casing', fu
     $exact = Brand::pluck('name');
     $lowercased = $exact->map(fn (string $name) => mb_strtolower($name));
 
-    // The recasing means these no longer match on the nose — which is exactly the
+    // The recasing means these no longer match on the nose - which is exactly the
     // drift that would zero out brand_id if the seeder compared names verbatim.
     $driftedOnCase = $referenced
         ->reject(fn (string $brand) => $exact->contains(trim($brand)))

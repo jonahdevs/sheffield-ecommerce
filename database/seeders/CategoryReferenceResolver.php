@@ -9,7 +9,7 @@ use RuntimeException;
 /**
  * Resolves the "category" value carried by each row of products.json to a category id.
  *
- * A bare name ("Ovens") is ambiguous the moment two branches of the tree reuse it —
+ * A bare name ("Ovens") is ambiguous the moment two branches of the tree reuse it -
  * "Coffee Machines > Automatic" and "Dishwashers > Automatic" would both answer to
  * "Automatic". Rows may therefore address a category by its full path, parent first:
  *
@@ -68,7 +68,7 @@ class CategoryReferenceResolver
 
         if (count($paths) > 1) {
             throw new RuntimeException(sprintf(
-                'Category "%s" is ambiguous — it exists at %s. Use the full path.',
+                'Category "%s" is ambiguous - it exists at %s. Use the full path.',
                 $reference,
                 implode(' and ', array_map(fn (string $p) => '"'.$p.'"', $paths)),
             ));

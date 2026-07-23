@@ -25,7 +25,7 @@ class StripeController extends Controller
             if ($payment) {
                 return redirect()
                     ->route('account.orders.show', $payment->order_id)
-                    ->with('success', 'Payment confirmed — your order is being processed.');
+                    ->with('success', 'Payment confirmed - your order is being processed.');
             }
         }
 
@@ -48,6 +48,6 @@ class StripeController extends Controller
 
         return redirect()
             ->route('checkout')
-            ->with('warning', 'Card payment was cancelled. Your cart is intact — try again whenever you\'re ready.');
+            ->with('warning', 'Card payment was cancelled. Your cart is intact - try again whenever you\'re ready.');
     }
 }

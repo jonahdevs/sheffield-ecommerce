@@ -21,7 +21,7 @@ use Illuminate\Support\Facades\Notification;
  * Otherwise it polls the validate endpoint once to fetch the CU number directly.
  *
  * This replaces the old ValidateSapInvoiceJob which blocked a worker for up to 5 minutes.
- * Here we use a 4-minute HTTP timeout — the job either completes or fails cleanly,
+ * Here we use a 4-minute HTTP timeout - the job either completes or fails cleanly,
  * never holding a worker open indefinitely.
  */
 class RecoverSapInvoiceJob implements ShouldQueue
@@ -43,9 +43,9 @@ class RecoverSapInvoiceJob implements ShouldQueue
     {
         $order = $this->order->fresh();
 
-        // Webhook already delivered the CU number — nothing to do.
+        // Webhook already delivered the CU number - nothing to do.
         if ($order->sap_sync_status === SapSyncStatus::COMPLETED) {
-            Log::info('SAP recovery: CU number already received via webhook — skipping.', [
+            Log::info('SAP recovery: CU number already received via webhook - skipping.', [
                 'order_id' => $order->id,
             ]);
 
@@ -53,7 +53,7 @@ class RecoverSapInvoiceJob implements ShouldQueue
         }
 
         if (! $order->sap_doc_entry) {
-            Log::warning('SAP recovery: no sap_doc_entry — cannot validate.', [
+            Log::warning('SAP recovery: no sap_doc_entry - cannot validate.', [
                 'order_id' => $order->id,
             ]);
 

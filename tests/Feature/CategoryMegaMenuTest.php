@@ -39,7 +39,7 @@ it('leaves a childless navbar category as a plain link that dismisses an open pa
         // No children → no flyout, no dropdown affordance.
         ->assertDontSee('/menu/'.$category->slug.'/flyout', false)
         ->assertDontSee('aria-haspopup', false)
-        // Settling on it closes whatever panel is open — the pointer never leaves the
+        // Settling on it closes whatever panel is open - the pointer never leaves the
         // nav, so the nav-level mouseleave can't do it. The close waits for the
         // pointer to settle, so sweeping through on the way down to the panel is safe.
         ->assertSee('@mouseenter="closeIntent($event)"', false)

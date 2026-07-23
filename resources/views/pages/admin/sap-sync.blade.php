@@ -92,7 +92,7 @@ new #[Layout('layouts::app')] #[Title('SAP Sync | Admin')] class extends Compone
         $this->refreshLists();
     }
 
-    /** Count of orders stalled mid-pipeline — drives the tab badge without loading the list. */
+    /** Count of orders stalled mid-pipeline - drives the tab badge without loading the list. */
     #[Computed]
     public function stuckCount(): int
     {
@@ -319,7 +319,7 @@ new #[Layout('layouts::app')] #[Title('SAP Sync | Admin')] class extends Compone
                             </flux:table.cell>
                             <flux:table.cell class="max-w-md truncate text-zinc-500"
                                 title="{{ $order->sap_sync_error }}">
-                                {{ $order->sap_sync_error ?: '—' }}
+                                {{ $order->sap_sync_error ?: '-' }}
                             </flux:table.cell>
                             <flux:table.cell align="end" class="tabular-nums text-zinc-500">
                                 {{ $order->sap_sync_attempts }}</flux:table.cell>
@@ -368,7 +368,7 @@ new #[Layout('layouts::app')] #[Title('SAP Sync | Admin')] class extends Compone
                             <flux:table.cell>
                                 <flux:badge :color="$order->sap_sync_status?->badgeColor() ?? 'zinc'" size="sm"
                                     inset="top bottom">
-                                    {{ $order->sap_sync_status?->label() ?? '—' }}
+                                    {{ $order->sap_sync_status?->label() ?? '-' }}
                                 </flux:badge>
                             </flux:table.cell>
                             <flux:table.cell align="end" class="text-sm text-zinc-500">
@@ -414,10 +414,10 @@ new #[Layout('layouts::app')] #[Title('SAP Sync | Admin')] class extends Compone
                                     <a href="{{ route('admin.orders.show', $log->order_id) }}" wire:navigate
                                         class="font-mono hover:text-brand-500">{{ $log->order->order_number }}</a>
                                 @else
-                                    <span class="text-zinc-400">—</span>
+                                    <span class="text-zinc-400">-</span>
                                 @endif
                             </flux:table.cell>
-                            <flux:table.cell class="text-zinc-500">{{ $log->operation ?: '—' }}</flux:table.cell>
+                            <flux:table.cell class="text-zinc-500">{{ $log->operation ?: '-' }}</flux:table.cell>
                             <flux:table.cell>
                                 <span @class([
                                     'text-sm font-medium',
@@ -434,7 +434,7 @@ new #[Layout('layouts::app')] #[Title('SAP Sync | Admin')] class extends Compone
                                 @endif
                             </flux:table.cell>
                             <flux:table.cell class="font-mono text-xs text-zinc-500">
-                                {{ $log->sap_document_number ?: '—' }}</flux:table.cell>
+                                {{ $log->sap_document_number ?: '-' }}</flux:table.cell>
                             <flux:table.cell align="end" class="text-sm text-zinc-500">
                                 {{ $log->created_at->format('d M, H:i') }}</flux:table.cell>
                             <flux:table.cell align="end">
@@ -474,7 +474,7 @@ new #[Layout('layouts::app')] #[Title('SAP Sync | Admin')] class extends Compone
                 <div class="grid grid-cols-2 gap-3 text-sm sm:grid-cols-3">
                     <div>
                         <div class="text-xs text-zinc-400">Operation</div>
-                        <div class="font-medium dark:text-white">{{ $log->operation ?: '—' }}</div>
+                        <div class="font-medium dark:text-white">{{ $log->operation ?: '-' }}</div>
                     </div>
                     <div>
                         <div class="text-xs text-zinc-400">HTTP status</div>
@@ -490,16 +490,16 @@ new #[Layout('layouts::app')] #[Title('SAP Sync | Admin')] class extends Compone
                     <div>
                         <div class="text-xs text-zinc-400">Duration</div>
                         <div class="font-medium dark:text-white">
-                            {{ $log->duration_ms !== null ? $log->duration_ms . ' ms' : '—' }}</div>
+                            {{ $log->duration_ms !== null ? $log->duration_ms . ' ms' : '-' }}</div>
                     </div>
                     <div>
                         <div class="text-xs text-zinc-400">SAP doc</div>
-                        <div class="font-mono text-xs dark:text-white">{{ $log->sap_document_number ?: '—' }}</div>
+                        <div class="font-mono text-xs dark:text-white">{{ $log->sap_document_number ?: '-' }}</div>
                     </div>
                     <div class="col-span-2">
                         <div class="text-xs text-zinc-400">Endpoint</div>
                         <div class="font-mono text-xs break-all dark:text-white">
-                            {{ $log->http_method ? $log->http_method . ' ' : '' }}{{ $log->endpoint ?: '—' }}</div>
+                            {{ $log->http_method ? $log->http_method . ' ' : '' }}{{ $log->endpoint ?: '-' }}</div>
                     </div>
                 </div>
 
@@ -529,7 +529,7 @@ new #[Layout('layouts::app')] #[Title('SAP Sync | Admin')] class extends Compone
                             </button>
                         @endif
                         <pre x-ref="req"
-                            class="scrollbar-thin max-h-64 overflow-auto rounded-md bg-zinc-50 p-3 font-mono text-xs whitespace-pre-wrap text-zinc-700 dark:bg-zinc-800/60 dark:text-zinc-200">{{ $pretty($log->request_payload) ?? '—' }}</pre>
+                            class="scrollbar-thin max-h-64 overflow-auto rounded-md bg-zinc-50 p-3 font-mono text-xs whitespace-pre-wrap text-zinc-700 dark:bg-zinc-800/60 dark:text-zinc-200">{{ $pretty($log->request_payload) ?? '-' }}</pre>
                     </div>
                 </div>
                 <div x-data="{ copied: false }">
@@ -546,7 +546,7 @@ new #[Layout('layouts::app')] #[Title('SAP Sync | Admin')] class extends Compone
                             </button>
                         @endif
                         <pre x-ref="res"
-                            class="scrollbar-thin max-h-64 overflow-auto rounded-md bg-zinc-50 p-3 font-mono text-xs whitespace-pre-wrap text-zinc-700 dark:bg-zinc-800/60 dark:text-zinc-200">{{ $pretty($log->response_payload) ?? '—' }}</pre>
+                            class="scrollbar-thin max-h-64 overflow-auto rounded-md bg-zinc-50 p-3 font-mono text-xs whitespace-pre-wrap text-zinc-700 dark:bg-zinc-800/60 dark:text-zinc-200">{{ $pretty($log->response_payload) ?? '-' }}</pre>
                     </div>
                 </div>
             </div>

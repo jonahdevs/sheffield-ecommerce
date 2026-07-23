@@ -25,13 +25,13 @@ new #[Layout('layouts::storefront')] #[Title('Shop')] class extends Component
 
     public function mount(): void
     {
-        $description = 'Browse Sheffield\'s full commercial kitchen catalog — ovens, refrigeration, preparation, warewashing, beverage and more. Filter by brand, price, stock and category.';
+        $description = 'Browse Sheffield\'s full commercial kitchen catalog - ovens, refrigeration, preparation, warewashing, beverage and more. Filter by brand, price, stock and category.';
 
         SEOMeta::setDescription($description);
         OpenGraph::setDescription($description)->setType('website');
         TwitterCard::setDescription($description);
 
-        JsonLdMulti::setType('CollectionPage')->setTitle('Shop — Sheffield Commercial Kitchen Equipment')->setDescription($description)->addValue('url', route('catalog'));
+        JsonLdMulti::setType('CollectionPage')->setTitle('Shop - Sheffield Commercial Kitchen Equipment')->setDescription($description)->addValue('url', route('catalog'));
     }
 
     #[Url(as: 'tag', history: true)]
@@ -99,7 +99,7 @@ new #[Layout('layouts::storefront')] #[Title('Shop')] class extends Component
     public function categoriesList(): Collection
     {
         // Only categories that actually hold catalog items (as primary category
-        // or via the pivot) — an empty checkbox would filter to zero results.
+        // or via the pivot) - an empty checkbox would filter to zero results.
         return Category::query()
             ->where('status', CategoryStatus::ACTIVE)
             ->withCount(['products' => fn ($q) => $q->published()->visibleInCatalog()])
@@ -114,7 +114,7 @@ new #[Layout('layouts::storefront')] #[Title('Shop')] class extends Component
     #[Computed]
     public function brandsList(): Collection
     {
-        // Only brands with at least one catalog item — same reasoning as the
+        // Only brands with at least one catalog item - same reasoning as the
         // category facet: an empty checkbox would filter to zero results.
         return Brand::query()
             ->where('is_active', true)
@@ -236,8 +236,8 @@ new #[Layout('layouts::storefront')] #[Title('Shop')] class extends Component
                             <option value="popularity">Most popular</option>
                             <option value="newest">Newest</option>
                             <option value="name-asc">Name (A–Z)</option>
-                            <option value="price-asc">Price — low to high</option>
-                            <option value="price-desc">Price — high to low</option>
+                            <option value="price-asc">Price - low to high</option>
+                            <option value="price-desc">Price - high to low</option>
                         </select>
                     </div>
                 </div>

@@ -9,9 +9,9 @@ use App\Settings\NotificationSettings;
 /**
  * Shared `via()` for staff-facing operational alerts. Two-tier gate:
  *
- *  1. Global (NotificationSettings) — if the store owner has disabled this
+ *  1. Global (NotificationSettings) - if the store owner has disabled this
  *     alert type entirely, no staff member receives it.
- *  2. Personal (staff_preferences) — each staff member can mute individual
+ *  2. Personal (staff_preferences) - each staff member can mute individual
  *     alert types for themselves via admin → Settings → My notifications.
  */
 trait RespectsStaffPreferences
@@ -31,18 +31,18 @@ trait RespectsStaffPreferences
 
         // Under central routing the email copy goes to the shared inbox (an
         // AnonymousNotifiable), so individual staff Users get the in-app copy
-        // only — never an email on top of the central inbox.
+        // only - never an email on top of the central inbox.
         $centralRouting = $settings->staff_email_routing === 'central' && filled($settings->staff_central_email);
         $mailGoesToThisNotifiable = ! ($centralRouting && $notifiable instanceof User);
 
-        // Mail channel — routing gate, then global gate, then personal gate.
+        // Mail channel - routing gate, then global gate, then personal gate.
         if ($mailGoesToThisNotifiable && ($baseKey === null || ($settings->{$baseKey.'_email'} ?? true))) {
             if (($prefs['email'] ?? true) !== false) {
                 $channels[] = 'mail';
             }
         }
 
-        // Database (in-app) channel — only for User notifiables; anonymous central-email
+        // Database (in-app) channel - only for User notifiables; anonymous central-email
         // recipients have no notifications() relationship to write to.
         if ($notifiable instanceof User && $this->supportsInApp() && ($baseKey === null || ($settings->{$baseKey.'_inapp'} ?? true))) {
             if (($prefs['inapp'] ?? true) !== false) {
@@ -50,7 +50,7 @@ trait RespectsStaffPreferences
             }
         }
 
-        // WhatsApp channel — staff member must have a phone number and implement toWhatsapp().
+        // WhatsApp channel - staff member must have a phone number and implement toWhatsapp().
         if (
             $notifiable instanceof User
             && $settings->whatsapp_channel_enabled

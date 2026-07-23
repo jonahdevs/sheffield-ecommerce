@@ -47,7 +47,7 @@ class FortifyServiceProvider extends ServiceProvider
     {
         VerifyEmail::toMailUsing(function (object $notifiable, string $verifyUrl): MailMessage {
             return (new MailMessage)
-                ->subject('Verify your email address — '.config('app.name'))
+                ->subject('Verify your email address - '.config('app.name'))
                 ->view('mails.auth.verify-email', [
                     'customerName' => $notifiable->name ?? 'there',
                     'verifyUrl' => $verifyUrl,

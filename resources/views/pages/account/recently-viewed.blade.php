@@ -41,7 +41,7 @@ new #[Layout('layouts::account')] #[Title('Recently Viewed')] class extends Comp
 
     <div>
         <flux:heading size="xl">Recently Viewed</flux:heading>
-        <flux:text class="mt-1">Products you've browsed — pick up where you left off.</flux:text>
+        <flux:text class="mt-1">Products you've browsed - pick up where you left off.</flux:text>
     </div>
 
     @if ($this->products->isEmpty())

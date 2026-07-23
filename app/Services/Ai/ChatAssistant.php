@@ -54,7 +54,7 @@ class ChatAssistant
             }
         }
 
-        // Exhausted the tool budget — force a final answer without tools.
+        // Exhausted the tool budget - force a final answer without tools.
         return $this->provider->chat($messages)->content ?? '';
     }
 

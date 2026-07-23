@@ -139,14 +139,14 @@ it('runs the product tool then answers from the results', function () {
     Http::fake([
         'api.groq.com/*' => Http::sequence()
             ->push(fakeToolCall('search_products', ['query' => 'blast chiller']))
-            ->push(fakeChatCompletion('We stock the Blast Chiller 20-Tray — want a quote?')),
+            ->push(fakeChatCompletion('We stock the Blast Chiller 20-Tray - want a quote?')),
     ]);
 
     $answer = app(ChatAssistant::class)->reply([
         ['role' => 'user', 'content' => 'Do you have a blast chiller?'],
     ]);
 
-    expect($answer)->toBe('We stock the Blast Chiller 20-Tray — want a quote?');
+    expect($answer)->toBe('We stock the Blast Chiller 20-Tray - want a quote?');
 
     // The second request must include the tool result feeding the catalogue data back.
     Http::assertSent(function ($request) {

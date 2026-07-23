@@ -41,7 +41,7 @@
   </head>
   <body xml:lang="en" style="margin: 0; width: 100%; height: 100%; background-color: #eef1f6; padding: 0; font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Noto Sans', Ubuntu, Cantarell, 'Helvetica Neue', sans-serif; word-break: break-word;">
     <div style="display:none;">
-      One click to confirm your subscription &mdash; join our trade newsletter. &#65279;&#847;  &#65279;&#847;  &#65279;&#847;  &#65279;&#847;  &#65279;&#847;  &#65279;&#847;  &#65279;&#847;  &#65279;&#847;  &#65279;&#847;  &#65279;&#847;  &#65279;&#847;  &#65279;&#847;  &#65279;&#847;  &#65279;&#847;  &#65279;&#847;  &#65279;&#847;  &#65279;&#847;  &#65279;&#847;  &#65279;&#847;  &#65279;&#847;  &#65279;&#847;  &#65279;&#847;  &#65279;&#847;  &#65279;&#847;  &#65279;&#847;  &#65279;&#847;  &#65279;&#847;  &#65279;&#847;  &#65279;&#847;  &#65279;&#847;  &#65279;&#847;  &#65279;&#847;
+      One click to confirm your subscription - join our trade newsletter. &#65279;&#847;  &#65279;&#847;  &#65279;&#847;  &#65279;&#847;  &#65279;&#847;  &#65279;&#847;  &#65279;&#847;  &#65279;&#847;  &#65279;&#847;  &#65279;&#847;  &#65279;&#847;  &#65279;&#847;  &#65279;&#847;  &#65279;&#847;  &#65279;&#847;  &#65279;&#847;  &#65279;&#847;  &#65279;&#847;  &#65279;&#847;  &#65279;&#847;  &#65279;&#847;  &#65279;&#847;  &#65279;&#847;  &#65279;&#847;  &#65279;&#847;  &#65279;&#847;  &#65279;&#847;  &#65279;&#847;  &#65279;&#847;  &#65279;&#847;  &#65279;&#847;  &#65279;&#847;
     </div>
     <span style="display:none;">
       <!--[if mso]>
@@ -143,7 +143,7 @@
           <!--[if mso]><table role="none" cellpadding="0" cellspacing="0" style="width: 100%"><tr><td style="background-color: #fffffe; padding: 20px 36px 4px"><![endif]-->
           <div style="background-color: #fffffe; padding: 20px 36px 4px;">
             <div style="border-radius: 6px; background-color: #f8fafc; border: 1px solid #e2e8f0; padding: 14px 16px;">
-              <p style="margin: 0; font-size: 12.5px; line-height: 19px; color: #64748b;">If you didn&rsquo;t sign up for this newsletter, you can safely ignore this email &mdash; your address won&rsquo;t be added to any list.</p>
+              <p style="margin: 0; font-size: 12.5px; line-height: 19px; color: #64748b;">If you didn&rsquo;t sign up for this newsletter, you can safely ignore this email - your address won&rsquo;t be added to any list.</p>
             </div>
           </div>
           <!--[if mso]></td></tr></table><![endif]-->

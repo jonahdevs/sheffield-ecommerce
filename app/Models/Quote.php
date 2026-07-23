@@ -101,7 +101,7 @@ class Quote extends Model
     }
 
     /**
-     * Whether the customer can still approve this quote — it is awaiting their
+     * Whether the customer can still approve this quote - it is awaiting their
      * decision and its validity window has not lapsed.
      */
     public function isApprovable(): bool

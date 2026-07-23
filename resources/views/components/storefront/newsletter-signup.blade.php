@@ -24,7 +24,7 @@ new class extends Component
         $existing = Subscriber::where('email', $this->email)->first();
 
         if ($existing && $existing->isConfirmed()) {
-            // Already active — silently update interests and show success
+            // Already active - silently update interests and show success
             $existing->update(['interests' => $this->interests]);
             $this->submitted = true;
 

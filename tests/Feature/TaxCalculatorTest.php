@@ -96,7 +96,7 @@ it('leaves the display price unchanged when storage and display modes match', fu
 });
 
 it('returns the stored price unchanged for a taxable product when prices include tax', function () {
-    // Storage and display are unified now — displayPriceCents never strips or adds
+    // Storage and display are unified now - displayPriceCents never strips or adds
     // tax, so the stored price is returned as-is regardless of the product's class.
     configureTax(['tax_enabled' => true, 'prices_include_tax' => true]);
     setDefaultTaxClass(16.0);

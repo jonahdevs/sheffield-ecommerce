@@ -138,7 +138,7 @@ new #[Layout('layouts::app')] #[Title('Shipping Methods | Admin')] class extends
     <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
             <flux:heading size="xl">Shipping methods</flux:heading>
-            <flux:subheading>The labels customers see at checkout — pricing lives on each carrier's configuration.</flux:subheading>
+            <flux:subheading>The labels customers see at checkout - pricing lives on each carrier's configuration.</flux:subheading>
         </div>
         <flux:button variant="primary" icon="plus" :href="route('admin.shipping.methods.create')" wire:navigate>
             Add method
@@ -206,7 +206,7 @@ new #[Layout('layouts::app')] #[Title('Shipping Methods | Admin')] class extends
                                 {{ $method->type->label() }}
                             </flux:badge>
                         </flux:table.cell>
-                        <flux:table.cell class="text-zinc-500">{{ $method->description ?? '—' }}</flux:table.cell>
+                        <flux:table.cell class="text-zinc-500">{{ $method->description ?? '-' }}</flux:table.cell>
                         <flux:table.cell>
                             <button wire:click="toggleActive({{ $method->id }})">
                                 <flux:badge size="sm" inset="top bottom" :color="$method->is_active ? 'green' : 'zinc'">

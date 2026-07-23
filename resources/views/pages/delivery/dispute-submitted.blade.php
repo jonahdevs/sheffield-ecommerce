@@ -10,7 +10,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Issue reported — {{ $order->order_number }}</title>
+    <title>Issue reported - {{ $order->order_number }}</title>
     @vite(['resources/css/app.css'])
 </head>
 <body class="min-h-screen bg-zinc-50 antialiased">

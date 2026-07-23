@@ -39,7 +39,7 @@ it('lists showroom phone numbers as tel links and the email as a mailto link', f
 });
 
 it('renders the showroom map and honours the configured provider', function () {
-    // Default provider is Leaflet — CartoDB tiles + the showroomMap component.
+    // Default provider is Leaflet - CartoDB tiles + the showroomMap component.
     $this->get(route('contact'))
         ->assertOk()
         ->assertSee('showroomMap', false)

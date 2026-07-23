@@ -117,7 +117,7 @@
               </tr>
             </table>
             <div class="bg-white-20" style="margin-top: 18px; margin-bottom: 18px; height: 1px; background-color: rgba(255, 255, 254, .2);"></div>
-            <p class="text-white-80" style="margin: 0; font-size: 13.5px; line-height: 21px; color: rgba(255, 255, 254, .8);">Thank you for your interest — here's a summary of your formal quotation for review and approval.</p>
+            <p class="text-white-80" style="margin: 0; font-size: 13.5px; line-height: 21px; color: rgba(255, 255, 254, .8);">Thank you for your interest - here's a summary of your formal quotation for review and approval.</p>
           </div>
           <!--[if mso]></td></tr></table><![endif]-->
           <!--[if mso]><table role="none" cellpadding="0" cellspacing="0" style="width: 100%"><tr><td style="background-color: #fffffe; padding: 24px 36px 0"><![endif]-->
@@ -262,7 +262,7 @@
           <!--[if mso]></td></tr></table><![endif]-->
           <!--[if mso]><table role="none" cellpadding="0" cellspacing="0" style="width: 100%"><tr><td style="background-color: #fffffe; padding: 24px 36px 40px"><![endif]-->
           <div style="background-color: #fffffe; padding: 24px 36px 40px;">
-            <p style="margin: 0; font-size: 13px; line-height: 20px; color: #64748b;">Have questions or need adjustments before accepting? Just reply to this email — we're happy to help.</p>
+            <p style="margin: 0; font-size: 13px; line-height: 20px; color: #64748b;">Have questions or need adjustments before accepting? Just reply to this email - we're happy to help.</p>
             <p style="margin: 14px 0 0; font-size: 13px; color: #475569;">
               Warm regards,
               <br>

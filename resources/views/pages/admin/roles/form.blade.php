@@ -96,7 +96,7 @@ new #[Layout('layouts::app')] #[Title('Role | Admin')] class extends Component {
             </div>
         </div>
 
-        {{-- Role name — inline below header, no card --}}
+        {{-- Role name - inline below header, no card --}}
         <div class="mt-6 max-w-sm">
             <flux:input
                 wire:model="name"
@@ -106,7 +106,7 @@ new #[Layout('layouts::app')] #[Title('Role | Admin')] class extends Component {
                 required
                 autofocus />
             @if ($this->isProtected())
-                <flux:text size="sm" class="mt-1.5 text-zinc-400">This is a protected role — its name cannot be changed.</flux:text>
+                <flux:text size="sm" class="mt-1.5 text-zinc-400">This is a protected role - its name cannot be changed.</flux:text>
             @endif
         </div>
 

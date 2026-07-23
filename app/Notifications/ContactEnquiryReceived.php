@@ -34,7 +34,7 @@ class ContactEnquiryReceived extends Notification implements ShouldQueue
         $enquiry = $this->enquiry;
 
         return (new MailMessage)
-            ->subject('New contact enquiry — '.$enquiry['inquiry'].' ['.$enquiry['reference'].']')
+            ->subject('New contact enquiry - '.$enquiry['inquiry'].' ['.$enquiry['reference'].']')
             ->replyTo($enquiry['email'], $enquiry['name'])
             ->markdown('mails.staff.contact-enquiry', [
                 'inquiry' => $enquiry['inquiry'],

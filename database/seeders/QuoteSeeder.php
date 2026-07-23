@@ -20,7 +20,7 @@ class QuoteSeeder extends Seeder
             return;
         }
 
-        // ── Quote 1: AWAITING_APPROVAL — ready for customer to accept or decline ──
+        // ── Quote 1: AWAITING_APPROVAL - ready for customer to accept or decline ──
         $q1 = Quote::factory()->create([
             'user_id' => $user->id,
             'status' => QuoteStatus::AWAITING_APPROVAL,
@@ -34,7 +34,7 @@ class QuoteSeeder extends Seeder
         // booted() auto-records: null → draft
         $q1->recordStatusChange(QuoteStatus::DRAFT, QuoteStatus::AWAITING_APPROVAL);
 
-        // ── Quote 2: SENT — priced but awaiting internal review before customer sees it ──
+        // ── Quote 2: SENT - priced but awaiting internal review before customer sees it ──
         $q2 = Quote::factory()->create([
             'user_id' => $user->id,
             'status' => QuoteStatus::SENT,
@@ -47,7 +47,7 @@ class QuoteSeeder extends Seeder
         // booted() auto-records: null → draft
         $q2->recordStatusChange(QuoteStatus::DRAFT, QuoteStatus::SENT);
 
-        // ── Quote 3: DECLINED — customer declined after reviewing ──
+        // ── Quote 3: DECLINED - customer declined after reviewing ──
         $q3 = Quote::factory()->create([
             'user_id' => $user->id,
             'status' => QuoteStatus::DECLINED,
@@ -61,7 +61,7 @@ class QuoteSeeder extends Seeder
         $q3->recordStatusChange(QuoteStatus::DRAFT, QuoteStatus::AWAITING_APPROVAL);
         $q3->recordStatusChange(QuoteStatus::AWAITING_APPROVAL, QuoteStatus::DECLINED);
 
-        // ── Quote 4: DRAFT — fresh request, not yet priced ──
+        // ── Quote 4: DRAFT - fresh request, not yet priced ──
         $q4 = Quote::factory()->create([
             'user_id' => $user->id,
             'status' => QuoteStatus::DRAFT,

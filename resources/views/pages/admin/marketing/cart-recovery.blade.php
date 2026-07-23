@@ -221,7 +221,7 @@ new #[Layout('layouts::app')] #[Title('Cart recovery | Admin')] class extends Co
                             </flux:table.cell>
                             <flux:table.cell align="end" class="tabular-nums text-zinc-500">{{ $cart->items->sum('quantity') }}</flux:table.cell>
                             <flux:table.cell align="end" class="font-medium tabular-nums">{!! money($cart->subtotalCents()) !!}</flux:table.cell>
-                            <flux:table.cell align="end" class="text-sm text-zinc-500">{{ $cart->last_activity_at?->diffForHumans(syntax: \Carbon\CarbonInterface::DIFF_ABSOLUTE) ?? '—' }}</flux:table.cell>
+                            <flux:table.cell align="end" class="text-sm text-zinc-500">{{ $cart->last_activity_at?->diffForHumans(syntax: \Carbon\CarbonInterface::DIFF_ABSOLUTE) ?? '-' }}</flux:table.cell>
                             <flux:table.cell align="end">
                                 @if ($cart->reminders_sent > 0)
                                     <flux:badge size="sm" color="blue" inset="top bottom">{{ $cart->reminders_sent }} sent</flux:badge>

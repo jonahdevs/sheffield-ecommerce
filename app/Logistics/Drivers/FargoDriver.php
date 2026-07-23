@@ -14,7 +14,7 @@ use App\Models\ShippingCarrier;
 /**
  * Fargo Courier does not expose a public REST API.
  * Bookings are handled by submitting a waybill request via their web portal
- * or over the phone. This driver manages the manual workflow — staff record
+ * or over the phone. This driver manages the manual workflow - staff record
  * the waybill number in the shipment after booking.
  */
 class FargoDriver implements LogisticsDriver

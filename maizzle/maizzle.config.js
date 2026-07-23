@@ -11,7 +11,7 @@ import { resolve, join } from 'node:path'
  * Laravel renders them with real data.
  *
  * Dynamic Laravel data (Blade echoes, @foreach/@if, money(), route()) is kept
- * verbatim by wrapping it in <Raw> — its slot content is extracted before Vue
+ * verbatim by wrapping it in <Raw> - its slot content is extracted before Vue
  * compiles, so `{{ ... }}` and `@directives` pass straight through.
  *
  * We build into a staging folder (`build/`) rather than straight into the mail
@@ -21,7 +21,7 @@ import { resolve, join } from 'node:path'
 const MAIL_VIEWS = resolve('../resources/views/mails')
 
 /**
- * The CSS inliner (juice) and HTML serializer escape text nodes — so a Blade
+ * The CSS inliner (juice) and HTML serializer escape text nodes - so a Blade
  * operator like `->` becomes `-&gt;` and `@if ($x > 0)` becomes `&gt; 0`,
  * which is invalid PHP. We undo that, but ONLY inside Blade constructs, so
  * legitimate HTML entities (&copy;, &#8199;, &nbsp;) are left untouched.
@@ -74,7 +74,7 @@ function decodeBladeServerCode(html) {
       }
     }
 
-    // @directive( ...balanced parens... ) — @if, @foreach, @forelse, etc.
+    // @directive( ...balanced parens... ) - @if, @foreach, @forelse, etc.
     const directive = BLADE_DIRECTIVE.exec(html.slice(i, i + 40))
     if (directive) {
       const open = i + directive[0].length - 1

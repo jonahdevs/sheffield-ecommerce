@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Storage;
 
 /**
  * Delivers the customer's KRA-validated tax receipt once it has been generated.
- * As a statutory tax document this is transactional and always sent — it is not
+ * As a statutory tax document this is transactional and always sent - it is not
  * subject to the customer's notification preferences.
  */
 class KraInvoiceReady extends Notification implements ShouldQueue
@@ -33,7 +33,7 @@ class KraInvoiceReady extends Notification implements ShouldQueue
         $order = $this->order;
 
         $mail = (new MailMessage)
-            ->subject('Your KRA Tax Invoice — '.$order->order_number)
+            ->subject('Your KRA Tax Invoice - '.$order->order_number)
             ->view('mails.orders.kra-invoice', [
                 'order' => $order,
                 'customerName' => $order->user?->name ?? 'there',

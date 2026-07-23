@@ -32,7 +32,7 @@ new #[Layout('layouts::storefront')] #[Title('Commercial Kitchen, Cold Room, Lau
 
     public function mount(): void
     {
-        $description = 'Sheffield Africa — East Africa\'s leading supplier of commercial kitchen, cold room, laundry and healthcare equipment since 2003. Expert consultation, installation, service and spares across Kenya, Uganda and Rwanda.';
+        $description = 'Sheffield Africa - East Africa\'s leading supplier of commercial kitchen, cold room, laundry and healthcare equipment since 2003. Expert consultation, installation, service and spares across Kenya, Uganda and Rwanda.';
 
         SEOMeta::setDescription($description);
         OpenGraph::setDescription($description)->setType('website');
@@ -70,8 +70,8 @@ new #[Layout('layouts::storefront')] #[Title('Commercial Kitchen, Cold Room, Lau
     }
 
     /**
-     * Up to four image-backed products drawn from a division — its own products
-     * plus everything in its subcategories — to fill the home card collage.
+     * Up to four image-backed products drawn from a division - its own products
+     * plus everything in its subcategories - to fill the home card collage.
      */
     public function collageProducts(Category $division): Collection
     {
@@ -115,7 +115,7 @@ new #[Layout('layouts::storefront')] #[Title('Commercial Kitchen, Cold Room, Lau
             return $featured;
         }
 
-        // Fallback: nothing curated yet — show the locked random pool from mount().
+        // Fallback: nothing curated yet - show the locked random pool from mount().
         return Product::query()
             ->forCard()
             ->whereIn('id', $this->featuredProductIds)
@@ -139,7 +139,7 @@ new #[Layout('layouts::storefront')] #[Title('Commercial Kitchen, Cold Room, Lau
         // "New Arrival" tag (overrides the age cut-off).
         $arrivals = (clone $base)->where(fn($q) => $q->where('published_at', '>=', now()->subDays(self::NEW_ARRIVAL_WINDOW_DAYS))->orWhereHas('tags', fn($t) => $t->where('name->' . config('app.locale', 'en'), 'New Arrival')))->latest('published_at')->take(12)->get();
 
-        // Fallback: nothing qualifies (new or slow catalog) — show the latest anyway.
+        // Fallback: nothing qualifies (new or slow catalog) - show the latest anyway.
         return $arrivals->isNotEmpty() ? $arrivals : (clone $base)->latest('published_at')->take(12)->get();
     }
 
@@ -151,14 +151,14 @@ new #[Layout('layouts::storefront')] #[Title('Commercial Kitchen, Cold Room, Lau
 }; ?>
 
 @php
-    // Hero rotator slides — copy maps to a stable serialisable form for Alpine.
+    // Hero rotator slides - copy maps to a stable serialisable form for Alpine.
     //
     // Extra keys support the three hero designs below (only one is active at a time):
-    //   'src'         desktop wide banner (text baked in)            — Options B & C
-    //   'src_mobile'  taller mobile banner (text baked in)           — Option B (designer to supply)
-    //   'headline'    live HTML headline over a plain background     — Option A
-    //   'sub'         live HTML subtext                              — Option A
-    //   'src_plain'   background photo WITHOUT baked-in text         — Option A (designer to supply)
+    //   'src'         desktop wide banner (text baked in)            - Options B & C
+    //   'src_mobile'  taller mobile banner (text baked in)           - Option B (designer to supply)
+    //   'headline'    live HTML headline over a plain background     - Option A
+    //   'sub'         live HTML subtext                              - Option A
+    //   'src_plain'   background photo WITHOUT baked-in text         - Option A (designer to supply)
     $heroSlides = [
         // [
         //     'src' => '/images/banners/kitchen-equipment-banner.webp',
@@ -166,7 +166,7 @@ new #[Layout('layouts::storefront')] #[Title('Commercial Kitchen, Cold Room, Lau
         //     'src_plain' => '/images/banners/plain/kitchen-equipment-banner.webp',
         //     'alt' => 'Fully equip your commercial kitchen',
         //     'headline' => 'Your business, fully equipped',
-        //     'sub' => 'Outfit your entire kitchen from one trusted supplier — serving Africa since 2003.',
+        //     'sub' => 'Outfit your entire kitchen from one trusted supplier - serving Africa since 2003.',
         //     'cta' => 'Shop all equipment',
         //     'align' => 'right',
         //     'url' => route('catalog'),
@@ -220,7 +220,7 @@ new #[Layout('layouts::storefront')] #[Title('Commercial Kitchen, Cold Room, Lau
             'src_mobile' => '/images/banners/mobile/clearance-sale.webp',
             'src_plain' => '/images/banners/plain/clearance-sale.webp',
             'alt' => 'Limited time clearance sale',
-            'headline' => 'Up to 20% off — while stocks last',
+            'headline' => 'Up to 20% off - while stocks last',
             'sub' => 'Limited-time prices on selected commercial equipment.',
             'cta' => 'Shop the sale',
             'align' => 'left',
@@ -266,7 +266,7 @@ new #[Layout('layouts::storefront')] #[Title('Commercial Kitchen, Cold Room, Lau
             'src' => '/images/banners/refrigeration.webp',
             'src_mobile' => '/images/banners/mobile/refrigeration.webp',
             'src_plain' => '/images/banners/plain/refrigeration.webp',
-            'alt' => 'Smart cooling — refrigeration solutions',
+            'alt' => 'Smart cooling - refrigeration solutions',
             'headline' => 'Keep it cold, keep it fresh',
             'sub' => 'Reliable refrigeration that protects your stock around the clock.',
             'cta' => 'Shop refrigeration',
@@ -311,7 +311,7 @@ new #[Layout('layouts::storefront')] #[Title('Commercial Kitchen, Cold Room, Lau
     {{-- Hero rotator --}}
     <section class="border-b border-zinc-200">
         <div class="shell py-3 md:py-5">
-            {{-- Positioning wrapper — arrows sit just outside the image on desktop --}}
+            {{-- Positioning wrapper - arrows sit just outside the image on desktop --}}
             {{-- wire:ignore keeps Livewire morphing from tearing down the
                  Swiper-initialised DOM when the component re-renders. --}}
             <div wire:ignore x-data="{
@@ -359,7 +359,7 @@ new #[Layout('layouts::storefront')] #[Title('Commercial Kitchen, Cold Room, Lau
                                         @if ($i === 0) fetchpriority="high" decoding="async" @else loading="lazy" decoding="async" @endif
                                         draggable="false" />
 
-                                    {{-- Glassmorphism card (commented out — kept for easy switch-back)
+                                    {{-- Glassmorphism card (commented out - kept for easy switch-back)
                                     <div class="absolute inset-x-4 bottom-4 md:inset-x-auto md:bottom-auto md:top-1/2 md:left-10 md:max-w-sm md:-translate-y-1/2">
                                         <div class="rounded-xl border border-white/20 bg-white/10 p-5 shadow-xl backdrop-blur-md md:p-7">
                                             <h2 class="font-serif text-xl font-semibold leading-tight text-white md:text-4xl">{{ $slide['headline'] }}</h2>
@@ -376,7 +376,7 @@ new #[Layout('layouts::storefront')] #[Title('Commercial Kitchen, Cold Room, Lau
                         @endforeach
                     </div>
 
-                    {{-- Dots — Alpine-driven so positioning and pill styles are fully ours --}}
+                    {{-- Dots - Alpine-driven so positioning and pill styles are fully ours --}}
                     <div
                         class="absolute bottom-2 left-1/2 z-10 flex -translate-x-1/2 items-center gap-1.5 rounded-full bg-black/35 px-2 py-1 backdrop-blur-sm md:bottom-4 md:px-2.5 md:py-1.5">
                         @for ($i = 0; $i < count($heroSlides); $i++)
@@ -396,7 +396,7 @@ new #[Layout('layouts::storefront')] #[Title('Commercial Kitchen, Cold Room, Lau
                         <span class="opacity-70" x-show="paused" x-cloak>· paused</span>
                     </div>
 
-                    {{-- Prev / next arrows — desktop only, revealed on hover --}}
+                    {{-- Prev / next arrows - desktop only, revealed on hover --}}
                     <button type="button" @click="swiper?.slidePrev()" aria-label="Previous slide"
                         class="absolute top-1/2 left-3 z-10 hidden size-10 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-black/35 text-white opacity-0 backdrop-blur-sm transition duration-200 hover:bg-black/55 group-hover:opacity-100 md:flex">
                         <flux:icon.chevron-left class="size-5" />
@@ -431,7 +431,7 @@ new #[Layout('layouts::storefront')] #[Title('Commercial Kitchen, Cold Room, Lau
         </div>
     </section>
 
-    {{-- Divisions / "Shop by department" — temporarily disabled. The section and its
+    {{-- Divisions / "Shop by department" - temporarily disabled. The section and its
          seeded Cold Room / Laundry / Healthcare products were removed; re-enable by
          removing the Blade comment wrapper below once the verticals are ready. --}}
     {{--
@@ -477,7 +477,7 @@ new #[Layout('layouts::storefront')] #[Title('Commercial Kitchen, Cold Room, Lau
                                 @endforeach
                             </div>
                         @else
-                            <!-- No product imagery yet — placeholder hero linking to the division -->
+                            <!-- No product imagery yet - placeholder hero linking to the division -->
                             <a href="{{ route('category.show', $division) }}" wire:navigate
                                 class="group mt-4 block flex-1">
                                 <div class="relative h-full min-h-44 overflow-hidden rounded bg-surface-sunken">
@@ -501,7 +501,7 @@ new #[Layout('layouts::storefront')] #[Title('Commercial Kitchen, Cold Room, Lau
     @endif
     --}}
 
-    {{-- Categories — dense Workshop grid (12 chips, square aspect, ink underline) --}}
+    {{-- Categories - dense Workshop grid (12 chips, square aspect, ink underline) --}}
     <section class="shell pt-8 md:pt-14 @container">
         <div class="mb-4 flex items-baseline justify-between">
             <h2 class="text-lg font-semibold tracking-tight @md:text-2xl">Shop by category</h2>
@@ -552,7 +552,7 @@ new #[Layout('layouts::storefront')] #[Title('Commercial Kitchen, Cold Room, Lau
     <section class="shell pt-8 md:pt-14">
         <div class="relative -mx-4 overflow-hidden border-y border-zinc-200 bg-white md:mx-0 md:rounded-md md:border">
             <div class="grid grid-cols-1 items-stretch md:grid-cols-[auto_1fr]">
-                {{-- Title panel — hidden below md so the marquee runs edge to edge on phones --}}
+                {{-- Title panel - hidden below md so the marquee runs edge to edge on phones --}}
                 <div
                     class="relative z-10 hidden min-w-60 flex-col justify-center border-r border-zinc-200 bg-white px-8 py-8 md:flex">
                     <h2 class="font-serif text-2xl leading-tight font-semibold uppercase">The
@@ -670,7 +670,7 @@ new #[Layout('layouts::storefront')] #[Title('Commercial Kitchen, Cold Room, Lau
             <div>
                 <div class="text-xs font-bold tracking-widest text-brand-500 uppercase">For procurement</div>
                 <div class="mt-2 font-serif text-3xl leading-none font-normal">
-                    Upload your tender or BOQ — formal quote in 24 hours.
+                    Upload your tender or BOQ - formal quote in 24 hours.
                 </div>
                 <div class="mt-2 text-sm text-olive-400">
                     Upload PDF or Excel · We respond in business hours · No account required.

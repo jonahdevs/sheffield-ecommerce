@@ -94,7 +94,7 @@ class ActivityLog
     public static function formatValue(string $logName, string $field, mixed $value): string
     {
         if ($value === null || $value === '') {
-            return '—';
+            return '-';
         }
 
         if (is_array($value)) {

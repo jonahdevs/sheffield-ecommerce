@@ -14,7 +14,7 @@
     $logoUrl        = $branding->logo_path
                         ? \Illuminate\Support\Facades\Storage::disk('public')->url($branding->logo_path)
                         : '/logo.png';
-    // Use the rate and inclusion flag snapshotted at quote save time — the document
+    // Use the rate and inclusion flag snapshotted at quote save time - the document
     // must reflect the tax terms that were in effect when the quote was prepared,
     // not the current global settings which may have changed since.
     $vatRate          = (float) $quote->vat_rate;
@@ -192,7 +192,7 @@
                 @if ($quote->delivery_required && $quote->shipping_cents === 0)
                     <tr>
                         <td colspan="5" class="border border-zinc-300 px-2 py-1.5 text-center text-[10.5px] text-amber-700 italic">
-                            * Delivery cost not yet included — will be confirmed with the order.
+                            * Delivery cost not yet included - will be confirmed with the order.
                         </td>
                     </tr>
                 @elseif ($vatRate > 0)

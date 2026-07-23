@@ -106,7 +106,7 @@ it('keeps the admin sidebar for staff errors raised outside /admin (e.g. Livewir
     actingAsAdmin();
 
     // Errors thrown inside a Livewire action render for /livewire/update, not the
-    // /admin URL — the admin referer keeps staff on the sidebar layout.
+    // /admin URL - the admin referer keeps staff on the sidebar layout.
     $this->withHeader('Referer', url('/admin/products'))
         ->get('/a-page-that-does-not-exist-'.uniqid())
         ->assertStatus(404)

@@ -27,7 +27,7 @@ class WhatsAppChannel
         $phoneNumberId = $settings->whatsapp_phone_number_id ?: config('services.whatsapp.phone_number_id');
 
         if (! $token || ! $phoneNumberId) {
-            Log::warning('WhatsApp credentials not configured — notification skipped.', [
+            Log::warning('WhatsApp credentials not configured - notification skipped.', [
                 'notification' => $notification::class,
             ]);
 

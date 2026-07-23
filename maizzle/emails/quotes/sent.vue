@@ -16,7 +16,7 @@
             <p class="m-0 mt-1 text-[13px] text-white/70">Your quotation is ready for review.</p>
           </template>
           <template #intro>
-            <p class="m-0 text-[13.5px] leading-[21px] text-white/80">Thank you for your interest — here's a summary of your formal quotation for review and approval.</p>
+            <p class="m-0 text-[13.5px] leading-[21px] text-white/80">Thank you for your interest - here's a summary of your formal quotation for review and approval.</p>
           </template>
         </MailHeader>
 
@@ -155,7 +155,7 @@
         <!-- CLOSING -->
         <Section class="bg-white px-9 pt-6 pb-10">
           <Raw>
-            <p class="m-0 text-[13px] leading-5 text-slate-500">Have questions or need adjustments before accepting? Just reply to this email — we're happy to help.</p>
+            <p class="m-0 text-[13px] leading-5 text-slate-500">Have questions or need adjustments before accepting? Just reply to this email - we're happy to help.</p>
             <p class="m-0 mt-3.5 text-[13px] text-slate-600">Warm regards,<br /><span class="font-bold text-slate-900">The {{ config('app.name') }} Team</span></p>
           </Raw>
         </Section>

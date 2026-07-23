@@ -10,7 +10,7 @@ use App\Http\Middleware\EnsureTwoFactorWhenRequired;
 use Illuminate\Support\Facades\Route;
 
 // ---------------------------------------------------------------------------
-// Admin / Staff — requires an assigned role and per-section permissions.
+// Admin / Staff - requires an assigned role and per-section permissions.
 // The outer group blocks any authenticated user who has no staff role at all.
 // Individual sub-groups enforce granular permission checks.
 // ---------------------------------------------------------------------------
@@ -19,7 +19,7 @@ Route::middleware(['auth', 'verified', EnsureTwoFactorWhenRequired::class, 'staf
     ->name('admin.')
     ->group(function () {
 
-        // ── Dashboard — all staff ────────────────────────────────────────────
+        // ── Dashboard - all staff ────────────────────────────────────────────
         Route::livewire('/', 'pages::admin.dashboard')->name('dashboard');
 
         // ── Products ─────────────────────────────────────────────────────────

@@ -88,7 +88,7 @@
                         <span x-show="! locating">Use my current location</span>
                         <span x-show="locating" x-cloak>Locating…</span>
                     </flux:button>
-                    <flux:text size="sm" class="text-zinc-400">Optional — used to pin the branch on the map.</flux:text>
+                    <flux:text size="sm" class="text-zinc-400">Optional - used to pin the branch on the map.</flux:text>
                 </div>
 
                 <flux:text size="sm" x-show="geoError" x-cloak x-text="geoError" class="text-red-500!" />

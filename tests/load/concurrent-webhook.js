@@ -2,7 +2,7 @@
  * Concurrent webhook idempotency test.
  *
  * Fires the same Paystack webhook reference N times simultaneously and asserts
- * that the order is confirmed exactly once — verifying our atomic markConfirmed()
+ * that the order is confirmed exactly once - verifying our atomic markConfirmed()
  * fix under real concurrency pressure.
  *
  * Setup before running:
@@ -93,7 +93,7 @@ export default function () {
         }
 
         // The response body won't distinguish "confirmed now" vs "already
-        // confirmed" — inspect the order status via db:monitor or Telescope
+        // confirmed" - inspect the order status via db:monitor or Telescope
         // after the run to confirm stock was only deducted once.
         confirmed.add(1);
     });
@@ -101,7 +101,7 @@ export default function () {
 
 export function handleSummary(data) {
     console.log('\n── Idempotency Check ──────────────────────────────────────');
-    console.log('Total webhook fires:', data.metrics.iterations?.values?.count ?? '—');
+    console.log('Total webhook fires:', data.metrics.iterations?.values?.count ?? '-');
     console.log('Expected: order confirmed ONCE regardless of duplicate fires.');
     console.log('Verify:   php artisan db:monitor  (check active transactions)');
     console.log('          php artisan tinker  →  Order::where("order_number", "...')->first()->status');

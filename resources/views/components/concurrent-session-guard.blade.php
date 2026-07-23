@@ -33,7 +33,7 @@ new class extends Component
             ->get()
             ->map(fn ($s) => [
                 'id'          => $s->id,
-                'ip'          => $s->ip_address ?? '—',
+                'ip'          => $s->ip_address ?? '-',
                 'browser'     => $this->parseBrowser($s->user_agent),
                 'os'          => $this->parseOs($s->user_agent),
                 'last_active' => $s->last_activity,
@@ -117,7 +117,7 @@ new class extends Component
                 class="max-w-md"
             >
                 <div class="space-y-5">
-                    {{-- Header — centered --}}
+                    {{-- Header - centered --}}
                     <div class="text-center">
                         <img src="/images/handshake_1549580.png" alt="" class="mx-auto mb-4 h-14 w-14 object-contain" />
                         <flux:heading size="lg">New Device Sign-In</flux:heading>

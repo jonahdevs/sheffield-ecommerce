@@ -1,6 +1,6 @@
 /* Google Fonts are loaded via <link> in partials/head.blade.php (with preconnect)
    so the font CSS downloads in parallel with this stylesheet instead of being
-   chained behind it — a render-blocking @import here delays first paint. */
+   chained behind it - a render-blocking @import here delays first paint. */
 @import "tailwindcss";
 @import "../../vendor/livewire/flux/dist/flux.css";
 @import "leaflet/dist/leaflet.css";
@@ -41,7 +41,7 @@
     --color-brand-blue-600: hsl(229, 52%, 34%);
     --color-brand-blue-700: hsl(229, 52%, 29%);
 
-    /* Workshop direction tokens — neutral ink scale, surfaces, lines */
+    /* Workshop direction tokens - neutral ink scale, surfaces, lines */
     --color-ink: var(--color-slate-800);
     --color-ink-2: #2b3344;
     --color-ink-3: #5d6577;
@@ -75,7 +75,7 @@
     backdrop-filter: blur(4px);
 }
 
-/* Admin sidebar — Workshop indigo panel (mirrors the handoff design spec).
+/* Admin sidebar - Workshop indigo panel (mirrors the handoff design spec).
    The panel renders dark regardless of the app theme; the `dark` utility class on
    the sidebar (see partials/admin/sidebar.blade.php) forces Flux's nav items to
    their light-ink variants so text stays readable on the indigo background. */
@@ -128,7 +128,7 @@ select:focus[data-flux-control] {
     @apply outline-hidden ring-2 ring-accent ring-offset-2;
 }
 
-/* Storefront page shell — wider than max-w-7xl (1280px) to match the Workshop design spec.
+/* Storefront page shell - wider than max-w-7xl (1280px) to match the Workshop design spec.
    Use in place of `mx-auto max-w-7xl px-6` for any storefront-facing section. */
 
 @layer components {
@@ -173,7 +173,7 @@ select:focus[data-flux-control] {
     animation: pageFade 220ms ease both;
 }
 
-/* Reusable thin scrollbar — apply the `scrollbar-thin` class to any scrollable container */
+/* Reusable thin scrollbar - apply the `scrollbar-thin` class to any scrollable container */
 @utility scrollbar-thin {
     scrollbar-width: thin;
     scrollbar-color: var(--color-zinc-300) transparent;
@@ -330,7 +330,7 @@ select:focus[data-flux-control] {
     padding: 0.4rem 0.65rem;
     vertical-align: top;
 }
-/* Zebra striping — spec tables run long, and banding keeps the eye on one row. */
+/* Zebra striping - spec tables run long, and banding keeps the eye on one row. */
 .pdp-rich-text table tbody tr:nth-child(even) {
     background: #f7f9fc;
 }
@@ -343,7 +343,29 @@ select:focus[data-flux-control] {
     border-radius: 6px;
 }
 
-/* Prevent Swiper FOUC — hide slides until Swiper adds .swiper-initialized.
+/* Gallery lightbox close button. This modal has no heading to anchor Flux's
+   default ✕, so the faint grey glyph vanishes against product imagery. Give it a
+   white chip (matching the prev/next arrows) so the way out is always findable.
+   The ✕ colour is set on the <svg>, not the button: Flux's text-zinc-400! utility
+   sits in @layer utilities and, being !important, beats an unlayered !important on
+   the button - but a direct declaration on the svg still overrides the inherited
+   colour it resolves currentColor from. */
+.pdp-gallery-modal [data-flux-modal-close] button {
+    background-color: #fff !important;
+    border: 1px solid var(--color-zinc-200, #e4e4e7) !important;
+    box-shadow: 0 1px 2px rgb(0 0 0 / 0.08) !important;
+}
+.pdp-gallery-modal [data-flux-modal-close] svg {
+    color: var(--color-zinc-600, #52525b) !important;
+}
+.pdp-gallery-modal [data-flux-modal-close] button:hover {
+    background-color: var(--color-zinc-50, #fafafa) !important;
+}
+.pdp-gallery-modal [data-flux-modal-close] button:hover svg {
+    color: var(--color-zinc-900, #18181b) !important;
+}
+
+/* Prevent Swiper FOUC - hide slides until Swiper adds .swiper-initialized.
    .swiper-eager opts out: the PDP main image is the LCP element, so it has to
    paint from the server HTML rather than wait on Swiper booting. */
 .swiper:not(.swiper-initialized) {

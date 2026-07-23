@@ -223,7 +223,7 @@ final class StorefrontSession
      * Merge the guest's session cart into the authenticated user's persisted
      * cart on login, then rehydrate the session from the merged result so the
      * live cart reflects everything the user had on any device. Overlapping
-     * lines keep the larger quantity, which makes the merge idempotent — logging
+     * lines keep the larger quantity, which makes the merge idempotent - logging
      * in repeatedly never inflates a line.
      */
     public static function mergeIntoUserCart(User $user): void
@@ -231,7 +231,7 @@ final class StorefrontSession
         $sessionCart = self::cart();
         $existing = Cart::where('user_id', $user->id)->first();
 
-        // Nothing to merge and nothing saved — don't create an empty cart row
+        // Nothing to merge and nothing saved - don't create an empty cart row
         // (e.g. a staff member logging in who never shops).
         if ($sessionCart === [] && ! $existing) {
             return;
@@ -394,7 +394,7 @@ final class StorefrontSession
 
             return false;
         }
-        // Hard cap at 4 — silently drop the oldest if we'd exceed it.
+        // Hard cap at 4 - silently drop the oldest if we'd exceed it.
         $list[] = $slug;
         if (count($list) > self::COMPARE_MAX) {
             $list = array_slice($list, -self::COMPARE_MAX);

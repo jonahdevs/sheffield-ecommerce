@@ -4,7 +4,7 @@
     <div class="flex flex-col gap-6">
         @if (session('quote_approval_pending'))
             <div class="rounded-md border border-brand-200 bg-brand-50 px-4 py-3 text-sm">
-                <p class="font-semibold text-brand-800">One last step — create an account to confirm your order</p>
+                <p class="font-semibold text-brand-800">One last step - create an account to confirm your order</p>
                 <p class="mt-0.5 text-brand-600">Your approved quote will be linked to your account so you can pay and track your order online.</p>
             </div>
         @endif

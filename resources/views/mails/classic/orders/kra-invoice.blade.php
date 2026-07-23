@@ -75,7 +75,7 @@
           <div style="padding: 28px 32px 0;">
             <div style="margin-bottom: 12px; display: inline-block; border-radius: 9999px; border: 1px solid #a7f3d0; background-color: #ecfdf5; padding: 4px 12px; font-size: 11px; font-weight: 700; letter-spacing: .05em; color: #047857; text-transform: uppercase;">KRA validated</div>
             <p style="margin: 0; font-size: 16px; line-height: 24px; font-weight: 700; color: #0f172a;">Hi {{ $customerName }}, your tax invoice is attached.</p>
-            <p style="margin: 8px 0 0; font-size: 14px; line-height: 20px; line-height: 24px; color: #64748b;">The KRA-validated invoice for this order is attached to this email as a PDF — please keep it for your records. Here's a quick summary.</p>
+            <p style="margin: 8px 0 0; font-size: 14px; line-height: 20px; line-height: 24px; color: #64748b;">The KRA-validated invoice for this order is attached to this email as a PDF - please keep it for your records. Here's a quick summary.</p>
           </div>
           <!--[if mso]></td></tr></table><![endif]-->
           <!--[if mso]><table role="none" cellpadding="0" cellspacing="0" style="width: 100%"><tr><td style="padding: 24px 32px 0"><![endif]-->
@@ -120,7 +120,7 @@
           <!--[if mso]></td></tr></table><![endif]-->
           <!--[if mso]><table role="none" cellpadding="0" cellspacing="0" style="width: 100%"><tr><td style="padding: 16px 32px 36px"><![endif]-->
           <div style="padding: 16px 32px 36px; text-align: center;">
-            <p style="margin: 0; font-size: 14px; line-height: 20px; color: #64748b;">Please keep this invoice for your records. Questions? Just reply to this email — we're happy to help.</p>
+            <p style="margin: 0; font-size: 14px; line-height: 20px; color: #64748b;">Please keep this invoice for your records. Questions? Just reply to this email - we're happy to help.</p>
             <p style="margin: 16px 0 0; font-size: 14px; line-height: 20px; color: #475569;">
               Thank you for choosing {{ config('app.name') }},
               <br>

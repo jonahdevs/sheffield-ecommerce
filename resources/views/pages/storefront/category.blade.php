@@ -65,7 +65,7 @@ new #[Layout('layouts::storefront')] class extends Component
     }
 
     /**
-     * All categories grouped by parent id — loaded once so the subtree walk
+     * All categories grouped by parent id - loaded once so the subtree walk
      * stays a single query.
      *
      * @return Collection<int|string, Collection<int, Category>>
@@ -122,7 +122,7 @@ new #[Layout('layouts::storefront')] class extends Component
     #[Computed]
     public function childCategories(): Collection
     {
-        // Hide children whose whole subtree holds no catalog items — ticking
+        // Hide children whose whole subtree holds no catalog items - ticking
         // such a checkbox could only ever produce an empty listing.
         return Category::query()
             ->where('parent_id', $this->category->id)
@@ -351,8 +351,8 @@ new #[Layout('layouts::storefront')] class extends Component
                             <option value="popularity">Most popular</option>
                             <option value="newest">Newest</option>
                             <option value="name-asc">Name (A–Z)</option>
-                            <option value="price-asc">Price — low to high</option>
-                            <option value="price-desc">Price — high to low</option>
+                            <option value="price-asc">Price - low to high</option>
+                            <option value="price-desc">Price - high to low</option>
                         </select>
                     </div>
                 </div>

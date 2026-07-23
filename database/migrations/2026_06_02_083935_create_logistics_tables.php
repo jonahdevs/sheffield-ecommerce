@@ -15,7 +15,7 @@ return new class extends Migration
         // own fleet (Sheffield Africa Logistics → driver: self_managed) or a 3PL
         // integration (Cossim, Fargo, Glovo, DHL, Aramex …).
         //
-        // The carrier is NEVER shown to the customer — they only see the method
+        // The carrier is NEVER shown to the customer - they only see the method
         // name (Standard Delivery, Express, etc.). The carrier is an operational
         // detail assigned silently by the system.
         //
@@ -37,7 +37,7 @@ return new class extends Migration
         // ==================================================
         // 2. SHIPPING METHODS
         // ==================================================
-        // Customer-facing method templates ONLY — no pricing, no zone/carrier
+        // Customer-facing method templates ONLY - no pricing, no zone/carrier
         // links here. These are the labels the customer sees and picks from.
         //
         // type = delivery  → fulfilled via carrier_rates (carrier assigned by zone)
@@ -82,7 +82,7 @@ return new class extends Migration
         // The actual price for a specific carrier + zone + method combination.
         // Sheffield charges KES 300 for Standard in Nairobi.
         // Cossim charges KES 800 for Standard in their upcountry zones.
-        // Same customer label ("Standard Delivery") — different carrier and price.
+        // Same customer label ("Standard Delivery") - different carrier and price.
         //
         // rate_type:
         //   fixed      → always base_rate_cents (minus free-over threshold)
@@ -165,7 +165,7 @@ return new class extends Migration
             $table->string('tracking_url', 500)->nullable();
             $table->string('status')->default('pending');
 
-            // Human delivery driver — used for self-managed / own-fleet deliveries
+            // Human delivery driver - used for self-managed / own-fleet deliveries
             // that have no external waybill. Lets staff and the customer identify
             // and contact whoever is physically delivering the order.
             $table->string('driver_name')->nullable();

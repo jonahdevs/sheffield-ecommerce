@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Response;
 /**
  * Blocks banned users from the application. Unlike the package middleware, this
  * logs the banned user out before redirecting, so the next request is no longer
- * authenticated and cannot re-trigger the block — otherwise every redirect
+ * authenticated and cannot re-trigger the block - otherwise every redirect
  * target runs this middleware again and the browser loops (ERR_TOO_MANY_REDIRECTS).
  */
 class ForbidBannedUser

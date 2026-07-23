@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Http;
 /**
  * Talks to any provider that exposes the OpenAI "chat/completions" REST shape:
  * Groq, OpenAI, Google Gemini (OpenAI endpoint), OpenRouter and Ollama all do.
- * Swapping provider is just a different base URL, key and model — see config/ai.php.
+ * Swapping provider is just a different base URL, key and model - see config/ai.php.
  */
 class OpenAiCompatibleProvider implements AiChatProvider
 {

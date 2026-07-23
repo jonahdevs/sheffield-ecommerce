@@ -260,7 +260,7 @@ new #[Layout('layouts::app')] #[Title('Orders | Admin')] class extends Component
                             <span class="font-mono">{{ $order->order_number }}</span>
                         </flux:table.cell>
                         <flux:table.cell class="text-sm text-zinc-500">
-                            {{ $order->user?->email ?? '—' }}
+                            {{ $order->user?->email ?? '-' }}
                         </flux:table.cell>
                         <flux:table.cell class="tabular-nums text-zinc-500">{{ $order->items_count }}</flux:table.cell>
                         <flux:table.cell class="font-medium tabular-nums">{!! money($order->total_cents) !!}</flux:table.cell>

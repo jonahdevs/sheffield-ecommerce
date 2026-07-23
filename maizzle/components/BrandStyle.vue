@@ -1,5 +1,5 @@
 <!--
-  Brand utility classes — Sheffield's two brand colours (red + navy).
+  Brand utility classes - Sheffield's two brand colours (red + navy).
 
   The framework Layout hardcodes `@import "@maizzle/tailwindcss"`, which never
   loads our `tailwind.css` `@theme`, so `bg-brand`/`text-navy` would compile to

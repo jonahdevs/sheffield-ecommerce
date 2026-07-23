@@ -73,7 +73,7 @@ it('opens a modal listing real bundle components and adds the bundle as one SKU'
     expect(StorefrontSession::cart())->toBe(['wok-bundle' => 1]);
 });
 
-it('only ever lists published, catalog-visible accessories — including after a Livewire update', function () {
+it('only ever lists published, catalog-visible accessories - including after a Livewire update', function () {
     $product = makeProduct(['slug' => 'oven-with-trays']);
 
     $visibleAccessory = makeProduct([
@@ -101,7 +101,7 @@ it('only ever lists published, catalog-visible accessories — including after a
     // Initial render: the draft accessory is filtered out.
     expect($idsNow())->toBe([$visibleAccessory->id]);
 
-    // After a Livewire round-trip (e.g. clicking a tab) the model is re-fetched —
+    // After a Livewire round-trip (e.g. clicking a tab) the model is re-fetched -
     // the unpublished accessory must STILL be excluded, not surface unfiltered.
     $component->set('activeTab', 'specs');
     expect($idsNow())->toBe([$visibleAccessory->id]);

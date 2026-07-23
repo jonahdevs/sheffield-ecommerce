@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Auth;
 /**
  * Looks up the signed-in customer's own orders and quotes.
  *
- * SECURITY: every query is scoped to Auth::id() at the data layer — the model
+ * SECURITY: every query is scoped to Auth::id() at the data layer - the model
  * cannot widen it. Guests get an "ask them to sign in" note and no data. The
  * `reference` argument only filters within the current user's own records.
  */

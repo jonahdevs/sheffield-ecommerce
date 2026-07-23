@@ -1,5 +1,5 @@
 /**
- * Catalog load test — simulates concurrent visitors browsing the storefront.
+ * Catalog load test - simulates concurrent visitors browsing the storefront.
  *
  * Install k6 (Windows): winget install k6 --source winget
  * Refresh PATH:  $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
@@ -9,7 +9,7 @@
  * Run (soak):    k6 run --env SCENARIO=soak  tests/load/catalog.js
  *
  * NOTE: Disable Telescope before running (APP_TELESCOPE=false or comment out in
- * TelescopeServiceProvider) — it writes every request to the DB and inflates
+ * TelescopeServiceProvider) - it writes every request to the DB and inflates
  * response times by 50-200ms per request.
  */
 
@@ -22,7 +22,7 @@ const BASE_URL = __ENV.BASE_URL || 'https://new-ecommerce.test';
 const errorRate  = new Rate('errors');
 const serverTime = new Trend('server_time_ms');
 
-// Scenario presets — choose via k6 run --env SCENARIO=smoke|load|soak
+// Scenario presets - choose via k6 run --env SCENARIO=smoke|load|soak
 const SCENARIOS = {
     smoke: { stages: [{ duration: '30s', target: 5 }] },
     load:  { stages: [{ duration: '30s', target: 20 }, { duration: '1m', target: 50 }, { duration: '30s', target: 0 }] },
@@ -43,14 +43,14 @@ export const options = {
         },
     },
     thresholds: {
-        // Adjust these for production — local dev with Telescope active will be 3-5× slower.
+        // Adjust these for production - local dev with Telescope active will be 3-5× slower.
         'http_req_duration{type:static}': ['p(95)<300'],
         'http_req_duration{type:dynamic}': ['p(95)<2000'],
         errors: ['rate<0.01'],
     },
 };
 
-// Real URLs from the app — mix of high-traffic pages.
+// Real URLs from the app - mix of high-traffic pages.
 // Add more product/category slugs from: php artisan tinker --execute 'Product::published()->pluck("slug")->take(10);'
 const PAGES = [
     { url: '/',                                                              type: 'dynamic' },

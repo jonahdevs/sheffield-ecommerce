@@ -188,7 +188,7 @@ new #[Layout('layouts::app')] #[Title('Staff | Admin')] class extends Component 
                             </div>
                         </flux:table.cell>
                         <flux:table.cell>
-                            @php $roleName = $member->roles->first()?->name ?? '—'; @endphp
+                            @php $roleName = $member->roles->first()?->name ?? '-'; @endphp
                             <flux:badge
                                 size="sm"
                                 inset="top bottom"

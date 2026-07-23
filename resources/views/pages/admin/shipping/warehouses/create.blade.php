@@ -153,7 +153,7 @@ new #[Layout('layouts::app')] #[Title('New Warehouse | Admin')] class extends Co
                         >
                             <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
                                 <flux:input wire:model="latitude" label="Latitude" placeholder="-1.2921"
-                                    description="Optional — for map display." />
+                                    description="Optional - for map display." />
                                 <flux:input wire:model="longitude" label="Longitude" placeholder="36.8219" />
                             </div>
 

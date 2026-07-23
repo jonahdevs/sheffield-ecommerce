@@ -4,7 +4,7 @@ namespace App\Services\Ai\Tools;
 
 interface Tool
 {
-    /** The function name the model calls — must match definition()['function']['name']. */
+    /** The function name the model calls - must match definition()['function']['name']. */
     public function name(): string;
 
     /**

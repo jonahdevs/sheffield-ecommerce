@@ -18,7 +18,7 @@
 
 <section class="mx-auto flex w-full max-w-md flex-col items-center px-5 py-16 text-center sm:py-24">
     @if ($bare)
-        <a href="{{ url('/') }}" class="mb-10 inline-flex" aria-label="{{ config('app.name', 'Sheffield') }} — Home">
+        <a href="{{ url('/') }}" class="mb-10 inline-flex" aria-label="{{ config('app.name', 'Sheffield') }} - Home">
             <img src="/logo.png" alt="{{ config('app.name', 'Sheffield') }}" class="h-10 w-auto" />
         </a>
     @endif

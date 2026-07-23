@@ -1,4 +1,4 @@
-{{-- Cookie consent notice — shown until accepted or declined. The choice is kept
+{{-- Cookie consent notice - shown until accepted or declined. The choice is kept
      in an unencrypted `cookie_consent` cookie (12 months) so the server can skip
      rendering tracking scripts; see partials/storefront/analytics.blade.php.
      Reopens via a window `open-cookie-settings` event (footer "Cookie settings"). --}}

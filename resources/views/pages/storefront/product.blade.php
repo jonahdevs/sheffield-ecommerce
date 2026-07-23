@@ -91,7 +91,7 @@ new #[Layout('layouts::storefront')] class extends Component {
     }
 
     /**
-     * Log a product view for analytics — guests and signed-in users alike.
+     * Log a product view for analytics - guests and signed-in users alike.
      * Throttled per session+product for 30 minutes so refreshes and Livewire
      * round-trips don't inflate the count.
      */
@@ -265,7 +265,7 @@ new #[Layout('layouts::storefront')] class extends Component {
     }
 
     /**
-     * Build the product page's SEO tags — title, description, OG image and a
+     * Build the product page's SEO tags - title, description, OG image and a
      * schema.org Product JSON-LD block (price, availability, brand, image).
      */
     private function applySeo(): void
@@ -381,7 +381,7 @@ new #[Layout('layouts::storefront')] class extends Component {
 
     /**
      * Add one more of a product that is already in the cart. Unlike the first add
-     * this does not re-open the accessory prompt — the customer has answered it —
+     * this does not re-open the accessory prompt - the customer has answered it -
      * and it avoids the trait's addToCart(), whose skipRender() would leave the
      * counter showing its old value.
      */
@@ -779,7 +779,7 @@ $displayCompareAt = $compareAt !== null ? $tax->displayPriceCents($product, (int
 $isOnSale = $compareAt !== null;
 
 // A variable product's headline is the span across its variants, not whichever
-    // one happens to be preselected — showing a single figure reads as "the" price.
+    // one happens to be preselected - showing a single figure reads as "the" price.
     $variantRange = $this->variantPriceRange;
     if ($variantRange) {
         $displayPrice = null;
@@ -801,7 +801,7 @@ $isOnSale = $compareAt !== null;
     $gallery = $this->galleryMedia;
 
     // Variant media declares only a `thumb` conversion, and getUrl() throws on a
-    // conversion the model never registered — so check before asking for one.
+    // conversion the model never registered - so check before asking for one.
     $mediaUrl = fn ($media, string $conversion) => $media->hasGeneratedConversion($conversion)
         ? $media->getUrl($conversion)
         : $media->getUrl();
@@ -874,7 +874,7 @@ $isOnSale = $compareAt !== null;
                          open in case the viewport changed while it was closed. --}}
                     requestAnimationFrame(() => {
                         {{-- <flux:modal> renders its own x-data (fluxModal), so the x-ref inside it
-                             registers to THAT component, not this gallery — $refs.lbSwiper reads
+                             registers to THAT component, not this gallery - $refs.lbSwiper reads
                              back undefined here and Swiper builds on nothing, leaving the slides
                              stuck at the FOUC rule's display:none (blank lightbox). Reach the node
                              through the gallery root instead, and stash the Swiper on it so we
@@ -908,7 +908,7 @@ $isOnSale = $compareAt !== null;
                         initialSlide: this.mainIdx,
                         {{-- No observer/observeParents: the slide list is fixed, and watching parents
                              meant any unrelated Livewire re-render (add to cart, tab switch) fired
-                             update() — which re-snaps a transition that is still running. --}}
+                             update() - which re-snaps a transition that is still running. --}}
                         on: {
                             slideChange: (s) => { this.mainIdx = s.activeIndex; },
                         },
@@ -936,7 +936,7 @@ $isOnSale = $compareAt !== null;
                                 {{-- Deliberately no wire:click. Nothing server-side reads galleryIdx
                                      (selectOption sets it itself), so a round-trip here bought nothing
                                      and re-rendered the component mid-transition, which snapped the
-                                     slide — and the ring with it — back to where it started. --}}
+                                     slide - and the ring with it - back to where it started. --}}
                                 <button type="button"
                                     x-on:click="lbIdx = {{ $i }}; showImage({{ $i }})"
                                     class="aspect-square size-16 shrink-0 cursor-pointer overflow-hidden rounded bg-white transition md:size-18"
@@ -1040,15 +1040,18 @@ $isOnSale = $compareAt !== null;
 
                 </div>{{-- end gallery flex row --}}
 
-                {{-- Image modal (Flux) — opened via $flux.modal('product-gallery').show() on the main image.
-                     Arrow keys step through the gallery: the listener sits on the modal wrapper so it
-                     catches keys from anywhere inside the dialog (including Flux's own close button)
-                     while staying inert once the dialog is closed. Escape is handled by Flux itself. --}}
-                <flux:modal name="product-gallery" class="w-full max-w-xl"
-                    x-on:keydown.left.prevent="prevLb()" x-on:keydown.right.prevent="nextLb()">
+                {{-- Image modal (Flux) - opened via $flux.modal('product-gallery').show() on the main image.
+                     Arrow keys step through the gallery. The listener is bound to the window, not the
+                     modal wrapper: Flux leaves focus on <body> when it opens, so a wrapper-scoped
+                     keydown never receives the bubbled event. The open-dialog guard keeps it inert
+                     (and stops it hijacking arrow keys) whenever this modal is closed, and scopes it to
+                     this gallery's own dialog. Escape is handled by Flux itself. --}}
+                {{-- pdp-gallery-modal: gives Flux's native close ✕ a visible chip (app.css) - without a
+                     heading to anchor it, the default faint-grey glyph vanishes against product imagery. --}}
+                <flux:modal name="product-gallery" class="w-full max-w-xl pdp-gallery-modal"
+                    x-on:keydown.left.window="if ($el.querySelector('dialog')?.open) { $event.preventDefault(); prevLb(); }"
+                    x-on:keydown.right.window="if ($el.querySelector('dialog')?.open) { $event.preventDefault(); nextLb(); }">
                     <div class="flex flex-col gap-4">
-                        <flux:heading size="lg" class="uppercase">Product Images</flux:heading>
-
                         {{-- Square image stage --}}
                         <div
                             class="group relative mx-auto aspect-square w-full max-w-[min(100%,60vh)] overflow-hidden bg-white">
@@ -1100,11 +1103,11 @@ $isOnSale = $compareAt !== null;
                 </flux:modal>
             </div>
 
-            {{-- Center column — product details --}}
+            {{-- Center column - product details --}}
             <div class="min-w-0">
                 @if ($product->brand)
                     @php
-                        // Only link out over http(s) — the `url` validation rule on the admin
+                        // Only link out over http(s) - the `url` validation rule on the admin
                         // form admits other schemes, and this lands in a public href.
                         $brandSite = $product->brand->website_url;
                         $brandSite =
@@ -1132,7 +1135,7 @@ $isOnSale = $compareAt !== null;
                 @endif
                 <h1 class="mt-2 font-serif text-3xl leading-tight font-normal lg:text-4xl">{{ $product->name }}</h1>
 
-                {{-- Rating summary — scrolls to the Reviews tab --}}
+                {{-- Rating summary - scrolls to the Reviews tab --}}
                 @if ($this->reviewsEnabled && $this->approvedReviews->isNotEmpty())
                     <button type="button" wire:click="$set('activeTab', 'reviews')"
                         onclick="document.getElementById('product-tabs')?.scrollIntoView({ behavior: 'smooth' })"
@@ -1254,7 +1257,7 @@ $isOnSale = $compareAt !== null;
                             ]);
                         }
                         if ($product->is_virtual) {
-                            $chips->push(['tone' => 'info', 'icon' => 'bolt', 'label' => 'Digital — no shipping']);
+                            $chips->push(['tone' => 'info', 'icon' => 'bolt', 'label' => 'Digital - no shipping']);
                         }
                         if ($product->is_downloadable) {
                             $chips->push([
@@ -1349,7 +1352,7 @@ $isOnSale = $compareAt !== null;
                             </flux:tooltip>
                         </div>
                     @elseif ($ctaOutOfStock)
-                        {{-- Out of stock — no stepper, two action buttons --}}
+                        {{-- Out of stock - no stepper, two action buttons --}}
                         <div class="mt-6 flex flex-wrap items-center gap-3">
                             <flux:button variant="customer-primary" size="customer-lg" disabled>
                                 Out of stock
@@ -1476,7 +1479,7 @@ $isOnSale = $compareAt !== null;
                 @endif
             </div>{{-- end product details column --}}
 
-            {{-- Side panel — policies, delivery & seller (no price, no cart) --}}
+            {{-- Side panel - policies, delivery & seller (no price, no cart) --}}
             <div class="lg:sticky lg:top-24 lg:self-start">
                 <flux:card>
 
@@ -1782,7 +1785,7 @@ $isOnSale = $compareAt !== null;
                             <div class="rounded-md bg-surface-sunken p-10 text-center text-ink-3">
                                 <flux:icon.document variant="outline" class="mx-auto size-7" />
                                 <div class="mt-2 text-sm">No downloadable documents for this product yet.</div>
-                                <div class="mt-1 text-xs">Request the spec sheet — we'll email it to you.</div>
+                                <div class="mt-1 text-xs">Request the spec sheet - we'll email it to you.</div>
                             </div>
                         @endforelse
                     </div>
@@ -1927,7 +1930,7 @@ $isOnSale = $compareAt !== null;
                                         @endif
                                     </div>
                                 </div>
-                                <div class="text-xs font-semibold tabular-nums text-ink">{!! $lineCents ? money($lineCents) : '—' !!}
+                                <div class="text-xs font-semibold tabular-nums text-ink">{!! $lineCents ? money($lineCents) : '-' !!}
                                 </div>
                             </div>
                         @endforeach
@@ -1943,7 +1946,7 @@ $isOnSale = $compareAt !== null;
                     </div>
                 @else
                     <flux:heading class="uppercase">Choose your items</flux:heading>
-                    <flux:subheading>Set a quantity for any product in this set — each is added to your cart on its own.
+                    <flux:subheading>Set a quantity for any product in this set - each is added to your cart on its own.
                     </flux:subheading>
 
                     <div class="mt-5 divide-y divide-zinc-100">

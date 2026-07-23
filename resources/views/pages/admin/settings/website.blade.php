@@ -432,13 +432,13 @@ new #[Layout('layouts::app')] #[Title('Website settings | Admin')] class extends
 
             <form wire:submit="saveLocalization" class="space-y-5 p-6">
                 <flux:select wire:model="currency" label="Currency">
-                    <flux:select.option value="KES">KES — Kenyan Shilling</flux:select.option>
-                    <flux:select.option value="USD">USD — US Dollar</flux:select.option>
-                    <flux:select.option value="EUR">EUR — Euro</flux:select.option>
-                    <flux:select.option value="GBP">GBP — British Pound</flux:select.option>
-                    <flux:select.option value="UGX">UGX — Ugandan Shilling</flux:select.option>
-                    <flux:select.option value="TZS">TZS — Tanzanian Shilling</flux:select.option>
-                    <flux:select.option value="ZAR">ZAR — South African Rand</flux:select.option>
+                    <flux:select.option value="KES">KES - Kenyan Shilling</flux:select.option>
+                    <flux:select.option value="USD">USD - US Dollar</flux:select.option>
+                    <flux:select.option value="EUR">EUR - Euro</flux:select.option>
+                    <flux:select.option value="GBP">GBP - British Pound</flux:select.option>
+                    <flux:select.option value="UGX">UGX - Ugandan Shilling</flux:select.option>
+                    <flux:select.option value="TZS">TZS - Tanzanian Shilling</flux:select.option>
+                    <flux:select.option value="ZAR">ZAR - South African Rand</flux:select.option>
                 </flux:select>
 
                 <flux:select wire:model="timezone" label="Timezone"

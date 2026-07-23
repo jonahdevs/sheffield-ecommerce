@@ -1,7 +1,7 @@
 <template>
   <Layout body-class="bg-[#eef1f6] font-sans">
     <BrandStyle />
-    <Preheader>Your order is confirmed — thank you for your purchase.</Preheader>
+    <Preheader>Your order is confirmed - thank you for your purchase.</Preheader>
 
     <Container class="mx-auto w-full max-w-[600px] px-3 py-7">
       <Section class="overflow-hidden bg-white">
@@ -16,7 +16,7 @@
             <p class="m-0 mt-1 text-[13px] text-white/70">Your order is confirmed.</p>
           </template>
           <template #intro>
-            <p class="m-0 text-[13.5px] leading-[21px] text-white/80">Thank you for shopping with us — we've received your order and it's being prepared. Below are the details of your purchase.</p>
+            <p class="m-0 text-[13.5px] leading-[21px] text-white/80">Thank you for shopping with us - we've received your order and it's being prepared. Below are the details of your purchase.</p>
           </template>
         </MailHeader>
 

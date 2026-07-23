@@ -108,7 +108,7 @@
                 @foreach ($order->items as $index => $item)
                     @php
                         $snapshot = $item->product_snapshot ?? [];
-                        $name     = $snapshot['name'] ?? '—';
+                        $name     = $snapshot['name'] ?? '-';
                         $sku      = $snapshot['sku'] ?? null;
                         $model    = $snapshot['model_number'] ?? null;
                     @endphp

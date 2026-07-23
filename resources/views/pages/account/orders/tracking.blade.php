@@ -14,7 +14,7 @@ new #[Layout('layouts::account')] #[Title('Order Tracking')] class extends Compo
     public function mount(Order $order): void
     {
         abort_unless($order->user_id === auth()->id(), 403);
-        SEOMeta::setTitle('Tracking — ' . $order->order_number);
+        SEOMeta::setTitle('Tracking - ' . $order->order_number);
         SEOMeta::setRobots('noindex,follow');
         $this->order = $order->load(['statusHistories', 'quote', 'shipment']);
     }
@@ -71,7 +71,7 @@ new #[Layout('layouts::account')] #[Title('Order Tracking')] class extends Compo
                 </flux:callout>
             @endif
 
-            {{-- Delivery driver — shown once the order is on its way / delivered --}}
+            {{-- Delivery driver - shown once the order is on its way / delivered --}}
             @if ($order->shipment?->hasDriver() && in_array($order->status->value, ['out_for_delivery', 'completed']))
                 <div class="mb-6 flex items-center gap-4 rounded-lg border border-brand-100 bg-brand-50 px-5 py-4">
                     <div class="flex size-10 shrink-0 items-center justify-center rounded-full bg-brand-500 text-white">

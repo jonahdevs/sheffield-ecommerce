@@ -70,7 +70,7 @@ it('seeds each product with the status, price and default variant from products.
     });
 
     // The GN-size ranges are each one variable product, and every size carries its
-    // own photo — they look different, so a shared parent image would misrepresent
+    // own photo - they look different, so a shared parent image would misrepresent
     // them. Sizes that used to be standalone products must be gone.
     $ranges = [
         'GROUP/ROASTING-BAKING-TRAY' => ['IMG/OVE/00060' => '23-gn', 'IMG/OVE/00058' => '11-gn', 'IMG/OVE/00059' => '21-gn'],
@@ -130,7 +130,7 @@ it('seeds each product with the status, price and default variant from products.
         ->and($defaultSku('GROUP/CHICKEN-SUPER-SPIKE'))->toBe('IMG/OVE/00022');
 
     // The granite-enameled container varies on two axes at once, so each variant
-    // must carry a value for both — a variant missing one can never be selected.
+    // must carry a value for both - a variant missing one can never be selected.
     $granite = Product::where('sku', 'GROUP/GRANITE-ENAMELED')
         ->with(['variants.attributeValues.attribute', 'productAttributes.attribute'])
         ->first();

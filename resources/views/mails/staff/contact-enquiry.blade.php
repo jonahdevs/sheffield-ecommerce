@@ -1,12 +1,12 @@
 <x-mail::message>
 # New contact enquiry
 
-**{{ $inquiry }}** — {{ $reference }}
+**{{ $inquiry }}** - {{ $reference }}
 
 <x-mail::table>
 | | |
 |:--|:--|
-| **Name** | {{ $name }}{{ $business ? ' — '.$business : '' }} |
+| **Name** | {{ $name }}{{ $business ? ' - '.$business : '' }} |
 | **Email** | {{ $email }} |
 @if($phone)
 | **Phone** | {{ $phone }} |

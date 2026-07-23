@@ -83,7 +83,7 @@ new #[Layout('layouts::app')] class extends Component {
 
     public function rendering($view): void
     {
-        $view->title($this->subjectLabel().' — Activity');
+        $view->title($this->subjectLabel().' - Activity');
     }
 }; ?>
 
@@ -183,7 +183,7 @@ new #[Layout('layouts::app')] class extends Component {
                         @elseif ($activity->event === 'created')
                             <span class="text-[12.5px] text-ink-3 italic">Record created</span>
                         @else
-                            <span class="text-[12.5px] text-ink-4">—</span>
+                            <span class="text-[12.5px] text-ink-4">-</span>
                         @endif
                     </div>
                 </div>

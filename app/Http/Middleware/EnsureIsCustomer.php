@@ -9,7 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
 /**
  * Keeps the customer self-service area (/account/*) for customers only. Staff
  * members (any user with at least one role) are sent to the admin dashboard, so
- * knowing a URL — or following a stale link — can't land them on the customer
+ * knowing a URL - or following a stale link - can't land them on the customer
  * account pages, which are scoped to their own, usually empty, account.
  */
 class EnsureIsCustomer

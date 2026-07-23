@@ -205,7 +205,7 @@
                 <td style="width: 32px; vertical-align: top;"><div style="background-color: #2f4196; height: 28px; width: 28px; border-radius: 9999px; text-align: center; font-size: 14px; line-height: 20px; line-height: 28px; font-weight: 700; color: #fffffe;">2</div></td>
                 <td style="padding-bottom: 16px; padding-left: 12px; vertical-align: top;">
                   <p style="margin: 0; font-size: 14px; line-height: 20px; font-weight: 600; color: #1e293b;">You receive your priced quotation</p>
-                  <p style="margin: 4px 0 0; font-size: 13px; color: #64748b;">Within 1 business day you'll get a formal quote @if ($isPickup)with item pricing — no shipping charges, since you'll collect from us.@else including item pricing and delivery costs.@endif</p>
+                  <p style="margin: 4px 0 0; font-size: 13px; color: #64748b;">Within 1 business day you'll get a formal quote @if ($isPickup)with item pricing - no shipping charges, since you'll collect from us.@else including item pricing and delivery costs.@endif</p>
                 </td>
               </tr>
               <tr>

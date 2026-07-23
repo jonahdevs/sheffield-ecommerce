@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Subscription confirmed — {{ config('app.name') }}</title>
+    <title>Subscription confirmed - {{ config('app.name') }}</title>
     @vite(['resources/css/app.css'])
 </head>
 <body class="min-h-screen bg-zinc-50 antialiased">
@@ -16,7 +16,7 @@
             </div>
             <h1 class="font-serif text-3xl text-zinc-900">You're confirmed.</h1>
             <p class="mt-4 text-base leading-relaxed text-zinc-500">
-                Welcome to The Sheffield Quarterly. You'll hear from us four times a year —
+                Welcome to The Sheffield Quarterly. You'll hear from us four times a year -
                 catalog drops, project stories, and trade-only offers. No noise in between.
             </p>
             <a href="{{ route('home') }}"

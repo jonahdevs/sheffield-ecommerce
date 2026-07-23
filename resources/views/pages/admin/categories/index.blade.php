@@ -288,7 +288,7 @@ new #[Layout('layouts::app')] #[Title('Categories | Admin')] class extends Compo
                         </flux:table.cell>
                         <flux:table.cell class="font-mono text-xs text-zinc-400">{{ $category->slug }}</flux:table.cell>
                         <flux:table.cell class="text-zinc-500">
-                            {{ $category->parent?->name ?? '—' }}
+                            {{ $category->parent?->name ?? '-' }}
                         </flux:table.cell>
                         <flux:table.cell class="tabular-nums">{{ $category->products_count }}</flux:table.cell>
                         <flux:table.cell>

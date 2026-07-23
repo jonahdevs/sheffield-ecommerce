@@ -12,7 +12,7 @@ new class extends Component {
 
     public bool $thinking = false;
 
-    /** Admin master switch — when false the widget renders nothing. */
+    /** Admin master switch - when false the widget renders nothing. */
     public bool $enabled = true;
 
     /** Admin-configured intro line shown in the empty panel. */
@@ -62,7 +62,7 @@ new class extends Component {
     }
 
     /**
-     * Call the configured provider for a reply. Never throws to the UI — on
+     * Call the configured provider for a reply. Never throws to the UI - on
      * failure it shows a friendly fallback so the widget stays usable.
      */
     public function reply(ChatAssistant $assistant): void
@@ -71,10 +71,10 @@ new class extends Component {
             $answer = $assistant->reply($this->payload());
         } catch (\Throwable $e) {
             report($e);
-            $answer = 'Sorry — I had trouble responding just now. Please try again, or reach our team on +254 713 777 111.';
+            $answer = 'Sorry - I had trouble responding just now. Please try again, or reach our team on +254 713 777 111.';
         }
 
-        $this->messages[] = ['role' => 'assistant', 'content' => $answer !== '' ? $answer : 'Sorry, I did not catch that — could you rephrase?'];
+        $this->messages[] = ['role' => 'assistant', 'content' => $answer !== '' ? $answer : 'Sorry, I did not catch that - could you rephrase?'];
         $this->thinking = false;
         $this->dispatch('chat-scroll');
     }

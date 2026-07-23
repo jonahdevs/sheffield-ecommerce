@@ -19,7 +19,7 @@ class QuotePdfService
     /**
      * Generate the quotation PDF, store it to disk and update document_path.
      * Returns the storage path on success, null on failure.
-     * Failure is logged but never throws — the quote is already sent even if
+     * Failure is logged but never throws - the quote is already sent even if
      * PDF generation fails.
      */
     public function generate(Quote $quote): ?string

@@ -10,7 +10,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Report delivery issue — {{ $order->order_number }}</title>
+    <title>Report delivery issue - {{ $order->order_number }}</title>
     @vite(['resources/css/app.css'])
 </head>
 <body class="min-h-screen bg-zinc-50 antialiased">
@@ -38,7 +38,7 @@
             <p class="mt-3 text-xs font-semibold uppercase tracking-widest text-zinc-400">Order {{ $order->order_number }}</p>
             <h1 class="mt-1 font-serif text-2xl font-black text-zinc-900">Report a delivery issue</h1>
             <p class="mt-2 text-sm text-zinc-500">
-                Tell us what's wrong — missing items, damage, or anything else. Our team will follow up within one business day.
+                Tell us what's wrong - missing items, damage, or anything else. Our team will follow up within one business day.
             </p>
         </div>
 

@@ -4,7 +4,7 @@ Syncs paid orders to the SAP Business One middleware, which posts an invoice and
 returns a KRA **CU (Control Unit) number** used to generate the tax receipt.
 
 The flow is two-phase and resilient: an invoice is created immediately, then the
-CU number arrives asynchronously — preferably via webhook, with a polling job as
+CU number arrives asynchronously - preferably via webhook, with a polling job as
 a safety net so a lost webhook never leaves an order un-validated.
 
 ---
@@ -35,15 +35,15 @@ Whichever path returns the CU number first wins; the other becomes a no-op
 (`RecoverSapInvoiceJob` exits early if the webhook already completed, and the
 webhook handler is idempotent on duplicate CU numbers).
 
-### Sync statuses — `App\Enums\SapSyncStatus`
+### Sync statuses - `App\Enums\SapSyncStatus`
 
 | Status        | Meaning                                                        |
 |---------------|----------------------------------------------------------------|
 | `PENDING`     | Paid, job not yet dispatched                                   |
-| `SYNCING`     | `SyncOrderToSapJob` running — `POST /api/invoice/create`       |
+| `SYNCING`     | `SyncOrderToSapJob` running - `POST /api/invoice/create`       |
 | `AWAITING_CU` | Invoice created in SAP, waiting for the KRA CU number          |
 | `COMPLETED`   | CU number received and receipt generated (terminal)           |
-| `FAILED`      | Exhausted all retries — staff alerted (terminal)              |
+| `FAILED`      | Exhausted all retries - staff alerted (terminal)              |
 | `RETURNED`    | SAP notified us the order was returned (terminal)             |
 
 ---
@@ -55,7 +55,7 @@ webhook handler is idempotent on duplicate CU numbers).
 | Class                       | Responsibility                                                                 |
 |-----------------------------|--------------------------------------------------------------------------------|
 | `SapIntegrationService`     | Orchestrates the two API calls (`syncOrder`, `validateInvoice`); writes `sap_sync_logs`; redacts secrets before logging. |
-| `SapClient`                 | Thin `Http` wrapper — auth header, SSL, timeout; maps failures to `SapApiException`. |
+| `SapClient`                 | Thin `Http` wrapper - auth header, SSL, timeout; maps failures to `SapApiException`. |
 | `SapConfig`                 | Resolves config, preferring admin-editable `IntegrationSettings` over `config/sap.php`. |
 | `SapWebhookHandler`         | Verifies the webhook secret and dispatches CU-number / return events.          |
 | `KraReceiptService`         | Generates the KRA tax receipt once a CU number is stored.                      |
@@ -72,13 +72,13 @@ webhook handler is idempotent on duplicate CU numbers).
 | HTTP in       | `App\Http\Controllers\Integrations\SapWebhookController` (`POST /api/webhooks/sap`), `SapSyncController` (`POST /api/products/sync`) |
 | Middleware    | `App\Http\Middleware\VerifySapSecret`                                  |
 | Command       | `php artisan sap:resync` (`App\Console\Commands\SapResyncCommand`)     |
-| Model         | `App\Models\SapSyncLog` — audit trail of every request/response       |
+| Model         | `App\Models\SapSyncLog` - audit trail of every request/response       |
 | Notification  | `App\Notifications\SapSyncFailedNotification`                          |
 | Admin UI      | `pages::admin.sap-sync` (live monitor, `admin.sap-sync` broadcast channel) |
 
 ---
 
-## Payload — `SapOrderPayload::fromOrder()`
+## Payload - `SapOrderPayload::fromOrder()`
 
 Three top-level blocks:
 
@@ -87,7 +87,7 @@ Three top-level blocks:
   "credit_guard_response": { /* payment details, gateway-aware */ },
   "customer": { /* name, email, address, phone, notes, timestamps */ },
   "order": {
-    "Orderid": 296,                 // numeric — SAP types this as Int64
+    "Orderid": 296,                 // numeric - SAP types this as Int64
     "reference": "SHF-2026-00296",  // human-facing order number
     "payment_status": "Paid",
     "cart": { "debit_total_price": 11040, "lines": [ /* … */ ] }
@@ -100,17 +100,17 @@ Three top-level blocks:
 The keys are SAP's legacy Credit Guard (card gateway) contract and stay stable,
 but the values are populated from **whichever gateway settled the payment**:
 
-- **`uid`** — settlement reference SAP reconciles the receipt against. Prefers the
+- **`uid`** - settlement reference SAP reconciles the receipt against. Prefers the
   M-Pesa/mobile-money receipt when present, else the gateway's own reference
   (Paystack reference → Stripe charge/intent).
-- **`cgUid`** — the gateway's internal transaction id (Paystack `payload.id`,
+- **`cgUid`** - the gateway's internal transaction id (Paystack `payload.id`,
   Stripe charge id, M-Pesa `checkout_request_id`).
 - **Card fields** (`cardBrand`, `cardNo` [last-4], `cardExpiration` [`MMYY`],
-  `creditCardToken`) — filled only for card rails (Paystack `channel = card`, or
+  `creditCardToken`) - filled only for card rails (Paystack `channel = card`, or
   Stripe). Mobile-money / bank-transfer leave them empty.
-- **`numberOfPayments`** — `"1"` when settled, `"0"` when there is no successful payment.
+- **`numberOfPayments`** - `"1"` when settled, `"0"` when there is no successful payment.
 
-> ⚠️ `Orderid` **must** stay numeric — SAP's deserializer rejects the whole payload
+> ⚠️ `Orderid` **must** stay numeric - SAP's deserializer rejects the whole payload
 > with an `Int64` conversion error otherwise. The order reference travels in
 > `reference`.
 
@@ -118,7 +118,7 @@ but the values are populated from **whichever gateway settled the payment**:
 
 `SapIntegrationService::redactPayload()` masks only `creditCardToken` and
 `personalId` before writing to `sap_sync_logs`. Everything else stays readable so
-syncs can be audited. **The payload sent over the wire is un-redacted** — inspect
+syncs can be audited. **The payload sent over the wire is un-redacted** - inspect
 it in Telescope → **HTTP Client** (`/telescope/client-requests`).
 
 ---
@@ -136,20 +136,20 @@ Values resolve from `IntegrationSettings` (admin UI) first, then `config/sap.php
 | `KRA_BUSINESS_PIN`            | Business PIN for KRA                                |
 | `SAP_VERIFY_SSL`              | TLS verification (default `true`)                  |
 | `SAP_RECOVERY_DELAY_MINUTES`  | Delay before `RecoverSapInvoiceJob` polls          |
-| `sap_enabled` (setting)       | Master switch — no sync dispatched when off        |
+| `sap_enabled` (setting)       | Master switch - no sync dispatched when off        |
 | `sap_auto_sync_orders` (setting) | Auto-dispatch sync on order confirmation        |
 
 ---
 
 ## Retries & failures
 
-- **`SyncOrderToSapJob`** — 3 tries, backoff `60/300/900s`.
-- **`RecoverSapInvoiceJob`** — 2 tries, backoff `300/900s`, 4-min HTTP timeout.
-- **`SapApiException::isRetryable()`** — retries connection failures (status `0`),
+- **`SyncOrderToSapJob`** - 3 tries, backoff `60/300/900s`.
+- **`RecoverSapInvoiceJob`** - 2 tries, backoff `300/900s`, 4-min HTTP timeout.
+- **`SapApiException::isRetryable()`** - retries connection failures (status `0`),
   `429`, and all `5xx`. Client `4xx` errors fail immediately (retrying won't help).
 - On permanent failure, order → `FAILED` and staff receive `SapSyncFailedNotification`.
 - If Phase 1 already created the invoice, `SyncOrderToSapJob::failed()` does **not**
-  mark the order `FAILED` — it lets `RecoverSapInvoiceJob` own the final outcome.
+  mark the order `FAILED` - it lets `RecoverSapInvoiceJob` own the final outcome.
 
 ---
 
@@ -177,9 +177,9 @@ In production the scheduler runs a worker automatically
 - *Job runs but nothing in Telescope HTTP Client?* You're on the **Requests** tab
   (incoming). Outgoing SAP calls are under **HTTP Client**.
 - *Every re-sync shows FAIL with "Invoice already created"?* SAP already has that
-  invoice — currently treated as a hard failure. (Idempotent handling is a known
+  invoice - currently treated as a hard failure. (Idempotent handling is a known
   TODO.)
-- *Code change not taking effect?* `queue:work` caches code in memory — restart
+- *Code change not taking effect?* `queue:work` caches code in memory - restart
   the worker after edits.
 
 ---
@@ -197,7 +197,7 @@ php artisan test --compact --filter=Sap
 
 ---
 
-## Appendix — Example payloads
+## Appendix - Example payloads
 
 The values below are what actually goes over the wire (Telescope → **HTTP Client**).
 The `customer` and `order` blocks are identical every time; only
@@ -205,7 +205,7 @@ The `customer` and `order` blocks are identical every time; only
 gateway (card / M-Pesa / Airtel / Pesalink); direct M-Pesa and Stripe are dormant
 fallbacks.
 
-### Full payload — Paystack **Card**
+### Full payload - Paystack **Card**
 
 ```json
 {
@@ -257,7 +257,7 @@ fallbacks.
 > (`line_total_cents`). `Orderid` must stay numeric (SAP `Int64`); the human
 > reference is in `reference`.
 
-For the rest, only `credit_guard_response` differs — the `customer` / `order`
+For the rest, only `credit_guard_response` differs - the `customer` / `order`
 blocks are unchanged.
 
 ### Paystack **M-Pesa** (mobile money)
@@ -323,7 +323,7 @@ Same shape as M-Pesa. Airtel settles through Paystack's `mobile_money` channel;
 ```
 No receipt for a bank transfer, so `uid` = the Paystack reference.
 
-### Direct **M-Pesa (Daraja)** — dormant fallback
+### Direct **M-Pesa (Daraja)** - dormant fallback
 
 ```json
 {
@@ -343,7 +343,7 @@ No receipt for a bank transfer, so `uid` = the Paystack reference.
 ```
 `uid` = the M-Pesa receipt; `cgUid` = the STK `checkout_request_id`.
 
-### **Stripe** — dormant fallback
+### **Stripe** - dormant fallback
 
 ```json
 {

@@ -32,7 +32,7 @@
             @php $isStaff = auth()->user()->roles->isNotEmpty(); @endphp
 
             @if ($isStaff)
-                {{-- Staff don't have a customer self-service area — link them into
+                {{-- Staff don't have a customer self-service area - link them into
                      the admin panel instead of the customer account pages. --}}
                 <div class="py-1.5">
                     <a href="{{ route('admin.dashboard') }}" wire:navigate

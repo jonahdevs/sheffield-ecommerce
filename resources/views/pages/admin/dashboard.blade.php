@@ -183,7 +183,7 @@ new #[Layout('layouts::app')] #[Title('Dashboard | Admin')] class extends Compon
                 ->limit(5)
                 ->get();
 
-            // Sales by county — geo-resolved from each order's address pin.
+            // Sales by county - geo-resolved from each order's address pin.
             $countyRows = DB::table('orders')
                 ->join('addresses', 'orders.address_id', '=', 'addresses.id')
                 ->whereIn('orders.status', self::PAID_STATUSES)
@@ -422,7 +422,7 @@ new #[Layout('layouts::app')] #[Title('Dashboard | Admin')] class extends Compon
         return $rows
             ->map(
                 fn($r) => [
-                    'name' => $r->name ?? '—',
+                    'name' => $r->name ?? '-',
                     'units' => (int) $r->units,
                     'pct' => $max > 0 ? (int) round(($r->units / $max) * 100) : 0,
                 ],
@@ -471,7 +471,7 @@ new #[Layout('layouts::app')] #[Title('Dashboard | Admin')] class extends Compon
         return is_string($status) ? $status : null;
     }
 
-    /** A human, status-aware label — "Payment received", "Order cancelled"… */
+    /** A human, status-aware label - "Payment received", "Order cancelled"… */
     public function activityLabel(Activity $a): string
     {
         $created = $a->description === 'created';
@@ -530,7 +530,7 @@ new #[Layout('layouts::app')] #[Title('Dashboard | Admin')] class extends Compon
         };
     }
 
-    /** "Order SHF-… · Jane Doe" — what was acted on and by whom. */
+    /** "Order SHF-… · Jane Doe" - what was acted on and by whom. */
     public function activityTarget(Activity $a): ?string
     {
         $subject = $a->subject;
@@ -563,7 +563,7 @@ new #[Layout('layouts::app')] #[Title('Dashboard | Admin')] class extends Compon
         }
 
         /* ApexCharts axis ticks and legend keys default to a dark ink that is
-           invisible on the dark card background — force a legible muted tone. */
+           invisible on the dark card background - force a legible muted tone. */
         .dark .apexcharts-xaxis-label,
         .dark .apexcharts-yaxis-label,
         .dark .apexcharts-xaxis-title text,
@@ -703,7 +703,7 @@ new #[Layout('layouts::app')] #[Title('Dashboard | Admin')] class extends Compon
                                     </div>
                                 </td>
                                 <td class="px-3 py-3 text-zinc-700 dark:text-zinc-300">
-                                    {{ $order->user?->name ?? '—' }}</td>
+                                    {{ $order->user?->name ?? '-' }}</td>
                                 <td
                                     class="px-3 py-3 text-right font-semibold tabular-nums text-zinc-900 dark:text-zinc-100">
                                     {!! money($order->total_cents) !!}</td>
@@ -737,7 +737,7 @@ new #[Layout('layouts::app')] #[Title('Dashboard | Admin')] class extends Compon
                             <tr class="hover:bg-zinc-50 dark:hover:bg-zinc-800/40">
                                 <td class="px-6 py-3 text-zinc-800 dark:text-zinc-200">
                                     {{ Str::limit($product->name, 45) }}</td>
-                                <td class="px-3 py-3 font-mono text-xs text-zinc-400">{{ $product->sku ?? '—' }}</td>
+                                <td class="px-3 py-3 font-mono text-xs text-zinc-400">{{ $product->sku ?? '-' }}</td>
                                 <td class="px-3 py-3">
                                     <flux:badge size="sm"
                                         :color="$product->stock_quantity === 0 ? 'red' : 'amber'">
@@ -838,7 +838,7 @@ new #[Layout('layouts::app')] #[Title('Dashboard | Admin')] class extends Compon
                     mode: 'range',
                     dateFormat: 'M j, Y',
                     // Pass Date objects (not Y-m-d strings) so flatpickr doesn't try to
-                    // parse them with the display dateFormat above — otherwise the input
+                    // parse them with the display dateFormat above - otherwise the input
                     // renders empty and the active default range isn't shown.
                     defaultDate: [new Date(from + 'T00:00:00'), new Date(to + 'T00:00:00')],
                     maxDate: 'today',

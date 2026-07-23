@@ -13,7 +13,7 @@ use Livewire\Attributes\Url;
  * Shared product-filter state and query logic for the storefront listing pages
  * (catalog and category). Both pages expose the same price / brand / rating /
  * availability facets and paginate the same way; each keeps only its divergent
- * bits — the category facet, its own category scope, and any extra filters
+ * bits - the category facet, its own category scope, and any extra filters
  * (catalog's free-text search, tags and new-arrivals).
  *
  * The host component must define a `products` computed property (unset here to
@@ -27,7 +27,7 @@ trait HasProductFilters
     public bool $showFilters = false;
 
     /**
-     * Category facet selection, as slugs — the catalog matches them directly, the
+     * Category facet selection, as slugs - the catalog matches them directly, the
      * category page resolves them to child-category subtrees.
      *
      * @var array<int, string>
@@ -61,8 +61,8 @@ trait HasProductFilters
 
     /**
      * Mirror the facet arrays back into the URL parameters. Done on render rather
-     * than in an `updated` hook so that every mutation path — checkbox, chip
-     * dismissal, "clear filters" — keeps the query string in step.
+     * than in an `updated` hook so that every mutation path - checkbox, chip
+     * dismissal, "clear filters" - keeps the query string in step.
      */
     public function renderingHasProductFilters(): void
     {

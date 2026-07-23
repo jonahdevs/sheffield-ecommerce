@@ -1,4 +1,4 @@
-{{-- Variation selector for a variable product — one swatch/pill row per variation
+{{-- Variation selector for a variable product - one swatch/pill row per variation
      attribute. Price and stock for the chosen combination live in the add-to-cart
      modal, so this renders the option buttons and nothing else.
 
@@ -6,8 +6,8 @@
      $this->isOptionAvailable(), selectOption() and an array $selectedOptions.
 
      Params:
-       keyPrefix    — wire:key namespace for the attribute rows
-       wrapperClass — spacing for the host context --}}
+       keyPrefix    - wire:key namespace for the attribute rows
+       wrapperClass - spacing for the host context --}}
 @php
     $keyPrefix = $keyPrefix ?? 'attr';
     $wrapperClass = $wrapperClass ?? 'space-y-4';
@@ -34,7 +34,7 @@
                     @if ($val->color_code)
                         <button type="button" wire:click="selectOption('{{ $attr['slug'] }}', '{{ $val->slug }}')"
                             @disabled(!$avail)
-                            title="{{ $val->label ?: $val->value }}{{ $avail ? '' : ' — out of stock' }}"
+                            title="{{ $val->label ?: $val->value }}{{ $avail ? '' : ' - out of stock' }}"
                             @class([
                                 'size-7 rounded-full border-2 transition',
                                 'border-ink ring-1 ring-ink ring-offset-1' => $isSel,

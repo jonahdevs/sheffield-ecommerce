@@ -25,7 +25,7 @@
 |:--|:--------|:----|----:|
 @foreach($items as $i => $item)
 @php $snap = is_array($item->product_snapshot) ? $item->product_snapshot : json_decode($item->product_snapshot, true); @endphp
-| {{ $i + 1 }} | {{ $snap['name'] ?? '—' }} | {{ $snap['sku'] ?? '—' }} | {{ $item->quantity }} |
+| {{ $i + 1 }} | {{ $snap['name'] ?? '-' }} | {{ $snap['sku'] ?? '-' }} | {{ $item->quantity }} |
 @endforeach
 </x-mail::table>
 

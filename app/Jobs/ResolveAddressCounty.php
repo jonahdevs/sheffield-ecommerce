@@ -9,7 +9,7 @@ use Illuminate\Foundation\Queue\Queueable;
 
 /**
  * Resolves an address pin to its county off the request cycle. Uses the local
- * GeoJSON boundary lookup (see CountyResolver) — no external API call.
+ * GeoJSON boundary lookup (see CountyResolver) - no external API call.
  */
 class ResolveAddressCounty implements ShouldQueue
 {

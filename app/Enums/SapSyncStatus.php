@@ -5,10 +5,10 @@ namespace App\Enums;
 enum SapSyncStatus: string
 {
     case PENDING = 'pending';        // Paid, job not yet dispatched
-    case SYNCING = 'syncing';        // SyncOrderToSapJob running — POST /api/invoice/create
+    case SYNCING = 'syncing';        // SyncOrderToSapJob running - POST /api/invoice/create
     case AWAITING_CU = 'awaiting_cu'; // Invoice created in SAP, waiting for KRA CU number
     case COMPLETED = 'completed';    // CU number received and receipt generated
-    case FAILED = 'failed';          // Exhausted all retries — admin alert sent
+    case FAILED = 'failed';          // Exhausted all retries - admin alert sent
     case RETURNED = 'returned';      // SAP notified us the order was returned
 
     public function label(): string

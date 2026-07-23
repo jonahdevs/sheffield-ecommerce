@@ -229,7 +229,7 @@ new #[Layout('layouts::app')] #[Title('Order | Admin')] class extends Component
             'notes' => $this->shipmentNotes ?: null,
         ]);
 
-        // Creating a shipment is the trigger for "out for delivery" — advance the status automatically.
+        // Creating a shipment is the trigger for "out for delivery" - advance the status automatically.
         if ($this->order->status === OrderStatus::PROCESSING) {
             $this->order->update(['status' => OrderStatus::OUT_FOR_DELIVERY, 'shipped_at' => now()]);
             $this->order->recordStatusChange(OrderStatus::PROCESSING, OrderStatus::OUT_FOR_DELIVERY, null, auth()->id());
@@ -489,7 +489,7 @@ new #[Layout('layouts::app')] #[Title('Order | Admin')] class extends Component
                                     </div>
                                 </flux:table.cell>
                                 <flux:table.cell>
-                                    <span class="font-mono text-xs text-zinc-400">{{ $item->product_sku ?: '—' }}</span>
+                                    <span class="font-mono text-xs text-zinc-400">{{ $item->product_sku ?: '-' }}</span>
                                 </flux:table.cell>
                                 <flux:table.cell align="end" class="tabular-nums text-zinc-500">{!! money($item->unit_price_cents) !!}</flux:table.cell>
                                 <flux:table.cell align="end" class="tabular-nums text-zinc-500">{{ $item->quantity }}</flux:table.cell>
@@ -575,7 +575,7 @@ new #[Layout('layouts::app')] #[Title('Order | Admin')] class extends Component
                     @php
                         $orderSteps = [
                             ['value' => 'pending', 'label' => 'Order Placed', 'icon' => 'clipboard-document-check', 'desc' => 'The order was placed successfully.'],
-                            ['value' => 'processing', 'label' => 'Being Prepared', 'icon' => 'cog-6-tooth', 'desc' => 'Payment received — items are being processed.'],
+                            ['value' => 'processing', 'label' => 'Being Prepared', 'icon' => 'cog-6-tooth', 'desc' => 'Payment received - items are being processed.'],
                             ['value' => 'out_for_delivery', 'label' => 'Out for Delivery', 'icon' => 'truck', 'desc' => 'The order is on its way to the customer.'],
                             ['value' => 'completed', 'label' => 'Delivered', 'icon' => 'check-badge', 'desc' => 'The order was delivered successfully.'],
                         ];
@@ -1002,14 +1002,14 @@ new #[Layout('layouts::app')] #[Title('Order | Admin')] class extends Component
 
             <flux:input wire:model="trackingNumber" label="Tracking number" placeholder="e.g. SHF-TRK-XXXX" />
 
-            {{-- Delivery driver — for own-fleet deliveries with no external waybill. --}}
+            {{-- Delivery driver - for own-fleet deliveries with no external waybill. --}}
             <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <flux:input wire:model="driverName" label="Driver name" placeholder="e.g. John Kamau" />
                 <flux:input wire:model="driverPhone" label="Driver phone" placeholder="e.g. 0712 345 678" />
             </div>
 
             <flux:select wire:model="warehouseId" label="Pickup warehouse">
-                <flux:select.option :value="null">None — delivery to customer</flux:select.option>
+                <flux:select.option :value="null">None - delivery to customer</flux:select.option>
                 @foreach ($this->warehouses as $wh)
                     <flux:select.option :value="$wh->id">{{ $wh->name }}</flux:select.option>
                 @endforeach

@@ -285,7 +285,7 @@ new #[Layout('layouts::storefront')] #[Title('Request a quote')] class extends C
                     'quote_id' => $quote->id,
                     'product_id' => $line['product']->id,
                     'product_snapshot' => [
-                        'name' => $line['product']->name . ($line['label'] ? ' — ' . $line['label'] : ''),
+                        'name' => $line['product']->name . ($line['label'] ? ' - ' . $line['label'] : ''),
                         'sku' => $line['variant']?->sku ?? $line['product']->sku,
                         'model_number' => $line['product']->model_number,
                         'slug' => $line['product']->slug,
@@ -396,7 +396,7 @@ new #[Layout('layouts::storefront')] #[Title('Request a quote')] class extends C
                                     </span>
                                     <div>
                                         <div class="text-sm font-semibold text-ink">Collect from Sheffield</div>
-                                        <div class="mt-0.5 text-xs text-ink-3">Pick up from our Nairobi showroom —
+                                        <div class="mt-0.5 text-xs text-ink-3">Pick up from our Nairobi showroom -
                                             free.</div>
                                     </div>
                                 </button>
@@ -471,7 +471,7 @@ new #[Layout('layouts::storefront')] #[Title('Request a quote')] class extends C
                                                 <flux:label>Address / location <span class="ms-0.5 text-red-500">*</span>
                                                 </flux:label>
                                                 <flux:textarea wire:model="delivery_address" rows="2"
-                                                    placeholder="e.g. Westlands, Nairobi — or a full street address" />
+                                                    placeholder="e.g. Westlands, Nairobi - or a full street address" />
                                                 <flux:error name="delivery_address" />
                                             </flux:field>
                                         @endguest
@@ -578,7 +578,7 @@ new #[Layout('layouts::storefront')] #[Title('Request a quote')] class extends C
                             </span>
                             <span class="flex items-center gap-2">
                                 <flux:icon.document-text variant="micro" class="size-3.5 text-brand-500" />
-                                No obligation — review before you commit
+                                No obligation - review before you commit
                             </span>
                         </div>
                     </div>
@@ -597,11 +597,7 @@ new #[Layout('layouts::storefront')] #[Title('Request a quote')] class extends C
                 spellcheck="false" autofocus icon="magnifying-glass" clearable
                 placeholder="Search products by name, brand or SKU…" />
 
-            <div class="mt-4 mb-1 text-xs font-bold tracking-widest text-ink-4 uppercase">
-                {{ strlen(trim($itemSearch)) >= 2 ? 'Results' : 'Browse the catalog' }}
-            </div>
-
-            <div class="max-h-96 overflow-y-auto scrollbar-thin">
+            <div class="mt-4 max-h-96 overflow-y-auto scrollbar-thin">
                 @if ($this->searchResults->isEmpty())
                     <div class="py-12 text-center">
                         @if (strlen(trim($itemSearch)) >= 2)
@@ -666,13 +662,6 @@ new #[Layout('layouts::storefront')] #[Title('Request a quote')] class extends C
                         </div>
                     @endif
                 @endif
-            </div>
-
-            <div class="mt-5 flex items-center justify-between border-t border-zinc-100 pt-4">
-                <span class="text-xs text-ink-3">{{ $this->lines->count() }}
-                    item{{ $this->lines->count() === 1 ? '' : 's' }} in quote</span>
-                <flux:button type="button" variant="customer-primary" size="customer"
-                    x-on:click="$flux.modals().close()">Done</flux:button>
             </div>
         </div>
     </flux:modal>

@@ -4,7 +4,7 @@ use App\Support\MediaNaming;
 use Illuminate\Support\Facades\File;
 
 // products.json points at image files by path, but nothing fails loudly when one is
-// missing — the seeder just skips it and the product goes live with no photo. These
+// missing - the seeder just skips it and the product goes live with no photo. These
 // checks are pure file/JSON validation, so they need no seeding.
 
 /** @return array<int, array<string, mixed>> */
@@ -44,8 +44,8 @@ it('names gallery images after the primary image, numbered from one', function (
     foreach (catalogue() as $product) {
         // Gallery files sit alongside the primary image under the same base name.
         // Keying off `image` rather than the product name covers grouped products
-        // too: a parent owns no photo of its own, so its `image` — and therefore
-        // its gallery — carries the default variant's file name.
+        // too: a parent owns no photo of its own, so its `image` - and therefore
+        // its gallery - carries the default variant's file name.
         $base = pathinfo($product['image'] ?? '', PATHINFO_FILENAME);
 
         foreach ($product['gallery'] ?? [] as $i => $path) {

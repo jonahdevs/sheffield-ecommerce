@@ -164,7 +164,7 @@ new #[Layout('layouts::storefront')] #[Title('Checkout')] class extends Componen
     public function placeOrder(): void
     {
         // If the order was already placed in this session and is still awaiting
-        // payment, just re-open the Paystack popup for it — don't create a
+        // payment, just re-open the Paystack popup for it - don't create a
         // duplicate. This is what a re-click after dismissing the popup hits.
         if ($this->payOrderId) {
             $existing = Order::find($this->payOrderId);
@@ -212,7 +212,7 @@ new #[Layout('layouts::storefront')] #[Title('Checkout')] class extends Componen
             $quote = app(DeliveryResolver::class)->quoteDefault($address->latitude, $address->longitude, $subtotalCents);
 
             if (!$quote->serviceable) {
-                $this->addError('selectedAddressId', "We don't deliver to this location yet — choose pickup or request a quote.");
+                $this->addError('selectedAddressId', "We don't deliver to this location yet - choose pickup or request a quote.");
 
                 return;
             }
@@ -222,7 +222,7 @@ new #[Layout('layouts::storefront')] #[Title('Checkout')] class extends Componen
         $vatCents = $tax->taxForCart($lines);
         $deliveryCents = $quote->feeCents;
 
-        // Revalidate the coupon at placement time — it may have expired or hit
+        // Revalidate the coupon at placement time - it may have expired or hit
         // its limit between when the customer applied it and now.
         $coupon = null;
         if ($this->appliedCouponId) {
@@ -270,7 +270,7 @@ new #[Layout('layouts::storefront')] #[Title('Checkout')] class extends Componen
                     'product_id' => $product->id,
                     'product_variant_id' => $variant?->id,
                     'product_snapshot' => [
-                        'name' => $product->name . ($line['label'] ? ' — ' . $line['label'] : ''),
+                        'name' => $product->name . ($line['label'] ? ' - ' . $line['label'] : ''),
                         'sku' => $variant?->sku ?? $product->sku,
                         'model_number' => $product->model_number,
                     ],
@@ -390,7 +390,7 @@ new #[Layout('layouts::storefront')] #[Title('Checkout')] class extends Componen
 
                     <div class="p-6">
                         @if ($this->deliveryMethod === 'pickup')
-                            <p class="text-sm text-ink-3">Collecting from our Nairobi showroom — no delivery address
+                            <p class="text-sm text-ink-3">Collecting from our Nairobi showroom - no delivery address
                                 required.</p>
                         @elseif ($this->selectedAddress)
                             @php $address = $this->selectedAddress; @endphp
@@ -441,7 +441,7 @@ new #[Layout('layouts::storefront')] #[Title('Checkout')] class extends Componen
                             <div class="text-sm font-semibold text-ink">
                                 {{ $deliveryLabels[$this->deliveryMethod] }}</div>
                             @if ($this->deliveryMethod === 'pickup')
-                                <div class="mt-0.5 text-xs text-ink-3">Collect from our Nairobi showroom — free.
+                                <div class="mt-0.5 text-xs text-ink-3">Collect from our Nairobi showroom - free.
                                 </div>
                             @elseif (!$this->selectedAddress)
                                 <div class="mt-0.5 text-xs text-ink-3">Add a delivery address to see availability
@@ -451,7 +451,7 @@ new #[Layout('layouts::storefront')] #[Title('Checkout')] class extends Componen
                                     Choose pickup or request a quote.</div>
                             @else
                                 <div class="mt-0.5 text-xs text-ink-3">
-                                    {{ $quote->zone?->name }}{{ $quote->etaLabel ? ' · ' . $quote->etaLabel : '' }} —
+                                    {{ $quote->zone?->name }}{{ $quote->etaLabel ? ' · ' . $quote->etaLabel : '' }} -
                                     @if ($quote->isFree)
                                         <span
                                             class="font-semibold text-emerald-600">Free{{ $quote->promotionName ? ' (' . $quote->promotionName . ')' : '' }}</span>
@@ -567,7 +567,7 @@ new #[Layout('layouts::storefront')] #[Title('Checkout')] class extends Componen
         </div>
     </div>
 
-    {{-- Address modal — select an existing address or add a new one --}}
+    {{-- Address modal - select an existing address or add a new one --}}
     @include('partials.storefront.address-modal')
 
     {{-- Delivery method modal --}}
@@ -584,7 +584,7 @@ new #[Layout('layouts::storefront')] #[Title('Checkout')] class extends Componen
                     <div>
                         <div class="text-sm font-semibold text-ink">{{ $title }}</div>
                         <div class="mt-0.5 text-xs text-ink-3">
-                            {{ $value === 'pickup' ? 'Collect from our Nairobi showroom — free.' : 'Delivery across Nairobi & nearby areas — free for launch.' }}
+                            {{ $value === 'pickup' ? 'Collect from our Nairobi showroom - free.' : 'Delivery across Nairobi & nearby areas - free for launch.' }}
                         </div>
                     </div>
                 </button>
@@ -610,7 +610,7 @@ new #[Layout('layouts::storefront')] #[Title('Checkout')] class extends Componen
                         this.processing = true;
                         this.$wire.verifyPayment(transaction.reference);
                     },
-                    // Dismissed: stay on checkout — the customer can click the
+                    // Dismissed: stay on checkout - the customer can click the
                     // button again to reopen the popup for the same order.
                     onCancel: () => {
                         this.processing = false;

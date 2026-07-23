@@ -1,4 +1,4 @@
-{{-- Step 1 body — pin the delivery location. Requires the addressMap() Alpine scope. --}}
+{{-- Step 1 body - pin the delivery location. Requires the addressMap() Alpine scope. --}}
 <div class="flex items-center justify-between">
     <flux:label>Pin location</flux:label>
     <div class="flex items-center gap-2">

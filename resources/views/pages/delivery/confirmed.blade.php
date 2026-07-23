@@ -10,7 +10,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Delivery confirmed — {{ $order->order_number }}</title>
+    <title>Delivery confirmed - {{ $order->order_number }}</title>
     @vite(['resources/css/app.css'])
 </head>
 <body class="min-h-screen bg-zinc-50 antialiased">
@@ -50,7 +50,7 @@
             </div>
             <ul class="divide-y divide-zinc-100">
                 @foreach ($order->items as $item)
-                    @php $name = $item->product_snapshot['name'] ?? $item->product_name ?? '—'; @endphp
+                    @php $name = $item->product_snapshot['name'] ?? $item->product_name ?? '-'; @endphp
                     <li class="flex items-center justify-between gap-4 px-5 py-3">
                         <span class="text-sm font-medium text-zinc-800">{{ $name }}</span>
                         <span class="shrink-0 text-sm text-zinc-400">× {{ $item->quantity }}</span>

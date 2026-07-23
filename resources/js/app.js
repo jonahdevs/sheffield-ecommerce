@@ -38,12 +38,12 @@ window.addEventListener('appinstalled', () => {
 
 // Replace wire:confirm's native browser dialog with the styled <x-confirm-dialog />
 // modal. Livewire exposes an overridable el.__livewire_confirm(action) hook per
-// element, and it tolerates the action being invoked asynchronously — so swapping
+// element, and it tolerates the action being invoked asynchronously - so swapping
 // the hook at click time (document capture fires before Livewire's own listener)
 // lets the modal decide later whether the action runs. Falls back to the native
 // dialog when the modal, Alpine, or Flux isn't on the page. wire:confirm.prompt
-// (typed confirmation) is not intercepted — its attribute name doesn't match.
-// Category mega-menu — a Reka-style navigation menu. Two stacked content layers
+// (typed confirmation) is not intercepted - its attribute name doesn't match.
+// Category mega-menu - a Reka-style navigation menu. Two stacked content layers
 // let the outgoing panel slide out toward the direction of travel while the
 // incoming panel slides in from the opposite edge, and the viewport morphs its
 // height between them. A short close delay bridges the gap between a trigger and
@@ -78,7 +78,7 @@ document.addEventListener('alpine:init', () => {
 
         // Pointer entered a trigger. Rather than a fixed dwell timer (which still
         // fires if the cursor merely slows while sweeping across), watch the
-        // pointer's speed: only open once it actually settles on the trigger — so
+        // pointer's speed: only open once it actually settles on the trigger - so
         // passing the cursor through the bar never pops the menu open. Once the
         // menu is already open, switching between triggers stays instant.
         hover(event, id, url) {
@@ -112,14 +112,14 @@ document.addEventListener('alpine:init', () => {
                 this.cancelOpen();
                 this._open(id, url, x);
             } else {
-                // Still moving — take a fresh sample and keep waiting.
+                // Still moving - take a fresh sample and keep waiting.
                 this._cx = this._px;
                 this._cy = this._py;
             }
         },
 
         // Pointer entered a category with no sub-categories. It can't open a panel,
-        // so it should dismiss the one that's showing — but the trigger grid is two
+        // so it should dismiss the one that's showing - but the trigger grid is two
         // rows deep and the panel hangs below both, so reaching the panel from a
         // top-row trigger means sweeping straight through the cell underneath it.
         // Mirror hover-intent: only dismiss once the pointer actually settles here.
@@ -144,19 +144,19 @@ document.addEventListener('alpine:init', () => {
             if (moved < this.sensitivity) {
                 this.close();
             } else {
-                // Still travelling — take a fresh sample and keep waiting.
+                // Still travelling - take a fresh sample and keep waiting.
                 this._cx = this._px;
                 this._cy = this._py;
             }
         },
 
         // Left the plain link before it settled (into the panel, or back to a
-        // trigger) — the menu stays as it was.
+        // trigger) - the menu stays as it was.
         cancelClose() {
             clearInterval(this._closeTimer);
         },
 
-        // Keyboard focus is deliberate — open immediately, no dwell.
+        // Keyboard focus is deliberate - open immediately, no dwell.
         focus(event, id, url) {
             this.cancelClose();
             this._open(id, url, this._pointerX(event));
@@ -172,7 +172,7 @@ document.addEventListener('alpine:init', () => {
             this.cancelOpen();
 
             // Direction follows the pointer's actual horizontal position, not the
-            // trigger's index — the trigger bar wraps onto two rows, so index order
+            // trigger's index - the trigger bar wraps onto two rows, so index order
             // wouldn't match where the mouse is really coming from.
             const direction = this._lastX === null || x >= this._lastX ? 'right' : 'left';
             this._lastX = x;
@@ -215,7 +215,7 @@ document.addEventListener('alpine:init', () => {
         },
 
         // Populate a layer and reveal it. On first open there's no directional
-        // motion — the viewport's scale-in unfold is the entrance. When switching
+        // motion - the viewport's scale-in unfold is the entrance. When switching
         // between triggers, the outgoing layer slides out toward the direction of
         // travel while the incoming one slides in from the opposite edge.
         swap(html, direction) {
@@ -265,7 +265,7 @@ document.addEventListener('alpine:init', () => {
             this._front = incoming;
         },
 
-        // Leaving a trigger before the pointer settles abandons the pending open —
+        // Leaving a trigger before the pointer settles abandons the pending open -
         // it never closes an already-open menu (that's the nav-level handler).
         cancelOpen() {
             clearInterval(this._intentTimer);
@@ -273,7 +273,7 @@ document.addEventListener('alpine:init', () => {
         },
 
         // The category bar scrolls away with the page, so any scroll means the
-        // visitor's focus has moved on — cancel a pending open and dismiss.
+        // visitor's focus has moved on - cancel a pending open and dismiss.
         onScroll() {
             this.cancelOpen();
 
@@ -282,7 +282,7 @@ document.addEventListener('alpine:init', () => {
             }
         },
 
-        // Closing is instant — fired the moment the pointer leaves the whole menu.
+        // Closing is instant - fired the moment the pointer leaves the whole menu.
         close() {
             this.cancelOpen();
             this.cancelClose();

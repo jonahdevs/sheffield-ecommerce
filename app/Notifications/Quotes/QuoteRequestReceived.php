@@ -31,7 +31,7 @@ class QuoteRequestReceived extends Notification implements ShouldQueue
         $quote = $this->quote;
 
         return (new MailMessage)
-            ->subject('We\'ve received your quote request — '.$quote->quote_number)
+            ->subject('We\'ve received your quote request - '.$quote->quote_number)
             ->view('mails.quotes.received', [
                 'quote' => $quote,
                 'customerName' => $quote->user?->name ?? $quote->contact_name ?? 'there',

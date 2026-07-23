@@ -18,9 +18,9 @@ use InvalidArgumentException;
  * Refunds a settled payment: reverses it at the gateway where supported, records
  * the refund (full or partial), advances the order, and notifies the customer.
  *
- * Paystack and Stripe refunds are issued live through the gateway API — Paystack
+ * Paystack and Stripe refunds are issued live through the gateway API - Paystack
  * reverses every channel (cards, M-Pesa, Airtel Money, bank transfer) for us.
- * Direct M-Pesa (Daraja) has no automated reversal in this integration — the
+ * Direct M-Pesa (Daraja) has no automated reversal in this integration - the
  * refund is recorded and the customer is notified, while finance reverses the
  * transaction through the Safaricom portal out of band.
  */
@@ -32,7 +32,7 @@ class RefundService
      */
     public function refund(Payment $payment, int $amountCents, ?string $reason = null, ?int $byUserId = null): Payment
     {
-        // One refund at a time per payment — prevents two concurrent admin clicks
+        // One refund at a time per payment - prevents two concurrent admin clicks
         // from both reading the same remaining balance and double-charging the gateway.
         $lock = Cache::lock("refund:{$payment->id}", 30);
 
@@ -58,7 +58,7 @@ class RefundService
                 throw new InvalidArgumentException("Refund amount must be between 1 and {$remaining} cents.");
             }
 
-            // Reverse at the gateway first — a rejected gateway refund must not leave
+            // Reverse at the gateway first - a rejected gateway refund must not leave
             // a recorded refund that never actually happened. The lock is held during
             // the network call (not a DB transaction) to keep connections free.
             if ($payment->provider === 'paystack') {
@@ -89,7 +89,7 @@ class RefundService
                     $order->user?->notify(new RefundProcessed($order, $amountCents, $reason));
 
                     if ($payment->provider === 'mpesa') {
-                        Log::warning('M-Pesa refund recorded — reverse the transaction manually via Safaricom.', [
+                        Log::warning('M-Pesa refund recorded - reverse the transaction manually via Safaricom.', [
                             'payment_id' => $payment->id,
                             'order_id' => $order->id,
                             'amount_cents' => $amountCents,

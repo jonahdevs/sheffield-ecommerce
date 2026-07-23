@@ -70,10 +70,10 @@
                             @endif
                         </td>
                         <td class="border border-zinc-300 px-2 py-2 align-top text-zinc-600">
-                            {{ $product->brand?->name ?? '—' }}
+                            {{ $product->brand?->name ?? '-' }}
                         </td>
                         <td class="border border-zinc-300 px-2 py-2 align-top text-zinc-600">
-                            {{ $product->primaryCategory?->name ?? '—' }}
+                            {{ $product->primaryCategory?->name ?? '-' }}
                         </td>
                         <td class="border border-zinc-300 px-2 py-2 align-top text-right tabular-nums">
                             @if ($product->price !== null)
@@ -82,7 +82,7 @@
                                     <div class="text-[10px] text-zinc-500 mt-0.5">Sale: {{ number_format($product->sale_price / 100, 2) }}</div>
                                 @endif
                             @else
-                                <span class="text-zinc-400">—</span>
+                                <span class="text-zinc-400">-</span>
                             @endif
                         </td>
                         <td class="border border-zinc-300 px-2 py-2 align-top text-center text-zinc-700">

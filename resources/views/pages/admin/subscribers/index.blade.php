@@ -175,7 +175,7 @@ new #[Layout('layouts::app')] #[Title('Subscribers | Admin')] class extends Comp
                         </flux:table.cell>
 
                         <flux:table.cell>
-                            <flux:text size="sm" class="font-mono text-zinc-400">{{ $subscriber->source ?? '—' }}</flux:text>
+                            <flux:text size="sm" class="font-mono text-zinc-400">{{ $subscriber->source ?? '-' }}</flux:text>
                         </flux:table.cell>
 
                         <flux:table.cell>
@@ -190,7 +190,7 @@ new #[Layout('layouts::app')] #[Title('Subscribers | Admin')] class extends Comp
 
                         <flux:table.cell>
                             <flux:text size="sm" class="text-zinc-400">
-                                {{ $subscriber->subscribed_at?->format('d M Y') ?? '—' }}
+                                {{ $subscriber->subscribed_at?->format('d M Y') ?? '-' }}
                             </flux:text>
                         </flux:table.cell>
                     </flux:table.row>

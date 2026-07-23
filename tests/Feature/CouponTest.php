@@ -155,7 +155,7 @@ it('rejects a coupon not yet started', function () {
 it('rejects when cart subtotal is below minimum', function () {
     $coupon = Coupon::factory()->create(['min_subtotal_cents' => 500_000]); // KES 5,000
 
-    expect($coupon->validateFor(100_000))->not->toBeNull(); // KES 1,000 — too low
+    expect($coupon->validateFor(100_000))->not->toBeNull(); // KES 1,000 - too low
 });
 
 it('rejects an exhausted coupon', function () {
@@ -202,7 +202,7 @@ it('applies a valid coupon at checkout', function () {
     session()->put('cart', ['test-product' => 1]);
 
     Livewire::test('pages::storefront.checkout')
-        ->set('couponInput', 'checkout10') // lowercase — should still work
+        ->set('couponInput', 'checkout10') // lowercase - should still work
         ->call('applyCoupon')
         ->assertHasNoErrors()
         ->assertSet('appliedCouponCode', 'CHECKOUT10')

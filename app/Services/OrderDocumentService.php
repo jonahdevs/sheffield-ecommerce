@@ -21,7 +21,7 @@ class OrderDocumentService
 
     /**
      * Generate both dispatch documents in one call.
-     * Safe to call multiple times — regenerates and overwrites.
+     * Safe to call multiple times - regenerates and overwrites.
      */
     public function generateDispatchDocuments(Order $order): void
     {

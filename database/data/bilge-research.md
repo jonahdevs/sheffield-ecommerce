@@ -8,25 +8,25 @@ and one knee-operated hand wash basin. Every page and image URL below was verifi
 
 ## 1. Brand identification
 
-**Bilge Endüstriyel Mutfak Ekipmanları** — a Turkish commercial-kitchen-equipment group
+**Bilge Endüstriyel Mutfak Ekipmanları** - a Turkish commercial-kitchen-equipment group
 founded 1957, one of Turkey's first stainless-steel kitchenware makers. Two related entities:
 
 | Entity | Role | Site |
 |---|---|---|
-| Bilge Endüstriyel Mutfak Ekipmanları | Sales-facing brand — cooking, prep, storage, refrigeration, dishwashing, sinks | [bilgemutfak.com](https://www.bilgemutfak.com) |
-| Bilgeinox | Manufacturing arm — deep-drawn stainless steel, ~5,000 t/year, 52% exported | bilgeinox.com.tr |
+| Bilge Endüstriyel Mutfak Ekipmanları | Sales-facing brand - cooking, prep, storage, refrigeration, dishwashing, sinks | [bilgemutfak.com](https://www.bilgemutfak.com) |
+| Bilgeinox | Manufacturing arm - deep-drawn stainless steel, ~5,000 t/year, 52% exported | bilgeinox.com.tr |
 
-Sold by quote request rather than checkout, through a global distributor network — no
+Sold by quote request rather than checkout, through a global distributor network - no
 Kenya/Africa presence of their own.
 
-The GN range is the universal **EN 631 Gastronorm standard** — plan dimensions are identical
+The GN range is the universal **EN 631 Gastronorm standard** - plan dimensions are identical
 across every compliant manufacturer. Bilge's naming ("Standart Gastronom Küvet" = solid,
 "Delikli Gastronom Küvet" = perforated, "Kapak" = lid) is standard industry terminology, not
 a proprietary design.
 
 ---
 
-## 2. Where to look — and the two URL traps
+## 2. Where to look - and the two URL traps
 
 **The site is reliably fetchable, but the obvious URL guesses 404.**
 
@@ -37,7 +37,7 @@ a proprietary design.
    200:  /mutfak-urunleri/gastronom-kuvetler/standart-gastronom-kuvet/standart-gastronom-kuvet-gn-1-1-serisi
    ```
 
-2. **Product pages need the `www.` host** — the bare apex 404s on these paths. Image files
+2. **Product pages need the `www.` host** - the bare apex 404s on these paths. Image files
    serve fine from either host.
 
 | Resource | URL |
@@ -64,51 +64,51 @@ this document is from the 304-stainless `standart` / `delikli` lines.
 ## 3. Product reference
 
 Official page and spec source per catalogue SKU. **Model** is Bilge's real manufacturer code
-— note this differs from the catalogue's `model_number` field, which holds distributor
+- note this differs from the catalogue's `model_number` field, which holds distributor
 shorthand (see §6).
 
 | SKU | Catalogue name | Model | Official page | Spec source |
 |---|---|---|---|---|
-| IMG/TCW/00106 | GN Container 1/1 65 Bilge | 6005637 | [standart GN 1/1](https://www.bilgemutfak.com/mutfak-urunleri/gastronom-kuvetler/standart-gastronom-kuvet/standart-gastronom-kuvet-gn-1-1-serisi) | depth table on page — 9 L |
-| IMG/TCW/00112 | GN Container 1/1 100 Bilge | 6005657 | [standart GN 1/1](https://www.bilgemutfak.com/mutfak-urunleri/gastronom-kuvetler/standart-gastronom-kuvet/standart-gastronom-kuvet-gn-1-1-serisi) | depth table on page — 14 L |
-| IMG/TCW/00118 | GN Container 1/1 150 Bilge | 6005638 | [standart GN 1/1](https://www.bilgemutfak.com/mutfak-urunleri/gastronom-kuvetler/standart-gastronom-kuvet/standart-gastronom-kuvet-gn-1-1-serisi) | depth table on page — 21 L |
-| IMG/TCW/00124 | GN Container 1/1 200 Bilge | 6005512 | [standart GN 1/1](https://www.bilgemutfak.com/mutfak-urunleri/gastronom-kuvetler/standart-gastronom-kuvet/standart-gastronom-kuvet-gn-1-1-serisi) | depth table on page — 28 L |
-| IMG/TCW/00107 | GN Container 1/2 65 Bilge | 6005517 | [standart GN 1/2](https://www.bilgemutfak.com/mutfak-urunleri/gastronom-kuvetler/standart-gastronom-kuvet/standart-gastronom-kuvet-gn-1-2-serisi) | depth table on page — 4 L |
-| IMG/TCW/00113 | GN Container 1/2 100 Bilge | 6005518 | [standart GN 1/2](https://www.bilgemutfak.com/mutfak-urunleri/gastronom-kuvetler/standart-gastronom-kuvet/standart-gastronom-kuvet-gn-1-2-serisi) | depth table on page — 6.5 L |
-| IMG/TCW/00119 | GN Container 1/2 150 Bilge | 6005519 | [standart GN 1/2](https://www.bilgemutfak.com/mutfak-urunleri/gastronom-kuvetler/standart-gastronom-kuvet/standart-gastronom-kuvet-gn-1-2-serisi) | depth table on page — 9.5 L |
-| IMG/TCW/00108 | GN Container 1/3 65 Bilge | 6005523 | [standart GN 1/3](https://www.bilgemutfak.com/mutfak-urunleri/gastronom-kuvetler/standart-gastronom-kuvet/standart-gastronom-kuvet-gn-1-3-serisi) | depth table on page — 2.5 L |
-| IMG/TCW/00114 | GN Container 1/3 100 Bilge | 6005524 | [standart GN 1/3](https://www.bilgemutfak.com/mutfak-urunleri/gastronom-kuvetler/standart-gastronom-kuvet/standart-gastronom-kuvet-gn-1-3-serisi) | depth table on page — 4 L |
-| IMG/TCW/00120 | GN Container 1/3 150 Bilge | 6005525 | [standart GN 1/3](https://www.bilgemutfak.com/mutfak-urunleri/gastronom-kuvetler/standart-gastronom-kuvet/standart-gastronom-kuvet-gn-1-3-serisi) | depth table on page — **5.7 L** |
-| IMG/TCW/00115 | GN Container 1/4 100 Bilge | 6005529 | [standart GN 1/4](https://www.bilgemutfak.com/mutfak-urunleri/gastronom-kuvetler/standart-gastronom-kuvet/standart-gastronom-kuvet-gn-1-4-serisi) | depth table on page — 2.8 L |
-| IMG/TCW/00121 | GN Container 1/4 150 Bilge | 6005530 | [standart GN 1/4](https://www.bilgemutfak.com/mutfak-urunleri/gastronom-kuvetler/standart-gastronom-kuvet/standart-gastronom-kuvet-gn-1-4-serisi) | depth table on page — 4 L |
-| IMG/TCW/00110 | GN Container 1/6 65 Bilge | 6005658 | [standart GN 1/6](https://www.bilgemutfak.com/mutfak-urunleri/gastronom-kuvetler/standart-gastronom-kuvet/standart-gastronom-kuvet-gn-1-6-serisi) | depth table on page — 1 L |
-| IMG/TCW/00116 | GN Container 1/6 100 Bilge | 6005532 | [standart GN 1/6](https://www.bilgemutfak.com/mutfak-urunleri/gastronom-kuvetler/standart-gastronom-kuvet/standart-gastronom-kuvet-gn-1-6-serisi) | depth table on page — 1.6 L |
-| IMG/TCW/00122 | GN Container 1/6 150 Bilge | 6005533 | [standart GN 1/6](https://www.bilgemutfak.com/mutfak-urunleri/gastronom-kuvetler/standart-gastronom-kuvet/standart-gastronom-kuvet-gn-1-6-serisi) | depth table on page — 2.4 L |
-| IMG/TCW/00111 | GN Container 1/9 65 Bilge | 6005534 | [standart GN 1/9](https://www.bilgemutfak.com/mutfak-urunleri/gastronom-kuvetler/standart-gastronom-kuvet/standart-gastronom-kuvet-gn-1-9-serisi) | depth table on page — 0.6 L |
-| IMG/TCW/00117 | GN Container 1/9 100 Bilge | 6005641 | [standart GN 1/9](https://www.bilgemutfak.com/mutfak-urunleri/gastronom-kuvetler/standart-gastronom-kuvet/standart-gastronom-kuvet-gn-1-9-serisi) | depth table on page — **1 L** |
-| IMG/TCW/00103 | GN Container Perforated 1/1 65 Bilge | 6005649 | [delikli GN 1/1](https://www.bilgemutfak.com/mutfak-urunleri/gastronom-kuvetler/delikli-gastronom-kuvet/delikli-gastronom-kuvet-gn-1-1-serisi) | depth table on page — no litres published |
-| IMG/TCW/00104 | GN Container Perforated 1/1 100 Bilge | 6005576 | [delikli GN 1/1](https://www.bilgemutfak.com/mutfak-urunleri/gastronom-kuvetler/delikli-gastronom-kuvet/delikli-gastronom-kuvet-gn-1-1-serisi) | depth table on page — no litres published |
-| IMG/TCW/00105 | GN Container Perforated 1/2 100 Bilge | not listed | [delikli GN 1/2](https://www.bilgemutfak.com/mutfak-urunleri/gastronom-kuvetler/delikli-gastronom-kuvet/delikli-gastronom-kuvet-gn-1-2-serisi) | depth table on page — no litres published |
-| IMG/TCW/00125 | GN Lids 1/1 Bilge | 6005669 | [gastronom kapak](https://www.bilgemutfak.com/mutfak-urunleri/gastronom-kuvetler/gastronom-kapak/standart-gastronom-kapak) | size table on page — 530×325 |
-| IMG/TCW/00126 | GN Lids 1/2 Bilge | 6005604 | [gastronom kapak](https://www.bilgemutfak.com/mutfak-urunleri/gastronom-kuvetler/gastronom-kapak/standart-gastronom-kapak) | size table on page — 325×265 |
-| IMG/TCW/00127 | GN Lids 1/3 Bilge | 6005605 | [gastronom kapak](https://www.bilgemutfak.com/mutfak-urunleri/gastronom-kuvetler/gastronom-kapak/standart-gastronom-kapak) | size table on page — 325×176 |
-| IMG/TCW/00128 | GN Lids 1/4 Bilge | 6005651 | [gastronom kapak](https://www.bilgemutfak.com/mutfak-urunleri/gastronom-kuvetler/gastronom-kapak/standart-gastronom-kapak) | size table on page — 265×162 |
-| IMG/TCW/00129 | GN Lids 1/6 Bilge | 6005606 | [gastronom kapak](https://www.bilgemutfak.com/mutfak-urunleri/gastronom-kuvetler/gastronom-kapak/standart-gastronom-kapak) | size table on page — 176×162 |
-| IMG/TCW/00130 | GN Lids 1/9 Bilge | 6005607 | [gastronom kapak](https://www.bilgemutfak.com/mutfak-urunleri/gastronom-kuvetler/gastronom-kapak/standart-gastronom-kapak) | size table on page — 176×108 |
-| IMG/HYS/00001 | Hand Wash Basin Knee Operated Bilge | 6005202 | [dizden kumandalı evye](https://www.bilgemutfak.com/mutfak-urunleri/bulasikhane-ekipmanlari/yikama-aksesuarlari/dizden-kumandali-evye) | variant table on page — 400×400×220 |
-| IMG/HOT/00112 | Bain Marie Sauce Bin 240X210 | unknown | **none exists** — see §7 | none — [distributor listing](https://rs-horeca.az/Bilge-inox-bain-marie-sauce-bin-en) (Cloudflare-gated) |
+| IMG/TCW/00106 | GN Container 1/1 65 Bilge | 6005637 | [standart GN 1/1](https://www.bilgemutfak.com/mutfak-urunleri/gastronom-kuvetler/standart-gastronom-kuvet/standart-gastronom-kuvet-gn-1-1-serisi) | depth table on page - 9 L |
+| IMG/TCW/00112 | GN Container 1/1 100 Bilge | 6005657 | [standart GN 1/1](https://www.bilgemutfak.com/mutfak-urunleri/gastronom-kuvetler/standart-gastronom-kuvet/standart-gastronom-kuvet-gn-1-1-serisi) | depth table on page - 14 L |
+| IMG/TCW/00118 | GN Container 1/1 150 Bilge | 6005638 | [standart GN 1/1](https://www.bilgemutfak.com/mutfak-urunleri/gastronom-kuvetler/standart-gastronom-kuvet/standart-gastronom-kuvet-gn-1-1-serisi) | depth table on page - 21 L |
+| IMG/TCW/00124 | GN Container 1/1 200 Bilge | 6005512 | [standart GN 1/1](https://www.bilgemutfak.com/mutfak-urunleri/gastronom-kuvetler/standart-gastronom-kuvet/standart-gastronom-kuvet-gn-1-1-serisi) | depth table on page - 28 L |
+| IMG/TCW/00107 | GN Container 1/2 65 Bilge | 6005517 | [standart GN 1/2](https://www.bilgemutfak.com/mutfak-urunleri/gastronom-kuvetler/standart-gastronom-kuvet/standart-gastronom-kuvet-gn-1-2-serisi) | depth table on page - 4 L |
+| IMG/TCW/00113 | GN Container 1/2 100 Bilge | 6005518 | [standart GN 1/2](https://www.bilgemutfak.com/mutfak-urunleri/gastronom-kuvetler/standart-gastronom-kuvet/standart-gastronom-kuvet-gn-1-2-serisi) | depth table on page - 6.5 L |
+| IMG/TCW/00119 | GN Container 1/2 150 Bilge | 6005519 | [standart GN 1/2](https://www.bilgemutfak.com/mutfak-urunleri/gastronom-kuvetler/standart-gastronom-kuvet/standart-gastronom-kuvet-gn-1-2-serisi) | depth table on page - 9.5 L |
+| IMG/TCW/00108 | GN Container 1/3 65 Bilge | 6005523 | [standart GN 1/3](https://www.bilgemutfak.com/mutfak-urunleri/gastronom-kuvetler/standart-gastronom-kuvet/standart-gastronom-kuvet-gn-1-3-serisi) | depth table on page - 2.5 L |
+| IMG/TCW/00114 | GN Container 1/3 100 Bilge | 6005524 | [standart GN 1/3](https://www.bilgemutfak.com/mutfak-urunleri/gastronom-kuvetler/standart-gastronom-kuvet/standart-gastronom-kuvet-gn-1-3-serisi) | depth table on page - 4 L |
+| IMG/TCW/00120 | GN Container 1/3 150 Bilge | 6005525 | [standart GN 1/3](https://www.bilgemutfak.com/mutfak-urunleri/gastronom-kuvetler/standart-gastronom-kuvet/standart-gastronom-kuvet-gn-1-3-serisi) | depth table on page - **5.7 L** |
+| IMG/TCW/00115 | GN Container 1/4 100 Bilge | 6005529 | [standart GN 1/4](https://www.bilgemutfak.com/mutfak-urunleri/gastronom-kuvetler/standart-gastronom-kuvet/standart-gastronom-kuvet-gn-1-4-serisi) | depth table on page - 2.8 L |
+| IMG/TCW/00121 | GN Container 1/4 150 Bilge | 6005530 | [standart GN 1/4](https://www.bilgemutfak.com/mutfak-urunleri/gastronom-kuvetler/standart-gastronom-kuvet/standart-gastronom-kuvet-gn-1-4-serisi) | depth table on page - 4 L |
+| IMG/TCW/00110 | GN Container 1/6 65 Bilge | 6005658 | [standart GN 1/6](https://www.bilgemutfak.com/mutfak-urunleri/gastronom-kuvetler/standart-gastronom-kuvet/standart-gastronom-kuvet-gn-1-6-serisi) | depth table on page - 1 L |
+| IMG/TCW/00116 | GN Container 1/6 100 Bilge | 6005532 | [standart GN 1/6](https://www.bilgemutfak.com/mutfak-urunleri/gastronom-kuvetler/standart-gastronom-kuvet/standart-gastronom-kuvet-gn-1-6-serisi) | depth table on page - 1.6 L |
+| IMG/TCW/00122 | GN Container 1/6 150 Bilge | 6005533 | [standart GN 1/6](https://www.bilgemutfak.com/mutfak-urunleri/gastronom-kuvetler/standart-gastronom-kuvet/standart-gastronom-kuvet-gn-1-6-serisi) | depth table on page - 2.4 L |
+| IMG/TCW/00111 | GN Container 1/9 65 Bilge | 6005534 | [standart GN 1/9](https://www.bilgemutfak.com/mutfak-urunleri/gastronom-kuvetler/standart-gastronom-kuvet/standart-gastronom-kuvet-gn-1-9-serisi) | depth table on page - 0.6 L |
+| IMG/TCW/00117 | GN Container 1/9 100 Bilge | 6005641 | [standart GN 1/9](https://www.bilgemutfak.com/mutfak-urunleri/gastronom-kuvetler/standart-gastronom-kuvet/standart-gastronom-kuvet-gn-1-9-serisi) | depth table on page - **1 L** |
+| IMG/TCW/00103 | GN Container Perforated 1/1 65 Bilge | 6005649 | [delikli GN 1/1](https://www.bilgemutfak.com/mutfak-urunleri/gastronom-kuvetler/delikli-gastronom-kuvet/delikli-gastronom-kuvet-gn-1-1-serisi) | depth table on page - no litres published |
+| IMG/TCW/00104 | GN Container Perforated 1/1 100 Bilge | 6005576 | [delikli GN 1/1](https://www.bilgemutfak.com/mutfak-urunleri/gastronom-kuvetler/delikli-gastronom-kuvet/delikli-gastronom-kuvet-gn-1-1-serisi) | depth table on page - no litres published |
+| IMG/TCW/00105 | GN Container Perforated 1/2 100 Bilge | not listed | [delikli GN 1/2](https://www.bilgemutfak.com/mutfak-urunleri/gastronom-kuvetler/delikli-gastronom-kuvet/delikli-gastronom-kuvet-gn-1-2-serisi) | depth table on page - no litres published |
+| IMG/TCW/00125 | GN Lids 1/1 Bilge | 6005669 | [gastronom kapak](https://www.bilgemutfak.com/mutfak-urunleri/gastronom-kuvetler/gastronom-kapak/standart-gastronom-kapak) | size table on page - 530×325 |
+| IMG/TCW/00126 | GN Lids 1/2 Bilge | 6005604 | [gastronom kapak](https://www.bilgemutfak.com/mutfak-urunleri/gastronom-kuvetler/gastronom-kapak/standart-gastronom-kapak) | size table on page - 325×265 |
+| IMG/TCW/00127 | GN Lids 1/3 Bilge | 6005605 | [gastronom kapak](https://www.bilgemutfak.com/mutfak-urunleri/gastronom-kuvetler/gastronom-kapak/standart-gastronom-kapak) | size table on page - 325×176 |
+| IMG/TCW/00128 | GN Lids 1/4 Bilge | 6005651 | [gastronom kapak](https://www.bilgemutfak.com/mutfak-urunleri/gastronom-kuvetler/gastronom-kapak/standart-gastronom-kapak) | size table on page - 265×162 |
+| IMG/TCW/00129 | GN Lids 1/6 Bilge | 6005606 | [gastronom kapak](https://www.bilgemutfak.com/mutfak-urunleri/gastronom-kuvetler/gastronom-kapak/standart-gastronom-kapak) | size table on page - 176×162 |
+| IMG/TCW/00130 | GN Lids 1/9 Bilge | 6005607 | [gastronom kapak](https://www.bilgemutfak.com/mutfak-urunleri/gastronom-kuvetler/gastronom-kapak/standart-gastronom-kapak) | size table on page - 176×108 |
+| IMG/HYS/00001 | Hand Wash Basin Knee Operated Bilge | 6005202 | [dizden kumandalı evye](https://www.bilgemutfak.com/mutfak-urunleri/bulasikhane-ekipmanlari/yikama-aksesuarlari/dizden-kumandali-evye) | variant table on page - 400×400×220 |
+| IMG/HOT/00112 | Bain Marie Sauce Bin 240X210 | unknown | **none exists** - see §7 | none - [distributor listing](https://rs-horeca.az/Bilge-inox-bain-marie-sauce-bin-en) (Cloudflare-gated) |
 
 The catalogue's 1/1 × 200 mm entry is worth noting: 200 mm is a **genuine current Bilge
-depth**, offered across the 1/1, 1/2, 1/3, 1/4 series — not an outlier.
+depth**, offered across the 1/1, 1/2, 1/3, 1/4 series - not an outlier.
 
 ---
 
 ## 4. Image sourcing
 
-**Bilge's own product photography covers every SKU except the Bain Marie sauce bin** — no
+**Bilge's own product photography covers every SKU except the Bain Marie sauce bin** - no
 generic EN 631 fallback was needed anywhere. Images were verified live (HTTP 200, real JPEG,
 50–82 KB, all distinct files) but **deliberately not downloaded or wired into
-`products.json`** — they are listed here for manual review first.
+`products.json`** - they are listed here for manual review first.
 
 Filename pattern: `bilgemutfak.com/urunler/gastronom-kuvetler/gn-<fraction><depth>.jpg`,
 prefixed `delikli-` for perforated, suffixed `-kapak` for lids.
@@ -132,7 +132,7 @@ prefixed `delikli-` for perforated, suffixed `-kapak` for lids.
 | IMG/TCW/00129 | Lid 1/6 | <https://bilgemutfak.com/urunler/gastronom-kuvetler/gn-16-kapak.jpg> |
 | IMG/TCW/00130 | Lid 1/9 | <https://bilgemutfak.com/urunler/gastronom-kuvetler/gn-19-kapak.jpg> |
 
-### Already in the catalogue — Bilge equivalent, for comparison (12 SKUs)
+### Already in the catalogue - Bilge equivalent, for comparison (12 SKUs)
 
 | SKU | Item | Image URL |
 |---|---|---|
@@ -154,10 +154,10 @@ prefixed `delikli-` for perforated, suffixed `-kapak` for lids.
 different-sized lids**, not a single 1/1 lid, which reads oddly on a single-SKU listing.
 
 **Lid design confirmed** by direct inspection of the downloaded photos: flat, solid, **no
-spoon notch, no steam vent** — just a small recessed centre pull-handle. The catalogue's
+spoon notch, no steam vent** - just a small recessed centre pull-handle. The catalogue's
 existing lid copy makes no false claims here.
 
-**No image exists for the Bain Marie Sauce Bin** anywhere that could be reached — see §7.
+**No image exists for the Bain Marie Sauce Bin** anywhere that could be reached - see §7.
 
 ---
 
@@ -174,12 +174,12 @@ The authoritative capacity/code reference, including depths the catalogue does n
 | GN 1/4 solid | 265×162 | 20/0.5L/6005527 · 40/1L/6005640 · 65/1.8L/6005528 · 100/2.8L/6005529 · 150/4L/6005530 · 200/5.5L/6005531 |
 | GN 1/6 solid | 176×162 | 65/1L/6005658 · 100/1.6L/6005532 · 150/2.4L/6005533 |
 | GN 1/9 solid | 176×108 | 65/0.6L/6005534 · 100/1L/6005641 |
-| GN 1/1 perforated | 530×325 (int. 505×300) | 20/6005574 · 40/6005575 · 65/6005649 · 100/6005576 · 150/6005577 · 200/6005666 — **no litre figures published** |
-| Standard lids | — | 2/1 6005609 · 1/1 6005669 · 2/3 6005652 · 1/2 6005604 · 1/3 6005605 · 1/4 6005651 · 1/6 6005606 · 1/9 6005607 · 2/4 6005611 |
+| GN 1/1 perforated | 530×325 (int. 505×300) | 20/6005574 · 40/6005575 · 65/6005649 · 100/6005576 · 150/6005577 · 200/6005666 - **no litre figures published** |
+| Standard lids | - | 2/1 6005609 · 1/1 6005669 · 2/3 6005652 · 1/2 6005604 · 1/3 6005605 · 1/4 6005651 · 1/6 6005606 · 1/9 6005607 · 2/4 6005611 |
 
 ---
 
-## 6. Data audit — errors found and corrected
+## 6. Data audit - errors found and corrected
 
 Every GN capacity in the catalogue was cross-checked against Bilge's published figures.
 **Two genuine errors**, both now fixed in `products.json`:
@@ -196,7 +196,7 @@ were already correct.
 
 - **Perforated capacities are inferred, not published.** The catalogue states capacities for
   the three perforated pans (00103 9.0 L, 00104 14.0 L, 00105 6.5 L). **Bilge publishes no
-  litre figure for the perforated range at all** — these were taken from the same-footprint
+  litre figure for the perforated range at all** - these were taken from the same-footprint
   solid pan. That is standard industry convention (Maxima, Hupfer do the same) and is not
   wrong, but it is not a manufacturer-published number either. A perforated pan's usable
   capacity is necessarily lower.
@@ -205,20 +205,20 @@ were already correct.
   rather than a correction.
 - **`model_number` holds distributor shorthand, not Bilge codes.** The catalogue's
   `"1/1*65 -P"` / `"1/2 - C"` format is internal (GN ratio × depth, `-P` perforated,
-  `-C` cover). Bilge's real codes are the 6005xxx values in §3 — worth deciding whether
+  `-C` cover). Bilge's real codes are the 6005xxx values in §3 - worth deciding whether
   `model_number` should carry the actual manufacturer code.
 - **IMG/TCW/00130** uses `"BLGNL1/9"`, breaking the `"X - C"` pattern of the other five
   lids. Cosmetic only.
 
 ---
 
-## 7. Bain Marie Sauce Bin (IMG/HOT/00112) — unresolved, needs the supplier
+## 7. Bain Marie Sauce Bin (IMG/HOT/00112) - unresolved, needs the supplier
 
 The one item in the range public sources could not settle. It had **zero content** before
 this pass (no image, no description, no spec, `price: 0`).
 
 - **Dimension conflict**: the name says "240X210", the `model_number` says "240*120". No
-  Bilge product page for this SKU exists on bilgemutfak.com or bilgeinox.com.tr — every
+  Bilge product page for this SKU exists on bilgemutfak.com or bilgeinox.com.tr - every
   plausible category was checked (buffet/servery, bain-marie service units, sauce and
   preserve holders, stainless kitchen accessories, Bilgeinox service lines).
   **Resolved to 240×210 mm** in `products.json`, by analogy: a comparable Intergastro product
@@ -226,7 +226,7 @@ this pass (no image, no description, no spec, `price: 0`).
   200–235 mm height is the normal shape for this category, so a 240×120 mm bin would be
   unusually shallow. Treat `"240*120"` as an unreliable distributor artifact.
 - **Brand confirmed, specs not**: an Azerbaijani distributor lists a "**Bilge Inox Bain Marie
-  Sauce Bin**" — proof Bilge sells exactly this product — but the page is Cloudflare-gated
+  Sauce Bin**" - proof Bilge sells exactly this product - but the page is Cloudflare-gated
   (403 to every automated method tried), so nothing could be extracted:
   <https://rs-horeca.az/Bilge-inox-bain-marie-sauce-bin-en>
 - **No image found anywhere.** Written up in `products.json` with only what is defensible
@@ -244,9 +244,9 @@ this pass (no image, no description, no spec, `price: 0`).
 Sizes Bilge makes in the same 304-stainless lines that the catalogue does not carry, if the
 range is worth filling:
 
-- **20 mm and 40 mm depths** across GN 1/1, 1/2, 1/3 and 1/4 — the shallow display/prep pans
-- **200 mm depth** in GN 1/2 (12.5 L), 1/3 (7.8 L) and 1/4 (5.5 L) — only 1/1 × 200 is stocked
-- **GN 2/1, 2/3 and 2/4 lids** (codes 6005609, 6005652, 6005611) — implying Bilge also makes
+- **20 mm and 40 mm depths** across GN 1/1, 1/2, 1/3 and 1/4 - the shallow display/prep pans
+- **200 mm depth** in GN 1/2 (12.5 L), 1/3 (7.8 L) and 1/4 (5.5 L) - only 1/1 × 200 is stocked
+- **GN 2/1, 2/3 and 2/4 lids** (codes 6005609, 6005652, 6005611) - implying Bilge also makes
   containers in those footprints
 - **Perforated 1/1 in 20, 40, 150 and 200 mm**, and perforated fractions beyond 1/1 and 1/2
 - **Parallel material lines**: polycarbonate, thermoplus/thermoset, handled (`saplı`) pans,
@@ -257,7 +257,7 @@ range is worth filling:
 ## 9. Summary of `products.json` changes this pass
 
 - **Capacity fixes**: IMG/TCW/00117 (0.8 → 1.0 L), IMG/TCW/00120 (6.0 → 5.7 L)
-- **IMG/HYS/00001** (Hand Wash Basin): added `width`, corrected `height` (400 → 220 — the
+- **IMG/HYS/00001** (Hand Wash Basin): added `width`, corrected `height` (400 → 220 - the
   true 400×400 footprint had been mis-mapped into length/height with the real height absent);
   full prose description + Key Features; spec table adding the confirmed 15-second knee-press
   flow and hot/cold supply

@@ -2,7 +2,7 @@
      InteractsWithStorefront trait; opened from a variable product's card or from
      the product page's Add to cart button.
 
-     The per-row steppers edit the cart directly, so there is nothing to confirm —
+     The per-row steppers edit the cart directly, so there is nothing to confirm -
      the footer just offers a way onward.
 
      Only rendered when there is something to show: a listing page has no variable

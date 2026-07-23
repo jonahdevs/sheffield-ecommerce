@@ -49,7 +49,7 @@ new #[Layout('layouts::app')] #[Title('Configure Carrier | Admin')] class extend
     // ==================================================
     // RATE EDITING
     // ==================================================
-    // Keyed by "{zone_id}_{method_id}" — loaded on demand when editing a zone's rates.
+    // Keyed by "{zone_id}_{method_id}" - loaded on demand when editing a zone's rates.
     /** @var array<string, array{rate_type: string, base_rate: ?float, free_over: ?float, eta_label: string, eta_min_days: ?int, eta_max_days: ?int, is_active: bool}> */
     public array $rateForm = [];
 
@@ -484,7 +484,7 @@ new #[Layout('layouts::app')] #[Title('Configure Carrier | Admin')] class extend
                     <div class="space-y-4 p-6">
                         @if ($driver === 'fargo')
                             <flux:text size="sm" class="rounded-md border border-amber-200 bg-amber-50 p-3 text-amber-700 dark:border-amber-700/40 dark:bg-amber-900/20 dark:text-amber-300">
-                                Fargo Courier uses a manual waybill workflow — no API credentials needed. Create waybills on the Fargo portal and enter the number on each shipment.
+                                Fargo Courier uses a manual waybill workflow - no API credentials needed. Create waybills on the Fargo portal and enter the number on each shipment.
                             </flux:text>
                         @else
                             <div class="grid grid-cols-1 gap-4">

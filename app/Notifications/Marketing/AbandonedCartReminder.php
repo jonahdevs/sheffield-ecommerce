@@ -61,6 +61,6 @@ class AbandonedCartReminder extends Notification implements ShouldQueue
 
         return $mail
             ->action('Return to your cart', $restoreUrl)
-            ->line("Items may sell out — complete your order while they're still available.");
+            ->line("Items may sell out - complete your order while they're still available.");
     }
 }

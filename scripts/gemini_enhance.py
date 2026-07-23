@@ -13,7 +13,7 @@ Uses only the Python standard library (no extra dependencies). Exits non-zero wi
 message on stderr so the caller can log and fall back to the un-enhanced original.
 
 IMPORTANT: AI regenerates the image and may subtly alter product details. This is a
-deliberate, opt-in step — the prompt instructs the model to preserve the product
+deliberate, opt-in step - the prompt instructs the model to preserve the product
 exactly, but callers should treat the output as needing human review.
 """
 

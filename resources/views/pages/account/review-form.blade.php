@@ -136,7 +136,7 @@ new #[Layout('layouts::account')] #[Title('Write a Review')] class extends Compo
                 <flux:label>Rating</flux:label>
                 <flux:select wire:model="rating">
                     @foreach ([5 => 'Excellent', 4 => 'Good', 3 => 'Average', 2 => 'Poor', 1 => 'Terrible'] as $value => $label)
-                        <flux:select.option value="{{ $value }}">{{ $value }} stars — {{ $label }}</flux:select.option>
+                        <flux:select.option value="{{ $value }}">{{ $value }} stars - {{ $label }}</flux:select.option>
                     @endforeach
                 </flux:select>
                 <flux:error name="rating" />

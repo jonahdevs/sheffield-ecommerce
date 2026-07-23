@@ -241,7 +241,7 @@ new #[Layout('layouts::app')] #[Title('Customer | Admin')] class extends Compone
                     <flux:icon.clock class="size-8 shrink-0 text-blue-400" />
                     <div>
                         <div class="text-sm font-semibold dark:text-white">
-                            {{ $this->orders->first()?->created_at->format('M j, Y') ?? '—' }}
+                            {{ $this->orders->first()?->created_at->format('M j, Y') ?? '-' }}
                         </div>
                         <flux:text size="sm">Last order</flux:text>
                     </div>

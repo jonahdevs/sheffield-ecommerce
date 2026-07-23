@@ -47,7 +47,7 @@ class Product extends Model implements HasMedia
         // Fit::Max downscales to fit the box and never enlarges or pads. Fit::Fill
         // would pad a smaller master onto the full canvas instead of enlarging it
         // (it carries DoNotUpsize), which strands the subject in the middle of a
-        // mostly-empty image — a 225px master became 7% of a 600×600 card. Every
+        // mostly-empty image - a 225px master became 7% of a 600×600 card. Every
         // frame that renders these already sets its own square via CSS aspect-ratio
         // + object-contain, so the conversion never needs to pad one in.
         $this->addMediaConversion('thumb')
@@ -291,7 +291,7 @@ class Product extends Model implements HasMedia
     // ==================================================
 
     /**
-     * Cover image URL — prefers the 'card' conversion when generated, falls back
+     * Cover image URL - prefers the 'card' conversion when generated, falls back
      * to the original so images show immediately after import before conversions run.
      */
     protected function coverUrl(): Attribute

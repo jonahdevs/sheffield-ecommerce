@@ -179,7 +179,7 @@ new #[Layout('layouts::app')] #[Title('Manage Section | Admin')] class extends C
                                 </div>
                             @endif
                             <span class="truncate text-sm font-medium text-zinc-800 dark:text-zinc-200">
-                                {{ $placement->category?->name ?? '—' }}
+                                {{ $placement->category?->name ?? '-' }}
                             </span>
                         </div>
 

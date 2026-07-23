@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 
 /**
- * Free-text place lookup for the address book's search box, backed by Photon —
+ * Free-text place lookup for the address book's search box, backed by Photon -
  * the OpenStreetMap geocoder built for autocomplete. Results are biased to
  * Kenya with a bounding box and memoised for a day, since the same handful of
  * estates and landmarks get typed over and over.

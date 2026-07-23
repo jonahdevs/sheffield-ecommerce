@@ -38,7 +38,7 @@ class NewQuoteRequested extends Notification implements ShouldQueue
         $who = $quote->contact_name ?: ($quote->user?->name ?? 'A customer');
 
         return (new MailMessage)
-            ->subject('New quote request — '.$quote->quote_number)
+            ->subject('New quote request - '.$quote->quote_number)
             ->markdown('mails.staff.new-quote', [
                 'who' => $who,
                 'quoteNumber' => $quote->quote_number,

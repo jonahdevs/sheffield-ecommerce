@@ -16,7 +16,7 @@ use Livewire\Attributes\Computed;
  * markup via the `partials.storefront.address-modal` partial.
  *
  * Page-specific side effects hang off the hook methods below
- * (`afterAddressSelected`, `afterAddressSaved`) — for example checkout
+ * (`afterAddressSelected`, `afterAddressSaved`) - for example checkout
  * recomputes its delivery quote and resolves the county for reporting.
  */
 trait InteractsWithAddressBook

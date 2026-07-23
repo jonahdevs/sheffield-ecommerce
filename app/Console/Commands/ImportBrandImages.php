@@ -60,7 +60,7 @@ class ImportBrandImages extends Command
         }
 
         $this->newLine();
-        $this->info("Done — copied: {$copied}, already existed: {$skipped}, not found: {$missing}.");
+        $this->info("Done - copied: {$copied}, already existed: {$skipped}, not found: {$missing}.");
 
         if ($missing > 0) {
             $this->warn('Run again with a different source path if some files live in a sub-folder.');

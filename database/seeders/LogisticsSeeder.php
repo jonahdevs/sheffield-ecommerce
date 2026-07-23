@@ -30,7 +30,7 @@ use Illuminate\Database\Seeder;
  *           + always show Pickup option
  *     NO  → show Pickup only ("No delivery to your area yet")
  *  3. Customer picks a method → carrier assigned silently by priority
- *  4. Shipment created — carrier never shown to customer
+ *  4. Shipment created - carrier never shown to customer
  */
 class LogisticsSeeder extends Seeder
 {
@@ -83,7 +83,7 @@ class LogisticsSeeder extends Seeder
 
     private function seedCarriers(): void
     {
-        // Sheffield Africa Logistics — your own fleet. Handles Nairobi & Surroundings.
+        // Sheffield Africa Logistics - your own fleet. Handles Nairobi & Surroundings.
         // driver = self_managed means no external API; dispatch is managed internally.
         ShippingCarrier::updateOrCreate(
             ['slug' => 'sheffield'],
@@ -92,13 +92,13 @@ class LogisticsSeeder extends Seeder
                 'driver' => 'self_managed',
                 'credentials' => null,
                 'tracking_url_template' => null,
-                'priority' => 10,  // highest priority — own fleet preferred
+                'priority' => 10,  // highest priority - own fleet preferred
                 'is_active' => true,
                 'sort_order' => 1,
             ],
         );
 
-        // Cossim Logistics — future integration for upcountry coverage.
+        // Cossim Logistics - future integration for upcountry coverage.
         // Add their zones + rates below when integration is ready.
         ShippingCarrier::updateOrCreate(
             ['slug' => 'cossim'],
@@ -113,7 +113,7 @@ class LogisticsSeeder extends Seeder
             ],
         );
 
-        // Fargo Courier — manual waybill workflow (no public API).
+        // Fargo Courier - manual waybill workflow (no public API).
         // Staff create waybills on the Fargo portal and enter the number manually.
         ShippingCarrier::updateOrCreate(
             ['slug' => 'fargo'],
@@ -136,13 +136,13 @@ class LogisticsSeeder extends Seeder
 
     private function seedWarehouse(): void
     {
-        // Sheffield Africa Logistics HQ — the only pickup location for now.
+        // Sheffield Africa Logistics HQ - the only pickup location for now.
         // When a second warehouse opens, add it here and customers will be
         // able to choose which warehouse to collect from at checkout.
         Warehouse::updateOrCreate(
             ['slug' => 'nairobi-hq'],
             [
-                'name' => 'Sheffield Africa Logistics — Nairobi HQ',
+                'name' => 'Sheffield Africa Logistics - Nairobi HQ',
                 'description' => 'Our main warehouse and collection point in Nairobi.',
                 'address' => 'Industrial Area, Enterprise Road',
                 'city' => 'Nairobi',
@@ -170,7 +170,7 @@ class LogisticsSeeder extends Seeder
         $express = ShippingMethod::where('slug', 'express-delivery')->first();
 
         if (! $sheffield || ! $nairobi || ! $standard || ! $express) {
-            $this->command->warn('LogisticsSeeder: missing carrier, zone or method — skipping coverage seed.');
+            $this->command->warn('LogisticsSeeder: missing carrier, zone or method - skipping coverage seed.');
 
             return;
         }
@@ -181,7 +181,7 @@ class LogisticsSeeder extends Seeder
             ['is_active' => true],
         );
 
-        // Sheffield — Standard Delivery in Nairobi
+        // Sheffield - Standard Delivery in Nairobi
         // KES 350, free over KES 15,000. Same day.
         CarrierRate::updateOrCreate(
             [
@@ -201,7 +201,7 @@ class LogisticsSeeder extends Seeder
             ],
         );
 
-        // Sheffield — Express Delivery in Nairobi
+        // Sheffield - Express Delivery in Nairobi
         // KES 600, no free-over. Within 4 hours.
         CarrierRate::updateOrCreate(
             [

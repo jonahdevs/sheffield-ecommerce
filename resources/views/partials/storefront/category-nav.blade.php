@@ -7,7 +7,7 @@
        • < lg  : a horizontal scroll strip with fade/chevron affordances (broad swipe browse).
 
      Flyout content is fetched on hover from route('menu.flyout', $category) and rendered
-     by partials/storefront/mega-menu-panel.blade.php — the category's image on the left,
+     by partials/storefront/mega-menu-panel.blade.php - the category's image on the left,
      a grid of child categories on the right. See App\Http\Controllers\Storefront\
      CategoryMenuController for the (currently random) children source. --}}
 @php
@@ -22,7 +22,7 @@
     @keydown.escape.window="close()" @scroll.window.passive="onScroll()"
     class="relative bg-brand-blue-500 text-olive-200">
 
-    {{-- Desktop (lg+) — trigger grid. grid-rows-2 + auto-rows-[0] caps visible content at
+    {{-- Desktop (lg+) - trigger grid. grid-rows-2 + auto-rows-[0] caps visible content at
          exactly 2 rows; overflow rows collapse to 0 height and get clipped. --}}
     <div class="shell hidden lg:block">
         <div
@@ -30,7 +30,7 @@
             @foreach ($navCategories as $category)
                 @php $isActive = $activeCategorySlug === $category->slug; @endphp
                 {{-- Only categories with sub-categories are mega-menu triggers; the rest
-                     stay plain links (no empty flyout). Settling on — or tabbing to — a
+                     stay plain links (no empty flyout). Settling on - or tabbing to - a
                      plain link dismisses an open panel, since the pointer never leaves the
                      nav and so the nav-level mouseleave never fires. The dismissal waits
                      for the pointer to settle so that sweeping down through a plain link,
@@ -93,7 +93,7 @@
         </div>
     </div>
 
-    {{-- Mobile / tablet (< lg) — horizontal scroller with edge fades --}}
+    {{-- Mobile / tablet (< lg) - horizontal scroller with edge fades --}}
     <section x-data="{
         showLeft: false,
         showRight: true,

@@ -96,8 +96,8 @@ new class extends Component
                     $isOrder = ($data['type'] ?? '') === 'new_order';
                     $fallbackUrl = $isOrder ? route('admin.orders.index') : route('admin.quotes.index');
                     $title = $isOrder
-                        ? 'New order — ' . ($data['order_number'] ?? '')
-                        : 'New quote — ' . ($data['quote_number'] ?? '');
+                        ? 'New order - ' . ($data['order_number'] ?? '')
+                        : 'New quote - ' . ($data['quote_number'] ?? '');
                     $subtitle = $isOrder
                         ? ($data['customer_name'] ?? 'Guest') . ' · ' . (isset($data['total']) ? money($data['total']) : '')
                         : ($data['contact_name'] ?? '') . (isset($data['contact_company']) && $data['contact_company'] ? ' · ' . $data['contact_company'] : '');

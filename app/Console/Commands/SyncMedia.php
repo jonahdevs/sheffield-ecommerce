@@ -69,7 +69,7 @@ class SyncMedia extends Command
             }
         });
 
-        $this->info("Categories — added {$added}".($fresh ? ", cleared {$cleared}" : '').'.');
+        $this->info("Categories - added {$added}".($fresh ? ", cleared {$cleared}" : '').'.');
     }
 
     private function syncProducts(bool $fresh): void
@@ -77,7 +77,7 @@ class SyncMedia extends Command
         $jsonPath = database_path('data/products.json');
 
         if (! File::exists($jsonPath)) {
-            $this->warn('products.json not found — skipping product sync.');
+            $this->warn('products.json not found - skipping product sync.');
 
             return;
         }
@@ -146,7 +146,7 @@ class SyncMedia extends Command
             config(['queue.default' => $previousQueue]);
         }
 
-        $this->info("Products — added {$added}".($fresh ? ", cleared {$cleared}" : '').'.');
+        $this->info("Products - added {$added}".($fresh ? ", cleared {$cleared}" : '').'.');
         if ($added > 0) {
             $this->line('  Run <comment>php artisan media-library:regenerate</comment> to generate all image conversions.');
         }

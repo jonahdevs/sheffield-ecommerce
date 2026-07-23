@@ -40,7 +40,7 @@ class QuoteReadyForReview extends Notification implements ShouldQueue
         }
 
         $mail = (new MailMessage)
-            ->subject('Your quotation is ready — '.$quote->quote_number)
+            ->subject('Your quotation is ready - '.$quote->quote_number)
             ->view('mails.quotes.sent', [
                 'quote' => $quote,
                 'customerName' => $quote->user?->name ?? $quote->contact_name ?? 'there',

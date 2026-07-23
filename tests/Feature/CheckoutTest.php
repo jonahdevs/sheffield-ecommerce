@@ -224,7 +224,7 @@ it('blocks delivery to an unserviceable location', function () {
     $address = Address::factory()->create([
         'user_id' => $user->id,
         'is_default' => true,
-        'latitude' => -4.0435, // Mombasa — outside every zone.
+        'latitude' => -4.0435, // Mombasa - outside every zone.
         'longitude' => 39.6682,
     ]);
     $this->actingAs($user);

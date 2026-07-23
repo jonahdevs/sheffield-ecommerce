@@ -67,11 +67,11 @@ class OrderSeeder extends Seeder
         $this->loadInfrastructure();
         $this->loadProducts();
 
-        // 1. Bulk historical orders (180 days) — powers the dashboard analytics charts.
+        // 1. Bulk historical orders (180 days) - powers the dashboard analytics charts.
         $this->createHistoricalCustomers();
         $this->seedHistoricalOrders();
 
-        // 2. Specific scenario orders — showcases every status in the admin UI with
+        // 2. Specific scenario orders - showcases every status in the admin UI with
         //    detailed SAP logs, KRA receipts, and activity history.
         $this->customer = User::where('email', 'customer@sheffieldafrica.com')->firstOrFail();
         $this->admin = User::where('email', 'admin@sheffieldafrica.com')->firstOrFail();
@@ -308,11 +308,11 @@ class OrderSeeder extends Seeder
         $order2 = $this->makeOrder([
             'status' => OrderStatus::PROCESSING,
             'payment_method' => 'mpesa',
-            'staff_notes' => 'SAP sync failed — check ERP logs. Retried manually once.',
+            'staff_notes' => 'SAP sync failed - check ERP logs. Retried manually once.',
             'confirmed_at' => now()->subDays(4),
             'sap_sync_status' => SapSyncStatus::FAILED,
             'sap_sync_attempts' => 3,
-            'sap_sync_error' => 'Connection timeout after 30s — SAP ERP unreachable',
+            'sap_sync_error' => 'Connection timeout after 30s - SAP ERP unreachable',
             'created_at' => now()->subDays(4),
             'updated_at' => now()->subDays(4)->addHours(2),
         ], 2);
@@ -339,12 +339,12 @@ class OrderSeeder extends Seeder
                 'http_method' => 'POST',
                 'request_payload' => ['order_number' => $order2->order_number, 'attempt' => $attempt],
                 'http_status_code' => 503,
-                'error_message' => 'Connection timeout after 30s — SAP ERP unreachable',
+                'error_message' => 'Connection timeout after 30s - SAP ERP unreachable',
                 'duration_ms' => 30012,
             ]);
         }
 
-        // Bank transfer — pending SAP sync
+        // Bank transfer - pending SAP sync
         $order3 = $this->makeOrder([
             'status' => OrderStatus::PROCESSING,
             'payment_method' => 'bank_transfer',
@@ -370,7 +370,7 @@ class OrderSeeder extends Seeder
 
     private function seedOutForDelivery(): void
     {
-        // In transit — shipment picked up by driver
+        // In transit - shipment picked up by driver
         $order = $this->makeOrder([
             'status' => OrderStatus::OUT_FOR_DELIVERY,
             'payment_method' => 'mpesa',
@@ -404,13 +404,13 @@ class OrderSeeder extends Seeder
             'estimated_delivery_at' => today(),
             'booked_at' => now()->subHours(5),
             'picked_up_at' => now()->subHours(4),
-            'notes' => 'Driver: James — +254 700 111 222',
+            'notes' => 'Driver: James - +254 700 111 222',
         ]);
 
         $this->logStatusChange($order, OrderStatus::PENDING, OrderStatus::PROCESSING,
             'Payment confirmed via M-Pesa. Receipt: MPE30072026C', now()->subDays(1)->subHours(6));
         $this->logStatusChange($order, OrderStatus::PROCESSING, OrderStatus::OUT_FOR_DELIVERY,
-            'Shipment booked — driver James assigned. ETA today.', now()->subHours(4));
+            'Shipment booked - driver James assigned. ETA today.', now()->subHours(4));
 
         SapSyncLog::create([
             'order_id' => $order->id,
@@ -427,7 +427,7 @@ class OrderSeeder extends Seeder
 
         app(OrderDocumentService::class)->generateDispatchDocuments($order);
 
-        // Express — driver en route
+        // Express - driver en route
         $order2 = $this->makeOrder([
             'status' => OrderStatus::OUT_FOR_DELIVERY,
             'payment_method' => 'mpesa',
@@ -464,14 +464,14 @@ class OrderSeeder extends Seeder
         $this->logStatusChange($order2, OrderStatus::PENDING, OrderStatus::PROCESSING,
             'Payment confirmed via M-Pesa. Receipt: MPE40062026D', now()->subHours(5));
         $this->logStatusChange($order2, OrderStatus::PROCESSING, OrderStatus::OUT_FOR_DELIVERY,
-            'Express shipment dispatched — driver en route.', now()->subHours(2));
+            'Express shipment dispatched - driver en route.', now()->subHours(2));
 
         app(OrderDocumentService::class)->generateDispatchDocuments($order2);
     }
 
     private function seedCompleted(): void
     {
-        // Completed 3 days ago — full KRA lifecycle done
+        // Completed 3 days ago - full KRA lifecycle done
         $order = $this->makeOrder([
             'status' => OrderStatus::COMPLETED,
             'payment_method' => 'mpesa',
@@ -546,12 +546,12 @@ class OrderSeeder extends Seeder
         app(OrderDocumentService::class)->generateDispatchDocuments($order);
         app(KraReceiptService::class)->generate($order);
 
-        // Completed 10 days ago — older order for revenue stats
+        // Completed 10 days ago - older order for revenue stats
         $order2 = $this->makeOrder([
             'status' => OrderStatus::COMPLETED,
             'payment_method' => 'card',
             'shipping_method_id' => $this->express->id,
-            'staff_notes' => 'VIP customer — expedited handling.',
+            'staff_notes' => 'VIP customer - expedited handling.',
             'confirmed_at' => now()->subDays(11),
             'shipped_at' => now()->subDays(10)->subHours(3),
             'delivered_at' => now()->subDays(10),
@@ -584,9 +584,9 @@ class OrderSeeder extends Seeder
         ]);
 
         $this->logStatusChange($order2, OrderStatus::PENDING, OrderStatus::PROCESSING,
-            'Card payment verified. VIP order — expedited handling.', now()->subDays(11));
+            'Card payment verified. VIP order - expedited handling.', now()->subDays(11));
         $this->logStatusChange($order2, OrderStatus::PROCESSING, OrderStatus::OUT_FOR_DELIVERY,
-            'Express shipment booked — priority dispatch.', now()->subDays(10)->subHours(4));
+            'Express shipment booked - priority dispatch.', now()->subDays(10)->subHours(4));
         $this->logStatusChange($order2, OrderStatus::OUT_FOR_DELIVERY, OrderStatus::COMPLETED,
             'Delivered on time. Customer confirmed receipt.', now()->subDays(10));
 
@@ -624,7 +624,7 @@ class OrderSeeder extends Seeder
         $order = $this->makeOrder([
             'status' => OrderStatus::CANCELLED,
             'payment_method' => 'mpesa',
-            'notes' => 'Customer cancelled — changed mind.',
+            'notes' => 'Customer cancelled - changed mind.',
             'staff_notes' => 'Refund processed via M-Pesa reversal. Ref: REV-2026-007.',
             'cancelled_at' => now()->subDays(2)->addHours(3),
             'created_at' => now()->subDays(2),
@@ -632,7 +632,7 @@ class OrderSeeder extends Seeder
         ], 1);
 
         $this->logStatusChange($order, OrderStatus::PENDING, OrderStatus::CANCELLED,
-            'Customer called in to cancel — changed mind after placing. Refund issued via M-Pesa reversal.',
+            'Customer called in to cancel - changed mind after placing. Refund issued via M-Pesa reversal.',
             now()->subDays(2)->addHours(3));
     }
 

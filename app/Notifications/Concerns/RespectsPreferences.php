@@ -9,9 +9,9 @@ use App\Settings\NotificationSettings;
 /**
  * Shared `via()` for customer-facing notifications. Two-tier gate:
  *
- *  1. Global (NotificationSettings) — if the store owner has disabled this
+ *  1. Global (NotificationSettings) - if the store owner has disabled this
  *     notification type entirely, no one receives it regardless of personal prefs.
- *  2. Personal (user's notification_preferences) — a registered user can mute
+ *  2. Personal (user's notification_preferences) - a registered user can mute
  *     a category for themselves. Guests always receive the message.
  *
  * A null preference key means the notification doesn't apply to this notifiable
@@ -28,7 +28,7 @@ trait RespectsPreferences
             return [];
         }
 
-        // Personal gate — user opted out of this notification category entirely.
+        // Personal gate - user opted out of this notification category entirely.
         if ($notifiable instanceof User) {
             [$group, $field] = $key;
             $prefs = $notifiable->notification_preferences ?? [];
@@ -50,7 +50,7 @@ trait RespectsPreferences
             }
         }
 
-        // In-app (database) channel — only for User notifiables that opt in via
+        // In-app (database) channel - only for User notifiables that opt in via
         // supportsInApp(). Anonymous notifiables (guests, central-email routes)
         // have no notifications() relationship to write to.
         if ($notifiable instanceof User && $this->supportsInApp() && $settings->inapp_channel_enabled) {
@@ -70,7 +70,7 @@ trait RespectsPreferences
             }
         }
 
-        // WhatsApp channel — globally enabled, notification implements toWhatsapp(),
+        // WhatsApp channel - globally enabled, notification implements toWhatsapp(),
         // notifiable has a phone, and the user hasn't muted this type on WhatsApp.
         if ($settings->whatsapp_channel_enabled && method_exists($this, 'toWhatsapp')) {
             $whatsappKey = $this->resolveGlobalKey($key, 'whatsapp');

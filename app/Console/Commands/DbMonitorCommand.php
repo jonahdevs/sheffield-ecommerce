@@ -42,11 +42,11 @@ class DbMonitorCommand extends Command
 
         $this->table(['Metric', 'Value'], [
             ['Uptime', "{$uptimeMins} min"],
-            ['Active connections', $stats->get('Threads_connected', '—')],
-            ['Row lock waits (lifetime)', $stats->get('Innodb_row_lock_waits', '—')],
-            ['Avg lock wait (ms)', $stats->get('Innodb_row_lock_time_avg', '—')],
-            ['Max lock wait (ms)', $stats->get('Innodb_row_lock_time_max', '—')],
-            ['Slow queries (> long_query_time)', $stats->get('Slow_queries', '—')],
+            ['Active connections', $stats->get('Threads_connected', '-')],
+            ['Row lock waits (lifetime)', $stats->get('Innodb_row_lock_waits', '-')],
+            ['Avg lock wait (ms)', $stats->get('Innodb_row_lock_time_avg', '-')],
+            ['Max lock wait (ms)', $stats->get('Innodb_row_lock_time_max', '-')],
+            ['Slow queries (> long_query_time)', $stats->get('Slow_queries', '-')],
         ]);
     }
 
@@ -80,7 +80,7 @@ class DbMonitorCommand extends Command
                 $t->age_s,
                 $t->trx_rows_locked,
                 $t->trx_rows_modified,
-                $t->query_snippet ?? '—',
+                $t->query_snippet ?? '-',
             ])
         );
     }
@@ -116,7 +116,7 @@ class DbMonitorCommand extends Command
                     $w->waiting_trx,
                     $w->blocking_trx,
                     $w->table_name,
-                    $w->index_name ?? '—',
+                    $w->index_name ?? '-',
                     $w->LOCK_TYPE,
                     $w->LOCK_MODE,
                 ])
@@ -156,7 +156,7 @@ class DbMonitorCommand extends Command
             $this->table(
                 ['Query', 'Runs', 'Total (s)', 'Avg (s)', 'Max (s)', 'Rows Examined', 'No-Index'],
                 collect($slow)->map(fn ($s) => [
-                    str($s->query ?? '—')->limit(70),
+                    str($s->query ?? '-')->limit(70),
                     $s->executions,
                     $s->total_s,
                     $s->avg_s,

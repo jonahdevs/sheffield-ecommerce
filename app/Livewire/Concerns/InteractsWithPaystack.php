@@ -17,7 +17,7 @@ use Flux\Flux;
 trait InteractsWithPaystack
 {
     /**
-     * Whether the inline popup can run — the gateway is enabled and its secret
+     * Whether the inline popup can run - the gateway is enabled and its secret
      * key is configured. Used both server-side and to gate the pay button.
      */
     public function paystackEnabled(): bool

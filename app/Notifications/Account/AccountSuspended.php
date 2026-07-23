@@ -10,7 +10,7 @@ use Illuminate\Notifications\Notification;
 /**
  * Plain notice sent to a customer when their account is suspended (banned), so
  * they understand why they can no longer sign in and how to reach support. Sent
- * over mail only and independent of notification preferences — it is a critical
+ * over mail only and independent of notification preferences - it is a critical
  * account notice, not a marketing or order update.
  */
 class AccountSuspended extends Notification implements ShouldQueue

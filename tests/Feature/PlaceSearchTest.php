@@ -37,7 +37,7 @@ it('returns geocoded suggestions for a query', function () {
         ->assertExactJson([[
             'label' => 'ABC Place, Waiyaki Way, Westlands, Nairobi',
             'longitude' => 36.8034,
-            // GeoJSON orders [lng, lat] — a swap here would pin addresses in the wrong hemisphere.
+            // GeoJSON orders [lng, lat] - a swap here would pin addresses in the wrong hemisphere.
             'latitude' => -1.2673,
         ]]);
 });
@@ -139,7 +139,7 @@ it('caches results so a repeated query hits the geocoder once', function () {
         ['coordinates' => [36.8034, -1.2673], 'properties' => ['name' => 'Sarit Centre']],
     ]))]);
 
-    // Same place, different casing and padding — all one cache entry.
+    // Same place, different casing and padding - all one cache entry.
     $this->getJson(route('places.search', ['q' => 'Sarit Centre']))->assertOk();
     $this->getJson(route('places.search', ['q' => '  sarit centre ']))->assertOk();
 

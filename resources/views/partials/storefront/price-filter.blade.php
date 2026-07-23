@@ -1,4 +1,4 @@
-{{-- Price filter — dual-thumb range slider + min/max number inputs.
+{{-- Price filter - dual-thumb range slider + min/max number inputs.
      Expects the host Livewire component to expose int $priceMin and $priceMax
      (whole KES units). Local Alpine state drives the UI and only commits to
      Livewire on release/change to avoid a request per drag tick. --}}
@@ -77,7 +77,7 @@
                 x-model.number="min" @change="commit()"
                 class="w-full rounded border border-zinc-300 px-2 py-1.5 text-sm tabular-nums focus:border-brand-500 focus:ring-0 focus:outline-none" />
         </div>
-        <span class="pb-2 text-ink-4">—</span>
+        <span class="pb-2 text-ink-4">-</span>
         <div class="flex-1">
             <label class="mb-1 block text-xs text-ink-4">Max</label>
             <input type="number" inputmode="numeric" :min="absMin" :max="absMax" :step="step"

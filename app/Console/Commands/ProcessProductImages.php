@@ -14,17 +14,17 @@ use Symfony\Component\Process\Process;
     {--sku= : Limit to a single product by SKU}
     {--limit= : Maximum number of images to process}
     {--output= : Directory to write processed images (default storage/app/public/products/product-images-processed)}
-    {--replace : Swap the processed image into the media library (destructive — alters originals)}
+    {--replace : Swap the processed image into the media library (destructive - alters originals)}
     {--fresh : Reprocess images even if an output already exists / was already processed}
     {--size=1200 : Square canvas edge in px for the processed master}
     {--margin=0.06 : Empty margin around the subject (fraction of canvas, 0-0.4)}
     {--bg=transparent : "transparent" or a hex colour (e.g. FFFFFF) for the backdrop}
     {--quality=90 : WebP quality (1-100)}
     {--model=isnet-general-use : rembg model name}
-    {--ai : Pre-enhance each image with the Gemini image API (sharpen/clean) before cutout — needs GEMINI_API_KEY}
+    {--ai : Pre-enhance each image with the Gemini image API (sharpen/clean) before cutout - needs GEMINI_API_KEY}
     {--ai-model=gemini-2.5-flash-image : Gemini image model id used with --ai}
     {--dry-run : Show what would be processed without writing anything}')]
-#[Description('Remove backgrounds, center subjects on a square canvas, and convert product images to WebP. Non-destructive by default — writes to a review folder unless --replace is passed.')]
+#[Description('Remove backgrounds, center subjects on a square canvas, and convert product images to WebP. Non-destructive by default - writes to a review folder unless --replace is passed.')]
 class ProcessProductImages extends Command
 {
     public function handle(): int
@@ -104,7 +104,7 @@ class ProcessProductImages extends Command
         $flags = $mode.($ai ? ', ai' : '').($dryRun ? ', dry run' : '');
         $this->info("Processing up to {$total} image(s) [{$flags}].");
         if (! $replace && ! $dryRun) {
-            $this->line("  Writing to <comment>{$outputDir}</comment> — originals untouched.");
+            $this->line("  Writing to <comment>{$outputDir}</comment> - originals untouched.");
         }
 
         $processed = 0;
@@ -121,7 +121,7 @@ class ProcessProductImages extends Command
             $source = $media->getPath();
 
             if (! File::exists($source)) {
-                $this->warn("  [missing] media #{$media->id} — {$media->file_name}");
+                $this->warn("  [missing] media #{$media->id} - {$media->file_name}");
                 $failed++;
 
                 return true;
@@ -136,7 +136,7 @@ class ProcessProductImages extends Command
             }
 
             if ($dryRun) {
-                $this->line("  [would process] media #{$media->id} — {$media->file_name}");
+                $this->line("  [would process] media #{$media->id} - {$media->file_name}");
                 $processed++;
 
                 return true;
@@ -156,7 +156,7 @@ class ProcessProductImages extends Command
                 if ($this->runAiEnhance($python, $aiTemp, $source, $apiKey)) {
                     $cutoutSource = $aiTemp;
                 } else {
-                    $this->warn("  [ai-skipped] media #{$media->id} — enhancing failed, using original.");
+                    $this->warn("  [ai-skipped] media #{$media->id} - enhancing failed, using original.");
                 }
             }
 
@@ -194,7 +194,7 @@ class ProcessProductImages extends Command
     }
 
     /**
-     * Flat output path — all processed images land in the one review folder. The
+     * Flat output path - all processed images land in the one review folder. The
      * media file name already encodes the product name + SKU, so it stays unique.
      */
     private function outputPathFor(Media $media, string $outputDir): string

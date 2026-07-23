@@ -37,7 +37,7 @@ class AttributeSeeder extends Seeder
                 ],
             ],
             [
-                // Gastronorm size — the variation axis for combi-oven trays, containers,
+                // Gastronorm size - the variation axis for combi-oven trays, containers,
                 // grids and similar accessories that ship in the standard GN footprints.
                 // Bakery standard (400 x 600 mm) is a separate norm, not a GN fraction,
                 // but it sits on the same axis because it is the alternative a buyer
@@ -46,15 +46,19 @@ class AttributeSeeder extends Seeder
                 'slug' => 'gn-size',
                 'type' => AttributeType::SELECT,
                 'values' => [
-                    ['value' => '1/3 GN', 'label' => '1/3 GN'],
-                    ['value' => '2/3 GN', 'label' => '2/3 GN'],
                     ['value' => '1/1 GN', 'label' => '1/1 GN'],
+                    ['value' => '1/2 GN', 'label' => '1/2 GN'],
+                    ['value' => '1/3 GN', 'label' => '1/3 GN'],
+                    ['value' => '1/4 GN', 'label' => '1/4 GN'],
+                    ['value' => '1/6 GN', 'label' => '1/6 GN'],
+                    ['value' => '1/9 GN', 'label' => '1/9 GN'],
+                    ['value' => '2/3 GN', 'label' => '2/3 GN'],
                     ['value' => '2/1 GN', 'label' => '2/1 GN'],
                     ['value' => 'Bakery standard', 'label' => 'Bakery standard'],
                 ],
             ],
             [
-                // Container depth — pairs with GN Size for gastronorm containers, which
+                // Container depth - pairs with GN Size for gastronorm containers, which
                 // come in the same footprint at more than one depth. Shallow suits dry
                 // roasting and baking; deep holds sauce for braising and stewing.
                 'name' => 'Depth',
@@ -67,7 +71,7 @@ class AttributeSeeder extends Seeder
                 ],
             ],
             [
-                // Working volume in litres — the variation axis for blenders and other
+                // Working volume in litres - the variation axis for blenders and other
                 // machines sold as one design in several cup or bowl sizes. Kept apart
                 // from Capacity, which counts items rather than measuring volume.
                 'name' => 'Volume',
@@ -78,11 +82,13 @@ class AttributeSeeder extends Seeder
                     ['value' => '4 litres', 'label' => '4 litres'],
                     ['value' => '8 litres', 'label' => '8 litres'],
                     ['value' => '10 litres', 'label' => '10 litres'],
+                    ['value' => '30 litres', 'label' => '30 litres'],
+                    ['value' => '40 litres', 'label' => '40 litres'],
                 ],
             ],
             [
                 // How much a rack holds. Some accessories share a footprint but differ
-                // in what they carry — the poultry spikes are all 1/1 GN, and vary only
+                // in what they carry - the poultry spikes are all 1/1 GN, and vary only
                 // in how many birds fit (and therefore how large each bird may be).
                 'name' => 'Capacity',
                 'slug' => 'capacity',

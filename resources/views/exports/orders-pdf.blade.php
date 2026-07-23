@@ -68,7 +68,7 @@
                         <td class="border border-zinc-300 px-2 py-2 align-top text-zinc-500 text-center">{{ $loop->iteration }}</td>
                         <td class="border border-zinc-300 px-2 py-2 align-top font-mono font-semibold text-zinc-900">{{ $order->order_number }}</td>
                         <td class="border border-zinc-300 px-2 py-2 align-top">
-                            <div class="font-semibold text-zinc-900">{{ $order->user?->name ?? '—' }}</div>
+                            <div class="font-semibold text-zinc-900">{{ $order->user?->name ?? '-' }}</div>
                             <div class="text-[10px] text-zinc-400 mt-0.5">{{ $order->user?->email }}</div>
                         </td>
                         <td class="border border-zinc-300 px-2 py-2 align-top text-center tabular-nums text-zinc-700">{{ $order->items_count }}</td>

@@ -4,7 +4,7 @@ Research notes behind the Skymsen enrichment pass on `products.json` (July 2026)
 sourced from Skymsen's official export site and cross-checked against resellers.
 
 Covers 20 machine SKUs. Seven further Skymsen entries are archived spare discs and blades
-(`IMS/MEC/*`) which were left untouched — they are line items rather than catalogue products.
+(`IMS/MEC/*`) which were left untouched - they are line items rather than catalogue products.
 
 ---
 
@@ -20,7 +20,7 @@ The same machines are sold under four names. Always match on **model code**, not
 | **Skymsen Europa** | Europe, 230 V / 50 Hz | skymseneuropa.com |
 
 US model codes differ: `DB-10` is sold as `EL-10`, `CSE` as `CSE1`, `BMS-N` as `BMS`.
-Useful as extra photo sources, but **never quote their specs** — they are 110–120 V / 60 Hz.
+Useful as extra photo sources, but **never quote their specs** - they are 110–120 V / 60 Hz.
 
 ---
 
@@ -46,7 +46,7 @@ Skymsen publishes dimensions as **H × W × L**, not W × D × H. Most existing 
 entries had the right numbers in the wrong fields. All Skymsen SKUs have been reordered to
 the catalogue's `length` / `width` / `height` convention.
 
-### Not published — do not invent
+### Not published - do not invent
 
 - No **kg/h throughput** figure exists for the CSE juicer (only rpm).
 - No **noise level** is published for any LAR blender or the BM2.
@@ -60,13 +60,13 @@ the catalogue's `length` / `width` / `height` convention.
 
 | SKU | Product | Was | Now |
 |---|---|---|---|
-| IMG/FPR/00048 | Potato Peeler 25KG | 110 V / 60 Hz with 45 kg net | 220 V / 50 Hz — 45 kg is the **220 V** figure; the 110 V unit is 48 kg. The record mixed two variants. |
+| IMG/FPR/00048 | Potato Peeler 25KG | 110 V / 60 Hz with 45 kg net | 220 V / 50 Hz - 45 kg is the **220 V** figure; the 110 V unit is 48 kg. The record mixed two variants. |
 | IMG/FPR/00033–38 | LAR blenders (5 SKUs) | 3,500 rpm | 3,000 rpm at 50 Hz |
 | IMG/FPR/00169 | Blender Bar 2 Litres | implied stainless cup | Cup is **Tritan polymer**; only the base is metal |
 | IMG/FPR/00214 | Juice Extractor ESB Super N | "entry-level", "affordable" | It is the **uprated 0.5 HP** model. `ESB-N` is the entry model (0.25 HP) |
 | IMG/FPR/00042 | Vegetable Processor PA7 | 0.25 HP, 300–400 kg/h, 6 discs | 0.5 HP, ~250 kg/h, **7 discs** |
-| All Skymsen | — | dimensions in wrong axes | reordered from H×W×L |
-| IMG/FPR/00048, 00246, 00050, 00105 | peelers + chipper | short description read *"SYSTEMATIC JSPCC-08 commercial potato chipper"* | Rewritten — copy-paste bug from an unrelated product |
+| All Skymsen | - | dimensions in wrong axes | reordered from H×W×L |
+| IMG/FPR/00048, 00246, 00050, 00105 | peelers + chipper | short description read *"SYSTEMATIC JSPCC-08 commercial potato chipper"* | Rewritten - copy-paste bug from an unrelated product |
 
 ---
 
@@ -79,7 +79,7 @@ purchase paperwork.
 
 `IMG/FPR/00050` (Potato Smasher on Stand) and the two chipper blades `IMS/MEC/00309` /
 `IMS/MEC/00312` are filed under brand **SKYMSEN**, but **DAK is Metalúrgica DAK of Canoas,
-Rio Grande do Sul** — an unrelated Brazilian manufacturer. Searching skymsen.com,
+Rio Grande do Sul** - an unrelated Brazilian manufacturer. Searching skymsen.com,
 skyfood.us and skymseneuropa.com returns zero results for a model "DAK".
 
 There is no manufacturer spec sheet, manual, EAN or HS data for DAK in English; all
@@ -88,7 +88,7 @@ sources are Brazilian retail listings.
 Two further points on this SKU:
 
 - The name says **"Potato Smasher"** but the 10 mm blades describe a **chipper**. DAK makes
-  both a masher (*amassador*) and a chip cutter (*cortador de legumes*) — unrelated products
+  both a masher (*amassador*) and a chip cutter (*cortador de legumes*) - unrelated products
   sharing a brand. The description now written assumes the chipper.
 - Sizing is inconsistent across resellers ("médio", "grande", "tripé industrial"). Ref. 109
   measures 121 × 53 × 48 cm at 4.6 kg. Confirm which size before publishing dimensions.
@@ -101,23 +101,23 @@ Two further points on this SKU:
 | LAR-04MB-N | LAR-04MB |
 | LAR-08MB-N | LAR-08MB |
 | LAR-10MB-N | LAR-10MB |
-| LAR 25MB | **does not exist** — see below |
+| LAR 25MB | **does not exist** - see below |
 
 The `-N` suffix belongs to Skymsen's *Brazilian domestic* lines (`LS-xxMB-N`, `TA-xxMB-N`),
-which are **different machines** — `LS` is explicitly a low-rotation blender for pastier
+which are **different machines** - `LS` is explicitly a low-rotation blender for pastier
 products. If supplier paperwork genuinely says `LS-04MB-N`, the specs written do not apply.
 
 ### 4.3 The 25 litre blender needs a model decision
 
 There is no `LAR-25MB`. The 25 L machines are:
 
-- **LAR-25LMB** — tilting, **with** stainless steel floor stand
-- **LAR-25PMB** — tilting, seamless cup, **without** stand
-- **LAR-25LMB-HD** — heavy-duty stand version
+- **LAR-25LMB** - tilting, **with** stainless steel floor stand
+- **LAR-25PMB** - tilting, seamless cup, **without** stand
+- **LAR-25LMB-HD** - heavy-duty stand version
 
 `products.json` was written for **LAR-25LMB** as the most likely match. Net weight is
 inconsistent on Skymsen's own site (20.5 kg on the 50 Hz SKU vs 25.5 kg on the 60 Hz SKU for
-identical dimensions) — the 20.5 kg looks like a data-entry error, so ~25.5 kg is published.
+identical dimensions) - the 20.5 kg looks like a data-entry error, so ~25.5 kg is published.
 
 ### 4.4 PA-7 vs PA-7 PRO
 
@@ -128,11 +128,11 @@ the PRO.
 
 ### 4.5 MAXICONV is two SKUs
 
-- **MAXICONV SV** — *sem vapor*, no steam
-- **MAXICONV VP** — manual steam injection via a panel button
+- **MAXICONV SV** - *sem vapor*, no steam
+- **MAXICONV VP** - manual steam injection via a panel button
 
 The catalogue entry is generic "MAXICONV". The VP is the more widely listed of the two.
-Note max temperature is **210 °C** — do not copy generic "up to 300 °C" convection claims.
+Note max temperature is **210 °C** - do not copy generic "up to 300 °C" convection claims.
 
 ### 4.6 Discovery 10 tray size changes the dimensions
 
@@ -144,7 +144,7 @@ Published figures assume 60 × 70 cm trays. At 20 kW, three-phase is mandatory.
 ## 5. Product reference
 
 Official page and spec sheet per catalogue SKU. **The `folders/*.pdf` spec sheets are the
-best image source** — print-quality Adobe Illustrator files with clean white-background
+best image source** - print-quality Adobe Illustrator files with clean white-background
 studio renders.
 
 | SKU | Catalogue name | Model | Official page | Spec sheet PDF |
@@ -162,11 +162,11 @@ studio renders.
 | IMG/FPR/00214 | Juice Extractor ESB Super N | ESB SUPER-N | [461652](https://www.skymsen.com/en/index.php/produtos/detalhe/461652) | [461652_eng.pdf](https://www.skymsen.com/uploads/produtos/folders/461652_eng.pdf) |
 | IMG/ICE/00019 | Milk Shake Mixer Single | BMS-N | [324752](https://www.skymsen.com/en/index.php/produtos/detalhe/324752) | [324752_eng.pdf](https://www.skymsen.com/uploads/produtos/folders/324752_eng.pdf) |
 | IMG/ICE/00020 | Milk Shake Mixer Triple | BMS-3-N | [451991](https://www.skymsen.com/index.php/produtos/detalhe/451991) | [451991.pdf](https://www.skymsen.com/uploads/produtos/folders/451991.pdf) |
-| IMG/FPR/00215 | Meat Slicer 300 | CFI-300L-N | ⚠ 404 — see §6 | [496049_eng.pdf](https://www.skymsen.com/uploads/produtos/folders/496049_eng.pdf) |
+| IMG/FPR/00215 | Meat Slicer 300 | CFI-300L-N | ⚠ 404 - see §6 | [496049_eng.pdf](https://www.skymsen.com/uploads/produtos/folders/496049_eng.pdf) |
 | IMG/FPR/00051 | Bone Saw Free Standing | SI-282HD | [624063](https://www.skymsen.com/en/index.php/produtos/detalhe/624063) | [624063_eng.pdf](https://www.skymsen.com/uploads/produtos/folders/624063_eng.pdf) |
-| IMG/OVE/00215 | Oven Convection 4 Tray Maxiconv | MAXICONV | ⚠ 404 — see §6 | [661805.pdf](https://www.skymsen.com/uploads/produtos/folders/661805.pdf) |
+| IMG/OVE/00215 | Oven Convection 4 Tray Maxiconv | MAXICONV | ⚠ 404 - see §6 | [661805.pdf](https://www.skymsen.com/uploads/produtos/folders/661805.pdf) |
 | IMG/OVE/00214 | Oven Convection 10 Trays Discovery 10 | DISCOVERY 10 | [609781](https://www.skymsen.com/en/index.php/produtos/detalhe/609781) | [609781_eng.pdf](https://www.skymsen.com/uploads/produtos/folders/609781_eng.pdf) |
-| IMG/FPR/00050 | Potato Smasher on Stand | DAK | none — not a Skymsen product | none |
+| IMG/FPR/00050 | Potato Smasher on Stand | DAK | none - not a Skymsen product | none |
 
 The numbers in those URLs are Skymsen's internal product codes for a **specific voltage
 variant**. Where a choice existed, the 220 V / 50 Hz page is linked.
@@ -189,7 +189,7 @@ variant**. Where a choice existed, the 220 V / 50 Hz page is linked.
 
 ### Site reliability
 
-skymsen.com is **unreliable to automated access** — pages 404 or hang intermittently,
+skymsen.com is **unreliable to automated access** - pages 404 or hang intermittently,
 including URLs that worked earlier in the same session. A browser is more likely to succeed.
 The `uploads/produtos/folders/*.pdf` paths are consistently reliable; if a product page will
 not open, go straight to the PDF.
@@ -201,23 +201,23 @@ Confirmed dead at time of writing (both 404, in EN and ES):
 
 **Verified working reseller fallbacks for those two:**
 
-- Slicer → [evandroshop.com.br](https://www.evandroshop.com.br/portateis-industriais/fatiador-de-frios/fatiador-de-frios-300mm-400w-semi-automatico-inox-cfi-300l-n-220v-skymsen) — two studio shots, white background
-- Maxiconv → [igorsolucoes.com](https://www.igorsolucoes.com/forno-eletrico-turbo-maxiconv-sem-vapor-skymsen) — four angles including a **background-removed cutout**, open-door and tray detail
+- Slicer → [evandroshop.com.br](https://www.evandroshop.com.br/portateis-industriais/fatiador-de-frios/fatiador-de-frios-300mm-400w-semi-automatico-inox-cfi-300l-n-220v-skymsen) - two studio shots, white background
+- Maxiconv → [igorsolucoes.com](https://www.igorsolucoes.com/forno-eletrico-turbo-maxiconv-sem-vapor-skymsen) - four angles including a **background-removed cutout**, open-door and tray detail
 
 ### Best sources, ranked
 
-1. **Official spec-sheet PDFs** (`folders/*.pdf`) — print-quality renders on white/light grey.
+1. **Official spec-sheet PDFs** (`folders/*.pdf`) - print-quality renders on white/light grey.
    Image-based, so text will not extract, but the artwork lifts cleanly.
-2. **Official product detail pages** — 710024 and 472727 carry 7+ clean white-background
+2. **Official product detail pages** - 710024 and 472727 carry 7+ clean white-background
    images each; 704270 (PA-7) has 20+; 609781 (Discovery 10) has 16.
-3. **US Skyfood resellers** — katom.com, kitchenall.com. Same machines, good photography,
+3. **US Skyfood resellers** - katom.com, kitchenall.com. Same machines, good photography,
    but **check for visible Skyfood branding** in frame before use.
 
 ### Extras
 
 - Full English export catalogue (5.8 MB, all products):
   <https://www.skymsen.com/uploads/produtos/catalogo/catalogo-arquivo_en.pdf>
-- Discovery 10 interactive 3D model — screenshot from any angle:
+- Discovery 10 interactive 3D model - screenshot from any angle:
   <https://app.vectary.com/p/3hwWNee1LluLzDhGjCXKOK>
 - LAR family manual (covers 2–10 L): <https://www.skymsen.com/manuais/414484.pdf>
 - CMP-range slicer manual: <https://www.skymsen.com/manuais_visualizacao/574074.pdf>
@@ -231,14 +231,14 @@ Confirmed dead at time of writing (both 404, in EN and ES):
 
 ---
 
-## 7. Accessory disc images — PA-7 cutting discs (July 2026)
+## 7. Accessory disc images - PA-7 cutting discs (July 2026)
 
 The 7 archived `IMS/MEC/*` discs/blades noted in §"Covers" above as line items were
 subsequently researched for images. **They are not on the current PA-7 PRO product page**
-(704270) — that page lists a different/updated accessory set (KC5V, GC10 PRO, W3, KC8),
+(704270) - that page lists a different/updated accessory set (KC5V, GC10 PRO, W3, KC8),
 so these 7 codes likely belong to an older PA-7 generation or a standalone accessory
 catalogue. The authoritative source turned out to be **skyfood.us** (Skymsen's US export
-brand, same manufacturer photography) — `skyfood.us/products.php?familia=5` lists all
+brand, same manufacturer photography) - `skyfood.us/products.php?familia=5` lists all
 seven.
 
 **Correction:** H3/EH3 is a **julienne** disc (3×3 mm strips), not a grater as the code
@@ -255,17 +255,17 @@ naming suggests.
 | IMS/MEC/02319 | Slicer Disc - 14MM | 14MM (mfr code **E14**) | Slicer disc, 14 mm | [skyfood.us](https://www.skyfood.us/products.php?familia=5), [GoFoodservice](https://www.gofoodservice.com/p/skyfood-e14) | <https://www.skyfood.us/photos/PC0709.JPG> |
 
 Notes: the `skyfood.us/photos/PC0xxx.JPG` files are manufacturer studio photos, white
-background, verified live. GC16 and W4 aren't hosted on skyfood.us directly — their
+background, verified live. GC16 and W4 aren't hosted on skyfood.us directly - their
 images come from Restaurant Stock's Shopify CDN (`_1024x.jpg` variants available),
 same product, but check for reseller branding/watermarks before use. Several reseller
 product-detail pages (katom.com, jesrestaurantequipment.com, gofoodservice.com individual
-listings) 403 to automated fetching — fine in a browser if higher-res or alternate angles
+listings) 403 to automated fetching - fine in a browser if higher-res or alternate angles
 are needed.
 
 ### 7.1 Full descriptions and technical specs (July 2026)
 
 Following the image pass, all 7 discs were researched to the same depth as the machine
-records — description, meta_description and technical_specification — and written into
+records - description, meta_description and technical_specification - and written into
 `products.json`, matching the catalogue's established content pattern (prose + `Key
 Features` list + HTML spec table).
 
@@ -273,7 +273,7 @@ Confirmed/sourced per disc:
 
 | SKU | Code | Cut type & size | Disc diameter | Weight | Compatible machines (as sourced) |
 |---|---|---|---|---|---|
-| IMS/MEC/00270 | GC16 | Cube dicing grid, 16×16 mm | — | ~0.51 kg | **Unresolved — see caveat below** |
+| IMS/MEC/00270 | GC16 | Cube dicing grid, 16×16 mm | - | ~0.51 kg | **Unresolved - see caveat below** |
 | IMS/MEC/00271 | Z8 | Grating, 8 mm | ~204 mm | 0.70 kg net / 0.80 kg gross | Skymsen PA-7 / PA7 PRO |
 | IMS/MEC/00272 | Z5 | Grating, 5 mm | ~205 mm | 0.68 kg net / 0.75 kg gross | Skymsen PA-7 / PA7 PRO |
 | IMS/MEC/00273 | W4 | Scallop (wave) slicing, 4 mm | ~205 mm | 0.86 kg net / 0.93 kg gross | PA-7, PA-7SE-N, PA-7LE-N, PAIE-N, PAIE-S-N |
@@ -282,28 +282,28 @@ Confirmed/sourced per disc:
 | IMS/MEC/02319 | 14MM (mfr code **E14**) | Slicing, 14 mm; pairs with a 14×14mm cube grid | ~203–205 mm | ~0.89–0.90 kg (sources disagree slightly) | PA-7, PA-7 PRO, PAIE-N, PAIE-S-N |
 
 Sources for the spec pass, beyond the image sources above: `skymsen.com` official part
-pages (094340 for H3 — directly fetched, confirms "DIÂMETRO 203mm" and "Corte Julienne de
-3mm"; 096130 for Z8; others via search-engine cache when direct fetch was blocked —
+pages (094340 for H3 - directly fetched, confirms "DIÂMETRO 203mm" and "Corte Julienne de
+3mm"; 096130 for Z8; others via search-engine cache when direct fetch was blocked -
 096121 Z5, 096091 W4, `loja.skymsen.com/produto/096059` E3, `loja.skymsen.com/produto/676470`
 E14), `maquinbal.com.br` (E14 material + compatibility).
 
-**Open flag — GC16 (IMS/MEC/00270):** every independent English-language source found
+**Open flag - GC16 (IMS/MEC/00270):** every independent English-language source found
 (Kitchenall, JES Restaurant Equipment, RestaurantStock) ties the code "GC16" to the
-Skymsen/Skyfood **MASTER series**, not the PA-7 — no source names GC16 and PA-7 together.
+Skymsen/Skyfood **MASTER series**, not the PA-7 - no source names GC16 and PA-7 together.
 The nearest official match on skymsen.com is "GC16-S," tied to the **PAIE-S-N** machine,
 and even that listing disagrees with a reseller on cube size (16 mm vs 12×12 mm). The
 description written avoids naming a specific machine to not overstate confidence. **This
-SKU may be miscoded in the catalogue** — worth a second look, since the PA-7's own record
+SKU may be miscoded in the catalogue** - worth a second look, since the PA-7's own record
 lists IMS/MEC/00270 in its `accessories` array.
 
-**Open flag — PA-7's own copy vs. its actual disc set:** the PA-7 record's existing
+**Open flag - PA-7's own copy vs. its actual disc set:** the PA-7 record's existing
 description/technical_specification (written earlier, unrelated to this pass) says the
 included set is "slicers 1 and 3 mm, graters 3, 5 and 8 mm, fine grater, 7×7 mm julienne."
 The 7 SKUs actually linked in its `accessories` array are GC16 (16 mm cube), Z8 (8 mm
 grate), Z5 (5 mm grate), W4 (4 mm scallop-slice), H3 (3×3 mm julienne), E3 (3 mm slice),
-and 14MM/E14 (14 mm slice) — a different set (no 1 mm slicer, no 7×7 julienne, has a cube
+and 14MM/E14 (14 mm slice) - a different set (no 1 mm slicer, no 7×7 julienne, has a cube
 grid and a 4 mm scallop disc instead). Not corrected here since it touches the PA-7's own
-record, not just the discs — flagging for a decision on which description is accurate.
+record, not just the discs - flagging for a decision on which description is accurate.
 
 ---
 
@@ -312,10 +312,10 @@ record, not just the discs — flagging for a decision on which description is a
 Models found during research that are not currently in the catalogue, if the range is
 worth filling:
 
-- **DB-06** — 6 kg potato peeler, below the DB-10
-- **LAR-06MB** — 6 L blender, between the 4 L and 8 L
-- **LAR-15LMB / LAR-15PMB** — 15 L tilting blenders, below the 25 L
-- **LI2** — 2 L bar blender with a genuine **stainless steel** cup (the BM2 alternative)
-- **BMS-P** — wall-mounted single-spindle milkshake mixer
-- **ESB-N** — 0.25 HP entry-level citrus juicer, below the ESB SUPER-N
-- **LAR-xx-HD** — heavy-duty variants across the blender line, for thick/pasty products
+- **DB-06** - 6 kg potato peeler, below the DB-10
+- **LAR-06MB** - 6 L blender, between the 4 L and 8 L
+- **LAR-15LMB / LAR-15PMB** - 15 L tilting blenders, below the 25 L
+- **LI2** - 2 L bar blender with a genuine **stainless steel** cup (the BM2 alternative)
+- **BMS-P** - wall-mounted single-spindle milkshake mixer
+- **ESB-N** - 0.25 HP entry-level citrus juicer, below the ESB SUPER-N
+- **LAR-xx-HD** - heavy-duty variants across the blender line, for thick/pasty products

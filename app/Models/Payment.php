@@ -50,7 +50,7 @@ class Payment extends Model
 
     /**
      * Short-lived Paystack access code returned by Initialize Transaction. Like
-     * the Stripe client secret it is request-scoped and never persisted — it is
+     * the Stripe client secret it is request-scoped and never persisted - it is
      * only used to resume the inline popup on the current page load.
      */
     protected ?string $transientAccessCode = null;
@@ -129,7 +129,7 @@ class Payment extends Model
     /**
      * Human-friendly payment method actually used. Paystack and Stripe are only
      * gateways, so the meaningful method is the settlement channel the customer
-     * paid through — card, M-Pesa / mobile money, bank transfer… — captured on
+     * paid through - card, M-Pesa / mobile money, bank transfer… - captured on
      * the verified transaction. Falls back to the provider when no channel was
      * recorded (e.g. a direct Daraja M-Pesa payment).
      */

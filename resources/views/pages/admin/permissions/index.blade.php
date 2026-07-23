@@ -126,7 +126,7 @@ new #[Layout('layouts::app')] #[Title('Permissions | Admin')] class extends Comp
                                 $remaining = $permission->roles->count() - $shown->count();
                             @endphp
                             @if ($permission->roles->isEmpty())
-                                <span class="text-xs text-zinc-400">—</span>
+                                <span class="text-xs text-zinc-400">-</span>
                             @else
                                 <div class="flex items-center gap-1 whitespace-nowrap">
                                     @foreach ($shown as $role)

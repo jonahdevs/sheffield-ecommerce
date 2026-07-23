@@ -16,8 +16,8 @@ use RuntimeException;
  * inline popup, verifying it server-side after the customer pays (and via the
  * async webhook), refunding settled payments, and advancing the order once paid.
  *
- * Paystack fronts every channel — cards, M-Pesa, Airtel Money and bank transfer
- * (Pesalink) — through one integration, so the on-page method choice simply
+ * Paystack fronts every channel - cards, M-Pesa, Airtel Money and bank transfer
+ * (Pesalink) - through one integration, so the on-page method choice simply
  * scopes which channel(s) the popup offers. Amounts are exchanged in the KES
  * subunit (cents), which matches Order::$total_cents directly.
  */
@@ -191,14 +191,14 @@ class PaystackPaymentService
             return;
         }
 
-        // Paystack's verify response is authoritative — confirm it charged the
+        // Paystack's verify response is authoritative - confirm it charged the
         // exact amount and currency we initialized with before advancing the
         // order. This guards against a tampered/replayed reference.
         $amount = (int) Arr::get($data, 'amount');
         $currency = strtolower((string) Arr::get($data, 'currency'));
 
         if ($amount !== (int) $payment->amount_cents || $currency !== strtolower($payment->currency)) {
-            Log::critical('Paystack amount/currency mismatch — payment rejected.', [
+            Log::critical('Paystack amount/currency mismatch - payment rejected.', [
                 'payment_id' => $payment->id,
                 'order_id' => $payment->order_id,
                 'expected_cents' => $payment->amount_cents,

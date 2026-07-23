@@ -6,7 +6,7 @@ each in **WhatsApp Manager → Message Templates**.
 ## Rules / gotchas
 - **Language:** create as **English (US)** → code `en_US` (the `WhatsAppMessage` default).
   If you create plain "English" (`en`), call `->language('en')` in the notification.
-- A `{{variable}}` **cannot be the first or last** thing in the body — wrap with static text.
+- A `{{variable}}` **cannot be the first or last** thing in the body - wrap with static text.
 - The **number of `{{n}}` placeholders must match** the `->body(...)` arg count exactly,
   or Meta rejects the send with error **#132001**.
 - Templates must be **Approved** before they can be sent (pending/in-review = "does not exist").
@@ -23,7 +23,7 @@ each in **WhatsApp Manager → Message Templates**.
 
 ## Templates
 
-### order_confirmed — `OrderConfirmed`
+### order_confirmed - `OrderConfirmed`
 Vars: `{{1}}` name · `{{2}}` order# · `{{3}}` total · `{{4}}` payment method · `{{5}}` order URL
 ```
 Hi {{1}}, your order {{2}} has been confirmed ✅
@@ -37,49 +37,49 @@ Thank you for shopping with us!
 ```
 Samples: `Jonah` · `ORD-2026-00184` · `KES 12,500.00` · `M-Pesa` · `https://.../account/orders/184`
 
-### order_status_update — `OrderStatusChanged`
+### order_status_update - `OrderStatusChanged`
 Vars: `{{1}}` name · `{{2}}` order# · `{{3}}` status label (Out for delivery / Completed / Cancelled)
 ```
 Hi {{1}}, the status of your order {{2}} has changed to: {{3}}. Check your account for full details.
 ```
 
-### refund_processed — `RefundProcessed`
+### refund_processed - `RefundProcessed`
 Vars: `{{1}}` name · `{{2}}` order# · `{{3}}` refund amount
 ```
 Hi {{1}}, a refund of {{3}} has been processed for your order {{2}}. It may take a few days to reflect. Thank you.
 ```
 
-### quote_ready — `QuoteReadyForReview`
+### quote_ready - `QuoteReadyForReview`
 Vars: `{{1}}` name (user or contact_name) · `{{2}}` quote#
 ```
 Hi {{1}}, your quotation {{2}} is ready for review. Log in to your account to view and approve it. Thank you.
 ```
 
-### quote_received — `QuoteRequestReceived`
+### quote_received - `QuoteRequestReceived`
 Vars: `{{1}}` name (user or contact_name) · `{{2}}` quote#
 ```
 Hi {{1}}, we've received your quote request {{2}} and our team is preparing it. We'll be in touch shortly. Thank you.
 ```
 
-### staff_new_order — `NewOrderReceived`
+### staff_new_order - `NewOrderReceived`
 Vars: `{{1}}` customer · `{{2}}` order# · `{{3}}` total
 ```
 New order received: {{2}} from {{1}}, total {{3}}. Open the admin panel to process it.
 ```
 
-### staff_low_stock — `LowStockAlert`
+### staff_low_stock - `LowStockAlert`
 Vars: `{{1}}` product name · `{{2}}` quantity
 ```
 Low stock alert: "{{1}}" has {{2}} unit(s) remaining. Please restock soon.
 ```
 
-### staff_new_quote — `NewQuoteRequested`
+### staff_new_quote - `NewQuoteRequested`
 Vars: `{{1}}` customer · `{{2}}` quote# · `{{3}}` item count
 ```
 New quote request {{2}} from {{1}} with {{3}} item(s) to price. Open the admin panel to prepare it.
 ```
 
-### staff_quote_decision — `QuoteDecisionReceived`
+### staff_quote_decision - `QuoteDecisionReceived`
 Vars: `{{1}}` customer · `{{2}}` quote# · `{{3}}` decision (approved / declined)
 ```
 Customer {{1}} has {{3}} quotation {{2}}. Open the admin panel for next steps.

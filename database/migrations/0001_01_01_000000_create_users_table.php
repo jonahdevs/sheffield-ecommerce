@@ -22,7 +22,7 @@ return new class extends Migration
             $table->rememberToken();
             $table->timestamp('banned_at')->nullable();
             $table->json('notification_preferences')->nullable();
-            // Personal preferences for admin/staff users — operational alert
+            // Personal preferences for admin/staff users - operational alert
             // opt-ins and UI preferences. Kept separate from the customer-facing
             // notification_preferences column, which the account area overwrites wholesale.
             $table->json('staff_preferences')->nullable();

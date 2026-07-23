@@ -104,7 +104,7 @@
               <tr>
                 <td style="padding-top: 24px; vertical-align: middle;">
                   <p style="margin: 0; font-size: 15px; font-weight: 700; color: #fffffe;">Hi {{ $customerName }},</p>
-                  <p class="text-white-70" style="margin: 4px 0 0; font-size: 13px; color: rgba(255, 255, 254, .7);">Quote {{ $quote->quote_number }} — act soon.</p>
+                  <p class="text-white-70" style="margin: 4px 0 0; font-size: 13px; color: rgba(255, 255, 254, .7);">Quote {{ $quote->quote_number }} - act soon.</p>
                 </td>
                 <td style="padding-top: 24px; text-align: right; vertical-align: middle;">
                   <div class="bg-white-15" style="display: inline-block; height: 44px; width: 44px; border-radius: 9999px; background-color: rgba(255, 255, 254, .15); text-align: center; line-height: 44px;">
@@ -114,7 +114,7 @@
               </tr>
             </table>
             <div class="bg-white-20" style="margin-top: 18px; margin-bottom: 18px; height: 1px; background-color: rgba(255, 255, 254, .2);"></div>
-            <p class="text-white-80" style="margin: 0; font-size: 13.5px; line-height: 21px; color: rgba(255, 255, 254, .8);">Just a quick reminder that the pricing we've prepared for you is still available — but not for long.</p>
+            <p class="text-white-80" style="margin: 0; font-size: 13.5px; line-height: 21px; color: rgba(255, 255, 254, .8);">Just a quick reminder that the pricing we've prepared for you is still available - but not for long.</p>
           </div>
           <!--[if mso]></td></tr></table><![endif]-->
           <!--[if mso]><table role="none" cellpadding="0" cellspacing="0" style="width: 100%"><tr><td style="background-color: #fffffe; padding: 28px 36px 4px"><![endif]-->
@@ -178,7 +178,7 @@
                 </td>
                 <td style="border-bottom: 1px solid; border-color: #f1f5f9; padding-top: 12px; padding-bottom: 12px; text-align: center; vertical-align: middle; font-size: 13px; color: #475569;">{{ $item->quantity }}</td>
                 <td style="border-bottom: 1px solid; border-color: #f1f5f9; padding-top: 12px; padding-bottom: 12px; padding-left: 12px; text-align: right; vertical-align: middle; font-size: 14px; line-height: 20px; font-weight: 700; white-space: nowrap; color: #0f172a;">
-                  {{ $item->line_total_cents > 0 ? money($item->line_total_cents) : '—' }}
+                  {{ $item->line_total_cents > 0 ? money($item->line_total_cents) : '-' }}
                 </td>
               </tr>
               @endforeach
@@ -236,7 +236,7 @@
           <!--[if mso]></td></tr></table><![endif]-->
           <!--[if mso]><table role="none" cellpadding="0" cellspacing="0" style="width: 100%"><tr><td style="background-color: #fffffe; padding: 24px 36px 40px"><![endif]-->
           <div style="background-color: #fffffe; padding: 24px 36px 40px;">
-            <p style="margin: 0; font-size: 13px; line-height: 20px; color: #64748b;">Need adjustments before the offer expires? Just reply to this email — we're happy to help.</p>
+            <p style="margin: 0; font-size: 13px; line-height: 20px; color: #64748b;">Need adjustments before the offer expires? Just reply to this email - we're happy to help.</p>
             <p style="margin: 14px 0 0; font-size: 13px; color: #475569;">
               Warm regards,
               <br>

@@ -49,7 +49,7 @@ new #[Layout('layouts::app')] #[Title('General settings | Admin')] class extends
      * Mirror the `password.confirm` middleware that protects the customer
      * security page: the personal Security section may only be viewed after a
      * recent password confirmation. The section is swapped client-side via a
-     * Livewire property, so the route middleware never runs — we enforce it here.
+     * Livewire property, so the route middleware never runs - we enforce it here.
      */
     protected function guardSecuritySection(): void
     {
@@ -116,7 +116,7 @@ new #[Layout('layouts::app')] #[Title('General settings | Admin')] class extends
                 </div>
 
                 <p class="border-b border-zinc-200 px-5 py-3 text-sm text-zinc-500 dark:border-zinc-600 dark:text-zinc-400">
-                    Choose which alerts you personally receive. These override nothing — the global master switches in
+                    Choose which alerts you personally receive. These override nothing - the global master switches in
                     <a href="{{ route('admin.settings.app', ['section' => 'notifications']) }}" wire:navigate
                         class="text-brand-500 hover:underline">App <flux:icon.chevron-right class="inline size-3" /> Notifications</a> take priority.
                 </p>

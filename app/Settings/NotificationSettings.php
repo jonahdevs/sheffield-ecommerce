@@ -33,7 +33,7 @@ class NotificationSettings extends Settings
     public ?string $whatsapp_business_account_id = null;
 
     // ==================================================
-    // CUSTOMER — ORDERS & SHIPPING
+    // CUSTOMER - ORDERS & SHIPPING
     // ==================================================
     public bool $customer_order_confirmation_email = true;
 
@@ -48,7 +48,7 @@ class NotificationSettings extends Settings
     public bool $customer_order_updates_whatsapp = false;
 
     // ==================================================
-    // CUSTOMER — QUOTATIONS
+    // CUSTOMER - QUOTATIONS
     // ==================================================
     public bool $customer_quote_received_email = true;
 
@@ -63,7 +63,7 @@ class NotificationSettings extends Settings
     public bool $customer_quote_updates_whatsapp = false;
 
     // ==================================================
-    // CUSTOMER — MARKETING & ACCOUNT
+    // CUSTOMER - MARKETING & ACCOUNT
     // ==================================================
     public bool $customer_marketing_email = true;
 
@@ -78,7 +78,7 @@ class NotificationSettings extends Settings
     public bool $customer_account_security_whatsapp = false;
 
     // ==================================================
-    // STAFF — ORDERS & PAYMENTS
+    // STAFF - ORDERS & PAYMENTS
     // ==================================================
     public bool $staff_new_order_email = true;
 
@@ -87,7 +87,7 @@ class NotificationSettings extends Settings
     public bool $staff_new_order_whatsapp = false;
 
     // ==================================================
-    // STAFF — CUSTOMERS & REVIEWS
+    // STAFF - CUSTOMERS & REVIEWS
     // ==================================================
     public bool $staff_new_review_email = true;
 
@@ -96,7 +96,7 @@ class NotificationSettings extends Settings
     public bool $staff_new_review_whatsapp = false;
 
     // ==================================================
-    // STAFF — INVENTORY
+    // STAFF - INVENTORY
     // ==================================================
     public bool $staff_low_stock_email = true;
 
@@ -105,7 +105,7 @@ class NotificationSettings extends Settings
     public bool $staff_low_stock_whatsapp = false;
 
     // ==================================================
-    // STAFF — QUOTATIONS
+    // STAFF - QUOTATIONS
     // ==================================================
     public bool $staff_new_quote_email = true;
 

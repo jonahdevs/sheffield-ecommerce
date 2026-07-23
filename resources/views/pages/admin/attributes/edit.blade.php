@@ -233,7 +233,7 @@ new #[Layout('layouts::app')] #[Title('Edit Attribute | Admin')] class extends C
                                                         class="font-mono text-xs text-zinc-400">{{ $value->color_code }}</span>
                                                 </span>
                                             @else
-                                                <span class="text-zinc-400">—</span>
+                                                <span class="text-zinc-400">-</span>
                                             @endif
                                         </flux:table.cell>
                                     @endif

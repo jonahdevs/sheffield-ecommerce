@@ -6,13 +6,13 @@
      storefront (always light) and the staff pages (dark-mode aware).
 
      Props:
-       steps         array  — [['value','label','icon','desc'], …] in pipeline order
-       histories     mixed  — the model's statusHistories collection (keyed on to_status here)
-       implicitFirst mixed  — Carbon|null; synthesises the first step's record (e.g. creation time)
-       aliases       array  — ['canonical_status' => 'fallback_status'] when the canonical is missing
-       isTerminal    bool   — the record ended on a terminal state
-       terminal      array|null — ['value','label','desc','icon','tone'=>'danger'|'muted']
-       showActor     bool   — show "by {name}" attribution (staff side) --}}
+       steps         array  - [['value','label','icon','desc'], …] in pipeline order
+       histories     mixed  - the model's statusHistories collection (keyed on to_status here)
+       implicitFirst mixed  - Carbon|null; synthesises the first step's record (e.g. creation time)
+       aliases       array  - ['canonical_status' => 'fallback_status'] when the canonical is missing
+       isTerminal    bool   - the record ended on a terminal state
+       terminal      array|null - ['value','label','desc','icon','tone'=>'danger'|'muted']
+       showActor     bool   - show "by {name}" attribution (staff side) --}}
 @props([
     'steps' => [],
     'histories' => null,

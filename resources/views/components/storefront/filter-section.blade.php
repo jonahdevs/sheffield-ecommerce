@@ -2,8 +2,8 @@
      listing sidebars (both the mobile drawer and the desktop aside).
 
      Props:
-       title — the uppercase heading shown on the toggle button
-       open  — whether the section starts expanded (default true) --}}
+       title - the uppercase heading shown on the toggle button
+       open  - whether the section starts expanded (default true) --}}
 @props(['title', 'open' => true])
 
 <div class="px-5 py-4" x-data="{ open: @js($open) }">

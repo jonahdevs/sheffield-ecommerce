@@ -21,12 +21,12 @@ class KraReceiptService
     /**
      * Generate the KRA tax receipt PDF, store it, and update receipt_path.
      * Returns the storage path on success, null on failure.
-     * Never throws — receipt failure must never cascade to the caller.
+     * Never throws - receipt failure must never cascade to the caller.
      */
     public function generate(Order $order): ?string
     {
         if (! $order->cu_number) {
-            Log::warning('KRA receipt: cannot generate — no CU number on order.', [
+            Log::warning('KRA receipt: cannot generate - no CU number on order.', [
                 'order_id' => $order->id,
             ]);
 

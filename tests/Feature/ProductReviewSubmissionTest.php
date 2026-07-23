@@ -27,7 +27,7 @@ beforeEach(function () {
     ]);
 });
 
-/** A customer with a completed order containing the given product — the verified-purchase gate. */
+/** A customer with a completed order containing the given product - the verified-purchase gate. */
 function verifiedPurchaserOf(Product $product, array $userAttrs = []): User
 {
     $user = User::factory()->create($userAttrs);
@@ -125,7 +125,7 @@ it('updates an existing review instead of creating a duplicate', function () {
     Livewire::test('pages::account.review-form', ['product' => $this->product])
         ->assertSet('rating', 2)
         ->set('rating', 5)
-        ->set('body', 'After the update it performs much better — revising my rating up.')
+        ->set('body', 'After the update it performs much better - revising my rating up.')
         ->call('submit')
         ->assertHasNoErrors();
 

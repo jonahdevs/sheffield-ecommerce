@@ -74,7 +74,7 @@
           <div style="padding: 28px 32px 0;">
             <p style="margin: 0; font-size: 16px; line-height: 24px; font-weight: 700; color: #0f172a;">Hi {{ $customerName }}, your request is in good hands.</p>
             <p style="margin: 8px 0 0; font-size: 14px; line-height: 20px; line-height: 24px; color: #64748b;">
-              We've received your quotation request and our team is already on it. Sit back — we'll send you a detailed, priced quotation within
+              We've received your quotation request and our team is already on it. Sit back - we'll send you a detailed, priced quotation within
               <span style="font-weight: 600; color: #334155;">1 business day</span>
               .
             </p>
@@ -158,7 +158,7 @@
                 </td>
                 <td style="padding-bottom: 16px; padding-left: 12px; vertical-align: top;">
                   <p style="margin: 0; font-size: 14px; line-height: 20px; font-weight: 600; color: #1e293b;">You receive your priced quotation</p>
-                  <p style="margin: 4px 0 0; font-size: 14px; line-height: 20px; color: #64748b;">Within 1 business day you'll get a formal quote @if ($isPickup) with item pricing — no shipping charges, since you'll collect from us. @else including item pricing and delivery costs to your selected location. @endif</p>
+                  <p style="margin: 4px 0 0; font-size: 14px; line-height: 20px; color: #64748b;">Within 1 business day you'll get a formal quote @if ($isPickup) with item pricing - no shipping charges, since you'll collect from us. @else including item pricing and delivery costs to your selected location. @endif</p>
                 </td>
               </tr>
               <tr>

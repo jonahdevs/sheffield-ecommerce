@@ -21,7 +21,7 @@ To be eligible for an exchange, products must meet all of the following:
 - In original, unopened condition, complete with all accessories, packaging and documentation.
 - Accompanied by proof of purchase (original receipt or invoice).
 - Faulty "Out of Box Failure" items reported within 24 hours of leaving the store or of delivery.
-- Exchanges on large appliances are only considered if they are uninstalled (never connected or hooked up), securely packaged (original packaging preferred), and in unused condition — free of scratches, dents or signs of use. Final eligibility is determined by our team on visual inspection and operational check.
+- Exchanges on large appliances are only considered if they are uninstalled (never connected or hooked up), securely packaged (original packaging preferred), and in unused condition - free of scratches, dents or signs of use. Final eligibility is determined by our team on visual inspection and operational check.
 
 ## How an exchange works
 

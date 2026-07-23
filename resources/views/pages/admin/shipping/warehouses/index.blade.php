@@ -205,7 +205,7 @@ new #[Layout('layouts::app')] #[Title('Warehouses | Admin')] class extends Compo
                             <span class="text-xs text-zinc-400">{{ $warehouse->city }}, {{ $warehouse->county }}</span>
                         </flux:table.cell>
                         <flux:table.cell class="text-zinc-500">
-                            {{ $warehouse->phone ?? '—' }}
+                            {{ $warehouse->phone ?? '-' }}
                             @if ($warehouse->email)
                                 <span class="block text-xs text-zinc-400">{{ $warehouse->email }}</span>
                             @endif

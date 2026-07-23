@@ -39,7 +39,7 @@ return [
      * The disk on which to store conversions (thumbnails, etc.) and responsive images
      * when no disk is specified explicitly on the media collection or via
      * `storingConversionsOnDisk()`. When left null, conversions are stored on the
-     * same disk as the original media — preserving previous behavior.
+     * same disk as the original media - preserving previous behavior.
      *
      * This is useful when the originals live on a remote disk (e.g. S3) but the
      * generated derivatives should stay local for faster access and lower egress.
@@ -353,7 +353,7 @@ return [
      * You can specify a prefix for that is used for storing all media.
      * If you set this to `/my-subdir`, all your media will be stored in a `/my-subdir` directory.
      */
-    'prefix' => env('MEDIA_PREFIX', ''),  // no prefix needed — dedicated disk provides isolation
+    'prefix' => env('MEDIA_PREFIX', ''),  // no prefix needed - dedicated disk provides isolation
 
     /*
      * When forcing lazy loading, media will be loaded even if you don't eager load media and you have

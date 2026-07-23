@@ -20,7 +20,7 @@ return new class extends Migration
         // Delivery zones are precise polygon geofences drawn by admin on a map.
         // The polygon JSON stores an ordered array of {lat, lng} coordinate pairs.
         // Serviceability is determined by a ray-casting point-in-polygon check.
-        // Pricing lives on carrier_rates — the zone is geography only.
+        // Pricing lives on carrier_rates - the zone is geography only.
         Schema::create('delivery_zones', function (Blueprint $table) {
             $table->id();
             $table->string('name');
@@ -121,13 +121,13 @@ return new class extends Migration
             $table->string('payment_method')->nullable();
             $table->text('notes')->nullable();
             $table->text('staff_notes')->nullable();
-            // Lifecycle timestamps — one per stage so queries like "orders shipped
+            // Lifecycle timestamps - one per stage so queries like "orders shipped
             // today" are instant rather than relying on a status-change audit log.
             $table->timestamp('confirmed_at')->nullable();
             $table->timestamp('shipped_at')->nullable();
             $table->timestamp('delivered_at')->nullable();
             $table->timestamp('cancelled_at')->nullable();
-            // SAP / KRA — document references and sync lifecycle
+            // SAP / KRA - document references and sync lifecycle
             $table->string('sap_doc_entry')->nullable();
             $table->string('sap_doc_number')->nullable();
             $table->string('sap_sync_status')->default('pending');
@@ -136,7 +136,7 @@ return new class extends Migration
             $table->text('sap_sync_error')->nullable();
             $table->string('cu_number')->nullable();
             $table->string('receipt_path')->nullable();
-            // Dispatch documents — generated when order moves to out_for_delivery
+            // Dispatch documents - generated when order moves to out_for_delivery
             $table->string('packing_list_path')->nullable();
             $table->string('delivery_note_path')->nullable();
             $table->index('sap_sync_status');
@@ -217,7 +217,7 @@ return new class extends Migration
             $table->string('contact_phone')->nullable();
             $table->string('contact_company')->nullable();
             $table->string('quote_number')->unique();
-            // 'draft' is the correct starting state — not 'sent'.
+            // 'draft' is the correct starting state - not 'sent'.
             $table->string('status')->default('draft');
             $table->bigInteger('subtotal_cents')->default(0);
             $table->bigInteger('vat_cents')->default(0);

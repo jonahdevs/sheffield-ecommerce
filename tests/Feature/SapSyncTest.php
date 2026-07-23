@@ -145,7 +145,7 @@ it('uses only two queries to look up any size batch', function () {
     $skus = Product::pluck('sku')->toArray();
     $items = array_map(fn ($sku) => ['sku' => $sku, 'price' => 100, 'stock_quantity' => 10], $skus);
 
-    // 2 SELECTs (whereIn products + whereIn variants) + 5 UPDATEs — never N×2 SELECTs
+    // 2 SELECTs (whereIn products + whereIn variants) + 5 UPDATEs - never N×2 SELECTs
     $queryCount = 0;
     DB::listen(fn ($q) => $queryCount++);
 

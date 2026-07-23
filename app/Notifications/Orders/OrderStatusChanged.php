@@ -39,10 +39,10 @@ class OrderStatusChanged extends Notification implements ShouldQueue
         $number = $order->order_number;
 
         $subject = match ($order->status) {
-            OrderStatus::OUT_FOR_DELIVERY => 'Your order is on its way — '.$number,
-            OrderStatus::COMPLETED => 'Order completed — '.$number,
-            OrderStatus::CANCELLED => 'Order cancelled — '.$number,
-            default => 'Order update — '.$number,
+            OrderStatus::OUT_FOR_DELIVERY => 'Your order is on its way - '.$number,
+            OrderStatus::COMPLETED => 'Order completed - '.$number,
+            OrderStatus::CANCELLED => 'Order cancelled - '.$number,
+            default => 'Order update - '.$number,
         };
 
         $confirmationUrl = ($order->status === OrderStatus::OUT_FOR_DELIVERY && $order->shipment)

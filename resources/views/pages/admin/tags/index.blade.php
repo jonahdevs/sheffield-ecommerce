@@ -185,7 +185,7 @@ new #[Layout('layouts::app')] #[Title('Tags | Admin')] class extends Component {
                             @if ($tag->type)
                                 <flux:badge size="sm" inset="top bottom" color="zinc">{{ ucfirst($tag->type) }}</flux:badge>
                             @else
-                                <span class="text-zinc-400">—</span>
+                                <span class="text-zinc-400">-</span>
                             @endif
                         </flux:table.cell>
                         <flux:table.cell align="end" class="tabular-nums text-zinc-500">{{ $tag->items_count }}</flux:table.cell>
@@ -223,7 +223,7 @@ new #[Layout('layouts::app')] #[Title('Tags | Admin')] class extends Component {
             <flux:input
                 wire:model="type"
                 label="Type"
-                placeholder="Optional — e.g. feature, badge"
+                placeholder="Optional - e.g. feature, badge"
                 description="Group related tags under a type. Leave blank for general tags." />
 
             <div class="flex justify-end gap-3 pt-2">

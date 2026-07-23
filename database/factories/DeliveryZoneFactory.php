@@ -39,7 +39,7 @@ class DeliveryZoneFactory extends Factory
     }
 
     /**
-     * Build a zone centred at the given coordinates (test convenience — matches
+     * Build a zone centred at the given coordinates (test convenience - matches
      * old centeredAt() API so existing tests need minimal changes).
      * The resulting polygon is a square that roughly matches a circle of the
      * given radius in metres (1 degree ≈ 111 km).

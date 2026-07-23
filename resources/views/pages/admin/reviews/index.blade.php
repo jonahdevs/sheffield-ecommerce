@@ -190,7 +190,7 @@ new #[Layout('layouts::app')] #[Title('Reviews | Admin')] class extends Componen
                 @forelse ($this->reviews as $review)
                     <flux:table.row :key="$review->id">
                         <flux:table.cell variant="strong">
-                            {{ $review->product?->name ?? '—' }}
+                            {{ $review->product?->name ?? '-' }}
                         </flux:table.cell>
                         <flux:table.cell>
                             <button type="button" wire:click="openReview({{ $review->id }})" class="block max-w-xs text-left">

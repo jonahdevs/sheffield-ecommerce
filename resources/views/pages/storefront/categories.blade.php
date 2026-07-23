@@ -15,9 +15,9 @@ use Livewire\Component;
 new #[Layout('layouts::storefront')] #[Title('All Categories')] class extends Component {
     public function mount(): void
     {
-        $description = 'Browse Sheffield Africa\'s full range of commercial equipment — kitchen, cold room, laundry and healthcare. Find the right category and explore our products.';
+        $description = 'Browse Sheffield Africa\'s full range of commercial equipment - kitchen, cold room, laundry and healthcare. Find the right category and explore our products.';
 
-        SEOMeta::setTitle('All Categories — Sheffield Africa')->setDescription($description);
+        SEOMeta::setTitle('All Categories - Sheffield Africa')->setDescription($description);
         OpenGraph::setTitle('All Categories')->setDescription($description)->setType('website');
         TwitterCard::setDescription($description);
         JsonLdMulti::setType('CollectionPage')->setTitle('All Categories')->setDescription($description);

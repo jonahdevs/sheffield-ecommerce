@@ -14,7 +14,7 @@ class ProductObserver
     /**
      * Snapshot the current store-wide weight/dimension units onto the product
      * so later changes to those settings never reinterpret stored measurements.
-     * Only stamps units left unset, and never runs on update — preserving the
+     * Only stamps units left unset, and never runs on update - preserving the
      * units a product was created under.
      */
     public function creating(Product $product): void

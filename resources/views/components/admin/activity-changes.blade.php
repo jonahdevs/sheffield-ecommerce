@@ -29,5 +29,5 @@
         @endforeach
     </div>
 @else
-    <span class="text-[12.5px] text-ink-4">—</span>
+    <span class="text-[12.5px] text-ink-4">-</span>
 @endif

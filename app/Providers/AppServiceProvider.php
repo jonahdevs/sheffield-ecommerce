@@ -74,7 +74,7 @@ class AppServiceProvider extends ServiceProvider
                 $productSearch = $settings->product_search_enabled;
                 $orderLookup = $settings->order_lookup_enabled;
             } catch (\Throwable) {
-                // Settings unavailable — default both tools on.
+                // Settings unavailable - default both tools on.
             }
 
             $tools = array_filter([
@@ -237,7 +237,7 @@ class AppServiceProvider extends ServiceProvider
                 config(['session.lifetime' => app(SecuritySettings::class)->session_lifetime]);
             }
         } catch (\Throwable) {
-            // Settings unavailable (e.g. mid-migration) — keep the config default.
+            // Settings unavailable (e.g. mid-migration) - keep the config default.
         }
     }
 
@@ -255,7 +255,7 @@ class AppServiceProvider extends ServiceProvider
                 date_default_timezone_set($timezone);
             }
         } catch (\Throwable) {
-            // Settings unavailable (e.g. mid-migration) — keep the config default.
+            // Settings unavailable (e.g. mid-migration) - keep the config default.
         }
     }
 
@@ -302,7 +302,7 @@ class AppServiceProvider extends ServiceProvider
                 config($overrides);
             }
         } catch (\Throwable) {
-            // Settings unavailable (e.g. mid-migration) — keep the config defaults.
+            // Settings unavailable (e.g. mid-migration) - keep the config defaults.
         }
     }
 }

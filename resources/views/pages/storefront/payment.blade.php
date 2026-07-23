@@ -106,7 +106,7 @@ new #[Layout('layouts::storefront')] #[Title('Payment')] class extends Component
                             <div>
                                 <flux:heading size="sm">Pay securely with Paystack</flux:heading>
                                 <p class="mt-1 text-sm text-ink-3">
-                                    Click pay to choose your method — card, M-Pesa, Airtel Money or bank transfer —
+                                    Click pay to choose your method - card, M-Pesa, Airtel Money or bank transfer -
                                     in Paystack's secure window. You'll stay on this page.
                                 </p>
                             </div>

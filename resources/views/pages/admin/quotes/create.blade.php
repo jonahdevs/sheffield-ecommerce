@@ -144,7 +144,7 @@ new #[Layout('layouts::app')] #[Title('New Quote | Admin')] class extends Compon
      * The unit-price inputs are comma-masked for display, so the property holds
      * strings like "1,234.56" while editing. Strip the separators in one pass
      * before validation and persistence keep the stored value numeric. Doing
-     * this here — rather than in an updated() hook — leaves the masked value
+     * this here - rather than in an updated() hook - leaves the masked value
      * untouched between renders so the input formatting survives a blur.
      */
     private function normalizePrices(): void
@@ -314,7 +314,7 @@ new #[Layout('layouts::app')] #[Title('New Quote | Admin')] class extends Compon
                                         </div>
                                     </flux:table.cell>
                                     <flux:table.cell>
-                                        <flux:input wire:model="lineItems.{{ $index }}.product_sku" placeholder="—" />
+                                        <flux:input wire:model="lineItems.{{ $index }}.product_sku" placeholder="-" />
                                     </flux:table.cell>
                                     <flux:table.cell>
                                         <flux:input wire:model.live.debounce.500ms="lineItems.{{ $index }}.unit_price" mask:dynamic="$money($input, '.', ',', 2)" inputmode="decimal" class="text-right" />

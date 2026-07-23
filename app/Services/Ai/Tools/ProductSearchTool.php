@@ -8,7 +8,7 @@ use Illuminate\Support\Str;
 /**
  * Lets the assistant search the live catalogue. Mirrors the storefront search
  * query (visible + published only) so the bot can only surface real, buyable
- * products — never invented ones.
+ * products - never invented ones.
  */
 class ProductSearchTool implements Tool
 {
@@ -47,7 +47,7 @@ class ProductSearchTool implements Tool
         $query = trim((string) ($arguments['query'] ?? ''));
 
         if (Str::length($query) < 2) {
-            return $this->encode([], 'Query too short — ask the customer for a more specific keyword.');
+            return $this->encode([], 'Query too short - ask the customer for a more specific keyword.');
         }
 
         $products = Product::query()
@@ -78,7 +78,7 @@ class ProductSearchTool implements Tool
                 'category' => $product->primaryCategory?->name,
                 'summary' => Str::of(strip_tags((string) $product->short_description))->squish()->limit(160)->value(),
                 'price' => $buyOnline ? money($price) : null,
-                'purchase' => $buyOnline ? 'Can be bought online at checkout or via a quote' : 'Quote only — request a quote for pricing',
+                'purchase' => $buyOnline ? 'Can be bought online at checkout or via a quote' : 'Quote only - request a quote for pricing',
                 'url' => route('product.show', $product),
             ];
         })->all();

@@ -12,7 +12,7 @@ class CouponSeeder extends Seeder
     {
         // ── Percentage discounts ──────────────────────────────────────────────
 
-        // General sitewide discount — no restrictions
+        // General sitewide discount - no restrictions
         Coupon::create([
             'code' => 'SHEFFIELD10',
             'type' => CouponType::PERCENT,
@@ -31,20 +31,20 @@ class CouponSeeder extends Seeder
             'is_active' => true,
         ]);
 
-        // Limited-use flash sale — first 50 customers only
+        // Limited-use flash sale - first 50 customers only
         Coupon::create([
             'code' => 'FLASH50',
             'type' => CouponType::PERCENT,
             'value' => 15,
             'max_uses' => 50,
             'uses_count' => 23, // 23 already used so the limit is visible
-            'description' => '15% off — limited to the first 50 customers.',
+            'description' => '15% off - limited to the first 50 customers.',
             'is_active' => true,
         ]);
 
         // ── Fixed amount discounts ────────────────────────────────────────────
 
-        // Welcome coupon — one use per customer, no minimum
+        // Welcome coupon - one use per customer, no minimum
         Coupon::create([
             'code' => 'WELCOME500',
             'type' => CouponType::FIXED,
@@ -66,18 +66,18 @@ class CouponSeeder extends Seeder
 
         // ── Time-bound coupons ────────────────────────────────────────────────
 
-        // Upcoming — starts next week (not yet valid)
+        // Upcoming - starts next week (not yet valid)
         Coupon::create([
             'code' => 'JULY15',
             'type' => CouponType::PERCENT,
             'value' => 15,
             'starts_at' => now()->addWeek(),
             'expires_at' => now()->addWeeks(3),
-            'description' => '15% off — valid for two weeks starting next week.',
+            'description' => '15% off - valid for two weeks starting next week.',
             'is_active' => true,
         ]);
 
-        // Expired — validity window has passed
+        // Expired - validity window has passed
         Coupon::create([
             'code' => 'LAUNCH25',
             'type' => CouponType::PERCENT,
@@ -85,7 +85,7 @@ class CouponSeeder extends Seeder
             'starts_at' => now()->subMonths(3),
             'expires_at' => now()->subMonth(),
             'uses_count' => 87,
-            'description' => 'Launch promotion — 25% off. This coupon has expired.',
+            'description' => 'Launch promotion - 25% off. This coupon has expired.',
             'is_active' => true,
         ]);
 
@@ -96,7 +96,7 @@ class CouponSeeder extends Seeder
             'code' => 'SUSPENDED',
             'type' => CouponType::PERCENT,
             'value' => 30,
-            'description' => '30% off — currently disabled by admin.',
+            'description' => '30% off - currently disabled by admin.',
             'is_active' => false,
         ]);
     }

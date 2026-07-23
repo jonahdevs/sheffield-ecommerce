@@ -24,7 +24,7 @@ class SapIntegrationService
     public function __construct(private readonly SapClient $client) {}
 
     /**
-     * Phase 1 — POST /api/invoice/create.
+     * Phase 1 - POST /api/invoice/create.
      * Sends the confirmed order to SAP and returns the document references.
      *
      * @throws SapApiException
@@ -44,7 +44,7 @@ class SapIntegrationService
         $docNumber = isset($data['docNumber']) ? (string) $data['docNumber'] : null;
 
         // SAP rejects a re-send of an order it has already invoiced. That is not a
-        // failure — the invoice exists; we only need the CU number. Treat it as a
+        // failure - the invoice exists; we only need the CU number. Treat it as a
         // benign, idempotent outcome instead of retrying and alerting staff.
         $alreadyExists = ! $success && $this->indicatesInvoiceExists($data, $response->body());
         $ok = $success || $alreadyExists;
@@ -64,7 +64,7 @@ class SapIntegrationService
         ]);
 
         if ($alreadyExists) {
-            Log::info('SAP invoice already exists — treating as synced.', [
+            Log::info('SAP invoice already exists - treating as synced.', [
                 'order_id' => $order->id,
                 'order_number' => $order->order_number,
                 'doc_entry' => $docEntry ?: null,
@@ -104,7 +104,7 @@ class SapIntegrationService
     }
 
     /**
-     * Phase 2 — POST /api/invoice/validate/{docEntry}.
+     * Phase 2 - POST /api/invoice/validate/{docEntry}.
      * Called by RecoverSapInvoiceJob if no webhook arrived within the delay window.
      *
      * @throws SapApiException
@@ -115,7 +115,7 @@ class SapIntegrationService
         $path = "/api/invoice/validate/{$docEntry}";
         $start = microtime(true);
 
-        // 4-minute timeout — KRA validation can be slow, but we don't want to
+        // 4-minute timeout - KRA validation can be slow, but we don't want to
         // block a worker indefinitely. The webhook is always the primary path.
         $response = $this->client->post($path, [], timeoutSeconds: 240);
 
@@ -189,8 +189,8 @@ class SapIntegrationService
     /**
      * Mask only the genuinely sensitive payment fields before persisting to
      * sap_sync_logs. The reusable card handle and national ID are secrets; the
-     * rest of the block — transaction references, card brand, the masked last-4,
-     * expiry, payment count — stays visible so the sync can actually be audited
+     * rest of the block - transaction references, card brand, the masked last-4,
+     * expiry, payment count - stays visible so the sync can actually be audited
      * and the per-gateway mapping verified.
      *
      * @param  array<string, mixed>  $payload

@@ -16,7 +16,7 @@
             <p class="m-0 mt-1 text-[13px] text-white/70">Your tax invoice is attached.</p>
           </template>
           <template #intro>
-            <p class="m-0 text-[13.5px] leading-[21px] text-white/80">The KRA-validated invoice for this order is attached as a PDF — please keep it for your records. Here's a quick summary.</p>
+            <p class="m-0 text-[13.5px] leading-[21px] text-white/80">The KRA-validated invoice for this order is attached as a PDF - please keep it for your records. Here's a quick summary.</p>
           </template>
         </MailHeader>
 
@@ -55,7 +55,7 @@
         <!-- CLOSING -->
         <Section class="bg-white px-9 pt-6 pb-10">
           <Raw>
-            <p class="m-0 text-[13px] leading-5 text-slate-500">Please keep this invoice for your records. Questions? Just reply to this email — we're happy to help.</p>
+            <p class="m-0 text-[13px] leading-5 text-slate-500">Please keep this invoice for your records. Questions? Just reply to this email - we're happy to help.</p>
             <p class="m-0 mt-3.5 text-[13px] text-slate-600">Thank you for choosing {{ config('app.name') }},<br /><span class="font-bold text-slate-900">{{ config('app.name') }} Support Team</span></p>
           </Raw>
         </Section>

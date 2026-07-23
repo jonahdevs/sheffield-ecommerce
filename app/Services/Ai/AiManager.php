@@ -50,7 +50,7 @@ class AiManager
                 }
             }
         } catch (\Throwable) {
-            // Settings unavailable — fall through to the config default.
+            // Settings unavailable - fall through to the config default.
         }
 
         return (string) config('ai.default');

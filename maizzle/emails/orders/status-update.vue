@@ -13,7 +13,7 @@
           <template #title><Raw>Order {{ $newStatus->label() }}</Raw></template>
           <template #greeting>
             <p class="m-0 text-[15px] font-bold text-white">Hi <Raw>{{ $customerName }}</Raw>,</p>
-            <p class="m-0 mt-1 text-[13px] text-white/70">Order <Raw>{{ $order->order_number }}</Raw> — here's the latest.</p>
+            <p class="m-0 mt-1 text-[13px] text-white/70">Order <Raw>{{ $order->order_number }}</Raw> - here's the latest.</p>
           </template>
           <template #intro>
             <p class="m-0 text-[13.5px] leading-[21px] text-white/80">Your order is now <Text as="span" class="font-bold text-white"><Raw>{{ $newStatus->label() }}</Raw></Text>. We'll keep you posted as it moves.</p>
@@ -124,7 +124,7 @@
         <!-- CLOSING -->
         <Section class="bg-white px-9 pt-6 pb-10">
           <Raw>
-            <p class="m-0 text-[13px] leading-5 text-slate-500">Questions about your order? Just reply to this email — our team is happy to help.</p>
+            <p class="m-0 text-[13px] leading-5 text-slate-500">Questions about your order? Just reply to this email - our team is happy to help.</p>
             <p class="m-0 mt-3.5 text-[13px] text-slate-600">Thank you for your order,<br /><span class="font-bold text-slate-900">{{ config('app.name') }} Support Team</span></p>
           </Raw>
         </Section>

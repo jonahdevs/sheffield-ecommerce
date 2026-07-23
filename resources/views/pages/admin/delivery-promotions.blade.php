@@ -267,7 +267,7 @@ new #[Layout('layouts::app')] #[Title('Delivery promotions | Admin')] class exte
     <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
             <flux:heading size="xl">Delivery promotions</flux:heading>
-            <flux:text class="mt-1">Overrides applied on top of zone fees — e.g. a launch free-delivery offer.</flux:text>
+            <flux:text class="mt-1">Overrides applied on top of zone fees - e.g. a launch free-delivery offer.</flux:text>
         </div>
         <flux:button variant="primary" icon="plus" wire:click="openCreatePromo">Add promotion</flux:button>
     </div>
@@ -338,7 +338,7 @@ new #[Layout('layouts::app')] #[Title('Delivery promotions | Admin')] class exte
                         <flux:table.cell class="text-zinc-500">
                             {{ $promo->effect->label() }}@if ($promo->effect === \App\Enums\DeliveryPromotionEffect::FLAT_FEE) ({{ money($promo->value_cents) }})@elseif ($promo->effect === \App\Enums\DeliveryPromotionEffect::PERCENT_OFF) ({{ $promo->percent }}%)@endif
                         </flux:table.cell>
-                        <flux:table.cell class="tabular-nums text-zinc-500">{{ $promo->min_subtotal_cents > 0 ? money($promo->min_subtotal_cents) : '—' }}</flux:table.cell>
+                        <flux:table.cell class="tabular-nums text-zinc-500">{{ $promo->min_subtotal_cents > 0 ? money($promo->min_subtotal_cents) : '-' }}</flux:table.cell>
                         <flux:table.cell class="text-sm text-zinc-500">
                             {{ $promo->starts_at?->format('d M Y') ?? 'now' }} – {{ $promo->ends_at?->format('d M Y') ?? 'open' }}
                         </flux:table.cell>

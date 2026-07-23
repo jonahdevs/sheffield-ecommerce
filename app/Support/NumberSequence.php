@@ -9,14 +9,14 @@ use Illuminate\Support\Facades\DB;
  *
  * Each key (e.g. "order:2026") maps to a row in `number_sequences`. {@see next()}
  * locks that row and increments it inside a transaction, so two concurrent
- * callers can never be handed the same value — unlike a `count() + 1` scan,
+ * callers can never be handed the same value - unlike a `count() + 1` scan,
  * which races and silently reuses numbers after deletes.
  */
 class NumberSequence
 {
     /**
      * Increment and return the next value for the given sequence key. Gaps from
-     * rolled-back transactions are acceptable — uniqueness, not contiguity, is
+     * rolled-back transactions are acceptable - uniqueness, not contiguity, is
      * what reference numbers require.
      */
     public static function next(string $key): int

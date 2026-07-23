@@ -3,7 +3,7 @@
         "name": "Coffee Machines",
         "image": "categories/coffee-machines.webp",
         "icon": "categories/coffee-machines-icon.png",
-        "description": "Professional espresso machines, automatic coffee makers, grinders, and accessories from leading brands including Rancilio, Simonelli, Kalerm, and Dr. Coffee — built for cafes, restaurants, hotels, and commercial kitchens across East Africa.",
+        "description": "Professional espresso machines, automatic coffee makers, grinders, and accessories from leading brands including Rancilio, Simonelli, Kalerm, and Dr. Coffee - built for cafes, restaurants, hotels, and commercial kitchens across East Africa.",
         "sort_order": 26,
         "placements": [
             "navbar"
@@ -342,7 +342,7 @@
         "name": "Ice Cube Machines",
         "image": null,
         "icon": "categories/ice-cube-machines-icon.png",
-        "description": "Commercial ice cube machines from trusted brands including Brema and Iberna — engineered for consistent, high-volume ice production in bars, restaurants, hotels, and food service operations across East Africa.",
+        "description": "Commercial ice cube machines from trusted brands including Brema and Iberna - engineered for consistent, high-volume ice production in bars, restaurants, hotels, and food service operations across East Africa.",
         "sort_order": 27,
         "placements": []
     },
@@ -350,7 +350,7 @@
         "name": "Ice Cream Machines",
         "image": "categories/ice-cream-machines.webp",
         "icon": "categories/ice-cream-machines-icon.png",
-        "description": "Professional soft serve and gelato machines from leading brands including Pasmo and Carpigiani — designed for cafes, dessert shops, hotels, and high-end hospitality venues across East Africa.",
+        "description": "Professional soft serve and gelato machines from leading brands including Pasmo and Carpigiani - designed for cafes, dessert shops, hotels, and high-end hospitality venues across East Africa.",
         "sort_order": 28,
         "placements": []
     },
@@ -358,7 +358,7 @@
         "name": "Dishwashers",
         "image": "categories/dishwashers.webp",
         "icon": "categories/dishwashers-icon.png",
-        "description": "Commercial dishwashers, glass washers, and warewashing accessories from trusted brands including Comenda, Hattons, and Kayalar — built for restaurants, hotels, bars, and high-volume food service operations across East Africa.",
+        "description": "Commercial dishwashers, glass washers, and warewashing accessories from trusted brands including Comenda, Hattons, and Kayalar - built for restaurants, hotels, bars, and high-volume food service operations across East Africa.",
         "sort_order": 29,
         "placements": []
     },
@@ -366,7 +366,7 @@
         "name": "Burners",
         "image": "categories/burners.webp",
         "icon": "categories/burners-icon.png",
-        "description": "Commercial gas and electric burners from trusted brands — built for restaurants, hotels, catering operations, and high-volume food service environments across East Africa.",
+        "description": "Commercial gas and electric burners from trusted brands - built for restaurants, hotels, catering operations, and high-volume food service environments across East Africa.",
         "sort_order": 30,
         "placements": []
     }

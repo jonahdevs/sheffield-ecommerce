@@ -45,7 +45,7 @@ class TaxCalculator
         return $this->defaultTaxClass;
     }
 
-    /** Effective default rate (percent) — the default tax class's rate, or 0. */
+    /** Effective default rate (percent) - the default tax class's rate, or 0. */
     public function defaultRate(): float
     {
         return (float) ($this->defaultTaxClass()?->rate ?? 0);
@@ -89,7 +89,7 @@ class TaxCalculator
 
     /**
      * Whether the storefront should show prices with tax included.
-     * Always mirrors prices_include_tax — one source of truth.
+     * Always mirrors prices_include_tax - one source of truth.
      */
     public function displayIncludesTax(): bool
     {
