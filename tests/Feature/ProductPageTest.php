@@ -213,14 +213,15 @@ it('shows the selected variant description in place of the product summary', fun
     $component = Livewire::test('pages::storefront.product', ['product' => $product->fresh()]);
 
     // Red is preselected and has no description, so the product summary stands.
-    // (The summary also appears in the share-button JS, so assert on the block
-    // itself rather than the bare string.)
-    expect($component->html())->toContain('pdp-rich-text mt-3');
+    // Variant and summary now share the pdp-rich-text block, so assert on the
+    // summary's own rendered div (its text also appears in the share-button JS).
+    expect($component->html())->toContain('text-ink-2">A sturdy apron</div>');
 
     $component->call('selectOption', 'color', 'blue')
         ->assertSee('Blue apron, 2/3 GN, 325 x 354 mm.');
 
-    expect($component->html())->not->toContain('pdp-rich-text mt-3');
+    // Selecting the variant replaces the summary div with the variant's own.
+    expect($component->html())->not->toContain('text-ink-2">A sturdy apron</div>');
 });
 
 it('makes a variant image the active gallery slide when its option is picked', function () {

@@ -23,6 +23,12 @@ new #[Layout('layouts::app')] #[Title('Brands | Admin')] class extends Component
     #[Url]
     public int $perPage = 10;
 
+    #[Url]
+    public string $sortBy = 'sort_order';
+
+    #[Url]
+    public string $sortDirection = 'asc';
+
     public bool $showModal = false;
     public ?int $editingId = null;
 
@@ -48,14 +54,26 @@ new #[Layout('layouts::app')] #[Title('Brands | Admin')] class extends Component
         $this->resetPage();
     }
 
+    public function sort(string $column): void
+    {
+        if ($this->sortBy === $column) {
+            $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
+        } else {
+            $this->sortBy = $column;
+            $this->sortDirection = 'asc';
+        }
+
+        $this->resetPage();
+    }
+
     #[Computed]
     public function brands()
     {
         return Brand::withCount('products')
             ->when($this->search, fn($q) => $q->where('name', 'like', '%' . $this->search . '%'))
             ->when($this->filterStatus !== '', fn($q) => $q->where('is_active', $this->filterStatus === 'active'))
-            ->orderBy('sort_order')
-            ->orderBy('name')
+            ->orderBy($this->sortBy, $this->sortDirection)
+            ->when($this->sortBy !== 'name', fn($q) => $q->orderBy('name'))
             ->paginate($this->perPage);
     }
 
@@ -193,10 +211,12 @@ new #[Layout('layouts::app')] #[Title('Brands | Admin')] class extends Component
         <flux:table
             container:class="[&_th:first-child]:pl-6 [&_th:last-child]:pr-6 [&_td:first-child]:pl-6 [&_td:last-child]:pr-6">
             <flux:table.columns class="bg-zinc-50 dark:bg-zinc-800/60">
-                <flux:table.column>Brand</flux:table.column>
+                <flux:table.column sortable :sorted="$sortBy === 'name'" :direction="$sortDirection"
+                    wire:click="sort('name')">Brand</flux:table.column>
                 <flux:table.column>Slug</flux:table.column>
                 <flux:table.column>Website</flux:table.column>
-                <flux:table.column>Products</flux:table.column>
+                <flux:table.column sortable :sorted="$sortBy === 'products_count'" :direction="$sortDirection"
+                    wire:click="sort('products_count')">Products</flux:table.column>
                 <flux:table.column>Status</flux:table.column>
                 <flux:table.column align="end">Actions</flux:table.column>
             </flux:table.columns>

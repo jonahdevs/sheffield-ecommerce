@@ -170,6 +170,15 @@ class ProductSeeder extends Seeder
         // e-commerce price list: listed SKUs are published, the rest are drafts).
         $status = ProductStatus::from($data['status'] ?? ProductStatus::DRAFT->value);
 
+        // Variable/grouped/bundle parents don't own a SKU - their variants or
+        // children carry the real ones (see products table migration). The
+        // products.json "GROUP/..." value is only an internal join key used to
+        // attach variants and build the slug below, so it must not be persisted
+        // as the product's SKU or it leaks into JSON-LD, search and the PDP.
+        $storedSku = in_array($type, [ProductType::VARIABLE, ProductType::GROUPED, ProductType::BUNDLE], true)
+            ? null
+            : $sku;
+
         $brandId = null;
         if (! empty($data['brand'])) {
             $brandId = $this->brandIdByName[mb_strtolower(trim($data['brand']))] ?? null;
@@ -182,8 +191,8 @@ class ProductSeeder extends Seeder
 
         $product = Product::create([
             'name' => $name,
-            'slug' => $this->buildSlug($data['slug'] ?? null, $name, $sku),
-            'sku' => $sku,
+            'slug' => $this->buildSlug($data['slug'] ?? null, $name, (string) $storedSku),
+            'sku' => $storedSku,
             'brand_id' => $brandId,
             'primary_category_id' => $primaryCategoryId,
             'model_number' => $data['model_number'] ?? null,

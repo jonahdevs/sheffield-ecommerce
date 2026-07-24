@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 
 class DatabaseSeeder extends Seeder
@@ -14,6 +15,16 @@ class DatabaseSeeder extends Seeder
         foreach (['packing-lists', 'delivery-notes', 'kra-receipts', 'quotations'] as $dir) {
             Storage::disk('local')->deleteDirectory($dir);
         }
+
+        // migrate:fresh drops the media table but never touches the media disk, so
+        // every previous seed run's Spatie media folders were piling up as orphans
+        // (storage/app/media grew past 3GB across repeated reseeds). Nothing on this
+        // disk is reachable once the media table is dropped, so wipe it before
+        // ProductSeeder/MediaSeeder repopulate it from scratch.
+        foreach (Storage::disk('media')->directories() as $dir) {
+            Storage::disk('media')->deleteDirectory($dir);
+        }
+        File::deleteDirectory(storage_path('media-library/temp'));
 
         User::factory()->create([
             'name' => 'Test User',

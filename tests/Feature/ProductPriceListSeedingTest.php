@@ -21,12 +21,23 @@ it('seeds each product with the status, price and default variant from products.
     expect(collect($items)->every(fn ($i) => isset($i['status'])))->toBeTrue();
     $expected = collect($items)->keyBy('sku');
 
+    // Variable/grouped/bundle parents persist a null SKU (their variants carry the
+    // real ones), so they are matched back to their source row by name - parent
+    // names are unique across the catalogue.
+    $expectedParentsByName = collect($items)
+        ->filter(fn ($i) => in_array($i['type'] ?? 'simple', ['variable', 'grouped', 'bundle', 'bundled'], true))
+        ->keyBy('name');
+
     // AttributeSeeder must run first: without it there are no attribute values for
     // ProductSeeder to attach, and every variant seeds with no variation axis at all.
     $this->seed([BrandSeeder::class, CategorySeeder::class, AttributeSeeder::class, ProductSeeder::class]);
 
-    Product::query()->get(['sku', 'status', 'price'])->each(function (Product $product) use ($expected) {
-        $item = $expected->get($product->sku);
+    Product::query()->get(['sku', 'status', 'price', 'name', 'type'])->each(function (Product $product) use ($expected, $expectedParentsByName) {
+        $item = $product->sku !== null
+            ? $expected->get($product->sku)
+            : $expectedParentsByName->get($product->name);
+
+        expect($item)->not->toBeNull("No source row for {$product->name} ({$product->sku})");
 
         expect($product->status->value)->toBe($item['status'])
             ->and($product->price)->toBe(
@@ -61,6 +72,11 @@ it('seeds each product with the status, price and default variant from products.
     expect($variableProducts)->not->toBeEmpty();
 
     $variableProducts->each(function (Product $product) {
+        // A variable parent owns no SKU - its variants carry the real ones. The
+        // products.json "GROUP/..." value is only an internal join key and must
+        // never be persisted as the product's SKU.
+        expect($product->sku)->toBeNull("{$product->name} persisted a parent SKU");
+
         expect($product->default_variant_id)->not->toBeNull();
 
         $default = $product->variants->firstWhere('id', $product->default_variant_id);
@@ -68,6 +84,9 @@ it('seeds each product with the status, price and default variant from products.
         expect($default)->not->toBeNull()
             ->and($default->stock_status)->toBe(StockStatus::IN_STOCK);
     });
+
+    // No product row anywhere carries a leaked GROUP/... join key as its SKU.
+    expect(Product::where('sku', 'like', 'GROUP/%')->count())->toBe(0);
 
     // The GN-size ranges are each one variable product, and every size carries its
     // own photo - they look different, so a shared parent image would misrepresent
@@ -93,8 +112,16 @@ it('seeds each product with the status, price and default variant from products.
         ],
     ];
 
+    // Parents no longer persist their GROUP/... key as a SKU, so they are found by
+    // the name carried on that source row rather than by the (now null) parent SKU.
+    $parentQuery = function (string $groupSku) use ($items) {
+        $name = collect($items)->firstWhere('sku', $groupSku)['name'];
+
+        return Product::where('name', $name)->where('type', ProductType::VARIABLE);
+    };
+
     foreach ($ranges as $parentSku => $expectedSizes) {
-        $parent = Product::where('sku', $parentSku)->with('variants.attributeValues')->first();
+        $parent = $parentQuery($parentSku)->with('variants.attributeValues')->first();
 
         expect($parent)->not->toBeNull()
             ->and($parent->type)->toBe(ProductType::VARIABLE)
@@ -116,8 +143,8 @@ it('seeds each product with the status, price and default variant from products.
     }
 
     // Each range opens on the size flagged in the source data, not merely inferred.
-    $defaultSku = function (string $parentSku): ?string {
-        $parent = Product::where('sku', $parentSku)->with('variants')->first();
+    $defaultSku = function (string $parentSku) use ($parentQuery): ?string {
+        $parent = $parentQuery($parentSku)->with('variants')->first();
 
         return $parent->variants->firstWhere('id', $parent->default_variant_id)?->sku;
     };
@@ -131,7 +158,7 @@ it('seeds each product with the status, price and default variant from products.
 
     // The granite-enameled container varies on two axes at once, so each variant
     // must carry a value for both - a variant missing one can never be selected.
-    $granite = Product::where('sku', 'GROUP/GRANITE-ENAMELED')
+    $granite = $parentQuery('GROUP/GRANITE-ENAMELED')
         ->with(['variants.attributeValues.attribute', 'productAttributes.attribute'])
         ->first();
 

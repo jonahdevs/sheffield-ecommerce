@@ -1153,9 +1153,9 @@ $isOnSale = $compareAt !== null;
                 @endif
                 {{-- A variant's own description supersedes the product summary once
                      one is selected: it describes the exact thing being bought.
-                     It comes from a plain textarea, so it is escaped, not raw. --}}
+                     Rendered as rich text like the product description below. --}}
                 @if ($variant?->description)
-                    <div class="mt-3 text-base leading-relaxed text-ink-2">{{ $variant->description }}</div>
+                    <div class="pdp-rich-text mt-3 text-base leading-relaxed text-ink-2">{!! $variant->description !!}</div>
                 @elseif ($product->short_description)
                     <div class="pdp-rich-text mt-3 text-base leading-relaxed text-ink-2">{!! $product->short_description !!}</div>
                 @endif

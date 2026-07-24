@@ -132,11 +132,15 @@ it('seeds the coffee taxonomy from the final e-commerce listing', function () {
         ->and($decanter->brand->name)->toBe('Crem')
         ->and($decanter->primary_category_id)->toBe($childId('Coffee Brewers'));
 
-    $waterUrn = Product::where('sku', 'IMG/COF/00001')->sole();
+    // IMG/COF/00001 now belongs to the Berjaya water urn as a variant (the 30 L size);
+    // the urn is a variable product whose parent SKU is null, so it is found by name.
+    $waterUrn = Product::where('name', 'Heated Water Urn with Concealed Element Berjaya')
+        ->where('type', 'variable')
+        ->sole();
 
-    expect($waterUrn->name)->toContain('Heated Water Urn')
-        ->and($waterUrn->brand->name)->toBe('Berjaya')
-        ->and($waterUrn->primaryCategory->name)->toBe('Beverage Equipment');
+    expect($waterUrn->brand->name)->toBe('Berjaya')
+        ->and($waterUrn->primaryCategory->name)->toBe('Beverage Equipment')
+        ->and($waterUrn->variants()->where('sku', 'IMG/COF/00001')->exists())->toBeTrue();
 
     // Every coffee product now drills into a machine type, grinder, brewer, servery or
     // accessories child - nothing is left parked on the Coffee Machines parent itself.
@@ -167,15 +171,16 @@ it('seeds the coffee taxonomy from the final e-commerce listing', function () {
  *
  * SAP does NOT group these - it tracks each size as its own item under its IMG/OVE
  * code - so the grouping is storefront-only. Each size therefore keeps its IMG/OVE SKU
- * as the VARIANT sku (which is what SAP sync matches on), while the parent carries a
- * synthetic SKU that SAP never sends, so its Product row cannot shadow a variant during
- * sync (ProcessSapProductSync matches Product SKUs before variant SKUs).
+ * as the VARIANT sku (which is what SAP sync matches on), while the parent carries no
+ * SKU at all (null), so its Product row cannot shadow a variant during sync
+ * (ProcessSapProductSync matches Product SKUs before variant SKUs, and null never
+ * matches a SAP item code).
  * Folded into the seeding test above because seeding the catalogue is slow.
  */
 function assertRoastingTraysAreGroupedByGnSize(): void
 {
     $tray = Product::where('name', 'Roasting and Baking Tray')
-        ->where('sku', 'GROUP/ROASTING-BAKING-TRAY')
+        ->where('type', 'variable')
         ->sole();
 
     expect($tray->type->value)->toBe('variable');
