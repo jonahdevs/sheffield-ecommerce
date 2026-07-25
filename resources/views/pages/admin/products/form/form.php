@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\MediaType;
 use App\Enums\ProductLinkType;
 use App\Enums\ProductStatus;
 use App\Enums\ProductType;
@@ -16,6 +17,7 @@ use App\Models\ProductAttribute;
 use App\Models\ProductLink;
 use App\Models\ProductVariant;
 use App\Models\TaxClass;
+use App\Services\VideoEmbed;
 use App\Settings\IntegrationSettings;
 use App\Settings\InventorySettings;
 use App\Settings\LocalizationSettings;
@@ -249,6 +251,20 @@ new #[Layout('layouts::app')] class extends Component
     /** Pending gallery uploads (Livewire temp files). */
     public array $pendingGalleryImages = [];
 
+    /** Pending gallery video file upload (Livewire temp file). */
+    public $pendingGalleryVideo = null;
+
+    /** Pasted YouTube/Vimeo URL awaiting "Add". */
+    public string $videoUrlInput = '';
+
+    /**
+     * Video links added but not yet saved; each holds the already-downloaded thumbnail's
+     * local temp path so a failed fetch is caught (and reported) at add-time, not save-time.
+     *
+     * @var array<int, array{provider: string, video_url: string, embed_url: string, thumb_path: string}>
+     */
+    public array $pendingGalleryVideoUrls = [];
+
     /** Existing gallery image records. */
     public array $galleryImages = [];
 
@@ -447,7 +463,12 @@ new #[Layout('layouts::app')] class extends Component
 
         $this->galleryImages = $product->getMedia('images')
             ->filter(fn ($m) => ! $m->getCustomProperty('is_cover', false))
-            ->map(fn ($m) => ['id' => $m->id, 'url' => $m->getUrl(), 'alt' => $m->getCustomProperty('alt', '')])
+            ->map(fn ($m) => [
+                'id' => $m->id,
+                'url' => $m->getUrl(),
+                'alt' => $m->getCustomProperty('alt', ''),
+                'type' => $m->getCustomProperty('media_type', MediaType::IMAGE->value),
+            ])
             ->values()
             ->all();
     }
@@ -1000,6 +1021,78 @@ new #[Layout('layouts::app')] class extends Component
         $this->galleryImages = array_values($this->galleryImages);
     }
 
+    /**
+     * Drops the dragged gallery item at its new position and persists the order to
+     * Spatie's order_column immediately. The cover leads the collection so it stays the
+     * first storefront slide; the gallery items follow in the order shown here.
+     */
+    public function handleGallerySort(int $id, int $position): void
+    {
+        $items = collect($this->galleryImages);
+        $moving = $items->firstWhere('id', $id);
+
+        if (! $moving) {
+            return;
+        }
+
+        $reordered = $items->reject(fn ($img) => $img['id'] === $id)->values();
+        $reordered->splice($position, 0, [$moving]);
+        $this->galleryImages = $reordered->all();
+
+        $orderedIds = collect([$this->coverImage['id'] ?? null])
+            ->merge($reordered->pluck('id'))
+            ->filter()
+            ->values()
+            ->all();
+
+        Media::setNewOrder($orderedIds);
+    }
+
+    /**
+     * Resolves the pasted URL and downloads its thumbnail immediately, so a bad URL or a
+     * failed fetch is reported right here rather than silently dropped at save time.
+     */
+    public function addGalleryVideoUrl(): void
+    {
+        $this->validate(['videoUrlInput' => ['required', 'url']]);
+
+        $resolved = app(VideoEmbed::class)->resolve($this->videoUrlInput);
+
+        if (! $resolved) {
+            $this->addError('videoUrlInput', 'Enter a valid YouTube or Vimeo URL.');
+
+            return;
+        }
+
+        $thumbPath = $resolved['thumbnail_url']
+            ? app(VideoEmbed::class)->downloadThumbnail($resolved['thumbnail_url'])
+            : null;
+
+        if (! $thumbPath) {
+            $this->addError('videoUrlInput', "Couldn't load that video's thumbnail — check the URL and try again.");
+
+            return;
+        }
+
+        $this->pendingGalleryVideoUrls[] = [
+            'provider' => $resolved['provider']->value,
+            'video_url' => $this->videoUrlInput,
+            'embed_url' => $resolved['embed_url'],
+            'thumb_path' => $thumbPath,
+        ];
+        $this->videoUrlInput = '';
+    }
+
+    public function removePendingGalleryVideoUrl(int $index): void
+    {
+        if (isset($this->pendingGalleryVideoUrls[$index]['thumb_path'])) {
+            @unlink($this->pendingGalleryVideoUrls[$index]['thumb_path']);
+        }
+
+        unset($this->pendingGalleryVideoUrls[$index]);
+        $this->pendingGalleryVideoUrls = array_values($this->pendingGalleryVideoUrls);
+    }
+
     // ==================================================
     // SAVE
     // ==================================================
@@ -1306,6 +1399,51 @@ new #[Layout('layouts::app')] class extends Component
             }
             $this->pendingGalleryImages = [];
         }
+
+        // ==================================================
+        // GALLERY VIDEO (UPLOADED FILE)
+        // ==================================================
+        if ($this->pendingGalleryVideo) {
+            $galleryIndex = $product->getMedia('images')
+                ->reject(fn ($media) => $media->getCustomProperty('is_cover'))
+                ->count() + 1;
+
+            $video = $product
+                ->addMedia($this->pendingGalleryVideo->getRealPath())
+                ->usingFileName(MediaNaming::productGallery($product->name, $product->sku, $galleryIndex, $this->pendingGalleryVideo->getClientOriginalExtension()))
+                ->usingName($product->name)
+                ->withCustomProperties(['is_cover' => false, 'media_type' => MediaType::VIDEO_FILE->value])
+                ->toMediaCollection('images');
+
+            $this->galleryImages[] = ['id' => $video->id, 'url' => $video->getUrl(), 'alt' => '', 'type' => MediaType::VIDEO_FILE->value];
+            $this->pendingGalleryVideo = null;
+        }
+
+        // ==================================================
+        // GALLERY VIDEO (EXTERNAL URL)
+        // ==================================================
+        foreach ($this->pendingGalleryVideoUrls as $pending) {
+            $galleryIndex = $product->getMedia('images')
+                ->reject(fn ($media) => $media->getCustomProperty('is_cover'))
+                ->count() + 1;
+
+            $video = $product
+                ->addMedia($pending['thumb_path'])
+                ->usingFileName(MediaNaming::productGallery($product->name, $product->sku, $galleryIndex, 'jpg'))
+                ->usingName($product->name)
+                ->withCustomProperties([
+                    'is_cover' => false,
+                    'media_type' => MediaType::VIDEO_EMBED->value,
+                    'video_provider' => $pending['provider'],
+                    'video_url' => $pending['video_url'],
+                    'embed_url' => $pending['embed_url'],
+                ])
+                ->toMediaCollection('images');
+
+            @unlink($pending['thumb_path']);
+            $this->galleryImages[] = ['id' => $video->id, 'url' => $video->getUrl(), 'alt' => '', 'type' => MediaType::VIDEO_EMBED->value];
+        }
+        $this->pendingGalleryVideoUrls = [];
 
         // Refresh variant image URLs after save and clear pending uploads
         foreach ($this->variants as $i => &$v) {

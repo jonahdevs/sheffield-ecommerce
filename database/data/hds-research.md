@@ -91,26 +91,32 @@ confirmation source. https://sheffieldafrica.com/product/1147/counter-top-heated
 
 ## 3. Product reference
 
-| SKU | Catalogue name | Model | Independent source | Confidence |
-|---|---|---|---|---|
-| IMG/HOT/00332 | Pressure Fryer Electric Broaster 1600 | BROASTER 1600E | https://broaster.com/wp-content/uploads/2020/02/14679-0-1600-1800-Oper-Man-rev-01-18.pdf | **High** — oil capacity (21 lb) matches exactly; dims close but not identical, see §4.3 |
-| IMG/HOT/00333 | Pressure Fryer Gas Broaster 1800 | BROASTER 1800G | https://broaster.com/equipment/broaster-1800/ | **High** — 42 lb oil capacity matches exactly |
-| IMG/HOT/00390 | Pressure Fryer Electric Broaster 1800 | BROASTER 1800E | same | **High** — 42 lb oil capacity matches exactly |
-| IMG/HOT/00344 | Fryer Single 22 Litres Gas HDS-120 | HDSFGH-120 | https://heavydutysystems.com/wp-content/uploads/2024/07/HDS-Gas-HDSFGH-Gas-Fryer.pdf | Medium — model confirmed, per-model BTU/dims not broken out in the PDF text extract |
-| IMG/HOT/00345 | Fryer Single 30 Litres Gas HDS-150 | HDSFGH-150 | same | Medium |
-| IMG/HOT/00406 | Free Standing 21 Ltrs Single Well Fryer HDSFGH-90 | HDSFGH-90 | https://tomadostore.com/en/hds-fgh-90-gas-floor-fryer-40-lb-stainless-steel-90-000-btu.html | **High** — 40 lb / 90,000 BTU confirmed independently |
-| IMG/HOT/00347 | Fryer Split Type 15+15 Ltrs HDS-150S | HDSFGH-150S | https://heavydutysystems.com/product/gas-split-tank-fryer/ | **High** — model confirmed on official split-tank page |
-| IMG/HOT/00407 | Fryer Baskets for HDSFGH-150S | 70201104400 | none found independently | Low — part number unconfirmed, see §4.2 |
-| IMG/HOT/00424 | Fryer Baskets for HDSFGH-90S | 70201104400 | none found independently | Low — same part number as 00407, host model itself unconfirmed, see §2 trap 3 |
-| IMG/HOT/00425 | Fryer Baskets for HDSFGH-120S LP | 70201105746 | none found independently | Low — part number and "LP" suffix both unconfirmed |
-| IMG/HOT/00436 | Fryer Split Type 10+10 Litres HDS Electric | (blank) | none — archived, no content | N/A — archived/incomplete record |
-| IMG/OVE/00223 | Convection Oven HDSECO-4A | HDSECO-4A | https://anyflip.com/iikmz/yedn/basic (Eagle catering catalogue) | Medium — 62L cavity/spec confirmed via a distributor catalogue, not Heavy Duty Systems' own site directly; current official listing groups this model under "3A 4A ... with Top Grill" (§2 trap 1) |
-| IMG/OVE/00224 | Convection Oven HDSECO-8A | HDSECO-8A | same catalogue | Medium — 116L cavity (700×460×360mm) confirmed; our stored 838×685×584mm reads as exterior vs this being interior cavity, not a contradiction |
-| IMG/OVE/00201 | Oven Convection Gas HDS GCO | HDSGCO-1 | https://benitezcommercial.com/products/heavy-duty-systems-hdsgco-1 | Medium — 54,000 BTU confirmed exactly; **dimensions do not match**, see §4.4 |
-| IMG/DIS/00138 | Heated Display Counter Top 700MM HDS | HDSHDN-26 | https://heavydutysystems.com/product/hot-display-case/ | Medium — the confirmed official line is `HDSHD-26/36/48`; our `HDSHDN-26` carries an extra "N" not seen on the official page, see §4.5 |
-| IMG/DIS/00139 | Heated Display Counter Top 900MM HDS | HDSHDN-36 | same | Medium — same "N" discrepancy; also the exact model appears on Sheffield Africa's site (non-independent) |
-| IMG/HOT/00437 | 6 Burner Gas Range with Gas Oven HDSGR-36 | HDSGR-36 | https://amsagt.com/wp-content/uploads/2023/07/HDSGR-24.pdf (sibling model's official-style sheet) | Low — archived/no price, name partially confirmed by a sibling model's spec sheet only |
-| IMG/HOT/OO438 | Gas Burners with Oven and 24" Griddle/Salamander | (blank) | https://heavydutysystems.com/product/gas-burners-with-oven-and-24-griddle/ (category exists) | N/A — archived/incomplete record; SKU itself has a likely typo, see §2 trap 5 |
+Unlike Skymsen, Heavy Duty Systems doesn't publish a distinct numbered page per SKU/variant —
+its site is organized by **product family**, so several of our catalogue models share one
+official page (e.g. `HDSFGH-90/120/150` all live on the single "Gas Fryer" page). Where that's
+the case, the same "Product page" URL repeats across rows below; it's still the correct
+official source, just not SKU-granular the way Skymsen's `produtos/detalhe/<id>` pages are.
+
+| SKU | Catalogue name | Model | Product page | Spec sheet / independent source | Confidence |
+|---|---|---|---|---|---|
+| IMG/HOT/00332 | Pressure Fryer Electric Broaster 1600 | BROASTER 1600E | https://broaster.com/equipment/broaster-pressure-fryer-1600/ | https://broaster.com/wp-content/uploads/2020/02/14679-0-1600-1800-Oper-Man-rev-01-18.pdf | **High** — oil capacity (21 lb) matches exactly; dims close but not identical, see §4.3 |
+| IMG/HOT/00333 | Pressure Fryer Gas Broaster 1800 | BROASTER 1800G | https://broaster.com/equipment/broaster-1800/ | same page | **High** — 42 lb oil capacity matches exactly |
+| IMG/HOT/00390 | Pressure Fryer Electric Broaster 1800 | BROASTER 1800E | https://broaster.com/equipment/broaster-1800/ | same | **High** — 42 lb oil capacity matches exactly |
+| IMG/HOT/00344 | Fryer Single 22 Litres Gas HDS-120 | HDSFGH-120 | https://heavydutysystems.com/product/gas-fryer/ | https://amsagt.com/wp-content/uploads/2023/07/HDSFGH-120.pdf | **High** — model confirmed on the official family page; 120,000 BTU and dims confirmed via the model-specific spec PDF (see §5) |
+| IMG/HOT/00345 | Fryer Single 30 Litres Gas HDS-150 | HDSFGH-150 | https://heavydutysystems.com/product/gas-fryer/ | https://heavydutysystems.com/wp-content/uploads/2024/07/HDS-Gas-HDSFGH-Gas-Fryer.pdf | Medium — model confirmed, per-model BTU/dims not broken out in the PDF text extract |
+| IMG/HOT/00406 | Free Standing 21 Ltrs Single Well Fryer HDSFGH-90 | HDSFGH-90 | https://heavydutysystems.com/product/gas-fryer/ | https://tomadostore.com/en/hds-fgh-90-gas-floor-fryer-40-lb-stainless-steel-90-000-btu.html | **High** — 40 lb / 90,000 BTU confirmed independently, model also confirmed on official family page |
+| IMG/HOT/00347 | Fryer Split Type 15+15 Ltrs HDS-150S | HDSFGH-150S | https://heavydutysystems.com/product/gas-split-tank-fryer/ | same page | **High** — model confirmed on official split-tank page |
+| IMG/HOT/00407 | Fryer Baskets for HDSFGH-150S | 70201104400 | https://heavydutysystems.com/product/gas-split-tank-fryer/ (host fryer's page; the basket itself isn't sold as a separate line there) | none found independently | Low — part number unconfirmed, see §4.2 |
+| IMG/HOT/00424 | Fryer Baskets for HDSFGH-90S | 70201104400 | none — `HDSFGH-90S` itself doesn't appear on Heavy Duty Systems' split-tank page, see §2 trap 3 | none found independently | Low — same part number as 00407, host model itself unconfirmed |
+| IMG/HOT/00425 | Fryer Baskets for HDSFGH-120S LP | 70201105746 | https://heavydutysystems.com/product/gas-split-tank-fryer/ (host fryer's page; "LP" suffix not shown there) | none found independently | Low — part number and "LP" suffix both unconfirmed |
+| IMG/HOT/00436 | Fryer Split Type 10+10 Litres HDS Electric | (blank) | none — archived, no content | none | N/A — archived/incomplete record |
+| IMG/OVE/00223 | Convection Oven HDSECO-4A | HDSECO-4A | https://heavydutysystems.com/product/electric-convection-oven-with-top-grill/ | https://anyflip.com/iikmz/yedn/basic (Eagle catering catalogue) | **High** — model confirmed on official page (listed there as "HDSECO-3A 4A"); 62L cavity/spec confirmed via a distributor catalogue |
+| IMG/OVE/00224 | Convection Oven HDSECO-8A | HDSECO-8A | https://heavydutysystems.com/product/electric-convection-oven/ | https://anyflip.com/iikmz/yedn/basic (Eagle catering catalogue) | **High** — model confirmed on official page (listed there as "HDSECO-8A;HDSECO-8AS"); 116L cavity (700×460×360mm) confirmed; our stored 838×685×584mm reads as exterior vs this being interior cavity, not a contradiction |
+| IMG/OVE/00201 | Oven Convection Gas HDS GCO | HDSGCO-1 | https://heavydutysystems.com/product/gas-convection-oven/ | https://benitezcommercial.com/products/heavy-duty-systems-hdsgco-1 | Medium — 54,000 BTU confirmed exactly; **dimensions do not match**, see §4.4 |
+| IMG/DIS/00138 | Heated Display Counter Top 700MM HDS | HDSHDN-26 | https://heavydutysystems.com/product/hot-display-case/ | same page | Medium — the confirmed official line is `HDSHD-26/36/48`; our `HDSHDN-26` carries an extra "N" not seen on the official page, see §4.5 |
+| IMG/DIS/00139 | Heated Display Counter Top 900MM HDS | HDSHDN-36 | https://heavydutysystems.com/product/hot-display-case/ | same page | Medium — same "N" discrepancy; also the exact model appears on Sheffield Africa's site (non-independent) |
+| IMG/HOT/00437 | 6 Burner Gas Range with Gas Oven HDSGR-36 | HDSGR-36 | https://heavydutysystems.com/product/gas-burners-with-oven/ | https://amsagt.com/wp-content/uploads/2023/07/HDSGR-24.pdf (sibling model's official-style sheet) | **High** — model confirmed on official family page (lists "HDSGR-24, HDSGR-36, HDSGR-60"), upgraded from the earlier archived/low-confidence read since this page wasn't found in the original pass |
+| IMG/HOT/OO438 | Gas Burners with Oven and 24" Griddle/Salamander | (blank) | https://heavydutysystems.com/product/gas-burners-with-oven-and-24-griddle/ | same page | N/A — archived/incomplete record; SKU itself has a likely typo, see §2 trap 5 |
 
 ---
 

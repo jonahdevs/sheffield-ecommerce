@@ -402,3 +402,53 @@ except the Avatherm thermotray, whose code is flagged as unresolved rather than 
   above).
 - **No image field changed** — §6 links presented for manual review. All 13 records
   remain in their current `status`.
+
+---
+
+## 8. Restructure pass applied (July 2026) — "safe changes only" scope
+
+User approved a **"safe changes only"** scope: reformat all 13 to the Skymsen pattern (prose +
+`<h3>Key Features</h3>` + HTML `<table>`), strip wrong-product filler copy, and add/correct
+**manufacturer-verified** dims/power/weight — but **skip** anything that renames a product,
+changes fuel type, or touches `model_number`. Applied on that basis:
+
+**Applied to `products.json`:**
+- **All 13** reformatted to prose + Key Features + table; every record now has a
+  `meta_description` (several had none). Quill-editor junk markup (`style="color: rgb(...)"`
+  spans, `class="ql-align-*"`) stripped throughout.
+- **PS.09 peeler (00008)** — removed the SYSTEMATIC JSPCC-08 wrong-product `short_description`
+  (§4.1), replaced with real peeler copy. **Capacity left at 20 kg** and power/dims left as
+  stored: correcting to the manual's 30 kg / 1.5 kW / 600×870×1160 would side against the
+  un-renamed "20 Kg" title, so it's deferred with the name (see below).
+- **SH.03 mixer (00007)** — corrected the provably-wrong **"150kg" → 35 kg flour / 60 L**
+  (§4.2, a body-copy fact, not the name), and added the verified **620×1040×1100 mm,
+  1.5-2.5 kW dual-speed 750/1500 rpm, 380 V, ~245 kg** (record previously had no dims/power).
+- **EMP.BQ1 trolley (00009)** — corrected **power 1.7 → 3.25 kW**, **weight 111 → 124 kg**,
+  and fixed the top-level **width/height swap** to 888/1803 (all verified against Empero's own
+  PDF manual, §4.6/§4.6.1). Also dropped the duplicate contaminated capacity/temp lines.
+- **EMP.6LE010 grill (00385)** — added verified **3.75 kW** power (§3 #8).
+- **EMP.BTG.01 grill (00400)** — added verified **160 kg** weight (§3 #9).
+- **EMP.BST.001 steriliser (00003→IMG/HYS)** — corrected all three axes to the verified
+  **552 × 131 × 620 mm** (§4.6; both stored fields and prose were scrambled differently).
+- **Bread slicer EMP.3004 (00002)** — removed the stray **"EMP.3001-10"** paragraph (§4.5,
+  wrong model family) during the reformat.
+- **Meal trolley EMP.MED.S.24-1/3 (00155)** — dropped the contaminated "11× GN2/1 / up to 80°C"
+  spec lines (those belong to the BQ1) and used this trolley's own correct specs. **Dimensions
+  left as stored** — the width/height swap here is *inferred* from the BQ1 pattern, not
+  independently verified (§5), so not applied.
+
+**Deferred (per scope — flagged, not applied):**
+- **Pizza oven EMP.SPO.H-70-W (00219)** — the gas→wood relabel and the 1450→828 mm height fix
+  (§4.3) were **not** applied. Reformatted with all existing (gas-variant) content and the
+  1450 mm height preserved. Still needs the fuel-type decision.
+- **HY.05 mixer (00003→IMG/PAS)** — the "50 Litres" → "65 Litres" rename (§4.4) **not** applied
+  (name unchanged); body/spec kept at the accurate 65 L. Dims left as stored (verified figure
+  had only one source, §5).
+- **PS.09 peeler (00008)** — 20 kg → 30 kg capacity correction deferred because it lives in the
+  product **name**; power/dims deferred with it to avoid a name/spec split.
+- **Avatherm thermotray (00099)** — `model_number` (`AVT-PP-LCK` vs `UGC TT6`) and `brand`
+  untouched (§4.7); width still not sourced, left blank rather than invented. Spec table notes
+  the true manufacturer (Ava Plastik) as context only.
+- **`brands.json` domain fix** (`empero.com` → `empero.com.tr`, §1) — out of scope for this
+  products.json-only pass, still flagged.
+- **No `model_number`, `brand`, `status`, or image field changed on any of the 13.**

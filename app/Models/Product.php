@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\MediaType;
 use App\Enums\ProductLinkType;
 use App\Enums\ProductStatus;
 use App\Enums\ProductType;
@@ -44,6 +45,14 @@ class Product extends Model implements HasMedia
 
     public function registerMediaConversions(?Media $media = null): void
     {
+        // Uploaded gallery videos have no image bytes to convert - Spatie\Image would
+        // throw running Fit against raw video data. Video slides backed by a real image
+        // (an embed's downloaded provider thumbnail) fall through and still get every
+        // conversion, since their mime_type is image/*.
+        if ($media && ! str_starts_with((string) $media->mime_type, 'image/')) {
+            return;
+        }
+
         // Fit::Max downscales to fit the box and never enlarges or pads. Fit::Fill
         // would pad a smaller master onto the full canvas instead of enlarging it
         // (it carries DoNotUpsize), which strands the subject in the middle of a
@@ -297,8 +306,7 @@ class Product extends Model implements HasMedia
     protected function coverUrl(): Attribute
     {
         return Attribute::get(function () {
-            $cover = $this->getFirstMedia('images', ['is_cover' => true])
-                ?? $this->getFirstMedia('images');
+            $cover = $this->coverMedia();
 
             if (! $cover) {
                 return null;
@@ -314,8 +322,7 @@ class Product extends Model implements HasMedia
     protected function coverWebpUrl(): Attribute
     {
         return Attribute::get(function () {
-            $cover = $this->getFirstMedia('images', ['is_cover' => true])
-                ?? $this->getFirstMedia('images');
+            $cover = $this->coverMedia();
 
             return ($cover && $cover->hasGeneratedConversion('card-webp'))
                 ? $cover->getUrl('card-webp')
@@ -354,23 +361,40 @@ class Product extends Model implements HasMedia
         });
     }
 
-    /** First gallery image after the cover, i.e. the one shown on card hover. */
+    /** First gallery image after the cover, i.e. the one shown on card hover. Never a video. */
     private function secondaryMedia(): ?Media
     {
-        $cover = $this->getFirstMedia('images', ['is_cover' => true])
-            ?? $this->getFirstMedia('images');
+        $cover = $this->coverMedia();
 
         return $this->getMedia('images')
+            ->filter(fn (Media $media) => $this->isImageMedia($media))
             ->reject(fn (Media $media) => $cover && $media->id === $cover->id)
             ->first();
+    }
+
+    /** Whether a media item is a plain image, never a video_file or video_embed. */
+    private function isImageMedia(Media $media): bool
+    {
+        return $media->getCustomProperty('media_type', MediaType::IMAGE->value) === MediaType::IMAGE->value;
+    }
+
+    /** The explicit cover if it's a real image, else the first real image in the gallery - never a video. */
+    private function coverMedia(): ?Media
+    {
+        $cover = $this->getFirstMedia('images', ['is_cover' => true]);
+
+        if ($cover && $this->isImageMedia($cover)) {
+            return $cover;
+        }
+
+        return $this->getMedia('images')->first(fn (Media $media) => $this->isImageMedia($media));
     }
 
     /** Small 120×120 thumbnail of the cover image; used in admin lists and line-item previews. */
     protected function thumbUrl(): Attribute
     {
         return Attribute::get(function () {
-            $cover = $this->getFirstMedia('images', ['is_cover' => true])
-                ?? $this->getFirstMedia('images');
+            $cover = $this->coverMedia();
 
             if (! $cover) {
                 return null;
@@ -390,8 +414,7 @@ class Product extends Model implements HasMedia
 
     private function mediaPlaceholder(): ?string
     {
-        $cover = $this->getFirstMedia('images', ['is_cover' => true])
-            ?? $this->getFirstMedia('images');
+        $cover = $this->coverMedia();
 
         if (! $cover || ! $cover->hasGeneratedConversion('lqip')) {
             return null;

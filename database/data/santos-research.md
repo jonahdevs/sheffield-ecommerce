@@ -207,3 +207,120 @@ server-rendered (unlike the PDFs, which need the `Read` tool rather than `WebFet
 - **Left 50A's dimensions/output unresolved** (§4.7) rather than overwrite with an
   unconfirmed generation's numbers.
 - **No `model_number` or image fields changed.**
+
+---
+
+## 8. Image sourcing — direct carousel URLs (July 2026)
+
+The product pages in §5 render their gallery/carousel client-side, which made the images hard
+to save by hand. Fetched each page and pulled the actual image URLs out of the carousel markup
+(all served from `santos.fr/media/cache/<hash>/<filename>`). Several pages carry multiple
+product **variants** in one gallery (different jar sizes, bowl counts, or finishes) - noted
+below wherever that applies so the wrong variant isn't picked by mistake.
+
+**33EA Blender Bar (IMG/FPR/00022)** - base "33" images only; the page also carries 33C/33G/33GE
+variant shots (skip those):
+https://www.santos.fr/media/cache/67f33eee613e45d3e2cdf03e3f553b83/SANTOS_33_Mixer_A_low.jpg
+https://www.santos.fr/media/cache/b7d2254fc68f82147e18a87a0380be67/SANTOS_33_Mixer_D_hd.jpg
+https://www.santos.fr/media/cache/b88edebc8eb9a36ac2137d3f7e5f6a2f/SANTOS_33_Mixer_F_hd.jpg
+https://www.santos.fr/media/cache/46fb704ea09b8c26529c9e2b27adce87/SANTOS_33_Mixer_G_hd.jpg
+
+**37-A Blender Kitchen (IMG/FPR/00023)** - page lists 4 jar/finish variants (37-4I, 37-4P, 37-2I,
+37-2P); catalogue name says "2+4 Litres" so more than one variant may be relevant:
+https://www.santos.fr/media/cache/a641b067a8afb21d0fa66699d3108fbf/SANTOS_37_Blender_A2_hd.jpg
+https://www.santos.fr/media/cache/5bbf30fded2f218d7d45cd6ac09ba1d6/SANTOS_37-4I_Blender_D_hd.jpg
+https://www.santos.fr/media/cache/e697c7012875b654ccc86a9701af8d3b/SANTOS_37-4I_Blender_F_hd.jpg
+https://www.santos.fr/media/cache/2961d81b5e615676e0f69c28af6887b3/SANTOS_37-4I_Blender_G_hd.jpg
+https://www.santos.fr/media/cache/3184e748effe22e5619d48b30a3b93b5/SANTOS_37-4P_Blender_D_hd.jpg
+https://www.santos.fr/media/cache/247d076c9099cf2e76c388f2a99edf53/SANTOS_37-2I_Blender_D_hd.jpg
+https://www.santos.fr/media/cache/3184e748effe22e5619d48b30a3b93b5/SANTOS_37-2P_Blender_D_hd.jpg
+
+**34-1A Juice Dispenser (IMG/BUF/00131)** - 1-tank variant only; page also has 34-2/34-3 (skip):
+https://www.santos.fr/media/cache/3b258e490188b5f3b93cbf2b8b86c9f8/SANTOS_34-1_Dispenser_D_hd.jpg
+https://www.santos.fr/media/cache/fa710691d9fe024f95de969ac1613076/SANTOS_34-1_Dispenser_F_hd.jpg
+https://www.santos.fr/media/cache/01d021350afb8d2a1be6c076c094a395/SANTOS_34-1_Dispenser_G_hd.jpg
+
+**10A Citrus Juicer (IMG/FPR/00021)** - base "10" images; page also has a 10C Compact variant
+(skip):
+https://www.santos.fr/media/cache/5eef9219aedc98bfae0e66ffc4f008f7/SANTOS_10_Juicer_A3_hd.jpg
+https://www.santos.fr/media/cache/aa7990fdde51bed900c41bcd58c0691d/SANTOS_10_Juicer_D_hd.jpg
+https://www.santos.fr/media/cache/d6947532e96ac68014996eef6d7da2ac/SANTOS_10_Juicer_F_hd.jpg
+https://www.santos.fr/media/cache/0acad75ab07acf53f04404641a447270/SANTOS_10_Juicer_G_hd.jpg
+
+**68JA Centrifugal Extractor (IMG/FPR/00027)**:
+https://www.santos.fr/media/cache/262ce82f9f890c1c7cfd576ed6ad319f/SANTOS_68_Juice%20Extractor_A2_hd.jpg
+https://www.santos.fr/media/cache/323866e829fda8269de6430563be1b28/SANTOS_68_Juice%20Extractor_D_hd.jpg
+https://www.santos.fr/media/cache/01d113a485a7638fcf60fc37de02d36d/SANTOS_68_Juice%20Extractor_F_hd.jpg
+https://www.santos.fr/media/cache/022edb99b82dec3d832615ba568be867/SANTOS_68_Juice%20Extractor_G_hd.jpg
+
+**70A Citrus Juicer (IMG/FPR/00032)** - no variant ambiguity on this page:
+https://www.santos.fr/media/cache/823d26cfb9b0ff3d28ad4401655f214d/SANTOS_70_JuicerNew_D_low.jpg
+https://www.santos.fr/media/cache/7a326ba150f4bc7205d34aaf1dc610ab/SANTOS_70_JuicerNew_F_low.jpg
+https://www.santos.fr/media/cache/dfef53f7a3dbbf753a4f26643b624288/SANTOS_70_JuicerNew_G_low.jpg
+
+**50A Juice Extractor (IMG/FPR/00174)** - the §5 product-page URL (`.../santos-juicer/50NEW/`)
+now 404s; the working URL is `.../santos-juicer/50/` (same 50NEW-generation photos). Same §4.7
+caution applies: these are current-generation photos, and the generation match against our
+stored specs is still unconfirmed.
+https://www.santos.fr/media/cache/1ba833e495f9ee1be1b4aec3dc617d7d/SANTOS_50NEW_Juicer_A1_LDD.jpg
+https://www.santos.fr/media/cache/bfac37a77e63f1fde67d46b7324993d0/SANTOS_50NEW_Juicer_D_LW.jpg
+https://www.santos.fr/media/cache/1c99f51911b1f06292b130a57ad758ea/SANTOS_50NEW_Juicer_F_LW.jpg
+https://www.santos.fr/media/cache/7c2fdfe47149c04ce72ebd966a8e4bc2/SANTOS_50NEW_Juicer_G_LW.jpg
+
+**65A Cold Press Juicer (IMG/FPR/00229)** - includes a lifestyle/ambiance shot:
+https://www.santos.fr/media/cache/05ec5aaad622de523d1b6951683e335f/SANTOS_65_ColdPressJuicer_A8_LDD.jpg
+https://www.santos.fr/media/cache/5a244daf39a4fc825dae3601e0e53d6b/SANTOS_65_V2_Cold%20PressJuicer_D_300DPI_LW.jpg
+https://www.santos.fr/media/cache/657896fa6ab796fee5c142d6f5062f1e/SANTOS_65_V2_Cold%20PressJuicer_G_300DPI_LW.jpg
+https://www.santos.fr/media/cache/2f9f40ca534d820387b0584912c998b6/SANTOS_65_V2_Cold%20PressJuicer_F_300DPI_LW.jpg
+https://www.santos.fr/media/cache/e56bc6a7c181ddadfc8cecc26c56826e/SANTOS_65_V2_Cold%20PressJuicer_ambiance_300DPI_LW.jpg
+
+**11A Classic Citrus Juicer (IMG/FPR/00230)** - page carries 4 finishes (plain/G/C/P); pick
+whichever matches actual stock:
+https://www.santos.fr/media/cache/9cba1c00f9d8b866056dae765a9edb17/SANTOS_11_Juicer_D_low.jpg
+https://www.santos.fr/media/cache/d3af5f8c84a56feeb408fec488df6f40/SANTOS_11_Juicer_F_low.jpg
+https://www.santos.fr/media/cache/61a097512d8704b16200c29bdf360454/SANTOS_11_Juicer_G_low.jpg
+
+Not yet downloaded/attached to `products.json` - links only, pending a decision on which
+variant/finish matches actual stock for the multi-variant pages (37-A, 34-1A, 11A).
+
+---
+
+## 9. New SKUs added: 34-2A and 34-3A dispensers (July 2026)
+
+The 34-1A (`IMG/BUF/00131`, 1 bowl) was already in the catalogue. Added two siblings as separate
+single products (not variants of 00131): `IMG/BUF/00151` (34-2A, 2 bowls) and `IMG/BUF/00152`
+(34-3A, 3 bowls), matching the `SANTOS_34-2_Dispenser` / `SANTOS_34-3_Dispenser` images already
+identified in §8. All three (00131/00151/00152) set to `quantity: 0`.
+
+**Not fabricated for the two new SKUs:**
+- **Price** - left `null`. No leaflet or reseller price found for the 2-bowl/3-bowl versions;
+  00131's own price (102,713 KES) is the 1-bowl figure and doesn't scale to guess from.
+- **Dimensions and wattage** - the §4.3 leaflet only covers the 34-1 column. Only the confirmed
+  family-wide feature copy (stainless steel, stirring paddle per bowl, tropical-rated compressor)
+  and the 12 L per-bowl capacity (consistent across the 34 family) were carried over.
+
+Needs a price from the supplier before these are ready to sell - currently just catalogue
+placeholders with real photos.
+
+---
+
+## 10. Description/spec restructure pass (July 2026) — applied to `products.json`
+
+Reformatted every SANTOS product's `description`/`technical_specification` to match the Skymsen
+pattern (prose paragraphs + `<h3>Key Features</h3>` list + HTML `<table>` spec), same as the
+HDS and Astar passes. **No data changed in this pass** - §4's leaflet-sourced numbers were
+already correct in `products.json` from the original audit; this was purely a format cleanup
+(bare `<ul>` specs → tables, bullet-only descriptions → prose + Key Features).
+
+- **33EA, 37-A, 34-1A, 10A, 70A, 11A** - straightforward reformat, all confirmed §4 numbers
+  carried over unchanged.
+- **68JA** - description also had leftover Quill editor markup (`class="ql-align-justify"`,
+  inline `style="color: rgb(68,68,68)"` spans) from a copy-paste; stripped during the rewrite.
+- **65A** - already had decent prose; added the `<h3>Key Features</h3>` list and converted the
+  mixed `<p>`/`<ul>` spec block into a single table.
+- **50A** - reformatted **without** switching to the "50NEW" leaflet's numbers. §4.7's
+  generation-mismatch flag still stands; the table keeps our existing stored figures
+  (260×450×470mm, 800W, 100 l/h) rather than the unconfirmed newer generation's.
+- **34-2A / 34-3A** (new SKUs from §9) - reformatted into the same prose + Key Features shape;
+  the spec table still only carries the one confirmed fact (12 L per bowl) - no invented
+  dimensions or wattage.

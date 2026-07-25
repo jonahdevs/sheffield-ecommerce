@@ -14,6 +14,7 @@ class ProductsExport implements FromQuery, WithColumnWidths, WithHeadings, WithM
 {
     public function __construct(
         private readonly string $search = '',
+        private readonly string $filterType = '',
         private readonly string $filterStatus = '',
         private readonly string $filterVisibility = '',
         private readonly string $filterStock = '',
@@ -29,6 +30,7 @@ class ProductsExport implements FromQuery, WithColumnWidths, WithHeadings, WithM
                 $q->where('name', 'like', '%'.$this->search.'%')
                     ->orWhere('sku', 'like', '%'.$this->search.'%');
             }))
+            ->when($this->filterType, fn ($q) => $q->where('type', $this->filterType))
             ->when($this->filterStatus, fn ($q) => $q->where('status', $this->filterStatus))
             ->when($this->filterVisibility, fn ($q) => $q->where('visibility', $this->filterVisibility))
             ->when($this->filterStock, fn ($q) => $q->where('stock_status', $this->filterStock))

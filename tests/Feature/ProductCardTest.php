@@ -166,3 +166,45 @@ it('shows the first gallery image as a hover swap over the cover', function () {
         ->toContain('group-hover:opacity-100')
         ->toContain($product->secondary_url);
 });
+
+it('never surfaces a video as the cover when the product has no image at all', function () {
+    $product = Product::factory()->create(['price' => 150000]);
+
+    // Held in a variable: the fake upload's temp file is removed once it is collected.
+    $upload = UploadedFile::fake()->create('demo.mp4', 500, 'video/mp4');
+    $product->addMedia($upload->getRealPath())
+        ->usingFileName('demo.mp4')
+        ->withCustomProperties(['is_cover' => false, 'media_type' => 'video_file'])
+        ->toMediaCollection('images');
+
+    expect($product->fresh()->cover_url)->toBeNull();
+});
+
+it('never surfaces a video as the hover-swap secondary image', function () {
+    $product = Product::factory()->create(['price' => 150000]);
+    $product->addMedia(UploadedFile::fake()->image('cover.jpg'))
+        ->withCustomProperties(['is_cover' => true])
+        ->toMediaCollection('images');
+
+    // Held in a variable: the fake upload's temp file is removed once it is collected.
+    $upload = UploadedFile::fake()->create('demo.mp4', 500, 'video/mp4');
+    $product->addMedia($upload->getRealPath())
+        ->usingFileName('demo.mp4')
+        ->withCustomProperties(['is_cover' => false, 'media_type' => 'video_file'])
+        ->toMediaCollection('images');
+
+    expect($product->fresh()->secondary_url)->toBeNull();
+});
+
+it('does not attempt image conversions on an uploaded video', function () {
+    $product = Product::factory()->create(['price' => 150000]);
+
+    // Held in a variable: the fake upload's temp file is removed once it is collected.
+    $upload = UploadedFile::fake()->create('demo.mp4', 500, 'video/mp4');
+    $video = $product->addMedia($upload->getRealPath())
+        ->usingFileName('demo.mp4')
+        ->withCustomProperties(['is_cover' => false, 'media_type' => 'video_file'])
+        ->toMediaCollection('images');
+
+    expect($video->hasGeneratedConversion('card'))->toBeFalse();
+});

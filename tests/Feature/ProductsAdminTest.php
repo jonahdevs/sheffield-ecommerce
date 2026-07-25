@@ -1,6 +1,7 @@
 <?php
 
 use App\Enums\ProductStatus;
+use App\Enums\ProductType;
 use App\Enums\ProductVisibility;
 use App\Enums\ReviewStatus;
 use App\Enums\StockStatus;
@@ -128,6 +129,28 @@ it('includes products in child categories when filtering by a parent category', 
         ->get('products');
 
     expect($products->pluck('name')->sort()->values()->all())->toBe(['Machine FAB 100', 'Machine Silvia']);
+});
+
+it('filters products by type', function () {
+    Product::factory()->create(['name' => 'Simple Kettle', 'type' => ProductType::SIMPLE]);
+    Product::factory()->create(['name' => 'Variable Apron', 'type' => ProductType::VARIABLE]);
+
+    $products = Livewire::test('pages::admin.products.index')
+        ->set('filterType', ProductType::VARIABLE->value)
+        ->get('products');
+
+    expect($products->pluck('name')->all())->toBe(['Variable Apron']);
+});
+
+it('resets the page and selection when the type filter changes', function () {
+    Product::factory()->count(3)->create(['type' => ProductType::SIMPLE]);
+
+    Livewire::test('pages::admin.products.index')
+        ->set('selectAll', true)
+        ->assertCount('selected', 3)
+        ->set('filterType', ProductType::SIMPLE->value)
+        ->assertCount('selected', 0)
+        ->assertSet('paginators.page', 1);
 });
 
 it('filters products by brand', function () {

@@ -165,3 +165,48 @@ that it shows the exact unit before use** — house-brand CDNs reuse shots acros
 
 No images for ASKL-650, SXW-280, BC-135L (not on site). AL-1200A / ASGH-988 images are for the
 near-match models, not confirmed identical to our units — treat as candidates only.
+
+---
+
+## 7. Description/spec restructure pass (July 2026) — applied to `products.json`
+
+Second pass: reformatted every ASTAR product's `description`/`technical_specification` to match
+the Skymsen pattern (prose paragraphs + `<h3>Key Features</h3>` list + HTML `<table>` spec),
+and pushed sourcing further on the 4 SKUs §4 had marked unfindable. Real primary images (supplied
+by the user, matching §6's CDN candidates) were attached to all 8 non-draft SKUs during this pass.
+
+### New sourcing since §4
+
+- **GH-538 pasta cooker (IMG/HOT/00304)** — a GH-538 *does* exist, independently confirmed on two
+  Chinese manufacturer/reseller sites (made-in-china.com, erzoda.com), but it's a **small 6-basket
+  countertop unit** (400×650×480mm, 17.5kg, 19,000 BTU) made by **Guangdong Jieguan Kitchen
+  Equipment**, not Astar. Our actual product photo (confirmed with the user during image-sourcing)
+  shows a **large floor-standing cabinet unit** with multiple basket wells — a different machine
+  entirely. Applying the Jieguan countertop numbers here would have been wrong despite the
+  matching code. **Description was written qualitatively from the confirmed photo only** (basket
+  wells, gas burners, cabinet base) — no fabricated dimensions/BTU. Same "don't invent" call as
+  the original §4 finding, just with a clearer reason why.
+- **SXW-280 meatball machine (IMG/FPR/00181)** — still no manufacturer spec sheet for this exact
+  code, but "-280" is a near-universal naming convention across independent brands (VBENLEM,
+  VEVOR, TECHTONGDA) for **280 pieces/minute** forming machines, and Sheffield Africa's listing
+  (non-independent, but consistent) confirms SXW-280 is the horizontal model in a Maxbaker SXW
+  series (SXW-200 = vertical). Description now uses "approximately 280 pieces/minute" framed as
+  pattern-typical, not a confirmed Astar spec sheet number. **The copy-paste bug is fixed** — this
+  SKU's `description` no longer contains Tumble Marinator text.
+- **ASKL-650 cutter mixer** and **BC-135L tumble marinator** — additional targeted searches beyond
+  §4 (site-specific, alternate terms) still returned nothing. Confirmed unfindable, not just
+  under-searched. Left with minimal, generic, non-numeric descriptions — no specs invented.
+- **FG-1200LS pastry showcase (IMG/DIS/00090)** — deliberately did **not** use §3.6's AL-1200A
+  numbers (350 W, 4–8°C, R134a) in the published description/spec table, since §3.6 already
+  flagged that match as size-only with the glass shape unconfirmed. The real product photo shows
+  curved glass (the catalogue name says "Square"), which is itself a discrepancy worth a second
+  look. Description is written from what the photo actually shows (curved glass, 2 shelves,
+  LED lighting, castors) rather than the AL-1200A spec sheet.
+
+### Still open
+
+- FG-1200LS: "Square" in the name vs. curved glass in the actual photo — worth confirming which
+  is right before trusting the name for future copy.
+- ASKL-650, BC-135L: genuinely no independent source exists; would need supplier paperwork.
+- GH-538: our unit's real manufacturer/model is still unidentified — "GH-538" appears to be a
+  distributor-assigned code, not Astar's or Jieguan's.

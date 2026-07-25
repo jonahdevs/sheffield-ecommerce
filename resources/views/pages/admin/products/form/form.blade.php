@@ -1337,21 +1337,37 @@
                     </button>
                     <div x-show="open" x-collapse x-cloak>
                         <div class="p-6 space-y-3">
-                            @if (!empty($galleryImages) || !empty($pendingGalleryImages))
-                                <div class="grid grid-cols-3 gap-2">
-                                    @foreach ($galleryImages as $i => $img)
-                                        <div
-                                            class="group relative overflow-hidden rounded-md border border-zinc-200 dark:border-zinc-700">
-                                            <img src="{{ $img['url'] }}" class="aspect-square w-full bg-white object-contain"
-                                                alt="{{ $img['alt'] }}" />
-                                            <button type="button"
-                                                wire:click="removeGalleryImage({{ $i }})"
+                            @if (!empty($galleryImages))
+                                {{-- Saved gallery items are Spatie media rows; wire:sort persists their
+                                     order_column on drop (handleGallerySort), keeping the cover first. --}}
+                                <div wire:sort="handleGallerySort" class="grid grid-cols-3 gap-2">
+                                    @foreach ($galleryImages as $img)
+                                        <div wire:key="gallery-{{ $img['id'] }}" wire:sort:item="{{ $img['id'] }}"
+                                            class="group relative cursor-grab overflow-hidden rounded-md border border-zinc-200 active:cursor-grabbing dark:border-zinc-700">
+                                            @if (($img['type'] ?? 'image') === 'video_file')
+                                                <div class="flex aspect-square w-full flex-col items-center justify-center gap-1 bg-zinc-900">
+                                                    <flux:icon.play-circle variant="solid" class="size-7 text-white/80" />
+                                                    <span class="text-[10px] font-medium tracking-wide text-white/70 uppercase">Video</span>
+                                                </div>
+                                            @else
+                                                <img src="{{ $img['url'] }}" class="aspect-square w-full bg-white object-contain"
+                                                    alt="{{ $img['alt'] }}" draggable="false" />
+                                                @if (($img['type'] ?? 'image') === 'video_embed')
+                                                    <span class="absolute bottom-1 left-1 rounded bg-black/60 px-1 py-0.5 text-[10px] font-medium tracking-wide text-white uppercase">Video link</span>
+                                                @endif
+                                            @endif
+                                            <button type="button" wire:sort:ignore
+                                                wire:click="removeGalleryImage({{ $loop->index }})"
                                                 class="absolute right-1 top-1 rounded-full bg-white/90 p-0.5 shadow hover:bg-white dark:bg-zinc-900/90">
                                                 <flux:icon.x-mark variant="micro" class="size-3 text-zinc-600" />
                                             </button>
                                         </div>
                                     @endforeach
+                                </div>
+                            @endif
 
+                            @if (!empty($pendingGalleryImages) || $pendingGalleryVideo)
+                                <div class="grid grid-cols-3 gap-2">
                                     @foreach ($pendingGalleryImages as $img)
                                         <div
                                             class="relative overflow-hidden rounded-md border border-zinc-200 dark:border-zinc-700">
@@ -1359,19 +1375,74 @@
                                                 alt="Preview" />
                                         </div>
                                     @endforeach
+
+                                    @if ($pendingGalleryVideo)
+                                        <div
+                                            class="relative overflow-hidden rounded-md border border-zinc-200 dark:border-zinc-700">
+                                            <video src="{{ $pendingGalleryVideo->temporaryUrl() }}"
+                                                class="aspect-square w-full bg-black object-contain" muted preload="metadata"></video>
+                                            <button type="button" wire:click="$set('pendingGalleryVideo', null)"
+                                                class="absolute right-1 top-1 rounded-full bg-white/90 p-0.5 shadow hover:bg-white dark:bg-zinc-900/90">
+                                                <flux:icon.x-mark variant="micro" class="size-3 text-zinc-600" />
+                                            </button>
+                                        </div>
+                                    @endif
                                 </div>
                             @endif
 
-                            <label
-                                class="flex cursor-pointer items-center justify-center gap-2 rounded-md border border-dashed border-zinc-300 py-3 text-sm text-zinc-400 transition hover:border-zinc-400 dark:border-zinc-700 dark:hover:border-zinc-600">
-                                <flux:icon.plus variant="micro" class="size-4" />
-                                Add images
-                                <input type="file" wire:model="pendingGalleryImages" accept="image/*" multiple
-                                    class="sr-only" />
-                            </label>
+                            @if (count($galleryImages) > 1)
+                                <flux:text size="sm" class="flex items-center gap-1.5 text-zinc-400">
+                                    <flux:icon.bars-2 variant="micro" class="size-3.5" />
+                                    Drag to reorder — the cover always stays first.
+                                </flux:text>
+                            @endif
 
-                            <div wire:loading wire:target="pendingGalleryImages" class="text-xs text-zinc-400">
+                            @if (!empty($pendingGalleryVideoUrls))
+                                <div class="space-y-1.5">
+                                    @foreach ($pendingGalleryVideoUrls as $i => $video)
+                                        <div class="flex items-center gap-2 rounded-md border border-zinc-200 px-2.5 py-1.5 text-xs dark:border-zinc-700">
+                                            <flux:icon.link variant="micro" class="size-3.5 shrink-0 text-zinc-400" />
+                                            <span class="truncate text-zinc-600 dark:text-zinc-300">{{ $video['video_url'] }}</span>
+                                            <button type="button" wire:click="removePendingGalleryVideoUrl({{ $i }})"
+                                                class="ml-auto shrink-0 text-zinc-400 hover:text-zinc-600">
+                                                <flux:icon.x-mark variant="micro" class="size-3.5" />
+                                            </button>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            @endif
+
+                            <div class="flex gap-2">
+                                <label
+                                    class="flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-md border border-dashed border-zinc-300 py-3 text-sm text-zinc-400 transition hover:border-zinc-400 dark:border-zinc-700 dark:hover:border-zinc-600">
+                                    <flux:icon.plus variant="micro" class="size-4" />
+                                    Add images
+                                    <input type="file" wire:model="pendingGalleryImages" accept="image/*" multiple
+                                        class="sr-only" />
+                                </label>
+
+                                <label
+                                    class="flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-md border border-dashed border-zinc-300 py-3 text-sm text-zinc-400 transition hover:border-zinc-400 dark:border-zinc-700 dark:hover:border-zinc-600">
+                                    <flux:icon.video-camera variant="micro" class="size-4" />
+                                    Add video
+                                    <input type="file" wire:model="pendingGalleryVideo"
+                                        accept="video/mp4,video/webm,video/quicktime" class="sr-only" />
+                                </label>
+                            </div>
+
+                            <div wire:loading wire:target="pendingGalleryImages,pendingGalleryVideo" class="text-xs text-zinc-400">
                                 Uploading…
+                            </div>
+
+                            <div class="flex items-end gap-2">
+                                <div class="flex-1">
+                                    <flux:input wire:model="videoUrlInput" label="Video link" size="sm"
+                                        placeholder="https://youtube.com/watch?v=…" />
+                                </div>
+                                <flux:button wire:click="addGalleryVideoUrl" wire:loading.attr="disabled"
+                                    wire:target="addGalleryVideoUrl" size="sm">
+                                    Add
+                                </flux:button>
                             </div>
                         </div>
                     </div>{{-- end x-collapse --}}

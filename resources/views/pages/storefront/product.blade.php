@@ -854,9 +854,11 @@ $isOnSale = $compareAt !== null;
                 gallery: @js(
     $gallery->values()->map(
         fn($img) => [
+            'type' => $img->getCustomProperty('media_type', 'image'),
             'url' => $mediaUrl($img, 'card'),
             'zoom' => $mediaUrl($img, 'zoom'),
             'thumb' => $mediaUrl($img, 'thumb'),
+            'embedUrl' => $img->getCustomProperty('embed_url'),
             'alt' => $img->getCustomProperty('alt', '') ?: $product->name,
             'label' => $img->getCustomProperty('alt', '') ?: '',
         ],
@@ -885,7 +887,7 @@ $isOnSale = $compareAt !== null;
                             rewind: true,
                             initialSlide: this.mainIdx,
                             on: {
-                                slideChange: (s) => { this.lbIdx = s.activeIndex; },
+                                slideChange: (s) => { this.lbIdx = s.activeIndex; this.pauseMedia(el); },
                             },
                         });
 
@@ -896,6 +898,14 @@ $isOnSale = $compareAt !== null;
                 prevLb() { this.$root.querySelector('[x-ref=lbSwiper]')._swiper?.slidePrev(); },
                 nextLb() { this.$root.querySelector('[x-ref=lbSwiper]')._swiper?.slideNext(); },
                 goLb(i) { this.$root.querySelector('[x-ref=lbSwiper]')._swiper?.slideTo(i); },
+
+                {{-- Stops a video/embed slide from keeping playing once Swiper has moved past it.
+                     An iframe has no cross-provider pause call without extra postMessage JS, so
+                     reloading its src is the simple, provider-agnostic way to force it to stop. --}}
+                pauseMedia(container) {
+                    container?.querySelectorAll('video').forEach((v) => v.pause());
+                    container?.querySelectorAll('iframe').forEach((f) => { f.src = f.src; });
+                },
 
                 {{-- Swiper owns the main image transition. Hand-rolling it meant tracking the
                      in-flight slide by hand, and clicking again before it landed raced the timers.
@@ -910,7 +920,7 @@ $isOnSale = $compareAt !== null;
                              meant any unrelated Livewire re-render (add to cart, tab switch) fired
                              update() - which re-snaps a transition that is still running. --}}
                         on: {
-                            slideChange: (s) => { this.mainIdx = s.activeIndex; },
+                            slideChange: (s) => { this.mainIdx = s.activeIndex; this.pauseMedia(this.$refs.mainSwiper); },
                         },
                     });
 
@@ -941,11 +951,20 @@ $isOnSale = $compareAt !== null;
                                     x-on:click="lbIdx = {{ $i }}; showImage({{ $i }})"
                                     class="aspect-square size-16 shrink-0 cursor-pointer overflow-hidden rounded bg-white transition md:size-18"
                                     :class="mainIdx === {{ $i }} ? 'border-2 border-brand-500' : 'border border-zinc-200 hover:border-zinc-400'">
-                                    {{-- contain, not cover: thumbs are no longer padded to a square
-                                         by the conversion, so cover would crop the product. --}}
-                                    <img src="{{ $mediaUrl($img, 'thumb') }}"
-                                        alt="{{ $img->getCustomProperty('alt', '') }}" class="size-full object-contain"
-                                        loading="lazy" />
+                                    @if ($img->getCustomProperty('media_type') === 'video_file')
+                                        {{-- No thumbnail exists for a raw upload without an FFMpeg
+                                             conversion pipeline - a play-icon tile stands in for it. --}}
+                                        <span class="grid size-full place-items-center bg-zinc-900">
+                                            <flux:icon.play-circle variant="solid" class="size-6 text-white/80" />
+                                        </span>
+                                    @else
+                                        {{-- contain, not cover: thumbs are no longer padded to a square
+                                             by the conversion, so cover would crop the product. A video_embed
+                                             thumb is the provider's own downloaded thumbnail image. --}}
+                                        <img src="{{ $mediaUrl($img, 'thumb') }}"
+                                            alt="{{ $img->getCustomProperty('alt', '') }}" class="size-full object-contain"
+                                            loading="lazy" />
+                                    @endif
                                 </button>
                             @endforeach
                         </div>
@@ -956,7 +975,7 @@ $isOnSale = $compareAt !== null;
                         style="aspect-ratio: 1; max-height: 520px;"
                         @mousemove="const r = $el.getBoundingClientRect(); lens = { x: Math.max(0,Math.min(100,(($event.clientX-r.left)/r.width)*100)), y: Math.max(0,Math.min(100,(($event.clientY-r.top)/r.height)*100)) }"
                         @mouseleave="lens = null"
-                        @click="openLightbox()">
+                        @click="if ((gallery[mainIdx]?.type ?? 'image') === 'image') openLightbox()">
                         @if ($isOnSale)
                             <span
                                 class="absolute top-4 left-4 z-10 inline-flex items-center gap-0.5 text-xs font-bold tracking-widest text-brand-500 uppercase">
@@ -1002,15 +1021,29 @@ $isOnSale = $compareAt !== null;
                             <div wire:ignore x-ref="mainSwiper" class="swiper swiper-eager absolute inset-0">
                                 <div class="swiper-wrapper">
                                     @foreach ($gallery as $i => $img)
+                                        @php
+                                            $mediaType = $img->getCustomProperty('media_type', 'image');
+                                        @endphp
                                         <div class="swiper-slide">
-                                            <img src="{{ $mediaUrl($img, 'card') }}"
-                                                alt="{{ $img->getCustomProperty('alt', '') ?: $product->name }}"
-                                                class="size-full object-contain"
-                                                @if ($i === 0) fetchpriority="high" @else loading="lazy" @endif
-                                                decoding="async"
-                                                :style="'transition:transform 75ms linear;' +
-                                                    (lens ? `transform:scale(2.3);transform-origin:${lens.x}% ${lens.y}%;` : '')"
-                                                draggable="false" />
+                                            @if ($mediaType === 'video_file')
+                                                <video controls preload="metadata" playsinline
+                                                    class="size-full object-contain" @click.stop>
+                                                    <source src="{{ $img->getUrl() }}" type="{{ $img->mime_type }}">
+                                                </video>
+                                            @elseif ($mediaType === 'video_embed')
+                                                <iframe src="{{ $img->getCustomProperty('embed_url') }}" class="size-full"
+                                                    @click.stop allow="autoplay; fullscreen; picture-in-picture"
+                                                    allowfullscreen loading="lazy"></iframe>
+                                            @else
+                                                <img src="{{ $mediaUrl($img, 'card') }}"
+                                                    alt="{{ $img->getCustomProperty('alt', '') ?: $product->name }}"
+                                                    class="size-full object-contain"
+                                                    @if ($i === 0) fetchpriority="high" @else loading="lazy" @endif
+                                                    decoding="async"
+                                                    :style="'transition:transform 75ms linear;' +
+                                                        (lens ? `transform:scale(2.3);transform-origin:${lens.x}% ${lens.y}%;` : '')"
+                                                    draggable="false" />
+                                            @endif
                                         </div>
                                     @endforeach
                                 </div>
@@ -1068,11 +1101,25 @@ $isOnSale = $compareAt !== null;
                             <div wire:ignore x-ref="lbSwiper" class="swiper absolute inset-0">
                                 <div class="swiper-wrapper">
                                     @foreach ($gallery as $img)
+                                        @php
+                                            $mediaType = $img->getCustomProperty('media_type', 'image');
+                                        @endphp
                                         <div class="swiper-slide">
+                                            @if ($mediaType === 'video_file')
+                                                <video controls preload="metadata" playsinline
+                                                    class="size-full object-contain" @click.stop>
+                                                    <source src="{{ $img->getUrl() }}" type="{{ $img->mime_type }}">
+                                                </video>
+                                            @elseif ($mediaType === 'video_embed')
+                                                <iframe src="{{ $img->getCustomProperty('embed_url') }}" class="size-full"
+                                                    @click.stop allow="autoplay; fullscreen; picture-in-picture"
+                                                    allowfullscreen loading="lazy"></iframe>
+                                            @else
                                             <img src="{{ $mediaUrl($img, 'zoom') }}"
                                                 alt="{{ $img->getCustomProperty('alt', '') ?: $product->name }}"
                                                 class="size-full select-none object-contain" loading="lazy"
                                                 draggable="false" />
+                                            @endif
                                         </div>
                                     @endforeach
                                 </div>
@@ -1093,8 +1140,17 @@ $isOnSale = $compareAt !== null;
                                     <button type="button" @click="goLb(i)"
                                         class="size-14 cursor-pointer overflow-hidden rounded border-2 bg-white transition"
                                         :class="i === lbIdx ? 'border-brand-500' : 'border-zinc-200 hover:border-zinc-400'">
-                                        <img :src="img.thumb" :alt="img.alt"
-                                            class="size-full object-contain" />
+                                        {{-- video_file has no thumb (raw upload, no FFMpeg conversion) - its
+                                             thumb would just be the mp4 URL, unusable as an <img> source. --}}
+                                        <template x-if="img.type === 'video_file'">
+                                            <span class="grid size-full place-items-center bg-zinc-900">
+                                                <flux:icon.play-circle variant="solid" class="size-5 text-white/80" />
+                                            </span>
+                                        </template>
+                                        <template x-if="img.type !== 'video_file'">
+                                            <img :src="img.thumb" :alt="img.alt"
+                                                class="size-full object-contain" />
+                                        </template>
                                     </button>
                                 </template>
                             </div>

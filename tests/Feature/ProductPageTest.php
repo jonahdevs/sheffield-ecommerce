@@ -327,6 +327,55 @@ it('drives the lightbox with its own swiper, built once the dialog is visible', 
         ->toContain('rewind: true');
 });
 
+it('renders an uploaded gallery video as a video slide with a play-icon thumbnail', function () {
+    $product = makeProduct(['slug' => 'video-file-product']);
+
+    // Held in a variable: the fake upload's temp file is removed once it is collected.
+    $upload = UploadedFile::fake()->create('clip.mp4', 500, 'video/mp4');
+    $product->addMedia($upload->getRealPath())
+        ->usingFileName('clip.mp4')
+        ->withCustomProperties(['is_cover' => false, 'media_type' => 'video_file'])
+        ->toMediaCollection('images');
+
+    $html = Livewire::test('pages::storefront.product', ['product' => $product->fresh()])->html();
+
+    expect($html)
+        ->toContain('<video controls')
+        ->toContain('clip.mp4')
+        // Thumbnail strip shows a play-icon tile, not a broken <img src="…mp4">.
+        ->toContain('bg-zinc-900')
+        ->not->toMatch('/<img src="[^"]*\.mp4"/');
+});
+
+it('renders a video URL gallery item as an iframe embed', function () {
+    $product = makeProduct(['slug' => 'video-embed-product']);
+
+    // Held in a variable: the fake upload's temp file is removed once it is collected.
+    $thumb = UploadedFile::fake()->image('thumb.jpg', 480, 360);
+    $product->addMedia($thumb->getRealPath())
+        ->usingFileName('thumb.jpg')
+        ->withCustomProperties([
+            'is_cover' => false,
+            'media_type' => 'video_embed',
+            'video_provider' => 'youtube',
+            'video_url' => 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+            'embed_url' => 'https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ',
+        ])
+        ->toMediaCollection('images');
+
+    $html = Livewire::test('pages::storefront.product', ['product' => $product->fresh()])->html();
+
+    expect($html)->toContain('<iframe src="https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ"');
+});
+
+it('pauses gallery media when the swiper slide changes', function () {
+    ['product' => $product] = makeVariableProduct();
+
+    $html = Livewire::test('pages::storefront.product', ['product' => $product])->html();
+
+    expect($html)->toContain('pauseMedia(container)');
+});
+
 it('does not pull a second copy of swiper from the cdn', function () {
     ['product' => $product] = makeVariableProduct();
 

@@ -1,6 +1,7 @@
 <?php
 
 use App\Enums\ProductStatus;
+use App\Enums\ProductType;
 use App\Exports\ProductsExport;
 use App\Models\Category;
 use App\Models\Product;
@@ -39,6 +40,19 @@ it('applies status filter to export', function () {
     Product::factory()->create(['status' => ProductStatus::DRAFT]);
 
     $this->get(route('admin.products.export', ['status' => ProductStatus::PUBLISHED->value]))->assertOk();
+
+    Excel::assertDownloaded('products.xlsx', function (ProductsExport $export) {
+        return $export->query()->count() === 2;
+    });
+});
+
+it('applies type filter to export', function () {
+    Excel::fake();
+
+    Product::factory()->count(2)->create(['type' => ProductType::SIMPLE]);
+    Product::factory()->create(['type' => ProductType::VARIABLE]);
+
+    $this->get(route('admin.products.export', ['type' => ProductType::SIMPLE->value]))->assertOk();
 
     Excel::assertDownloaded('products.xlsx', function (ProductsExport $export) {
         return $export->query()->count() === 2;

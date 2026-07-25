@@ -1,6 +1,7 @@
 <?php
 
 use App\Enums\ProductStatus;
+use App\Enums\ProductType;
 use App\Enums\ProductVisibility;
 use App\Enums\StockStatus;
 use App\Imports\ProductsImport;
@@ -46,6 +47,9 @@ new #[Layout('layouts::app')] #[Title('Products | Admin')] class extends Compone
     public string $filterStatus = '';
 
     #[Url]
+    public string $filterType = '';
+
+    #[Url]
     public string $filterVisibility = '';
 
     #[Url]
@@ -72,6 +76,12 @@ new #[Layout('layouts::app')] #[Title('Products | Admin')] class extends Compone
     public bool $selectAll = false;
 
     public function updatedSearch(): void
+    {
+        $this->resetPage();
+        $this->clearSelection();
+    }
+
+    public function updatedFilterType(): void
     {
         $this->resetPage();
         $this->clearSelection();
@@ -179,6 +189,7 @@ new #[Layout('layouts::app')] #[Title('Products | Admin')] class extends Compone
                     $q->where('name', 'like', '%'.$this->search.'%')->orWhere('sku', 'like', '%'.$this->search.'%');
                 }),
             )
+            ->when($this->filterType, fn ($q) => $q->where('type', $this->filterType))
             ->when($this->filterStatus, fn ($q) => $q->where('status', $this->filterStatus))
             ->when($this->filterVisibility, fn ($q) => $q->where('visibility', $this->filterVisibility))
             ->when($this->filterStock, fn ($q) => $q->where('stock_status', $this->filterStock))
@@ -392,15 +403,15 @@ new #[Layout('layouts::app')] #[Title('Products | Admin')] class extends Compone
                     <flux:button size="sm" icon="arrow-down-tray" icon-trailing="chevron-down">Export</flux:button>
                     <flux:menu>
                         <flux:menu.item icon="table-cells"
-                            href="{{ route('admin.products.export', array_filter(['format' => 'xlsx', 'q' => $search, 'status' => $filterStatus, 'visibility' => $filterVisibility, 'stock' => $filterStock, 'category' => $filterCategory, 'brand' => $filterBrand])) }}">
+                            href="{{ route('admin.products.export', array_filter(['format' => 'xlsx', 'q' => $search, 'type' => $filterType, 'status' => $filterStatus, 'visibility' => $filterVisibility, 'stock' => $filterStock, 'category' => $filterCategory, 'brand' => $filterBrand])) }}">
                             Excel (.xlsx)
                         </flux:menu.item>
                         <flux:menu.item icon="document-text"
-                            href="{{ route('admin.products.export', array_filter(['format' => 'csv', 'q' => $search, 'status' => $filterStatus, 'visibility' => $filterVisibility, 'stock' => $filterStock, 'category' => $filterCategory, 'brand' => $filterBrand])) }}">
+                            href="{{ route('admin.products.export', array_filter(['format' => 'csv', 'q' => $search, 'type' => $filterType, 'status' => $filterStatus, 'visibility' => $filterVisibility, 'stock' => $filterStock, 'category' => $filterCategory, 'brand' => $filterBrand])) }}">
                             CSV (.csv)
                         </flux:menu.item>
                         <flux:menu.item icon="document-chart-bar"
-                            href="{{ route('admin.products.pdf', array_filter(['q' => $search, 'status' => $filterStatus, 'visibility' => $filterVisibility, 'stock' => $filterStock, 'category' => $filterCategory, 'brand' => $filterBrand])) }}">
+                            href="{{ route('admin.products.pdf', array_filter(['q' => $search, 'type' => $filterType, 'status' => $filterStatus, 'visibility' => $filterVisibility, 'stock' => $filterStock, 'category' => $filterCategory, 'brand' => $filterBrand])) }}">
                             PDF catalog
                         </flux:menu.item>
                         <flux:menu.separator />
@@ -434,6 +445,13 @@ new #[Layout('layouts::app')] #[Title('Products | Admin')] class extends Compone
                     <flux:select.option value="">All brands</flux:select.option>
                     @foreach ($this->brandOptions as $brand)
                         <flux:select.option :value="$brand->id">{{ $brand->name }}</flux:select.option>
+                    @endforeach
+                </flux:select>
+
+                <flux:select wire:model.live="filterType" class="w-36">
+                    <flux:select.option value="">All types</flux:select.option>
+                    @foreach (ProductType::cases() as $t)
+                        <flux:select.option :value="$t->value">{{ ucfirst($t->value) }}</flux:select.option>
                     @endforeach
                 </flux:select>
 
@@ -650,7 +668,7 @@ new #[Layout('layouts::app')] #[Title('Products | Admin')] class extends Compone
                 @empty
                     <flux:table.row>
                         <flux:table.cell colspan="10" class="py-16 text-center text-zinc-400">
-                            @if ($search || $filterStatus || $filterVisibility || $filterStock || $filterCategory || $filterBrand)
+                            @if ($search || $filterType || $filterStatus || $filterVisibility || $filterStock || $filterCategory || $filterBrand)
                                 No products match your filters.
                             @else
                                 No products yet.

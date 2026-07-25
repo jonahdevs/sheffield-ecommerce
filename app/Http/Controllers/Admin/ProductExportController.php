@@ -37,6 +37,7 @@ class ProductExportController extends Controller
                         ->orWhere('sku', 'like', '%'.$search.'%');
                 });
             })
+            ->when($request->string('type')->value(), fn ($q, $type) => $q->where('type', $type))
             ->when($request->string('status')->value(), fn ($q, $status) => $q->where('status', $status))
             ->when($request->string('visibility')->value(), fn ($q, $vis) => $q->where('visibility', $vis))
             ->when($request->string('stock')->value(), fn ($q, $stock) => $q->where('stock_status', $stock))
@@ -89,6 +90,7 @@ class ProductExportController extends Controller
     {
         return new ProductsExport(
             search: $request->string('q')->value(),
+            filterType: $request->string('type')->value(),
             filterStatus: $request->string('status')->value(),
             filterVisibility: $request->string('visibility')->value(),
             filterStock: $request->string('stock')->value(),

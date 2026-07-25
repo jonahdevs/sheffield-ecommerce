@@ -86,6 +86,7 @@ class AttributeSeeder extends Seeder
                     ['value' => '16 litres', 'label' => '16 litres'],
                     ['value' => '18 litres', 'label' => '18 litres'],
                     ['value' => '20 litres', 'label' => '20 litres'],
+                    ['value' => '22 litres', 'label' => '22 litres'],
                     ['value' => '27 litres', 'label' => '27 litres'],
                     ['value' => '30 litres', 'label' => '30 litres'],
                     ['value' => '40 litres', 'label' => '40 litres'],
