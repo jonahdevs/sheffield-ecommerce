@@ -37,6 +37,24 @@ it('keeps brand names unique once lowercased', function () {
     expect($lowercased->duplicates()->values()->all())->toBe([]);
 });
 
+it('gives each Blueline-family brand its own row', function () {
+    $this->seed(BrandSeeder::class);
+
+    // Blueline, Sheffield Blueline and SV-Blueline are deliberately kept as three
+    // separate brands even though the first two share a logo and a website. The
+    // Sheffield Blueline reference had no row at all, so its 47 refrigeration
+    // products seeded with a null brand_id and appeared under no brand anywhere.
+    $lowercased = Brand::pluck('name')->map(fn (string $name) => mb_strtolower($name));
+
+    $unresolved = collect(['BLUELINE', 'SHEFFIELD BLUELINE', 'SV-BLUELINE'])
+        ->reject(fn (string $reference) => $lowercased->contains(mb_strtolower($reference)))
+        ->values();
+
+    expect($unresolved->all())->toBe([]);
+
+    expect(Brand::whereIn('slug', ['blueline', 'sheffield-blueline', 'sv-blueline'])->count())->toBe(3);
+});
+
 it('still matches products.json brand references that differ only in casing', function () {
     $this->seed(BrandSeeder::class);
 

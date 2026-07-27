@@ -65,6 +65,24 @@ it('seeds each product with the status, price and default variant from products.
     expect($rational->name)->toBe('Rational')
         ->and(Product::where('brand_id', $rational->id)->count())->toBeGreaterThan(0);
 
+    // The seeder reads "model_number" and nothing else, so a row spelling the key any
+    // other way persists no code at all - fourteen rows once did, losing every Antunes
+    // and Kalerm part number. Assert the codes survive the round trip, not just that
+    // the key is spelled right in the JSON.
+    $expectedCodes = collect($items)
+        ->filter(fn ($i) => ! empty($i['sku']) && ! empty($i['model_number']))
+        ->pluck('model_number', 'sku');
+
+    $persisted = Product::whereIn('sku', $expectedCodes->keys())->pluck('model_number', 'sku');
+
+    $lost = $expectedCodes
+        ->reject(fn ($code, $sku) => $persisted->get($sku) === $code)
+        ->map(fn ($code, $sku) => $sku.' → expected '.$code.', got '.($persisted->get($sku) ?? 'null'))
+        ->values()
+        ->all();
+
+    expect($lost)->toBe([]);
+
     // Every variable product opens on a concrete variant rather than falling back
     // at render time, and that variant is one of its own and in stock.
     $variableProducts = Product::where('type', ProductType::VARIABLE)->with('variants')->get();
