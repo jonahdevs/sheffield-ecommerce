@@ -10,7 +10,7 @@ it('renders the storefront home page', function () {
 
     $response->assertOk();
     $response->assertSee('Shop by category');
-    $response->assertSee('Featured equipment');
+    $response->assertSee('You may also like');
     $response->assertSee('just dropped');
     $response->assertSee('brand-marquee', false);
 });

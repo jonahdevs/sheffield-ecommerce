@@ -137,7 +137,7 @@ new #[Layout('layouts::storefront')] #[Title('Wishlist')] class extends Componen
                         in 24 business hours.
                     </div>
                 </div>
-                <flux:button variant="primary" icon-trailing="arrow-right"
+                <flux:button variant="primary"
                     :href="route('quote.request', ['products' => $this->products->pluck('slug')->implode(',')])"
                     wire:navigate>
                     Convert to quote

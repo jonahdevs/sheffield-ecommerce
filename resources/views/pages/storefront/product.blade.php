@@ -831,7 +831,7 @@ $isOnSale = $compareAt !== null;
         <div class="shell py-3">
             <flux:breadcrumbs>
                 <flux:breadcrumbs.item :href="route('home')" wire:navigate>Home</flux:breadcrumbs.item>
-                <flux:breadcrumbs.item :href="route('catalog')" wire:navigate>Catalog</flux:breadcrumbs.item>
+                <flux:breadcrumbs.item :href="route('catalog')" wire:navigate>Shop</flux:breadcrumbs.item>
                 @if ($product->primaryCategory)
                     <flux:breadcrumbs.item :href="route('category.show', $product->primaryCategory)" wire:navigate>
                         {{ $product->primaryCategory->name }}

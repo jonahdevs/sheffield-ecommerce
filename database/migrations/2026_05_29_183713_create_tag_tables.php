@@ -20,9 +20,16 @@ return new class extends Migration
         });
 
         Schema::create('taggables', function (Blueprint $table) {
+            $table->id();
             $table->foreignId('tag_id')->constrained()->cascadeOnDelete();
 
             $table->morphs('taggable');
+
+            // Spatie's own tags()/attachTag() never reference this column, so a plain
+            // insert leaves it at the default - staff order the products of a tag
+            // (e.g. "Featured") from admin/tags/{tag}/products, which writes it
+            // explicitly. See App\Models\TagProduct.
+            $table->unsignedInteger('sort_order')->default(0);
 
             $table->unique(['tag_id', 'taggable_id', 'taggable_type']);
         });

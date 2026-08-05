@@ -17,6 +17,7 @@ use App\Models\Product;
 use App\Models\ProductAttribute;
 use App\Models\ProductLink;
 use App\Models\ProductVariant;
+use App\Models\TagProduct;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
@@ -27,6 +28,9 @@ class ProductSeeder extends Seeder
 {
     /** @var array<string, int> SKU → product id */
     private array $productIdBySku = [];
+
+    /** @var list<string> SKUs the price guard held back from publishing */
+    private array $unpricedDrafts = [];
 
     /** @var array<string, int> brand name → brand id */
     private array $brandIdByName = [];
@@ -73,11 +77,29 @@ class ProductSeeder extends Seeder
         }
 
         $this->tagFeaturedProducts();
+        $this->reportUnpricedDrafts();
+    }
+
+    /**
+     * The price guard is silent per row, so say once at the end which SKUs it caught -
+     * a row that is meant to sell needs its price list entry fixed, not the guard.
+     */
+    private function reportUnpricedDrafts(): void
+    {
+        if ($this->unpricedDrafts === []) {
+            return;
+        }
+
+        $this->command?->warn(sprintf(
+            '%d product(s) marked published in products.json carry no price and were seeded as drafts: %s',
+            count($this->unpricedDrafts),
+            implode(', ', $this->unpricedDrafts),
+        ));
     }
 
     /**
      * Flag a handful of published, in-stock, priced products as "Featured" so the
-     * home page Featured equipment grid has curated data out of the box.
+     * home page "You may also like" grid has curated data out of the box.
      */
     private function tagFeaturedProducts(): void
     {
@@ -89,9 +111,19 @@ class ProductSeeder extends Seeder
             ->whereNotNull('price')
             ->where('price', '>', 0)
             ->inRandomOrder()
-            ->take(8)
+            ->take(12)
             ->get()
-            ->each(fn (Product $product) => $product->attachTag($featured));
+            ->each(function (Product $product, int $index) use ($featured) {
+                $product->attachTag($featured);
+
+                // attachTag() leaves taggables.sort_order at its DB default (every row
+                // tied at 0), so the home page's "You may also like" order would be
+                // whatever the DB happens to return rather than anything meaningful.
+                // Give the seeded picks a real order; staff can then rearrange them at
+                // admin/tags/{tag}/products.
+                TagProduct::where('tag_id', $featured->id)->where('taggable_id', $product->id)
+                    ->update(['sort_order' => $index]);
+            });
     }
 
     private function primeLookups(): void
@@ -169,6 +201,17 @@ class ProductSeeder extends Seeder
         // Status comes straight from products.json (stamped from the approved
         // e-commerce price list: listed SKUs are published, the rest are drafts).
         $status = ProductStatus::from($data['status'] ?? ProductStatus::DRAFT->value);
+
+        // Overrides the status above: a published row with no price is unbuyable, so
+        // it's demoted to draft - except quote-only rows, which legitimately carry no
+        // price and are answered with "Request a quote" instead (see
+        // pages/storefront/product.blade.php).
+        $isQuoteOnly = (bool) ($data['requires_quotation'] ?? false);
+
+        if ($status === ProductStatus::PUBLISHED && ! $isQuoteOnly && ! $this->hasSellablePrice($data, $price, $type)) {
+            $status = ProductStatus::DRAFT;
+            $this->unpricedDrafts[] = (string) ($data['sku'] ?? $name);
+        }
 
         // Variable/grouped/bundle parents don't own a SKU - their variants or
         // children carry the real ones (see products table migration). The
@@ -277,6 +320,37 @@ class ProductSeeder extends Seeder
         }
 
         return StockStatus::IN_STOCK;
+    }
+
+    /**
+     * Whether the row has a price a shopper could actually be charged.
+     *
+     * A variable parent carries no price of its own - the variants do. Grouped and
+     * bundle parents price through the child products they point at, which are
+     * separate products.json rows, so their price isn't visible from here; having
+     * children at all is taken as priced.
+     *
+     * @param  array<string, mixed>  $data
+     */
+    private function hasSellablePrice(array $data, ?int $price, ProductType $type): bool
+    {
+        if ($price !== null && $price > 0) {
+            return true;
+        }
+
+        foreach ($data['variants'] ?? [] as $variant) {
+            $variantPrice = $this->toMinorUnits($variant['price'] ?? null);
+
+            if ($variantPrice !== null && $variantPrice > 0) {
+                return true;
+            }
+        }
+
+        return match ($type) {
+            ProductType::GROUPED => ($data['grouped_children'] ?? []) !== [],
+            ProductType::BUNDLE => ($data['bundle_children'] ?? []) !== [],
+            default => false,
+        };
     }
 
     private function toMinorUnits(int|float|string|null $amount): ?int

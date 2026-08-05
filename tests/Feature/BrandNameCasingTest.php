@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\File;
 // eyebrow labels that genuinely want caps get them from an `uppercase` CSS class.
 
 /** Brands whose real styling is an initialism or acronym, so caps are correct. */
-const CAPITALISED_BRANDS = ['TASKI', 'SDX', 'ICOS', 'HDS', 'PSV', 'KEF'];
+const CAPITALISED_BRANDS = ['TASKI', 'SDX', 'ICOS', 'HDS', 'PSV', 'KEF', 'HY'];
 
 it('stores brand names in display casing rather than all caps', function () {
     $this->seed(BrandSeeder::class);

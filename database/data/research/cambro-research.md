@@ -1,368 +1,249 @@
 # Cambro Product Research
 
-Research notes behind a CAMBRO audit pass on `products.json` (July 2026). Covers both
-CAMBRO SKUs: one Camshelving polymer shelving unit (`IMG/STO/00001`, published) and one
-Camrack warewashing rack (`IMG/DWW/00107`, archived).
+Supersedes `old/cambro-research.md`.
 
-**No `products.json` or `brands.json` changes have been applied** — this file is findings
-only, same starting point as the Brema and Santos passes before a scope decision.
+Covers both CAMBRO SKUs: `IMG/STO/00001` (Camshelving Basics Plus, stored code
+`CB4213672V4580`) and `IMG/DWW/00107` (`PR59314151` Camrack peg rack).
 
-Headline: this is the **cleanest brand match found so far**. Both stored `model_number`
-values decode cleanly against Cambro's real, published part-number grammar, and one of
-them (`PR59314151`) is an **exact, current, verbatim Cambro catalogue number confirmed on
-cambro.com itself** — the first SKU in any of these passes where the stored code needed no
-interpretation at all. The other is off by a **single character**. The problems here are in
-the *names, dimensions and descriptions*, not the codes.
+**Nothing has been applied to `products.json` or `brands.json`.** Staged imagery and per-file
+ledger: `Desktop\ecommerce\products resorce final\cambro\` (`_sourced.json`, `_FINDINGS.md`).
+
+⚠ **This file REVERSES the code recommendation made in `old/cambro-research.md`.** The earlier
+proposal of `CBA213672V4580` rested on an inference that does not survive checking. See §2.
 
 ---
 
-## 1. Brand identification
+## 1. Brand identification — unchanged
 
-**Cambro** = **Cambro Manufacturing Company**, a US foodservice-products manufacturer based
-in Huntington Beach, California. Best known for insulated food-transport carriers, polymer
-food-storage containers, `Camshelving®` polymer shelving and `Camrack®` warewashing racks —
-the last two being exactly the two categories our catalogue carries.
+**Cambro Manufacturing Company**, Huntington Beach, California. `brands.json` entry
+(`slug: cambro`, `website_url: https://www.cambro.com`) is **correct, live, no change needed.**
+No bot-gating; every page and document served cleanly.
 
-`brands.json` entry is **correct and needs no change**:
-
-- `slug: cambro`, `website_url: https://www.cambro.com` — **verified live**, serves product
-  pages directly, no redirect, no domain migration. Unlike the Brema case (`bremaice.it` →
-  `bremagroup.it`) there is nothing to flag here.
-
-Official product pages used in this pass:
+Official sources used:
 
 https://www.cambro.com/Products/shelving/camshelving-basics-plus-series/
 https://www.cambro.com/Products/shelving/camshelving-basics-plus-series/basics-plus-stationary-starter-units-vented-shelves/
 https://www.cambro.com/Products/shelving/camshelving-basics-plus-series/basics-plus-add-on-units-vented-shelves/
 https://www.cambro.com/Products/warewashing/camrack-peg-and-tray-racks/
+https://cambro.widen.net/content/hayq3fk2gp/pdf/Camshelving-Spec-Book---North-America.pdf
 
 ---
 
-## 2. Decoding Cambro's part-number grammar
+## 2. ⭐⭐ `CB4213672V4580` — and the add-on vs starter question
 
-Cambro's part numbers are **fully systematic and dimension-derived**, which is what makes
-this brand auditable in a way the house-brand SKUs are not. Two separate grammars apply.
+Both were held back previously. Both can now be answered from **Cambro's own 96-page spec book**.
 
-### 2.1 Camshelving Basics Plus
+### 2.1 The evidence
+
+Camshelving Spec Book (North America), **page 45** — 72"-height V4 vented tables, Brushed
+Graphite (580). Both candidates are listed in adjacent columns:
+
+| Type | 21" depth, 72" height, 4 vented shelves |
+|---|---|
+| **Starter** | **`CBU213672V4`** — length **36"** (914 mm), **44.49 lb** |
+| **Add-On** | **`CBA213672V4`** — length **34¼"** (870 mm), **39.5 lb** |
+
+And Cambro's own "includes" wording — note it counts **post KITS**, not posts:
+
+> "**Starter units include 2 factory assembled post kits**, 8 or 10 traverses, traverse dovetails
+> and shelf plates. **Add-On units include 1 factory assembled post kit**, 8 or 10 traverses,
+> traverse dovetails and shelf plates. Units ship complete in 1 box."
+
+### 2.2 ⚠ Why the previous recommendation does not hold
+
+`old/cambro-research.md` concluded **add-on** because our record says *"Designed to share posts,
+simplifying assembly and maximizing storage space"* and called that "Cambro's add-on copy,
+near-verbatim".
+
+**That sentence appears on BOTH the starter page and the add-on page.** It is series-level
+marketing copy for Basics Plus as a whole — verified by extracting it from both pages this pass.
+It carries **no** information about unit type, and the inference built on it must be discarded.
+
+### 2.3 What the evidence actually says — three pointers, all to STARTER
+
+| Signal | Value | Points to |
+|---|---|---|
+| Stored numeric length | **910 mm** ≈ **36"** | **CBU** (add-on is 34¼" = 870 mm) |
+| Product **name** — "PVC Shelves **910** Cambro" | **910** | **CBU** (an add-on would be "870") |
+| Currently-attached storefront photo | 4 vented shelves, **4 full corner posts, freestanding** | **CBU** (add-on has posts at one end only) |
+| Description "Includes **2** posts…" | see below | **CBU**, on the better reading |
+
+⚠ **"Includes 2 posts" is best read as a truncation of Cambro's STARTER sentence:**
+
+> Cambro (starter): "include **2** factory assembled post **kits**, 8 or 10 **traverses**, traverse **dovetails** and **shelf plates**"
+> our record: "Includes **2** posts, post connectors, **traverses** and **vented shelf plates**"
+
+The structure tracks the starter line — the number **2**, then traverses, then
+connectors/dovetails, then shelf plates. Cambro's **add-on** sentence begins "**1** factory
+assembled post kit", which would have produced "includes 1 post kit". Dropping "kits" turns the
+starter line into "2 posts"; nothing plausible turns the add-on line into it.
+
+### 2.4 ⭐ Recommendation — RECOMMENDATION ONLY, nothing applied
+
+> **`CBU213672V4580`** — Camshelving Basics Plus, Vented, 4-Shelf, **Stationary Starter Unit**,
+> 21" × 36" × 72", Brushed Graphite.
+
+`CB` + **`U`** + `213672` + `V4` + `580`. The stored `CB**4**213672V4580` has a **`4`** in exactly
+the position Cambro's grammar reserves for the unit-type letter. The decisive point is that **`4`
+is not a valid value there at all** — there is no `CB4` prefix anywhere in Cambro's scheme.
+
+⚠ **`model_number` is the unique ID and has NOT been touched, inline or otherwise.** This needs
+approval plus ideally one supplier question:
+
+> *"Is what we stock a complete freestanding bay, or an extension that bolts onto an existing one?"*
+
+If the answer is "extension", the code is `CBA213672V4580` **and the length must change to
+870 mm**, because an add-on only adds 34¼" to a run. **Both candidate images are staged**, so
+either answer is ready.
+
+### 2.5 Cambro's part-number grammar (confirmed against the spec book)
 
 ```
 CB  +  U|A  +  DD  +  LL  +  HH  +  V|S|VS  +  n  +  CCC
 ```
 
-| Segment | Meaning | Our value |
-|---|---|---|
-| `CB` | Cam**b**ro **B**asics Plus series | `CB` |
-| `U` / `A` | **U** = stationary starter **U**nit (4 posts), **A** = **A**dd-on unit (2 posts) | **`4`** ⚠ |
-| `DD` | Depth, inches | `21` |
-| `LL` | Length, inches | `36` |
-| `HH` | Height, inches | `72` |
-| `V`/`S`/`VS` | **V**ented / **S**olid / 3 vented + 1 solid | `V` |
-| `n` | Number of shelves | `4` |
-| `CCC` | Cambro colour code — `580` = Brushed Graphite, `480` = Speckled Gray | `580` |
-
-Worked confirmations of the grammar on real parts:
-
-- `CBU213672V4580` — starter, 21 × 36 × 72, vented, 4 shelves, Brushed Graphite:
-  https://www.webstaurantstore.com/cambro-cbu213672v4580-camshelving-basics-plus-vented-4-shelf-stationary-starter-unit-21-x-36-x-72/214BSM3672V4.html
-- `CBA183672V4580` — the same thing as an **add-on** at 18" depth:
-  https://www.webstaurantstore.com/cambro-cba183672v4580-camshelving-basics-plus-vented-4-shelf-add-on-unit-18-x-36-x-72/214BAS3672V4.html
-- `CBA213672V4` appears **by name in Cambro's own add-on spec table** (21" × 34 1/4" ×
-  72", 4V, 39.8 lb):
-  https://www.cambro.com/Products/shelving/camshelving-basics-plus-series/basics-plus-add-on-units-vented-shelves/
-
-### 2.2 Camrack peg racks
-
-```
-PR  +  [59]  +  height  +  CCC
-```
-
-| Segment | Meaning | Our value |
-|---|---|---|
-| `PR` | **P**eg **R**ack | `PR` |
-| `59` | 5-row × 9-row peg layout (omitted entirely on the 9×9 racks) | `59` |
-| `314` / `500` | Inside height: `314` = 3 1/4" (no extender), `500` = 4 7/8" (with extender) | `314` |
-| `CCC` | Colour code — `151` = **Soft Gray** | `151` |
-
-Cambro's own published family table (all four codes confirmed on cambro.com):
-
-| Part | Configuration | Inside height |
-|---|---|---|
-| `OETR314` | Open End Tray Rack | 3 1/4" |
-| `PR314` | 9 × 9 rows, no extender | 3 1/4" |
-| `PR500` | 9 × 9 rows, with extender | 4 7/8" |
-| **`PR59314`** | **5 × 9 rows, no extender** | **3 1/4"** |
-| `PR59500` | 5 × 9 rows, with extender | 4 7/8" |
+`U` = stationary starter, `A` = add-on · `DD` depth (18/21/24) · `LL` length · `HH` height
+(64/72/84) · `V`/`S`/`VS` vented/solid/mixed · `n` shelf count · `CCC` colour
+(`580` Brushed Graphite, `480` Speckled Gray, `151` Soft Gray).
 
 ---
 
-## 3. Per-SKU findings
+## 3. `PR59314151` — exact, unchanged, and now visually verified
 
-### 3.1 IMG/STO/00001 — "PVC Shelves 910 Cambro", `CB4213672V4580` ⚠ one-character error
+**A genuine, current, exact Cambro part number, confirmed on cambro.com. No `model_number`
+change.** Grammar: `PR` (peg rack) + `59` (5 × 9 rows) + `314` (3¼" inside height, no extender)
++ `151` (Soft Gray).
 
-**Verdict: the code is real Cambro, off by exactly one character.** `CB4213672V4580` is
-`CB` + **`4`** + `213672V4580`. The `4` sits in precisely the position that Cambro's grammar
-reserves for the unit-type letter `U` or `A`. There is **no `CB4` prefix anywhere in
-Cambro's scheme**, and no search on the literal string returns a single hit; `CBU213672V4580`
-and `CBA213672V4580` both return real products at those exact dimensions.
+⚠ **The 5 × 9 vs 9 × 9 distinction was verified by eye this pass, not assumed.** Rendered side by
+side the two mouldings are unmistakable:
 
-**Which letter?** The record's own stored `description` settles it:
+- **`PR59314151` (ours)** — pegs in **two different spacings**, a coarse half and a fine half.
+- **`PR314151`** — a **uniformly dense** peg grid across the whole base, many more pegs.
 
-> "Designed to share posts, simplifying assembly and maximizing storage space.
->  **Includes 2 posts**, post connectors, traverses and vented shelf plates."
+All four staged `IMG-DWW-00107__*` files are the 5 × 9. The two `PR314151` files are quarantined
+in `_brand-reference/` and **must not be attached to the SKU**.
 
-That is Cambro's **add-on** copy, near-verbatim. Cambro's starter units ship **4 posts**;
-add-on units ship **2** and borrow the neighbouring unit's posts. WebstaurantStore states it
-explicitly for the add-on ("4 shelves, **2 posts** with pre-installed post connectors and
-wedges, matching dovetails, and 8 traverses") and for the starter ("**4 posts**,
-pre-installed post connectors and wedges, 32 dovetails, 4 vented shelves, and 8 traverses").
+**Full specification** (the record currently holds almost none of this): Camrack peg rack, full
+size, 5 × 9, no extender · overall 19¾" × 19¾" × 4" (**502 × 502 × 102 mm**) · inside height 3¼"
+(83 mm) · polypropylene · Soft Gray (151) · heat resistant to 200 °F (93.3 °C) · ~4.0 lb
+(1.8 kg) · NSF listed, dishwasher safe · stackable, moulded handles · Made in USA · case pack 6.
 
-→ **Closest real Cambro equivalent: `CBA213672V4580`** — Camshelving Basics Plus Vented
-4-Shelf Add-On Unit, 21" × 36" × 72", Brushed Graphite. `A` → `4` is a plain transcription
-slip (visually adjacent in many sans-serif and OCR contexts). **Not applied** — per
-[[feedback_model_number_unique_id]], `model_number` is the unique ID and stays untouched
-until approved.
+**Capacity** — the two spacings are the point of the 5 × 9 layout: the 5-row half takes up to ten
+10" bowls, deep plates or platters; the 9-row half up to eighteen 10" plates, twelve 12" plates,
+twenty-seven 7½" plates, or nine 14" × 18" trays.
 
-**But this needs a commercial decision before any code is written in, because add-on ≠
-starter.** An add-on unit **cannot stand alone** — it is not a sellable freestanding
-shelving unit. If what Sheffield actually stocks is a complete freestanding bay, the correct
-code is `CBU213672V4580` and the *description* is the thing that's wrong (it should say 4
-posts). If it really is an add-on bay, the code is `CBA213672V4580` and the *product name
-and dimensions* are wrong. One of those two is true; the record as it stands is internally
-consistent with neither.
+⚠ **"64 Comp" in the product name is wrong and must not be published as a spec.** It is a peg
+rack, not a compartment rack (resellers list "Compartments: 1"), and Cambro makes no
+64-compartment Camrack. The earlier theory — that someone counted an 8 × 8 = 64 peg array — was
+counted off **`PR314151`, the wrong rack**, which weakens it further. **No Cambro or reseller
+document states a peg count anywhere.** Recommended rename: *"Camrack 5 × 9 Peg Rack — Full Size,
+Soft Gray"*.
 
-**Dimensions — the width/height transposition bug, again.**
+⚠ Zoomed 6× into the rack rim: the moulded text reads only **"CAMBRO"**, not a part number. So
+`code_proven` on the two official files rests on **Cambro's own DAM filenames**
+(`PR59314151_A1LL_0119_S04`) — strong provenance, but not proof off the product itself.
 
-Real size, 21" D × 36" L × 72" H = **533 × 914 × 1829 mm**.
+---
 
-| Field | Stored | Actually is | Correct value |
+## 4. SAP audit
+
+| SKU | SAP W/D/H | Remark | Verdict |
 |---|---|---|---|
-| `length` | 540 | depth, 21" | 533 ✔ (rounded, fine) |
-| `width` | **1830** | the **height**, 72" | should be **914** |
-| `height` | **910** | the **length/width**, 36" | should be **1829** |
+| IMG/STO/00001 | **540 / 910 / 1830** | "…Includes 2 posts…" (no dimensions) | ✅ **SAP correct, W/D/H order** — 540 = 21" depth, 910 = 36" length, 1830 = 72" height |
+| IMG/DWW/00107 | *(blank)* | "Compartment size 45X45X72" | ⚠ fields MISSING; remark garbled |
 
-Same `width`↔`height` swap already documented in the Santos, Empero and Brema passes. The
-`technical_specification` field currently contains nothing but these same three transposed
-numbers as a bare `<ul>`.
+**Column order established from SAP itself: `W / D / H`** — and unusually **SAP's values are
+right.** It is `products.json` that is wrong: it stores `910 / 540 / 1830` as length/width/height,
+i.e. **width 1830 (really the height) and height 910 (really the length)** — the familiar
+transposition. Correct: `length` 533–540, `width` 914, `height` 1829.
 
-⚠ **Add-on footprint caveat:** if this is confirmed as an add-on (`CBA`), its own catalogued
-length is **34 1/4" (870 mm)**, not 36" — because it shares posts with the unit it bolts
-onto, so it only *adds* 34.25" to a run. Cambro's own add-on spec table lists it that way.
-The starter (`CBU`) is a true 36" (914 mm). Whichever way the code decision goes, the length
-figure follows it.
+⚠ SAP's Camrack remark **"Compartment size 45X45X72"** is not a compartment size — the rack is
+502 × 502 × 102 mm with an 83 mm inside height. Treat the string as unreliable, and the blank
+dimension fields as **MISSING, not zero**.
 
-**Other findings:**
+---
 
-- **It is not PVC.** Cambro Camshelving shelf plates are **polypropylene**; the weight-
-  bearing posts and traverses are **steel-cored, encapsulated in thick polypropylene** —
-  weldless, no exposed metal, which is the whole basis of the rust-free claim. The stored
-  description already says "smooth polypropylene" and "solid steel cores", so the
-  description contradicts the product *name*. "PVC Shelves" is a Sheffield house convention
-  (see the sibling `IMG/STO/00007` "PVC Shelves Vented 1060 Perfect"), not a Cambro term.
-- **The "910" in the name is the 36" shelf length** (914 mm), consistent with how the
-  sibling OEM shelving SKUs are named ("1060", "1220"). Correct as a naming convention.
-- **The stored photo does not match the code.** `products/pvc-shelves-910-cambro-imgsto00001.jpg`
-  shows a **5-shelf** unit in **light grey (Speckled Gray, colour 480)**. The code specifies
-  **4 shelves** (`V4`) in **Brushed Graphite (580)** — the near-black finish. Two independent
-  mismatches in one image; it also appears to be an older-generation Camshelving render.
-  Replacement candidates downloaded in §6.
-- **Missing from the record entirely:** temperature range **-36 °F to 190 °F (-38 °C to
-  88 °C)**, weight (**39.8 lb / 18.1 kg** add-on, **46.3 lb / 21.0 kg** starter — both from
-  Cambro's own spec tables), shelf adjustability (4" increments), NSF listing (mentioned in
-  the description but not the spec), and the **limited lifetime warranty against rust and
-  corrosion**.
-- **Load rating is unresolved and should not be published until confirmed.** Resellers state
-  **600 lb (272 kg) per shelf**; Cambro's own add-on spec page summarises **300 lb per shelf
-  / 1,350 lb per unit**; the starter page summarises **500–700 lb per shelf / 1,800 lb per
-  unit**. WebstaurantStore reconciles part of it ("600 lbs per shelf when built in a straight
-  line… if configured in an L- or U-shaped design, capacity drops to 300 lbs per shelf"),
-  which explains the 600/300 pair but not the 700/1,800 figures. **Recommend quoting no load
-  rating rather than guessing** — a wrong shelf load rating is a safety claim, not a
-  marketing one. Resolve from the Basics Plus spec sheet PDF or Cambro directly.
+## 5. Resolution — ceilings tested, not assumed
 
-### 3.2 IMG/DWW/00107 — "Plate Racks 64 Comp Camrack Grey", `PR59314151` ✅ exact match, wrong name
+**WebstaurantStore's undocumented `xxl` rendition is genuine**, re-verified this pass because a
+sibling brand in the same batch (Waring/Katom) turned out to be serving pure upscales:
 
-**Verdict: `PR59314151` is a genuine, current, exact Cambro part number** — confirmed on
-Cambro's own site, not just resellers:
-
-https://www.cambro.com/Products/warewashing/camrack-peg-and-tray-racks/
-
-Cambro's own listing gives: 5 × 9 rows, no extender, inside height 3 1/4" (8.3 cm), colour
-Soft Gray (151), list price USD 56.90 each, case pack 6, case weight 24.15 lb (10.95 kg).
-Every character of our stored code is accounted for. **No change needed to `model_number`.**
-
-**The product *name* is wrong, though, in two separate ways.**
-
-1. **It is a peg rack, not a compartment rack.** Cambro's own product family is "Camrack®
-   Peg and Tray Racks" — an open moulded base with upright pegs that plates lean between.
-   There are no compartments; resellers list "Compartments: 1". A "Plate Rack — 64
-   Compartment" describes a different kind of product entirely (compare the sibling
-   `IMG/DWW/00104` "Glass Rack 25 Compartment", which genuinely is a compartment rack).
-2. **Cambro does not make a 64-compartment Camrack at all.** Their compartment counts run
-   8 / 9 / 10 / 16 / 20 / 25 / 30 / 36 / 49; searching for a `64S…` code returns nothing.
-   So "64 Comp" cannot be salvaged by pointing it at a different Cambro part.
-
-**Where "64" probably came from — inference, not a sourced fact.** Counting the moulded peg
-array on Cambro's own high-resolution render of the full-size peg-rack base gives an **8 × 8
-grid = 64 pegs**. That is almost certainly what someone recorded as "64 Comp". This was
-counted off the image
-(`https://cambro.widen.net/content/3iajw5cu4p/webp/PR314151_A1C0_0818_s01.webp`, downloaded
-in §6) — **no Cambro or reseller document states a peg count anywhere**, so treat this as a
-plausible explanation, not a verified spec. **Do not publish "64 pegs" as a spec.** The
-defensible rename is something like "Camrack 5 × 9 Peg Rack — Full Size, Soft Gray".
-
-**Full specification (record currently has none of this — it holds only name, sku, brand,
-model, category, `price: null`, `quantity: 87`, `image: ""`, `status: archived`):**
-
-| Spec | Value |
+| Rendition | Returns |
 |---|---|
-| Type | Camrack® Peg Rack, full size, 5 × 9 rows, no extender |
-| Overall size | 19 3/4" × 19 3/4" × 4" (**502 × 502 × 102 mm**) |
-| Inside / usable height | 3 1/4" (83 mm) |
-| Material | Polypropylene |
-| Colour | Soft Gray (Cambro colour 151) |
-| Heat resistance | Up to 200 °F (93.3 °C) |
-| Weight | ~4.0 lb (1.8 kg) each — derived from case weight 24.15 lb ÷ 6; a reseller lists 3.58 lb shipping weight |
-| Certification | NSF listed; dishwasher safe |
-| Features | Stackable (smooth top rim), ergonomic moulded handles, smooth sides, rounded corners |
-| Origin | Made in USA |
-| Case pack | 6 |
+| `large` | 600 × 600 |
+| `extra_large` | 1000 × 1000 |
+| **`xxl`** | **2000 × 2000** |
+| `original`, `zoom`, `huge`, `xl` | 404 |
 
-**Capacity** (the two peg spacings are the point of the 5 × 9 layout — one half coarse for
-deep items, one half fine for flat plates):
+High-frequency (Laplacian) energy check: `xxl` at 2000 px scores **4.02**, versus **1.99** for
+`extra_large` upscaled to 2000 px — roughly **twice** the real detail, so it is a true master.
+It is also **native-capped, not padded**: `…/3002600.jpg` returns 1050 × 1050 from `xxl` while
+its siblings return 2000.
 
-- 5-row spacing: up to **ten 10" bowls**, deep plates, platters or plate covers
-- 9-row spacing: up to **eighteen 10" plates**, twelve 12" plates, twenty-seven 7 1/2"
-  plates, or nine 14" × 18" trays
+**Cambro's own Widen DAM:** swap the format segment for **`original`** —
+`cambro.widen.net/content/<hash>/original/<FILE>.webp` — and the DAM 303-redirects to a signed
+`cf-store.widencdn.net` URL with the native master. The sized `webp`/`jpeg`/`png` renditions cap
+at 2048 regardless of any `?w=`. This produced the **4104 × 2988** Camrack hero, the largest file
+in this four-brand pass.
 
-**Related parts** worth knowing if a taller rack is ever needed: `PR59500151` (same 5 × 9
-layout with extender, 4 7/8" inside height) and `PR59314L40151` (with a 4" extender);
-`PR314151` is the 9 × 9 version, `OETR314151` the open-end tray rack.
+⚠ **The same trick applies to documents.** The spec book's on-page link
+(`/view/pdf/hayq3fk2gp/…?t.download=true`) returns a **24 KB HTML viewer**, not the PDF.
+`/content/hayq3fk2gp/pdf/…` returns the real **13.7 MB** file (96 pages, full text layer);
+`/content/hayq3fk2gp/original/…` returns 36.5 MB. Anyone taking the on-page link at face value
+would stage an HTML file with a `.pdf` extension.
 
-**Pricing:** record has `price: null`. Cambro list is USD 56.90; street pricing at US
-resellers ranges roughly USD 22–40. Landed Kenyan pricing is a supplier question, but there
-is a real list price to anchor against, which is more than most SKUs in this catalogue have.
+## 6. Shared-photo check — negative, which is the point
 
-Sources:
-https://www.cambro.com/Products/warewashing/camrack-peg-and-tray-racks/
-https://www.webstaurantstore.com/cambro-pr59314l40151-soft-gray-5-x-9-camrack-peg-rack/214PR59314GY.html
-https://www.ckitchen.com/p/cambro-pr59314151-camrack-5-x-9-peg-rack.html
-https://www.katom.com/144-PR59314.html
-https://www.dbmark.com/en/products2/washing-transporting-and-storing-crockery/universal-camracks/camrack-r-5x9-peg-rack-pr59314
+Plastic dish racks are the textbook shared-photo case, so the full protocol was run over all 11
+staged files **plus both currently-attached storefront images**: MD5 grouping → 16×16 ahash
+shortlist at ≤40 bits → per-pixel RMS on 256×256 greyscale.
 
----
+- **No MD5 duplicates.**
+- **No pair scored below RMS 41** (closest 41.49 and 42.56 — similar compositions of genuinely
+  different objects). **Nothing is a shared photo.**
+- Specifically, **`CBU213672V4580` and `CBA183672V4580` are different photographs** (ahash 23,
+  RMS 41.49) — WebstaurantStore serves distinct renders for starter and add-on, so the
+  "byte-identical under two part-number filenames" trap **is not present here**.
 
-## 4. Cross-cutting notes
+⚠ The three official Cambro Camshelving renders **are** range assets — all of `CBA183064V4580`,
+the 18 × 30 × 64 unit — and are named `CB-RANGE-` accordingly. A sweep of all three Basics Plus
+pages confirms **no `CBU213672` or `CBA213672` render exists anywhere on cambro.com**; Cambro
+publishes one representative render per series, not per size. The size-accurate options are the
+two WebstaurantStore files, which are also the highest-resolution ones — no trade-off to make.
 
-- **Colour codes are meaningful and both of ours are self-consistent.** `580` = Brushed
-  Graphite, `480` = Speckled Gray, `151` = Soft Gray, `184` = Beige, `119` = Sherwood Green.
-  The Camrack SKU's name says "Grey" and its code ends `151` (Soft Gray) — agreement. The
-  shelving SKU's code ends `580` (Brushed Graphite) but its **photo shows `480` Speckled
-  Gray** — disagreement (§3.1).
-- **The width/height transposition bug appears again** on the one dimensioned SKU here
-  (§3.1). That is now Santos, Empero, Brema and Cambro. It is a catalogue-wide import
-  problem, and every remaining dimensioned SKU should be assumed suspect until individually
-  checked — never mechanically rotated, since the Santos pass proved some records are
-  already correct.
-- **Model-code quality is unusually high for this catalogue.** Across two SKUs the total
-  divergence from Cambro's real numbering is **one character**. Contrast Santos (an invented
-  "A" suffix on all 9 codes) and the house `JW-`/`PR` codes. Where a brand publishes a
-  systematic dimension-derived grammar like Cambro's, the stored codes can be *validated*
-  rather than merely looked up.
-- **Both records under-describe a well-documented brand.** The peg rack is completely empty
-  and archived despite 87 units in stock and a published US list price; the shelving unit
-  has a description that contradicts its own product name (polypropylene vs "PVC") and its
-  own image (4-shelf graphite vs 5-shelf speckled grey).
+## 7. Two open items
 
----
+- ⚠ **Colour disagreement.** The code ends `580` = **Brushed Graphite** (near-black), but the
+  attached storefront image shows a **light/mid grey** unit (Speckled Gray, 480). Shelf count (4
+  vented) and configuration (freestanding, 4 posts) are right; the finish is not. Either the
+  colour digits or the photo is wrong. Worth a supplier question alongside §2.4.
+- ⚠ **Load rating — still do not publish.** The 300 / 600 / 700 lb-per-shelf conflict is
+  unresolved, and the live starter page adds a fourth framing (*"…700 lbs (317.5 kg) per shelf up
+  to 48" (1220 mm)"*), i.e. the rating depends on **shelf length** as well as on whether the run
+  is straight or L/U-shaped. A wrong shelf load rating is a safety claim, not a marketing one.
 
-## 5. Product reference
+⚠ Also unchanged: **it is not PVC.** Camshelving shelf plates are **polypropylene** over
+steel-cored, encapsulated posts and traverses. "PVC Shelves" is a Sheffield house naming
+convention, and the record's own description already says "polypropylene" — so the name
+contradicts the description.
 
-| SKU | Catalogue name | Stored model | Real Cambro part | Official page | Confidence |
-|---|---|---|---|---|---|
-| IMG/STO/00001 | PVC Shelves 910 Cambro | `CB4213672V4580` | **`CBA213672V4580`** (add-on, per the record's own "2 posts" copy) — or `CBU213672V4580` if it is really a freestanding starter | https://www.cambro.com/Products/shelving/camshelving-basics-plus-series/basics-plus-add-on-units-vented-shelves/ | **High** on the size/series/colour (21×36×72 vented 4-shelf Brushed Graphite is unambiguous); **Medium** on add-on vs starter — needs a supplier answer |
-| IMG/DWW/00107 | Plate Racks 64 Comp Camrack Grey | `PR59314151` | **`PR59314151`** — exact, unchanged | https://www.cambro.com/Products/warewashing/camrack-peg-and-tray-racks/ | **Very high** — verbatim match on Cambro's own site; only the catalogue *name* is wrong |
+## 8. Product reference
 
-Supporting reseller sources:
-https://www.webstaurantstore.com/cambro-cbu213672v4580-camshelving-basics-plus-vented-4-shelf-stationary-starter-unit-21-x-36-x-72/214BSM3672V4.html
-https://www.webstaurantstore.com/cambro-cba183672v4580-camshelving-basics-plus-vented-4-shelf-add-on-unit-18-x-36-x-72/214BAS3672V4.html
-https://www.katom.com/144-CBU183672580.html
-https://www.restaurantsupply.com/cambro-cbu213672v4580-brushed-graphite-basic-72-inch-x-18-inch-x-60-inch-plastic-vented-stationary-shelving-unit
+| SKU | Stored model | Real Cambro part | Official page | Confidence |
+|---|---|---|---|---|
+| IMG/STO/00001 | `CB4213672V4580` | **`CBU213672V4580`** (starter) — or `CBA213672V4580` if the supplier confirms an add-on, in which case the length becomes 870 mm | https://www.cambro.com/Products/shelving/camshelving-basics-plus-series/basics-plus-stationary-starter-units-vented-shelves/ | **High** on size/series/colour; **Medium-High** on starter vs add-on |
+| IMG/DWW/00107 | `PR59314151` | **`PR59314151`** — exact, unchanged | https://www.cambro.com/Products/warewashing/camrack-peg-and-tray-racks/ | **Very high** |
 
----
+## 9. Recommended actions (nothing applied)
 
-## 6. Image sourcing (July 2026) — downloaded to `Downloads/cambro-images/`
-
-**15 files** (7 shelving, 8 rack). Cambro serves its product renders from a Widen DAM
-(`cambro.widen.net/content/<hash>/webp/<PARTNUMBER>_<viewcode>.webp`) — the filenames carry
-the part number, which makes it easy to tell which size/variant a render actually depicts.
-Downloaded straight via `curl`, no auth or referer needed. Naming follows the Brema/Santos
-convention (`<SKU-with-dashes>__<descriptor>.<ext>`).
-
-### IMG/STO/00001 — Camshelving Basics Plus
-
-| File | Source | Note |
-|---|---|---|
-| `IMG-STO-00001__CBU213672V4580-webstaurant.jpg` | https://cdnimg.webstaurantstore.com/images/products/large/378104/3027656.jpg | **Best candidate.** The only render found of the **exact** 21 × 36 × 72 vented 4-shelf Brushed Graphite unit. Clean white background. |
-| `IMG-STO-00001__CBA183672V4580-addon-webstaurant.jpg` | https://cdnimg.webstaurantstore.com/images/products/large/378064/3019652.jpg | The **add-on** equivalent — use this one instead if §3.1 resolves to `CBA` |
-| `IMG-STO-00001__CBU-basics-plus-starter-render.webp` | https://cambro.widen.net/content/ugkb8vixxz/webp/CBU183064V4580_A1R0_0117_s02.webp | Official Cambro render, but of `CBU183064` (18 × 30 × 64) — same series/finish, **different size** |
-| `IMG-STO-00001__CBU-basics-plus-starter-render2.webp` | https://cambro.widen.net/content/mpafeknh5o/webp/CBU183064V4580_A1R0_0918_S01.webp | as above |
-| `IMG-STO-00001__CBA-basics-plus-addon-render.webp` | https://cambro.widen.net/content/gchlzsxil2/webp/CBA183064V4580_A1R0_0918_S01.webp | Official add-on render, `CBA183064` |
-| `IMG-STO-00001__CBA-basics-plus-addon-lifestyle.webp` | https://cambro.widen.net/content/fmrcbid1lz/webp/CBA183064V4580_A1LK_0616_s02.webp | In-kitchen lifestyle shot |
-| `IMG-STO-00001__CBA-basics-plus-addon-detail.webp` | https://cambro.widen.net/content/e4duvs5cdx/webp/CBA183064V4580_B1RK_1013_s05.webp | Detail/loaded shot |
-
-⚠ The official `cambro.widen.net` renders on the Basics Plus category pages are all of the
-**18 × 30 × 64** unit — Cambro uses one representative render per series rather than one per
-size. They are correct for *series and finish* (Brushed Graphite, vented shelves) but not
-for our size or shelf count. The two WebstaurantStore files are the size-accurate ones.
-
-⚠ The **currently attached** storefront image
-(`storage/app/public/products/pvc-shelves-910-cambro-imgsto00001.jpg`) is wrong on two
-counts — 5 shelves instead of 4, and Speckled Gray (480) instead of Brushed Graphite (580).
-Replacing it is the single highest-value change available on this SKU.
-
-### IMG/DWW/00107 — Camrack 5 × 9 Peg Rack
-
-| File | Source | Note |
-|---|---|---|
-| `IMG-DWW-00107__PR59314151-ckitchen-1.webp` | https://cdn.ckitchen.com/pmidimages/cambro-pr59314151-camrack-5-x-9-peg-rack-20221214152256266.webp | **Correct part**, but small (≈11 KB) |
-| `IMG-DWW-00107__PR59314151-ckitchen-2.webp` | https://cdn.ckitchen.com/pmidimages/cambro-pr59314151-camrack-5-x-9-peg-rack-20250621050851199.webp | **Correct part**, 3/4 view, still small (≈16 KB) |
-| `IMG-DWW-00107__PR59314-webstaurant-1.jpg` | https://cdnimg.webstaurantstore.com/images/products/large/59571/2672179.jpg | **Best storefront candidate** — in-use shot, plates being loaded, 600 × 600 |
-| `IMG-DWW-00107__PR59314-webstaurant-2.jpg` | https://cdnimg.webstaurantstore.com/images/products/large/59571/3002600.jpg | Second in-use angle |
-| `IMG-DWW-00107__PR314151-official-front.webp` | https://cambro.widen.net/content/ancrloehtx/webp/PR314151_A1R0_0818_S03.webp | Official Cambro, but the **9 × 9** `PR314` — see caution below |
-| `IMG-DWW-00107__PR314151-official-closeup.webp` | https://cambro.widen.net/content/3iajw5cu4p/webp/PR314151_A1C0_0818_s01.webp | Official, high-res 1200px; this is the image the 8 × 8 peg count in §3.2 was read off |
-| `IMG-DWW-00107__PR314151-official-loaded.webp` | https://cambro.widen.net/content/n0gtizj8gw/webp/PR314151_A1RL_1016_S02.webp | Official, loaded with plates |
-| `IMG-DWW-00107__PR314151-official-lifestyle.webp` | https://cambro.widen.net/content/fmonxrqjvq/webp/PR314151_A1LK_0818_s04.webp | Official lifestyle |
-
-⚠ **Peg-layout caution:** Cambro's own Peg and Tray Racks page only carries renders of
-`PR314151`, the **9 × 9** rack — our SKU is the **5 × 9** `PR59314151`. The two are the same
-moulding family, same tray, same colour, but the peg spacing visibly differs on one half.
-The two ckitchen files and the two WebstaurantStore files are the ones actually showing
-`PR59314`; the four official Cambro files are the higher-resolution but **wrong-configuration**
-option. Prefer the WebstaurantStore in-use shots for the storefront.
-
-Nothing has been copied into `storage/app/public/products/` or referenced in
-`products.json` — staged in Downloads for review, same as the Brema and Santos sets. Note
-`IMG/DWW/00107` currently has `image: ""` and `status: archived`, so its photo is ready
-whenever that record is published.
-
----
-
-## 7. Recommended next steps (none applied)
-
-Ordered by value, all requiring approval:
-
-1. **Answer the add-on-vs-starter question with the supplier** for `IMG/STO/00001`. Every
-   other fix on that SKU (code, length, post count, price sanity) hangs off it.
-2. **Fix the width/height transposition** — `width: 1830` / `height: 910` → `width: 914` /
-   `height: 1829` (or 870 if add-on). Safe and independent of #1's outcome for the height.
-3. **Replace the shelving photo** — the attached image is the wrong shelf count *and* the
-   wrong colour (§6).
-4. **Build out `IMG/DWW/00107` from scratch** — it is completely empty despite 87 units in
-   stock, an exact verified part number, a full public spec, and a USD list price. Rename to
-   drop the false "64 Comp" and the false "Plate Rack" framing.
-5. **Rewrite both descriptions to the Skymsen prose + `<h3>Key Features</h3>` + `<table>`
-   pattern**, add `meta_description` to both (neither has one), and split
-   `short_description` per [[project_description_field_split]].
-6. **Leave the load rating out** until the 300 / 600 / 700 lb conflict is resolved from
-   Cambro's Basics Plus spec sheet (§3.1).
-7. **Do not change `model_number` on `IMG/DWW/00107`** — it is already exactly right.
+1. 🔴 **Settle starter vs add-on with the supplier**, then apply the code from §2.4. Every other
+   fix on `IMG/STO/00001` hangs off it.
+2. 🟠 **Fix the width/height transposition** — `width: 1830` / `height: 910` → `width: 914` /
+   `height: 1829` (or 870 if add-on). Safe and independent of #1 for the height.
+3. 🟠 **Build out `IMG/DWW/00107` from scratch** using §3 — it has 82 units in stock, an exact
+   verified part number and a full public spec. Drop the false "64 Comp" and "Plate Rack" framing.
+4. 🟡 Replace the shelving photo if the colour question resolves against it (§7).
+5. 🟡 Rewrite both descriptions to the house prose + `<h3>Key Features</h3>` + `<table>` pattern;
+   add `meta_description` to both; correct "PVC" in the shelving name.
+6. ⚪ **Publish no load rating** until it is read off the spec book for the exact part (§7).
+7. ⚪ **No `model_number` change on `IMG/DWW/00107`** — it is already exactly right.

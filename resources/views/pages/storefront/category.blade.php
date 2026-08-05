@@ -219,37 +219,13 @@ new #[Layout('layouts::storefront')] class extends Component
     </div>
 
     {{-- Category hero --}}
-    @php
-        $banner = $category->banner_url;
-        $bannerPlaceholder = $category->banner_placeholder;
-    @endphp
-    <div
-        class="relative overflow-hidden border-b border-zinc-200 py-6 sm:py-10
-        {{ $banner ? '' : 'bg-surface-sunken' }}">
-
-        @if ($banner)
-            @if ($bannerPlaceholder)
-                <img src="{{ $bannerPlaceholder }}" alt="" aria-hidden="true"
-                    class="absolute inset-0 size-full scale-110 object-cover blur-xl" />
-            @endif
-            <picture class="contents">
-                @if ($category->banner_webp_url)
-                    <source srcset="{{ $category->banner_webp_url }}" type="image/webp" />
-                @endif
-                <img src="{{ $banner }}" alt="" aria-hidden="true" fetchpriority="high" decoding="async"
-                    x-data="{ loaded: false }" x-init="loaded = $el.complete" x-on:load="loaded = true"
-                    x-bind:class="loaded ? 'opacity-100' : 'opacity-0'"
-                    class="absolute inset-0 size-full object-cover transition-opacity duration-700" />
-            </picture>
-            <div class="absolute inset-0 bg-zinc-900/60"></div>
-        @endif
-
-        <div class="shell relative z-10">
-            <h1 class="text-xl font-semibold tracking-tight sm:text-2xl {{ $banner ? 'text-white' : 'text-ink' }}">
+    <div class="pt-3 sm:pt-4">
+        <div class="shell">
+            <h1 class="text-xl font-semibold tracking-tight text-ink sm:text-2xl">
                 {{ $category->name }}
             </h1>
             @if ($category->description)
-                <p class="mt-2 max-w-xl text-sm {{ $banner ? 'text-white/75' : 'text-ink-3' }}">
+                <p class="mt-2 max-w-3xl text-sm text-ink-3">
                     {{ $category->description }}
                 </p>
             @endif

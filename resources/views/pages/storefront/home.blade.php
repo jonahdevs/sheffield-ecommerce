@@ -39,7 +39,7 @@ new #[Layout('layouts::storefront')] #[Title('Commercial Kitchen, Cold Room, Lau
         TwitterCard::setDescription($description);
         JsonLdMulti::setDescription($description)->setType('Organization');
 
-        $this->featuredProductIds = Product::query()->visibleInCatalog()->published()->where('stock_status', StockStatus::IN_STOCK)->whereNotNull('price')->where('price', '>', 0)->inRandomOrder()->take(6)->pluck('id')->toArray();
+        $this->featuredProductIds = Product::query()->visibleInCatalog()->published()->where('stock_status', StockStatus::IN_STOCK)->whereNotNull('price')->where('price', '>', 0)->inRandomOrder()->take(12)->pluck('id')->toArray();
     }
 
     /**
@@ -98,7 +98,10 @@ new #[Layout('layouts::storefront')] #[Title('Commercial Kitchen, Cold Room, Lau
     #[Computed]
     public function featuredProducts(): Collection
     {
-        // Curated: products staff have tagged "Featured", ordered by sort_order.
+        // Curated: products staff have tagged "Featured", ordered by the position
+        // staff gave them on admin/tags/{tag}/products - taggables.sort_order, not
+        // the product's own sort_order column (that's shared across every tag a
+        // product carries, so it can't hold a per-tag order).
         $featured = Product::query()
             ->forCard()
             ->visibleInCatalog()
@@ -106,9 +109,13 @@ new #[Layout('layouts::storefront')] #[Title('Commercial Kitchen, Cold Room, Lau
             ->where('stock_status', StockStatus::IN_STOCK)
             ->whereNotNull('price')
             ->where('price', '>', 0)
-            ->whereHas('tags', fn($t) => $t->where('name->' . config('app.locale', 'en'), 'Featured'))
-            ->orderBy('sort_order')
-            ->take(6)
+            ->join('taggables', fn($join) => $join->on('taggables.taggable_id', '=', 'products.id')
+                ->where('taggables.taggable_type', Product::class))
+            ->join('tags', 'tags.id', '=', 'taggables.tag_id')
+            ->where('tags.name->' . config('app.locale', 'en'), 'Featured')
+            ->orderBy('taggables.sort_order')
+            ->select('products.*')
+            ->take(12)
             ->get();
 
         if ($featured->isNotEmpty()) {
@@ -648,8 +655,8 @@ new #[Layout('layouts::storefront')] #[Title('Commercial Kitchen, Cold Room, Lau
     {{-- Featured products --}}
     <section class="shell pt-8 md:pt-14 @container">
         <div class="mb-4 flex items-baseline justify-between">
-            <h2 class="text-lg font-semibold tracking-tight @md:text-2xl">Featured equipment</h2>
-            <a href="{{ route('catalog') }}?tag=Featured" wire:navigate
+            <h2 class="text-lg font-semibold tracking-tight @md:text-2xl">You may also like</h2>
+            <a href="{{ route('catalog') }}" wire:navigate
                 class="text-sm font-medium text-brand-500 underline transition-colors hover:text-brand-600">
                 View all
             </a>

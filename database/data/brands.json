@@ -838,5 +838,149 @@
     "logo": null,
     "website_url": null,
     "is_active": true
+  },
+  {
+    "slug": "kayalar",
+    "name": "Kayalar",
+    "description": "Kayaplas Kayalar Plastik of Istanbul, maker of the EURORACKS line of dishwasher and glass racks and plastic catering ware.",
+    "logo": null,
+    "website_url": "https://www.kayaplas.com.tr",
+    "is_active": true
+  },
+  {
+    "slug": "sheffield-redline",
+    "name": "Sheffield Redline",
+    "description": "Sheffield house label applied to catering equipment sourced through H-Kitchen (Hangzhou Kator). Companion line to HK-Redline.",
+    "logo": null,
+    "website_url": null,
+    "is_active": true
+  },
+  {
+    "slug": "wanhui",
+    "name": "Wanhui",
+    "description": "Wanhui Industrial (China) Limited of Jiangmen, Guangdong. Chafing dishes, gastronorm pans, commercial cookware, service trolleys and buffet equipment.",
+    "logo": null,
+    "website_url": "http://www.whkitchenware.com/",
+    "is_active": true
+  },
+  {
+    "slug": "geneva",
+    "name": "Geneva",
+    "description": "Supplier label carried on stainless pressure cookers and catering smallwares.",
+    "logo": null,
+    "website_url": null,
+    "is_active": true
+  },
+  {
+    "slug": "lincat",
+    "name": "Lincat",
+    "description": "Lincat is a British manufacturer of commercial catering equipment, based in Lincoln, England.",
+    "logo": null,
+    "website_url": "https://www.lincat.co.uk",
+    "is_active": true
+  },
+  {
+    "slug": "bravilor",
+    "name": "Bravilor",
+    "description": "Bravilor Bonamat is a Dutch manufacturer of professional coffee brewing equipment.",
+    "logo": null,
+    "website_url": "https://www.bravilor.com",
+    "is_active": true
+  },
+  {
+    "slug": "fimar-group",
+    "name": "Fimar Group",
+    "description": "Fimar S.p.A. is an Italian manufacturer of food preparation machinery for professional kitchens.",
+    "logo": null,
+    "website_url": "https://www.fimarspa.it",
+    "is_active": true
+  },
+  {
+    "slug": "nisbet",
+    "name": "Nisbet",
+    "description": "Nisbets is a catering equipment distributor rather than a manufacturer; goods carried under this label are made by third parties.",
+    "logo": null,
+    "website_url": "https://www.nisbets.co.uk",
+    "is_active": true
+  },
+  {
+    "slug": "hy",
+    "name": "HY",
+    "description": "Model-code prefix carried on OEM Sheffield buffet equipment. Retained as a label for goods whose manufacturer is not recorded.",
+    "logo": null,
+    "website_url": null,
+    "is_active": true
+  },
+  {
+    "slug": "foshan",
+    "name": "Foshan",
+    "description": "Origin label. Foshan is a manufacturing city in Guangdong, China; the manufacturer of these goods is not separately recorded.",
+    "logo": null,
+    "website_url": null,
+    "is_active": true
+  },
+  {
+    "slug": "jangmen",
+    "name": "Jangmen",
+    "description": "Origin label for goods from Jiangmen, Guangdong, China. The manufacturer is not separately recorded.",
+    "logo": null,
+    "website_url": null,
+    "is_active": true
+  },
+  {
+    "slug": "guangdong-perfect",
+    "name": "Guangdong Perfect",
+    "description": "Supplier label for goods from Guangdong, China. The manufacturer is not separately recorded.",
+    "logo": null,
+    "website_url": null,
+    "is_active": true
+  },
+  {
+    "slug": "oucboll",
+    "name": "Oucboll",
+    "description": "Supplier label carried on imported catering equipment. No manufacturer of this name has been identified.",
+    "logo": null,
+    "website_url": null,
+    "is_active": true
+  },
+  {
+    "slug": "grachoo",
+    "name": "Grachoo",
+    "description": "Supplier label carried on imported catering equipment. No manufacturer of this name has been identified.",
+    "logo": null,
+    "website_url": null,
+    "is_active": true
+  },
+  {
+    "slug": "andyman",
+    "name": "Andyman",
+    "description": "Supplier label carried on imported cookware. No manufacturer of this name has been identified.",
+    "logo": null,
+    "website_url": null,
+    "is_active": true
+  },
+  {
+    "slug": "shineho",
+    "name": "Shineho",
+    "description": "Supplier label carried on imported catering equipment. No manufacturer of this name has been identified.",
+    "logo": null,
+    "website_url": null,
+    "is_active": true
+  },
+  {
+    "slug": "maysin",
+    "name": "Maysin",
+    "description": "Supplier label carried on imported catering equipment. No manufacturer of this name has been identified.",
+    "logo": null,
+    "website_url": null,
+    "is_active": true
+  },
+  {
+    "slug": "kingma",
+    "name": "Kingma",
+    "description": "Supplier label carried on imported catering equipment. No manufacturer of this name has been identified.",
+    "logo": null,
+    "website_url": null,
+    "is_active": true
   }
 ]

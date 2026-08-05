@@ -191,6 +191,8 @@ new #[Layout('layouts::app')] #[Title('Tags | Admin')] class extends Component {
                         <flux:table.cell align="end" class="tabular-nums text-zinc-500">{{ $tag->items_count }}</flux:table.cell>
                         <flux:table.cell align="end">
                             <div class="flex items-center justify-end gap-1">
+                                <flux:button size="xs" variant="ghost" icon="squares-2x2" tooltip="Manage products"
+                                    :href="route('admin.tags.products', $tag)" wire:navigate />
                                 <flux:button size="xs" variant="ghost" icon="pencil-square" wire:click="openEdit({{ $tag->id }})" />
                                 <flux:button size="xs" variant="ghost" icon="trash-2"
                                     wire:click="delete({{ $tag->id }})"

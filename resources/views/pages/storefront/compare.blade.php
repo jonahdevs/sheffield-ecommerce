@@ -257,6 +257,7 @@ new #[Layout('layouts::storefront')] #[Title('Compare')] class extends Component
                         @foreach ($this->products as $product)
                             <td wire:key="remove-{{ $product->slug }}" class="border-l border-zinc-200 px-4 py-3 text-center align-top">
                                 <flux:button variant="ghost" size="sm" icon="trash-2"
+                                    class="text-red-600 hover:text-red-700 dark:text-red-500 dark:hover:text-red-400"
                                     wire:click="remove('{{ $product->slug }}')" aria-label="Remove from compare" />
                             </td>
                         @endforeach

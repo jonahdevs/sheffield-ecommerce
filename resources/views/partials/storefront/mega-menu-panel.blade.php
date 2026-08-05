@@ -26,7 +26,7 @@
     </a>
 
     {{-- Children grid (right) --}}
-    <div class="col-span-7">
+    <div class="col-span-7 max-h-84 overflow-y-auto pr-1 scrollbar-thin">
         <div class="grid grid-cols-6 gap-2">
             @foreach ($children as $child)
                 <a href="{{ route('category.show', $child) }}" wire:navigate

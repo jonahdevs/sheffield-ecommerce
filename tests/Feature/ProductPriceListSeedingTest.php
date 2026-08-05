@@ -32,14 +32,29 @@ it('seeds each product with the status, price and default variant from products.
     // ProductSeeder to attach, and every variant seeds with no variation axis at all.
     $this->seed([BrandSeeder::class, CategorySeeder::class, AttributeSeeder::class, ProductSeeder::class]);
 
-    Product::query()->get(['sku', 'status', 'price', 'name', 'type'])->each(function (Product $product) use ($expected, $expectedParentsByName) {
+    // ProductSeeder demotes a row products.json marked published to draft when it has
+    // no price and isn't quote-only (see hasSellablePrice()) - a published listing
+    // with no price and no quote path is unbuyable, not a legitimate storefront state.
+    // Their status therefore diverges from the source row on purpose.
+    $unpricedNonQuoteSkus = collect($items)
+        ->reject(fn ($i) => (bool) ($i['requires_quotation'] ?? false))
+        ->filter(fn ($i) => ($i['status'] ?? null) === 'published')
+        ->filter(fn ($i) => empty($i['price']) || (float) $i['price'] <= 0)
+        ->pluck('sku')
+        ->all();
+
+    Product::query()->get(['sku', 'status', 'price', 'name', 'type'])->each(function (Product $product) use ($expected, $expectedParentsByName, $unpricedNonQuoteSkus) {
         $item = $product->sku !== null
             ? $expected->get($product->sku)
             : $expectedParentsByName->get($product->name);
 
         expect($item)->not->toBeNull("No source row for {$product->name} ({$product->sku})");
 
-        expect($product->status->value)->toBe($item['status'])
+        $expectedStatus = in_array($product->sku, $unpricedNonQuoteSkus, true)
+            ? ProductStatus::DRAFT->value
+            : $item['status'];
+
+        expect($product->status->value)->toBe($expectedStatus)
             ->and($product->price)->toBe(
                 $item['price'] === null ? null : (int) round(((float) $item['price']) * 100)
             );
@@ -91,38 +106,55 @@ it('seeds each product with the status, price and default variant from products.
 
     $variableProducts->each(function (Product $product) {
         // A variable parent owns no SKU - its variants carry the real ones. The
-        // products.json "GROUP/..." value is only an internal join key and must
-        // never be persisted as the product's SKU.
+        // parent's products.json value is only an internal join key and must never
+        // be persisted as the product's SKU.
         expect($product->sku)->toBeNull("{$product->name} persisted a parent SKU");
 
         expect($product->default_variant_id)->not->toBeNull();
 
         $default = $product->variants->firstWhere('id', $product->default_variant_id);
 
-        expect($default)->not->toBeNull()
-            ->and($default->stock_status)->toBe(StockStatus::IN_STOCK);
+        expect($default)->not->toBeNull();
+
+        // Open on a variant the customer can actually buy - but only when one exists.
+        // A product whose every variant is out of stock (Pradeep's electric catering
+        // urn: all four are 0 in SAP) has no in-stock default to choose, so requiring
+        // one asserts something unsatisfiable rather than catching a bad default.
+        $anyInStock = $product->variants
+            ->contains(fn ($variant) => $variant->stock_status === StockStatus::IN_STOCK);
+
+        if ($anyInStock) {
+            expect($default->stock_status)->toBe(
+                StockStatus::IN_STOCK,
+                "{$product->name} defaults to an out-of-stock variant while another is in stock"
+            );
+        }
     });
 
-    // No product row anywhere carries a leaked GROUP/... join key as its SKU.
-    expect(Product::where('sku', 'like', 'GROUP/%')->count())->toBe(0);
+    // No parent leaks its join key as a SKU. The key used to be a "GROUP/..." string,
+    // which was obvious when it leaked; it is now the default variant's article number,
+    // which would look plausible on a page, so assert the invariant directly.
+    expect(Product::where('type', ProductType::VARIABLE)->whereNotNull('sku')->count())->toBe(0);
 
     // The GN-size ranges are each one variable product, and every size carries its
     // own photo - they look different, so a shared parent image would misrepresent
     // them. Sizes that used to be standalone products must be gone.
+    // Keyed by the parent's products.json join key, which is its default variant's
+    // article number - the parent itself persists no SKU.
     $ranges = [
-        'GROUP/ROASTING-BAKING-TRAY' => ['IMG/OVE/00060' => '23-gn', 'IMG/OVE/00058' => '11-gn', 'IMG/OVE/00059' => '21-gn'],
-        'GROUP/MULTIBAKER' => ['IMG/OVE/00049' => '13-gn', 'IMG/OVE/00048' => '23-gn', 'IMG/OVE/00047' => '11-gn'],
-        'GROUP/CROSS-N-STRIPE-GRILL' => ['IMG/OVE/00028' => '23-gn', 'IMG/OVE/00029' => '11-gn'],
+        'IMG/OVE/00058' => ['IMG/OVE/00060' => '23-gn', 'IMG/OVE/00058' => '11-gn', 'IMG/OVE/00059' => '21-gn'],
+        'IMG/OVE/00047' => ['IMG/OVE/00049' => '13-gn', 'IMG/OVE/00048' => '23-gn', 'IMG/OVE/00047' => '11-gn'],
+        'IMG/OVE/00028' => ['IMG/OVE/00028' => '23-gn', 'IMG/OVE/00029' => '11-gn'],
         // Bakery standard is not a GN fraction, but it shares the size axis because
         // it is the other footprint this tray is sold in.
-        'GROUP/PERFORATED-BAKING-TRAY' => ['IMG/OVE/00051' => '11-gn', 'IMG/OVE/00050' => 'bakery-standard'],
-        'GROUP/COMBI-FRY' => ['IMG/OVE/00025' => '23-gn', 'IMG/OVE/00024' => '11-gn'],
-        'GROUP/GRILLING-PIZZA-TRAY' => ['IMG/OVE/00039' => '23-gn', 'IMG/OVE/00038' => '11-gn'],
+        'IMG/OVE/00051' => ['IMG/OVE/00051' => '11-gn', 'IMG/OVE/00050' => 'bakery-standard'],
+        'IMG/OVE/00024' => ['IMG/OVE/00025' => '23-gn', 'IMG/OVE/00024' => '11-gn'],
+        'IMG/OVE/00038' => ['IMG/OVE/00039' => '23-gn', 'IMG/OVE/00038' => '11-gn'],
         // Both spikes are 1/1 GN; they vary by how many birds they hold, not footprint.
-        'GROUP/CHICKEN-SUPER-SPIKE' => ['IMG/OVE/00021' => '8-birds', 'IMG/OVE/00022' => '10-birds'],
+        'IMG/OVE/00022' => ['IMG/OVE/00021' => '8-birds', 'IMG/OVE/00022' => '10-birds'],
         // The LAR tabletop blenders vary by cup volume. The 25 L is deliberately not
         // here: it is floor-standing with a tilting cup, not a bigger tabletop unit.
-        'GROUP/BLENDER-KITCHEN-SS' => [
+        'IMG/FPR/00034' => [
             'IMG/FPR/00033' => '3-litres',
             'IMG/FPR/00034' => '4-litres',
             'IMG/FPR/00036' => '8-litres',
@@ -130,8 +162,8 @@ it('seeds each product with the status, price and default variant from products.
         ],
     ];
 
-    // Parents no longer persist their GROUP/... key as a SKU, so they are found by
-    // the name carried on that source row rather than by the (now null) parent SKU.
+    // Parents do not persist their join key as a SKU, so they are found by the name
+    // carried on that source row rather than by the (now null) parent SKU.
     $parentQuery = function (string $groupSku) use ($items) {
         $name = collect($items)->firstWhere('sku', $groupSku)['name'];
 
@@ -167,16 +199,19 @@ it('seeds each product with the status, price and default variant from products.
         return $parent->variants->firstWhere('id', $parent->default_variant_id)?->sku;
     };
 
-    expect($defaultSku('GROUP/MULTIBAKER'))->toBe('IMG/OVE/00047')
-        ->and($defaultSku('GROUP/CROSS-N-STRIPE-GRILL'))->toBe('IMG/OVE/00029')
-        ->and($defaultSku('GROUP/ROASTING-BAKING-TRAY'))->toBe('IMG/OVE/00058')
-        ->and($defaultSku('GROUP/GRANITE-ENAMELED'))->toBe('IMG/OVE/00031')
-        ->and($defaultSku('GROUP/COMBI-FRY'))->toBe('IMG/OVE/00024')
-        ->and($defaultSku('GROUP/CHICKEN-SUPER-SPIKE'))->toBe('IMG/OVE/00022');
+    // Cross N Stripe opens on 00028, not the 00029 it used to: SAP put 00029 to zero
+    // stock, and a range should not open on a size the customer cannot buy while its
+    // sibling is available.
+    expect($defaultSku('IMG/OVE/00047'))->toBe('IMG/OVE/00047')
+        ->and($defaultSku('IMG/OVE/00028'))->toBe('IMG/OVE/00028')
+        ->and($defaultSku('IMG/OVE/00058'))->toBe('IMG/OVE/00058')
+        ->and($defaultSku('IMG/OVE/00031'))->toBe('IMG/OVE/00031')
+        ->and($defaultSku('IMG/OVE/00024'))->toBe('IMG/OVE/00024')
+        ->and($defaultSku('IMG/OVE/00022'))->toBe('IMG/OVE/00022');
 
     // The granite-enameled container varies on two axes at once, so each variant
     // must carry a value for both - a variant missing one can never be selected.
-    $granite = $parentQuery('GROUP/GRANITE-ENAMELED')
+    $granite = $parentQuery('IMG/OVE/00031')
         ->with(['variants.attributeValues.attribute', 'productAttributes.attribute'])
         ->first();
 

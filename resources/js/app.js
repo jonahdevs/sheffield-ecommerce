@@ -57,6 +57,7 @@ document.addEventListener('alpine:init', () => {
         height: 0,
         sensitivity: 10, // px of movement per sample below which the pointer counts as "settled"
         pollInterval: 90, // ms between hover-intent samples
+        switchDelay: 200, // ms a pointer must stay on a trigger before the open panel switches to it
         _front: 0, // which of the two layers is currently showing
         _cache: {},
         _intentTimer: null,
@@ -68,6 +69,8 @@ document.addEventListener('alpine:init', () => {
         _reqId: 0,
         _lastX: null,
         _closeTimer: null,
+        _switchTimer: null,
+        _activeRow: null, // viewport y of the row the open panel was triggered from
 
         // Keep the latest pointer position (bound to the nav's mousemove) so
         // hover-intent can measure the cursor's speed.
@@ -79,18 +82,29 @@ document.addEventListener('alpine:init', () => {
         // Pointer entered a trigger. Rather than a fixed dwell timer (which still
         // fires if the cursor merely slows while sweeping across), watch the
         // pointer's speed: only open once it actually settles on the trigger - so
-        // passing the cursor through the bar never pops the menu open. Once the
-        // menu is already open, switching between triggers stays instant.
+        // passing the cursor through the bar never pops the menu open.
+        //
+        // Switching while the menu is already open uses two different guards
+        // depending on direction, because a sideways move and a downward one fail
+        // differently: sideways/up (row <= _activeRow) only needs switchDelay, since
+        // the pointer is over triggers the whole time. Down into a lower row still
+        // needs the stricter settle test - the panel sits below the grid, so reaching
+        // it means sweeping through the trigger underneath, and a pointer easing
+        // downward can linger there without meaning to open it.
         hover(event, id, url) {
             this.cancelClose();
 
-            if (this.isOpen) {
-                this._open(id, url, this._pointerX(event));
+            const x = this._pointerX(event);
+            const row = this._rowOf(event);
+
+            if (this.isOpen && (this._activeRow === null || row <= this._activeRow)) {
+                clearTimeout(this._switchTimer);
+                this._switchTimer = setTimeout(() => this._open(id, url, x, row), this.switchDelay);
 
                 return;
             }
 
-            this._pending = { id, url, x: this._pointerX(event) };
+            this._pending = { id, url, x, row };
             this._px = this._cx = event.clientX;
             this._py = this._cy = event.clientY;
 
@@ -108,9 +122,9 @@ document.addEventListener('alpine:init', () => {
             const moved = Math.abs(this._px - this._cx) + Math.abs(this._py - this._cy);
 
             if (moved < this.sensitivity) {
-                const { id, url, x } = this._pending;
+                const { id, url, x, row } = this._pending;
                 this.cancelOpen();
-                this._open(id, url, x);
+                this._open(id, url, x, row);
             } else {
                 // Still moving - take a fresh sample and keep waiting.
                 this._cx = this._px;
@@ -159,7 +173,7 @@ document.addEventListener('alpine:init', () => {
         // Keyboard focus is deliberate - open immediately, no dwell.
         focus(event, id, url) {
             this.cancelClose();
-            this._open(id, url, this._pointerX(event));
+            this._open(id, url, this._pointerX(event), this._rowOf(event));
         },
 
         _pointerX(event) {
@@ -168,8 +182,17 @@ document.addEventListener('alpine:init', () => {
             return rect.left + rect.width / 2;
         },
 
-        _open(id, url, x) {
+        // Which grid row a trigger sits on, as its viewport y. Cells in a row share a
+        // top, and the bar is only ever two rows deep, so comparing tops is enough to
+        // tell "along the bar" from "down towards the panel". Rounded because
+        // sub-pixel layout can leave siblings a fraction apart.
+        _rowOf(event) {
+            return Math.round(event.currentTarget.getBoundingClientRect().top);
+        },
+
+        _open(id, url, x, row = null) {
             this.cancelOpen();
+            this._activeRow = row;
 
             // Direction follows the pointer's actual horizontal position, not the
             // trigger's index - the trigger bar wraps onto two rows, so index order
@@ -265,10 +288,12 @@ document.addEventListener('alpine:init', () => {
             this._front = incoming;
         },
 
-        // Leaving a trigger before the pointer settles abandons the pending open -
-        // it never closes an already-open menu (that's the nav-level handler).
+        // Leaving a trigger before the pointer settles (or before the switch dwell
+        // elapses) abandons the pending open - it never closes an already-open menu
+        // (that's the nav-level handler).
         cancelOpen() {
             clearInterval(this._intentTimer);
+            clearTimeout(this._switchTimer);
             this._pending = null;
         },
 
@@ -287,6 +312,7 @@ document.addEventListener('alpine:init', () => {
             this.cancelOpen();
             this.cancelClose();
             this.isOpen = false;
+            this._activeRow = null;
         },
     }));
 });

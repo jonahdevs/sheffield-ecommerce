@@ -55,6 +55,7 @@ Route::middleware(['auth', 'verified', EnsureTwoFactorWhenRequired::class, 'staf
 
         Route::middleware('permission:tags.manage')->group(function () {
             Route::livewire('/tags', 'pages::admin.tags.index')->name('tags.index');
+            Route::livewire('/tags/{tag}/products', 'pages::admin.tags.products')->name('tags.products');
         });
 
         // ── Orders ───────────────────────────────────────────────────────────

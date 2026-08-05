@@ -6,13 +6,15 @@ use Artesaos\SEOTools\Facades\JsonLdMulti;
 use Artesaos\SEOTools\Facades\OpenGraph;
 use Artesaos\SEOTools\Facades\SEOMeta;
 use Artesaos\SEOTools\Facades\TwitterCard;
-use Illuminate\Support\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
 new #[Layout('layouts::storefront')] #[Title('All Categories')] class extends Component {
+    public int $perPage = 24;
+
     public function mount(): void
     {
         $description = 'Browse Sheffield Africa\'s full range of commercial equipment - kitchen, cold room, laundry and healthcare. Find the right category and explore our products.';
@@ -23,16 +25,21 @@ new #[Layout('layouts::storefront')] #[Title('All Categories')] class extends Co
         JsonLdMulti::setType('CollectionPage')->setTitle('All Categories')->setDescription($description);
     }
 
-    /** @return Collection<int, Category> */
     #[Computed]
-    public function categories(): Collection
+    public function categories(): LengthAwarePaginator
     {
         return Category::with('media')
             ->withCount(['products' => fn($q) => $q->published()->visibleInCatalog()])
             ->where('status', CategoryStatus::ACTIVE)
             ->orderBy('sort_order')
             ->orderBy('name')
-            ->get();
+            ->paginate($this->perPage);
+    }
+
+    public function loadMore(): void
+    {
+        $this->perPage += 12;
+        unset($this->categories);
     }
 }; ?>
 
@@ -97,6 +104,15 @@ new #[Layout('layouts::storefront')] #[Title('All Categories')] class extends Co
                     </a>
                 @endforeach
             </div>
+
+            @if ($this->categories->hasMorePages())
+                <div class="mt-10 flex justify-center">
+                    <flux:button variant="customer-outline" size="customer" wire:click="loadMore"
+                        wire:loading.attr="disabled" wire:target="loadMore">
+                        Load more
+                    </flux:button>
+                </div>
+            @endif
         @endif
 
     </div>

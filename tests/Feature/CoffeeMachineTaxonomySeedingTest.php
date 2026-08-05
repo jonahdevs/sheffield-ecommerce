@@ -1,6 +1,7 @@
 <?php
 
 use App\Enums\CategorySection;
+use App\Enums\ProductStatus;
 use App\Models\Brand;
 use App\Models\Category;
 use App\Models\CategoryPlacement;
@@ -10,6 +11,7 @@ use Database\Seeders\AttributeSeeder;
 use Database\Seeders\BrandSeeder;
 use Database\Seeders\CategorySeeder;
 use Database\Seeders\ProductSeeder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Str;
 
 /**
@@ -56,13 +58,17 @@ it('seeds the coffee taxonomy from the final e-commerce listing', function () {
 
     $countIn = fn (string $name) => Product::where('primary_category_id', $childId($name))->count();
 
+    // Brewers and servery run past the workbook's own rows: the taxonomy restructure
+    // pulled the five filter brewers and three servery items that had been parked in
+    // Beverage Equipment into the coffee tree where they belong (see
+    // COFFEE_TAXONOMY_LATE_ARRIVALS).
     expect($countIn('Semi Automatic'))->toBe(7)
         ->and($countIn('Coffee Grinders'))->toBe(4)
         ->and($countIn('Semi Automatic Accessories'))->toBe(3)
         ->and($countIn('Automatic'))->toBe(7)
         ->and($countIn('Automatic Accessories'))->toBe(2)
-        ->and($countIn('Coffee Brewers'))->toBe(10)
-        ->and($countIn('Coffee Servery'))->toBe(4);
+        ->and($countIn('Coffee Brewers'))->toBe(15)
+        ->and($countIn('Coffee Servery'))->toBe(7);
 
     // The workbook reuses one "COFFEE MACHINE ACCESSORIES" label twice; the block
     // is split by whichever machine type it follows.
@@ -125,7 +131,7 @@ it('seeds the coffee taxonomy from the final e-commerce listing', function () {
 
     // The workbook mistypes the CREM decanter's item number as IMG/COF/00001; its
     // real SKU is IMG/COF/00008. The Berjaya water urn that actually owns
-    // IMG/COF/00001 must be left alone, in Beverage Equipment.
+    // IMG/COF/00001 must be left alone, under Beverage Machines.
     $decanter = Product::where('sku', 'IMG/COF/00008')->sole();
 
     expect($decanter->name)->toBe('Decanter 1.8 Litres CREM')
@@ -139,7 +145,7 @@ it('seeds the coffee taxonomy from the final e-commerce listing', function () {
         ->sole();
 
     expect($waterUrn->brand->name)->toBe('Berjaya')
-        ->and($waterUrn->primaryCategory->name)->toBe('Beverage Equipment')
+        ->and($waterUrn->primaryCategory->name)->toBe('Water Boilers & Urns')
         ->and($waterUrn->variants()->where('sku', 'IMG/COF/00001')->exists())->toBeTrue();
 
     // Every coffee product now drills into a machine type, grinder, brewer, servery or
@@ -148,21 +154,87 @@ it('seeds the coffee taxonomy from the final e-commerce listing', function () {
 
     assertWaterTreatmentSitsUnderHygiene();
 
-    // Coffee Machines leads the navbar, and its five active children make it a
-    // mega-menu trigger rather than a plain link.
+    // Coffee Machines sits in the navbar, and its five active children make it a
+    // mega-menu trigger rather than a plain link. Refrigeration leads the bar - the
+    // departments are ordered by how much of the catalogue they carry.
     $navbar = CategoryPlacement::query()
         ->where('location', CategorySection::NAVBAR)
         ->orderBy('sort_order')
-        ->first();
+        ->get();
 
-    expect($navbar->category_id)->toBe($parent->id)
-        ->and($navbar->sort_order)->toBe(1);
+    expect($navbar->first()->category->name)->toBe('Refrigeration')
+        ->and($navbar->firstWhere('category_id', $parent->id))->not->toBeNull()
+        // The grid is a 6x2 cap, so anything past twelve would never render.
+        ->and($navbar->count())->toBeLessThanOrEqual(12);
 
+    assertDepartmentsHoldTheWholeCatalogue();
+    assertUnpricedProductsAreNotPublished();
     assertSpecificationsRenderAsTables();
     assertCoffeeDescriptionsSplitFromSeoCopy();
     assertCoffeeImagesFollowTheNamingConvention();
     assertRoastingTraysAreGroupedByGnSize();
 });
+
+/**
+ * Coffee Machines was the first category to get a real hierarchy; the rest of the
+ * catalogue followed, modelled on the main website's KITCHEN groups. The top level is
+ * now seventeen departments rather than thirty loose categories, and every product
+ * hangs off a leaf so no department page is just an undifferentiated pile.
+ *
+ * Folded into the seeding test above because seeding the catalogue is slow.
+ */
+function assertDepartmentsHoldTheWholeCatalogue(): void
+{
+    $departments = Category::whereNull('parent_id')->orderBy('sort_order')->get();
+
+    expect($departments->pluck('name')->all())->toBe([
+        'Refrigeration',
+        'Cooking Equipment',
+        'Ovens',
+        'Displays',
+        'Food Preparation',
+        'Buffet & Servery',
+        'Coffee Machines',
+        'Beverage Machines',
+        'Juice Processors',
+        'Bakery Preparation',
+        'Dishwashers',
+        'Kitchen Smalls',
+        'Ice & Ice Cream Machines',
+        'Hygiene',
+        'Storage & Food Transport',
+        'Rational Combi Steamers',
+        'Floor Care & Cleaning',
+    ]);
+
+    // Every department drills down, and nothing is parked on a department itself -
+    // a product filed on the parent would be invisible to the sub-category pages.
+    expect($departments->every(fn (Category $d) => $d->children()->exists()))->toBeTrue()
+        ->and(Product::whereIn('primary_category_id', $departments->pluck('id'))->count())->toBe(0);
+
+    // No sub-category seeds empty, otherwise the mega menu offers a dead end.
+    $childless = Category::whereNotNull('parent_id')
+        ->whereDoesntHave('children')
+        ->withCount('primaryProducts')
+        ->get()
+        ->where('primary_products_count', 0);
+
+    expect($childless->pluck('name')->all())->toBe([]);
+
+    $depth = fn (string $name) => Category::where('name', $name)->sole()
+        ->primaryProducts()->count();
+
+    // Spot checks across the reshuffles: the old Burners/Fryers/Fast Food/Induction
+    // Cookers top-levels folded into Cooking Equipment, and the four display
+    // categories folded into Displays.
+    expect($depth('Cooking Ranges'))->toBe(9)
+        ->and($depth('Fryers'))->toBe(21)
+        ->and($depth('Induction Cookers'))->toBe(16)
+        ->and($depth('Counter Chillers'))->toBe(14)
+        ->and($depth('GN Containers & Lids'))->toBe(33)
+        ->and($depth('Chafing Dishes'))->toBe(28)
+        ->and($depth('Dishwasher Racks'))->toBe(23);
+}
 
 /**
  * The three separate Roasting and Baking Tray listings (1/1, 2/1, 2/3 GN) are the
@@ -236,7 +308,7 @@ function assertRoastingTraysAreGroupedByGnSize(): void
 function assertWaterTreatmentSitsUnderHygiene(): void
 {
     $hygiene = Category::whereNull('parent_id')->where('slug', 'hygiene')->sole();
-    $softeners = Category::where('slug', 'water-softeners')->sole();
+    $softeners = Category::where('slug', 'water-softeners-filtration')->sole();
 
     expect($softeners->parent_id)->toBe($hygiene->id);
 
@@ -295,8 +367,12 @@ function assertSpecificationsRenderAsTables(): void
     // colon-less "Length 205mm" still folds into the Dimensions row.
     expect(Product::where('sku', 'IMG/COF/00104')->value('technical_specification'))
         ->toContain('<tr><td><strong>Weight</strong></td><td>6 kg</td></tr>')
+        // The enrichment pass relabelled this row's axes to W × D × H (205mm is the
+        // brewer's narrow face, not its depth). Only five IMG/COF rows carry that
+        // label against seventeen still on L × W × H, so the catalogue-wide axis
+        // question is still open - this asserts the row as it actually ships.
         ->and(Product::where('sku', 'IMG/COF/00139')->value('technical_specification'))
-        ->toContain('<tr><td><strong>Dimensions (L × W × H)</strong></td><td>205 × 405 × 455 mm</td></tr>')
+        ->toContain('<tr><td><strong>Dimensions (W × D × H)</strong></td><td>205 × 405 × 455 mm</td></tr>')
         ->toContain('<tr><td><strong>Housing Material</strong></td><td>Stainless Steel</td></tr>');
 
     // "Length (Depth)" is still the length axis, so the Kryo 65 OD gets all three.
@@ -320,6 +396,86 @@ function assertSpecificationsRenderAsTables(): void
 }
 
 /**
+ * A published product with no price renders a blank price on the card and the PDP and
+ * adds to cart at zero, so ProductSeeder holds those rows back as drafts however the
+ * price list stamped them. Three rows in the current catalogue are caught this way -
+ * two Santos juice dispensers and a Grachoo wash basin.
+ *
+ * Quote-only rows are the deliberate exception: five Blueline counter units are
+ * published with no price on purpose, because requires_quotation routes them to
+ * "Request a quote" instead of a price - the guard leaves those alone.
+ *
+ * The guard also treats a variable parent as priced when any variant is, since such a
+ * parent need not carry a price of its own. Every variable row in the catalogue happens
+ * to carry one today, so that branch is a guard against future data rather than
+ * something this fixture exercises.
+ *
+ * Folded into the seeding test above because seeding the catalogue is slow.
+ */
+function assertUnpricedProductsAreNotPublished(): void
+{
+    $unpriced = Product::query()
+        ->where('status', ProductStatus::PUBLISHED)
+        ->where('requires_quotation', false)
+        ->where(fn ($query) => $query->whereNull('price')->orWhere('price', '<=', 0))
+        ->whereDoesntHave('variants', fn ($query) => $query->where('price', '>', 0))
+        ->orderBy('sku')
+        ->pluck('sku')
+        ->all();
+
+    expect($unpriced)->toBe([]);
+
+    // The guard demotes rather than drops - the rows still seed, just as drafts, so
+    // staff can price them in admin and publish without re-importing.
+    $held = Product::whereIn('sku', ['IMG/BUF/00151', 'IMG/BUF/00152', 'IMG/HYS/00283'])->get();
+
+    expect($held)->toHaveCount(3)
+        ->and($held->every(fn (Product $p) => $p->status === ProductStatus::DRAFT))->toBeTrue();
+
+    // The quote-only counter units keep the published status products.json stamped -
+    // requires_quotation is what makes an unpriced listing legitimate, not an
+    // afterthought the guard should override.
+    $quoteOnly = Product::whereIn('sku', [
+        'IMG/REF/00217', 'IMG/REF/00218', 'IMG/REF/00219', 'IMG/REF/00231', 'IMG/REF/00232',
+    ])->get();
+
+    expect($quoteOnly)->toHaveCount(5)
+        ->and($quoteOnly->every(fn (Product $p) => $p->status === ProductStatus::PUBLISHED))->toBeTrue()
+        ->and($quoteOnly->every(fn (Product $p) => $p->requires_quotation))->toBeTrue();
+}
+
+/**
+ * The five filter brewers and three servery items that the category restructure lifted
+ * out of Beverage Equipment and into the coffee tree. They belong there - a Bravilor
+ * batch brewer is not "beverage equipment" while a Coffee Brewers category exists - but
+ * they are not workbook rows, so the workbook-derived copy and photography assertions
+ * below are scoped past them.
+ *
+ * @var list<string>
+ */
+const COFFEE_TAXONOMY_LATE_ARRIVALS = [
+    'IMG/COF/00004', 'IMG/COF/00006', 'IMG/COF/00007', 'IMG/COF/00012',
+    'IMG/COF/00013', 'IMG/COF/00111', 'IMG/COF/00137', 'IMG/COF/00138',
+];
+
+/**
+ * The 37 products the coffee workbook itself lists, i.e. everything in the coffee tree
+ * minus the late arrivals above.
+ *
+ * @return Collection<int, Product>
+ */
+function workbookCoffeeProducts(): Collection
+{
+    return Product::whereHas(
+        'primaryCategory',
+        fn ($query) => $query->whereIn('slug', [
+            'semi-automatic', 'semi-automatic-accessories', 'coffee-grinders',
+            'automatic', 'automatic-accessories', 'coffee-brewers', 'coffee-servery',
+        ])
+    )->whereNotIn('sku', COFFEE_TAXONOMY_LATE_ARRIVALS)->get();
+}
+
+/**
  * The two description fields do different jobs, so the copy is split rather than shared:
  * short_description is a neutral, scannable summary drawn from the product's own
  * description, while the SEO-pattern copy (brand + model, use case, market framing)
@@ -328,13 +484,7 @@ function assertSpecificationsRenderAsTables(): void
  */
 function assertCoffeeDescriptionsSplitFromSeoCopy(): void
 {
-    $coffee = Product::whereHas(
-        'primaryCategory',
-        fn ($query) => $query->whereIn('slug', [
-            'semi-automatic', 'semi-automatic-accessories', 'coffee-grinders',
-            'automatic', 'automatic-accessories', 'coffee-brewers', 'coffee-servery',
-        ])
-    )->get();
+    $coffee = workbookCoffeeProducts();
 
     expect($coffee)->toHaveCount(37);
 
@@ -375,13 +525,7 @@ function assertCoffeeDescriptionsSplitFromSeoCopy(): void
  */
 function assertCoffeeImagesFollowTheNamingConvention(): void
 {
-    $coffee = Product::whereHas(
-        'primaryCategory',
-        fn ($query) => $query->whereIn('slug', [
-            'semi-automatic', 'semi-automatic-accessories', 'coffee-grinders',
-            'automatic', 'automatic-accessories', 'coffee-brewers', 'coffee-servery',
-        ])
-    )->with('media')->get();
+    $coffee = workbookCoffeeProducts()->load('media');
 
     // The Egro Zero milk fridge, Rocky Doser and DAC-05 cup dispenser have no photo
     // anywhere yet; every other coffee product carries one.
