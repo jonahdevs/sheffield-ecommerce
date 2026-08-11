@@ -51,6 +51,22 @@ it('keeps market framing out of short_description on enriched products', functio
     expect($leaks)->toBe([]);
 });
 
+it('keeps market framing out of variant descriptions too', function () {
+    // A variant's description is not a long description - product.blade.php renders it in
+    // the SAME slot as the parent's short_description, as the @if branch that precedes it.
+    // So it is customer-facing copy under the title and market framing leaks there exactly
+    // as it would above. Unconditional rather than scoped to enriched rows, because a
+    // variant description is only ever written as part of the copy pass.
+    $leaks = collect(catalogueRows())
+        ->flatMap(fn ($row) => collect($row['variants'] ?? [])
+            ->filter(fn ($variant) => preg_match('/\b(Kenya|Kenyan|Nairobi|East Africa|Mombasa|Africa)\b/i', $variant['description'] ?? ''))
+            ->pluck('sku'))
+        ->values()
+        ->all();
+
+    expect($leaks)->toBe([]);
+});
+
 it('gives every enriched product a meta_description to draw SEO copy from', function () {
     $missing = collect(catalogueRows())
         ->filter(fn ($row) => str_contains($row['description'] ?? '', '<h3>')

@@ -275,7 +275,12 @@ new #[Layout('layouts::storefront')] class extends Component {
 
         $title = $product->meta_title ?: trim(($brand ? $brand . ' ' : '') . $product->name) . '';
 
-        $description = $product->meta_description ?: ($product->short_description ?: Str::limit(strip_tags((string) $product->description), 160)) ?: 'Authorised distributor for ' . $product->name . ' across East Africa. Install, service and spares from Sheffield.';
+        // short_description and description are both rich text the PDP prints with {!! !!},
+        // so neither may reach a meta tag unstripped. meta_description is authored plain and
+        // to length, so it alone is used verbatim.
+        $description = $product->meta_description
+            ?: Str::limit(strip_tags((string) ($product->short_description ?: $product->description)), 160)
+            ?: 'Authorised distributor for ' . $product->name . ' across East Africa. Install, service and spares from Sheffield.';
 
         $imageUrl = $product->cover_url;
 

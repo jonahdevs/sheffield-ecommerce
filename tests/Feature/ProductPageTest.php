@@ -1039,3 +1039,48 @@ it('stays silent when a variation counter is clicked with nothing in the cart', 
         ->call('decVariationQty', $blue->id)
         ->assertNotDispatched('toast-show');
 });
+
+it('strips rich text out of the meta description when it falls back to short_description', function () {
+    // short_description is rendered on the PDP with {!! !!}, so it can hold markup. The
+    // description fallback was always stripped but the short_description one was not, so a
+    // formatted short_description would have put raw tags inside the meta tag.
+    $product = makeProduct([
+        'slug' => 'meta-fallback-wok',
+        'meta_description' => null,
+        'short_description' => '<p>Twin-burner <strong>wok range</strong> rated 24 kW.</p>',
+        'description' => '<p>Long copy.</p>',
+    ]);
+
+    $response = $this->get(route('product.show', $product))->assertOk();
+
+    $response->assertSee('content="Twin-burner wok range rated 24 kW."', false);
+    $response->assertDontSee('content="<p>Twin-burner', false);
+});
+
+it('caps a fallback meta description at 160 characters', function () {
+    $product = makeProduct([
+        'slug' => 'meta-long-wok',
+        'meta_description' => null,
+        'short_description' => str_repeat('a', 400),
+    ]);
+
+    $this->get(route('product.show', $product))
+        ->assertOk()
+        ->assertSee('content="'.str_repeat('a', 160).'..."', false);
+});
+
+it('uses an authored meta_description verbatim even past 160 characters', function () {
+    // 82 catalogue rows carry an authored meta_description longer than 160 characters.
+    // Truncating them here would rewrite copy that was written deliberately for the tag.
+    $authored = 'Sheffield '.str_repeat('b', 200);
+
+    $product = makeProduct([
+        'slug' => 'meta-authored-wok',
+        'meta_description' => $authored,
+        'short_description' => 'Ignored short copy.',
+    ]);
+
+    $this->get(route('product.show', $product))
+        ->assertOk()
+        ->assertSee('content="'.$authored.'"', false);
+});
