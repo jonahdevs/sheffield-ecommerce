@@ -819,3 +819,538 @@ Sweep: **0 broken references.**
    superseded copies. ⚠ That folder is **gitignored and untracked**, so this is irreversible.
 5. **Render and check every image against its record before assigning**; report mismatches
    instead of assigning them.
+
+---
+
+## 2026-08-07 — Downloads batch: 96 SKU-named files, 53 SKUs assigned, 3 files held
+
+User-curated batch dropped in Downloads under `<SKU>__<model>-<source>-<tags>.jpg` naming.
+Standing rules applied: base filename → primary, `(1)…(n)` → gallery, old assigned images
+deleted from storage, sources deleted from Downloads after copy. Every file was rendered and
+checked against its record before assignment (5 parallel verification passes). 93 files
+copied; primaries whose old asset had a different extension (.png/.jpeg/.jfif → .jpg) had the
+old file deleted — 17 such deletions. Sweep after apply: **0 broken references** across 683
+products.
+
+### Assigned (53 SKUs)
+
+BUF 00027, 00028, 00031 (+7 gallery), 00143 · COF 00020 · DIS 00146 ·
+FPR 00046 (+3), 00179 (+2), 00218 (+1), 00222 (+1), 00251, 00252, 00253 (+1), 00255, 00257 ·
+HOT 00063, 00066, 00069, 00071 (+5), 00195, 00219, 00222, 00271 (+3), 00275, 00276, 00278,
+00353, 00386, 00388, 00389, 00416, 00417, 00419 (+4), 00420 (+4), 00421, 00434 (+3) ·
+ICE 00040 · OVE 00009, 00087, 00088, 00168, 00169, 00205, 00206, 00229 (+1), 00230 (+3) ·
+PAS 00011, 00155, 00156, 00157, 00160 (+1, replaced old gallery-1), 00166, 00169 ·
+STO 00011
+
+### Held — NOT assigned, files left in Downloads
+
+- ⚠ `IMG-STO-00013__…REJECTED-is-HK-113101…` — pixels confirm the filename's own REJECTED
+  verdict: a tall double-column bakery tray rack trolley, not a dishwasher-rack trolley.
+- ⚠ `IMG-HOT-00282__MDXZ-24-linkrich-2.jpg` — the machine's own panel reads
+  **"MDBZ-30 MODEL ELECTRIC PRESSURE FRYER"**, a different (larger) model; no CODEMISMATCH
+  tag in the filename suggests this was not spotted. SKU keeps its previous image.
+- ⚠ `IMG-OVE-00229__YXD-1AE-ckesydney-3 (2).jpg` — front-on frame shows a **twin-fan**
+  interior; the YXD-1AE is single-fan. The frame almost certainly depicts the YXD-8A family
+  (SKU IMG/OVE/00230). Excluded from 00229's gallery.
+
+### Competing-base decisions (two base filenames for one SKU)
+
+- IMG/BUF/00031 primary = `DR-1-kator.jpg` (exact model code, clean, no watermark); the
+  7-frame rebenet DR-1CKS NEARMATCH set → gallery 1-7 (all carry a 乐百纳 watermark).
+- IMG/HOT/00434 primary = `DF-10L-2-infernus-1.jpg` (only clean closed-door shot showing the
+  split double-tank config); rebenet set → gallery 1-3 (lids-on + two open-door service views
+  with BaiChuan branding).
+- IMG/FPR/00218 (REF pair, `-a`/`-c` suffixes, no plain base): `-c` → primary (upright, fully
+  in frame per verification), `-a` → gallery-1.
+
+### ⚠ One photo, four SKUs — spiral mixers PAS 00155/00156/00157/00169 (BM-25/75/50/100)
+
+All four files are **pixel-identical** (MD5s differ by metadata only; zero channel difference
+at 1200×1200). One photograph now represents four capacities from 25 kg to 100 kg. Assigned
+as supplied because the filenames declare `family-hero` (same treatment as the earlier
+FAMILY-ART display cabinets), but note the `family-detail-2` descriptor on 00156 is wrong —
+it is the same hero frame, not a detail shot. Distinct per-capacity photos remain wanted.
+
+### Verification caveats (assigned, but worth knowing)
+
+- OVE 00009 (HTD-90) and 00169 (HTD-40): photos carry a Chinese **"Gas Food Oven"** banner on
+  records listed as *electric*. Likely the OEM's shared-cabinet gas render; the HTD line is
+  electric per SAP. Flagged, not blocked.
+- HOT 00271 (all 4 frames): side plate reads **6ATS-A**, confirming the filename's NEARMATCH —
+  it is the -A variant standing in for 6ATS-C; slot count (6) is correct.
+- HOT 00063: the filename's "shows 3-pan not 6" warning appears **over-cautious** — the frame
+  shows ~6 pans (3 lidded + 3 upright-lid), plausibly matching BS-6V after all.
+- HOT 00388 (RC-400T for "Split 15+15"): vat reads as one open tank with twin baskets; the
+  split divider is not visible in the frame.
+- FPR 00251 (TC-22): pictured unit carries **Boma** branding and reads as a smaller #12-class
+  grinder; treat as near-match.
+- FPR 00222: primary (per filename slot) shows the whole blender with whisk fitted; the
+  gallery frame shows the attachment alone — arguably the better primary for an
+  attachment-only SKU. **Suggest swapping** if the user agrees.
+- Visible third-party branding in assigned frames: MAXIMA (HOT 00066), infernus (HOT 00219,
+  00434 primary), Ladbros (HOT 00275), Pressure Prince (HOT 00278), Southstar (PAS 00011 family
+  label, PAS 00166), Lingxuich-like oval (FPR 00255), AG EQUIPMENT plaques (FPR 00046/00179,
+  PAS 00160), Rebenet watermarks (BUF 00031 gallery, HOT 00071, HOT 00271).
+- BUF 00028 vs 00143 share a source filename but are **different photographs** (different
+  angles) of the same AT60293 model — fine, though the two records look like duplicate
+  catalogue entries of one product.
+- DIS 00146: filename's `RANGE-x2` warning contradicted by pixels — frame shows exactly one
+  single-door black cooler, which is what the SKU wants.
+- ICE 00040 / STO 00011: UNPROVEN stands — right machine type, no identifying text in frame.
+
+Sweep: **0 broken references.**
+
+#### Addendum (same day, user decisions on the held files)
+
+- **HOT 00282 assigned after all** — user: "you can use it, they are similar." The
+  linkrich frame (panel reads MDBZ-30) now fronts the MDXZ-24 record; old .png deleted.
+- **`IMG-OVE-00229__…(2).jpg` (twin-fan frame) deleted from Downloads** at user's request —
+  not assigned anywhere.
+- STO 00013 remains open: still no image, its REJECTED file still sits in Downloads.
+
+#### Second drop (same day) — 3 SKUs, 4 files
+
+- **COF 00022** (WB-30A) — stainless 30 L catering urn, sight glass + tap; primary replaced
+  in place (.jpg → .jpg).
+- **HOT 00352** (CT-3) — conveyor toaster, fascia reads "ELECTRIC CONVEYOR TOASTER"; base
+  frame → primary, second frame (feed rack + toast, slightly different unit) → gallery-1.
+- **PAS 00103** (B10GFA) — `REF__` planetary-mixer family shot, blank model plate, "FOOD
+  MIXER" label; assigned under the standing REF allowance.
+
+All three rendered and checked before assignment; sources deleted from Downloads.
+STO 00013 still open (REJECTED file remains the only SKU-named file in Downloads).
+
+#### Third drop (same day) — KEF coffee-brewer family, 5 SKUs, 14 files
+
+- **COF 00103** (FTL120 Black) — KEF Filtro black brewer, 1 decanter. kef-1 3/4 shot →
+  primary; kef-2 front + panel close-up + filter-basket close-up → gallery 1-3.
+  ⚠ kef-2 frames "(1)" and "(2)" were **pixel-identical** (max channel diff 0, metadata-only
+  MD5 difference) — "(2)" dropped and deleted from Downloads, not assigned.
+- **COF 00104** (FTL120-2 Inox) — 2-decanter stainless brewer confirmed in all 3 frames.
+  Primary (user's CUSTOMWRAP finish frame) shows **XBP** branding; gallery-2 is the
+  KEF-branded front view.
+- **COF 00105** (FLC 250) — KEF Filtronic thermal-server brewer, 3 angles; primary replaced
+  (.png → .jpg), old gallery-1 slot overwritten, gallery now 2 frames.
+- **COF 00138** (Double Cater Thermos) — SKU had **no image at all**; base name derived from
+  the product name (`coffee-brewer-with-double-cater-thermos-imgcof00138`). ⚠ Frames show
+  KEF's single-thermos Filtronist standing in for the double-cater record, per the user's
+  own NEARMATCH + REPRESENTATIVE-RANGE tags.
+- **IMS/FIT 00992** (Coffee Filter Papers 90/250) — basket-style pleated papers,
+  REPRESENTATIVE-RANGE; primary replaced (.png → .jpg).
+
+All frames rendered and checked before assignment; sources deleted from Downloads.
+STO 00013 still open.
+
+---
+
+## 2026-08-10 — Kitchenware chafers + veg processor + Wanhui cookware (14 files)
+
+Fourteen files staged in Downloads under the `SKU__model-CAVEAT-source-descriptor` convention.
+All fourteen rendered and viewed before any assignment. **Twelve assigned, two withheld.**
+
+The Chrome `(n)` suffixes were **not** duplicate downloads this time — every `(n)` was a
+genuinely different frame, and for `IMG/BUF/00177` one of them was a different pan
+configuration entirely. Default `(n)` → gallery held, except where the frame failed rule 2.
+
+| SKU | model | source file | file written | replaced |
+|---|---|---|---|---|
+| IMG/BUF/00177 | RA2301 | `…wanhui-rolltop-closed-1.jpg` | `products/chafing-dish-roll-top-9-litres-ra2301-imgbuf00177.jpg` | `…-superseded-20260810.webp` |
+| IMG/BUF/00177 | RA2301 | `…closed-1 (2).jpg` | `products/gallery/…-imgbuf00177-1.jpg` | — (**new** gallery) |
+| IMG/BUF/00178 | RA2301AE | `…empire-EMP-RA2301B-closed-1.jpg` | `products/chafing-dish-roll-top-9-litres-electric-ra2301ae-imgbuf00178.jpg` | `…-superseded-20260810.jpg` |
+| IMG/BUF/00178 | RA2301AE | `…closed-1 (1).jpg` | `products/gallery/…-imgbuf00178-1.jpg` | — (**new** gallery) |
+| IMG/FPR/00239 | QC205A | `…astarkitchen-QC205B-sibling-4.jpg` | `products/commercial-vegetable-food-processor-qc205a-imgfpr00239.jpg` | `…-superseded-20260810.webp` |
+| IMG/FPR/00239 | QC205A | `…sibling-4 (1).jpg` | `products/gallery/…-imgfpr00239-1.jpg` | — (**new** gallery) |
+| IMG/TCW/00354 | SD22816 | `…wanhui-saucepan-x3.jpg` | `products/high-sauce-pan-10-litres-e22816-imgtcw00354.jpg` | `…-superseded-20260810.jpg` |
+| IMG/TCW/00355 | SDI2828 | `…wanhui-stockpot-x7.jpg` | `products/stock-pot-17-litres-ei2828-imgtcw00355.jpg` | `…-superseded-20260810.jpg` |
+| IMG/TCW/00357 | SD22414 | `…wanhui-saucepan-x3.jpg` | `products/high-sauce-pan-65-litres-e22414-imgtcw00357.jpg` | `…-superseded-20260810.jpg` |
+| IMG/TCW/00368 | SDI3636 | `…wanhui-stockpot-x7.jpg` | `products/stock-pot-36-litres-ei3636-imgtcw00368.jpg` | `…-superseded-20260810.jpg` |
+| IMG/TCW/00382 | SD22013 | `…wanhui-saucepan-x3.jpg` | `products/high-sauce-pan-4-litres-imgtcw00382.jpg` | `…-superseded-20260810.jpg` |
+| IMG/TCW/00386 | CSP 2525 | `…wanhui-stockpot-x7.jpg` | `products/stock-pot-12-litres-csp-2525-imgtcw00386.jpg` | `…-superseded-20260810.jpg` |
+
+All 12 are 1200², a large step up from the cookware files they replaced (7–15 KB, i.e. thumbnails).
+
+### Notes
+
+- **IMG/BUF/00177** — primary is the lid-**closed** frame; gallery-1 is the lid-**open** frame
+  with a **single full-size pan**, which is what a 9-litre roll-top chafer should show.
+- **IMG/BUF/00178** — same product body as 00177 with the electric water pan. The supplier
+  frame is Empire-badged `EMP-RA2301B` per the user's own NEARMATCH tag.
+- **IMG/FPR/00239** — the two frames are the same machine from different angles; the `(1)`
+  frame is arguably the better hero (front-side, green/red buttons visible) but the
+  base-filename → primary rule was kept. Say the word and they swap.
+- **Wanhui cookware ×6** — `REPRESENTATIVE-RANGE` as tagged: **one saucepan frame serves
+  00354 / 00357 / 00382** and **one stockpot frame serves 00355 / 00368 / 00386**. The same
+  pixels now sit under three code-asserting filenames in each set. Sanctioned here because
+  the range is genuinely one product in six sizes, but it is the shared-photo pattern and is
+  recorded as such.
+
+### Not assigned — kept as evidence
+
+- **`IMG/STO/00013`** (HK-113103, *Trolley for Dish Washer Rack*) — the user's own filename
+  says `REJECTED-is-HK-113101`, and the frame confirms it: a **bakery tray trolley** with
+  ~15 pairs of tray runners and 3 loaded trays, not a dishwasher-rack trolley. Filed to
+  `products resorce final\hk-redline\_brand-reference\IMG-STO-00013__REJECTED-is-HK-113101-bakery-tray-trolley.jpg`.
+  **STO 00013 remains without an image.**
+- **`IMG/BUF/00177` third frame** (`…closed-1 (1).jpg`) — lid open over **two 1/2-size pans**,
+  i.e. a 2-division configuration, not the 9-litre single our record describes. Filed to
+  `products resorce final\kitchenware\_brand-reference\IMG-BUF-00177__NOTASSIGNED-twin-half-pan-configuration.jpg`.
+  If the RA2301 is in fact sold with a twin-pan option, it belongs in gallery slot 2.
+
+All 14 sources deleted from Downloads.
+
+### Second batch, same day — six more Wanhui cookware frames
+
+Landed in Downloads while the first batch was being filed. All six viewed; all six assigned.
+Filenames were unchanged from the records, so **no `products.json` edit was needed** — the
+files were superseded in place.
+
+| SKU | model | file written | replaced |
+|---|---|---|---|
+| IMG/TCW/00388 | SDI4545 | `products/stock-pot-71-litres-csp-4545-imgtcw00388.jpg` | `…-superseded-20260810.jpg` |
+| IMG/TCW/00389 | SDI4040 | `products/stock-pot-50-litres-csp-4040-imgtcw00389.jpg` | `…-superseded-20260810.jpg` |
+| IMG/TCW/00519 | SDI2518 | `products/high-sauce-pan-85-litres-ss-25x18-imgtcw00519.jpg` | `…-superseded-20260810.jpg` |
+| IMG/TCW/00520 | SDI3222 | `products/high-sauce-pan-18-litres-ss-32x22-imgtcw00520.jpg` | `…-superseded-20260810.jpg` |
+| IMG/TCW/00526 | NF811-20 | `products/gn-container-11-20-non-stick-imgtcw00526.jpg` | `…-superseded-20260810.jpg` |
+| IMG/TCW/00527 | NF811-40 | `products/gn-container-11-40-non-stick-imgtcw00527.jpg` | `…-superseded-20260810.jpg` |
+
+### Two catalogue problems these frames expose
+
+1. **`SD2…` vs `SDI…` is saucepan vs stockpot.** Across both batches the pattern is exact:
+   every `SD2xxxx` code got the long-handled saucepan frame, every `SDIxxxx` code got the
+   two-handled stockpot frame. But **`IMG/TCW/00519` (SDI2518) and `IMG/TCW/00520` (SDI3222)
+   are named "High Sauce Pan"** in our catalogue while carrying `SDI` codes, and the user's
+   own filenames tag both `stockpot`. The frames are two-handled stockpots. Either the two
+   names are wrong or the two model_numbers are — **not resolved here**, and `model_number`
+   was not touched.
+2. **`IMG/TCW/00526` / `00527` are not non-stick.** Both records read "GN Container 1/1 …
+   **Non Stick**"; the supplied frame is plain **stainless** GN pans with lids, and the user's
+   filename says so outright (`stainless-not-nonstick`). The frame also reads as **1/2**-size
+   rather than 1/1. Assigned per the CODEMISMATCH precedent (code/finish noted, image still
+   filed) — but the record copy is the thing to fix, not the picture.
+
+Twenty files handled today; Downloads clear of `IMG-*`.
+
+---
+
+## 2026-08-10 (second session) — OEM Sheffield chafers, Jiwins racks, Pasmo, Prisma Food
+
+A much larger drop, still arriving while it was being filed (53 → 64 → 110 files mid-pass).
+**57 files across 30 SKUs assigned and cleared; 81 files still staged** (see foot of entry).
+Every frame rendered and viewed before assignment. `(n)` → gallery, base filename → primary.
+
+### Batch A — chafers, water boiler, vacuum packers, ice (12 SKUs, 20 files)
+
+| SKU | model | written | replaced |
+|---|---|---|---|
+| IMG/BUF/00037 | HY-902 | primary + gallery-1 | 600² `.jpg` superseded |
+| IMG/BUF/00043 | HY-605-1 | primary | 600² superseded |
+| IMG/BUF/00056 | HY 501-2 | primary + gallery 1–3 | **had no image at all** |
+| IMG/BUF/00219 | 431001 | primary (`.jpeg`→`.jpg`) | **225²** superseded |
+| IMG/BUF/00220 | 432102 | primary | 800² superseded |
+| IMG/COF/00027 | WBB20L | primary + gallery-1 | 600² superseded |
+| IMG/FPR/00231 | DZ300 | primary (`.jpeg`→`.jpg`) | **225²** superseded |
+| IMG/FPR/00232 | DZ400 | primary (`.jpeg`→`.jpg`) | **225²** superseded |
+| IMG/ICE/00017 | S110F | primary + gallery 1–2 (`.jpeg`→`.jpg`) | 1512² superseded |
+| IMG/ICE/00018 | S520F | primary + gallery-1 (`.jpeg`→`.jpg`) | 1512² superseded |
+| IMG/REF/00019 | ZBJ-150L | primary | 1512² superseded |
+| IMG/REF/00210 | ZBJ-250L | primary | **394²** superseded |
+
+⚠ **ICE/00017, ICE/00018 and REF/00019 were a resolution DOWNGRADE** — they already held
+1512² assets and the new frames are 1200². Flagged to the user, who chose to assign anyway.
+The 1512² originals are all kept as `…-superseded-20260810.*` and can be restored.
+
+### Batch B — Jiwins dishwash racks (12 SKUs, 29 files)
+
+`DWW/00040 · 00043 · 00097 · 00098 · 00101 · 00103 · 00104 · 00105 · 00110 · 00142 · 00143 · 00144`
+— every primary replaced a 600² thumbnail (or filled an **empty** `image` field), gallery slots
+created from the `(n)` frames. Six of these SKUs had `"image": ""` and now have one:
+`00097 · 00098 · 00105 · 00142 · 00143 · 00144`.
+
+Compartment counts were checked against the record and match: 00040 = 4×4, 00043 = 5×5,
+00098 = 6×6, 00101 = 4×4, 00104 = 5×5. 00097 / 00103 / 00142 are correctly **peg** racks,
+and 00105 is a genuine stainless mobile 48-plate trolley on castors — an unusually good match.
+
+### Batch C — shelving and pizza ovens (6 SKUs, 8 files)
+
+`STO/00005` (chrome wire shelving ✔), `STO/00007 · 00008 · 00009` (grey vented polymer
+shelving — one photo across the 1060/1220/910 lengths, tagged NEARMATCH), `OVE/00019`
+(Prisma Food single gas deck, +gallery-1), `OVE/00020` (Tunnel C/50 conveyor, +gallery-1).
+
+### Caveats carried by this batch
+
+- **`IMG/BUF/00037` is not a drop-in.** Record is named "Chafing Dish **Drop in**"; the frames
+  show a **round roll-top chafer on legs with a fuel holder**, exactly as the user's own
+  `NOT-A-DROP-IN` tag says. Image assigned, **name left alone** — the name is what needs review.
+- **`IMG/BUF/00056` gallery-3 is a polycarbonate-cover model** on different legs, while the
+  record's own description says "Roll Top Lid and Stainless steel Legs". Assigned under the
+  NEARMATCH precedent, but it is a different lid type from slots 1–2. Record is also `draft`.
+- **The Jiwins "feature diagram" frames** (`00040-2`, `00043-2`, `00097-2`, `00098-3`,
+  `00101-2`, `00103-1`, `00104-4`, `00142-1`) are one **generic brand infographic**. It always
+  depicts a *compartment* rack, even on the SKUs that are peg racks — fine as a spec graphic,
+  wrong as a product photo. Kept in the last gallery slot for that reason.
+- **`IMG/DWW/00110` and `IMG/DWW/00143` are both model `JW-S`** — two catalogue records for
+  what looks like one product. Both were given open-rack frames.
+- **`IMG/DWW/00144` is a cutlery rack (`JW-C`) but received the `JW-S` open-rack photo.**
+  The user tagged it REPRESENTATIVE-RANGE; a cutlery rack normally has compartments/baskets,
+  so this one is worth a second look.
+
+### Separately: four products were showing no image at all
+
+`IMG/COF/00103`, `IMG/COF/00104`, `IMG/COF/00105` and `IMS/FIT/00992` still pointed at `.png`
+files that a previous session had replaced with `.jpg`, so the extension in `products.json` no
+longer matched what was on disk. Corrected. **A full sweep now reports 0 broken image
+references across all 683 products.**
+
+### Still staged in Downloads at the end of this pass — 81 files
+
+`COF/00023 · 00024 · 00025 · 00029 · 00030 · 00031 · 00032` (urns/milk boilers — note 00024/25
+are variant children of 00023, and 00030/31 of 00029, so their frames belong on the parents),
+the whole **Rancilio/espresso group** `COF/00035–00048 · 00079 · 00128 · 00135`, a new
+**HYS** group (`00033 · 00035 · 00038 · 00039 · 00040 · 00096 · 00207 · 00264`) and a further
+**OVE** group (`00031 · 00032 · 00034 · 00035 · 00036 · 00038 · 00042 · 00043 · 00058 · 00059 · 00108`).
+None of these have been viewed or assigned yet.
+
+### 2026-08-10 (third pass) — Pradeep urns, Rational hygiene & oven accessories, Rancilio
+
+The 81 files left staged after the second pass, all viewed and cleared.
+
+| group | SKUs | files | notes |
+|---|---|---|---|
+| Pradeep urns / milk boilers | 3 | 7 | `COF/00023 · 00029 · 00032` |
+| Rational hygiene (HYS) | 8 | 8 | `00033 · 00035 · 00038 · 00039 · 00040 · 00096 · 00207 · 00264` |
+| Rational oven accessories (OVE) | 11 | 20 | `00031(+3 variants) · 00036 · 00038 · 00042 · 00043 · 00058(+1) · 00108` |
+| Rancilio espresso | 13 | 46 | `00035–00048 · 00079 · 00128 · 00135` — every primary was a `.png`, now `.jpg` |
+
+**Four more SKUs that had no image at all now have one:** `HYS/00096`, `HYS/00264`,
+`OVE/00042`, `OVE/00043`, plus `COF/00047` and `COF/00128`.
+
+### The variant trap — worth remembering
+
+The Rational oven accessories are the **first group where the variant children carry their own
+`image` keys**, unlike `COF/00001` where the house rule was "image on the parent, children carry
+none". Two consequences, both hit during this pass:
+
+1. The `IMG/OVE/00032 · 00034 · 00035` frames were first filed into the **parent's gallery**,
+   which was wrong — each of those variants has its own `image` slot and its own filename
+   (`granite-enameled-11-60-mm-imgove00032.jpg` etc.). They were moved to the correct slots and
+   the parent gallery removed. Same for `OVE/00059`.
+2. Superseding `roasting-and-baking-tray-11-gn-imgove00058.**png**` silently broke a **variant**
+   reference, because the parent record and its self-referencing variant entry both pointed at
+   the same file. **The routine broken-link sweep only walked top-level `image`/`gallery` and
+   did not see it.** The sweep now walks `variants[].image` too — 33 extra references that were
+   previously never checked. Anyone scripting against this file should do the same.
+
+### Notes and caveats
+
+- **`HYS/00039` — our `model_number` looks truncated.** Record says `6006.011`; the jerrycan
+  label in the photo reads **`Art.-No. 6006.0110`**. The user's own tag says CODEMISMATCH.
+  `model_number` untouched, but this one is decidable from the pixels.
+- **`HYS/00207`** — record `56.00.22`, tub label reads **`56.00.210A`**. NEARMATCH as tagged.
+- Three Rational products carry their article number legibly on the packaging and it matches our
+  record exactly: `HYS/00033` (9006.0137), `HYS/00040` (56.00.211), `HYS/00264` (56.01.912).
+- **Pradeep `COF/00023` filename has no SKU suffix** (`…-jacket-pradeep.jpg`), unlike every other
+  file in the catalogue. Left as-is to avoid a needless rename; worth normalising some day.
+- **Four redundant frames discarded**: `COF/00024 · 00025` are pixel-identical to `00023`, and
+  `COF/00030 · 00031` to `00029`. They are variant children with no image slot, so there was
+  nowhere for a second copy of the same photo to go.
+- **`COF/00048` (Water Softener) mixes two manufacturers** — the primary is a **DVA**-labelled
+  softener, gallery-1 is a **BWT bestcup**. Both are OEM units resold under Rancilio; neither
+  contradicts the record, but they are not the same product.
+- **`COF/00128`** is named "Rocky **Doser** Nero Black"; the primary correctly shows a black
+  doser Rocky, but gallery-1 is the **doserless** body, as the user's filename says.
+- **`COF/00047` gallery-1** shows the milk fridge beside an EGRO ZERO+ machine that we do not
+  sell — a context shot, not a product shot.
+- Pradeep `COF/00023 · 00029 · 00032` were **1512² → 1200² downgrades**, consistent with the
+  user's standing "assign anyway" decision. Originals kept as `…-superseded-20260810.*`.
+
+**Still staged at the end of this pass — 35 files** (all arrived mid-pass, none viewed):
+`IMG/DIS/00120` and a large **REF** cold-room / display-fridge block —
+`REF/00031–00045 · 00095–00107 · 00126–00128 · 00144 · 00155–00158`.
+
+### 2026-08-10 (fourth pass) — Sheffield Blueline cold rooms & counters
+
+48 files, 47 SKUs, all viewed and assigned. **Every one a clear resolution upgrade** — the
+images they replaced ran 225²–800², frequently 533² or smaller; all 48 new frames are 1200².
+No downgrade question arose in this batch.
+
+| block | SKUs |
+|---|---|
+| Upright cabinets (GN650 / GN1410 / GN1200) | `REF/00031 · 00032 · 00033 · 00042 · 00044 · 00045 · 00095 · 00096 · 00097 · 00098` |
+| Counter chillers/freezers (GN…100) | `REF/00034 · 00035 · 00036 · 00037 · 00102 · 00103 · 00104` |
+| Barline glass-door counters (…TNG) | `REF/00041 · 00105 · 00106 · 00107 · 00144 · 00155 · 00160 · 00161 · 00220` |
+| SNACK 600-series counters | `REF/00126 · 00127 · 00128 · 00215 · 00217 · 00218 · 00219` |
+| Drawer counters (U-GN…, GN…140) | `REF/00043 · 00099 · 00166 · 00167 · 00182` |
+| Saladettes / salad counters | `REF/00038 · 00039 · 00040 · 00168` |
+| DR/DF under-counter & upright | `REF/00156 · 00157 · 00158 · 00159` |
+| Wine cooler | `DIS/00120` |
+
+### This block verified better than any other so far
+
+The model codes are **systematically checkable against the pixels**, and every one held:
+
+- **`GN[N]100…` → door count.** `GN1100`=1 door, `GN2100`=2, `GN3100`=3, `GN4100`=4 — confirmed
+  on both the solid-door (`TN`/`BT`) and glass-door (`TNG`) variants. Same for `SNACK[N]100`.
+- **`U-GN3160TN` = 6 drawers** (3 bays × 2) and **`U-GN4180TN` = 8 drawers** (4 × 2) — exact.
+- **`GN2140TN` = 4 drawers**, **`GN3140TN` = 4 drawers + 1 door**, **`GN4140TN` = 4 drawers +
+  2 doors** — each matches its record name word for word.
+- **`S902V` = 2-door saladette, `S903` = 3-door** — the digit is the door count.
+- **`GN650BTM`** ("2 Semi Doors") is the single-width cabinet with **two half-height doors** —
+  the `M` suffix, correctly distinguished from the 1-door `GN650BT`.
+- **`DR200`/`DF200` are under-counter height; `DR400`/`DF400` are full uprights** — matches
+  "Under Counter" vs "600 Series" in the names.
+
+### Notes
+
+- Extensions were a mess in this block — `.jpg`, `.jpeg` and `.png` all in use. Every primary is
+  now `.jpg` and the 47 records were updated to match, so no repeat of the stale-extension bug
+  fixed earlier today.
+- **`REF/00160`** is the only SKU with a second frame (doors-open); it became gallery-1.
+- Several `TNG` SKUs legitimately share one supplier frame — `REF/00105 · 00106 · 00144` are all
+  `GN2100TNG` at different widths, and `REF/00217 · 00218` are both `SNACK2100BT`. Tagged
+  REPRESENTATIVE-RANGE / NEARMATCH by the user and correct as such.
+- `REF/00040` is tagged CODEMISMATCH (`S902V` vs the supplier's `G-S902`); image assigned,
+  `model_number` untouched.
+- Four filenames carried `UNDERFLOOR-340px/500px/600px/640px` tags, but the delivered files are
+  all 1200² — the tag reflects the source page, not the file supplied.
+
+Downloads clear. **Catalogue-wide: 1,100 image references, 0 broken.**
+
+### 2026-08-10 (fifth pass) — Skymsen, Sulte microwaves, Steelology pressure cooker
+
+17 files, 8 SKUs. **15 assigned, 2 withheld.**
+
+| SKU | model | result |
+|---|---|---|
+| IMG/FPR/00050 | DAK | primary + gallery-1 — **had no image at all** |
+| IMG/FPR/00169 | BM2 | primary + gallery 1–2 |
+| IMG/HOT/00167 | SSPC-16 | primary — replaced a **600²** |
+| IMG/HOT/00402 | EM025FJTS0SF00 | primary + gallery-1 (`.webp` gallery → `.jpg`) |
+| IMG/HOT/00403 | EMA34GTQS00E00 | primary + gallery 1–2 |
+| IMG/ICE/00019 | BMS-N | primary + gallery-1 |
+| IMG/OVE/00215 | MAXICONV | primary + gallery-1 — replaced a **392×389 `.png`** |
+
+### ⚠ A file was mislabelled — caught by rendering it
+
+**`IMG-REF-00219__SNACK1100BT-vcher-catalogue2022-UNDERFLOOR-640px-2.jpg` is not a counter
+freezer.** It is a **close-up of the cutting-grid plate on the black hammered stand** — i.e. a
+detail shot from the **`IMG/FPR/00050` DAK vegetable-cutter** group, under a REF/00219 filename.
+
+It arrived with the same filename as the genuine `SNACK1100BT` frame assigned in the fourth pass
+(md5 `61dfb34a`, 77 KB) but is a different file (md5 `236d8622`, 176 KB). Had it been assigned on
+the strength of its filename it would have silently replaced a correct, verified counter-freezer
+photo with a picture of a chip cutter. **Not assigned.** Filed to
+`products resorce final\sheffield-blueline\_brand-reference\IMG-REF-00219__MISLABELLED-is-actually-FPR-00050-cutter-grid-detail.jpg`.
+It would sit perfectly well as `FPR/00050` gallery-2 if wanted — say the word.
+
+This is the first time in this effort that a **filename** was wrong rather than the underlying
+research. It is the strongest argument yet for rule 1 (render before assigning): no metadata
+check, hash check or dimension check would have caught it.
+
+### Also not assigned — kept as evidence
+
+- **`IMG-HOT-00167__REF__TimeSaver-40L-…-SOURCE-OF-OUR-STORED-SSPC-PHOTO.jpg`** — the user's
+  filename says it outright, and the pixels agree: our **previously stored SSPC-16 photo was
+  actually the Time Saver 40 L**, which carries a pressure gauge and safety valve the 16 L does
+  not. The new captioned 16 L frame replaces it. The 40 L is filed to
+  `products resorce final\steelology\_brand-reference\` as proof of what the old photo was.
+
+### Notes
+
+- **`IMG/HOT/00403` mixes two brands across its frames** — the primary and rear view are
+  **SOLWAVE**-badged, gallery-1 is **EASYLINE**. Both are OEM commercial microwaves sold under
+  our `EMA34GTQS00E00` code (tagged CODEMISMATCH), but they are not the same badge.
+- **`IMG/FPR/00169` frames disagree on motor rating** — the primary reads **2 HP** and gallery-2
+  reads **3 HP MOTOR**. Our record is `BM2` "Blender Bar **2 Litres**", where the 2 is jug
+  capacity, not horsepower — so the HP difference is a genuine model difference between frames,
+  not a naming artefact. Worth a look.
+- **`IMG/FPR/00050` is named "Potato Smasher on Stand"** but both frames show a **vegetable/chip
+  cutter** with a grid blade (the supplier calls it *cortador de legumes*). It smashes nothing.
+  Image assigned — the SKU had none — but the name is wrong.
+- `FPR/00169`, `HOT/00402`, `HOT/00403`, `ICE/00019` were 1512² → 1200² downgrades, per the
+  user's standing "assign anyway" decision. Originals kept as `…-superseded-20260810.*`.
+
+### 2026-08-10 (sixth pass) — Snow Village / Xuecun cold chain, Taski spares, rose-gold buffet
+
+47 files, 35 SKUs. **46 assigned, 1 withheld.** 29 upgrades (many replacing 181²–600²
+thumbnails), 5 downgrades taken under the user's standing decision, 1 SKU that had no image.
+
+### ⚠ Second mislabelled file of the day
+
+**`IMG-HYS-00152__7510030-namtaski-1 (1).jpg` is an NX500 battery, not a driving disc.**
+`IMG/HYS/00152` is "High-Speed Driving Disc 43/01"; its base frame is correctly a flat black
+driving disc, but the second file under the same name is a **Numatic NX500 battery pack**.
+Not assigned. Filed to
+`products resorce final\taski\_brand-reference\IMG-HYS-00152__MISLABELLED-is-an-NX500-battery-not-a-driving-disc.jpg`.
+
+Note the neighbouring `IMG/HYS/00259` ("NX LI-ON BATTERY 37V 8100M 8.1 Ah") received an
+**NX300** — and that is the *correct* one: 37 V × 8.1 Ah ≈ 300 Wh. So the stray file is not
+even the right battery for the battery SKU.
+
+### `IMG/DIS/00093` — assigned to gallery, not primary
+
+Both supplied frames are **detail crops** (a shelf-edge/glass close-up and a condenser/controller
+close-up), while the existing primary is a proper full 1512² shot of the stocked multideck.
+Promoting a crop would have been a visible regression, so the primary was **left alone** and the
+two frames went to gallery-1 and gallery-2. This is a deliberate departure from the
+base-filename → primary rule.
+
+### Codes that verified against the pixels
+
+- **`LC-298B` single door · `LC-1200(T)` double · `LC-1500(T)` triple** — exact.
+- **`CFD-20N1` single · `CFD-40N2F` double · `CFD-60D3F-K` triple** solid doors — exact.
+- **`DG-TY700` is the *curved*-glass cake cabinet and `DG-TZ700` the *square*** — both frames of
+  each confirm it, and our names already said curved/square correctly.
+- **`BD/BC-388` "Double Top"** shows exactly two chest lids; **`SD/SC-158Y` "Arched Glass Door"**
+  is genuinely arched.
+- **`D002`/`D005` are fixed heat-lamp shades, `D011` is the rise-and-fall pendant** — a real
+  difference our three near-identical names do not capture.
+
+### Notes
+
+- **`IMG/HYS/00255` ("Center Broom B3300") shows the whole sweeper**, not the broom. The user
+  tagged it `REPRESENTATIVE-taski-insitu`, so it is deliberate, but a spare-part page will show
+  a complete machine.
+- **`IMG/REF/00184`** is named "Upright **Single** Solid Door Chiller" but the frame shows a
+  single-bay cabinet with **two half doors**. Tagged CODEMISMATCH by the user.
+- **`IMG/REF/00201` and `IMG/REF/00232` are both `PLD-15N2F(HB)`**, and **`00179`/`00231` are both
+  `PLR-18N2F(HB)`** — the latter pair differ by depth (1800×600 vs 1800×700), but 00201/00232
+  look like duplicate records. Worth checking.
+- **`IMG/BUF/00272` (ZT001) and `IMG/BUF/00274` (DL206)** received near-identical rectangular
+  lamp-on-induction-base frames; 00274 is tagged `REFONLY` and is visibly a lower-quality extract.
+- `DIS/00093`, `HYS/00134`, `HYS/00152`, `HYS/00255`, `HYS/00259` were 1512² → 1200² downgrades.
+- `IMG/FPR/00079` "Orange Juicer Z06A-N" resolved to a **Zummo Z06A Nature** — the model code
+  decodes cleanly, a good confirmation for a SKU that had only a 225² thumbnail.
+
+Downloads clear. **Catalogue-wide: 1,112 image references, 0 broken.**
+
+### 2026-08-10 (seventh pass) — Skymsen/Rancilio spare parts, and a scanning bug
+
+6 files, 6 SKUs, all assigned.
+
+| SKU | model | result |
+|---|---|---|
+| IMS/MEC/00274 | H3/EH3 | Disc H3 — julienne disc, two toothed blades |
+| IMS/MEC/00303 | STAINLESS STEEL | Rancilio-logo tamper (`.png` → `.jpg`) |
+| IMS/MEC/00309 | DAK | Male Blade for Chipper 10 MM — **had no image** |
+| IMS/MEC/00312 | DAK | Female Blade for Chipper 10 MM — **had no image** |
+| IMS/MEC/02131 | E3 | Disc -E3 — slicing disc, two curved blades |
+| IMS/MEC/02319 | 14MM | Slicer Disc 14 MM — single straight blade |
+
+The three Skymsen discs are visually distinct from one another and each matches its record.
+`00309`/`00312` share one **labelled** DAK diagram showing *Macho: 10 mm* (male) beside
+*Navalha: 10 mm* (female) — tagged `SHARED-DOC-x2` by the user. Sharing is legitimate here
+because both parts are named in-frame, so neither product page misleads.
+
+### ⚠ Process bug — these six sat untouched through six passes
+
+Every Downloads sweep today filtered on **`IMG-*`**, a prefix taken from the first batch and never
+revisited. The catalogue also uses an **`IMS/…`** SKU prefix (spare parts and fittings), so
+`IMS-MEC-*` files were invisible to every scan. They were only found because the user asked why
+six files were untouched.
+
+**The scan pattern is now `^(IMG|IMS)-[A-Z]{3}-\d+__`** — i.e. match the *staging convention*
+(`SKU__descriptor`), not one hard-coded prefix. Any future sweep should key off the `__`
+separator rather than the leading letters, since the catalogue contains at least two SKU
+namespaces and may contain more.
+
+Downloads clear under both prefixes. **Catalogue-wide: 1,114 image references, 0 broken.**
