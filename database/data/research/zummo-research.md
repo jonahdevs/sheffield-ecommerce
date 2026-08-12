@@ -1,7 +1,7 @@
 # Zummo Product Research
 
-**No `old/zummo-research.md` exists to supersede.** The July 2026 Zummo material lives inside
-`old/robot-coupe-sammic-zummo-research.md`, §5 and §7.3 — this file supersedes that section only,
+**No `zummo-research.md` exists to supersede.** The July 2026 Zummo material lives inside
+`robot-coupe-sammic-zummo-research.md`, §5 and §7.3 — this file supersedes that section only,
 and is the first standalone Zummo research file.
 
 Pass date: August 2026. Covers the catalogue's single ZUMMO SKU, `IMG/FPR/00079`. **Nothing applied

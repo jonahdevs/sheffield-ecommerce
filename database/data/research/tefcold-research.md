@@ -2,9 +2,9 @@
 
 Covers the 2 TEFCOLD SKUs (BC 60 and BC 85-1 bottle coolers, both Cold Displays).
 
-Partly supersedes `old/tefcold-waring-research.md`, which combined Tefcold with Waring and
+Partly supersedes `tefcold-waring-research.md`, which combined Tefcold with Waring and
 predates the SAP export. **The Waring half of that file is not superseded** - this pass covered
-Tefcold only, so `old/tefcold-waring-research.md` remains the reference for WDM120K and WCT805K.
+Tefcold only, so `tefcold-waring-research.md` remains the reference for WDM120K and WCT805K.
 
 Staging folder: `Desktop\ecommerce\products resorce final\tefcold\`
 Nothing in `products.json`, `brands.json` or `storage/` was changed by this pass.

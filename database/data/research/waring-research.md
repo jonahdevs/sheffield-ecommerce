@@ -1,6 +1,6 @@
 # Waring Product Research
 
-Supersedes the WARING half of `old/tefcold-waring-research.md` (the TEFCOLD half of that file
+Supersedes the WARING half of `tefcold-waring-research.md` (the TEFCOLD half of that file
 is untouched and still stands).
 
 Covers both WARING SKUs — `IMG/HOT/00108` (WCT805K 4-slot toaster) and `IMG/ICE/00021`

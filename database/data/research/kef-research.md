@@ -4,7 +4,7 @@
 `Desktop\ecommerce\products resorce final\kef\`.
 
 This supersedes the KEF sections (§4, §6.3, §7) of the archived
-`research/old/rational-rancilio-kef-gaps-research.md`. Two of that pass's open items are now
+`research/`rational-rancilio-kef-gaps-research.md`. Two of that pass's open items are now
 closed and one of its conclusions is overturned - see §7.
 
 The decisive source for this brand is not the website. It is KEF's **195-page e-catalogue**, a

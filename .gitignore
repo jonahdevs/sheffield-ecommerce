@@ -36,3 +36,8 @@ storage/media-library/temp
 **/caddy
 frankenphp
 frankenphp-worker.php
+
+# Working backups written by the catalogue tooling (products.json is tracked; these are not)
+database/data/products.json.bak-*
+database/data/*.BACKUP.xlsx
+database/data/*.BACKUP-*.xlsx

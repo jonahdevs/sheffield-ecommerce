@@ -57,7 +57,7 @@ Do not bulk-apply SAP dimensions without this mapping.
 ## 2. The headline defect: IMG/COF/00036 is the TANK machine, not a "Tall" machine
 
 SAP model `CLASS 5ST GR 1`, description `ESPRESSO MACHINE CLASS 5ST GR1`.
-Earlier (pre-SAP) research in `research/old/rational-rancilio-kef-gaps-research.md` read the
+Earlier (pre-SAP) research in `research/`rational-rancilio-kef-gaps-research.md` read the
 `ST` as **"S Tall"** and staged Classe 5 **S Tall** renders for it. That is wrong.
 
 `ST` = **S Tank**. Four independent proofs:

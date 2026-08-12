@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Str;
 
 // ProductSeeder reads products.json by exact key name, so a row that misspells one
 // persists null without anything failing - the product just goes live missing that
@@ -35,15 +36,14 @@ it('gives every product a model_number', function () {
     expect($missing)->toBe([]);
 });
 
-it('keeps market framing out of short_description on enriched products', function () {
+it('keeps market framing out of short_description', function () {
     // The PDP renders short_description as customer-facing rich text under the title,
     // while meta_description feeds the <meta> tag. The catalogue was originally seeded
     // with SEO copy in short_description, so shoppers were shown search-engine text.
-    // Scoped to rows already enriched (structured description + spec table) so the
-    // products still awaiting a rewrite don't fail this.
+    // This once only checked enriched rows, and 63 unenriched ones kept their SEO copy
+    // for months as a result. It now covers every row: short_description is a scan
+    // line for the product, and market framing belongs in meta_description.
     $leaks = collect(catalogueRows())
-        ->filter(fn ($row) => str_contains($row['description'] ?? '', '<h3>')
-            && str_starts_with($row['technical_specification'] ?? '', '<table'))
         ->filter(fn ($row) => preg_match('/\b(Kenya|Kenyan|Nairobi|East Africa|Mombasa|Africa)\b/i', $row['short_description'] ?? ''))
         ->pluck('sku')
         ->all();
@@ -144,6 +144,42 @@ it('formats every variant item code the same way', function () {
     expect($malformed)->toBe([]);
 });
 
+it('never lets two products resolve to the same URL', function () {
+    // ProductSeeder::buildSlug() honours an explicit "slug" key and otherwise derives
+    // one from name + sku. An explicit slug is used to keep a URL stable when a product
+    // is renamed, which means it deliberately stops matching its own name - so it can
+    // silently collide with another product's derived slug. Whoever wins the collision
+    // takes the other's URL.
+    $seen = [];
+    $collisions = [];
+
+    foreach (catalogueRows() as $row) {
+        $sku = $row['sku'] ?? '?';
+        $slug = ! empty($row['slug'])
+            ? Str::slug($row['slug'])
+            : Str::slug(($row['name'] ?? '').' '.$sku);
+
+        if (isset($seen[$slug])) {
+            $collisions[] = $slug.' ← '.$seen[$slug].' and '.$sku;
+        }
+
+        $seen[$slug] = $sku;
+    }
+
+    expect($collisions)->toBe([]);
+});
+
+it('keeps every explicit slug well formed', function () {
+    $malformed = collect(catalogueRows())
+        ->filter(fn ($row) => ! empty($row['slug']))
+        ->reject(fn ($row) => preg_match('/^[a-z0-9]+(?:-[a-z0-9]+)*$/', $row['slug']) === 1)
+        ->map(fn ($row) => $row['sku'].' → "'.$row['slug'].'"')
+        ->values()
+        ->all();
+
+    expect($malformed)->toBe([]);
+});
+
 it('uses only keys the seeder recognises', function () {
     // Derived from the catalogue as it stands. A key outside this set is either a
     // typo the seeder will silently drop, or a genuinely new field - in which case
@@ -152,7 +188,8 @@ it('uses only keys the seeder recognises', function () {
         'accessories', 'attributes', 'brand', 'category', 'description', 'gallery',
         'height', 'image', 'length', 'meta_description', 'model_number', 'name',
         'price', 'quantity', 'requires_quotation', 'short_description', 'sku',
-        'sort_order', 'status', 'technical_specification', 'type', 'variants', 'width',
+        'slug', 'sort_order', 'status', 'technical_specification', 'type', 'variants',
+        'width',
     ];
 
     $unknown = [];

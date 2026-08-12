@@ -1,6 +1,6 @@
 # Robot Coupe Product Research
 
-Supersedes the Robot Coupe section of `old/robot-coupe-sammic-zummo-research.md`.
+Supersedes the Robot Coupe section of `robot-coupe-sammic-zummo-research.md`.
 
 Covers all 4 ROBOT COUPE SKUs: `IMG/FPR/00018` (R301 combination processor),
 `IMG/FPR/00227` (CMP 400 V.V immersion blender), `IMG/FPR/00228` (CMP 300 V.V immersion
