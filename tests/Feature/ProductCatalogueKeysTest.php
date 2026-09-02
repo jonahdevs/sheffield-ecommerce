@@ -67,6 +67,23 @@ it('keeps market framing out of variant descriptions too', function () {
     expect($leaks)->toBe([]);
 });
 
+it('never publishes a product without a price to sell it at', function () {
+    // A published row with no price shows "Request quote" on the card and, when it is
+    // also flagged quote-only, an add-to-cart the PDP cannot honour. Five SV-Blueline
+    // counter units and two Santos juice dispensers shipped in that state; they are
+    // drafts now, and stay drafts until the price list carries them. Mirrors
+    // ProductSeeder::hasSellablePrice() - variants and grouped/bundle children count.
+    $unpriced = collect(catalogueRows())
+        ->filter(fn ($row) => ($row['status'] ?? null) === 'published')
+        ->reject(fn ($row) => (float) ($row['price'] ?? 0) > 0)
+        ->reject(fn ($row) => collect($row['variants'] ?? [])->contains(fn ($variant) => (float) ($variant['price'] ?? 0) > 0))
+        ->reject(fn ($row) => ($row['grouped_children'] ?? []) !== [] || ($row['bundle_children'] ?? []) !== [])
+        ->pluck('sku')
+        ->all();
+
+    expect($unpriced)->toBe([]);
+});
+
 it('gives every enriched product a meta_description to draw SEO copy from', function () {
     $missing = collect(catalogueRows())
         ->filter(fn ($row) => str_contains($row['description'] ?? '', '<h3>')
@@ -201,4 +218,57 @@ it('uses only keys the seeder recognises', function () {
     }
 
     expect($unknown)->toBe([]);
+});
+
+it('keeps stored dimensions in step with the spec table', function () {
+    // length/width/height feed filtering and the shipping estimate, while the spec
+    // table's Dimensions row is what the shopper actually reads. Nothing kept the two
+    // in step, so a correction applied to one silently left the other wrong. The
+    // imports-team workbook proved 16 rows had been carrying a sibling model's size -
+    // IMG/HOT/00189 held the 10-litre fryer's dimensions on the 15-litre record.
+    $drifted = [];
+
+    foreach (catalogueRows() as $row) {
+        $stored = [$row['length'] ?? null, $row['width'] ?? null, $row['height'] ?? null];
+
+        if (in_array(null, $stored, true)) {
+            continue;
+        }
+
+        $matched = preg_match(
+            '/<td><strong>(?:External )?Dimensions[^<]*<\/strong><\/td><td>([\d,]+)\s*&times;\s*([\d,]+)\s*&times;\s*([\d,]+)\s*mm/',
+            $row['technical_specification'] ?? '',
+            $cells
+        );
+
+        if (! $matched) {
+            continue;
+        }
+
+        $tabled = array_map(fn ($cell) => (int) str_replace(',', '', $cell), array_slice($cells, 1));
+
+        if ($tabled !== $stored) {
+            $drifted[] = $row['sku'].' → stored '.implode('×', $stored).', table '.implode('×', $tabled);
+        }
+    }
+
+    // Pre-existing drift, catalogued 2026-09-02 so that NEW drift fails this test.
+    // Most are axis-order permutations of the same three numbers rather than different
+    // measurements; see database/data/research/imported-items-crosswalk.md §C.
+    $known = [
+        'IMG/FPR/00177', 'IMG/FPR/00212', 'IMG/FPR/00008', 'IMG/FPR/00181',
+        'IMG/BUF/00129', 'IMG/BUF/00130', 'IMG/FPR/00027', 'IMG/REF/00034',
+        'IMG/REF/00035', 'IMG/OVE/00230', 'IMG/OVE/00018', 'IMG/OVE/00017',
+        'IMG/PAS/00003', 'IMG/HOT/00063', 'IMG/BUF/00231', 'IMG/HOT/00333',
+        'IMG/HOT/00390', 'IMG/BUF/00155', 'IMG/HYS/00003', 'IMG/COF/00071',
+        'IMG/ICE/00027', 'IMG/ICE/00028', 'IMG/DWW/00085', 'IMG/DWW/00093',
+        'IMG/HOT/00049',
+    ];
+
+    $unexpected = array_values(array_filter(
+        $drifted,
+        fn ($entry) => ! in_array(Str::before($entry, ' →'), $known, true)
+    ));
+
+    expect($unexpected)->toBe([]);
 });

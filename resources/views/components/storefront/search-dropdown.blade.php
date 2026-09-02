@@ -79,12 +79,15 @@ new class extends Component {
             return collect();
         }
 
-        return Category::query()
+        $categories = Category::query()
             ->where('status', CategoryStatus::ACTIVE)
-            ->withCount('products')
             ->where('name', 'like', "%{$this->query}%")
             ->take(3)
             ->get();
+
+        Category::hydrateCatalogProductCounts($categories);
+
+        return $categories;
     }
 
     #[Computed]
@@ -225,7 +228,7 @@ new class extends Component {
                                 class="grid cursor-pointer grid-cols-[20px_1fr_auto] items-center gap-3 px-4 py-2.5 hover:bg-surface-sunken">
                                 <flux:icon.squares-2x2 variant="micro" class="size-3.5 text-ink-4" />
                                 <span class="text-sm text-ink">{{ $category->name }}</span>
-                                <span class="text-xs text-ink-4 tabular-nums">{{ $category->products_count }}</span>
+                                <span class="text-xs text-ink-4 tabular-nums">{{ $category->catalog_products_count }}</span>
                             </a>
                         @endforeach
                     </div>
@@ -381,7 +384,7 @@ new class extends Component {
                                         class="grid cursor-pointer grid-cols-[20px_1fr_auto] items-center gap-3 px-4 py-3 hover:bg-surface-sunken">
                                         <flux:icon.squares-2x2 variant="micro" class="size-3.5 text-ink-4" />
                                         <span class="text-sm text-ink">{{ $category->name }}</span>
-                                        <span class="tabular-nums text-xs text-ink-4">{{ $category->products_count }}</span>
+                                        <span class="tabular-nums text-xs text-ink-4">{{ $category->catalog_products_count }}</span>
                                     </a>
                                 @endforeach
                             </div>

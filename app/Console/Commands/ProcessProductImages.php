@@ -37,7 +37,7 @@ class ProcessProductImages extends Command
             return self::FAILURE;
         }
 
-        $python = env('PYTHON_BIN', 'python');
+        $python = (string) config('services.python_bin');
         $fresh = (bool) $this->option('fresh');
         $dryRun = (bool) $this->option('dry-run');
         $replace = (bool) $this->option('replace');

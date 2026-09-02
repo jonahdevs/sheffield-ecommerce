@@ -86,7 +86,10 @@ class RefundService
                 }
 
                 if ($order) {
-                    $order->user?->notify(new RefundProcessed($order, $amountCents, $reason));
+                    // afterCommit: the queue worker can pick this up before the
+                    // surrounding transaction commits and mail a refund notice for
+                    // a refund that then rolls back.
+                    $order->user?->notify((new RefundProcessed($order, $amountCents, $reason))->afterCommit());
 
                     if ($payment->provider === 'mpesa') {
                         Log::warning('M-Pesa refund recorded - reverse the transaction manually via Safaricom.', [

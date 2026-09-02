@@ -15,6 +15,13 @@ class ProcessSapProductSync implements ShouldQueue
 {
     use Queueable;
 
+    public int $tries = 3;
+
+    /** @var array<int, int> */
+    public array $backoff = [60, 300];
+
+    public int $timeout = 120;
+
     /**
      * @param  array<int, array{sku: string, price: float|int, stock_quantity: int}>  $products
      */
@@ -74,5 +81,13 @@ class ProcessSapProductSync implements ShouldQueue
                 Log::warning('SAP sync: SKU not found.', ['sku' => $sku]);
             }
         }
+    }
+
+    public function failed(?\Throwable $exception): void
+    {
+        Log::error('SAP product sync failed.', [
+            'skus' => collect($this->products)->pluck('sku')->all(),
+            'error' => $exception?->getMessage(),
+        ]);
     }
 }

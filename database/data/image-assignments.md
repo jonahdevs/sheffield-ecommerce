@@ -1354,3 +1354,31 @@ separator rather than the leading letters, since the catalogue contains at least
 namespaces and may contain more.
 
 Downloads clear under both prefixes. **Catalogue-wide: 1,114 image references, 0 broken.**
+
+## 2026-08-13 — Wanhui cookware re-images (2 SKUs)
+
+| date | SKU | model | source | file written | replaced | notes |
+|---|---|---|---|---|---|---|
+| 2026-08-13 | IMG/TCW/00366 | SDI3624 | `_IMGTCW00366.jpg` (user-supplied) | `products/casserole-24-litres-e13624-imgtcw00366.jpg` | old 600² frame **deleted** (user instruction, overriding rule 3) | 1200² replacing 600², **same photograph** at higher resolution — stainless two-handle casserole with domed lid, matches the record |
+| 2026-08-13 | IMG/TCW/00363 | SDI2525 | `IMGTCW00363.jpg` (user-supplied) | `products/stock-pot-12-litres-ei2525-imgtcw00363.jpg` + media re-added | old 600² frame **deleted**, media `907` → `1475` | 1200² replacing 600², a **different, better frame** (three-quarter view, lid on, riveted handles). `SDI2525` = 25 × 25 cm → ≈ 12.3 L, matches "12 Litres" |
+
+The code decodes: `SDI3624` = 36 cm dia × 24 cm high → π·18²·24 ≈ 24.4 L, so the "24 Litres"
+in the name is a volume, not a repeat of the height. Consistent with the cookware-code rule
+established in the 2026-08-10 Wanhui batches.
+
+`image` in products.json was **not** edited — the new file took the existing filename, which
+already follows the slug convention (name `Casserole 24 Litres E13624` + `imgtcw00366`). The
+`E13624` in that filename comes from the product name, not from `model_number`; per rule 4 the
+name was left alone, so the two codes still disagree on the record. Worth resolving separately.
+
+**Two storage locations, not one.** `storage/app/public/products/` is only the *source* the
+seeder reads. What the storefront serves is the Media Library copy under
+`storage/app/media/<media_id>/`, reached as `/media/<id>/<file>` — replacing the file in
+`products/` alone changes nothing on a running site until the catalogue is reseeded.
+
+**So both get written.** From `00363` onward the procedure is: overwrite the `products/` source,
+then `clearMediaCollection('images')` and re-add it with `preservingOriginal()`. Re-adding
+rather than patching the bytes in place mints a **new media id**, so the URL changes and no
+browser can serve a cached frame — and Spatie deletes the old `media/<id>/` directory, which
+is what "delete the old image entirely" actually requires. `products/` and the media copy are
+byte-identical afterwards, so a later reseed is a no-op rather than a regression.

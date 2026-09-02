@@ -22,4 +22,9 @@ return new class extends Migration
             $table->index(['log_name', 'subject_type', 'subject_id'], 'activity_log_subject_lookup_index');
         });
     }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('activity_log');
+    }
 };

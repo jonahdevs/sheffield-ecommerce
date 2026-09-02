@@ -39,7 +39,10 @@ class DarajaClient
             $response = Http::withBasicAuth(
                 (string) $this->config['consumer_key'],
                 (string) $this->config['consumer_secret'],
-            )->get($this->baseUrl().'/oauth/v1/generate', ['grant_type' => 'client_credentials']);
+            )
+                ->timeout(10)
+                ->connectTimeout(5)
+                ->get($this->baseUrl().'/oauth/v1/generate', ['grant_type' => 'client_credentials']);
 
             $token = $response->json('access_token');
 
@@ -94,7 +97,10 @@ class DarajaClient
 
     private function client(): PendingRequest
     {
-        return Http::withToken($this->accessToken())->acceptJson();
+        return Http::withToken($this->accessToken())
+            ->acceptJson()
+            ->timeout(15)
+            ->connectTimeout(5);
     }
 
     private function password(string $timestamp): string

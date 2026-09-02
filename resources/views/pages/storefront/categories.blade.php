@@ -28,12 +28,15 @@ new #[Layout('layouts::storefront')] #[Title('All Categories')] class extends Co
     #[Computed]
     public function categories(): LengthAwarePaginator
     {
-        return Category::with('media')
-            ->withCount(['products' => fn($q) => $q->published()->visibleInCatalog()])
+        $categories = Category::with('media')
             ->where('status', CategoryStatus::ACTIVE)
             ->orderBy('sort_order')
             ->orderBy('name')
             ->paginate($this->perPage);
+
+        Category::hydrateCatalogProductCounts($categories->items());
+
+        return $categories;
     }
 
     public function loadMore(): void
@@ -98,7 +101,7 @@ new #[Layout('layouts::storefront')] #[Title('All Categories')] class extends Co
                                 {{ $category->name }}
                             </div>
                             <div class="shrink-0 text-xs text-ink-3 tabular-nums">
-                                {{ $category->products_count }}
+                                {{ $category->catalog_products_count }}
                             </div>
                         </div>
                     </a>

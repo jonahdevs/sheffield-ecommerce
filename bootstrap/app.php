@@ -56,6 +56,12 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
+        // SAP posts to /api/* without an Accept header, so Laravel's auto-detection
+        // would hand it an HTML error page it cannot parse.
+        $exceptions->shouldRenderJsonWhen(function ($request, Throwable $e): bool {
+            return $request->is('api/*') || $request->expectsJson();
+        });
+
         // Log InnoDB lock wait timeouts (1205) and deadlocks (1213) that survive
         // all DB::transaction() retries to the dedicated db channel so they appear
         // in storage/logs/db-*.log alongside slow query entries.

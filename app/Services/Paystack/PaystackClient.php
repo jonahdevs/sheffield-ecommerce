@@ -2,9 +2,12 @@
 
 namespace App\Services\Paystack;
 
+use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\PendingRequest;
+use Illuminate\Http\Client\RequestException;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
+use Throwable;
 
 /**
  * Thin wrapper around the Paystack REST API (Initialize Transaction, Verify
@@ -38,7 +41,15 @@ class PaystackClient
      */
     public function verifyTransaction(string $reference): array
     {
-        return $this->client()->get(self::BASE_URL.'/transaction/verify/'.$reference)->json() ?? [];
+        // Idempotent GET, and the customer has already been charged by the time we
+        // ask - a transient network blip here must not read as "payment failed".
+        // Only connection errors and Paystack 5xx are retried; a 404 (unknown
+        // reference) is a real answer and retrying it just delays the response.
+        return $this->client()
+            ->retry(3, 200, fn (Throwable $e): bool => $e instanceof ConnectionException
+                || ($e instanceof RequestException && $e->response->serverError()), throw: false)
+            ->get(self::BASE_URL.'/transaction/verify/'.$reference)
+            ->json() ?? [];
     }
 
     /**
@@ -54,6 +65,10 @@ class PaystackClient
 
     private function client(): PendingRequest
     {
-        return Http::withToken($this->secretKey)->acceptJson()->asJson();
+        return Http::withToken($this->secretKey)
+            ->acceptJson()
+            ->asJson()
+            ->timeout(15)
+            ->connectTimeout(5);
     }
 }

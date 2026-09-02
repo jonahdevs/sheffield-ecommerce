@@ -8,6 +8,12 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
+/**
+ * Deliberately NOT ShouldQueue. It carries a live \Throwable whose stack trace
+ * holds closures, so queueing it dies with "Serialization of 'Closure' is not
+ * allowed". Nothing is lost: every sender is a job's failed() hook, which
+ * already runs on the worker rather than in the request.
+ */
 class SapSyncFailedNotification extends Notification
 {
     use Queueable;

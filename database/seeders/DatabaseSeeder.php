@@ -44,12 +44,12 @@ class DatabaseSeeder extends Seeder
             PageSeeder::class,
             DeliveryZoneSeeder::class,
             LogisticsSeeder::class,
-            // AddressSeeder::class,
-            // OrderSeeder::class,
-            // CouponSeeder::class,
-            // QuoteSeeder::class,
-            // ReviewSeeder::class,
-            // BannedIpSeeder::class,
+            AddressSeeder::class,
+            OrderSeeder::class,
+            CouponSeeder::class,
+            QuoteSeeder::class,
+            ReviewSeeder::class,
+            BannedIpSeeder::class,
             // Must run last: builds image conversions for all media attached above.
             MediaSeeder::class,
         ]);

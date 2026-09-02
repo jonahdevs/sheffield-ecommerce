@@ -84,8 +84,8 @@ new #[Layout('layouts::storefront')] #[Title('Commercial Kitchen, Cold Room, Lau
     #[Computed]
     public function featuredCategories(): Collection
     {
-        return CategoryPlacement::query()
-            ->with(['category' => fn($q) => $q->withCount('products')])
+        $categories = CategoryPlacement::query()
+            ->with('category')
             ->where('location', CategorySection::HOME_PAGE_FEATURED)
             ->where('status', CategoryStatus::ACTIVE)
             ->orderBy('sort_order')
@@ -93,6 +93,10 @@ new #[Layout('layouts::storefront')] #[Title('Commercial Kitchen, Cold Room, Lau
             ->get()
             ->pluck('category')
             ->filter();
+
+        Category::hydrateCatalogProductCounts($categories);
+
+        return $categories;
     }
 
     #[Computed]
@@ -547,7 +551,7 @@ new #[Layout('layouts::storefront')] #[Title('Commercial Kitchen, Cold Room, Lau
                             {{ $category->name }}
                         </div>
                         <div class="shrink-0 text-xs text-ink-3 tabular-nums">
-                            {{ $category->products_count ?? $category->products()->count() }}
+                            {{ $category->catalog_products_count }}
                         </div>
                     </div>
                 </a>

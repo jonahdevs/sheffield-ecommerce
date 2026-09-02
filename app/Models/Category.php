@@ -160,6 +160,87 @@ class Category extends Model implements HasMedia
         return $ids;
     }
 
+    /**
+     * Set `catalog_products_count` on each category: the number of distinct
+     * storefront-visible products filed under it OR any category beneath it.
+     *
+     * A plain withCount('products') reports zero for every parent, because the
+     * catalog sits entirely on the leaves - so counts must descend the tree.
+     * Products reached as a primary category and through the pivot are unioned,
+     * matching how the category page itself selects what to list.
+     *
+     * @param  iterable<int, Category>  $categories
+     */
+    public static function hydrateCatalogProductCounts(iterable $categories): void
+    {
+        $categories = collect($categories)->filter();
+
+        if ($categories->isEmpty()) {
+            return;
+        }
+
+        $childrenByParent = static::query()
+            ->whereNotNull('parent_id')
+            ->get(['id', 'parent_id'])
+            ->groupBy('parent_id');
+
+        $productIdsByCategory = static::visibleProductIdsByCategory();
+
+        foreach ($categories as $category) {
+            $ids = [];
+            $queue = [(int) $category->id];
+            $seen = [];
+
+            while ($queue !== []) {
+                $id = (int) array_pop($queue);
+
+                if (isset($seen[$id])) {
+                    continue;
+                }
+
+                $seen[$id] = true;
+
+                foreach ($productIdsByCategory[$id] ?? [] as $productId) {
+                    $ids[$productId] = true;
+                }
+
+                foreach ($childrenByParent->get($id, []) as $child) {
+                    $queue[] = $child->id;
+                }
+            }
+
+            $category->catalog_products_count = count($ids);
+        }
+    }
+
+    /**
+     * @return array<int, array<int, int>>
+     */
+    private static function visibleProductIdsByCategory(): array
+    {
+        $map = [];
+
+        $pivot = Product::query()
+            ->published()
+            ->visibleInCatalog()
+            ->join('category_product', 'category_product.product_id', '=', 'products.id')
+            ->toBase()
+            ->get(['products.id as product_id', 'category_product.category_id']);
+
+        $primary = Product::query()
+            ->published()
+            ->visibleInCatalog()
+            ->whereNotNull('primary_category_id')
+            ->toBase()
+            ->get(['products.id as product_id', 'products.primary_category_id as category_id']);
+
+        foreach ($pivot->concat($primary) as $row) {
+            $map[(int) $row->category_id][] = (int) $row->product_id;
+        }
+
+        return $map;
+    }
+
     // ==================================================
     // ACCESSORS
     // ==================================================

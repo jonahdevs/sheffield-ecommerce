@@ -5,6 +5,7 @@ namespace App\Rules;
 use App\Settings\IntegrationSettings;
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
+use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Translation\PotentiallyTranslatedString;
 
@@ -21,11 +22,20 @@ class Recaptcha implements ValidationRule
             return;
         }
 
-        $result = Http::asForm()->post('https://www.google.com/recaptcha/api/siteverify', [
-            'secret' => config('services.recaptcha.secret'),
-            'response' => $value,
-            'remoteip' => request()->ip(),
-        ])->json();
+        try {
+            $result = Http::asForm()
+                ->timeout(5)
+                ->connectTimeout(3)
+                ->post('https://www.google.com/recaptcha/api/siteverify', [
+                    'secret' => config('services.recaptcha.secret'),
+                    'response' => $value,
+                    'remoteip' => request()->ip(),
+                ])->json();
+        } catch (ConnectionException) {
+            // Google unreachable: fail closed with the normal message rather than
+            // 500ing the form, and never hold the request past the 5s timeout.
+            $result = [];
+        }
 
         if (! ($result['success'] ?? false) || ($result['score'] ?? 0) < 0.5) {
             $fail(__('Security verification failed. Please try again.'));

@@ -38,6 +38,8 @@ class WhatsAppChannel
         $message = $notification->toWhatsapp($notifiable);
 
         $response = Http::withToken($token)
+            ->timeout(10)
+            ->connectTimeout(5)
             ->post("https://graph.facebook.com/v19.0/{$phoneNumberId}/messages", [
                 'messaging_product' => 'whatsapp',
                 'to' => $this->normalisePhone($phone),
