@@ -1,0 +1,193 @@
+sku,live_id,name,missing_concepts,numbers_only_on_live
+IMG/FPR/00042,731,"Vegetable Processor PA7",,"450,320,300,400,438,25,110,24.5"
+IMG/FPR/00177,733,"Vegetable Processor S-QC205",capacity,"535,270,525,400,510,1047,350,19"
+IMG/FPR/00239,1121,"Commercial Vegetable Food Processor QC20",voltage/power,"220,50,350"
+FAB/FPR/00372,736,"Potato Peeler 15 Kg Sheffield",,"10,350,450"
+IMG/FPR/00008,1332,"Potato Peeler 20 Kg Empero",capacity,"380,20"
+IMG/FPR/00048,1224,"Potato Peeler 25KG Skymsen",,"110,60,670,550,1155,45,64"
+IMG/FPR/00046,1197,"Meat Slicer Ø 300MM",,"25,033,60,127,27.00,31.50"
+IMG/FPR/00253,1235,"Bone Sawer JG210",,"15,180,400,436,45"
+IMG/FPR/00051,398,"Bone Saw Free Standing SI-282HD",,"835,800,1675,240,50"
+IMG/FPR/00184,403,"Manual Hamburger Press 130",,"450,370,350"
+IMG/HOT/00196,405,"Tumble Marinator",,"991,635,914"
+IMG/FPR/00231,1068,"Vacuum Packing Machine DZ300",capacity,220
+IMG/FPR/00232,1069,"Vacuum Packing Machine DZ400",capacity,"10,20,540,490,500,65"
+FAB/DIS/00007,675,"Meat Display Counter 1500","voltage/power,insulation","1490,1245"
+FAB/DIS/00010,676,"Meat Display Counter 2000","voltage/power,insulation",1245
+IMG/FPR/00034,640,"Blender Kitchen SS",,"260,275,630,3500"
+IMG/FPR/00038,643,"Blender Kitchen 25 Litres SS",,"1180,3500,10"
+IMG/FPR/00217,1064,"Hand Immersion Blender 350W H-Kitchen","net weight,voltage/power","300,240,50,4000,16000,220,110,60"
+IMG/FPR/00218,1066,"Hand Immersion Blender 500W H-Kitchen",,"4000,16000,110,400"
+IMG/FPR/00221,1065,"Immersion Blender Tube 400 Mm","net weight,voltage/power","350,240,50,4000,16000,220,110,60"
+IMG/FPR/00227,1032,"Immersion Blender CMP 400 VV",,"120,5000,10000,15,16"
+IMG/FPR/00228,1031,"Immersion Blender CMP 300 VV",,"240,2300,9600,15"
+IMG/FPR/00274,1199,"Kitchen Blender with Soundproof Cover","voltage/power,capacity","50,2200,9850"
+IMG/BUF/00129,102,"Juice Dispenser 3 Tank LSP-18X3",compressor,"470,740,475"
+IMG/BUF/00130,103,"Juice Dispenser 2 Tank LSP-18X2",compressor,"510,470,740,39"
+IMG/BUF/00151,105,"Juice Dispenser 2 Tank 34-2A Santos",voltage/power,"380,430,545,260,230,50"
+IMG/BUF/00152,106,"Juice Dispenser 3 Tank 34-3A Santos",voltage/power,"570,430,545,260,230,50"
+IMG/FPR/00027,658,"Juice Extractor Centrifugal Santos 68",,"1300,3000,140,02,79"
+IMG/FPR/00040,660,"Juice Extractor Centrifugal Skymsen CSE",,"280,480,680,3500"
+IMG/FPR/00079,653,"Orange Juicer Z06A-N",,"548,431,811,220,120"
+IMG/ICE/00019,662,"Milk Shake Mixer Single Skymsen",,"210,150,470,15000"
+IMG/REF/00032,35,"Upright Glass Door Chiller Single 7008 B","insulation,castors",
+IMG/REF/00034,45,"Counter Chiller 9007 Blueline","insulation,castors",124
+IMG/REF/00036,48,"Counter Chiller 1407 Blueline","insulation,castors",
+IMG/REF/00037,49,"Counter Chiller 1807 Blueline","insulation,castors",
+IMG/REF/00041,60,"Barline Chiller 2207 Blueline","insulation,castors",
+IMG/REF/00042,1340,"Upright Solid Door Dual Chiller Freezer ","climate class,gross weight,castors","537,195,210,134,404,220,240,2010"
+IMG/REF/00043,379,"Drawer Counter Chiller 6 Drawers 1800 Bl","climate class,gross weight,net weight,capacity","1800,220,240,134,268,123,138"
+IMG/REF/00044,36,"Upright Solid Door Chiller 1 Door Blueli","insulation,castors",
+IMG/REF/00057,78,"Blast Chiller 5 Trays DGD",shelves,
+IMG/REF/00060,232,"Upright Solid Door Chiller 2 Door DGD AF",refrigerant,"800,2030,1420,230,40,452"
+IMG/REF/00062,230,"Upright Solid Door Chiller 1 Door DGD AF",,"800,2030,40"
+IMG/REF/00095,38,"Upright Solid Door Chiller 2 Door Blueli","insulation,castors","830,2010,1480,1400"
+IMG/REF/00097,37,"Upright Glass Door Chiller Double 1408 B","insulation,castors",
+IMG/REF/00099,381,"Drawer Counter Chiller 8 Drawers 2200 Bl","climate class,gross weight,net weight,capacity","700,650,220,240,134,362,170,190"
+IMG/REF/00102,50,"Counter Chiller 2207 Blueline GN4100TN","insulation,castors",
+IMG/REF/00105,53,"Barline Chiller 1207 Blueline GN2100TNG-","insulation,castors",294
+IMG/REF/00106,56,"Barline Chiller 1507 Blueline GN2100TNG-","insulation,castors",390
+IMG/REF/00107,58,"Barline Chiller 1807 Blueline GN3100TNG","insulation,castors",
+IMG/REF/00144,55,"Barline Chiller 1207 Blueline","insulation,castors",
+IMG/REF/00155,59,"Barline Chiller 2206 Blueline","insulation,castors",
+IMG/REF/00160,54,"Barline Chiller 1406 Blueline","insulation,castors",
+IMG/REF/00161,57,"Barline Chiller 1806 Blueline","insulation,castors",
+IMG/REF/00167,1341,"Counter Chiller with 4 Drawers & 1 Door","shelves,insulation,castors","1340,810,2000,600,400,24"
+IMG/REF/00168,1342,"3 Door Saladette Counter 1340 Blueline","shelves,insulation,castors",
+IMG/REF/00182,1343,"Refrigerated Counter Chiller 2 Doors & 4",defrost,850
+IMG/REF/00184,1110,"Upright Single Solid Door Chiller CFR-20",temperature,10
+IMG/REF/00186,1112,"Upright Double Solid Door Chiller CFR-40",temperature,10
+IMG/REF/00193,79,"Blast Chiller for 10 Trays GN1/1 or 60X4",shelves,"1260,90"
+IMG/REF/00215,1345,"Counter Chiller 9006 Blueline","climate class,gross weight,shelves,castors","124,60,68,134,220,240"
+IMG/REF/00220,1346,"Barline Chiller 1506 Blueline SNACK2100T","climate class,shelves,castors","314,134,220,240"
+IMG/REF/00031,180,"Upright Solid Door Freezer 2 Semi Doors ","insulation,castors",
+IMG/REF/00033,32,"Upright Glass Door Freezer Single 7008 M","insulation,castors",
+IMG/REF/00035,40,"Counter Freezer 9007 Blueline","insulation,castors",
+IMG/REF/00038,62,"Salad Counter 3 Door 1800 Blueline","insulation,castors",
+IMG/REF/00039,63,"Salad Counter 3 Door 2000 Blueline","shelves,insulation,castors","530,330,10"
+IMG/REF/00040,61,"2 Door Saladette Counter 1045 Blueline","insulation,castors","580,450,970,800"
+IMG/REF/00045,34,"Upright Solid Door Freezer 1 Door Blueli","defrost,insulation,castors",
+IMG/REF/00096,1134,"Upright Solid Door Freezer 2 Door Blueli","climate class,insulation","1400,1035,24,15.31,5591,13,30,55"
+IMG/REF/00098,33,"Upright Glass Door Freezer Double 1408 B","insulation,castors",22
+IMG/REF/00103,41,"Counter Freezer 1207 Blueline GN2100BT-1","insulation,castors",294
+IMG/REF/00104,42,"Counter Freezer 1507 Blueline GN2100BT-1","insulation,castors",390
+IMG/REF/00128,44,"Counter Freezer SNACK3100BT 600 Series","insulation,castors",
+IMG/REF/00158,1349,"Solid Door Freezer 1 Door Under Counter ","climate class,defrost",113
+IMG/REF/00159,1350,"Upright Solid 1 Door Freezer 600 Sries D",defrost,"1625,72,220,240,29"
+IMG/REF/00217,1351,"2 Door Counter Freezer 1500X600X860 SNAC",shelves,"18,22,404,240"
+IMG/REF/00218,1352,"2 Door Counter Freezer 1200X600X860 SNAC",shelves,"18,22,404,240"
+IMG/REF/00219,1353,"Counter Freezer 9006 SNACK1100BT","insulation,castors",124
+IMG/DIS/00069,154,"Refrigerated Pizza Display VRX1500/380 F",castors,239
+IMG/REF/00179,998,"Counter Chiller (Engineering Version) 18",,"700,275,212"
+IMG/REF/00197,1355,"Single Temperature Double Top Freezer BD","voltage/power,insulation,capacity",
+IMG/REF/00200,1289,"Island Freezer SD/SC-518","refrigerant,insulation,castors","10,395,75,290,100"
+IMG/REF/00201,1356,"Counter Freezer (Air Cooled Freezing) PL","compressor,refrigerant,voltage/power,defrost","18,398,201"
+IMG/REF/00202,1357,"Upright Triple Solid Door Freezer (CFD-6","compressor,refrigerant,temperature,shelves,defrost,insulation,capacity,castors","1430,50.5,18,22,40,290"
+IMG/REF/00204,1274,"Order Dish Multifunctional Cabinet (LMD-","compressor,refrigerant,temperature,defrost","100,10,12,600"
+IMG/REF/00205,1275,"Order Dish Convenience Store Cabinet LCD",insulation,"798,10,22,100"
+IMG/REF/00063,179,"Upright Solid Door Freezer 2 Door DGD AF",,"800,2030,1420,40"
+IMG/DIS/00022,107,"Back Bar Cooler Single Door H Kitchen",,"10,220,50"
+IMG/DIS/00023,109,"Back Bar Cooler Double Door SS H Kitchen",,"10,220,50"
+IMG/DIS/00024,110,"Back Bar Cooler Triple Door H Kitchen","compressor,voltage/power","23,10,201,220,50"
+IMG/DIS/00112,108,"Back Bar Cooler Double Door Black H Kitc",,"10,220,50"
+IMG/DIS/00093,137,"Multi Deck Display Cooler V6060SL DGD",capacity,"605,1980,300"
+IMG/DIS/00096,138,"Multi Deck Display Cooler V60187SL DGD",capacity,"1955,605,1980,1000"
+IMG/DIS/00100,141,"Multi Deck Display Cooler VS60150SLINOX ",capacity,"1580,1958,800,230"
+IMG/DIS/00106,139,"Multi Deck Display Cooler V6080SLINOX DG",capacity,"740,1300,400,230"
+IMG/DIS/00142,1279,"Wine Cooler Under Counter YC-53","compressor,refrigerant","60,600,75,10,38,28.5,590,560"
+IMG/DIS/00143,1280,"Beverage Cooler TYC-120-2D",,"20,55,330"
+IMG/REF/00203,1320,"Vertical Display Cabinet Triple Door Chi","refrigerant,voltage/power,capacity","1800,600,1920,116,1248,290,220,240"
+IMG/DIS/00132,1003,"Vertical Display Cabinet Single Door Chi",,"62,24,50,162"
+IMG/DIS/00019,70,"Pastry Display Square 1500 FGDG 1500LS-3","compressor,shelves","740,1300"
+IMG/DIS/00021,71,"Pastry Display Square 1500 FGDG 1500LSD-","compressor,shelves",740
+IMG/DIS/00020,72,"Pastry Display Square 1800","compressor,shelves",
+IMG/DIS/00062,670,"Ice Static Display Case Infrico VBZ12","refrigerant,climate class","920,1345,14,16,260,220,240,10"
+IMG/OVE/00229,1358,"Elec. Convection Oven YXD-1AE",insulation,"454,327,25,325,450,75"
+IMG/OVE/00230,1359,"Elec. Convection Oven YXD-8A-3","capacity,castors","220,67,572"
+IMG/OVE/00078,126,"Oven Convection Electric 4 Trays 435X350",temperature,"220,240"
+IMG/OVE/00215,683,"Oven Convection Turbo Electrical 4 Tray ",,"1490,1070,1900,60,3000,410"
+IMG/OVE/00018,689,"Pizza Oven Electric Double Deck - Prisma",,"900,760,230,500"
+IMG/OVE/00020,691,"Conveyor Pizza Oven Electric C/50",,"1210,1860,130,145,2800,4100"
+IMG/OVE/00217,1106,"Conveyor Pizza Oven-Digital","gross weight,net weight,voltage/power","230,50,46,57,350"
+IMG/OVE/00107,1140,"Oven Convection Electric Blodgett CTB SG",,"208,27.0,720"
+IMG/OVE/00201,1071,"Oven Convection Gas HDS GCO",,"120,967,1099,1384,185,275"
+IMG/OVE/00214,682,"Oven Convection Turbo Electrical 10 Tray",,"1490,1070,1900"
+IMG/OVE/00019,690,"Pizza Oven Single Gas Deck - Prisma Food",,"1005,620,400"
+IMG/PAS/00012,717,"Dough Mixer Spiral",,"415,795,17,36,65"
+IMG/PAS/00157,1039,"Spiral Mixer 130 LITRES/50KG BM-50",,"245,122,794,520,1033,304"
+IMG/PAS/00156,1040,"Spiral Mixer 200 LITRES/75KG BM-75",,"225,112,1065,630,1130,50,304"
+IMG/PAS/00102,727,"Cake Mixer Planetary 7 Litres H-Kitchen",voltage/power,"400,250,410,220,240,50,325,917"
+IMG/PAS/00101,726,"Cake Mixer Planetary 20 Litres H-Kitchen",,"880,530,460,1100,95"
+IMG/PAS/00145,1132,"Cake Mixer Planetary 30 Litres H-Kitchen",voltage/power,"1100,240,50,10,197317,462"
+IMG/PAS/00160,1193,"TABLE TOP DOUGH SHEETER ROLLER SIZE 522x",,"220,380,40,1700,430"
+IMG/PAS/00159,1074,"Semi Automatic Dividing and Rounding Mac",,"220,75,360,10,13"
+IMG/BUF/00115,1192,"Chafing Dish Insert Porcelain 2/3 GN",,"360,350,325"
+IMG/BUF/00252,1295,"Electric Chafing Dish Golden Frame",temperature,
+IMG/BUF/00253,1296,"Electric Chafing Dish Golden Frame Squar",capacity,
+IMG/BUF/00254,1297,"Electric Chafing Dish Hammer Point",temperature,
+IMG/BUF/00249,1282,"Buffet Warmer Electric TC-2F",temperature,"30,85,526,324,250"
+IMG/HOT/00195,1240,"Electric Food Warmer Cart OT-10B-21 Redl",voltage/power,"220,50"
+IMG/BUF/00032,484,"Plate Warmer Cart Double","net weight,temperature",10
+IMG/BUF/00031,483,"Plate Warmer Cart Single","net weight,temperature,capacity",10
+IMG/BUF/00269,1307,"Rose Gold Heat Lamp D002",,"150,355,440"
+IMG/BUF/00270,1308,"Rose Gold Heat Lamp D005",,"150,355,440"
+IMG/BUF/00271,1309,"Rose Gold Heat Lamp D011",,"150,355,440,005"
+IMG/HOT/00063,1157,"Bain Marie Table Top H-Kitchen BS-6V",,"220,240,17"
+IMG/BUF/00090,437,"Induction Cooker Wanhui",voltage/power,"3500,220,240,50,60"
+IMG/BUF/00228,1053,"Induction Cooker Single Zone 5KW Table T",temperature,5000
+IMG/TCW/00089,469,"GN Container 1/1 100 Berjaya",,"50,65,200"
+IMG/TCW/00090,468,"GN Container 1/2 100 Berjaya",,"50,65,200"
+IMG/TCW/00108,463,"GN Container 1/3 65 Bilge",,"50,100,150,200"
+IMG/TCW/00110,465,"GN Container 1/6 65 Bilge",,"50,100,150,200"
+IMG/TCW/00111,466,"GN Container 1/9 65 Bilge",,"50,100,150,200"
+IMG/TCW/00112,462,"GN Container 1/1 100 Bilge",,"50,65,150,200"
+IMG/TCW/00113,461,"GN Container 1/2 100 Bilge",,"50,65,150,200"
+IMG/TCW/00115,464,"GN Container 1/4 100 Bilge",,"50,65,150,200"
+IMG/HOT/00108,635,"Toaster 4 Slots Waring",,"483,406,420,1000,230"
+IMG/HOT/00271,633,"Toaster 6 Slots H-Kitchen",,"460,210,225,230,50"
+IMG/HOT/00352,1113,"Conveyor Toaster CT-3",insulation,"13,50"
+IMG/HOT/00155,1163,"Infra Red Grill Mercatus XXL MC167",,"420,320,365"
+IMG/HOT/00156,1164,"Infra Red Grill Mercatus XL MC167",,"510,410,365"
+IMG/HOT/00071,627,"Salamander Electric Lift Up EB-600","gross weight,net weight,temperature","450,400,300,230,52,49"
+IMG/HOT/00402,1060,"Microwave Oven 25LTR EM025FJTS0SF00",,"1550,1000,511,432,311,620,540,410"
+IMG/HOT/00403,1061,"Microwave Oven 34LTR EMA34GTQS00E00",,"3000,1800,368,650,610,480"
+IMG/HOT/00098,1215,"Fryer Roller Grill RFG 12",shelves,
+IMG/HOT/00085,1207,"Fryer Single 13 Litres Gas Lincar",voltage/power,"240,345"
+IMG/HOT/00333,611,"Pressure Fryer Gas Broaster 1800",voltage/power,"65000,120,60"
+IMG/HOT/00347,1141,"Fryer Split Type 15 + 15 Ltrs HDS-150S",temperature,
+IMG/COF/00023,354,"Milk Boiler with Indirect Water Heating ",,"9228,2800,3000"
+IMG/COF/00108,1278,"Water Boiler EF-20 (Hydroboil)","voltage/power,capacity",230
+IMG/COF/00032,357,"Heated Insulated Water Urn 36 Litres",,"7227,36,50,60,230,2800,3000"
+IMG/COF/00029,359,"Non Heated Insulated Catering Urn/Thermo",,"50,60,230,240,2800,3000"
+IMG/COF/00004,704,"Coffee Brewer Single Cater",,"350,75,380,2500"
+IMG/COF/00130,1204,"AQ-RO-600 Watermark",,"470,230,422,2271,25"
+IMG/COF/00131,1234,"Ultrafiltration System VZN-511V",,"622,254,610"
+IMG/TCW/00355,925,"Stock Pot 17 Litres EI2828",,"28,20,18"
+IMG/TCW/00386,924,"Stock Pot 12 Litres CSP 2525",,"25,20,18"
+IMG/TCW/00388,927,"Stock Pot 71 Litres CSP 4545",,"45,20,18"
+IMG/COF/00041,119,"Cappuccino Machine Silvia",,"14.5,1150,50,60,23,16"
+IMG/COF/00079,120,"Cappuccino Machine Silvia Pro",,"14.5,1100,50,60,23,18"
+IMG/COF/00035,114,"Espresso Machine Class 5S GR1",,"14.5,1800,230,50"
+IMG/COF/00036,115,"Espresso Machine Class 5ST GR1",,"14.5,1800,230,50"
+IMG/COF/00037,116,"Espresso Machine Class 5S GR2 Black",,"14.5,4750,380,415,50"
+IMG/COF/00038,117,"Espresso Machine Class 5S GR2 White",,"14.5,4750,380,415,50"
+IMG/COF/00039,118,"Espresso Machine Class 7S GR3",,"1010,14.5,6750,50,60"
+IMG/COF/00048,123,"Water Softeners DP2",,"170,250,90,1000"
+IMS/MEC/00303,713,"Coffee Tamper Stainless Steel",capacity,
+IMS/MEC/00469,714,"Coffee Tamper PVC",capacity,
+IMG/COF/00096,111,"Automatic Coffee Machine Minibar",,"2700,3100,230"
+IMG/COF/00073,1227,"Automatic Coffee Machine Fab 100",,"18.5,403,30,160"
+IMG/COF/00074,1228,"Automatic Coffee Machine Fas 100",,"18.5,403,30,160"
+IMG/COF/00033,358,"Coffee Brewer with Coffee Filter",,"9230,50,60,230"
+IMG/COF/00104,1128,"Coffee Brewer with 2 Decanter FLT120-2 I",,"190,370,440"
+IMG/REF/00082,91,"Ice Cube Machine CB-416A Brema",capacity,"592,687,13,18,33,42"
+IMG/REF/00154,92,"Ice Cube Machine CB-640A Brema",,"603,850,13,18,33,42"
+IMG/REF/00181,93,"Ice Cube Machine CB 955A HC Brema","temperature,capacity","18,21,15"
+IMG/REF/00022,1236,"Ice Cube Machine ZBJ-40P Iberna",,"15,10,450,500,580,950"
+IMG/REF/00021,1237,"Ice Cube Machine ZBJ-60P Iberna",capacity,"15,10,450,680,290"
+IMG/REF/00209,1242,"Ice Cube Machine ZBJ-80P Iberna",capacity,"240,60,115,650,30,290"
+IMG/REF/00019,1244,"Ice Cube Machine ZBJ-150P Iberna",temperature,"25,20,43,290,765,780,1500"
+IMG/REF/00210,1245,"Ice Cube Machine ZBJ-250P Iberna","temperature,capacity","25,20,43,290"
+IMG/ICE/00018,144,"Ice Cream Machine Free Standing S520F",,"785,820,1539,230"
+IMG/ICE/00028,100,"Pastomaster 60 RTX Batch Pasteuriser",,"390,1370,1080,65,380"
+IMG/DWW/00149,1186,"Hood Type Dishwasher",voltage/power,30
