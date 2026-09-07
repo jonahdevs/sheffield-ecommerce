@@ -694,7 +694,7 @@ new #[Layout('layouts::app')] #[Title('Order | Admin')] class extends Component
                                     <span class="font-semibold tabular-nums dark:text-white">{!! money($payment->amount_cents) !!}</span>
                                 </div>
                                 @php
-                                    $ref = $payment->mpesa_receipt ?? $payment->stripe_payment_intent_id ?? $payment->checkout_request_id;
+                                    $ref = $payment->mpesa_receipt ?? $payment->paystack_reference ?? $payment->checkout_request_id;
                                 @endphp
                                 @if ($ref)
                                     <div class="flex justify-between gap-2">

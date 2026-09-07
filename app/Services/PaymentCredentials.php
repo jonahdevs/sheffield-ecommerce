@@ -18,25 +18,6 @@ class PaymentCredentials
     ) {}
 
     // -------------------------------------------------------------------------
-    // Stripe
-    // -------------------------------------------------------------------------
-
-    public function stripeKey(): string
-    {
-        return $this->apiSettings->stripe_key ?: (string) config('services.stripe.key', '');
-    }
-
-    public function stripeSecret(): string
-    {
-        return $this->apiSettings->stripe_secret ?: (string) config('services.stripe.secret', '');
-    }
-
-    public function stripeWebhookSecret(): string
-    {
-        return $this->apiSettings->stripe_webhook_secret ?: (string) config('services.stripe.webhook_secret', '');
-    }
-
-    // -------------------------------------------------------------------------
     // Paystack
     // -------------------------------------------------------------------------
 

@@ -27,17 +27,6 @@ class PaymentFactory extends Factory
         ];
     }
 
-    public function stripe(): static
-    {
-        return $this->state([
-            'provider' => 'stripe',
-            'phone' => null,
-            'merchant_request_id' => null,
-            'checkout_request_id' => null,
-            'stripe_payment_intent_id' => 'pi_test_'.fake()->bothify('??????????'),
-        ]);
-    }
-
     public function paystack(): static
     {
         return $this->state([
@@ -84,17 +73,16 @@ class PaymentFactory extends Factory
                 'status' => PaymentStatus::SUCCESS,
                 'paid_at' => now(),
                 // Daraja M-Pesa success fields
-                'mpesa_receipt' => $provider === 'mpesa' ? strtoupper(fake()->bothify('???#####??')) : null,
+                // Mobile-money receipt: direct Daraja, and Paystack mobile money
+                // which surfaces the network receipt.
+                'mpesa_receipt' => ($provider === 'mpesa' || $isPaystackMobile) ? strtoupper(fake()->bothify('???#####??')) : null,
                 'result_code' => $provider === 'mpesa' ? 0 : null,
                 'result_desc' => $provider === 'mpesa' ? 'The service request is processed successfully.' : null,
-                // Stripe success fields
-                'stripe_charge_id' => $provider === 'stripe' ? 'ch_test_'.fake()->bothify('??????????') : null,
                 // Paystack success fields
                 'authorization_code' => $provider === 'paystack' ? 'AUTH_'.fake()->bothify('??????????') : null,
-                'mpesa_receipt' => $isPaystackMobile ? strtoupper(fake()->bothify('???#####??')) : null,
                 // Card details for card-based payments
-                'card_brand' => ($isPaystackCard || $provider === 'stripe') ? 'visa' : null,
-                'card_last4' => ($isPaystackCard || $provider === 'stripe') ? '4242' : null,
+                'card_brand' => $isPaystackCard ? 'visa' : null,
+                'card_last4' => $isPaystackCard ? '4242' : null,
             ], fn ($v) => $v !== null);
         });
     }

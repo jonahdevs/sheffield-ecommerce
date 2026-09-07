@@ -7,7 +7,6 @@ use App\Enums\PaymentStatus;
 use App\Models\Payment;
 use App\Notifications\Orders\RefundProcessed;
 use App\Services\Paystack\PaystackPaymentService;
-use App\Services\Stripe\StripePaymentService;
 use Illuminate\Contracts\Cache\LockTimeoutException;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
@@ -18,8 +17,8 @@ use InvalidArgumentException;
  * Refunds a settled payment: reverses it at the gateway where supported, records
  * the refund (full or partial), advances the order, and notifies the customer.
  *
- * Paystack and Stripe refunds are issued live through the gateway API - Paystack
- * reverses every channel (cards, M-Pesa, Airtel Money, bank transfer) for us.
+ * Paystack refunds are issued live through the gateway API - it reverses every
+ * channel (cards, M-Pesa, Airtel Money, bank transfer) for us.
  * Direct M-Pesa (Daraja) has no automated reversal in this integration - the
  * refund is recorded and the customer is notified, while finance reverses the
  * transaction through the Safaricom portal out of band.
@@ -63,8 +62,6 @@ class RefundService
             // the network call (not a DB transaction) to keep connections free.
             if ($payment->provider === 'paystack') {
                 app(PaystackPaymentService::class)->refund($payment, $amountCents);
-            } elseif ($payment->provider === 'stripe') {
-                app(StripePaymentService::class)->refund($payment, $amountCents);
             }
 
             return DB::transaction(function () use ($payment, $amountCents, $alreadyRefunded, $reason, $byUserId) {

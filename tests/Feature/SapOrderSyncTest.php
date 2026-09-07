@@ -407,26 +407,6 @@ it('leaves card fields empty for a Paystack mobile-money payment and uses the re
         ->and($block['numberOfPayments'])->toBe('1');
 });
 
-it('fills card fields for a Stripe payment', function () {
-    $order = Order::factory()->create();
-
-    Payment::factory()->stripe()->successful()->create([
-        'order_id' => $order->id,
-        'stripe_payment_intent_id' => 'pi_test_123',
-        'stripe_charge_id' => 'ch_test_456',
-        'card_brand' => 'mastercard',
-        'card_last4' => '4444',
-    ]);
-
-    $block = SapOrderPayload::fromOrder($order)['credit_guard_response'];
-
-    expect($block['uid'])->toBe('ch_test_456')
-        ->and($block['cgUid'])->toBe('ch_test_456')
-        ->and($block['cardBrand'])->toBe('mastercard')
-        ->and($block['cardNo'])->toBe('4444')
-        ->and($block['creditCardToken'])->toBe('pi_test_123');
-});
-
 it('returns an empty payment block when the order has no successful payment', function () {
     $order = Order::factory()->create();
 

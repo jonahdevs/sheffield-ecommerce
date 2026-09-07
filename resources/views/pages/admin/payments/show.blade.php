@@ -108,8 +108,6 @@ new #[Layout('layouts::app')] #[Title('Payment | Admin')] class extends Componen
             ['label' => 'Checkout request', 'value' => $p->checkout_request_id],
             ['label' => 'Paystack reference', 'value' => $p->paystack_reference],
             ['label' => 'Authorization code', 'value' => $p->authorization_code],
-            ['label' => 'Stripe session', 'value' => $p->stripe_session_id],
-            ['label' => 'Stripe payment intent', 'value' => $p->stripe_payment_intent_id],
             ['label' => 'Result code', 'value' => $p->result_code !== null ? (string) $p->result_code : null],
             ['label' => 'Result description', 'value' => $p->result_desc],
         ], fn ($row) => ! empty($row['value'])));
@@ -230,8 +228,6 @@ new #[Layout('layouts::app')] #[Title('Payment | Admin')] class extends Componen
                     <span class="font-mono">{{ $payment->order?->order_number }}</span>.
                     @if ($payment->provider === 'paystack')
                         This reverses the payment through Paystack immediately.
-                    @elseif ($payment->provider === 'stripe')
-                        This reverses the charge through Stripe immediately.
                     @else
                         This records the refund and notifies the customer - reverse the M-Pesa transaction manually via Safaricom.
                     @endif

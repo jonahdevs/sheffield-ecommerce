@@ -12,5 +12,4 @@ it('labels the Paystack settlement channel rather than the gateway', function (?
     'bank transfer channel' => ['bank_transfer', 'paystack', 'Bank transfer'],
     'paystack without channel' => [null, 'paystack', 'Paystack'],
     'direct mpesa' => [null, 'mpesa', 'M-Pesa'],
-    'stripe' => [null, 'stripe', 'Card'],
 ]);

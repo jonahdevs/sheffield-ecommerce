@@ -102,12 +102,12 @@ but the values are populated from **whichever gateway settled the payment**:
 
 - **`uid`** - settlement reference SAP reconciles the receipt against. Prefers the
   M-Pesa/mobile-money receipt when present, else the gateway's own reference
-  (Paystack reference → Stripe charge/intent).
+  (the Paystack reference).
 - **`cgUid`** - the gateway's internal transaction id (Paystack `payload.id`,
-  Stripe charge id, M-Pesa `checkout_request_id`).
+  M-Pesa `checkout_request_id`).
 - **Card fields** (`cardBrand`, `cardNo` [last-4], `cardExpiration` [`MMYY`],
-  `creditCardToken`) - filled only for card rails (Paystack `channel = card`, or
-  Stripe). Mobile-money / bank-transfer leave them empty.
+  `creditCardToken`) - filled only for card rails (Paystack `channel = card`).
+  Mobile-money / bank-transfer leave them empty.
 - **`numberOfPayments`** - `"1"` when settled, `"0"` when there is no successful payment.
 
 > ⚠️ `Orderid` **must** stay numeric - SAP's deserializer rejects the whole payload
@@ -202,8 +202,8 @@ php artisan test --compact --filter=Sap
 The values below are what actually goes over the wire (Telescope → **HTTP Client**).
 The `customer` and `order` blocks are identical every time; only
 `credit_guard_response` changes with the gateway/channel. Paystack is the active
-gateway (card / M-Pesa / Airtel / Pesalink); direct M-Pesa and Stripe are dormant
-fallbacks.
+gateway (card / M-Pesa / Airtel / Pesalink); direct M-Pesa (Daraja) is a dormant
+fallback.
 
 ### Full payload - Paystack **Card**
 
@@ -342,27 +342,6 @@ No receipt for a bank transfer, so `uid` = the Paystack reference.
 }
 ```
 `uid` = the M-Pesa receipt; `cgUid` = the STK `checkout_request_id`.
-
-### **Stripe** - dormant fallback
-
-```json
-{
-  "credit_guard_response": {
-    "authNumber": "",
-    "cardBrand": "mastercard",
-    "cardExpiration": "",
-    "cardId": "",
-    "cardNo": "4444",
-    "cgUid": "ch_3QabcXYZ",
-    "creditCardToken": "pi_3QabcXYZ",
-    "numberOfPayments": "1",
-    "personalId": "",
-    "uid": "ch_3QabcXYZ"
-  }
-}
-```
-Treated as a card. `creditCardToken` = payment intent, `cgUid` / `uid` = charge id.
-`cardExpiration` stays empty (Stripe expiry isn't recorded).
 
 ### **No successful payment** (unpaid / failed)
 

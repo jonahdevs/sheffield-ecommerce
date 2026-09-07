@@ -54,12 +54,6 @@ new #[Layout('layouts::app')] #[Title('Financial settings | Admin')] class exten
 
     public ?string $mpesa_callback_url = null;
 
-    public ?string $stripe_key = null;
-
-    public ?string $stripe_secret = null;
-
-    public ?string $stripe_webhook_secret = null;
-
     public ?string $paystack_public_key = null;
 
     public ?string $paystack_secret_key = null;
@@ -102,9 +96,6 @@ new #[Layout('layouts::app')] #[Title('Financial settings | Admin')] class exten
         $this->mpesa_consumer_secret = $api->mpesa_consumer_secret;
         $this->mpesa_passkey = $api->mpesa_passkey;
         $this->mpesa_callback_url = $api->mpesa_callback_url;
-        $this->stripe_key = $api->stripe_key;
-        $this->stripe_secret = $api->stripe_secret;
-        $this->stripe_webhook_secret = $api->stripe_webhook_secret;
         $this->paystack_public_key = $api->paystack_public_key;
         $this->paystack_secret_key = $api->paystack_secret_key;
 
@@ -126,11 +117,8 @@ new #[Layout('layouts::app')] #[Title('Financial settings | Admin')] class exten
             'mpesa_shortcode'      => ['nullable', 'string', 'max:20'],
             'mpesa_type'           => ['required', 'in:paybill,till'],
             'mpesa_callback_url'   => ['nullable', 'url', 'max:500'],
-            'card_provider'        => ['required', 'in:flutterwave,paystack,stripe'],
+            'card_provider'        => ['required', 'in:flutterwave,paystack'],
             'bank_details'         => ['nullable', 'string', 'max:1000'],
-            'stripe_key'           => ['nullable', 'string', 'max:500'],
-            'stripe_secret'        => ['nullable', 'string', 'max:500'],
-            'stripe_webhook_secret' => ['nullable', 'string', 'max:500'],
             'paystack_public_key'  => ['nullable', 'string', 'max:500'],
             'paystack_secret_key'  => ['nullable', 'string', 'max:500'],
             'mpesa_consumer_key'   => ['nullable', 'string', 'max:500'],
@@ -157,9 +145,6 @@ new #[Layout('layouts::app')] #[Title('Financial settings | Admin')] class exten
             'mpesa_consumer_secret' => $this->mpesa_consumer_secret ?: null,
             'mpesa_passkey'         => $this->mpesa_passkey ?: null,
             'mpesa_callback_url'    => $this->mpesa_callback_url ?: null,
-            'stripe_key'            => $this->stripe_key ?: null,
-            'stripe_secret'         => $this->stripe_secret ?: null,
-            'stripe_webhook_secret' => $this->stripe_webhook_secret ?: null,
             'paystack_public_key'   => $this->paystack_public_key ?: null,
             'paystack_secret_key'   => $this->paystack_secret_key ?: null,
         ])->save();

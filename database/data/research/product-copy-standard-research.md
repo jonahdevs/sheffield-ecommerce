@@ -77,6 +77,15 @@ do: what the machine is for, who it suits, and *why* the headline numbers matter
 
 ### `short_description` — **a scan line, 8-30 words**
 
+> ⚠ **2026-09-04 — this figure is not the one in force, and needs a decision.**
+> `publish-readiness.csv` was scored at **18-38 words**, and the catalogue was written to it:
+> median 25, 75% of rows between 18 and 38, only 21% inside 8-30. `App\Support\CopyStandard`
+> enforces 18-38 because that reproduces the existing scoreboard exactly; adopting 8-30 instead
+> would fail 173 rows rather than 166. The same split affects the bullet rule above — ≤ 12 words
+> as written, ≤ 14 as scored, a 90-row versus 15-row difference.
+> To settle it: change the constants in `CopyStandard`, rerun `php artisan catalogue:readiness
+> --write`, and correct these two lines.
+
 What the item is, its headline specs and its model code. Distilled from that product's own
 `description`. It answers *what is this* at a glance, above the fold.
 

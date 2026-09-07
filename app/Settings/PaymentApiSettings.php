@@ -20,14 +20,6 @@ class PaymentApiSettings extends Settings
 
     public ?string $mpesa_callback_url;
 
-    public ?string $stripe_key;
-
-    #[ShouldBeEncrypted]
-    public ?string $stripe_secret;
-
-    #[ShouldBeEncrypted]
-    public ?string $stripe_webhook_secret;
-
     public ?string $paystack_public_key;
 
     #[ShouldBeEncrypted]

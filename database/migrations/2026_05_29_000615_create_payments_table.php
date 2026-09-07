@@ -29,11 +29,7 @@ return new class extends Migration
             $table->integer('result_code')->nullable();
             $table->string('result_desc')->nullable();
 
-            // Stripe fields
-            // Note: stripe_client_secret is intentionally omitted - it is a
-            // short-lived credential that must be held in memory only, never persisted.
-            $table->string('stripe_payment_intent_id')->nullable()->unique();
-            $table->string('stripe_charge_id')->nullable();
+            // Card fields, populated for card-channel gateway payments
             $table->string('card_brand')->nullable();
             $table->char('card_last4', 4)->nullable();
 

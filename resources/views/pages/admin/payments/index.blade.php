@@ -244,7 +244,7 @@ new #[Layout('layouts::app')] #[Title('Payments | Admin')] class extends Compone
                     <flux:table.row :key="$payment->id">
                         <flux:table.cell variant="strong">
                             <span class="font-mono text-xs">
-                                {{ $payment->mpesa_receipt ?? ($payment->paystack_reference ?? ($payment->stripe_payment_intent_id ?? ($payment->checkout_request_id ?? '-'))) }}
+                                {{ $payment->mpesa_receipt ?? ($payment->paystack_reference ?? ($payment->checkout_request_id ?? '-')) }}
                             </span>
                             @if ($payment->phone)
                                 <span class="block text-xs font-normal text-zinc-400">{{ $payment->phone }}</span>

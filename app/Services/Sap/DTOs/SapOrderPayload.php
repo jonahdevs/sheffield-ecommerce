@@ -37,7 +37,7 @@ final readonly class SapOrderPayload
      * The keys are the legacy Credit Guard (card gateway) contract SAP's
      * middleware parses; we keep them stable and populate them from whichever
      * gateway actually settled the payment. Card fields are only filled for card
-     * channels (Paystack `card` / Stripe); every method fills `uid` with the
+     * channels (Paystack `card`); every method fills `uid` with the
      * settlement reference SAP reconciles the receipt against. Unknown fields are
      * left empty - SAP middleware accepts partial data.
      *
@@ -71,10 +71,8 @@ final readonly class SapOrderPayload
             $block['cardNo'] = (string) ($payment->card_last4 ?? '');
             $block['cardExpiration'] = self::cardExpiration($payment);
             // Reusable card handle the gateway returned (Paystack authorization
-            // code / Stripe payment intent) so SAP can store a card-on-file token.
-            $block['creditCardToken'] = (string) ($payment->authorization_code
-                ?? $payment->stripe_payment_intent_id
-                ?? '');
+            // code) so SAP can store a card-on-file token.
+            $block['creditCardToken'] = (string) ($payment->authorization_code ?? '');
         }
 
         return $block;
@@ -82,12 +80,11 @@ final readonly class SapOrderPayload
 
     /**
      * Was the payment made on a card rail? Only then do the card-specific fields
-     * carry meaningful data. Paystack reports the concrete channel post-verify;
-     * Stripe only ever charges cards.
+     * carry meaningful data. Paystack reports the concrete channel post-verify.
      */
     private static function isCardPayment(Payment $payment): bool
     {
-        return $payment->provider === 'stripe' || $payment->channel === 'card';
+        return $payment->channel === 'card';
     }
 
     /**
@@ -100,8 +97,6 @@ final readonly class SapOrderPayload
     {
         return (string) ($payment->mpesa_receipt
             ?? $payment->paystack_reference
-            ?? $payment->stripe_charge_id
-            ?? $payment->stripe_payment_intent_id
             ?? '');
     }
 
@@ -113,7 +108,6 @@ final readonly class SapOrderPayload
     {
         return match ($payment->provider) {
             'paystack' => (string) (data_get($payment->payload, 'id') ?? $payment->paystack_reference ?? ''),
-            'stripe' => (string) ($payment->stripe_charge_id ?? $payment->stripe_payment_intent_id ?? ''),
             'mpesa' => (string) ($payment->checkout_request_id ?? ''),
             default => '',
         };

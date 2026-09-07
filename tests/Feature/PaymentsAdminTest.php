@@ -15,15 +15,15 @@ it('loads the payments admin index', function () {
 
 it('filters payments by status and provider', function () {
     Payment::factory()->successful()->create(['mpesa_receipt' => 'AAA111']);
-    Payment::factory()->stripe()->create(['stripe_payment_intent_id' => 'pi_BBB']);
+    Payment::factory()->paystack()->create(['paystack_reference' => 'PSK-BBB']);
 
     Livewire::test('pages::admin.payments.index')
         ->set('filterProvider', 'mpesa')
         ->assertSee('AAA111')
-        ->assertDontSee('pi_BBB')
+        ->assertDontSee('PSK-BBB')
         ->set('filterProvider', '')
         ->set('filterStatus', PaymentStatus::PENDING->value)
-        ->assertSee('pi_BBB')
+        ->assertSee('PSK-BBB')
         ->assertDontSee('AAA111');
 });
 

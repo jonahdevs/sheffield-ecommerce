@@ -24,8 +24,6 @@ use Spatie\Activitylog\Support\LogOptions;
     'mpesa_receipt',
     'result_code',
     'result_desc',
-    'stripe_payment_intent_id',
-    'stripe_charge_id',
     'card_brand',
     'card_last4',
     'paystack_reference',
@@ -42,16 +40,9 @@ class Payment extends Model
     use HasFactory, LogsActivity;
 
     /**
-     * Short-lived Stripe client secret. Per the payments migration this is a
-     * credential that must live in session/memory only and is never persisted,
-     * so it's held on the in-memory model for the current request only.
-     */
-    protected ?string $transientClientSecret = null;
-
-    /**
-     * Short-lived Paystack access code returned by Initialize Transaction. Like
-     * the Stripe client secret it is request-scoped and never persisted - it is
-     * only used to resume the inline popup on the current page load.
+     * Short-lived Paystack access code returned by Initialize Transaction. It is
+     * request-scoped and never persisted - it is only used to resume the inline
+     * popup on the current page load.
      */
     protected ?string $transientAccessCode = null;
 
@@ -92,11 +83,6 @@ class Payment extends Model
     // ACCESSORS
     // ==================================================
 
-    public function getStripeClientSecretAttribute(): ?string
-    {
-        return $this->transientClientSecret;
-    }
-
     public function getPaystackAccessCodeAttribute(): ?string
     {
         return $this->transientAccessCode;
@@ -105,16 +91,6 @@ class Payment extends Model
     // ==================================================
     // HELPERS
     // ==================================================
-
-    /**
-     * Attach the (non-persisted) Stripe client secret for this request.
-     */
-    public function withStripeClientSecret(?string $secret): static
-    {
-        $this->transientClientSecret = $secret;
-
-        return $this;
-    }
 
     /**
      * Attach the (non-persisted) Paystack access code for this request.
@@ -127,9 +103,9 @@ class Payment extends Model
     }
 
     /**
-     * Human-friendly payment method actually used. Paystack and Stripe are only
-     * gateways, so the meaningful method is the settlement channel the customer
-     * paid through - card, M-Pesa / mobile money, bank transfer… - captured on
+     * Human-friendly payment method actually used. Paystack is only a gateway,
+     * so the meaningful method is the settlement channel the customer paid
+     * through - card, M-Pesa / mobile money, bank transfer… - captured on
      * the verified transaction. Falls back to the provider when no channel was
      * recorded (e.g. a direct Daraja M-Pesa payment).
      */
@@ -144,7 +120,6 @@ class Payment extends Model
             'qr' => 'QR',
             default => match ($this->provider) {
                 'mpesa' => 'M-Pesa',
-                'stripe' => 'Card',
                 'paystack' => 'Paystack',
                 default => ucwords(str_replace('_', ' ', (string) $this->provider)),
             },

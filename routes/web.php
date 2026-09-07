@@ -5,7 +5,6 @@ use App\Http\Controllers\Dev\MailPreviewController;
 use App\Http\Controllers\NewsletterController;
 use App\Http\Controllers\Payments\MpesaCallbackController;
 use App\Http\Controllers\Payments\PaystackWebhookController;
-use App\Http\Controllers\Payments\StripeWebhookController;
 use App\Http\Controllers\SocialAuthController;
 use App\Http\Controllers\Storefront\CategoryMenuController;
 use App\Models\Cart;
@@ -18,7 +17,6 @@ use Illuminate\Support\Facades\Route;
 // Payment provider callbacks (server-to-server, no auth, CSRF-exempt)
 // ---------------------------------------------------------------------------
 Route::post('/api/webhooks/mpesa', MpesaCallbackController::class)->name('payments.mpesa.callback');
-Route::post('/api/webhooks/stripe', StripeWebhookController::class)->name('payments.stripe.webhook');
 Route::post('/api/webhooks/paystack', PaystackWebhookController::class)->name('payments.paystack.webhook');
 
 // ---------------------------------------------------------------------------

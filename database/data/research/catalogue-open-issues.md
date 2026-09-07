@@ -782,3 +782,179 @@ Back bar coolers gained `Temperature Range 2-10 °C` and `Voltage 220 V / 50 Hz`
 Live states the S takes a `FIXED WATER CONNECTION` while the ST takes `FIXED WATER CONNECTION &
 BUILT IN 2 LITRE WATER TANK`. That tank is the only functional difference between two otherwise
 identical machines, and neither record said so. Now on both.
+
+## U. Harvest into the source-blocked rows — 2026-09-04
+
+A different cut from sections I–T. Rather than sweeping by category, this took the **82
+published rows whose copy could not be written because the record held nothing** (see
+`copy-blocked-on-source.md`) and asked the live site for each of them.
+
+| | rows |
+|---|---:|
+| Source-blocked rows | 82 |
+| Matched on the live site | 51 |
+| Carrying a substantial live `technical_specification` | 26 |
+| **Records rebuilt from live in this pass** | **18** |
+
+⭐ **Eleven of the eighteen had no spec table at all on our side.** `IMG/HOT/00257`,
+`IMG/HYS/00274`, `IMG/DIS/00144`, `IMG/BUF/00259`, `IMG/FPR/00079`, `IMG/HOT/00382`,
+`IMG/HYS/00220` and `IMG/HYS/00221` went from zero informative rows to between four and ten.
+
+⭐ **`IMG/REF/00204` was not the product our copy described.** Our record held only a
+dimensions line. Live reveals a **dual-temperature cabinet — chiller over chest freezer**,
++10 to 0 °C above and ≤ -12 °C below, on R600a with copper-pipe cooling. Nothing in our copy
+said the machine had two compartments.
+
+⭐ **`IMG/HYS/00220` / `IMG/HYS/00221` are a knee-operated / manual pair.** Live states
+"controlled water out of knee joint" for the YLS42 and "manually controlled water discharge"
+for the YLS44B. That is the only functional difference between two otherwise identical basins
+and neither record mentioned it.
+
+Every dimension harvested **corroborated our stored values exactly** except where noted below.
+Nothing was adopted over a disagreement.
+
+### U1. `IMG/BUF/00249` TC-2F — the stored dimensions cannot be right
+Both records say **29 × 23 × 22 mm**. The same live record gives a **526 × 324 mm heated
+glass**, so the cabinet cannot be 29 mm across. The dimensions row has been **dropped from the
+spec table rather than published**; stored `length`/`width`/`height` left untouched.
+→ **Needs:** a tape measure.
+
+### U2. `IMG/REF/00198` SD/SC-158Y — we were publishing internal dimensions as external
+Live states *"Inner dimensions for 158L: ~ 600*700*800"*. Our record published that triple as
+`Dimensions (W × D × H)` and stores it in `length`/`width`/`height`. Relabelled to **Internal
+Dimensions** per the source. The external footprint is now unknown.
+→ **Needs:** the external size. ⚠ Do not assume the stored fields are external.
+
+### U3. `IMG/REF/00205` LCD-639 — temperature omitted, depth left open
+Ours says a flat **-18 °C**; live says **dual temperature, "0 ~ 10 °C | ≤-22"**. Neither
+published. Depth **790 (ours) vs 798 (live)** — ours retained so the stored fields and the
+table stay in step. Harvested cleanly: dual-temperature configuration, cyclopentane
+insulation, R290.
+
+### U4. `IMG/FPR/00079` Z06A-N — dimension conflict, not adopted
+Ours 542 × 427 × 810, live 548 × 431 × 811. Ours retained.
+Live still carries the **three-market voltage list** that section E2 identified as this row's
+original defect; only the 230 V / 50 Hz figure was taken. The US-catalogue bullets
+("7.5 Gal of juice/hour", "Smokey gray front cover", "Customizable bins") were dropped.
+
+### U5. `IMG/DIS/00144` LK-1.6BY — temperature range not credible
+Live gives **"-2 °C to 20 °C"** for an ice cream display cabinet. A cabinet topping out at
++20 °C does not hold ice cream; the figure is almost certainly -2 to **-20**. Left out of the
+rebuilt table and the copy, on the same reasoning as B5.
+→ **Needs:** the factory figure.
+
+### U6. `IMG/BUF/00259` D7016T — overall height contradicts its own food pan
+Live gives overall **805 × 455 × 205 mm** and a food pan **600 × 410 × 240 mm**. A 240 mm pan
+does not sit in a 205 mm body. Pan and stand sizes published; **overall dimensions omitted.**
+
+### U7. ⚠ `IMG/FPR/00217` IB350CV — the live row mixes two products
+It carries this machine's `POWER: 350 W / 240 V / 50 Hz` **and** a separate `Power: 500W`, under
+model **`BLD300`** rather than IB350CV. Only the facts explicitly tied to the 350 W identity
+were taken. The net weight (3.1 kg), the 4,000–16,000 rpm range and the 110 V/60 Hz line were
+all left, because none can be attributed to this model while the row is in that state.
+⚠ The 4,000–16,000 rpm range is identical to `IMG/FPR/00218` (IB500LV), which supports the
+reading that the 500 W content belongs to that machine.
+→ **Needs:** the live row split, or a supplier sheet for the IB350CV.
+
+### U8. `IMG/PAS/00145` B30GA — speeds run together, model number disagrees with itself
+Live reads **"3-Speed gear box 197317 & 462rpm"**, almost certainly 197 / 317 / 462 rpm but not
+separated in the source. The three-speed gearbox is published; the figures are not.
+Our own record also disagrees with itself: `model_number` is **B30GA2**, the spec table says
+**B30GA**, and live says **B30GA**.
+⚠ Live dimensions for this row are a `100 × 100 × 100` placeholder and were ignored.
+
+### U9. `IMG/PAS/00102` HK-B7 — name and capacity disagree
+The product name says **7 Litres**; the live spec says a **7.5 L** bowl. The spec figure is
+published. A rename would need approval, so the name is untouched.
+
+### U10. Garbled control strings on two fryers, not published
+`IMG/HOT/00257` — *"Thermostat adjusts from 200°F to 204"* and *"400°F450°F hi-limiter"*.
+`IMG/HOT/00388` — *"Thermostat adjusts from 450°F (232°C) hi-limiter guarantees safety"*,
+which merges a thermostat range with a high-limit cut-out.
+Neither row's thermostat range or hi-limiter figure was published.
+⚠ `IMG/HOT/00388`'s first paragraph **was** the raw supplier string — 85 words of hyphen-joined
+spec publishing to shoppers. Replaced with prose; the facts moved into the spec table.
+
+### U11. Ten rows carried `<p><br></p>` spacers — fixed
+Raw supplier imports separated paragraphs with an empty paragraph holding a `<br>`. These
+render as a stray blank line on the PDP and counted as a paragraph against the standard.
+All ten cleaned catalogue-wide: `IMG/FPR/00080`, `IMG/FPR/00140`, `IMG/FPR/00139`,
+`IMG/DIS/00145`, `IMG/DIS/00144`, `IMG/BUF/00259`, `IMG/HOT/00382`, `IMG/HOT/00384`,
+`IMG/HYS/00274` and one further row.
+
+### U12. Still to sweep
+Eight of the 26 rows with substantial live specification were not reached in this pass:
+`IMG/DIS/00145`, `IMG/FPR/00140`, `IMG/HOT/00275`, `IMG/REF/00197`, `IMG/FPR/00239`,
+`IMG/FPR/00093`, `IMG/BUF/00090`, `IMG/HOT/00195`.
+The remaining 31 source-blocked rows do not match any live record, and **114 of the
+catalogue's thin spec tables sit in categories the I–T category sweep never reached** — that
+remains the larger seam.
+
+## V. The un-swept categories are a much thinner seam than expected — 2026-09-04
+
+Section U closed by naming the next target: *"114 of the catalogue's thin spec tables sit in
+categories the I–T category sweep never reached — that remains the larger seam."* This section
+tested that claim. **It does not hold.**
+
+The 100 rows that still had a thin spec table in a never-swept category (down from 114 after
+the U pass) were each looked up on the live site:
+
+| | rows | |
+|---|---:|---|
+| Sweep target | 100 | thin spec, category never swept |
+| Matched on the live site | 29 | |
+| — with a substantial live specification | **8** | rebuilt, see below |
+| — thin or empty on live as well | 21 | live knows no more than we do |
+| Skipped as a multi-hit SKU | 1 | `IMG/HOT/00256` |
+| **No live counterpart at all** | **70** | |
+
+⚠ **The live site cannot supply 92 of these 100 rows.** Seventy of them do not exist there in
+any addressable form, and twenty-one exist but are as empty as ours. The category sweep is not
+a large remaining seam; sections I–T took most of what the live record had.
+
+The rows with no live counterpart cluster hard by brand and by category:
+
+| brand | rows | | category | rows |
+|---|---:|---|---|---:|
+| HK-REDLINE | 16 | | Kitchen Smalls > Pots & Pans | 9 |
+| SHEFFIELD | 7 | | Ovens > Oven Accessories | 4 |
+| STEELOLOGY | 6 | | Cooking Equipment > Fryers | 4 |
+| KITCHENWARE | 6 | | Hygiene > Storage Containers | 4 |
+| OEM SHEFFIELD | 5 | | Buffet & Servery > Bain Maries | 3 |
+| RIMPAR | 4 | | Beverage Machines > Water Boilers | 3 |
+
+That shape is consistent with section N: these are largely **house-brand and kitchen-smalls
+lines that were never listed on the live site at all**, not a matching failure.
+
+→ **Conclusion: the remaining catalogue gap is a supplier-data problem, not a sync problem.**
+Further sweeping has little left to give. The chase-list in `copy-blocked-on-source.md` — 82
+rows across 21 brands, 39 of them holding no specification whatsoever — is the work that
+actually closes it.
+
+### Harvested in this pass (8 records)
+
+| SKU | model | gained |
+|---|---|---|
+| `IMG/DIS/00145` | LK-1.2DD | 12 × GN 1/4, 265 W, R290, dimensions — had no spec table |
+| `IMG/FPR/00140` | JSJC-12 | fruit 40-90 mm, 20 oranges/min, 0.37 kW, 55 kg — had no spec table |
+| `IMG/BUF/00151` | Santos 34-2A | 260 W, 230 V, 380 × 430 × 545 mm |
+| `IMG/BUF/00152` | Santos 34-3A | 260 W, 230 V, 570 × 430 × 545 mm |
+| `IMG/HOT/00275` | BS-4V | 4 pans, 1.5 kW, 220-240 V, 17 kg |
+| `IMG/REF/00197` | BD/BC-388 | **capacity 388 L**, which the model number itself encodes |
+| `IMG/FPR/00239` | QC205A | 5-disc set, 350 W, 220 V |
+| `IMG/HOT/00195` | OT-10B-21 | 2.6 kW, 220 V |
+
+### V1. `IMG/DIS/00145` LK-1.2DD — capacity omitted, same pattern as section L
+Live gives **256 litres for both** the LK-1.2DD and the LK-1.6BY. This is the 1.2 m cabinet
+taking **12** GN 1/4 pans against the 1.6 m cabinet's **18**. A shorter cabinet with two thirds
+the pans does not hold the same volume — the identical figure is the copy-paste that section L
+found across two whole ranges. Pan count published, litres not.
+→ **Needs:** the real capacity for the 1.2 m model.
+
+### V2. `IMG/FPR/00140` JSJC-12 — a voltage list mislabelled as watts
+Live reads **"Power 220/120 W"** directly above **"Engine 0.37 kw"**. The first is a
+two-market *voltage* list wearing a watts unit; the real power is 0.37 kW. Only the 220 V
+figure was published, on the same reasoning as section E.
+
+### V3. `IMG/HOT/00256` — skipped, multi-hit SKU
+Resolves to more than one live row and was not read. Same class of problem as section N.
