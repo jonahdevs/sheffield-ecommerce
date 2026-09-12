@@ -4200,7 +4200,7 @@
     "technical_specification": "<table><tbody><tr><td><strong>Brand</strong></td><td>HK-Redline</td></tr><tr><td><strong>Model</strong></td><td>YXD-8A-3</td></tr><tr><td><strong>Type</strong></td><td>Electric convection oven</td></tr><tr><td><strong>Trays</strong></td><td>3 &times; 600 &times; 400 mm</td></tr><tr><td><strong>Power</strong></td><td>3.5 kW</td></tr><tr><td><strong>Voltage</strong></td><td>240 V / 50 Hz</td></tr><tr><td><strong>Current</strong></td><td>15 A</td></tr><tr><td><strong>Temperature Range</strong></td><td>50 to 300 &deg;C</td></tr><tr><td><strong>External Dimensions (W &times; D &times; H)</strong></td><td>834 &times; 765 &times; 500 mm</td></tr><tr><td><strong>Internal Dimensions (W &times; D &times; H)</strong></td><td>700 &times; 460 &times; 288 mm</td></tr><tr><td><strong>Net Weight</strong></td><td>50 kg</td></tr></tbody></table>",
     "length": 834,
     "width": 765,
-    "height": 572,
+    "height": 500,
     "status": "published",
     "meta_description": "HK-Redline YXD-8A-3 electric convection oven in Kenya - 3 trays, 3.5 kW, 50 to 300 &deg;C, 834x765x500mm. Commercial baking equipment.",
     "gallery": [
@@ -4432,9 +4432,11 @@
     "price": 0,
     "quantity": 0,
     "image": "products/oven-stand-os85075s-201-grade-height-670-fabpsb00061.jpg",
-    "short_description": "Stainless steel oven stand, 201 grade, 670 mm high.",
-    "description": null,
-    "status": "archived"
+    "short_description": "Fabricated stainless steel oven stand with runners for eight trays and a single undershelf. 1.5 mm grade 201 top on 40 mm square legs with adjustable feet. Model OS85075S.",
+    "description": "<p>This is a fabricated stainless steel stand built to carry a countertop oven and the trays that go with it. The top is 1.5 mm sheet in grade 201 stainless steel, heavy enough to take the weight of a deck or convection oven without flexing under it, and the frame stands on 40 mm square legs with adjustable feet so it can be levelled on an uneven kitchen floor.</p><p>What makes it an oven stand rather than a plain table is the runner set below the top. Stainless steel runners hold eight trays, so the trays that come out of the oven have somewhere to go immediately underneath it instead of competing for bench space. A single undershelf sits below that for pans and containers. Grade 201 is the right specification for a dry stand of this kind, where the surface stays out of standing water.</p><h3>Key Features</h3><ul><li>Stainless steel runners below the top hold eight trays</li><li>1.5 mm thick top in grade 201 stainless steel</li><li>Single undershelf for pans and containers</li><li>40 mm square legs with adjustable feet</li><li>Nominal height 670 mm</li></ul>",
+    "status": "archived",
+    "meta_description": "Sheffield OS85075S stainless steel oven stand, runners for eight trays and an undershelf. Fabricated to order in Kenya for commercial kitchens.",
+    "technical_specification": "<table><tbody><tr><td><strong>Brand</strong></td><td>Sheffield</td></tr><tr><td><strong>Model</strong></td><td>OS85075S</td></tr><tr><td><strong>Type</strong></td><td>Fabricated oven stand</td></tr><tr><td><strong>Material</strong></td><td>Grade 201 stainless steel sheet</td></tr><tr><td><strong>Top Thickness</strong></td><td>1.5 mm</td></tr><tr><td><strong>Tray Capacity</strong></td><td>8 trays on stainless steel runners</td></tr><tr><td><strong>Shelving</strong></td><td>Single undershelf</td></tr><tr><td><strong>Legs</strong></td><td>40 mm square, adjustable feet</td></tr><tr><td><strong>Height</strong></td><td>670 mm</td></tr></tbody></table>"
   },
   {
     "name": "Baking Trays",
@@ -5481,9 +5483,11 @@
     "price": 0,
     "quantity": 12,
     "image": "products/chafing-dish-oval-hy-836-imgbuf00146.jpg",
-    "short_description": "Oval stainless steel chafing dish, HY-836.",
-    "description": null,
-    "status": "archived"
+    "short_description": "Oval chafing dish holding 5.5 litres, built in stainless steel throughout. The oval format suits carved joints and whole fish that sit awkwardly in a rectangular pan. Model HY-836.",
+    "description": "<p>The HY-836 is an oval chafing dish holding 5.5 litres, built in stainless steel throughout. Oval rather than rectangular is a serving decision more than a capacity one: the shape suits a curved buffet run and carved or whole items such as a joint, a whole fish or a rolled dish, where a GN rectangle forces the food into a corner.</p><p>Five and a half litres is enough for roughly forty to fifty portions of a wet dish before a refill, which places it at a single service station rather than a full banquet line. Stainless steel construction throughout means the pan, frame and lid all wash the same way and none of the parts discolour over a service, and the finish is smooth enough that spills wipe off the frame rather than baking on around the fuel holder.</p><h3>Key Features</h3><ul><li>Oval format, suited to carved and whole items</li><li>5.5 litre capacity, roughly 40 to 50 portions</li><li>Stainless steel pan, frame and lid</li><li>Smooth surfaces wipe clean between services</li></ul>",
+    "status": "archived",
+    "meta_description": "HY-836 oval chafing dish, 5.5 litres in stainless steel. Buffet and banqueting equipment for hotels and caterers in Kenya.",
+    "technical_specification": "<table><tbody><tr><td><strong>Brand</strong></td><td>HY</td></tr><tr><td><strong>Model</strong></td><td>HY-836</td></tr><tr><td><strong>Type</strong></td><td>Oval chafing dish</td></tr><tr><td><strong>Capacity</strong></td><td>5.5 litres</td></tr><tr><td><strong>Material</strong></td><td>Stainless steel</td></tr><tr><td><strong>Format</strong></td><td>Oval</td></tr></tbody></table>"
   },
   {
     "name": "Chafing Dish Roll Top 9 Litres RA2301",
@@ -5859,12 +5863,14 @@
     "price": 140000,
     "quantity": 1,
     "image": "products/food-warmer-electric-bertos-imghot00005.jpg",
-    "short_description": "Electric food warmer for buffet and banquet service, Bertos E7SP-4B.",
-    "description": null,
+    "short_description": "Countertop electric food warmer taking one GN 1/1 pan, heated by a ceramic lamp above and a warmed tank below. AISI 304 stainless steel, 1 kW at 230-240 V. Model E7SP-4B.",
+    "description": "<p>The Bertos E7SP-4B is a countertop electric food warmer built around a single GN 1/1 opening, sized for the pass where fried food waits between the fryer and the plate. Its worktop and front panels are AISI 304 stainless steel, and the well drains through a ramp and channel that carries fat away from the food rather than letting it collect underneath.</p><p>Heat arrives from both directions. A ceramic lamp works from above while a low-output element warms the tank below, and that pairing is what keeps chips crisp instead of steaming them soft, which is the usual failure of a warmer that heats only from beneath. Rated at 1 kW on a 230-240 V supply it draws roughly 4 A, so it runs from an ordinary socket and can be placed anywhere along the counter without its own circuit.</p><h3>Key Features</h3><ul><li>Takes one GN 1/1 pan; well measures 305 x 510 x 175 mm</li><li>Ceramic lamp above, heated tank below</li><li>AISI 304 stainless steel worktop and front panels</li><li>Ramp and channel drain fat from the well</li><li>1 kW at 230-240 V, about 4 A</li></ul>",
     "status": "archived",
     "length": 400,
     "width": 700,
-    "height": 290
+    "height": 290,
+    "meta_description": "Bertos E7SP-4B countertop electric food warmer, one GN 1/1 pan with ceramic lamp and heated tank. For chip shops, canteens and delis in Kenya.",
+    "technical_specification": "<table><tbody><tr><td><strong>Brand</strong></td><td>Bertos</td></tr><tr><td><strong>Model</strong></td><td>E7SP-4B</td></tr><tr><td><strong>Type</strong></td><td>Countertop electric food warmer</td></tr><tr><td><strong>Pan Capacity</strong></td><td>1 x GN 1/1</td></tr><tr><td><strong>Well Dimensions</strong></td><td>305 x 510 x 175 mm</td></tr><tr><td><strong>Heating</strong></td><td>Upper ceramic lamp and lower tank element</td></tr><tr><td><strong>Power</strong></td><td>1 kW</td></tr><tr><td><strong>Voltage</strong></td><td>230-240 V</td></tr><tr><td><strong>Construction</strong></td><td>AISI 304 stainless steel worktop and front panels</td></tr><tr><td><strong>Overall Dimensions</strong></td><td>400 x 700 x 290 mm</td></tr></tbody></table>"
   },
   {
     "name": "Food Warmer Electric Redline CS-310",
@@ -5875,14 +5881,14 @@
     "price": 47196,
     "quantity": 5,
     "image": "products/food-warmer-electric-redline-cs-310-imghot00222.jpg",
-    "short_description": "Food Warmer Electric Redline, measuring 330 &times; 560 &times; 500 mm.",
-    "description": "<p>Electric Food Warmer Table Top -940W / 220-240V</p><p>Stainless steel sheathed heating elements on top</p><p>Heating elements for even heat distribution compared with lamps</p><p>Mirror polished radiant plate against heater to improve efficiency</p><p>Easy access from 3 sides for food Can be used to keep French fries or any food warm</p><p>Separate on/off switches for lamp and heater</p><p>Raised base to keep heat away from table base</p><p>Optional wiring grid for drainage of Fries grease</p><h3>Key Features</h3><ul><li>Dimensions (L &times; W &times; H): 330 &times; 560 &times; 500 mm</li></ul>",
+    "short_description": "Heated chip scuttle that holds fried chips at serving temperature between the fryer and the plate, rated 940 W on a 220 to 240 volt supply.",
+    "description": "<p>The HK-Redline CS-310 is an electric chip scuttle - a heated holding station that sits between the fryer and the counter, keeping a batch of chips hot and crisp while orders are plated. It draws 940 W from an ordinary 220-240 V socket, so it needs no special supply.</p><p>Chips lose their texture faster than almost anything else on a menu. Left in the fryer basket they carry on cooking in their own residual oil and go leathery; left on the pass they cool and go soft within minutes. A scuttle holds them in warm, dry air instead, so a busy fryer can run ahead of demand and still serve chips that eat like they have just come out.</p><h3>Key Features</h3><ul><li>Heated holding station for fried chips</li><li>940 W element on a 220-240 V supply</li><li>Runs at 50/60 Hz, so no special supply is needed</li><li>Compact 330 &times; 560 &times; 500 mm counter footprint</li><li>Lets the fryer run ahead of the order rush</li></ul>",
     "length": 330,
     "width": 560,
     "height": 500,
-    "technical_specification": "<table><tbody><tr><td><strong>Brand</strong></td><td>HK-Redline</td></tr><tr><td><strong>Model</strong></td><td>CS-310</td></tr><tr><td><strong>Type</strong></td><td>Food Warmer Electric Redline</td></tr><tr><td><strong>Dimensions (L &times; W &times; H)</strong></td><td>330 &times; 560 &times; 500 mm</td></tr></tbody></table>",
+    "technical_specification": "<table><tbody><tr><td><strong>Brand</strong></td><td>HK-Redline</td></tr><tr><td><strong>Model</strong></td><td>CS-310</td></tr><tr><td><strong>Product Type</strong></td><td>Electric chip scuttle (heated holding station)</td></tr><tr><td><strong>Power Input</strong></td><td>940 W</td></tr><tr><td><strong>Rated Voltage</strong></td><td>220-240 V</td></tr><tr><td><strong>Frequency</strong></td><td>50/60 Hz</td></tr><tr><td><strong>Dimensions (L &times; W &times; H)</strong></td><td>330 &times; 560 &times; 500 mm</td></tr></tbody></table>",
     "status": "published",
-    "meta_description": "HK-Redline CS-310 food warmer electric redline in Kenya. Commercial catering equipment."
+    "meta_description": "HK-Redline CS-310 electric chip scuttle in Kenya - 940 W heated holding station that keeps fried chips crisp and hot for service."
   },
   {
     "name": "Hot Pot with Warmer Stove 36CM Rose Gold 6L",
@@ -8238,11 +8244,14 @@
     "price": null,
     "quantity": 5,
     "image": "products/fryer-split-type-10-10-litres-hds-electric-imghot00436.jpg",
-    "short_description": "Split-type electric fryer with two 10-litre tanks, HDS HDSEFF-10LS.",
+    "short_description": "Split-tank electric fryer with two independent 10 litre wells, each separately controlled so oils never mix. Floor standing, single phase 240 V. Model HDSEFF-10LS.",
     "status": "archived",
     "length": 400,
     "width": 800,
-    "height": 1100
+    "height": 1100,
+    "description": "<p>The HDSEFF-10LS is a split-tank electric fryer: two separate 10 litre wells in one floor-standing body, each with its own oil and its own controls. The point of a split tank is separation rather than volume. Fish and chips can be fried at the same time without the fish flavouring the chips, or one side can be kept for a dietary requirement while the other handles general service.</p><p>Twenty litres of oil across two tanks also recovers temperature faster than a single twenty litre well, because each side is heating a smaller mass and only the side in use is drawn down. The unit is wired for a single phase 240 V supply on a double-wire connection, and its 400 mm width means two of them occupy the same run of line as one standard 800 mm cooking module.</p><h3>Key Features</h3><ul><li>Split tank: two independent 10 litre wells</li><li>Separate controls per side, so oils never mix</li><li>Faster temperature recovery than one large well</li><li>Single phase 240 V, double-wire connection</li><li>Floor standing, 400 x 800 x 1100 mm</li></ul>",
+    "meta_description": "HDS HDSEFF-10LS split-tank electric fryer, two 10 litre wells with separate controls. Supplied to restaurants and hotels across Kenya.",
+    "technical_specification": "<table><tbody><tr><td><strong>Brand</strong></td><td>HDS</td></tr><tr><td><strong>Model</strong></td><td>HDSEFF-10LS</td></tr><tr><td><strong>Type</strong></td><td>Split-tank electric fryer, floor standing</td></tr><tr><td><strong>Tank Configuration</strong></td><td>2 x 10 litres, independent</td></tr><tr><td><strong>Total Oil Capacity</strong></td><td>20 litres</td></tr><tr><td><strong>Voltage</strong></td><td>240 V, single phase, 50 Hz</td></tr><tr><td><strong>Connection</strong></td><td>Double wire</td></tr><tr><td><strong>Dimensions</strong></td><td>400 x 800 x 1100 mm</td></tr></tbody></table>"
   },
   {
     "sku": "IMG/HOT/00434",
@@ -8348,14 +8357,14 @@
     "price": 225000,
     "quantity": 0,
     "image": "products/elec-fryer-ef-28l-imghot00421.jpg",
-    "short_description": "Counter-top electric fryer with a 28 litre oil tank, sized to hold temperature through a rush where bench space rather than floor space is available.",
+    "short_description": "Floor-standing electric fryer with a 28 litre oil tank, a 9 kW element on a 220 to 240 volt supply, a 0 to 99 minute timer and a 230 degree safety cut-out.",
     "status": "published",
-    "description": "<p>The HK-Redline EF-28L is a single-tank electric fryer holding 28 litres of oil, the counter-top sibling of the floor-standing DF-28L. It is the fryer for an operation that needs real tank volume but has bench space rather than floor space to give it.</p><p>A 28 litre tank matters more than it sounds: the larger the oil mass, the less the temperature falls when frozen product goes in, so the crust sets quickly instead of the food sitting and absorbing oil. That is the difference between a fryer that keeps up through a rush and one that never recovers. The tank is stainless steel throughout for wash-down.</p><h3>Key Features</h3><ul><li>28 litre oil capacity in a counter-top format</li><li>Large oil mass resists temperature drop on loading</li><li>Stainless steel tank and body</li><li>Counter-top sibling of the floor-standing DF-28L</li></ul>",
-    "technical_specification": "<table><tbody><tr><td><strong>Brand</strong></td><td>HK-Redline</td></tr><tr><td><strong>Model</strong></td><td>EF-28L</td></tr><tr><td><strong>Type</strong></td><td>Elec Fryer</td></tr></tbody></table>",
-    "meta_description": "HK-Redline EF-28L electric fryer in Kenya - 28 litre oil capacity, stainless steel tank, counter-top format. Commercial deep fryer.",
+    "description": "<p>The HK-Redline EF-28L is a floor-standing electric fryer built around a 28-litre oil tank, sized for fast-food kitchens that fry continuously rather than in occasional batches. At 1,100 mm tall it stands on the floor as its own station rather than taking counter space.</p><p>A 9 kW element is what makes a tank this size practical: recovery time after a basket goes in is the figure that decides whether the tenth order of a rush comes out as good as the first. A timer running from 0 to 99 minutes signals when a batch is done, and a second thermostat inside the housing cuts the power at 230 degrees Celsius should the working thermostat ever fail.</p><h3>Key Features</h3><ul><li>28-litre oil tank for continuous frying</li><li>9 kW element on a 220-240 V, 50 Hz supply</li><li>Timer alarm adjustable from 0 to 99 minutes</li><li>Independent thermostat cuts power at 230 degrees Celsius</li><li>Heating tube swings up for cleaning the oil bowl</li><li>Floor-standing, 400 &times; 800 &times; 1,100 mm</li></ul>",
+    "technical_specification": "<table><tbody><tr><td><strong>Brand</strong></td><td>HK-Redline</td></tr><tr><td><strong>Model</strong></td><td>EF-28L</td></tr><tr><td><strong>Product Type</strong></td><td>Floor-standing electric fryer</td></tr><tr><td><strong>Oil Capacity</strong></td><td>28 litres</td></tr><tr><td><strong>Power</strong></td><td>9 kW</td></tr><tr><td><strong>Voltage</strong></td><td>220-240 V</td></tr><tr><td><strong>Frequency</strong></td><td>50 Hz</td></tr><tr><td><strong>Timer</strong></td><td>0-99 minutes with alarm</td></tr><tr><td><strong>Safety Cut-out</strong></td><td>230 &deg;C independent thermostat</td></tr><tr><td><strong>Dimensions (W &times; D &times; H)</strong></td><td>400 &times; 800 &times; 1,100 mm</td></tr></tbody></table>",
+    "meta_description": "HK-Redline EF-28L electric fryer in Kenya - 28 litre tank, 9 kW, with a 0-99 minute timer and a 230 C safety cut-out.",
     "length": 400,
-    "width": 700,
-    "height": 290
+    "width": 800,
+    "height": 1100
   },
   {
     "name": "Milk Boiler with Indirect Water Heating Jacket",
@@ -8663,9 +8672,11 @@
     "price": 0,
     "quantity": 1,
     "image": "products/heated-insulated-water-urn-40-litres-imgcof00098.jpg",
-    "short_description": "Heated insulated water urn, 40 litres, Jangmen WBB40L.",
-    "description": null,
-    "status": "archived"
+    "short_description": "Insulated 40 litre stainless steel water urn, about 200 cups per fill. Double-walled with foam insulation, concealed element, boil-dry cutout and a non-drip tap. 2800-3000 W. Model WBB40L.",
+    "description": "<p>This Jiangmen WBB40L is a 40 litre insulated water urn for sites that pour hot water all day rather than in bursts. Forty litres is roughly 200 cups, so one fill covers a tea break for a large staff canteen, a conference floor or a ward round without anyone waiting on a reboil.</p><p>The body is double walled with polyurethane foam between the skins, which is the feature that matters most in service: once the water is up to temperature the element cycles far less often to hold it there, and the manufacturer rates the saving at up to half the electricity of an uninsulated urn. The element is concealed beneath the base so there is nothing inside the chamber to descale around, and a boil-dry cutout shuts the heat off if the urn is switched on empty.</p><h3>Key Features</h3><ul><li>40 litre capacity, roughly 200 cups per fill</li><li>Double-walled stainless steel with polyurethane foam insulation</li><li>Concealed element leaves the chamber clear for cleaning</li><li>Automatic boil-dry protection</li><li>Heavy duty non-drip dispensing tap</li><li>2800-3000 W at 230-240 V</li></ul>",
+    "status": "archived",
+    "meta_description": "Jiangmen WBB40L insulated 40 litre water urn, around 200 cups per fill, with concealed element and boil-dry protection. For canteens and hotels in Kenya.",
+    "technical_specification": "<table><tbody><tr><td><strong>Brand</strong></td><td>Jiangmen</td></tr><tr><td><strong>Model</strong></td><td>WBB40L</td></tr><tr><td><strong>Type</strong></td><td>Insulated electric water urn</td></tr><tr><td><strong>Capacity</strong></td><td>40 litres</td></tr><tr><td><strong>Construction</strong></td><td>Double-walled stainless steel, polyurethane foam filled</td></tr><tr><td><strong>Element</strong></td><td>Concealed</td></tr><tr><td><strong>Safety</strong></td><td>Automatic boil-dry protection</td></tr><tr><td><strong>Dispensing</strong></td><td>Heavy duty non-drip tap</td></tr><tr><td><strong>Power</strong></td><td>2800-3000 W</td></tr><tr><td><strong>Voltage</strong></td><td>230-240 V</td></tr></tbody></table>"
   },
   {
     "name": "Heated Water Urn Non-Exposed Element 15 Litres",
@@ -9272,12 +9283,14 @@
     "price": 0,
     "quantity": 100,
     "image": null,
-    "short_description": "Wall-mounted stainless steel hand wash basin, Grachoo HSWM-006.",
-    "description": null,
+    "short_description": "Wall-mounted stainless steel hand wash basin supplied with faucet and drain, manually operated. Bowl 390 x 290 x 115 mm in grade 304 stainless steel. Model HSWM-006.",
+    "description": "<p>The HSWM-006 is a wall-mounted stainless steel hand wash basin supplied complete with its faucet and drain, so it arrives as a unit to be plumbed in rather than a bowl to be fitted out. Water discharge is controlled manually, which makes it the straightforward counterpart to the knee-operated HSWM-001 in areas where hands-free operation is not required.</p><p>The bowl is 390 mm wide, 290 mm deep and 115 mm from rim to base, formed in 304 stainless steel at 1.0 mm. Grade 304 is the specification that matters here: it is the austenitic stainless normally required around food and clinical washing because it resists the chlorides in detergents and disinfectants. Wall mounting keeps the floor underneath clear, which is what makes the area beneath the basin cleanable rather than a trap.</p><h3>Key Features</h3><ul><li>Supplied with faucet and drain fitted</li><li>Manually controlled water discharge</li><li>Bowl 390 x 290 x 115 mm</li><li>Grade 304 stainless steel, 1.0 mm</li><li>Wall mounted, floor left clear beneath</li></ul>",
     "status": "draft",
     "length": 400,
     "width": 400,
-    "height": 320
+    "height": 320,
+    "meta_description": "Grachoo HSWM-006 wall-mounted hand wash basin in 304 stainless steel, faucet and drain included. For commercial kitchens across Kenya.",
+    "technical_specification": "<table><tbody><tr><td><strong>Brand</strong></td><td>Grachoo</td></tr><tr><td><strong>Model</strong></td><td>HSWM-006</td></tr><tr><td><strong>Type</strong></td><td>Wall-mounted hand wash basin</td></tr><tr><td><strong>Operation</strong></td><td>Manually controlled discharge</td></tr><tr><td><strong>Supplied With</strong></td><td>Faucet and drain</td></tr><tr><td><strong>Bowl Size</strong></td><td>390 x 290 x 115 mm</td></tr><tr><td><strong>Material</strong></td><td>Grade 304 stainless steel, 1.0 mm</td></tr><tr><td><strong>Mounting</strong></td><td>Wall</td></tr></tbody></table>"
   },
   {
     "name": "Hand Wash Basin Knee Operated HSWM-001",
@@ -9288,9 +9301,11 @@
     "price": 0,
     "quantity": 61,
     "image": "products/hand-wash-basin-knee-operated-hswm-001-imghys00283.jpg",
-    "short_description": "Knee-operated stainless steel hand wash basin, Grachoo HSWM-001.",
-    "description": null,
-    "status": "draft"
+    "short_description": "Knee-operated stainless steel hand wash basin, started without touching a tap. Wall mountable, with a bowl 350 mm across and 115 mm deep. Model HSWM-001.",
+    "description": "<p>The HSWM-001 is a knee-operated hand wash basin in stainless steel, made for the point in a kitchen or clinic where hands must be washed without touching a tap. The user presses a knee panel to start the flow, so nothing that has just been handled is transferred onto a handle and back onto the next pair of clean hands.</p><p>That single detail is why knee operation is specified in food preparation and treatment areas rather than a mixer tap. The housing is stainless steel throughout and the unit is wall mountable, which keeps the floor beneath it clear for cleaning and lets the basin be set at the right height for the people using it. Overall it measures 400 x 400 x 200 mm with a further 30 mm allowance, around a bowl of 350 mm across and 115 mm deep.</p><h3>Key Features</h3><ul><li>Knee-operated, so no hand contact with a tap</li><li>Stainless steel housing throughout</li><li>Wall mountable, leaving the floor clear</li><li>Bowl 350 mm across and 115 mm deep</li><li>Overall 400 x 400 x 200 mm plus 30 mm</li></ul>",
+    "status": "draft",
+    "meta_description": "Grachoo HSWM-001 knee-operated stainless steel hand wash basin, wall mountable. Hands-free hygiene for kitchens and clinics in Kenya.",
+    "technical_specification": "<table><tbody><tr><td><strong>Brand</strong></td><td>Grachoo</td></tr><tr><td><strong>Model</strong></td><td>HSWM-001</td></tr><tr><td><strong>Type</strong></td><td>Knee-operated hand wash basin</td></tr><tr><td><strong>Operation</strong></td><td>Knee panel, no hand contact</td></tr><tr><td><strong>Mounting</strong></td><td>Wall mountable</td></tr><tr><td><strong>Material</strong></td><td>Stainless steel</td></tr><tr><td><strong>Bowl Size</strong></td><td>350 mm diameter x 115 mm deep</td></tr><tr><td><strong>Overall Dimensions</strong></td><td>400 x 400 x 200 mm (+30 mm)</td></tr></tbody></table>"
   },
   {
     "sku": "IMG/COF/00070",
@@ -9299,13 +9314,16 @@
     "model_number": "HLT.12",
     "category": "Hygiene > Water Softeners & Filtration",
     "image": "",
-    "short_description": "Water softener for espresso and coffee equipment, Sheffield HLT.12.",
+    "short_description": "Manual water softener for coffee machines, ovens and steamers. Handles inlet hardness to 90 French degrees at up to 1000 litres per hour, regenerated with about 1 kg of salt. Model HLT.12.",
     "price": 32200,
     "quantity": 1,
     "status": "archived",
     "length": 400,
     "width": 170,
-    "height": 250
+    "height": 250,
+    "description": "<p>The HLT.12 is a manual water softener for machines that will not tolerate scale: espresso groups, combi ovens, steamers and glasswashers. It treats incoming drinking water down to a maximum hardness of 90 French degrees and passes up to 1000 litres an hour, which is enough for a two-group coffee machine or a single oven rather than a whole kitchen.</p><p>Being manual, it is regenerated by hand rather than on a timer. Each regeneration takes about one kilogram of salt, so the running cost is easy to predict and there is no drain valve or controller to fail. It needs between 1 and 8 bar of supply pressure and water between 4 and 25 degrees Celsius, and at 7.5 kilograms it can sit on a shelf or under a counter without a stand.</p><h3>Key Features</h3><ul><li>Manual regeneration, about 1 kg of salt per cycle</li><li>Maximum inlet hardness 90 French degrees</li><li>Flow rate up to 1000 litres per hour</li><li>Supply pressure 1 to 8 bar</li><li>Water and room temperature 4 to 25 degrees Celsius</li><li>7.5 kg, 400 x 170 x 250 mm</li></ul>",
+    "meta_description": "HLT.12 manual water softener for coffee machines and combi ovens, 1000 litres per hour. Scale protection for kitchens across Kenya.",
+    "technical_specification": "<table><tbody><tr><td><strong>Brand</strong></td><td>Sheffield</td></tr><tr><td><strong>Model</strong></td><td>HLT.12</td></tr><tr><td><strong>Type</strong></td><td>Manual water softener</td></tr><tr><td><strong>Maximum Inlet Hardness</strong></td><td>90 French degrees</td></tr><tr><td><strong>Recommended Flow Rate</strong></td><td>Up to 1000 litres per hour</td></tr><tr><td><strong>Supply Pressure</strong></td><td>1 to 8 bar</td></tr><tr><td><strong>Water Temperature</strong></td><td>4 to 25 degrees Celsius</td></tr><tr><td><strong>Room Temperature</strong></td><td>4 to 25 degrees Celsius</td></tr><tr><td><strong>Salt per Regeneration</strong></td><td>1 kg</td></tr><tr><td><strong>Weight</strong></td><td>7.5 kg</td></tr><tr><td><strong>Dimensions</strong></td><td>400 x 170 x 250 mm</td></tr></tbody></table>"
   },
   {
     "sku": "IMG/COF/00125",
@@ -9529,9 +9547,11 @@
     "price": 25600,
     "quantity": 93,
     "image": "products/rational-cleaner-tablets-560022-imghys00207.jpg",
-    "short_description": "Cleaner tablets for Rational combi ovens and SelfCooking Center units.",
-    "description": null,
-    "status": "published"
+    "short_description": "Rational red cleaner tabs for SelfCookingCenter combi ovens, part number 56.00.22, supplied 100 per case. Concentrated tablets that remove baked-on fat and protein from the cooking chamber.",
+    "description": "<p>These are the red cleaner tabs for Rational SelfCookingCenter combi ovens, supplied 100 to a case under part number 56.00.22. They are the cleaning half of the two-tab system: the red tab lifts baked-on fat and protein from the cooking chamber, while the separate care tab handles scale and rinsing.</p><p>Rational builds them as a concentrated tablet rather than a liquid for two practical reasons. A tablet is dosed by count, so nobody has to measure a detergent into a hot chamber, and the concentration means a single tab covers a full clean cycle, which keeps the running cost per wash predictable. A 100-tab case therefore covers about a hundred cleaning cycles, or roughly three months of nightly cleaning on one oven.</p><h3>Key Details</h3><ul><li>Rational part number 56.00.22, supplied 100 tabs per case</li><li>Red cleaner tab, for the cleaning phase of the cycle</li><li>For SelfCookingCenter combi ovens with CareControl</li><li>Concentrated tablet form, dosed by count not by volume</li><li>Used alongside the separate care tab, not instead of it</li></ul>",
+    "status": "published",
+    "meta_description": "Rational 56.00.22 cleaner tabs for SelfCookingCenter combi ovens, 100 per case. Genuine Rational consumables supplied and stocked in Kenya.",
+    "technical_specification": "<table><tbody><tr><td><strong>Brand</strong></td><td>Rational</td></tr><tr><td><strong>Model</strong></td><td>56.00.22</td></tr><tr><td><strong>Type</strong></td><td>Cleaner tab (red)</td></tr><tr><td><strong>Pack Size</strong></td><td>100 tabs per case</td></tr><tr><td><strong>Function</strong></td><td>Removes baked-on fat and protein from the cooking chamber</td></tr><tr><td><strong>Compatibility</strong></td><td>Rational SelfCookingCenter combi ovens with CareControl</td></tr><tr><td><strong>Form</strong></td><td>Concentrated tablet</td></tr></tbody></table>"
   },
   {
     "name": "Rational Active Green Cartridge",
@@ -11481,9 +11501,11 @@
     "price": 6000,
     "quantity": 12,
     "image": "products/stock-pot-12-litres-ei2525-imgtcw00363.jpg",
-    "short_description": "Stainless steel stock pot, 12 litres.",
-    "description": null,
-    "status": "published"
+    "short_description": "Heavy duty stainless steel stock pot, 250 mm across and 250 mm deep, holding about 12 litres. Supplied with its cover. Model SDI2525.",
+    "description": "<p>This is a heavy duty stainless steel stock pot measuring 250 mm across and 250 mm deep, supplied with its cover. Those two figures give a working volume of about 12 litres, and the equal diameter and height are what define a stock pot rather than a saucepan: the tall column of liquid loses less to evaporation over a long simmer, so a stock reduces at the rate you intend rather than boiling dry.</p><p>Twelve litres suits a small to medium kitchen making stock, soup or a bulk sauce in one batch, or boiling pasta and vegetables in service. Stainless steel gives a neutral surface that will not react with tomato, wine or vinegar over hours of cooking, which matters more in a stock pot than in almost any other pan because the contact time is so long. The cover is included rather than ordered separately.</p><h3>Key Features</h3><ul><li>250 mm diameter by 250 mm deep, about 12 litres</li><li>Equal height and diameter limits evaporation when simmering</li><li>Heavy duty stainless steel, non-reactive with acidic foods</li><li>Cover supplied with the pot</li></ul>",
+    "status": "published",
+    "meta_description": "Wanhui SDI2525 stainless steel stock pot, 250 x 250 mm and about 12 litres, cover included. Commercial cookware stocked in Kenya.",
+    "technical_specification": "<table><tbody><tr><td><strong>Brand</strong></td><td>Wanhui</td></tr><tr><td><strong>Model</strong></td><td>SDI2525</td></tr><tr><td><strong>Type</strong></td><td>Stock pot with cover</td></tr><tr><td><strong>Capacity</strong></td><td>12 litres</td></tr><tr><td><strong>Diameter</strong></td><td>250 mm</td></tr><tr><td><strong>Height</strong></td><td>250 mm</td></tr><tr><td><strong>Material</strong></td><td>Heavy duty stainless steel</td></tr><tr><td><strong>Cover</strong></td><td>Supplied</td></tr></tbody></table>"
   },
   {
     "name": "Stock Pot 36 Litres EI3636",
@@ -13295,8 +13317,11 @@
       "products/gallery/plate-racks-64-comp-camrack-grey-imgdww00107-3.jpg",
       "products/gallery/plate-racks-64-comp-camrack-grey-imgdww00107-4.jpg"
     ],
-    "short_description": "",
-    "status": "archived"
+    "short_description": "Cambro Camrack peg rack in soft gray with 64 compartments for plates and trays. Supplied without extenders, so it is configured for standard plate depth. Model PR59314151.",
+    "status": "archived",
+    "description": "<p>This is a Cambro Camrack peg rack in soft gray, with 64 compartments for plates and trays. A peg rack differs from a moulded compartment rack in that the plates stand between pegs rather than in fixed pockets, so a single rack takes a range of plate diameters instead of one size, and water drains off the face of each plate rather than collecting in a well.</p><p>It is supplied without extenders. Extenders are the add-on rows that raise the peg height for taller items, so this rack is configured for standard plate depth as it comes and can be built up later if the crockery changes. Sixty-four compartments matches a full dishwasher rack footprint, which means one rack goes through the machine and straight onto the shelf without the plates being handled in between.</p><h3>Key Details</h3><ul><li>64 compartments for plates and trays</li><li>Peg design accepts a range of plate diameters</li><li>Supplied without extenders; extenders can be added later</li><li>Soft gray Camrack finish</li><li>Washes, stores and stacks in the same rack</li></ul>",
+    "meta_description": "Cambro PR59314151 Camrack 64-compartment plate and tray rack in soft gray. Dishwasher racking for hotels and canteens in Kenya.",
+    "technical_specification": "<table><tbody><tr><td><strong>Brand</strong></td><td>Cambro</td></tr><tr><td><strong>Model</strong></td><td>PR59314151</td></tr><tr><td><strong>Type</strong></td><td>Camrack peg rack for plates and trays</td></tr><tr><td><strong>Compartments</strong></td><td>64</td></tr><tr><td><strong>Extenders</strong></td><td>Not included</td></tr><tr><td><strong>Colour</strong></td><td>Soft gray</td></tr></tbody></table>"
   },
   {
     "sku": "IMG/DWW/00110",

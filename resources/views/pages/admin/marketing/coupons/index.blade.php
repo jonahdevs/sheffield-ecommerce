@@ -213,7 +213,7 @@ new #[Layout('layouts::app')] #[Title('Coupons | Admin')] class extends Componen
                                 {{ $coupon->valueLabel() }}
                             </div>
                             @if ($coupon->min_subtotal_cents > 0)
-                                <div class="mt-0.5 text-xs text-zinc-400">Min {!! money($coupon->min_subtotal_cents) !!}</div>
+                                <div class="mt-0.5 text-xs text-zinc-400">Min {{ money($coupon->min_subtotal_cents) }}</div>
                             @endif
                         </flux:table.cell>
 

@@ -1898,7 +1898,7 @@ $isOnSale = $compareAt !== null;
                                                     {{ $review->created_at->format('d M Y') }}</span>
                                                 @if ($review->verified_purchase)
                                                     <span
-                                                        class="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-medium text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400">
+                                                        class="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-medium text-emerald-700">
                                                         <svg class="size-3" fill="currentColor" viewBox="0 0 20 20">
                                                             <path fill-rule="evenodd"
                                                                 d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z"
@@ -1991,7 +1991,7 @@ $isOnSale = $compareAt !== null;
                                         @endif
                                     </div>
                                 </div>
-                                <div class="text-xs font-semibold tabular-nums text-ink">{!! $lineCents ? money($lineCents) : '-' !!}
+                                <div class="text-xs font-semibold tabular-nums text-ink">{{ $lineCents ? money($lineCents) : '-' }}
                                 </div>
                             </div>
                         @endforeach
@@ -2000,7 +2000,7 @@ $isOnSale = $compareAt !== null;
                     <div class="mt-5 flex items-center justify-between border-t border-zinc-200 pt-4">
                         <div>
                             <div class="text-xs font-bold uppercase tracking-wide text-ink-3">Bundle price</div>
-                            <div class="font-serif text-2xl tabular-nums">{!! $this->bundlePriceCents ? money($this->bundlePriceCents) : 'Quote on request' !!}</div>
+                            <div class="font-serif text-2xl tabular-nums">{{ $this->bundlePriceCents ? money($this->bundlePriceCents) : 'Quote on request' }}</div>
                         </div>
                         <flux:button variant="primary" icon="shopping-cart" wire:click="addBundleToCart">Add to cart
                         </flux:button>
@@ -2027,7 +2027,7 @@ $isOnSale = $compareAt !== null;
                                 </div>
                                 <div class="min-w-0 flex-1">
                                     <div class="truncate text-sm font-semibold text-ink">{{ $child->name }}</div>
-                                    <div class="text-xs text-ink-3 tabular-nums">{!! $childPrice ? money($childPrice) : 'POA' !!}</div>
+                                    <div class="text-xs text-ink-3 tabular-nums">{{ $childPrice ? money($childPrice) : 'POA' }}</div>
                                 </div>
                                 <div
                                     class="inline-flex h-9 shrink-0 items-stretch overflow-hidden rounded border border-zinc-200">

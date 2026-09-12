@@ -120,7 +120,7 @@ new #[Layout('layouts::account')] #[Title('Order')] class extends Component
                     Placed on <span class="font-bold text-ink">{{ $order->created_at->format('M j, Y') }}</span>
                 </p>
                 <p class="text-[13px] text-ink-2">
-                    Total: <span class="font-bold text-ink">{!! money($order->total_cents) !!}</span>
+                    Total: <span class="font-bold text-ink">{{ money($order->total_cents) }}</span>
                 </p>
             </div>
 
@@ -172,9 +172,9 @@ new #[Layout('layouts::account')] #[Title('Order')] class extends Component
                             {{-- Price + Buy Again --}}
                             <div class="flex shrink-0 flex-col items-end gap-2">
                                 <div class="text-right">
-                                    <p class="text-sm font-bold text-ink">{!! money($item->line_total_cents) !!}</p>
+                                    <p class="text-sm font-bold text-ink">{{ money($item->line_total_cents) }}</p>
                                     @if ($item->quantity > 1)
-                                        <p class="text-[11px] text-ink-4">{!! money($item->unit_price_cents) !!} each</p>
+                                        <p class="text-[11px] text-ink-4">{{ money($item->unit_price_cents) }} each</p>
                                     @endif
                                 </div>
                                 @if ($item->product)
@@ -203,7 +203,7 @@ new #[Layout('layouts::account')] #[Title('Order')] class extends Component
                         <div class="space-y-2.5 p-5">
                             <div class="flex justify-between text-[13px]">
                                 <span class="font-medium text-ink-3">Subtotal</span>
-                                <span class="font-bold tabular-nums text-ink">{!! money($order->subtotal_cents) !!}</span>
+                                <span class="font-bold tabular-nums text-ink">{{ money($order->subtotal_cents) }}</span>
                             </div>
                             @if ($order->discount_cents > 0)
                                 <div class="flex justify-between text-[13px]">
@@ -213,13 +213,13 @@ new #[Layout('layouts::account')] #[Title('Order')] class extends Component
                                             <span class="ml-1 rounded bg-emerald-50 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-widest text-emerald-700">{{ $order->coupon_code }}</span>
                                         @endif
                                     </span>
-                                    <span class="font-bold tabular-nums text-emerald-600">− {!! money($order->discount_cents) !!}</span>
+                                    <span class="font-bold tabular-nums text-emerald-600">− {{ money($order->discount_cents) }}</span>
                                 </div>
                             @endif
                             <div class="flex justify-between text-[13px]">
                                 <span class="font-medium text-ink-3">Delivery</span>
                                 @if ($order->delivery_cents > 0)
-                                    <span class="font-bold tabular-nums text-ink">{!! money($order->delivery_cents) !!}</span>
+                                    <span class="font-bold tabular-nums text-ink">{{ money($order->delivery_cents) }}</span>
                                 @else
                                     <span class="font-bold text-emerald-600">Free</span>
                                 @endif
@@ -227,17 +227,17 @@ new #[Layout('layouts::account')] #[Title('Order')] class extends Component
                             @if ($order->installation_cents > 0)
                                 <div class="flex justify-between text-[13px]">
                                     <span class="font-medium text-ink-3">Installation</span>
-                                    <span class="font-bold tabular-nums text-ink">{!! money($order->installation_cents) !!}</span>
+                                    <span class="font-bold tabular-nums text-ink">{{ money($order->installation_cents) }}</span>
                                 </div>
                             @endif
                             <div class="flex justify-between text-[13px]">
                                 <span class="font-medium text-ink-3">{!! $order->vatLabel() !!}</span>
-                                <span class="font-bold tabular-nums text-ink">{!! money($order->vat_cents) !!}</span>
+                                <span class="font-bold tabular-nums text-ink">{{ money($order->vat_cents) }}</span>
                             </div>
                             <div class="flex items-baseline justify-between border-t border-zinc-200 pt-3">
                                 <span class="text-sm font-bold uppercase tracking-widest text-ink">Total</span>
                                 <span class="font-serif text-2xl font-black leading-none text-brand-500 tabular-nums">
-                                    {!! money($order->total_cents) !!}
+                                    {{ money($order->total_cents) }}
                                 </span>
                             </div>
                         </div>
@@ -288,7 +288,7 @@ new #[Layout('layouts::account')] #[Title('Order')] class extends Component
                                     </div>
                                     <div class="flex justify-between">
                                         <span class="font-medium text-ink-3">Amount paid</span>
-                                        <span class="font-bold tabular-nums text-ink">{!! money($payment->amount_cents) !!}</span>
+                                        <span class="font-bold tabular-nums text-ink">{{ money($payment->amount_cents) }}</span>
                                     </div>
                                     @if ($payment->paid_at)
                                         <div class="flex justify-between">

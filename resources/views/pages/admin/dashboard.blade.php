@@ -706,7 +706,7 @@ new #[Layout('layouts::app')] #[Title('Dashboard | Admin')] class extends Compon
                                     {{ $order->user?->name ?? '-' }}</td>
                                 <td
                                     class="px-3 py-3 text-right font-semibold tabular-nums text-zinc-900 dark:text-zinc-100">
-                                    {!! money($order->total_cents) !!}</td>
+                                    {{ money($order->total_cents) }}</td>
                                 <td class="px-6 py-3 text-right">
                                     <flux:badge size="sm" :color="$order->status->badgeColor()">
                                         {{ $order->status->label() }}</flux:badge>

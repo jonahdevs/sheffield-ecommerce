@@ -51,7 +51,10 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(DarajaClient::class, fn ($app): DarajaClient => new DarajaClient(
             $app->make(PaymentCredentials::class)->mpesaConfig()
         ));
-        $this->app->singleton(Money::class);
+        // Scoped, not singleton: Money holds CurrencySettings from construction,
+        // so a singleton would keep formatting every price with the symbol and
+        // separators that were current when an Octane worker booted.
+        $this->app->scoped(Money::class);
 
         // Every product card resolves the calculator. Scoped (not singleton) keeps
         // its default-tax-class lookup memoised for the request without leaking

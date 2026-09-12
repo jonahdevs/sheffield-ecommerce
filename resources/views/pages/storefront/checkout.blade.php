@@ -246,6 +246,15 @@ new #[Layout('layouts::storefront')] #[Title('Checkout')] class extends Componen
                 'user_id' => auth()->id(),
                 'address_id' => $address?->id,
                 'delivery_zone_id' => $quote->zone?->id,
+                // Snapshot the destination: address_id is nullOnDelete, and the
+                // delivery note, packing list, KRA receipt and SAP payload all
+                // fall back to these columns once the relation is gone.
+                'shipping_name' => $address?->name,
+                'shipping_email' => auth()->user()->email,
+                'shipping_phone' => $address?->phone,
+                'shipping_line1' => $address?->line1,
+                'shipping_state' => $address?->county,
+                'delivery_zone_name' => $quote->zone?->name,
                 'order_number' => Order::generateNumber(),
                 'status' => OrderStatus::PENDING,
                 'subtotal_cents' => $subtotalCents,
@@ -456,7 +465,7 @@ new #[Layout('layouts::storefront')] #[Title('Checkout')] class extends Componen
                                         <span
                                             class="font-semibold text-emerald-600">Free{{ $quote->promotionName ? ' (' . $quote->promotionName . ')' : '' }}</span>
                                     @else
-                                        <span class="font-semibold text-ink-2">{!! money($quote->feeCents) !!}</span>
+                                        <span class="font-semibold text-ink-2">{{ money($quote->feeCents) }}</span>
                                     @endif
                                 </div>
                             @endif
@@ -511,12 +520,12 @@ new #[Layout('layouts::storefront')] #[Title('Checkout')] class extends Componen
                         <div class="flex flex-col gap-3">
                             <div class="flex items-center justify-between text-sm text-ink-2">
                                 <span>Subtotal</span>
-                                <span class="font-medium tabular-nums">{!! money($subtotalCents) !!}</span>
+                                <span class="font-medium tabular-nums">{{ money($subtotalCents) }}</span>
                             </div>
                             @if ($discountCents > 0)
                                 <div class="flex items-center justify-between text-sm text-emerald-600">
                                     <span>Discount ({{ $this->appliedCouponCode }})</span>
-                                    <span class="font-medium tabular-nums">−{!! money($discountCents) !!}</span>
+                                    <span class="font-medium tabular-nums">−{{ money($discountCents) }}</span>
                                 </div>
                             @endif
                             <div class="flex items-center justify-between text-sm text-ink-2">
@@ -526,14 +535,14 @@ new #[Layout('layouts::storefront')] #[Title('Checkout')] class extends Componen
                                 @else
                                     <span
                                         class="{{ $deliveryCents === 0 ? 'font-medium text-emerald-600' : 'font-medium tabular-nums' }}">
-                                        {!! $deliveryCents === 0 ? 'Free' : money($deliveryCents) !!}
+                                        {{ $deliveryCents === 0 ? 'Free' : money($deliveryCents) }}
                                     </span>
                                 @endif
                             </div>
                             @if ($tax->enabled() && $vatCents > 0)
                                 <div class="flex items-center justify-between text-sm text-ink-2">
                                     <span>{!! $vatRateLabel !!}</span>
-                                    <span class="font-medium tabular-nums">{!! money($vatCents) !!}</span>
+                                    <span class="font-medium tabular-nums">{{ money($vatCents) }}</span>
                                 </div>
                             @endif
                         </div>
@@ -542,7 +551,7 @@ new #[Layout('layouts::storefront')] #[Title('Checkout')] class extends Componen
 
                         <div class="flex items-center justify-between">
                             <span class="text-sm font-bold tracking-wide uppercase">Total</span>
-                            <span class="text-2xl font-bold text-brand-500 tabular-nums">{!! money($totalCents) !!}</span>
+                            <span class="text-2xl font-bold text-brand-500 tabular-nums">{{ money($totalCents) }}</span>
                         </div>
 
                         <flux:button variant="customer-primary" size="customer-lg" wire:click="placeOrder"

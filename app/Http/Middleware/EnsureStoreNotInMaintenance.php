@@ -23,7 +23,10 @@ class EnsureStoreNotInMaintenance
         }
 
         // Keep the admin panel + auth flows reachable so staff can sign in.
-        if ($request->is('admin', 'admin/*', 'login', 'logout', 'register', 'forgot-password', 'reset-password/*', 'two-factor-challenge', 'user/*', 'email/*')) {
+        // Payment webhooks must stay reachable too: the gateway has already taken
+        // the customer's money, and a 503 here would lose the callback that marks
+        // the order paid.
+        if ($request->is('admin', 'admin/*', 'api/webhooks/*', 'login', 'logout', 'register', 'forgot-password', 'reset-password/*', 'two-factor-challenge', 'user/*', 'email/*')) {
             return $next($request);
         }
 

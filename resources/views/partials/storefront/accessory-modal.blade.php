@@ -28,7 +28,7 @@
                 <div class="min-w-0 flex-1">
                     <div class="truncate text-sm font-semibold text-ink">{{ $item['name'] }}</div>
                     <div class="mt-0.5 flex items-center gap-2 text-xs text-ink-3">
-                        <span class="tabular-nums">{!! $item['price_cents'] ? money($item['price_cents']) : 'POA' !!}</span>
+                        <span class="tabular-nums">{{ $item['price_cents'] ? money($item['price_cents']) : 'POA' }}</span>
                         @if ($item['is_required'])
                             <flux:badge size="sm" color="amber" inset="top bottom">Recommended</flux:badge>
                         @endif

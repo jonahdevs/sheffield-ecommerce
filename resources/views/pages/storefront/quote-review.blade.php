@@ -194,13 +194,13 @@ new #[Layout('layouts::storefront')] #[Title('Review Your Quote')] class extends
                                         <span class="font-mono text-xs text-ink-4">{{ $item->product_sku ?: '-' }}</span>
                                     </flux:table.cell>
                                     <flux:table.cell class="hidden sm:table-cell" align="end">
-                                        <span class="tabular-nums text-sm text-ink-2">{!! money($item->unit_price_cents) !!}</span>
+                                        <span class="tabular-nums text-sm text-ink-2">{{ money($item->unit_price_cents) }}</span>
                                     </flux:table.cell>
                                     <flux:table.cell align="end">
                                         <span class="tabular-nums text-sm text-ink-3">{{ $item->quantity }}</span>
                                     </flux:table.cell>
                                     <flux:table.cell align="end">
-                                        <span class="font-semibold tabular-nums text-ink">{!! money($item->line_total_cents) !!}</span>
+                                        <span class="font-semibold tabular-nums text-ink">{{ money($item->line_total_cents) }}</span>
                                     </flux:table.cell>
                                 </flux:table.row>
                             @endforeach
@@ -226,31 +226,31 @@ new #[Layout('layouts::storefront')] #[Title('Review Your Quote')] class extends
                     <div class="space-y-3 px-5 py-4">
                         <div class="flex justify-between">
                             <flux:text size="sm">Subtotal</flux:text>
-                            <flux:text size="sm" class="font-medium tabular-nums">{!! money($quote->subtotal_cents) !!}</flux:text>
+                            <flux:text size="sm" class="font-medium tabular-nums">{{ money($quote->subtotal_cents) }}</flux:text>
                         </div>
                         @if ($quote->discount_cents > 0)
                             <div class="flex justify-between">
                                 <flux:text size="sm">Discount</flux:text>
-                                <flux:text size="sm" class="font-medium tabular-nums text-red-500">−{!! money($quote->discount_cents) !!}</flux:text>
+                                <flux:text size="sm" class="font-medium tabular-nums text-red-500">−{{ money($quote->discount_cents) }}</flux:text>
                             </div>
                         @endif
                         @if ($quote->shipping_cents > 0)
                             <div class="flex justify-between">
                                 <flux:text size="sm">Shipping</flux:text>
-                                <flux:text size="sm" class="font-medium tabular-nums">{!! money($quote->shipping_cents) !!}</flux:text>
+                                <flux:text size="sm" class="font-medium tabular-nums">{{ money($quote->shipping_cents) }}</flux:text>
                             </div>
                         @endif
                         @if ($quote->vat_cents > 0)
                             <div class="flex justify-between">
                                 <flux:text size="sm">VAT ({{ rtrim(rtrim(number_format($quote->vat_rate, 2), '0'), '.') }}%)</flux:text>
-                                <flux:text size="sm" class="font-medium tabular-nums">{!! money($quote->vat_cents) !!}</flux:text>
+                                <flux:text size="sm" class="font-medium tabular-nums">{{ money($quote->vat_cents) }}</flux:text>
                             </div>
                         @endif
                     </div>
                     <flux:separator />
                     <div class="flex items-baseline justify-between px-5 py-4">
                         <flux:text class="text-xs font-bold uppercase tracking-wide">Total</flux:text>
-                        <span class="font-serif text-2xl text-brand-500 tabular-nums">{!! money($quote->total_cents) !!}</span>
+                        <span class="font-serif text-2xl text-brand-500 tabular-nums">{{ money($quote->total_cents) }}</span>
                     </div>
                 </flux:card>
             </aside>

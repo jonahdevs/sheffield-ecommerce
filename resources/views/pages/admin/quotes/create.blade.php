@@ -322,7 +322,7 @@ new #[Layout('layouts::app')] #[Title('New Quote | Admin')] class extends Compon
                                     <flux:table.cell>
                                         <flux:input wire:model.live.debounce.500ms="lineItems.{{ $index }}.quantity" type="number" min="1" class="text-right" />
                                     </flux:table.cell>
-                                    <flux:table.cell align="end" class="font-medium tabular-nums">{!! money($lineTotal) !!}</flux:table.cell>
+                                    <flux:table.cell align="end" class="font-medium tabular-nums">{{ money($lineTotal) }}</flux:table.cell>
                                     <flux:table.cell align="end">
                                         <flux:button size="xs" variant="ghost" icon="trash-2" tooltip="Remove line" wire:click="removeLine({{ $index }})" type="button"
                                             class="text-red-500! hover:text-red-600!" />
@@ -342,7 +342,7 @@ new #[Layout('layouts::app')] #[Title('New Quote | Admin')] class extends Compon
                         <flux:button size="sm" variant="ghost" icon="plus" wire:click="addBlankLine" type="button">Add blank line</flux:button>
                         <div class="text-right">
                             <span class="text-xs font-bold uppercase tracking-wide text-zinc-500">Total</span>
-                            <span class="ml-3 text-xl font-semibold text-brand-500 tabular-nums">{!! money($this->totalCents) !!}</span>
+                            <span class="ml-3 text-xl font-semibold text-brand-500 tabular-nums">{{ money($this->totalCents) }}</span>
                         </div>
                     </div>
                 </flux:card>

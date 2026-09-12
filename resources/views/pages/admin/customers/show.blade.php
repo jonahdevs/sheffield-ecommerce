@@ -233,7 +233,7 @@ new #[Layout('layouts::app')] #[Title('Customer | Admin')] class extends Compone
                 <flux:card class="flex items-center gap-4">
                     <flux:icon.banknotes class="size-8 shrink-0 text-emerald-400" />
                     <div>
-                        <div class="text-2xl font-semibold tabular-nums dark:text-white">{!! money($this->totalSpentCents) !!}</div>
+                        <div class="text-2xl font-semibold tabular-nums dark:text-white">{{ money($this->totalSpentCents) }}</div>
                         <flux:text size="sm">Lifetime spend</flux:text>
                     </div>
                 </flux:card>
@@ -275,7 +275,7 @@ new #[Layout('layouts::app')] #[Title('Customer | Admin')] class extends Compone
                                         class="font-mono">{{ $order->order_number }}</span></flux:table.cell>
                                 <flux:table.cell align="end" class="tabular-nums text-zinc-500">
                                     {{ $order->items_count }}</flux:table.cell>
-                                <flux:table.cell align="end" class="font-medium tabular-nums">{!! money($order->total_cents) !!}
+                                <flux:table.cell align="end" class="font-medium tabular-nums">{{ money($order->total_cents) }}
                                 </flux:table.cell>
                                 <flux:table.cell>
                                     <flux:badge size="sm" inset="top bottom" :color="$order->status->badgeColor()">

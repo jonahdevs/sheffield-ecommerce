@@ -39,3 +39,16 @@ it('lets an admin browse the storefront during maintenance', function () {
 
     $this->actingAs($admin)->get(route('home'))->assertOk();
 });
+
+it('keeps payment webhooks reachable during maintenance', function () {
+    app(MaintenanceSettings::class)->fill([
+        'maintenance_mode' => true,
+        'maintenance_message' => 'Down for now.',
+    ])->save();
+
+    // The gateway has already taken the customer's money; a 503 here would lose
+    // the callback that marks the order paid. Any non-503 means it reached the
+    // controller rather than the maintenance page.
+    expect($this->postJson(route('payments.paystack.webhook'), [])->status())->not->toBe(503);
+    expect($this->postJson(route('payments.mpesa.callback'), [])->status())->not->toBe(503);
+});

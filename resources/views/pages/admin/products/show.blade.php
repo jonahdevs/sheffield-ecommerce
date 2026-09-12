@@ -323,12 +323,12 @@ new #[Layout('layouts::app')] #[Title('Product analytics | Admin')] class extend
                     <div class="space-y-2 border-t border-zinc-100 pt-4 text-sm dark:border-zinc-700">
                         <div class="flex items-center justify-between">
                             <span class="text-zinc-500">Price</span>
-                            <span class="font-medium tabular-nums dark:text-white">{!! money($product->sale_price ?? $product->price) !!}</span>
+                            <span class="font-medium tabular-nums dark:text-white">{{ money($product->sale_price ?? $product->price) }}</span>
                         </div>
                         @if ($product->sale_price)
                             <div class="flex items-center justify-between">
                                 <span class="text-zinc-500">Regular</span>
-                                <span class="tabular-nums text-zinc-400 line-through">{!! money($product->price) !!}</span>
+                                <span class="tabular-nums text-zinc-400 line-through">{{ money($product->price) }}</span>
                             </div>
                         @endif
                         <div class="flex items-center justify-between">
@@ -400,7 +400,7 @@ new #[Layout('layouts::app')] #[Title('Product analytics | Admin')] class extend
                         <flux:icon name="chart-pie" class="size-5 text-amber-400" />
                     </div>
                     @if ($m['has_cost'])
-                        <div class="text-2xl font-semibold tabular-nums dark:text-white">{!! money($m['margin_cents']) !!}</div>
+                        <div class="text-2xl font-semibold tabular-nums dark:text-white">{{ money($m['margin_cents']) }}</div>
                         <div class="text-xs text-zinc-400">{{ $m['margin_pct'] !== null ? $m['margin_pct'] . '% margin' : '-' }}</div>
                     @else
                         <div class="text-2xl font-semibold text-zinc-300">-</div>
@@ -520,7 +520,7 @@ new #[Layout('layouts::app')] #[Title('Product analytics | Admin')] class extend
                                 <flux:table.cell variant="strong"><span class="font-mono">{{ $item->order->order_number }}</span></flux:table.cell>
                                 <flux:table.cell class="text-zinc-600 dark:text-zinc-300">{{ $item->order->user?->name ?? '-' }}</flux:table.cell>
                                 <flux:table.cell align="end" class="tabular-nums text-zinc-500">{{ $item->quantity }}</flux:table.cell>
-                                <flux:table.cell align="end" class="font-medium tabular-nums">{!! money($item->line_total_cents) !!}</flux:table.cell>
+                                <flux:table.cell align="end" class="font-medium tabular-nums">{{ money($item->line_total_cents) }}</flux:table.cell>
                                 <flux:table.cell>
                                     <flux:badge size="sm" inset="top bottom" :color="$item->order->status->badgeColor()">
                                         {{ $item->order->status->label() }}

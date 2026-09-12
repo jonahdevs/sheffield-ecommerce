@@ -30,7 +30,7 @@
                             <span class="font-mono text-xs text-ink-4">{{ $row['reference'] }}</span>
                         </div>
                         <div class="mt-0.5 flex flex-wrap items-center gap-2 text-xs text-ink-3">
-                            <span class="tabular-nums">{!! $row['price_cents'] ? money($row['price_cents']) : 'POA' !!}</span>
+                            <span class="tabular-nums">{{ $row['price_cents'] ? money($row['price_cents']) : 'POA' }}</span>
                             @if ($row['backorder'])
                                 <flux:badge size="sm" color="amber" inset="top bottom">On backorder</flux:badge>
                             @elseif (!$row['in_stock'])

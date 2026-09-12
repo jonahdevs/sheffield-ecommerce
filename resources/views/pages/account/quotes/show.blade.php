@@ -147,7 +147,7 @@ new #[Layout('layouts::account')] #[Title('Quote')] class extends Component {
                 </p>
                 @if ($quote->isPriced())
                     <p class="text-[13px] text-ink-2">
-                        Total: <span class="font-bold text-ink">{!! money($quote->total_cents) !!}</span>
+                        Total: <span class="font-bold text-ink">{{ money($quote->total_cents) }}</span>
                     </p>
                     @if ($quote->expires_at)
                         <p class="text-[13px] {{ $quote->expires_at->isPast() ? 'text-red-500' : 'text-ink-3' }}">
@@ -265,9 +265,9 @@ new #[Layout('layouts::account')] #[Title('Quote')] class extends Component {
                             {{-- Price --}}
                             <div class="shrink-0 text-right">
                                 @if ($quote->isPriced())
-                                    <p class="text-sm font-bold text-ink">{!! money($item->line_total_cents) !!}</p>
+                                    <p class="text-sm font-bold text-ink">{{ money($item->line_total_cents) }}</p>
                                     @if ($item->quantity > 1)
-                                        <p class="text-[11px] text-ink-4">{!! money($item->unit_price_cents) !!} each</p>
+                                        <p class="text-[11px] text-ink-4">{{ money($item->unit_price_cents) }} each</p>
                                     @endif
                                 @else
                                     <p class="text-[11px] font-medium text-amber-500">Pricing pending</p>
@@ -289,33 +289,33 @@ new #[Layout('layouts::account')] #[Title('Quote')] class extends Component {
                             <div class="space-y-2.5 p-5">
                                 <div class="flex justify-between text-[13px]">
                                     <span class="font-medium text-ink-3">Subtotal</span>
-                                    <span class="font-bold tabular-nums text-ink">{!! money($quote->subtotal_cents) !!}</span>
+                                    <span class="font-bold tabular-nums text-ink">{{ money($quote->subtotal_cents) }}</span>
                                 </div>
                                 @if ($quote->discount_cents > 0)
                                     <div class="flex justify-between text-[13px]">
                                         <span class="font-medium text-emerald-600">Discount</span>
                                         <span
-                                            class="font-bold tabular-nums text-emerald-600">−{!! money($quote->discount_cents) !!}</span>
+                                            class="font-bold tabular-nums text-emerald-600">−{{ money($quote->discount_cents) }}</span>
                                     </div>
                                 @endif
                                 @if ($quote->shipping_cents > 0)
                                     <div class="flex justify-between text-[13px]">
                                         <span class="font-medium text-ink-3">Delivery</span>
-                                        <span class="font-bold tabular-nums text-ink">{!! money($quote->shipping_cents) !!}</span>
+                                        <span class="font-bold tabular-nums text-ink">{{ money($quote->shipping_cents) }}</span>
                                     </div>
                                 @endif
                                 @if ($quote->vat_cents > 0)
                                     <div class="flex justify-between text-[13px]">
                                         <span class="font-medium text-ink-3">VAT
                                             ({{ rtrim(rtrim(number_format($quote->vat_rate, 2), '0'), '.') }}%)</span>
-                                        <span class="font-bold tabular-nums text-ink">{!! money($quote->vat_cents) !!}</span>
+                                        <span class="font-bold tabular-nums text-ink">{{ money($quote->vat_cents) }}</span>
                                     </div>
                                 @endif
                                 <div class="flex items-baseline justify-between border-t border-zinc-200 pt-3">
                                     <span class="text-sm font-bold uppercase tracking-widest text-ink">Total</span>
                                     <span
                                         class="font-serif text-2xl font-black leading-none text-brand-500 tabular-nums">
-                                        {!! money($quote->total_cents) !!}
+                                        {{ money($quote->total_cents) }}
                                     </span>
                                 </div>
                             </div>

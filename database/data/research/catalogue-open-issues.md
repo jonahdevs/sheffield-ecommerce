@@ -958,3 +958,171 @@ figure was published, on the same reasoning as section E.
 
 ### V3. `IMG/HOT/00256` — skipped, multi-hit SKU
 Resolves to more than one live row and was not read. Same class of problem as section N.
+
+---
+
+## W. Findings from the SAP-export × imports-workbook cross-read, 2026-09-07
+
+Source folders the user pointed at this session: `Desktop\ecommerce\product sap source`
+(18 per-namespace SAP exports) and `Desktop\ecommerce\products resorce final`
+(44 brand folders, 558 spec PDFs).
+
+⚠⚠ **First, a method correction that affects every "sources disagree" judgement below.**
+SAP's `Item Remarks` and the IMPORTED ITEMS workbook's `Description` column are **one lineage,
+not two sources.** Measured over the 39 §B1 SKUs: **18 byte-identical after normalisation,
+9 more the same text lightly edited, only 12 genuinely different.** SAP agreeing with the
+workbook is therefore *not* corroboration. Only a manufacturer or dealer source counts.
+
+### W1. ✅ APPLIED — `IMG/HOT/00169` / `IMG/HOT/00170` were described as the wrong metal
+Both rows read *"Stainless steel pressure cooker"*. Two independent sources say **aluminium**:
+SAP Remarks (*"Heavy gauge aluminium construction … hard anodised aluminium"*) and the Amazon
+"Time Saver Commercial Aluminium Cooker" listing already cited in
+`broaster-geneva-rimpar-research.md`. Both rewritten to house format from the SAP remark, which
+also supplied the three safety devices (locking handle, overpressure release valve, gasket
+release window), the rustproof/polished/dishwasher-safe finish and the type.
+⚠ **Tension left standing:** the model code `SSPC-*` reads as *Stainless Steel Pressure Cooker*.
+The code is the only thing suggesting steel; the prose evidence is on the side of aluminium.
+→ **Needs:** confirmation from the supplier, since it is a published material claim.
+
+### W2. `GENEVA` is not the maker — and reassigning it empties the brand
+The crosswalk established `SSPC-16/25/40/60` are H-Kitchen **"Timesaver"** units. `GENEVA` has
+**exactly two products, both of them these**, so correcting the brand orphans the `GENEVA` row in
+`brands.json` — the same outcome as `IBERNA`/`BROASTER` in the SAP reconciliation. The spec table
+now names **Timesaver** as the brand while the `brand` field still says `GENEVA`.
+→ **Needs a decision:** reassign to `H-KITCHEN` (and delete or keep the empty `GENEVA` brand), or
+introduce `TIMESAVER` as a brand in its own right.
+
+### W3. `IMG/DWW/00043` — the workbook row matched is a **different product** (false join)
+Crosswalk §B1 joined our `JW-253` *Glass Rack Extender 25 Compartment* to Guangzhou `JW-25` on a
+"near" match. They disagree on what the thing is: SAP says *"Rack Extender - 25 Compartment"*,
+the workbook says *"Glass Rack Beige - **16 Compt**; Compartment size 90x90x45"*. 25 vs 16
+compartments, extender vs rack. **`JW-25` is a 16-compartment beige glass rack; `JW-253` is the
+25-compartment extender.** Do not apply the workbook figures to this SKU.
+
+### W4. `IMG/HOT/00098` Roller Grill — power disagrees by ~40%, and one side looks estimated
+SAP: *"Power / Gas rating~8 kW to 9 kW"*, outside 400 × 700 × 325, 12 L tank, 18 kg/hr, 34 kg,
+190 °C. Workbook: *"RF 12 S ; **6.4KW 380V** (12 Liters) with cold zone"*, automatic oil filtering
+by decanting. ⚠ The SAP text is littered with `~` approximations and reads as estimated rather
+than transcribed; the workbook gives a definite nameplate figure. The model naming also differs
+(`RFG 12` vs `RF 12 S`).
+→ **Needs:** the Roller Grill datasheet. Nothing applied. Note `roller-grill/` exists in the
+final research folder — check its PDFs before asking the supplier.
+
+### W5. `IMG/BUF/00244` A032 heat lamp — colour conflicts, electricals agree
+SAP *"230V/50hz/250W/dia: 175mm/**copper**"* vs workbook *"Retractable Heating Lamp;
+230V/50hz/250W/dia: 175mm/**Black color**"*. The electrical figures and the 175 mm diameter agree
+and are safe to publish; the colour does not, and our name says *Copper*. Probably a two-finish
+variant sharing one code. The workbook also adds **retractable** and a 600-1500 mm height range,
+which the record does not carry.
+→ Apply the electricals; omit colour; confirm whether the finish is a variant.
+
+### W6. `IMG/BUF/00051` TC-1 — the two sources disagree on what the product is
+SAP says *"Induction Cooker"*, the workbook says *"Heating Pad"*. Our name says *Induction Cooker
+Kassidy*. Neither side carries a single specification. Stays blocked; this is a supplier question,
+not a writing one.
+
+### W7. Additive detail found for rows that were flagged "no spec"
+Where SAP and the workbook diverge, each usually holds something the other lacks — worth mining
+rather than choosing between:
+
+* `IMG/DWW/00107` Cambro — SAP gives **compartment size 45 × 45 × 72** and "peg rack, 64
+  compartment"; the workbook gives chemical/temperature resistance to **200 °F**, one-direction
+  plate loading, inter-stacking and an outside height of **4 in**. Together they are enough for a
+  full write-up. (Row still carries `no price`.)
+* `IMG/BUF/00027` / `IMG/BUF/00028` — SAP supplies the pan format the records lack:
+  **2/3 GN round** for `AT50293`, **2/3 GN square** for `AT60293`.
+* `IMG/COF/00009` — SAP adds output **21 litres/hour**; `IMG/COF/00010` adds **30 L/hr
+  (200 cups/hr)**.
+
+### W8. ⚠ `IMG/COF/00010` — do not apply its power rating, from either source
+Both SAP and the workbook carry **"400V 3N/ 9000W"** on the 5-litre *serving station*. That is the
+CQ Tower brewer's rating, which sits directly above it on the same sheet; an unheated vacuum
+serving vessel has no 9 kW element. It is a copy-paste that propagated through both systems, and
+is the clearest single proof that they share one lineage.
+
+### W9. ✅ APPLIED — CREM dimension corrections
+* `IMG/COF/00006` M2 — stored 205 × 410 × 428 matched no source. **205 × 360 × 430** applied: the
+  SAP export, the workbook and the independent South African dealer in `crem-research.md` all give
+  it (the dealer being the one that counts).
+* `IMG/COF/00009` 2.5 L serving station — stored 206 × 274 × 436 came from the CREM product sheet
+  alone. **220 × 220 × 440** applied on Parts Town's independent listing, which SAP/workbook
+  (220 × 440) match. Its **weight row was dropped**: contested three ways at 1 kg / 2.5 kg /
+  3.0-3.1 kg with nothing to settle it.
+* `IMG/COF/00010` 5 L serving station — **left alone**. Four figures, no majority: Parts Town
+  280 × 280 × 470, CREM sheet 483 × 325 × 373, CREM UK brochure H545/D460/W280, SAP/workbook
+  300 × 500.
+* `IMG/COF/00011` airpot — **left alone**, and a *new* conflict recorded: SAP and the workbook both
+  say *"Chrome finish with black trim"* and *"**Glass** insulation"*, where our spec table says
+  *stainless steel exterior* and *vacuum-insulated*. Glass-lined vs steel-lined matters to a buyer.
+  ✅ The same remark settles the sight-gauge question in favour of the status quo: *"Has a glass
+  sight gauge"* confirms the **"with Sight Gauge" in the name is real**. No rename needed.
+
+### W10. `IMG/COF/00012` — spec written, but the name is still wrong
+SAP and the workbook both give **1.9 litres / 12 cups / unbreakable stainless steel interior and
+exterior / brew-through lid**, applied as the row's first ever spec table plus full copy. But
+`crem-research.md` established the article is CREM's **"Thermos 1.9 L Stainless"** — a thermal jug,
+not a percolator. Both our name and both source texts call it a percolator, because they share the
+same ancestor. The new copy calls it a *thermal serving jug* and avoids claiming it percolates.
+→ **Needs a rename decision** (`Thermos Percolator SS` → e.g. `Thermos Jug 1.9 Litres SS`), with
+the slug pinned as in section D. Flag left as `named in open issues`.
+
+### W11. The 558 spec PDFs are the unmined asset
+`Desktop\ecommerce\products resorce final\` holds **558 manufacturer PDFs** already tied to a SKU
+by filename — densest on sheffield-blueline (69), rational (53), taski (48), bilge (36), skymsen
+(29), santos (29), hds (29), tecnodom (28), hk-redline (27), berjaya (20). These are the one source
+that can close *"under 3 informative spec rows"* and *"sources disagree"* **without asking a
+supplier**, and no pass has read them yet. Every brand folder also carries `_FINDINGS.md` (per-SKU
+verdicts, proven resolution ceilings) and `_sourced.json` (per-image provenance with an
+`agrees_with_sap` field that flags conflicts directly).
+→ **Suggested next batch**, ahead of sending the supplier-request sheets.
+
+---
+
+## X. The live site's `name` and `model_number` are the wrong side — 2026-09-10
+
+Found while auditing live product copy for descriptions that describe a different product. A
+detector flagged 8 live descriptions naming another product's model code and never their own.
+Three looked like clear copy defects and were corrected on live. **SAP then proved the copy was
+right and the live `name` and `model_number` were wrong**, so all three writes were reverted the
+same session and the live catalogue was verified byte-identical to its pre-session baseline.
+
+⚠⚠ **The lesson: on the main site, do not treat `name` + `model_number` agreeing as corroboration.**
+They share a lineage and can be wrong together. The description was written by us from
+`products.json`, so it is an *independent* witness. Settle every such conflict with SAP first.
+
+| SKU | SAP `Model Number` | our `products.json` | live `model_number` | live copy said |
+|---|---|---|---|---|
+| IMG/BUF/00272 | **ZT001** | ZT001 | DL206 ✗ | ZT001 ✓ |
+| IMG/BUF/00274 | **DL206** | DL206 | ZT001 ✗ | DL206 ✓ |
+| IMG/PAS/00103 | **B10GFA** | B10GFA | B10GA ✗ | B10GFA ✓ |
+| IMG/HOT/00278 | **MDXZ-16** | MDXZ-16 | MDX15 ✗ | MDXZ-16 ✓ |
+| IMG/BUF/00026 | **A035** | A035 | AO35S ✗ | A035 ✓ |
+| IMG/BUF/00024 | **A032** | A032 | AO32G ✗ | A032 ✓ |
+| IMG/BUF/00023 | **A032** | A032 | AO32B ✗ | A032 ✓ |
+| IMG/BUF/00186 | **CPWK090-31** | CPWK090-31 | *(sku as model)* | CPWK090-1-31 |
+
+⭐ `IMG/BUF/00272` and `IMG/BUF/00274` are **swapped on live in both fields at once** — the warmer
+lamp carries the vegetable warmer's code and vice versa. That is a transposition of two records,
+not two independent typos.
+⚠ The three heat lamps show the live column substituting **letter O for digit zero** and appending
+a colour letter (`A035` → `AO35S`). `A032` is genuinely shared by the black and the gold 175 mm
+lamps in both SAP and our catalogue, so the colour suffix on live is an invention, not a finding.
+⚠ `IMG/COF/00103`/`00104` are the one case SAP does **not** settle: SAP itself writes `FTL120 BLACK`
+for one and `FLT120 INOX` for the other, our catalogue says `FLT120`, live says `FTL120`.
+**SAP contradicts itself across two rows of the same family** — needs the manufacturer, KEF.
+
+→ **Decision needed:** whether to write the SAP code back over the live `name` and `model_number`
+on the seven settled rows. That is a `model_number` change, so it waits for approval per the
+standing rule.
+
+### X1. `IMG/BUF/00186` Thermo Box 6 GN Heated — copy belongs to a 90 litre carrier
+Live id 1126 (6 GN, heated) and live id 1050 (3 GN) both publish the same
+`CPWK090-1` 90-litre insulated carrier text, and neither mentions heating; the copy quotes a
+passive range of -40 ºC to 80 ºC. Two different boxes cannot share one interior volume.
+→ **Needs a source** for the 6 GN heated box before either row is rewritten.
+
+### X2. Live id 1321 `SHAWARMA GAS RG-2` — copy is for a different machine
+The description reads *"Electric kebab grill: The GR 80 E enables you to cook a spit of kebab or
+gyros meat of 40 kg…"*. Wrong model and wrong fuel; the product is gas. This SKU is **live-only**,
+absent from `products.json`, so there is no in-house copy to fall back on.
+→ **Needs a source** (Roller Grill RG-2 gas specification).

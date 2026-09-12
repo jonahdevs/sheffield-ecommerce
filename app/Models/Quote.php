@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\Notification;
 use Spatie\Activitylog\Models\Concerns\LogsActivity;
 use Spatie\Activitylog\Support\LogOptions;
 
-#[Fillable(['user_id', 'order_id', 'contact_name', 'contact_email', 'contact_phone', 'contact_company', 'quote_number', 'status', 'subtotal_cents', 'vat_cents', 'vat_rate', 'tax_inclusive', 'shipping_cents', 'discount_type', 'discount_value', 'discount_cents', 'total_cents', 'notes', 'internal_notes', 'terms', 'document_path', 'delivery_required', 'delivery_address', 'expires_at'])]
+#[Fillable(['user_id', 'order_id', 'contact_name', 'contact_email', 'contact_phone', 'contact_company', 'quote_number', 'status', 'subtotal_cents', 'vat_cents', 'vat_rate', 'tax_inclusive', 'shipping_cents', 'discount_type', 'discount_value', 'discount_cents', 'total_cents', 'notes', 'internal_notes', 'terms', 'document_path', 'delivery_required', 'delivery_address', 'sent_at', 'expires_at'])]
 class Quote extends Model
 {
     /** @use HasFactory<QuoteFactory> */

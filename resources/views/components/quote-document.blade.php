@@ -142,22 +142,22 @@
                             @endif
                         </td>
                         <td class="border border-zinc-300 px-2 py-2 align-top text-center tabular-nums">{{ $item->quantity }}</td>
-                        <td class="border border-zinc-300 px-2 py-2 align-top text-right tabular-nums text-zinc-600">{!! money($item->unit_price_cents) !!}</td>
-                        <td class="border border-zinc-300 px-2 py-2 align-top text-right tabular-nums font-semibold text-zinc-900">{!! money($item->line_total_cents) !!}</td>
+                        <td class="border border-zinc-300 px-2 py-2 align-top text-right tabular-nums text-zinc-600">{{ money($item->unit_price_cents) }}</td>
+                        <td class="border border-zinc-300 px-2 py-2 align-top text-right tabular-nums font-semibold text-zinc-900">{{ money($item->line_total_cents) }}</td>
                     </tr>
                 @endforeach
 
                 {{-- Subtotal --}}
                 <tr>
                     <td colspan="4" class="border border-zinc-300 px-2 py-2 text-right text-zinc-500">Subtotal</td>
-                    <td class="border border-zinc-300 px-2 py-2 text-right tabular-nums font-semibold">{!! money($quote->subtotal_cents) !!}</td>
+                    <td class="border border-zinc-300 px-2 py-2 text-right tabular-nums font-semibold">{{ money($quote->subtotal_cents) }}</td>
                 </tr>
 
                 {{-- Discount --}}
                 @if ($quote->discount_cents > 0)
                     <tr>
                         <td colspan="4" class="border border-zinc-300 px-2 py-2 text-right text-zinc-500">Discount</td>
-                        <td class="border border-zinc-300 px-2 py-2 text-right tabular-nums text-red-600">−{!! money($quote->discount_cents) !!}</td>
+                        <td class="border border-zinc-300 px-2 py-2 text-right tabular-nums text-red-600">−{{ money($quote->discount_cents) }}</td>
                     </tr>
                 @endif
 
@@ -165,7 +165,7 @@
                 @if ($quote->delivery_required && $quote->shipping_cents > 0)
                     <tr>
                         <td colspan="4" class="border border-zinc-300 px-2 py-2 text-right text-zinc-500">Shipping</td>
-                        <td class="border border-zinc-300 px-2 py-2 text-right tabular-nums">{!! money($quote->shipping_cents) !!}</td>
+                        <td class="border border-zinc-300 px-2 py-2 text-right tabular-nums">{{ money($quote->shipping_cents) }}</td>
                     </tr>
                 @endif
 
@@ -175,7 +175,7 @@
                         <td colspan="4" class="border border-zinc-300 px-2 py-2 text-right text-zinc-500">
                             {{ $pricesIncludeTax ? "VAT included ({$vatRate}%)" : "VAT ({$vatRate}%)" }}
                         </td>
-                        <td class="border border-zinc-300 px-2 py-2 text-right tabular-nums">{!! money($quote->vat_cents) !!}</td>
+                        <td class="border border-zinc-300 px-2 py-2 text-right tabular-nums">{{ money($quote->vat_cents) }}</td>
                     </tr>
                 @endif
 
@@ -185,7 +185,7 @@
                         Total ({{ $quote->currency }})
                     </td>
                     <td class="border border-zinc-300 bg-zinc-100 px-2 py-2.5 text-right font-bold text-zinc-900 text-[13px] tabular-nums">
-                        {!! money($quote->total_cents) !!}
+                        {{ money($quote->total_cents) }}
                     </td>
                 </tr>
 

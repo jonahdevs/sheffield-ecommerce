@@ -72,10 +72,10 @@
                             <div class="text-[10px] text-zinc-400 mt-0.5">{{ $order->user?->email }}</div>
                         </td>
                         <td class="border border-zinc-300 px-2 py-2 align-top text-center tabular-nums text-zinc-700">{{ $order->items_count }}</td>
-                        <td class="border border-zinc-300 px-2 py-2 align-top text-right tabular-nums text-zinc-700">{!! money($order->subtotal_cents) !!}</td>
-                        <td class="border border-zinc-300 px-2 py-2 align-top text-right tabular-nums text-zinc-700">{!! money($order->delivery_cents) !!}</td>
-                        <td class="border border-zinc-300 px-2 py-2 align-top text-right tabular-nums text-zinc-700">{!! money($order->vat_cents) !!}</td>
-                        <td class="border border-zinc-300 px-2 py-2 align-top text-right tabular-nums font-semibold text-zinc-900">{!! money($order->total_cents) !!}</td>
+                        <td class="border border-zinc-300 px-2 py-2 align-top text-right tabular-nums text-zinc-700">{{ money($order->subtotal_cents) }}</td>
+                        <td class="border border-zinc-300 px-2 py-2 align-top text-right tabular-nums text-zinc-700">{{ money($order->delivery_cents) }}</td>
+                        <td class="border border-zinc-300 px-2 py-2 align-top text-right tabular-nums text-zinc-700">{{ money($order->vat_cents) }}</td>
+                        <td class="border border-zinc-300 px-2 py-2 align-top text-right tabular-nums font-semibold text-zinc-900">{{ money($order->total_cents) }}</td>
                         <td class="border border-zinc-300 px-2 py-2 align-top text-center text-zinc-700">
                             {{ $order->latestPayment?->status->label() ?? 'Unpaid' }}
                         </td>
@@ -95,7 +95,7 @@
                     <tr>
                         <td colspan="7" class="border border-zinc-300 bg-zinc-100 px-2 py-2 text-right font-bold text-zinc-900">Grand Total</td>
                         <td class="border border-zinc-300 bg-zinc-100 px-2 py-2 text-right tabular-nums font-bold text-zinc-900">
-                            {!! money($orders->sum('total_cents')) !!}
+                            {{ money($orders->sum('total_cents')) }}
                         </td>
                         <td colspan="3" class="border border-zinc-300 bg-zinc-100"></td>
                     </tr>

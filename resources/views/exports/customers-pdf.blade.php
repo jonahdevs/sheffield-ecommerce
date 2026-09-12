@@ -71,7 +71,7 @@
                             {{ $customer->orders_count }}
                         </td>
                         <td class="border border-zinc-300 px-2 py-2 align-top text-right tabular-nums font-semibold text-zinc-900">
-                            {!! money($customer->orders_sum_total_cents ?? 0) !!}
+                            {{ money($customer->orders_sum_total_cents ?? 0) }}
                         </td>
                         <td class="border border-zinc-300 px-2 py-2 align-top text-center text-zinc-600">
                             {{ $customer->created_at->format('d M Y') }}

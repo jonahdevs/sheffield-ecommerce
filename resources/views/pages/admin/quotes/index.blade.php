@@ -263,7 +263,7 @@ new #[Layout('layouts::app')] #[Title('Quotes | Admin')] class extends Component
                             {{ $quote->user?->email ?? $quote->contact_email ?? '-' }}
                         </flux:table.cell>
                         <flux:table.cell class="tabular-nums text-zinc-500">{{ $quote->items_count }}</flux:table.cell>
-                        <flux:table.cell class="font-medium tabular-nums">{!! money($quote->total_cents) !!}</flux:table.cell>
+                        <flux:table.cell class="font-medium tabular-nums">{{ money($quote->total_cents) }}</flux:table.cell>
                         <flux:table.cell>
                             <flux:badge size="sm" inset="top bottom" :color="$quote->status->badgeColor()">
                                 {{ $quote->status->label() }}

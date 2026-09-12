@@ -10,77 +10,77 @@ use Laravel\Socialite\Facades\Socialite;
 
 class SocialAuthController extends Controller
 {
+    /**
+     * Supported providers mapped to the settings flag that enables them and the
+     * users column holding their provider id.
+     *
+     * @var array<string, array{flag: string, column: string, label: string}>
+     */
+    private const PROVIDERS = [
+        'google' => ['flag' => 'google_login_enabled', 'column' => 'google_id', 'label' => 'Google'],
+        'facebook' => ['flag' => 'facebook_login_enabled', 'column' => 'facebook_id', 'label' => 'Facebook'],
+    ];
+
     public function redirectToGoogle(IntegrationSettings $settings): RedirectResponse
     {
-        abort_unless($settings->google_login_enabled, 404);
-
-        return Socialite::driver('google')->redirect();
+        return $this->redirectToProvider('google', $settings);
     }
 
     public function handleGoogleCallback(IntegrationSettings $settings): RedirectResponse
     {
-        abort_unless($settings->google_login_enabled, 404);
-
-        try {
-            $googleUser = Socialite::driver('google')->user();
-        } catch (\Exception) {
-            return redirect()->route('login')->withErrors(['email' => 'Google sign-in failed. Please try again.']);
-        }
-
-        // Find by google_id first, then fall back to email (links existing accounts).
-        $user = User::firstWhere('google_id', $googleUser->getId())
-            ?? User::firstWhere('email', $googleUser->getEmail());
-
-        if ($user) {
-            $user->fill([
-                'google_id' => $googleUser->getId(),
-                'email_verified_at' => $user->email_verified_at ?? now(),
-            ])->save();
-        } else {
-            $user = User::create([
-                'name' => $googleUser->getName(),
-                'email' => $googleUser->getEmail(),
-                'google_id' => $googleUser->getId(),
-                'email_verified_at' => now(),
-            ]);
-        }
-
-        Auth::login($user, remember: true);
-
-        return redirect()->intended(route('dashboard'));
+        return $this->handleProviderCallback('google', $settings);
     }
 
     public function redirectToFacebook(IntegrationSettings $settings): RedirectResponse
     {
-        abort_unless($settings->facebook_login_enabled, 404);
-
-        return Socialite::driver('facebook')->redirect();
+        return $this->redirectToProvider('facebook', $settings);
     }
 
     public function handleFacebookCallback(IntegrationSettings $settings): RedirectResponse
     {
-        abort_unless($settings->facebook_login_enabled, 404);
+        return $this->handleProviderCallback('facebook', $settings);
+    }
+
+    /**
+     * Send the user to the provider, 404ing when an admin has disabled it.
+     */
+    private function redirectToProvider(string $provider, IntegrationSettings $settings): RedirectResponse
+    {
+        abort_unless($settings->{self::PROVIDERS[$provider]['flag']}, 404);
+
+        return Socialite::driver($provider)->redirect();
+    }
+
+    /**
+     * Sign the user in from the provider's callback, creating the account on
+     * first use and linking it to an existing one by email.
+     */
+    private function handleProviderCallback(string $provider, IntegrationSettings $settings): RedirectResponse
+    {
+        ['flag' => $flag, 'column' => $column, 'label' => $label] = self::PROVIDERS[$provider];
+
+        abort_unless($settings->{$flag}, 404);
 
         try {
-            $fbUser = Socialite::driver('facebook')->user();
+            $socialUser = Socialite::driver($provider)->user();
         } catch (\Exception) {
-            return redirect()->route('login')->withErrors(['email' => 'Facebook sign-in failed. Please try again.']);
+            return redirect()->route('login')->withErrors(['email' => $label.' sign-in failed. Please try again.']);
         }
 
-        // Find by facebook_id first, then fall back to email (links existing accounts).
-        $user = User::firstWhere('facebook_id', $fbUser->getId())
-            ?? User::firstWhere('email', $fbUser->getEmail());
+        // Find by provider id first, then fall back to email (links existing accounts).
+        $user = User::firstWhere($column, $socialUser->getId())
+            ?? User::firstWhere('email', $socialUser->getEmail());
 
         if ($user) {
             $user->fill([
-                'facebook_id' => $fbUser->getId(),
+                $column => $socialUser->getId(),
                 'email_verified_at' => $user->email_verified_at ?? now(),
             ])->save();
         } else {
             $user = User::create([
-                'name' => $fbUser->getName(),
-                'email' => $fbUser->getEmail(),
-                'facebook_id' => $fbUser->getId(),
+                'name' => $socialUser->getName(),
+                'email' => $socialUser->getEmail(),
+                $column => $socialUser->getId(),
                 'email_verified_at' => now(),
             ]);
         }

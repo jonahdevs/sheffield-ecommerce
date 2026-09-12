@@ -107,17 +107,17 @@ new #[Layout('layouts::settings')] #[Title('Notifications')] class extends Compo
                 </div>
 
                 {{-- Channel headers --}}
-                <div class="flex items-center justify-end border-b border-zinc-200 bg-zinc-50 px-5 py-2.5 dark:border-zinc-600 dark:bg-zinc-800/40">
+                <div class="flex items-center justify-end border-b border-zinc-200 bg-zinc-50 px-5 py-2.5">
                     <span class="w-14 shrink-0 whitespace-nowrap text-center text-[9px] font-extrabold uppercase tracking-widest text-zinc-500 sm:w-16">Email</span>
                     <span @class([
                         'w-14 shrink-0 whitespace-nowrap text-center text-[9px] font-extrabold uppercase tracking-widest sm:w-16',
                         'text-zinc-500' => $this->inappEnabled,
-                        'text-zinc-300 dark:text-zinc-600' => ! $this->inappEnabled,
+                        'text-zinc-300' => ! $this->inappEnabled,
                     ])>In-app</span>
                     <span @class([
                         'w-14 shrink-0 whitespace-nowrap text-center text-[9px] font-extrabold uppercase tracking-widest sm:w-16',
                         'text-zinc-500' => $this->whatsappEnabled,
-                        'text-zinc-300 dark:text-zinc-600' => ! $this->whatsappEnabled,
+                        'text-zinc-300' => ! $this->whatsappEnabled,
                     ])>WhatsApp</span>
                 </div>
 
@@ -151,7 +151,7 @@ new #[Layout('layouts::settings')] #[Title('Notifications')] class extends Compo
                 @endphp
 
                 @foreach ($groups as $group)
-                    <div class="flex items-center gap-2 border-b border-zinc-200 bg-zinc-50/60 px-5 py-3 dark:border-zinc-600 dark:bg-zinc-800/20">
+                    <div class="flex items-center gap-2 border-b border-zinc-200 bg-zinc-50/60 px-5 py-3">
                         <flux:icon :icon="$group['icon']" class="size-3.5 shrink-0 text-brand-500" />
                         <span class="text-[11px] font-bold uppercase tracking-widest text-zinc-500">{{ $group['label'] }}</span>
                     </div>
@@ -161,10 +161,10 @@ new #[Layout('layouts::settings')] #[Title('Notifications')] class extends Compo
                             $modelPath = 'prefs.' . $row['key'];
                         @endphp
                         <div class="flex items-center justify-between gap-4 px-5 py-3.5
-                            @if (! $loop->last || ! $loop->parent->last) border-b border-zinc-200 dark:border-zinc-700 @endif">
+                            @if (! $loop->last || ! $loop->parent->last) border-b border-zinc-200 @endif">
                             <div class="flex-1">
-                                <div class="mb-0.5 text-[13px] font-semibold text-zinc-800 dark:text-zinc-100">{{ $row['label'] }}</div>
-                                <div class="text-[11px] leading-relaxed text-zinc-500 dark:text-zinc-400">{{ $row['desc'] }}</div>
+                                <div class="mb-0.5 text-[13px] font-semibold text-zinc-800">{{ $row['label'] }}</div>
+                                <div class="text-[11px] leading-relaxed text-zinc-500">{{ $row['desc'] }}</div>
                             </div>
                             <div class="flex shrink-0 items-center">
                                 <div class="flex w-14 justify-center sm:w-16">

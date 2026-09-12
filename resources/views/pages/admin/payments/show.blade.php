@@ -126,7 +126,7 @@ new #[Layout('layouts::app')] #[Title('Payment | Admin')] class extends Componen
     <div class="mt-2 flex flex-wrap items-center justify-between gap-4">
         <div>
             <div class="flex items-center gap-3">
-                <flux:heading size="xl" class="tabular-nums">{!! money($payment->amount_cents) !!}</flux:heading>
+                <flux:heading size="xl" class="tabular-nums">{{ money($payment->amount_cents) }}</flux:heading>
                 <flux:badge size="lg" :color="$payment->status->badgeColor()">{{ $payment->status->label() }}</flux:badge>
             </div>
             <flux:subheading>{{ ($payment->paid_at ?? $payment->created_at)->format('d F Y, g:i A') }}</flux:subheading>
@@ -189,7 +189,7 @@ new #[Layout('layouts::app')] #[Title('Payment | Admin')] class extends Componen
                         </a>
                         <div class="flex items-center justify-between text-zinc-500">
                             <span>Order total</span>
-                            <span class="tabular-nums">{!! money($payment->order->total_cents) !!}</span>
+                            <span class="tabular-nums">{{ money($payment->order->total_cents) }}</span>
                         </div>
                         <flux:badge size="sm" inset="top bottom" :color="$payment->order->status->badgeColor()">
                             {{ $payment->order->status->label() }}

@@ -134,7 +134,7 @@ new #[Layout('layouts::app')] #[Title('Cart recovery | Admin')] class extends Co
         <flux:card class="flex items-center gap-4">
             <flux:icon.banknotes class="size-8 shrink-0 text-emerald-400" />
             <div>
-                <div class="text-2xl font-semibold tabular-nums dark:text-white">{!! money($s['recoverable_cents']) !!}</div>
+                <div class="text-2xl font-semibold tabular-nums dark:text-white">{{ money($s['recoverable_cents']) }}</div>
                 <flux:text size="sm">Recoverable value</flux:text>
             </div>
         </flux:card>
@@ -220,7 +220,7 @@ new #[Layout('layouts::app')] #[Title('Cart recovery | Admin')] class extends Co
                                 @endif
                             </flux:table.cell>
                             <flux:table.cell align="end" class="tabular-nums text-zinc-500">{{ $cart->items->sum('quantity') }}</flux:table.cell>
-                            <flux:table.cell align="end" class="font-medium tabular-nums">{!! money($cart->subtotalCents()) !!}</flux:table.cell>
+                            <flux:table.cell align="end" class="font-medium tabular-nums">{{ money($cart->subtotalCents()) }}</flux:table.cell>
                             <flux:table.cell align="end" class="text-sm text-zinc-500">{{ $cart->last_activity_at?->diffForHumans(syntax: \Carbon\CarbonInterface::DIFF_ABSOLUTE) ?? '-' }}</flux:table.cell>
                             <flux:table.cell align="end">
                                 @if ($cart->reminders_sent > 0)

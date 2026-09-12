@@ -144,3 +144,31 @@ it('falls back to the default tax rate for a manual line with no product', funct
         ->and((float) $order->items->first()->tax_rate)->toBe(16.0)
         ->and($order->items->first()->product_id)->toBeNull();
 });
+
+it('carries the quote discount and shipping charge into the order', function () {
+    applyTaxSettings(['tax_enabled' => false, 'prices_include_tax' => false]);
+
+    $product = Product::factory()->create();
+    $quote = quoteWithLine(100000, $product);
+    $quote->update(['discount_cents' => 10000, 'shipping_cents' => 35000]);
+
+    $order = app(QuoteConversionService::class)->convert($quote->fresh()->load('items'));
+
+    // (100000 - 10000) + 0 VAT + 35000 shipping
+    expect($order->discount_cents)->toBe(10000)
+        ->and($order->delivery_cents)->toBe(35000)
+        ->and($order->subtotal_cents)->toBe(100000)
+        ->and($order->total_cents)->toBe(125000);
+});
+
+it('never lets a discount larger than the subtotal produce a negative order total', function () {
+    applyTaxSettings(['tax_enabled' => false, 'prices_include_tax' => false]);
+
+    $product = Product::factory()->create();
+    $quote = quoteWithLine(50000, $product);
+    $quote->update(['discount_cents' => 80000, 'shipping_cents' => 0]);
+
+    $order = app(QuoteConversionService::class)->convert($quote->fresh()->load('items'));
+
+    expect($order->total_cents)->toBe(0);
+});

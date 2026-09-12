@@ -60,7 +60,7 @@ new class extends Component
                                 {{ $product->name }}
                             </a>
                             <div class="mt-0.5 text-xs text-brand-500 tabular-nums">
-                                {{ $line['qty'] }} × {!! money($product->sale_price ?? $product->price ?? 0) !!}
+                                {{ $line['qty'] }} × {{ money($product->sale_price ?? $product->price ?? 0) }}
                             </div>
                         </div>
                         <button type="button" wire:click="removeFromCart('{{ $line['key'] }}')"
@@ -76,7 +76,7 @@ new class extends Component
             <div class="border-t border-zinc-100 px-4 py-4">
                 <div class="flex items-center justify-between">
                     <span class="text-sm font-semibold text-ink">Total</span>
-                    <span class="text-sm font-bold text-brand-500 tabular-nums">{!! money($totalCents) !!}</span>
+                    <span class="text-sm font-bold text-brand-500 tabular-nums">{{ money($totalCents) }}</span>
                 </div>
                 <div class="mt-3 flex gap-2">
                     <flux:button variant="customer-outline" size="customer" :href="route('cart')" wire:navigate class="flex-1!">View cart</flux:button>

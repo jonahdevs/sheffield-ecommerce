@@ -147,7 +147,10 @@ return new class extends Migration
         // For pickup orders: warehouse_id is set, carrier_id is null.
         Schema::create('shipments', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('order_id')->constrained()->cascadeOnDelete();
+            // Unique: the one-row-per-order rule above is what Order::shipment()
+            // (a hasOne) assumes, so a double submit must fail rather than leave
+            // a second, invisible row the order views never read.
+            $table->foreignId('order_id')->unique()->constrained()->cascadeOnDelete();
             $table->foreignId('shipping_method_id')
                 ->nullable()
                 ->constrained('shipping_methods')

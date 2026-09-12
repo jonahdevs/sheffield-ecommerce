@@ -593,7 +593,7 @@ new #[Layout('layouts::app')] #[Title('Quote | Admin')] class extends Component 
                                         <span class="tabular-nums text-zinc-500">{{ $item['quantity'] }}</span>
                                     </flux:table.cell>
                                     <flux:table.cell align="end" class="font-semibold tabular-nums">
-                                        {!! money($lineTotal) !!}
+                                        {{ money($lineTotal) }}
                                     </flux:table.cell>
                                     <flux:table.cell align="end">
                                         <flux:button size="xs" variant="ghost" icon="trash-2" tooltip="Remove line"
@@ -616,7 +616,7 @@ new #[Layout('layouts::app')] #[Title('Quote | Admin')] class extends Component 
                         <div class="w-72 space-y-2 text-sm">
                             <div class="flex items-center justify-between">
                                 <span class="text-zinc-500 dark:text-zinc-400">Subtotal</span>
-                                <span class="tabular-nums font-medium dark:text-white">{!! money($this->subtotalCents) !!}</span>
+                                <span class="tabular-nums font-medium dark:text-white">{{ money($this->subtotalCents) }}</span>
                             </div>
 
                             {{-- Discount --}}
@@ -634,7 +634,7 @@ new #[Layout('layouts::app')] #[Title('Quote | Admin')] class extends Component 
                                             :placeholder="$discountType === 'percentage' ? '0' : '0.00'"
                                             class="w-20! text-right" />
                                         @if ($this->discountCents > 0)
-                                            <span class="tabular-nums text-red-500">−{!! money($this->discountCents) !!}</span>
+                                            <span class="tabular-nums text-red-500">−{{ money($this->discountCents) }}</span>
                                         @endif
                                     @endif
                                 </div>
@@ -650,14 +650,14 @@ new #[Layout('layouts::app')] #[Title('Quote | Admin')] class extends Component 
                             @if ($this->vatRate > 0)
                                 <div class="flex items-center justify-between">
                                     <span class="text-zinc-500 dark:text-zinc-400">VAT ({{ $this->vatRate }}%)</span>
-                                    <span class="tabular-nums dark:text-white">{!! money($this->vatCents) !!}</span>
+                                    <span class="tabular-nums dark:text-white">{{ money($this->vatCents) }}</span>
                                 </div>
                             @endif
                             <div
                                 class="flex items-center justify-between border-t border-zinc-200 pt-2 dark:border-zinc-700">
                                 <span class="font-semibold dark:text-white">Total</span>
                                 <span
-                                    class="text-lg font-bold text-brand-500 tabular-nums">{!! money($this->totalCents) !!}</span>
+                                    class="text-lg font-bold text-brand-500 tabular-nums">{{ money($this->totalCents) }}</span>
                             </div>
                         </div>
                     </div>

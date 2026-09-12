@@ -72,7 +72,17 @@ class QuoteConversionService
 
             $subtotalCents = (int) $lines->sum(fn ($line) => $line['item']->line_total_cents);
             $vatCents = (int) $lines->sum('tax_cents');
-            $totalCents = $this->tax->pricesIncludeTax() ? $subtotalCents : $subtotalCents + $vatCents;
+
+            // The customer approved the quote's total, so the order must carry the
+            // staff-set discount and delivery charge through rather than rebuilding
+            // the total from line items alone. Mirrors the quote's own arithmetic:
+            // (subtotal - discount) + VAT (unless tax-inclusive) + shipping.
+            $discountCents = (int) $quote->discount_cents;
+            $deliveryCents = (int) $quote->shipping_cents;
+            $afterDiscount = max(0, $subtotalCents - $discountCents);
+            $totalCents = $afterDiscount
+                + ($this->tax->pricesIncludeTax() ? 0 : $vatCents)
+                + $deliveryCents;
 
             $order = Order::create([
                 'user_id' => $quote->user_id,
@@ -80,7 +90,8 @@ class QuoteConversionService
                 'status' => OrderStatus::PENDING,
                 'subtotal_cents' => $subtotalCents,
                 'vat_cents' => $vatCents,
-                'delivery_cents' => 0,
+                'discount_cents' => $discountCents,
+                'delivery_cents' => $deliveryCents,
                 'installation_cents' => 0,
                 'total_cents' => $totalCents,
                 // Provenance is captured by the quote relationship (and the

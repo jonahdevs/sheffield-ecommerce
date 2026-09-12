@@ -218,7 +218,7 @@ new #[Layout('layouts::storefront')] #[Title('Cart')] class extends Component
 
                                 {{-- Unit price --}}
                                 <td class="px-4 py-5 xl:px-6 text-center text-sm font-medium text-ink tabular-nums whitespace-nowrap">
-                                    {!! money($unitPrice) !!}
+                                    {{ money($unitPrice) }}
                                 </td>
 
                                 {{-- Qty stepper --}}
@@ -238,7 +238,7 @@ new #[Layout('layouts::storefront')] #[Title('Cart')] class extends Component
 
                                 {{-- Line total --}}
                                 <td class="px-4 py-5 xl:px-6 text-right text-sm font-semibold text-ink tabular-nums whitespace-nowrap">
-                                    {!! money($lineTotal) !!}
+                                    {{ money($lineTotal) }}
                                 </td>
                             </tr>
                         @endforeach
@@ -267,18 +267,18 @@ new #[Layout('layouts::storefront')] #[Title('Cart')] class extends Component
                         <div class="flex flex-col gap-3">
                             <div class="flex items-center justify-between text-sm text-ink-2">
                                 <span>Subtotal</span>
-                                <span class="font-medium tabular-nums">{!! money($subtotalCents) !!}</span>
+                                <span class="font-medium tabular-nums">{{ money($subtotalCents) }}</span>
                             </div>
                             <div class="flex items-center justify-between text-sm text-ink-2">
                                 <span>Shipping</span>
                                 <span class="{{ $deliveryCents === 0 ? 'font-medium text-emerald-600' : 'font-medium tabular-nums' }}">
-                                    {!! $deliveryCents === 0 ? 'Free' : money($deliveryCents) !!}
+                                    {{ $deliveryCents === 0 ? 'Free' : money($deliveryCents) }}
                                 </span>
                             </div>
                             @if ($tax->enabled() && $vatCents > 0)
                                 <div class="flex items-center justify-between text-sm text-ink-2">
                                     <span>{{ $vatRateLabel }}@if ($taxInclusive) <span class="text-xs opacity-60">(incl.)</span>@endif</span>
-                                    <span class="font-medium tabular-nums">{!! money($vatCents) !!}</span>
+                                    <span class="font-medium tabular-nums">{{ money($vatCents) }}</span>
                                 </div>
                             @endif
                         </div>
@@ -287,7 +287,7 @@ new #[Layout('layouts::storefront')] #[Title('Cart')] class extends Component
 
                         <div class="flex items-center justify-between">
                             <span class="text-sm font-bold tracking-wide uppercase">Total</span>
-                            <span class="text-2xl font-bold text-brand-500 tabular-nums">{!! money($totalCents) !!}</span>
+                            <span class="text-2xl font-bold text-brand-500 tabular-nums">{{ money($totalCents) }}</span>
                         </div>
 
                         <flux:button variant="customer-primary" size="customer-lg" :href="route('checkout')" wire:navigate icon:trailing="chevron-right" class="mt-5! w-full!">

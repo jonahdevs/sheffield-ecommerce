@@ -199,7 +199,7 @@ new class extends Component {
                 @if ($this->products->isNotEmpty())
                     <div class="border-t border-zinc-100 pt-1">
                         @foreach ($this->products as $product)
-                            <a href="{{ route('product.show', $product) }}" wire:navigate
+                            <a href="{{ route('product.show', $product) }}" wire:navigate wire:key="p-{{ $product->id }}"
                                 @click="saveRecent('{{ addslashes($product->name) }}')"
                                 class="grid cursor-pointer grid-cols-[36px_1fr_auto] items-center gap-3 px-4 py-1.5 hover:bg-surface-sunken">
                                 @if ($product->cover_url)
@@ -223,7 +223,7 @@ new class extends Component {
                     <div class="border-t border-zinc-100">
                         <div class="px-4 py-2 text-xs font-bold tracking-widest text-ink-4 uppercase">Categories</div>
                         @foreach ($this->categories as $category)
-                            <a href="{{ route('category.show', $category) }}" wire:navigate
+                            <a href="{{ route('category.show', $category) }}" wire:navigate wire:key="c-{{ $category->id }}"
                                 @click="saveRecent('{{ addslashes($category->name) }}')"
                                 class="grid cursor-pointer grid-cols-[20px_1fr_auto] items-center gap-3 px-4 py-2.5 hover:bg-surface-sunken">
                                 <flux:icon.squares-2x2 variant="micro" class="size-3.5 text-ink-4" />
@@ -238,7 +238,7 @@ new class extends Component {
                     <div class="border-t border-zinc-100">
                         <div class="px-4 py-2 text-xs font-bold tracking-widest text-ink-4 uppercase">Brands</div>
                         @foreach ($this->brands as $brand)
-                            <a href="{{ route('catalog') }}?brand={{ $brand->id }}" wire:navigate
+                            <a href="{{ route('catalog') }}?brand={{ $brand->id }}" wire:navigate wire:key="b-{{ $brand->id }}"
                                 @click="saveRecent('{{ addslashes($brand->name) }}')"
                                 class="grid cursor-pointer grid-cols-[20px_1fr_auto] items-center gap-3 px-4 py-2.5 hover:bg-surface-sunken">
                                 <span class="inline-flex size-4 items-center justify-center rounded bg-surface-sunken text-xs font-bold text-ink-3 border border-zinc-200">
@@ -355,7 +355,7 @@ new class extends Component {
                         @if ($this->products->isNotEmpty())
                             <div class="border-t border-zinc-100 pt-1">
                                 @foreach ($this->products as $product)
-                                    <a href="{{ route('product.show', $product) }}" wire:navigate
+                                    <a href="{{ route('product.show', $product) }}" wire:navigate wire:key="mp-{{ $product->id }}"
                                         @click="saveRecent('{{ addslashes($product->name) }}'); $wire.closeMobile()"
                                         class="grid cursor-pointer grid-cols-[40px_1fr_auto] items-center gap-3 px-4 py-2 hover:bg-surface-sunken">
                                         @if ($product->cover_url)
@@ -379,7 +379,7 @@ new class extends Component {
                             <div class="border-t border-zinc-100">
                                 <div class="px-4 py-2.5 text-xs font-bold uppercase tracking-widest text-ink-4">Categories</div>
                                 @foreach ($this->categories as $category)
-                                    <a href="{{ route('category.show', $category) }}" wire:navigate
+                                    <a href="{{ route('category.show', $category) }}" wire:navigate wire:key="mc-{{ $category->id }}"
                                         @click="saveRecent('{{ addslashes($category->name) }}'); $wire.closeMobile()"
                                         class="grid cursor-pointer grid-cols-[20px_1fr_auto] items-center gap-3 px-4 py-3 hover:bg-surface-sunken">
                                         <flux:icon.squares-2x2 variant="micro" class="size-3.5 text-ink-4" />
@@ -394,7 +394,7 @@ new class extends Component {
                             <div class="border-t border-zinc-100">
                                 <div class="px-4 py-2.5 text-xs font-bold uppercase tracking-widest text-ink-4">Brands</div>
                                 @foreach ($this->brands as $brand)
-                                    <a href="{{ route('catalog') }}?brand={{ $brand->id }}" wire:navigate
+                                    <a href="{{ route('catalog') }}?brand={{ $brand->id }}" wire:navigate wire:key="mb-{{ $brand->id }}"
                                         @click="saveRecent('{{ addslashes($brand->name) }}'); $wire.closeMobile()"
                                         class="grid cursor-pointer grid-cols-[20px_1fr_auto] items-center gap-3 px-4 py-3 hover:bg-surface-sunken">
                                         <span class="inline-flex size-4 items-center justify-center rounded border border-zinc-200 bg-surface-sunken text-xs font-bold text-ink-3">

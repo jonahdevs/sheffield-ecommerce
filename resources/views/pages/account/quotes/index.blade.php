@@ -2,7 +2,6 @@
 
 use App\Enums\QuoteStatus;
 use Artesaos\SEOTools\Facades\SEOMeta;
-use Flux\Flux;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
@@ -37,16 +36,6 @@ new #[Layout('layouts::account')] #[Title('Quotes')] class extends Component {
         $this->resetPage();
     }
 
-    public function approve(int $id): void
-    {
-        $quote = auth()->user()->quotes()->findOrFail($id);
-        $quote->update(['status' => QuoteStatus::APPROVED]);
-
-        \Illuminate\Support\Facades\Notification::send(\App\Support\StaffRecipients::for('quotes.manage'), new \App\Notifications\Quotes\QuoteDecisionReceived($quote));
-
-        unset($this->quotes);
-        Flux::toast(heading: 'Quote approved', text: 'Your quote has been approved and our team will be in touch.', variant: 'success');
-    }
 }; ?>
 
 <div class="page-fade space-y-6">
@@ -89,7 +78,7 @@ new #[Layout('layouts::account')] #[Title('Quotes')] class extends Component {
             </div>
             <flux:table
                 container:class="[&_th:first-child]:pl-6 [&_th:last-child]:pr-6 [&_td:first-child]:pl-6 [&_td:last-child]:pr-6">
-                <flux:table.columns class="bg-zinc-50 dark:bg-zinc-800/60">
+                <flux:table.columns class="bg-zinc-50">
                     <flux:table.column>Quote</flux:table.column>
                     <flux:table.column class="hidden sm:table-cell">Date</flux:table.column>
                     <flux:table.column class="hidden md:table-cell">Expires</flux:table.column>
@@ -101,7 +90,7 @@ new #[Layout('layouts::account')] #[Title('Quotes')] class extends Component {
                     @foreach ($this->quotes as $quote)
                         <flux:table.row wire:key="quote-{{ $quote->id }}"
                             :href="route('account.quotes.show', $quote)" wire:navigate
-                            class="cursor-pointer hover:bg-zinc-50 dark:hover:bg-zinc-800/40">
+                            class="cursor-pointer hover:bg-zinc-50">
                             <flux:table.cell>
                                 <flux:text class="font-semibold text-ink">{{ $quote->quote_number }}</flux:text>
                             </flux:table.cell>
@@ -126,7 +115,7 @@ new #[Layout('layouts::account')] #[Title('Quotes')] class extends Component {
                             <flux:table.cell class="hidden md:table-cell" align="end">
                                 @if ($quote->isPriced())
                                     <flux:text size="sm" class="font-semibold tabular-nums">
-                                        {!! money($quote->total_cents) !!}
+                                        {{ money($quote->total_cents) }}
                                     </flux:text>
                                 @else
                                     <flux:text size="sm" class="text-zinc-400 italic">Awaiting quote</flux:text>

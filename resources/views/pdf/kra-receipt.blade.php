@@ -151,22 +151,22 @@
                             @endif
                         </td>
                         <td class="border border-zinc-300 px-2 py-1.5 align-top text-center tabular-nums">{{ $item->quantity }}</td>
-                        <td class="border border-zinc-300 px-2 py-1.5 align-top text-right tabular-nums text-zinc-600">{!! money($item->unit_price_cents) !!}</td>
-                        <td class="border border-zinc-300 px-2 py-1.5 align-top text-right tabular-nums font-semibold text-zinc-900">{!! money($item->line_total_cents) !!}</td>
+                        <td class="border border-zinc-300 px-2 py-1.5 align-top text-right tabular-nums text-zinc-600">{{ money($item->unit_price_cents) }}</td>
+                        <td class="border border-zinc-300 px-2 py-1.5 align-top text-right tabular-nums font-semibold text-zinc-900">{{ money($item->line_total_cents) }}</td>
                     </tr>
                 @endforeach
 
                 {{-- Subtotal --}}
                 <tr>
                     <td colspan="4" class="border border-zinc-300 px-2 py-1.5 text-right text-zinc-500">Subtotal</td>
-                    <td class="border border-zinc-300 px-2 py-1.5 text-right tabular-nums font-semibold">{!! money($order->subtotal_cents) !!}</td>
+                    <td class="border border-zinc-300 px-2 py-1.5 text-right tabular-nums font-semibold">{{ money($order->subtotal_cents) }}</td>
                 </tr>
 
                 {{-- Delivery --}}
                 @if ($order->delivery_cents > 0)
                     <tr>
                         <td colspan="4" class="border border-zinc-300 px-2 py-1.5 text-right text-zinc-500">Delivery</td>
-                        <td class="border border-zinc-300 px-2 py-1.5 text-right tabular-nums">{!! money($order->delivery_cents) !!}</td>
+                        <td class="border border-zinc-300 px-2 py-1.5 text-right tabular-nums">{{ money($order->delivery_cents) }}</td>
                     </tr>
                 @endif
 
@@ -174,7 +174,7 @@
                 @if ($order->vat_cents > 0)
                     <tr>
                         <td colspan="4" class="border border-zinc-300 px-2 py-1.5 text-right text-zinc-500">VAT ({{ $vatRate }}%)</td>
-                        <td class="border border-zinc-300 px-2 py-1.5 text-right tabular-nums">{!! money($order->vat_cents) !!}</td>
+                        <td class="border border-zinc-300 px-2 py-1.5 text-right tabular-nums">{{ money($order->vat_cents) }}</td>
                     </tr>
                 @endif
 
@@ -184,7 +184,7 @@
                         Total (KES)
                     </td>
                     <td class="border border-zinc-300 bg-zinc-100 px-2 py-2.5 text-right font-bold text-zinc-900 text-[12.5px] tabular-nums">
-                        {!! money($order->total_cents) !!}
+                        {{ money($order->total_cents) }}
                     </td>
                 </tr>
 

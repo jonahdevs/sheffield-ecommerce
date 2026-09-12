@@ -213,7 +213,7 @@ new #[Layout('layouts::app')] #[Title('Customers | Admin')] class extends Compon
                         </flux:table.cell>
                         <flux:table.cell class="tabular-nums text-zinc-500">{{ $customer->orders_count }}
                         </flux:table.cell>
-                        <flux:table.cell class="font-medium tabular-nums">{!! money($customer->orders_sum_total_cents) !!}</flux:table.cell>
+                        <flux:table.cell class="font-medium tabular-nums">{{ money($customer->orders_sum_total_cents) }}</flux:table.cell>
                         <flux:table.cell class="text-sm text-zinc-500">{{ $customer->created_at->format('M j, Y') }}
                         </flux:table.cell>
                         <flux:table.cell align="end">

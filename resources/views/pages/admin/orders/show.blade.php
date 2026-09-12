@@ -201,6 +201,14 @@ new #[Layout('layouts::app')] #[Title('Order | Admin')] class extends Component
             return;
         }
 
+        // An order carries a single shipment; stop a double submit before it hits
+        // the unique index on shipments.order_id.
+        if ($this->order->shipment) {
+            Flux::toast(heading: 'Shipment already exists', text: 'This order already has a shipment.', variant: 'warning');
+
+            return;
+        }
+
         $this->validate([
             'carrierId' => ['nullable', 'exists:shipping_carriers,id'],
             'warehouseId' => ['nullable', 'exists:warehouses,id'],
@@ -491,9 +499,9 @@ new #[Layout('layouts::app')] #[Title('Order | Admin')] class extends Component
                                 <flux:table.cell>
                                     <span class="font-mono text-xs text-zinc-400">{{ $item->product_sku ?: '-' }}</span>
                                 </flux:table.cell>
-                                <flux:table.cell align="end" class="tabular-nums text-zinc-500">{!! money($item->unit_price_cents) !!}</flux:table.cell>
+                                <flux:table.cell align="end" class="tabular-nums text-zinc-500">{{ money($item->unit_price_cents) }}</flux:table.cell>
                                 <flux:table.cell align="end" class="tabular-nums text-zinc-500">{{ $item->quantity }}</flux:table.cell>
-                                <flux:table.cell align="end" class="font-semibold tabular-nums">{!! money($item->line_total_cents) !!}</flux:table.cell>
+                                <flux:table.cell align="end" class="font-semibold tabular-nums">{{ money($item->line_total_cents) }}</flux:table.cell>
                             </flux:table.row>
                         @endforeach
                     </flux:table.rows>
@@ -503,7 +511,7 @@ new #[Layout('layouts::app')] #[Title('Order | Admin')] class extends Component
                     <div class="w-72 space-y-2 text-sm">
                         <div class="flex items-center justify-between">
                             <span class="text-zinc-500 dark:text-zinc-400">Subtotal</span>
-                            <span class="font-medium tabular-nums dark:text-white">{!! money($order->subtotal_cents) !!}</span>
+                            <span class="font-medium tabular-nums dark:text-white">{{ money($order->subtotal_cents) }}</span>
                         </div>
                         @if ($order->discount_cents > 0)
                             <div class="flex items-center justify-between">
@@ -513,13 +521,13 @@ new #[Layout('layouts::app')] #[Title('Order | Admin')] class extends Component
                                         <span class="ml-1 rounded bg-emerald-500/10 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-widest text-emerald-600 dark:text-emerald-400">{{ $order->coupon_code }}</span>
                                     @endif
                                 </span>
-                                <span class="font-medium tabular-nums text-emerald-600 dark:text-emerald-400">− {!! money($order->discount_cents) !!}</span>
+                                <span class="font-medium tabular-nums text-emerald-600 dark:text-emerald-400">− {{ money($order->discount_cents) }}</span>
                             </div>
                         @endif
                         <div class="flex items-center justify-between">
                             <span class="text-zinc-500 dark:text-zinc-400">Delivery</span>
                             @if ($order->delivery_cents > 0)
-                                <span class="font-medium tabular-nums dark:text-white">{!! money($order->delivery_cents) !!}</span>
+                                <span class="font-medium tabular-nums dark:text-white">{{ money($order->delivery_cents) }}</span>
                             @else
                                 <span class="font-medium text-emerald-600">Free</span>
                             @endif
@@ -527,16 +535,16 @@ new #[Layout('layouts::app')] #[Title('Order | Admin')] class extends Component
                         @if ($order->installation_cents > 0)
                             <div class="flex items-center justify-between">
                                 <span class="text-zinc-500 dark:text-zinc-400">Installation</span>
-                                <span class="font-medium tabular-nums dark:text-white">{!! money($order->installation_cents) !!}</span>
+                                <span class="font-medium tabular-nums dark:text-white">{{ money($order->installation_cents) }}</span>
                             </div>
                         @endif
                         <div class="flex items-center justify-between">
                             <span class="text-zinc-500 dark:text-zinc-400">{!! $order->vatLabel() !!}</span>
-                            <span class="font-medium tabular-nums dark:text-white">{!! money($order->vat_cents) !!}</span>
+                            <span class="font-medium tabular-nums dark:text-white">{{ money($order->vat_cents) }}</span>
                         </div>
                         <div class="flex items-center justify-between border-t border-zinc-200 pt-2 dark:border-zinc-700">
                             <span class="font-semibold dark:text-white">Total</span>
-                            <span class="text-lg font-bold text-brand-500 tabular-nums">{!! money($order->total_cents) !!}</span>
+                            <span class="text-lg font-bold text-brand-500 tabular-nums">{{ money($order->total_cents) }}</span>
                         </div>
                     </div>
                 </div>
@@ -691,7 +699,7 @@ new #[Layout('layouts::app')] #[Title('Order | Admin')] class extends Component
                                 </div>
                                 <div class="flex justify-between gap-2">
                                     <span class="shrink-0 text-zinc-500">Amount</span>
-                                    <span class="font-semibold tabular-nums dark:text-white">{!! money($payment->amount_cents) !!}</span>
+                                    <span class="font-semibold tabular-nums dark:text-white">{{ money($payment->amount_cents) }}</span>
                                 </div>
                                 @php
                                     $ref = $payment->mpesa_receipt ?? $payment->paystack_reference ?? $payment->checkout_request_id;

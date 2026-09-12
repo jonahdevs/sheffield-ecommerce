@@ -163,7 +163,7 @@ new #[Layout('layouts::app')] #[Title('Payments | Admin')] class extends Compone
         <flux:card class="flex items-center gap-4">
             <flux:icon.banknotes class="size-9 text-emerald-400" />
             <div>
-                <div class="text-2xl font-semibold tabular-nums dark:text-white">{!! money($this->stats['collected']) !!}</div>
+                <div class="text-2xl font-semibold tabular-nums dark:text-white">{{ money($this->stats['collected']) }}</div>
                 <flux:text size="sm">Collected</flux:text>
             </div>
         </flux:card>
@@ -184,7 +184,7 @@ new #[Layout('layouts::app')] #[Title('Payments | Admin')] class extends Compone
         <flux:card class="flex items-center gap-4">
             <flux:icon.arrow-uturn-left class="size-9 text-rose-400" />
             <div>
-                <div class="text-2xl font-semibold tabular-nums dark:text-white">{!! money($this->stats['refunded']) !!}</div>
+                <div class="text-2xl font-semibold tabular-nums dark:text-white">{{ money($this->stats['refunded']) }}</div>
                 <flux:text size="sm">Refunded</flux:text>
             </div>
         </flux:card>
@@ -263,7 +263,7 @@ new #[Layout('layouts::app')] #[Title('Payments | Admin')] class extends Compone
                             <span class="block text-xs capitalize text-zinc-400">via
                                 {{ str_replace('_', ' ', (string) $payment->provider) }}</span>
                         </flux:table.cell>
-                        <flux:table.cell class="font-medium tabular-nums">{!! money($payment->amount_cents) !!}
+                        <flux:table.cell class="font-medium tabular-nums">{{ money($payment->amount_cents) }}
                         </flux:table.cell>
                         <flux:table.cell>
                             <flux:badge size="sm" inset="top bottom" :color="$payment->status->badgeColor()">

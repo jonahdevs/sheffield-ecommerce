@@ -585,10 +585,10 @@ new #[Layout('layouts::app')] #[Title('Products | Admin')] class extends Compone
 
                         <flux:table.cell variant="strong" class="tabular-nums">
                             @if ($product->price)
-                                KES {{ number_format(intdiv($product->price, 100), 0, '.', ',') }}
+                                {{ money($product->price) }}
                                 @if ($product->sale_price)
                                     <span class="block text-xs font-normal text-emerald-600">
-                                        Sale KES {{ number_format(intdiv($product->sale_price, 100), 0, '.', ',') }}
+                                        Sale {{ money($product->sale_price) }}
                                     </span>
                                 @endif
                             @else

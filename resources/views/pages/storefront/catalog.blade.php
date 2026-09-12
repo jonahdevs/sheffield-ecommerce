@@ -270,7 +270,7 @@ new #[Layout('layouts::storefront')] #[Title('Shop')] class extends Component
                         @foreach ($selectedCategories as $slug)
                             @php $cat = $this->categoriesList->firstWhere('slug', $slug); @endphp
                             @if ($cat)
-                                <button type="button" wire:click="removeCategory('{{ $slug }}')"
+                                <button type="button" wire:click="removeCategory('{{ $slug }}')" wire:key="chip-cat-{{ $slug }}"
                                     class="inline-flex h-7 cursor-pointer items-center gap-1.5 rounded-full bg-surface-sunken px-3 text-xs font-medium text-ink-2 hover:bg-zinc-200">
                                     {{ $cat->name }}
                                     <flux:icon.x variant="micro" class="size-3 text-ink-3" />
@@ -280,7 +280,7 @@ new #[Layout('layouts::storefront')] #[Title('Shop')] class extends Component
                         @foreach ($selectedBrands as $brandSlug)
                             @php $br = $this->brandsList->firstWhere('slug', $brandSlug); @endphp
                             @if ($br)
-                                <button type="button" wire:click="removeBrand('{{ $brandSlug }}')"
+                                <button type="button" wire:click="removeBrand('{{ $brandSlug }}')" wire:key="chip-brand-{{ $brandSlug }}"
                                     class="inline-flex h-7 cursor-pointer items-center gap-1.5 rounded-full bg-surface-sunken px-3 text-xs font-medium text-ink-2 hover:bg-zinc-200">
                                     {{ $br->name }}
                                     <flux:icon.x variant="micro" class="size-3 text-ink-3" />

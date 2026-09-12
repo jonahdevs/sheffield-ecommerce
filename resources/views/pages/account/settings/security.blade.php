@@ -439,7 +439,7 @@ new #[Layout('layouts::settings')] #[Title('Security')] class extends Component 
         {{-- Session list --}}
         <div class="divide-y divide-zinc-100">
             @foreach ($this->sessions as $session)
-                <div class="flex items-center gap-3.5 px-5 py-3.5">
+                <div class="flex items-center gap-3.5 px-5 py-3.5" wire:key="session-{{ $session->id }}">
                     <div class="flex size-9 shrink-0 items-center justify-center rounded-md bg-zinc-100">
                         @if (in_array($session->platform, ['Android', 'iOS']))
                             <flux:icon.device-phone-mobile class="size-4 text-zinc-500" />

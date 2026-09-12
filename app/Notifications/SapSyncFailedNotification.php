@@ -42,7 +42,7 @@ class SapSyncFailedNotification extends Notification
                 'orderNumber' => $this->order->order_number,
                 'customerName' => $this->order->user?->name ?? 'Guest',
                 'customerEmail' => $this->order->user?->email ?? '-',
-                'total' => number_format($this->order->total_cents / 100, 2).' KES',
+                'total' => money($this->order->total_cents),
                 'errorMessage' => $this->exception->getMessage(),
                 'url' => route('admin.orders.show', $this->order),
             ]);

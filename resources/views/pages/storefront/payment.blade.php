@@ -162,7 +162,7 @@ new #[Layout('layouts::storefront')] #[Title('Payment')] class extends Component
                                         <div class="text-xs text-ink-4">Qty {{ $item->quantity }}</div>
                                     </div>
                                     <div class="text-xs font-semibold text-ink tabular-nums whitespace-nowrap">
-                                        {!! money($item->line_total_cents) !!}</div>
+                                        {{ money($item->line_total_cents) }}</div>
                                 </div>
                             @endforeach
                         </div>
@@ -172,18 +172,18 @@ new #[Layout('layouts::storefront')] #[Title('Payment')] class extends Component
                         <div class="flex flex-col gap-3">
                             <div class="flex items-center justify-between text-sm text-ink-2">
                                 <span>Subtotal</span>
-                                <span class="font-medium tabular-nums">{!! money($order->subtotal_cents) !!}</span>
+                                <span class="font-medium tabular-nums">{{ money($order->subtotal_cents) }}</span>
                             </div>
                             <div class="flex items-center justify-between text-sm text-ink-2">
                                 <span>Shipping</span>
                                 <span
                                     class="{{ $order->delivery_cents === 0 ? 'font-medium text-emerald-600' : 'font-medium tabular-nums' }}">
-                                    {!! $order->delivery_cents === 0 ? 'Free' : money($order->delivery_cents) !!}
+                                    {{ $order->delivery_cents === 0 ? 'Free' : money($order->delivery_cents) }}
                                 </span>
                             </div>
                             <div class="flex items-center justify-between text-sm text-ink-2">
-                                <span>{{ $order->vatLabel() }}</span>
-                                <span class="font-medium tabular-nums">{!! money($order->vat_cents) !!}</span>
+                                <span>{{ $order->vatLabelText() }}</span>
+                                <span class="font-medium tabular-nums">{{ money($order->vat_cents) }}</span>
                             </div>
                         </div>
 
@@ -191,7 +191,7 @@ new #[Layout('layouts::storefront')] #[Title('Payment')] class extends Component
 
                         <div class="flex items-center justify-between">
                             <span class="text-sm font-bold tracking-wide uppercase">Total</span>
-                            <span class="text-2xl font-bold text-brand-500 tabular-nums">{!! money($order->total_cents) !!}</span>
+                            <span class="text-2xl font-bold text-brand-500 tabular-nums">{{ money($order->total_cents) }}</span>
                         </div>
 
                         <div class="mt-5 flex items-center justify-center gap-1.5 text-xs text-ink-4">

@@ -81,7 +81,7 @@ new #[Layout('layouts::account')] #[Title('Orders')] class extends Component
                 @endforeach
             </div>
             <flux:table container:class="scrollbar-thin [&_th:first-child]:pl-6 [&_th:last-child]:pr-6 [&_td:first-child]:pl-6 [&_td:last-child]:pr-6">
-                <flux:table.columns class="bg-zinc-50 dark:bg-zinc-800/60">
+                <flux:table.columns class="bg-zinc-50">
                     <flux:table.column>Order</flux:table.column>
                     <flux:table.column class="hidden sm:table-cell">Date</flux:table.column>
                     <flux:table.column>Status</flux:table.column>
@@ -107,7 +107,7 @@ new #[Layout('layouts::account')] #[Title('Orders')] class extends Component
                             </flux:table.cell>
                             <flux:table.cell class="hidden md:table-cell" align="end">
                                 <flux:text size="sm" class="font-semibold tabular-nums">
-                                    {!! money($order->total_cents) !!}
+                                    {{ money($order->total_cents) }}
                                 </flux:text>
                             </flux:table.cell>
                             <flux:table.cell align="end">

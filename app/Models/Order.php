@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Enums\OrderStatus;
 use App\Enums\PaymentStatus;
 use App\Enums\SapSyncStatus;
+use App\Events\LowStockDetected;
 use App\Events\OrderPlaced;
 use App\Events\OrderUpdated;
 use App\Jobs\SyncOrderToSapJob;
@@ -13,6 +14,7 @@ use App\Notifications\Orders\NewOrderReceived;
 use App\Notifications\Orders\OrderConfirmed;
 use App\Services\Sap\SapConfig;
 use App\Settings\CheckoutSettings;
+use App\Settings\InventorySettings;
 use App\Support\NumberSequence;
 use App\Support\StaffRecipients;
 use Database\Factories\OrderFactory;
@@ -22,14 +24,20 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Query\Expression;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Storage;
 use Spatie\Activitylog\Models\Concerns\LogsActivity;
 use Spatie\Activitylog\Support\LogOptions;
 
-#[Fillable(['user_id', 'address_id', 'delivery_zone_id', 'shipping_method_id', 'warehouse_id', 'order_number', 'status', 'subtotal_cents', 'vat_cents', 'tax_inclusive', 'delivery_cents', 'installation_cents', 'discount_cents', 'total_cents', 'coupon_id', 'coupon_code', 'payment_method', 'notes', 'staff_notes', 'confirmed_at', 'shipped_at', 'delivered_at', 'cancelled_at', 'sap_doc_entry', 'sap_doc_number', 'sap_sync_status', 'sap_synced_at', 'sap_sync_attempts', 'sap_sync_error', 'cu_number', 'receipt_path',
-    'packing_list_path', 'delivery_note_path'])]
+#[Fillable(['user_id', 'address_id', 'delivery_zone_id', 'shipping_method_id', 'warehouse_id', 'order_number', 'status', 'subtotal_cents', 'vat_cents', 'tax_inclusive', 'delivery_cents', 'installation_cents', 'discount_cents', 'total_cents', 'currency', 'coupon_id', 'coupon_code', 'payment_method', 'notes', 'staff_notes', 'confirmed_at', 'shipped_at', 'delivered_at', 'cancelled_at', 'sap_doc_entry', 'sap_doc_number', 'sap_sync_status', 'sap_synced_at', 'sap_sync_attempts', 'sap_sync_error', 'cu_number', 'receipt_path',
+    'packing_list_path', 'delivery_note_path',
+    // Destination snapshot, copied at placement so later address edits or
+    // deletions (address_id is nullOnDelete) can't rewrite a placed order's
+    // shipping details. Read as the fallback by the delivery note, packing
+    // list, KRA receipt and the SAP order payload.
+    'shipping_name', 'shipping_email', 'shipping_phone', 'shipping_line1', 'shipping_line2', 'shipping_city', 'shipping_state', 'shipping_postcode', 'shipping_country', 'delivery_zone_name', 'shipping_method_name', 'warehouse_name'])]
 class Order extends Model
 {
     /** @use HasFactory<OrderFactory> */
@@ -215,8 +223,12 @@ class Order extends Model
                 DB::table('product_variants')
                     ->where('id', $item->variant->id)
                     ->update([
-                        'stock_quantity' => DB::raw('GREATEST(0, CAST(stock_quantity AS SIGNED) - '.(int) $item->quantity.')'),
+                        'stock_quantity' => $this->flooredDecrement((int) $item->quantity),
                     ]);
+
+                $this->reportLowStock($item->product, (int) DB::table('product_variants')
+                    ->where('id', $item->variant->id)
+                    ->value('stock_quantity'));
 
                 continue;
             }
@@ -225,9 +237,45 @@ class Order extends Model
                 DB::table('products')
                     ->where('id', $item->product->id)
                     ->update([
-                        'stock_quantity' => DB::raw('GREATEST(0, CAST(stock_quantity AS SIGNED) - '.(int) $item->quantity.')'),
+                        'stock_quantity' => $this->flooredDecrement((int) $item->quantity),
                     ]);
+
+                $this->reportLowStock($item->product, (int) DB::table('products')
+                    ->where('id', $item->product->id)
+                    ->value('stock_quantity'));
             }
+        }
+    }
+
+    /**
+     * Subtract a quantity in a single UPDATE without dropping below zero.
+     * A CASE expression rather than GREATEST()/CAST(... AS SIGNED), which are
+     * MySQL-only and make the whole order-confirmation path unrunnable on the
+     * SQLite connection the test suite uses. Comparing before subtracting also
+     * means an unsigned column never has to evaluate a negative intermediate.
+     */
+    private function flooredDecrement(int $quantity): Expression
+    {
+        return DB::raw("CASE WHEN stock_quantity <= {$quantity} THEN 0 ELSE stock_quantity - {$quantity} END");
+    }
+
+    /**
+     * The stock writes above go through the query builder so the decrement stays
+     * atomic, which means Eloquent never fires and ProductObserver /
+     * ProductVariantObserver never see the change. Selling stock down is the main
+     * way it runs low, so the low-stock event has to be raised here instead.
+     */
+    private function reportLowStock(?Product $product, int $quantity): void
+    {
+        if (! $product) {
+            return;
+        }
+
+        $threshold = $product->low_stock_threshold
+            ?? app(InventorySettings::class)->low_stock_threshold;
+
+        if ($quantity <= $threshold) {
+            LowStockDetected::dispatch($product, $quantity);
         }
     }
 
