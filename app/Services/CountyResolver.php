@@ -12,7 +12,6 @@ namespace App\Services;
 class CountyResolver
 {
     private const FILE = 'maps/kenya-counties.geojson';
-
     /** @var array<int, array{name: string, rings: array<int, array<int, array{0: float, 1: float}>>}>|null */
     private static ?array $counties = null;
 
