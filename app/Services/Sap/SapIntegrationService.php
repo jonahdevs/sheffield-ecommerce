@@ -41,7 +41,8 @@ class SapIntegrationService
 
         $success = $response->successful() && ($data['success'] ?? false) === true;
         $docEntry = (string) ($data['docEntry'] ?? '');
-        $docNumber = isset($data['docNumber']) ? (string) $data['docNumber'] : null;
+        $rawDocNumber = $data['docNum'] ?? $data['docNumber'] ?? null;
+        $docNumber = filled($rawDocNumber) ? (string) $rawDocNumber : null;
 
         // SAP rejects a re-send of an order it has already invoiced. That is not a
         // failure - the invoice exists; we only need the CU number. Treat it as a

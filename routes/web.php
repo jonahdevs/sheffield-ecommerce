@@ -5,6 +5,7 @@ use App\Http\Controllers\Dev\MailPreviewController;
 use App\Http\Controllers\NewsletterController;
 use App\Http\Controllers\Payments\MpesaCallbackController;
 use App\Http\Controllers\Payments\PaystackWebhookController;
+use App\Http\Controllers\ProductsController;
 use App\Http\Controllers\SocialAuthController;
 use App\Http\Controllers\Storefront\CategoryMenuController;
 use App\Models\Cart;
@@ -143,6 +144,15 @@ if (app()->environment('local')) {
 // slugs only; the component 404s on unpublished/unknown pages.
 // ---------------------------------------------------------------------------
 Route::livewire('/{page:slug}', 'pages::storefront.page')->name('page.show');
+
+// -----
+// Testing resource controller
+// --------
+Route::delete('products', [ProductsController::class, 'index'])->name('products.index');
+Route::delete('products/{id}', [ProductsController::class, 'destroy'])->name('products.destroy');
+// -----
+// End Testing resource controller
+// --------
 
 // ---------------------------------------------------------------------------
 // Catch-all 404 - runs inside the web middleware group so the session/auth are

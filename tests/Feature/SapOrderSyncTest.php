@@ -519,6 +519,30 @@ it('stores the docEntry and queues recovery when SAP echoes it on an already-exi
     Queue::assertPushed(RecoverSapInvoiceJob::class);
 });
 
+it('stores the docEntry and docNum returned by SAP on invoice create', function () {
+    Queue::fake();
+
+    Http::fake([
+        '*/api/invoice/create' => Http::response([
+            'success' => true,
+            'message' => 'Invoice created successfully',
+            'docEntry' => '26165',
+            'docNum' => '29621',
+            'cuNumber' => null,
+        ], 200),
+    ]);
+
+    $order = Order::factory()->create(['sap_sync_status' => SapSyncStatus::PENDING]);
+    Payment::factory()->successful()->create(['order_id' => $order->id]);
+
+    (new SyncOrderToSapJob($order))->handle(app(SapIntegrationService::class));
+
+    $order->refresh();
+
+    expect($order->sap_doc_entry)->toBe('26165')
+        ->and($order->sap_doc_number)->toBe('29621');
+});
+
 it('still hard-fails on a genuine SAP error', function () {
     Http::fake([
         '*/api/invoice/create' => Http::response(['success' => false, 'message' => 'G/L account needs DR assignment'], 200),
