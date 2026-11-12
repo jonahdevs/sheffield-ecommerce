@@ -88,7 +88,7 @@ it('syncs price and quantity to a product by sku', function () {
     ]))->handle(app(IntegrationSettings::class));
 
     $product->refresh();
-    expect($product->sale_price)->toBe(2000)
+    expect($product->sale_price)->toBe(200000)
         ->and($product->stock_quantity)->toBe(50)
         ->and($product->stock_status)->toBe(StockStatus::IN_STOCK)
         ->and($product->sap_last_synced_at)->not->toBeNull();
@@ -112,10 +112,23 @@ it('syncs price and quantity to a product variant by sku', function () {
     ]))->handle(app(IntegrationSettings::class));
 
     $variant->refresh();
-    expect($variant->price)->toBe(999)
+    expect($variant->price)->toBe(99900)
         ->and($variant->stock_quantity)->toBe(20)
         ->and($variant->stock_status)->toBe(StockStatus::IN_STOCK)
         ->and($variant->sap_last_synced_at)->not->toBeNull();
+});
+
+it('converts SAP shilling prices with decimals to cents', function () {
+    $product = Product::factory()->create(['sku' => 'IMG/FPR/00042', 'sale_price' => null]);
+    $variant = ProductVariant::factory()->create(['sku' => 'VAR-DEC', 'price' => 100]);
+
+    (new ProcessSapProductSync([
+        ['sku' => 'IMG/FPR/00042', 'price' => 1200.00, 'stock_quantity' => 150],
+        ['sku' => 'VAR-DEC', 'price' => 8537.6, 'stock_quantity' => 5],
+    ]))->handle(app(IntegrationSettings::class));
+
+    expect($product->refresh()->sale_price)->toBe(120000)
+        ->and($variant->refresh()->price)->toBe(853760);
 });
 
 it('does not update price when sap_sync_price is disabled', function () {

@@ -23,7 +23,7 @@ class ProcessSapProductSync implements ShouldQueue
     public int $timeout = 120;
 
     /**
-     * @param  array<int, array{sku: string, price: float|int, stock_quantity: int}>  $products
+     * @param  array<int, array{sku: string, price: float|int, stock_quantity: int}>  $products  Prices in shillings, as SAP sends them.
      */
     public function __construct(public readonly array $products) {}
 
@@ -51,7 +51,7 @@ class ProcessSapProductSync implements ShouldQueue
                 $updates = ['sap_last_synced_at' => now()];
 
                 if ($settings->sap_sync_price) {
-                    $updates['sale_price'] = $item['price'];
+                    $updates['sale_price'] = $this->toCents($item['price']);
                 }
 
                 if ($settings->sap_sync_quantity) {
@@ -66,7 +66,7 @@ class ProcessSapProductSync implements ShouldQueue
                 $updates = ['sap_last_synced_at' => now()];
 
                 if ($settings->sap_sync_price) {
-                    $updates['price'] = $item['price'];
+                    $updates['price'] = $this->toCents($item['price']);
                 }
 
                 if ($settings->sap_sync_quantity) {
@@ -81,6 +81,14 @@ class ProcessSapProductSync implements ShouldQueue
                 Log::warning('SAP sync: SKU not found.', ['sku' => $sku]);
             }
         }
+    }
+
+    /**
+     * SAP sends prices in shillings (e.g. 1200.00); the catalogue stores cents.
+     */
+    private function toCents(float|int|string $shillings): int
+    {
+        return (int) round((float) $shillings * 100);
     }
 
     public function failed(?\Throwable $exception): void
